@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>Claude Code Approver</title>
+  <link rel="manifest" href="/manifest.json">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --surface2: #232342;
+      --accent: #e94560;
+      --approve: #00d26a;
+      --reject: #ff4757;
+      --text: #eee;
+      --text-dim: #8888aa;
+      --border: #2a2a4a;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 헤더 */
+    .header {
+      background: var(--surface);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--reject);
+      display: inline-block;
+      margin-right: 8px;
+      transition: background 0.3s;
+    }
+    .status-dot.connected { background: var(--approve); }
+
+    /* 탭 */
+    .tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* 승인 카드 */
+    .card-list { padding: 12px; }
+
+    .approval-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .tool-badge {
+      background: var(--surface2);
+      color: var(--accent);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .time-ago {
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+
+    .command-box {
+      background: #0d0d1a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #ddd;
+      word-break: break-all;
+      max-height: 120px;
+      overflow-y: auto;
+      margin-bottom: 12px;
+    }
+
+    .workdir {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn:active { transform: scale(0.96); }
+
+    .btn-approve {
+      background: var(--approve);
+      color: #000;
+    }
+    .btn-reject {
+      background: var(--reject);
+      color: #fff;
+    }
+    .btn-approve-all {
+      background: var(--surface2);
+      border: 1px solid var(--approve);
+      color: var(--approve);
+      margin: 0 12px 12px;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    /* 히스토리 */
+    .history-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .history-icon { font-size: 20px; }
+    .history-cmd {
+      flex: 1;
+      font-family: monospace;
+      font-size: 12px;
+      color: #ccc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .history-time {
+      font-size: 11px;
+      color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    /* 규칙 설정 */
+    .rule-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 8px;
+    }
+    .rule-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .rule-name { font-size: 14px; font-weight: 600; }
+    .rule-pattern {
+      font-family: monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+    .rule-action {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+    .rule-action.approve { background: rgba(0,210,106,0.2); color: var(--approve); }
+    .rule-action.reject { background: rgba(255,71,87,0.2); color: var(--reject); }
+
+    /* 토글 스위치 */
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+    .toggle input { display: none; }
+    .toggle-slider {
+      position: absolute;
+      inset: 0;
+      background: #444;
+      border-radius: 12px;
+      transition: 0.2s;
+    }
+    .toggle-slider:before {
+      content: '';
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: white;
+      top: 3px;
+      left: 3px;
+      transition: 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: var(--approve); }
+    .toggle input:checked + .toggle-slider:before { transform: translateX(20px); }
+
+    .master-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .master-toggle-label { font-weight: 600; }
+
+    /* 빈 상태 */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-dim);
+    }
+    .empty-icon { font-size: 48px; margin-bottom: 16px; }
+
+    /* 알림 배지 */
+    .badge {
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 10px;
+      margin-left: 6px;
+    }
+
+    .hidden { display: none !important; }
+
+    /* 진동 애니메이션 */
+    @keyframes vibrate {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-2px); }
+      75% { transform: translateX(2px); }
+    }
+    .vibrate { animation: vibrate 0.3s ease-in-out 3; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div style="display:flex;align-items:center">
+      <span class="status-dot" id="statusDot"></span>
+      <h1>Claude Code Approver</h1>
+    </div>
+    <span id="pendingCount" class="badge hidden">0</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="pending" id="tabPending">
+      대기 중 <span id="pendingBadge" class="badge hidden">0</span>
+    </div>
+    <div class="tab" data-tab="history" id="tabHistory">히스토리</div>
+    <div class="tab" data-tab="rules" id="tabRules">자동 규칙</div>
+  </div>
+
+  <!-- 대기 중 탭 -->
+  <div id="panelPending" class="card-list">
+    <div id="approveAllBtn" class="btn-approve-all hidden" onclick="approveAll()">
+      모두 승인
+    </div>
+    <div id="pendingList"></div>
+    <div id="pendingEmpty" class="empty">
+      <div class="empty-icon">✨</div>
+      <div>대기 중인 승인 요청이 없습니다</div>
+    </div>
+  </div>
+
+  <!-- 히스토리 탭 -->
+  <div id="panelHistory" class="card-list hidden">
+    <div id="historyList"></div>
+    <div id="historyEmpty" class="empty">
+      <div class="empty-icon">📭</div>
+      <div>아직 처리 내역이 없습니다</div>
+    </div>
+  </div>
+
+  <!-- 자동 규칙 탭 -->
+  <div id="panelRules" class="card-list hidden">
+    <div class="master-toggle">
+      <span class="master-toggle-label">자동 승인 활성화</span>
+      <label class="toggle">
+        <input type="checkbox" id="autoApproveToggle" onchange="toggleAutoApprove()">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div id="rulesList"></div>
+  </div>
+
+  <script>
+    // 상태
+    let ws = null;
+    let pendingApprovals = [];
+    let historyItems = [];
+
+    // WebSocket 연결
+    function connect() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}/ws`);
+
+      ws.onopen = () => {
+        document.getElementById('statusDot').classList.add('connected');
+        console.log('WebSocket 연결됨');
+      };
+
+      ws.onclose = () => {
+        document.getElementById('statusDot').classList.remove('connected');
+        console.log('WebSocket 연결 해제 - 3초 후 재연결');
+        setTimeout(connect, 3000);
+      };
+
+      ws.onmessage = (e) => {
+        const msg = JSON.parse(e.data);
+        handleMessage(msg);
+      };
+    }
+
+    function handleMessage(msg) {
+      switch (msg.type) {
+        case 'pending_list':
+          pendingApprovals = msg.data;
+          renderPending();
+          break;
+        case 'new_approval':
+          pendingApprovals.push(msg.data);
+          renderPending();
+          notifyNewApproval(msg.data);
+          break;
+        case 'approval_resolved':
+          pendingApprovals = pendingApprovals.filter(a => a.id !== msg.data.id);
+          historyItems.unshift(msg.data);
+          renderPending();
+          renderHistory();
+          break;
+      }
+    }
+
+    function notifyNewApproval(approval) {
+      // 브라우저 알림
+      if (Notification.permission === 'granted') {
+        new Notification('Claude Code 승인 요청', {
+          body: approval.command.slice(0, 100),
+          icon: '/icon-192.png',
+          vibrate: [200, 100, 200],
+        });
+      }
+      // 진동 효과
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+
+      // 탭 제목 깜빡임
+      document.title = `(${pendingApprovals.length}) 승인 요청!`;
+      setTimeout(() => { document.title = 'Claude Code Approver'; }, 5000);
+    }
+
+    // 렌더링
+    function renderPending() {
+      const list = document.getElementById('pendingList');
+      const empty = document.getElementById('pendingEmpty');
+      const allBtn = document.getElementById('approveAllBtn');
+      const badge = document.getElementById('pendingBadge');
+      const countBadge = document.getElementById('pendingCount');
+
+      if (pendingApprovals.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        allBtn.classList.add('hidden');
+        badge.classList.add('hidden');
+        countBadge.classList.add('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      badge.textContent = pendingApprovals.length;
+      badge.classList.remove('hidden');
+      countBadge.textContent = pendingApprovals.length;
+      countBadge.classList.remove('hidden');
+
+      if (pendingApprovals.length > 1) {
+        allBtn.classList.remove('hidden');
+        allBtn.textContent = `모두 승인 (${pendingApprovals.length}건)`;
+      } else {
+        allBtn.classList.add('hidden');
+      }
+
+      list.innerHTML = pendingApprovals.map(a => `
+        <div class="approval-card vibrate" id="card-${a.id}">
+          <div class="card-header">
+            <span class="tool-badge">${esc(a.tool)}</span>
+            <span class="time-ago">${timeAgo(a.createdAt)}</span>
+          </div>
+          <div class="command-box">${esc(a.command)}</div>
+          ${a.workdir ? `<div class="workdir">📂 ${esc(a.workdir)}</div>` : ''}
+          <div class="btn-row">
+            <button class="btn btn-approve" onclick="approve('${a.id}')">✓ 승인</button>
+            <button class="btn btn-reject" onclick="reject('${a.id}')">✕ 거부</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderHistory() {
+      const list = document.getElementById('historyList');
+      const empty = document.getElementById('historyEmpty');
+
+      if (historyItems.length === 0) {
+        list.innerHTML = '';
+        empty.classList.remove('hidden');
+        return;
+      }
+
+      empty.classList.add('hidden');
+      list.innerHTML = historyItems.map(h => {
+        const icon = h.status === 'approved' ? '✅' : h.status === 'rejected' ? '❌' : '⏳';
+        return `
+          <div class="history-item">
+            <span class="history-icon">${icon}</span>
+            <span class="history-cmd">${esc(h.command)}</span>
+            <span class="history-time">${timeAgo(h.resolvedAt || h.createdAt)}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 액션
+    function approve(id) {
+      ws.send(JSON.stringify({ type: 'approve', id }));
+      const card = document.getElementById(`card-${id}`);
+      if (card) {
+        card.style.opacity = '0.5';
+        card.style.transform = 'translateX(100px)';
+        card.style.transition = 'all 0.3s';
+      }
+    }
+
+    function reject(id) {
+      ws.send(JSON.stringify({ type: 'reject', id }));
+      const card = document.getElementById(`card-${id}`);
+      if (card) {
+        card.style.opacity = '0.5';
+        card.style.transform = 'translateX(-100px)';
+        card.style.transition = 'all 0.3s';
+      }
+    }
+
+    async function approveAll() {
+      try {
+        await fetch('/api/approve-all', { method: 'POST' });
+      } catch (e) {
+        console.error('모두 승인 실패:', e);
+      }
+    }
+
+    // 자동 규칙
+    async function loadRules() {
+      try {
+        const res = await fetch('/api/rules');
+        const rules = await res.json();
+        document.getElementById('autoApproveToggle').checked = rules.enabled;
+        renderRules(rules.rules);
+      } catch (e) {
+        console.error('규칙 로드 실패:', e);
+      }
+    }
+
+    function renderRules(rules) {
+      const list = document.getElementById('rulesList');
+      list.innerHTML = rules.map((r, i) => `
+        <div class="rule-card">
+          <div class="rule-header">
+            <span class="rule-name">${esc(r.name)}</span>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span class="rule-action ${r.action}">${r.action === 'approve' ? '승인' : '거부'}</span>
+              <label class="toggle">
+                <input type="checkbox" ${r.active ? 'checked' : ''} onchange="toggleRule(${i}, this.checked)">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          ${r.pattern ? `<div class="rule-pattern">${esc(r.pattern)}</div>` : ''}
+          ${r.tool ? `<div class="rule-pattern">도구: ${esc(r.tool)}</div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    async function toggleAutoApprove() {
+      const enabled = document.getElementById('autoApproveToggle').checked;
+      await fetch('/api/rules', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ enabled }),
+      });
+    }
+
+    async function toggleRule(index, active) {
+      const res = await fetch(`/api/rules/toggle/${index}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ active }),
+      });
+      const rules = await res.json();
+      renderRules(rules.rules);
+    }
+
+    // 탭 전환
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const target = tab.dataset.tab;
+        document.getElementById('panelPending').classList.toggle('hidden', target !== 'pending');
+        document.getElementById('panelHistory').classList.toggle('hidden', target !== 'history');
+        document.getElementById('panelRules').classList.toggle('hidden', target !== 'rules');
+
+        if (target === 'history') loadHistory();
+        if (target === 'rules') loadRules();
+      });
+    });
+
+    async function loadHistory() {
+      try {
+        const res = await fetch('/api/history');
+        historyItems = await res.json();
+        renderHistory();
+      } catch (e) {
+        console.error('히스토리 로드 실패:', e);
+      }
+    }
+
+    // 유틸리티
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function timeAgo(dateStr) {
+      const diff = Math.round((Date.now() - new Date(dateStr)) / 1000);
+      if (diff < 5) return '방금';
+      if (diff < 60) return `${diff}초 전`;
+      if (diff < 3600) return `${Math.floor(diff / 60)}분 전`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)}시간 전`;
+      return `${Math.floor(diff / 86400)}일 전`;
+    }
+
+    // 브라우저 알림 권한 요청
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
+    // 초기화
+    connect();
+    setInterval(() => {
+      // 시간 표시 업데이트
+      document.querySelectorAll('.time-ago').forEach(el => {
+        // re-render on interval handled by next message
+      });
+      renderPending();
+    }, 30000);
+  </script>
+</body>
+</html>
