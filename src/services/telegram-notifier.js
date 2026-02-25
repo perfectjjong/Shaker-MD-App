@@ -5,9 +5,22 @@ class TelegramNotifier {
     this.chatId = chatId;
     this.approvalManager = approvalManager;
     this.messageMap = new Map(); // approvalId -> telegramMessageId
+    this.stats = { approved: 0, rejected: 0, timeout: 0 };
 
     this.bot = new TelegramBot(token, { polling: true });
     this._setupHandlers();
+
+    // 타임아웃 알림 연동
+    approvalManager.on('resolved', (record) => {
+      if (record.status === 'timeout') {
+        this._notifyTimeout(record);
+        this.stats.timeout++;
+      } else if (record.status === 'approved') {
+        this.stats.approved++;
+      } else if (record.status === 'rejected') {
+        this.stats.rejected++;
+      }
+    });
   }
 
   _setupHandlers() {
@@ -106,7 +119,22 @@ class TelegramNotifier {
         `🖥 *서버 상태*\n\n` +
         `• 가동 시간: ${hours}시간 ${mins}분\n` +
         `• 대기 중: ${pending.length}건\n` +
+        `• 승인: ${this.stats.approved}건 | 거부: ${this.stats.rejected}건 | 타임아웃: ${this.stats.timeout}건\n` +
         `• 메모리: ${Math.round(process.memoryUsage().rss / 1024 / 1024)}MB`,
+        { parse_mode: 'Markdown' }
+      );
+    });
+
+    // /help - 도움말
+    this.bot.onText(/\/help/, (msg) => {
+      this.bot.sendMessage(
+        msg.chat.id,
+        `📖 *명령어 목록*\n\n` +
+        `/pending - 대기 중인 승인 목록\n` +
+        `/approveall - 모두 승인\n` +
+        `/history - 최근 처리 내역\n` +
+        `/status - 서버 상태\n` +
+        `/help - 이 도움말`,
         { parse_mode: 'Markdown' }
       );
     });
@@ -116,11 +144,23 @@ class TelegramNotifier {
    * 승인 요청 알림 전송
    */
   async sendApprovalRequest(approval) {
+    // 명령어가 길면 잘라서 보여주기
+    const cmdDisplay = approval.command.length > 400
+      ? approval.command.slice(0, 397) + '...'
+      : approval.command;
+
+    // 위험도 태그
+    const risk = this._assessRisk(approval.command);
+    const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
+
+    const pendingCount = this.approvalManager.getPending().length;
+    const queueInfo = pendingCount > 1 ? `\n📬 대기열: ${pendingCount}건` : '';
+
     const text =
       `🔔 *Claude Code 승인 요청*\n\n` +
-      `📂 \`${approval.workdir || 'N/A'}\`\n` +
-      `🔧 도구: \`${approval.tool}\`\n\n` +
-      `\`\`\`\n${approval.command.slice(0, 500)}\n\`\`\`\n\n` +
+      `${riskLabel} | 🔧 \`${approval.tool}\`\n` +
+      `📂 \`${approval.workdir || 'N/A'}\`${queueInfo}\n\n` +
+      `\`\`\`\n${cmdDisplay}\n\`\`\`\n\n` +
       `⏱ 대기 중...`;
 
     const msg = await this.bot.sendMessage(this.chatId, text, {
@@ -136,6 +176,33 @@ class TelegramNotifier {
     });
 
     this.messageMap.set(approval.id, msg.message_id);
+  }
+
+  /**
+   * 명령어 위험도 평가
+   */
+  _assessRisk(command) {
+    const highRisk = /(rm\s+-rf|sudo|chmod\s+777|mkfs|dd\s+if|>\s*\/dev\/|shutdown|reboot|kill\s+-9)/i;
+    const medRisk = /(rm\s|mv\s|cp\s+-r|git\s+(push|reset|rebase)|npm\s+(publish|unpublish)|docker\s+rm)/i;
+    if (highRisk.test(command)) return 'high';
+    if (medRisk.test(command)) return 'medium';
+    return 'low';
+  }
+
+  /**
+   * 타임아웃 알림
+   */
+  async _notifyTimeout(record) {
+    await this._updateMessage(record.id, 'timeout');
+    try {
+      await this.bot.sendMessage(
+        this.chatId,
+        `⏳ *타임아웃*\n\n\`${record.command.slice(0, 100)}\`\n\n승인 대기 시간이 초과되었습니다.`,
+        { parse_mode: 'Markdown' }
+      );
+    } catch (e) {
+      // 무시
+    }
   }
 
   /**
