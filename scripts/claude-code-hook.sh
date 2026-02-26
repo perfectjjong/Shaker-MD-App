@@ -34,6 +34,13 @@ INPUT=$(cat)
 TOOL_NAME=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('tool_name',''))" 2>/dev/null)
 TOOL_INPUT=$(echo "$INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(json.dumps(d.get('tool_input',{})))" 2>/dev/null)
 
+# 읽기 전용 도구는 바로 패스 (승인 불필요)
+case "$TOOL_NAME" in
+  Read|Glob|Grep|WebSearch|WebFetch|TodoWrite)
+    exit 0
+    ;;
+esac
+
 # 명령어 추출 (Bash 도구인 경우)
 if [ "$TOOL_NAME" = "Bash" ]; then
   COMMAND=$(echo "$TOOL_INPUT" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('command',''))" 2>/dev/null)
@@ -56,10 +63,17 @@ if [ -z "$POST_DATA" ]; then
   exit 0
 fi
 
-RESPONSE=$(curl -s -m 300 \
+# API 키 헤더 (설정된 경우)
+AUTH_HEADER=""
+if [ -n "$CLAUDE_APPROVER_API_KEY" ]; then
+  AUTH_HEADER="-H \"x-api-key: $CLAUDE_APPROVER_API_KEY\""
+fi
+
+RESPONSE=$(eval curl -s -m 300 \
   -X POST "${SERVER_URL}/api/approval" \
   -H "Content-Type: application/json" \
-  -d "$POST_DATA" 2>/dev/null)
+  $AUTH_HEADER \
+  -d "'$POST_DATA'" 2>/dev/null)
 
 # 응답 파싱
 STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('status',''))" 2>/dev/null)

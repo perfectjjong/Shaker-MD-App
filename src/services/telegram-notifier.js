@@ -232,9 +232,10 @@ class TelegramNotifier {
       );
     } catch (e) {
       // 메시지가 이미 변경된 경우 무시
+    } finally {
+      // 성공/실패 관계없이 항상 맵에서 제거 (메모리 누수 방지)
+      this.messageMap.delete(approvalId);
     }
-
-    this.messageMap.delete(approvalId);
   }
 }
 
