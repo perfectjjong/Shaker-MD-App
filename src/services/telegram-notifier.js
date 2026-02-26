@@ -8,6 +8,13 @@ class TelegramNotifier {
     this.stats = { approved: 0, rejected: 0, timeout: 0 };
 
     this.bot = new TelegramBot(token, { polling: true });
+    this.bot.on('polling_error', (err) => {
+      // 네트워크 에러는 경고만 출력 (재시도는 라이브러리가 자동 처리)
+      if (!this._lastPollingError || Date.now() - this._lastPollingError > 60000) {
+        console.warn('[Telegram] 폴링 연결 오류 (자동 재시도 중):', err.message);
+        this._lastPollingError = Date.now();
+      }
+    });
     this._setupHandlers();
 
     // 타임아웃 알림 연동
@@ -156,10 +163,13 @@ class TelegramNotifier {
     const pendingCount = this.approvalManager.getPending().length;
     const queueInfo = pendingCount > 1 ? `\n📬 대기열: ${pendingCount}건` : '';
 
+    const dashboardUrl = process.env.EXTERNAL_URL;
+    const dashboardLink = dashboardUrl ? `\n🌐 [대시보드](${dashboardUrl})` : '';
+
     const text =
       `🔔 *Claude Code 승인 요청*\n\n` +
       `${riskLabel} | 🔧 \`${approval.tool}\`\n` +
-      `📂 \`${approval.workdir || 'N/A'}\`${queueInfo}\n\n` +
+      `📂 \`${approval.workdir || 'N/A'}\`${queueInfo}${dashboardLink}\n\n` +
       `\`\`\`\n${cmdDisplay}\n\`\`\`\n\n` +
       `⏱ 대기 중...`;
 

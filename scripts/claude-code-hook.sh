@@ -41,15 +41,25 @@ else
   COMMAND=$(echo "$TOOL_INPUT" | python3 -c "import sys,json; print(json.dumps(json.load(sys.stdin)))" 2>/dev/null)
 fi
 
-# 서버로 승인 요청
+# 서버로 승인 요청 (안전한 JSON 생성)
+POST_DATA=$(python3 -c "
+import json, sys
+print(json.dumps({
+    'command': sys.argv[1],
+    'tool': sys.argv[2],
+    'workdir': sys.argv[3]
+}))
+" "$COMMAND" "$TOOL_NAME" "$(pwd)" 2>/dev/null)
+
+if [ -z "$POST_DATA" ]; then
+  # JSON 생성 실패시 패스
+  exit 0
+fi
+
 RESPONSE=$(curl -s -m 300 \
   -X POST "${SERVER_URL}/api/approval" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"command\": $(python3 -c "import json; print(json.dumps('''${COMMAND}'''))" 2>/dev/null || echo "\"${COMMAND}\""),
-    \"tool\": \"${TOOL_NAME}\",
-    \"workdir\": \"$(pwd)\"
-  }" 2>/dev/null)
+  -d "$POST_DATA" 2>/dev/null)
 
 # 응답 파싱
 STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('status',''))" 2>/dev/null)

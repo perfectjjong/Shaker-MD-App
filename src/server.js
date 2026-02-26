@@ -75,15 +75,7 @@ wss.on('connection', (ws) => {
   });
 });
 
-// 승인 이벤트를 WebSocket 클라이언트에 브로드캐스트
-approvalManager.on('new', (approval) => {
-  broadcast({ type: 'new_approval', data: approval });
-});
-
-approvalManager.on('resolved', (approval) => {
-  broadcast({ type: 'approval_resolved', data: approval });
-});
-
+// WebSocket 브로드캐스트
 function broadcast(msg) {
   const payload = JSON.stringify(msg);
   for (const client of wsClients) {
@@ -93,12 +85,25 @@ function broadcast(msg) {
   }
 }
 
-// 새 승인 요청 시 자동 승인 체크 + 텔레그램 알림
+approvalManager.on('resolved', (approval) => {
+  broadcast({ type: 'approval_resolved', data: approval });
+});
+
+// 새 승인 요청: WebSocket 브로드캐스트 + 자동 승인 체크 + 텔레그램 알림
 approvalManager.on('new', async (approval) => {
-  // 자동 승인 규칙 체크
-  if (autoApprover.shouldAutoApprove(approval)) {
+  // WebSocket 클라이언트에 브로드캐스트
+  broadcast({ type: 'new_approval', data: approval });
+
+  // 자동 승인 규칙 체크 (API 경로 외에서 생성된 경우 대비)
+  const autoResult = autoApprover.shouldAutoApprove(approval);
+  if (autoResult === 'approve') {
     console.log(`[AutoApprove] 자동 승인: ${approval.command}`);
     approvalManager.resolve(approval.id, 'approved');
+    return;
+  }
+  if (autoResult === 'reject') {
+    console.log(`[AutoApprove] 자동 거부: ${approval.command}`);
+    approvalManager.resolve(approval.id, 'rejected');
     return;
   }
 
