@@ -23,6 +23,7 @@
 const http = require('http');
 
 const SERVER_URL = process.env.CLAUDE_APPROVER_URL || 'http://localhost:3847';
+const API_KEY = process.env.CLAUDE_APPROVER_API_KEY || '';
 const CONNECT_TIMEOUT = 3000;  // 서버 연결 타임아웃 (3초)
 const APPROVAL_TIMEOUT = 300000; // 승인 대기 타임아웃 (5분)
 
@@ -94,8 +95,9 @@ async function main() {
 function checkServer() {
   return new Promise((resolve) => {
     const url = new URL(`${SERVER_URL}/api/pending`);
+    const headers = API_KEY ? { 'x-api-key': API_KEY } : {};
     const req = http.get(
-      { hostname: url.hostname, port: url.port, path: url.pathname, timeout: CONNECT_TIMEOUT },
+      { hostname: url.hostname, port: url.port, path: url.pathname, timeout: CONNECT_TIMEOUT, headers },
       (res) => { res.resume(); resolve(true); }
     );
     req.on('error', () => resolve(false));
@@ -117,6 +119,7 @@ function requestApproval(data) {
         headers: {
           'Content-Type': 'application/json',
           'Content-Length': Buffer.byteLength(postData),
+          ...(API_KEY ? { 'x-api-key': API_KEY } : {}),
         },
         timeout: APPROVAL_TIMEOUT,
       },

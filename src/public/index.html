@@ -297,6 +297,34 @@
       margin-left: 6px;
     }
 
+    /* 푸시 알림 바 */
+    .push-bar {
+      background: var(--surface2);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+    }
+    .push-bar .push-status { color: var(--text-dim); }
+    .push-bar .push-status.active { color: var(--approve); }
+    .push-btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .push-btn.subscribed {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
     .hidden { display: none !important; }
 
     /* 진동 애니메이션 */
@@ -315,6 +343,11 @@
       <h1>Claude Code Approver</h1>
     </div>
     <span id="pendingCount" class="badge hidden">0</span>
+  </div>
+
+  <div id="pushBar" class="push-bar hidden">
+    <span id="pushStatus" class="push-status">알림 비활성</span>
+    <button id="pushBtn" class="push-btn" onclick="togglePush()">알림 켜기</button>
   </div>
 
   <div class="tabs">
@@ -454,7 +487,7 @@
       }
 
       list.innerHTML = pendingApprovals.map(a => `
-        <div class="approval-card vibrate" id="card-${a.id}">
+        <div class="approval-card vibrate" id="card-${esc(a.id)}" data-approval-id="${esc(a.id)}">
           <div class="card-header">
             <span class="tool-badge">${esc(a.tool)}</span>
             <span class="time-ago">${timeAgo(a.createdAt)}</span>
@@ -462,8 +495,8 @@
           <div class="command-box">${esc(a.command)}</div>
           ${a.workdir ? `<div class="workdir">📂 ${esc(a.workdir)}</div>` : ''}
           <div class="btn-row">
-            <button class="btn btn-approve" onclick="approve('${a.id}')">✓ 승인</button>
-            <button class="btn btn-reject" onclick="reject('${a.id}')">✕ 거부</button>
+            <button class="btn btn-approve" data-action="approve">✓ 승인</button>
+            <button class="btn btn-reject" data-action="reject">✕ 거부</button>
           </div>
         </div>
       `).join('');
@@ -492,26 +525,27 @@
       }).join('');
     }
 
-    // 액션
-    function approve(id) {
-      ws.send(JSON.stringify({ type: 'approve', id }));
-      const card = document.getElementById(`card-${id}`);
-      if (card) {
+    // 이벤트 위임 (XSS 방어: onclick 인라인 핸들러 대신 data 속성 사용)
+    document.getElementById('pendingList').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const card = btn.closest('[data-approval-id]');
+      if (!card) return;
+      const id = card.dataset.approvalId;
+      const action = btn.dataset.action;
+
+      if (action === 'approve') {
+        ws.send(JSON.stringify({ type: 'approve', id }));
         card.style.opacity = '0.5';
         card.style.transform = 'translateX(100px)';
         card.style.transition = 'all 0.3s';
-      }
-    }
-
-    function reject(id) {
-      ws.send(JSON.stringify({ type: 'reject', id }));
-      const card = document.getElementById(`card-${id}`);
-      if (card) {
+      } else if (action === 'reject') {
+        ws.send(JSON.stringify({ type: 'reject', id }));
         card.style.opacity = '0.5';
         card.style.transform = 'translateX(-100px)';
         card.style.transition = 'all 0.3s';
       }
-    }
+    });
 
     async function approveAll() {
       try {
@@ -614,18 +648,117 @@
       return `${Math.floor(diff / 86400)}일 전`;
     }
 
-    // 브라우저 알림 권한 요청
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+    // === PWA Push 알림 ===
+    let pushSubscription = null;
+    let swRegistration = null;
+    let vapidPublicKey = null;
+
+    async function initPush() {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.log('Push 미지원 브라우저');
+        return;
+      }
+
+      try {
+        // Service Worker 등록
+        swRegistration = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker 등록 완료');
+
+        // VAPID 키 가져오기
+        const res = await fetch('/api/push/vapid-key');
+        const data = await res.json();
+        if (!data.key) return;
+        vapidPublicKey = data.key;
+
+        // 푸시 바 표시
+        document.getElementById('pushBar').classList.remove('hidden');
+
+        // 기존 구독 확인
+        pushSubscription = await swRegistration.pushManager.getSubscription();
+        updatePushUI();
+      } catch (e) {
+        console.error('Push 초기화 실패:', e);
+      }
+    }
+
+    function updatePushUI() {
+      const btn = document.getElementById('pushBtn');
+      const status = document.getElementById('pushStatus');
+
+      if (pushSubscription) {
+        btn.textContent = '알림 끄기';
+        btn.classList.add('subscribed');
+        status.textContent = '모바일 푸시 알림 활성';
+        status.classList.add('active');
+      } else {
+        btn.textContent = '알림 켜기';
+        btn.classList.remove('subscribed');
+        status.textContent = '알림 비활성';
+        status.classList.remove('active');
+      }
+    }
+
+    async function togglePush() {
+      if (pushSubscription) {
+        // 구독 해제
+        try {
+          const endpoint = pushSubscription.endpoint;
+          await pushSubscription.unsubscribe();
+          await fetch('/api/push/unsubscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endpoint }),
+          });
+          pushSubscription = null;
+          updatePushUI();
+        } catch (e) {
+          console.error('구독 해제 실패:', e);
+        }
+      } else {
+        // 구독 등록
+        try {
+          const permission = await Notification.requestPermission();
+          if (permission !== 'granted') {
+            alert('알림 권한을 허용해주세요.');
+            return;
+          }
+
+          const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+          pushSubscription = await swRegistration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey,
+          });
+
+          await fetch('/api/push/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pushSubscription.toJSON()),
+          });
+          updatePushUI();
+        } catch (e) {
+          console.error('구독 실패:', e);
+          alert('푸시 알림 구독에 실패했습니다: ' + e.message);
+        }
+      }
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
     }
 
     // 초기화
     connect();
+    initPush();
+
+    // 30초마다 시간 표시 업데이트 (timeAgo 갱신)
     setInterval(() => {
-      // 시간 표시 업데이트
-      document.querySelectorAll('.time-ago').forEach(el => {
-        // re-render on interval handled by next message
-      });
       renderPending();
     }, 30000);
   </script>
