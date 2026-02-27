@@ -11,7 +11,19 @@ const apiRoutes = require('./routes/api');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server, path: '/ws' });
+const wss = new WebSocketServer({ noServer: true });
+
+// HTTP upgrade 요청을 WSS로 전달 (/ws 경로만)
+server.on('upgrade', (request, socket, head) => {
+  const { pathname } = new URL(request.url, `http://${request.headers.host}`);
+  if (pathname === '/ws') {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request);
+    });
+  } else {
+    socket.destroy();
+  }
+});
 
 // 서비스 초기화
 const approvalManager = new ApprovalManager();
@@ -172,11 +184,52 @@ async function initTelegram() {
 }
 
 const PORT = process.env.PORT || 3847;
+
+// 한글/이모지 등 전각 문자 폭을 고려한 pad 함수
+function displayWidth(str) {
+  let w = 0;
+  for (const ch of str) {
+    const code = ch.codePointAt(0);
+    // CJK, 한글, 전각 문자: 2칸, 이모지 계열도 2칸
+    if (
+      (code >= 0x1100 && code <= 0x115F) ||  // 한글 자모
+      (code >= 0x2E80 && code <= 0x9FFF) ||  // CJK
+      (code >= 0xAC00 && code <= 0xD7AF) ||  // 한글 음절
+      (code >= 0xF900 && code <= 0xFAFF) ||  // CJK 호환
+      (code >= 0xFE30 && code <= 0xFE6F) ||  // CJK 호환 형태
+      (code >= 0xFF01 && code <= 0xFF60) ||  // 전각 ASCII
+      (code >= 0xFFE0 && code <= 0xFFE6) ||  // 전각 기호
+      (code >= 0x20000 && code <= 0x2FA1F) || // CJK 확장
+      (code >= 0x2600 && code <= 0x27BF) ||  // 기호/이모지
+      (code >= 0x1F300 && code <= 0x1F9FF)   // 이모지
+    ) {
+      w += 2;
+    } else {
+      w += 1;
+    }
+  }
+  return w;
+}
+
+function pad(str, targetWidth) {
+  const w = displayWidth(str);
+  return str + ' '.repeat(Math.max(0, targetWidth - w));
+}
+
+// 포트 충돌 감지 (listen 전에 등록해야 함)
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n[ERROR] 포트 ${PORT} 이미 사용 중입니다.`);
+    console.error('  다른 서버 인스턴스가 실행 중인지 확인하세요.');
+    console.error(`  또는 .env에서 PORT 값을 변경하세요.\n`);
+    process.exit(1);
+  }
+});
+
 server.listen(PORT, '0.0.0.0', async () => {
-  const portStr = String(PORT);
   const localUrl = `http://localhost:${PORT}`;
   const apiUrl = `http://localhost:${PORT}/api`;
-  const pad = (str, len) => str + ' '.repeat(Math.max(0, len - str.length));
+  const W = 43; // 내부 컨텐츠 폭
 
   // Telegram 초기화 (서버 시작 후 비동기)
   telegramNotifier = await initTelegram();
@@ -186,19 +239,19 @@ server.listen(PORT, '0.0.0.0', async () => {
   console.log('╔══════════════════════════════════════════════╗');
   console.log('║   Claude Code Mobile Approver v1.0          ║');
   console.log('╠══════════════════════════════════════════════╣');
-  console.log(`║   ${pad('로컬:  ' + localUrl, 43)}║`);
-  console.log(`║   ${pad('API:   ' + apiUrl, 43)}║`);
+  console.log(`║   ${pad('Local: ' + localUrl, W)}║`);
+  console.log(`║   ${pad('API:   ' + apiUrl, W)}║`);
   console.log('║                                              ║');
   if (telegramNotifier) {
-    console.log('║   ✓ Telegram 알림 활성화                     ║');
+    console.log(`║   ${pad('✓ Telegram 알림 활성화', W)}║`);
   } else {
-    console.log('║   ✗ Telegram 미연결 (웹 대시보드 사용)       ║');
+    console.log(`║   ${pad('✗ Telegram 미연결 (웹 대시보드 사용)', W)}║`);
   }
   if (pushNotifier.enabled) {
-    console.log('║   ✓ Web Push 알림 활성화                     ║');
+    console.log(`║   ${pad('✓ Web Push 알림 활성화', W)}║`);
   }
   if (API_KEY) {
-    console.log('║   ✓ API 키 인증 활성화                       ║');
+    console.log(`║   ${pad('✓ API 키 인증 활성화', W)}║`);
   }
   console.log('╚══════════════════════════════════════════════╝');
   console.log('');

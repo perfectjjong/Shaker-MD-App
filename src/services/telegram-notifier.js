@@ -2,6 +2,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const https = require('https');
 const http = require('http');
 const { URL } = require('url');
+const { assessRisk } = require('./risk-assessor');
 
 class TelegramNotifier {
   constructor(token, chatId, approvalManager, options = {}) {
@@ -337,7 +338,7 @@ class TelegramNotifier {
       : approval.command;
 
     // 위험도 태그
-    const risk = this._assessRisk(approval.command);
+    const risk = assessRisk(approval.command);
     const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
 
     const pendingCount = this.approvalManager.getPending().length;
@@ -366,17 +367,6 @@ class TelegramNotifier {
     });
 
     this.messageMap.set(approval.id, msg.message_id);
-  }
-
-  /**
-   * 명령어 위험도 평가
-   */
-  _assessRisk(command) {
-    const highRisk = /(rm\s+-rf|sudo|chmod\s+777|mkfs|dd\s+if|>\s*\/dev\/|shutdown|reboot|kill\s+-9)/i;
-    const medRisk = /(rm\s|mv\s|cp\s+-r|git\s+(push|reset|rebase)|npm\s+(publish|unpublish)|docker\s+rm)/i;
-    if (highRisk.test(command)) return 'high';
-    if (medRisk.test(command)) return 'medium';
-    return 'low';
   }
 
   /**

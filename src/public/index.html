@@ -396,11 +396,39 @@
     let ws = null;
     let pendingApprovals = [];
     let historyItems = [];
+    let apiKey = '';
+
+    // URL 파라미터에서 API 키 추출 (예: ?api_key=xxx)
+    (function() {
+      const params = new URLSearchParams(location.search);
+      const key = params.get('api_key');
+      if (key) {
+        apiKey = key;
+        // URL에서 키 제거 (보안)
+        const clean = new URL(location.href);
+        clean.searchParams.delete('api_key');
+        history.replaceState(null, '', clean.pathname + clean.search);
+        sessionStorage.setItem('approver_api_key', key);
+      } else {
+        apiKey = sessionStorage.getItem('approver_api_key') || '';
+      }
+    })();
+
+    // 인증 헤더 포함 fetch 래퍼
+    function apiFetch(url, options = {}) {
+      if (apiKey) {
+        options.headers = { ...(options.headers || {}), 'x-api-key': apiKey };
+      }
+      return fetch(url, options);
+    }
 
     // WebSocket 연결
     function connect() {
       const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-      ws = new WebSocket(`${proto}//${location.host}/ws`);
+      const wsUrl = apiKey
+        ? `${proto}//${location.host}/ws?api_key=${encodeURIComponent(apiKey)}`
+        : `${proto}//${location.host}/ws`;
+      ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
         document.getElementById('statusDot').classList.add('connected');
@@ -549,7 +577,7 @@
 
     async function approveAll() {
       try {
-        await fetch('/api/approve-all', { method: 'POST' });
+        await apiFetch('/api/approve-all', { method: 'POST' });
       } catch (e) {
         console.error('모두 승인 실패:', e);
       }
@@ -558,7 +586,7 @@
     // 자동 규칙
     async function loadRules() {
       try {
-        const res = await fetch('/api/rules');
+        const res = await apiFetch('/api/rules');
         const rules = await res.json();
         document.getElementById('autoApproveToggle').checked = rules.enabled;
         renderRules(rules.rules);
@@ -589,7 +617,7 @@
 
     async function toggleAutoApprove() {
       const enabled = document.getElementById('autoApproveToggle').checked;
-      await fetch('/api/rules', {
+      await apiFetch('/api/rules', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled }),
@@ -597,7 +625,7 @@
     }
 
     async function toggleRule(index, active) {
-      const res = await fetch(`/api/rules/toggle/${index}`, {
+      const res = await apiFetch(`/api/rules/toggle/${index}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ active }),
@@ -624,7 +652,7 @@
 
     async function loadHistory() {
       try {
-        const res = await fetch('/api/history');
+        const res = await apiFetch('/api/history');
         historyItems = await res.json();
         renderHistory();
       } catch (e) {
@@ -664,8 +692,16 @@
         swRegistration = await navigator.serviceWorker.register('/sw.js');
         console.log('Service Worker 등록 완료');
 
+        // Service Worker에 API 키 전달
+        if (apiKey && swRegistration.active) {
+          swRegistration.active.postMessage({ type: 'SET_API_KEY', key: apiKey });
+        }
+        navigator.serviceWorker.ready.then((reg) => {
+          if (apiKey) reg.active.postMessage({ type: 'SET_API_KEY', key: apiKey });
+        });
+
         // VAPID 키 가져오기
-        const res = await fetch('/api/push/vapid-key');
+        const res = await apiFetch('/api/push/vapid-key');
         const data = await res.json();
         if (!data.key) return;
         vapidPublicKey = data.key;
@@ -704,7 +740,7 @@
         try {
           const endpoint = pushSubscription.endpoint;
           await pushSubscription.unsubscribe();
-          await fetch('/api/push/unsubscribe', {
+          await apiFetch('/api/push/unsubscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ endpoint }),
@@ -729,7 +765,7 @@
             applicationServerKey,
           });
 
-          await fetch('/api/push/subscribe', {
+          await apiFetch('/api/push/subscribe', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(pushSubscription.toJSON()),
