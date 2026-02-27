@@ -6,6 +6,7 @@ const path = require('path');
 const { ApprovalManager } = require('./services/approval-manager');
 const { TelegramNotifier } = require('./services/telegram-notifier');
 const { AutoApprover } = require('./services/auto-approver');
+const { PushNotifier } = require('./services/push-notifier');
 const apiRoutes = require('./routes/api');
 
 const app = express();
@@ -16,6 +17,13 @@ const wss = new WebSocketServer({ server, path: '/ws' });
 const approvalManager = new ApprovalManager();
 const autoApprover = new AutoApprover();
 let telegramNotifier = null;
+
+// Push 알림 초기화
+const pushNotifier = new PushNotifier({
+  vapidPublicKey: process.env.VAPID_PUBLIC_KEY,
+  vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
+  vapidEmail: process.env.VAPID_EMAIL,
+});
 
 // API 키 인증 미들웨어
 const API_KEY = process.env.API_KEY || '';
@@ -36,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.locals.approvalManager = approvalManager;
 app.locals.autoApprover = autoApprover;
 app.locals.telegramNotifier = telegramNotifier;
+app.locals.pushNotifier = pushNotifier;
 
 // API 라우트 (인증 적용)
 app.use('/api', authMiddleware, apiRoutes);
@@ -115,6 +124,15 @@ approvalManager.on('new', async (approval) => {
       console.error('[Telegram] 알림 전송 실패:', e.message);
     }
   }
+
+  // Push 알림
+  if (pushNotifier.enabled) {
+    try {
+      await pushNotifier.sendApprovalRequest(approval);
+    } catch (e) {
+      console.error('[Push] 알림 전송 실패:', e.message);
+    }
+  }
 });
 
 /**
@@ -175,6 +193,9 @@ server.listen(PORT, '0.0.0.0', async () => {
     console.log('║   ✓ Telegram 알림 활성화                     ║');
   } else {
     console.log('║   ✗ Telegram 미연결 (웹 대시보드 사용)       ║');
+  }
+  if (pushNotifier.enabled) {
+    console.log('║   ✓ Web Push 알림 활성화                     ║');
   }
   if (API_KEY) {
     console.log('║   ✓ API 키 인증 활성화                       ║');

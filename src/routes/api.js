@@ -145,18 +145,74 @@ router.delete('/rules/:index', (req, res) => {
   res.json(rules);
 });
 
+// GET /api/push/vapid-key - VAPID 공개키 반환
+router.get('/push/vapid-key', (req, res) => {
+  const { pushNotifier } = req.app.locals;
+  if (pushNotifier && pushNotifier.vapidPublicKey) {
+    res.json({ key: pushNotifier.vapidPublicKey });
+  } else {
+    res.json({ key: null });
+  }
+});
+
+// POST /api/push/subscribe - 푸시 구독 등록
+router.post('/push/subscribe', (req, res) => {
+  const { pushNotifier } = req.app.locals;
+  if (!pushNotifier || !pushNotifier.enabled) {
+    return res.status(400).json({ error: 'Push 알림이 비활성화되어 있습니다' });
+  }
+  const { endpoint, keys } = req.body;
+  if (!endpoint || !keys) {
+    return res.status(400).json({ error: 'endpoint와 keys가 필요합니다' });
+  }
+  pushNotifier.subscribe(req.body);
+  res.json({ success: true });
+});
+
+// POST /api/push/unsubscribe - 푸시 구독 해제
+router.post('/push/unsubscribe', (req, res) => {
+  const { pushNotifier } = req.app.locals;
+  if (!pushNotifier) {
+    return res.status(400).json({ error: 'Push 알림이 비활성화되어 있습니다' });
+  }
+  const { endpoint } = req.body;
+  if (!endpoint) {
+    return res.status(400).json({ error: 'endpoint가 필요합니다' });
+  }
+  pushNotifier.unsubscribe(endpoint);
+  res.json({ success: true });
+});
+
+// POST /api/push/test - 테스트 푸시 전송
+router.post('/push/test', async (req, res) => {
+  const { pushNotifier } = req.app.locals;
+  if (!pushNotifier || !pushNotifier.enabled) {
+    return res.status(400).json({ error: 'Push 알림이 비활성화되어 있습니다' });
+  }
+  const sent = await pushNotifier.sendToAll({
+    type: 'test',
+    title: '테스트 알림',
+    body: 'Push 알림이 정상 작동합니다!',
+  });
+  res.json({ sent });
+});
+
 // GET /api/health - 서버 및 Telegram 연결 상태
 router.get('/health', (req, res) => {
-  const { telegramNotifier } = req.app.locals;
+  const { telegramNotifier, pushNotifier } = req.app.locals;
   const telegramStatus = telegramNotifier
     ? telegramNotifier.getStatus()
     : { connected: false, reason: 'not_configured' };
+  const pushStatus = pushNotifier
+    ? pushNotifier.getStatus()
+    : { enabled: false };
 
   res.json({
     status: 'ok',
     uptime: Math.round(process.uptime()),
     memory: Math.round(process.memoryUsage().rss / 1024 / 1024),
     telegram: telegramStatus,
+    push: pushStatus,
   });
 });
 
