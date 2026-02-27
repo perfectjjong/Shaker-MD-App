@@ -17,17 +17,6 @@ const approvalManager = new ApprovalManager();
 const autoApprover = new AutoApprover();
 let telegramNotifier = null;
 
-if (process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID) {
-  telegramNotifier = new TelegramNotifier(
-    process.env.TELEGRAM_BOT_TOKEN,
-    process.env.TELEGRAM_CHAT_ID,
-    approvalManager
-  );
-  console.log('[Telegram] 봇 연결됨');
-} else {
-  console.log('[Telegram] 토큰 미설정 - 웹 대시보드만 사용 가능');
-}
-
 // API 키 인증 미들웨어
 const API_KEY = process.env.API_KEY || '';
 function authMiddleware(req, res, next) {
@@ -128,12 +117,52 @@ approvalManager.on('new', async (approval) => {
   }
 });
 
+/**
+ * Telegram 초기화 (연결 검사 포함)
+ */
+async function initTelegram() {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) {
+    console.log('[Telegram] 토큰 미설정 - 웹 대시보드만 사용 가능');
+    return null;
+  }
+
+  const proxy = process.env.TELEGRAM_PROXY || null;
+
+  console.log('[Telegram] api.telegram.org 연결 검사 중...');
+  const check = await TelegramNotifier.checkConnectivity(token, proxy);
+
+  if (!check.ok) {
+    console.error(`[Telegram] 연결 실패: ${check.error}`);
+    if (check.blocked) {
+      console.error('[Telegram] 해결 방법:');
+      console.error('  1. .env에 TELEGRAM_PROXY=socks5://host:port 설정');
+      console.error('  2. 또는 Telegram 접근이 가능한 환경에서 서버 실행');
+    }
+    console.log('[Telegram] 웹 대시보드만 사용 가능 (Telegram 비활성화)');
+    return null;
+  }
+
+  console.log(`[Telegram] 연결 확인 완료 (봇: @${check.botName})`);
+
+  const notifier = new TelegramNotifier(token, chatId, approvalManager, { proxy });
+  await notifier.start();
+
+  return notifier;
+}
+
 const PORT = process.env.PORT || 3847;
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(PORT, '0.0.0.0', async () => {
   const portStr = String(PORT);
   const localUrl = `http://localhost:${PORT}`;
   const apiUrl = `http://localhost:${PORT}/api`;
   const pad = (str, len) => str + ' '.repeat(Math.max(0, len - str.length));
+
+  // Telegram 초기화 (서버 시작 후 비동기)
+  telegramNotifier = await initTelegram();
+  app.locals.telegramNotifier = telegramNotifier;
 
   console.log('');
   console.log('╔══════════════════════════════════════════════╗');
@@ -145,7 +174,7 @@ server.listen(PORT, '0.0.0.0', () => {
   if (telegramNotifier) {
     console.log('║   ✓ Telegram 알림 활성화                     ║');
   } else {
-    console.log('║   ✗ Telegram 미설정 (.env 확인)              ║');
+    console.log('║   ✗ Telegram 미연결 (웹 대시보드 사용)       ║');
   }
   if (API_KEY) {
     console.log('║   ✓ API 키 인증 활성화                       ║');

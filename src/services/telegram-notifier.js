@@ -1,24 +1,186 @@
 const TelegramBot = require('node-telegram-bot-api');
+const https = require('https');
+const http = require('http');
+const { URL } = require('url');
 
 class TelegramNotifier {
-  constructor(token, chatId, approvalManager) {
+  constructor(token, chatId, approvalManager, options = {}) {
     this.chatId = chatId;
     this.approvalManager = approvalManager;
     this.messageMap = new Map(); // approvalId -> telegramMessageId
     this.stats = { approved: 0, rejected: 0, timeout: 0 };
+    this.connected = false;
+    this._token = token;
+    this._options = options;
+    this._consecutiveErrors = 0;
+    this._maxConsecutiveErrors = 5;
+  }
 
-    this.bot = new TelegramBot(token, { polling: true });
-    this.bot.on('polling_error', (err) => {
-      // 네트워크 에러는 경고만 출력 (재시도는 라이브러리가 자동 처리)
-      if (!this._lastPollingError || Date.now() - this._lastPollingError > 60000) {
-        console.warn('[Telegram] 폴링 연결 오류 (자동 재시도 중):', err.message);
-        this._lastPollingError = Date.now();
+  /**
+   * Telegram API 서버 연결 가능 여부를 사전 검사
+   */
+  static async checkConnectivity(token, proxyUrl) {
+    const testUrl = `https://api.telegram.org/bot${token}/getMe`;
+
+    return new Promise((resolve) => {
+      const timeout = setTimeout(() => {
+        resolve({ ok: false, error: '연결 타임아웃 (5초)' });
+      }, 5000);
+
+      try {
+        const urlObj = new URL(testUrl);
+
+        const requestOptions = {
+          hostname: urlObj.hostname,
+          path: urlObj.pathname,
+          method: 'GET',
+          timeout: 5000,
+        };
+
+        // 프록시 설정이 있으면 프록시를 통해 연결
+        if (proxyUrl) {
+          const proxy = new URL(proxyUrl);
+          requestOptions.hostname = proxy.hostname;
+          requestOptions.port = proxy.port;
+          requestOptions.path = testUrl;
+          requestOptions.headers = {
+            Host: urlObj.hostname,
+          };
+          if (proxy.username) {
+            requestOptions.headers['Proxy-Authorization'] =
+              'Basic ' + Buffer.from(`${proxy.username}:${proxy.password}`).toString('base64');
+          }
+
+          const req = http.request(requestOptions, (res) => {
+            let data = '';
+            res.on('data', (chunk) => (data += chunk));
+            res.on('end', () => {
+              clearTimeout(timeout);
+              try {
+                const json = JSON.parse(data);
+                if (json.ok) {
+                  resolve({ ok: true, botName: json.result.username });
+                } else {
+                  resolve({ ok: false, error: `Telegram API 오류: ${json.description}` });
+                }
+              } catch {
+                resolve({ ok: false, error: `응답 파싱 실패 (HTTP ${res.statusCode})` });
+              }
+            });
+          });
+
+          req.on('error', (err) => {
+            clearTimeout(timeout);
+            resolve({ ok: false, error: `프록시 연결 실패: ${err.message}` });
+          });
+
+          req.on('timeout', () => {
+            req.destroy();
+            clearTimeout(timeout);
+            resolve({ ok: false, error: '프록시 연결 타임아웃' });
+          });
+
+          req.end();
+        } else {
+          // 직접 연결
+          const req = https.get(testUrl, { timeout: 5000 }, (res) => {
+            let data = '';
+            res.on('data', (chunk) => (data += chunk));
+            res.on('end', () => {
+              clearTimeout(timeout);
+              try {
+                const json = JSON.parse(data);
+                if (json.ok) {
+                  resolve({ ok: true, botName: json.result.username });
+                } else {
+                  resolve({ ok: false, error: `Telegram API 오류: ${json.description}` });
+                }
+              } catch {
+                resolve({ ok: false, error: `응답 파싱 실패 (HTTP ${res.statusCode})` });
+              }
+            });
+          });
+
+          req.on('error', (err) => {
+            clearTimeout(timeout);
+            const msg = err.message || String(err);
+            if (msg.includes('403') || msg.includes('tunneling')) {
+              resolve({
+                ok: false,
+                error: '네트워크 프록시가 api.telegram.org 연결을 차단 중 (403)',
+                blocked: true,
+              });
+            } else if (msg.includes('EAI_AGAIN') || msg.includes('ENOTFOUND') || msg.includes('getaddrinfo')) {
+              resolve({
+                ok: false,
+                error: 'api.telegram.org DNS 조회 실패 (네트워크 차단 또는 DNS 미설정)',
+                blocked: true,
+              });
+            } else {
+              resolve({ ok: false, error: `연결 실패: ${msg}` });
+            }
+          });
+
+          req.on('timeout', () => {
+            req.destroy();
+            clearTimeout(timeout);
+            resolve({ ok: false, error: '연결 타임아웃' });
+          });
+        }
+      } catch (err) {
+        clearTimeout(timeout);
+        resolve({ ok: false, error: `검사 중 오류: ${err.message}` });
       }
     });
+  }
+
+  /**
+   * 봇 시작 (연결 검사 후)
+   */
+  async start() {
+    // 프록시 설정 구성
+    const botOptions = { polling: true };
+
+    if (this._options.proxy) {
+      botOptions.request = {
+        proxy: this._options.proxy,
+      };
+      console.log(`[Telegram] 프록시 사용: ${this._options.proxy}`);
+    }
+
+    this.bot = new TelegramBot(this._token, botOptions);
+
+    this.bot.on('polling_error', (err) => {
+      this._consecutiveErrors++;
+
+      // 연속 에러 횟수에 따라 로그 레벨 조절
+      if (this._consecutiveErrors <= 3) {
+        console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
+      }
+
+      // 연속 에러가 임계값 초과 시 폴링 중지
+      if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
+        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지. 웹 대시보드만 사용 가능.`);
+        this.connected = false;
+        this.bot.stopPolling();
+      }
+    });
+
+    // 정상 수신 시 에러 카운터 리셋
+    this.bot.on('message', () => {
+      this._consecutiveErrors = 0;
+      this.connected = true;
+    });
+
+    this.bot.on('callback_query', () => {
+      this._consecutiveErrors = 0;
+      this.connected = true;
+    });
+
     this._setupHandlers();
 
     // 타임아웃 알림 연동
-    approvalManager.on('resolved', (record) => {
+    this.approvalManager.on('resolved', (record) => {
       if (record.status === 'timeout') {
         this._notifyTimeout(record);
         this.stats.timeout++;
@@ -28,6 +190,22 @@ class TelegramNotifier {
         this.stats.rejected++;
       }
     });
+
+    this.connected = true;
+    return this;
+  }
+
+  /**
+   * 연결 상태 정보
+   */
+  getStatus() {
+    return {
+      connected: this.connected,
+      consecutiveErrors: this._consecutiveErrors,
+      maxErrors: this._maxConsecutiveErrors,
+      stats: { ...this.stats },
+      proxy: this._options.proxy || null,
+    };
   }
 
   _setupHandlers() {
@@ -151,6 +329,8 @@ class TelegramNotifier {
    * 승인 요청 알림 전송
    */
   async sendApprovalRequest(approval) {
+    if (!this.connected) return;
+
     // 명령어가 길면 잘라서 보여주기
     const cmdDisplay = approval.command.length > 400
       ? approval.command.slice(0, 397) + '...'
@@ -204,6 +384,7 @@ class TelegramNotifier {
    */
   async _notifyTimeout(record) {
     await this._updateMessage(record.id, 'timeout');
+    if (!this.connected) return;
     try {
       await this.bot.sendMessage(
         this.chatId,

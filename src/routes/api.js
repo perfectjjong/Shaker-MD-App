@@ -145,4 +145,19 @@ router.delete('/rules/:index', (req, res) => {
   res.json(rules);
 });
 
+// GET /api/health - 서버 및 Telegram 연결 상태
+router.get('/health', (req, res) => {
+  const { telegramNotifier } = req.app.locals;
+  const telegramStatus = telegramNotifier
+    ? telegramNotifier.getStatus()
+    : { connected: false, reason: 'not_configured' };
+
+  res.json({
+    status: 'ok',
+    uptime: Math.round(process.uptime()),
+    memory: Math.round(process.memoryUsage().rss / 1024 / 1024),
+    telegram: telegramStatus,
+  });
+});
+
 module.exports = router;
