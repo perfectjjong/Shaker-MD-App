@@ -8,7 +8,7 @@ class TelegramNotifier {
   constructor(token, chatId, approvalManager, options = {}) {
     this.chatId = chatId;
     this.approvalManager = approvalManager;
-    this.messageMap = new Map(); // approvalId -> telegramMessageId
+    this.messageMap = new Map(); // approvalId -> { messageId, approval }
     this.stats = { approved: 0, rejected: 0, timeout: 0 };
     this.connected = false;
     this._token = token;
@@ -366,7 +366,7 @@ class TelegramNotifier {
       },
     });
 
-    this.messageMap.set(approval.id, msg.message_id);
+    this.messageMap.set(approval.id, { messageId: msg.message_id, approval });
   }
 
   /**
@@ -387,20 +387,38 @@ class TelegramNotifier {
   }
 
   /**
-   * 처리 완료 시 메시지 업데이트
+   * 처리 완료 시 메시지 업데이트 (텍스트 + 버튼 모두 변경)
    */
   async _updateMessage(approvalId, status) {
-    const messageId = this.messageMap.get(approvalId);
-    if (!messageId) return;
+    const entry = this.messageMap.get(approvalId);
+    if (!entry) return;
 
+    const { messageId, approval } = entry;
     const emoji = status === 'approved' ? '✅' : status === 'rejected' ? '❌' : '⏳';
     const label = status === 'approved' ? '승인됨' : status === 'rejected' ? '거부됨' : '타임아웃';
 
+    const cmdDisplay = approval.command.length > 400
+      ? approval.command.slice(0, 397) + '...'
+      : approval.command;
+
+    const risk = assessRisk(approval.command);
+    const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
+
+    const updatedText =
+      `${emoji} *${label}*\n\n` +
+      `${riskLabel} | 🔧 \`${approval.tool}\`\n` +
+      `📂 \`${approval.workdir || 'N/A'}\`\n\n` +
+      `\`\`\`\n${cmdDisplay}\n\`\`\``;
+
     try {
-      await this.bot.editMessageReplyMarkup(
-        { inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]] },
-        { chat_id: this.chatId, message_id: messageId }
-      );
+      await this.bot.editMessageText(updatedText, {
+        chat_id: this.chatId,
+        message_id: messageId,
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]],
+        },
+      });
     } catch (e) {
       // 메시지가 이미 변경된 경우 무시
     } finally {
