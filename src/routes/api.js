@@ -197,6 +197,61 @@ router.post('/push/test', async (req, res) => {
   res.json({ sent });
 });
 
+// GET /api/diagnose - Telegram webhook 상태 진단 및 자동 수정
+router.get('/diagnose', async (req, res) => {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) {
+    return res.json({ error: 'TELEGRAM_BOT_TOKEN 미설정' });
+  }
+
+  const https = require('https');
+  const fetch = (url) => new Promise((resolve, reject) => {
+    https.get(url, (r) => {
+      let data = '';
+      r.on('data', (c) => data += c);
+      r.on('end', () => { try { resolve(JSON.parse(data)); } catch (e) { reject(e); } });
+    }).on('error', reject);
+  });
+
+  const result = { steps: [] };
+
+  // 1. webhook 상태 확인
+  try {
+    const info = await fetch(`https://api.telegram.org/bot${token}/getWebhookInfo`);
+    const webhookUrl = info.result?.url || '';
+    result.webhookUrl = webhookUrl || '(없음)';
+    result.webhookActive = !!webhookUrl;
+    result.steps.push(`webhook 상태: ${webhookUrl ? '설정됨 → ' + webhookUrl : '없음 (정상)'}`);
+  } catch (e) {
+    result.steps.push(`webhook 확인 실패: ${e.message}`);
+    return res.json(result);
+  }
+
+  // 2. webhook이 설정되어 있으면 삭제
+  if (result.webhookActive) {
+    try {
+      const del = await fetch(`https://api.telegram.org/bot${token}/deleteWebhook?drop_pending_updates=true`);
+      result.webhookDeleted = del.result === true;
+      result.steps.push(`webhook 삭제: ${del.result ? '성공 ✓' : '실패 ✗'}`);
+    } catch (e) {
+      result.steps.push(`webhook 삭제 실패: ${e.message}`);
+    }
+  }
+
+  // 3. 현재 서버 Telegram 연결 상태
+  const { telegramNotifier } = req.app.locals;
+  result.serverTelegramStatus = telegramNotifier ? telegramNotifier.getStatus() : { connected: false, reason: 'not_configured' };
+  result.steps.push(`서버 연결 상태: ${telegramNotifier ? (telegramNotifier.connected ? '연결됨 ✓' : '연결 안됨 ✗') : '미초기화'}`);
+
+  if (result.webhookActive && result.webhookDeleted) {
+    result.action = '서버를 재시작하면 polling이 정상 작동합니다';
+  } else if (!result.webhookActive) {
+    result.action = 'webhook 없음 - 다른 원인 확인 필요 (서버 로그 확인)';
+  }
+
+  res.json(result);
+});
+
 // GET /api/health - 서버 및 Telegram 연결 상태
 router.get('/health', (req, res) => {
   const { telegramNotifier, pushNotifier } = req.app.locals;

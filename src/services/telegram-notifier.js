@@ -161,9 +161,7 @@ class TelegramNotifier {
     // 핸들러를 polling 시작 전에 먼저 등록
     this.bot.on('polling_error', (err) => {
       this._consecutiveErrors++;
-      if (this._consecutiveErrors <= 3) {
-        console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
-      }
+      console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
       if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
         console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지 후 재연결 시도.`);
         this.connected = false;
