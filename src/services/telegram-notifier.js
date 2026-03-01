@@ -140,10 +140,9 @@ class TelegramNotifier {
    * 봇 시작 (연결 검사 후)
    */
   async start() {
-    // 프록시 설정 구성
     const botOptions = {
       polling: {
-        // callback_query를 명시적으로 요청 (webhook 잔재로 인한 누락 방지)
+        autoStart: false, // webhook 제거 후 수동으로 polling 시작 (409 Conflict 방지)
         params: {
           allowed_updates: ['message', 'callback_query'],
         },
@@ -159,23 +158,12 @@ class TelegramNotifier {
 
     this.bot = new TelegramBot(this._token, botOptions);
 
-    // webhook이 남아있으면 callback_query가 polling으로 오지 않음 → 명시적 제거
-    try {
-      await this.bot.deleteWebHook();
-      console.log('[Telegram] webhook 제거 완료 (polling 모드 전환)');
-    } catch (e) {
-      console.warn('[Telegram] webhook 제거 실패 (무시):', e.message);
-    }
-
+    // 핸들러를 polling 시작 전에 먼저 등록
     this.bot.on('polling_error', (err) => {
       this._consecutiveErrors++;
-
-      // 연속 에러 횟수에 따라 로그 레벨 조절
       if (this._consecutiveErrors <= 3) {
         console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
       }
-
-      // 연속 에러가 임계값 초과 시 폴링 중지 후 재연결 예약
       if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
         console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지 후 재연결 시도.`);
         this.connected = false;
@@ -184,7 +172,6 @@ class TelegramNotifier {
       }
     });
 
-    // 정상 수신 시 에러 카운터 및 재연결 카운터 리셋
     this.bot.on('message', () => {
       this._consecutiveErrors = 0;
       this._reconnectAttempts = 0;
@@ -198,6 +185,18 @@ class TelegramNotifier {
     });
 
     this._setupHandlers();
+
+    // polling 시작 전에 webhook 제거 (webhook 활성 상태에서 polling 시 409 Conflict 발생)
+    try {
+      await this.bot.deleteWebHook();
+      console.log('[Telegram] webhook 제거 완료 (polling 모드 전환)');
+    } catch (e) {
+      console.warn('[Telegram] webhook 제거 실패 (무시):', e.message);
+    }
+
+    // webhook 제거 완료 후 polling 시작
+    await this.bot.startPolling();
+    console.log('[Telegram] polling 시작 완료');
 
     // 타임아웃 알림 연동
     this.approvalManager.on('resolved', (record) => {
@@ -267,15 +266,13 @@ class TelegramNotifier {
   _setupHandlers() {
     // 콜백 쿼리 (인라인 버튼 클릭)
     this.bot.on('callback_query', async (query) => {
+      console.log(`[Telegram] callback_query 수신: ${query.data} (from: ${query.from?.username || query.from?.id})`);
       try {
         const [action, approvalId] = query.data.split(':');
 
-        // 이미 처리된 버튼 (noop) - 응답만 하고 종료
+        // 이미 처리된 버튼 (noop)
         if (action === 'noop') {
-          // answerCallbackQuery 실패를 무시 (쿼리 만료 등)
-          this.bot.answerCallbackQuery(query.id, {
-            text: '⏳ 이미 처리된 요청입니다',
-          }).catch(() => {});
+          this.bot.answerCallbackQuery(query.id, { text: '⏳ 이미 처리된 요청입니다' }).catch(() => {});
           return;
         }
 
@@ -286,19 +283,20 @@ class TelegramNotifier {
           if (success) {
             const emoji = action === 'approve' ? '✅' : '❌';
             const label = action === 'approve' ? '승인됨' : '거부됨';
-            // answerCallbackQuery가 실패해도(쿼리 만료 등) _updateMessage는 반드시 실행
-            this.bot.answerCallbackQuery(query.id, {
-              text: `${emoji} ${label}`,
-            }).catch(() => {});
+            this.bot.answerCallbackQuery(query.id, { text: `${emoji} ${label}` }).catch(() => {});
             await this._updateMessage(approvalId, status);
           } else {
-            this.bot.answerCallbackQuery(query.id, {
-              text: '⏳ 이미 처리된 요청입니다',
-            }).catch(() => {});
+            console.warn(`[Telegram] resolve 실패 - 이미 처리됐거나 없는 ID: ${approvalId}`);
+            this.bot.answerCallbackQuery(query.id, { text: '⏳ 이미 처리된 요청입니다' }).catch(() => {});
           }
+        } else {
+          // 알 수 없는 action - 항상 응답해야 버튼 스피너가 멈춤
+          this.bot.answerCallbackQuery(query.id, {}).catch(() => {});
         }
       } catch (e) {
         console.error('[Telegram] 콜백 쿼리 처리 오류:', e.message);
+        // 항상 응답 (버튼 로딩 스피너 방지)
+        this.bot.answerCallbackQuery(query.id, { text: '❗ 처리 중 오류 발생' }).catch(() => {});
       }
     });
 
