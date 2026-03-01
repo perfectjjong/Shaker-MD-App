@@ -29,19 +29,7 @@ router.post('/approval', async (req, res) => {
 
   // 수동 승인 대기
   try {
-    const status = await approvalManager.create({
-      command, tool, workdir, sessionId,
-      onId: (id) => {
-        // 훅 프로세스가 HTTP 연결을 끊으면 (exit(0) 등) 자동 승인 처리
-        // 훅은 연결 끊김 시 exit(0)으로 종료해 이미 허용 상태이므로 approved로 정리
-        req.on('close', () => {
-          if (approvalManager.pending.has(id)) {
-            console.log(`[Approval] 훅 연결 끊김 - 자동 승인: ${id.slice(0, 8)}...`);
-            approvalManager.resolve(id, 'approved');
-          }
-        });
-      },
-    });
+    const status = await approvalManager.create({ command, tool, workdir, sessionId });
     res.json({ status });
   } catch (e) {
     res.status(500).json({ error: e.message });
