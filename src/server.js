@@ -7,15 +7,22 @@ const { ApprovalManager } = require('./services/approval-manager');
 const { TelegramNotifier } = require('./services/telegram-notifier');
 const { AutoApprover } = require('./services/auto-approver');
 const { PushNotifier } = require('./services/push-notifier');
+const { TaskManager } = require('./services/task-manager');
 const apiRoutes = require('./routes/api');
+const taskApiRoutes = require('./routes/task-api');
 
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocketServer({ server, path: '/ws' });
+
+// WebSocket: noServer 모드로 경로별 라우팅
+const wss = new WebSocketServer({ noServer: true });         // 대시보드 /ws
+const wssExecutor = new WebSocketServer({ noServer: true }); // Executor /ws/executor
+const wssCommander = new WebSocketServer({ noServer: true }); // Commander /ws/commander
 
 // 서비스 초기화
 const approvalManager = new ApprovalManager();
 const autoApprover = new AutoApprover();
+const taskManager = new TaskManager();
 let telegramNotifier = null;
 
 // Push 알림 초기화
@@ -45,31 +52,53 @@ app.locals.approvalManager = approvalManager;
 app.locals.autoApprover = autoApprover;
 app.locals.telegramNotifier = telegramNotifier;
 app.locals.pushNotifier = pushNotifier;
+app.locals.taskManager = taskManager;
 
 // API 라우트 (인증 적용)
 app.use('/api', authMiddleware, apiRoutes);
+app.use('/api/tasks', authMiddleware, taskApiRoutes);
 
 // SPA 폴백
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// WebSocket 연결 관리
-const wsClients = new Set();
+// ─── WebSocket 경로별 라우팅 ─────────────────────────────
 
-wss.on('connection', (ws, req) => {
-  // WebSocket 인증 (API 키 설정 시)
-  if (API_KEY) {
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const key = url.searchParams.get('api_key');
-    if (key !== API_KEY) {
-      ws.close(4001, '인증 실패');
-      return;
+server.on('upgrade', (req, socket, head) => {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const pathname = url.pathname;
+
+  function doAuth(wsServer, handler) {
+    if (API_KEY) {
+      const key = url.searchParams.get('api_key');
+      if (key !== API_KEY) {
+        socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
+        socket.destroy();
+        return;
+      }
     }
+    wsServer.handleUpgrade(req, socket, head, (ws) => handler(ws, req));
   }
 
+  if (pathname === '/ws') {
+    doAuth(wss, handleDashboardWs);
+  } else if (pathname === '/ws/executor') {
+    doAuth(wssExecutor, handleExecutorWs);
+  } else if (pathname === '/ws/commander') {
+    doAuth(wssCommander, handleCommanderWs);
+  } else {
+    socket.destroy();
+  }
+});
+
+// ─── 대시보드 WebSocket (/ws) ────────────────────────────
+
+const wsClients = new Set();
+
+function handleDashboardWs(ws) {
   wsClients.add(ws);
-  console.log(`[WS] 클라이언트 연결 (총 ${wsClients.size}명)`);
+  console.log(`[WS] 대시보드 연결 (총 ${wsClients.size}명)`);
 
   // 연결 시 대기 중인 승인 목록 전송
   const pending = approvalManager.getPending();
@@ -77,13 +106,12 @@ wss.on('connection', (ws, req) => {
 
   ws.on('close', () => {
     wsClients.delete(ws);
-    console.log(`[WS] 클라이언트 연결 해제 (총 ${wsClients.size}명)`);
+    console.log(`[WS] 대시보드 연결 해제 (총 ${wsClients.size}명)`);
   });
 
   ws.on('message', (raw) => {
     try {
       const msg = JSON.parse(raw);
-      // 입력 검증: id가 문자열이어야 함
       if (!msg.id || typeof msg.id !== 'string') return;
       if (msg.type === 'approve') {
         approvalManager.resolve(msg.id, 'approved');
@@ -94,9 +122,64 @@ wss.on('connection', (ws, req) => {
       console.error('[WS] 메시지 파싱 오류:', e.message);
     }
   });
-});
+}
 
-// WebSocket 브로드캐스트
+// ─── Executor WebSocket (/ws/executor) ───────────────────
+
+const executorClients = new Map(); // executorId → ws
+
+function handleExecutorWs(ws, req) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const executorId = url.searchParams.get('executorId') || `executor-${Date.now()}`;
+  const capabilities = (url.searchParams.get('capabilities') || '').split(',').filter(Boolean);
+
+  executorClients.set(executorId, ws);
+  taskManager.registerExecutor(executorId, capabilities);
+  console.log(`[WS/Executor] 연결: ${executorId}`);
+
+  ws.on('close', () => {
+    executorClients.delete(executorId);
+    console.log(`[WS/Executor] 연결 해제: ${executorId}`);
+  });
+
+  ws.on('message', (raw) => {
+    try {
+      const msg = JSON.parse(raw);
+      if (msg.type === 'heartbeat') {
+        taskManager.heartbeatExecutor(executorId);
+      }
+    } catch (e) {
+      console.error('[WS/Executor] 메시지 파싱 오류:', e.message);
+    }
+  });
+}
+
+// ─── Commander WebSocket (/ws/commander) ─────────────────
+
+const commanderClients = new Map(); // commanderId → Set<ws>
+
+function handleCommanderWs(ws, req) {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+  const commanderId = url.searchParams.get('commanderId') || `commander-${Date.now()}`;
+
+  if (!commanderClients.has(commanderId)) {
+    commanderClients.set(commanderId, new Set());
+  }
+  commanderClients.get(commanderId).add(ws);
+  console.log(`[WS/Commander] 연결: ${commanderId}`);
+
+  ws.on('close', () => {
+    const clients = commanderClients.get(commanderId);
+    if (clients) {
+      clients.delete(ws);
+      if (clients.size === 0) commanderClients.delete(commanderId);
+    }
+    console.log(`[WS/Commander] 연결 해제: ${commanderId}`);
+  });
+}
+
+// ─── 브로드캐스트 유틸 ───────────────────────────────────
+
 function broadcast(msg) {
   const payload = JSON.stringify(msg);
   for (const client of wsClients) {
@@ -105,6 +188,24 @@ function broadcast(msg) {
     }
   }
 }
+
+function broadcastToExecutors(msg) {
+  const payload = JSON.stringify(msg);
+  for (const ws of executorClients.values()) {
+    if (ws.readyState === 1) ws.send(payload);
+  }
+}
+
+function broadcastToCommander(commanderId, msg) {
+  const clients = commanderClients.get(commanderId);
+  if (!clients) return;
+  const payload = JSON.stringify(msg);
+  for (const ws of clients) {
+    if (ws.readyState === 1) ws.send(payload);
+  }
+}
+
+// ─── ApprovalManager 이벤트 ─────────────────────────────
 
 approvalManager.on('resolved', (approval) => {
   broadcast({ type: 'approval_resolved', data: approval });
@@ -133,6 +234,66 @@ approvalManager.on('new', async (approval) => {
       console.error('[Push] 알림 전송 실패:', e.message);
     }
   }
+});
+
+// ─── TaskManager 이벤트 ──────────────────────────────────
+
+taskManager.on('task:created', async (task) => {
+  // 사용자에게 Telegram 승인 요청
+  if (telegramNotifier) {
+    try {
+      await telegramNotifier.sendTaskApprovalRequest(task);
+    } catch (e) {
+      console.error('[Telegram] Task 알림 전송 실패:', e.message);
+    }
+  }
+});
+
+taskManager.on('task:approved', (task) => {
+  // Executor에게 새 작업 알림
+  broadcastToExecutors({ type: 'task_available', data: task });
+});
+
+taskManager.on('task:rejected', async (task) => {
+  // Commander에게 알림
+  broadcastToCommander(task.commanderId, { type: 'task_update', data: task });
+  if (telegramNotifier) {
+    try {
+      await telegramNotifier.sendTaskStatusUpdate(task, 'rejected');
+    } catch (e) {
+      console.error('[Telegram] Task 상태 알림 실패:', e.message);
+    }
+  }
+});
+
+taskManager.on('task:executing', (task) => {
+  broadcastToCommander(task.commanderId, { type: 'task_update', data: task });
+});
+
+taskManager.on('task:completed', async (task) => {
+  broadcastToCommander(task.commanderId, { type: 'task_update', data: task });
+  if (telegramNotifier) {
+    try {
+      await telegramNotifier.sendTaskStatusUpdate(task, 'completed');
+    } catch (e) {
+      console.error('[Telegram] Task 완료 알림 실패:', e.message);
+    }
+  }
+});
+
+taskManager.on('task:failed', async (task) => {
+  broadcastToCommander(task.commanderId, { type: 'task_update', data: task });
+  if (telegramNotifier) {
+    try {
+      await telegramNotifier.sendTaskStatusUpdate(task, 'failed');
+    } catch (e) {
+      console.error('[Telegram] Task 실패 알림 실패:', e.message);
+    }
+  }
+});
+
+taskManager.on('task:timeout', (task) => {
+  broadcastToCommander(task.commanderId, { type: 'task_update', data: task });
 });
 
 /**
@@ -165,7 +326,7 @@ async function initTelegram() {
 
   console.log(`[Telegram] 연결 확인 완료 (봇: @${check.botName})`);
 
-  const notifier = new TelegramNotifier(token, chatId, approvalManager, { proxy });
+  const notifier = new TelegramNotifier(token, chatId, approvalManager, { proxy, taskManager });
   await notifier.start();
 
   return notifier;
@@ -214,9 +375,20 @@ function shutdown(signal) {
     approvalManager.resolve(p.id, 'timeout');
   }
 
+  // 실행 중인 작업 전부 failed 처리
+  taskManager.shutdown();
+
   // WebSocket 연결 종료
   for (const client of wsClients) {
     client.close(1001, '서버 종료');
+  }
+  for (const ws of executorClients.values()) {
+    ws.close(1001, '서버 종료');
+  }
+  for (const clients of commanderClients.values()) {
+    for (const ws of clients) {
+      ws.close(1001, '서버 종료');
+    }
   }
 
   // Telegram 폴링 중지 (재연결 타이머 포함)

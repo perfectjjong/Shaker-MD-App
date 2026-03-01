@@ -9,7 +9,9 @@
     "setup": "node scripts/setup-telegram.js",
     "test:telegram": "node scripts/test-telegram.js",
     "hook:install": "node scripts/install-hook.js",
-    "hook:uninstall": "node scripts/install-hook.js uninstall"
+    "hook:uninstall": "node scripts/install-hook.js uninstall",
+    "executor": "node scripts/executor-client.js",
+    "executor:dev": "node --watch scripts/executor-client.js"
   },
   "keywords": [
     "claude-code",

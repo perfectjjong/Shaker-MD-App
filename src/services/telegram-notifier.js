@@ -7,7 +7,9 @@ class TelegramNotifier {
   constructor(token, chatId, approvalManager, options = {}) {
     this.chatId = chatId;
     this.approvalManager = approvalManager;
+    this.taskManager = options.taskManager || null;
     this.messageMap = new Map(); // approvalId -> telegramMessageId
+    this.taskMessageMap = new Map(); // taskId -> telegramMessageId
     this.stats = { approved: 0, rejected: 0, timeout: 0 };
     this.connected = false;
     this._token = token;
@@ -271,7 +273,10 @@ class TelegramNotifier {
     this.bot.on('callback_query', async (query) => {
       console.log(`[Telegram] callback_query 수신: ${query.data} (from: ${query.from?.username || query.from?.id})`);
       try {
-        const [action, approvalId] = query.data.split(':');
+        // 콜론으로 분리 (task_approve:uuid 또는 approve:uuid 형태)
+        const colonIdx = query.data.indexOf(':');
+        const action = colonIdx >= 0 ? query.data.slice(0, colonIdx) : query.data;
+        const id = colonIdx >= 0 ? query.data.slice(colonIdx + 1) : '';
 
         // 이미 처리된 버튼 (noop)
         if (action === 'noop') {
@@ -279,19 +284,37 @@ class TelegramNotifier {
           return;
         }
 
+        // ── 기존 승인/거부 (ApprovalManager) ──────────────
         if (action === 'approve' || action === 'reject') {
           const status = action === 'approve' ? 'approved' : 'rejected';
-          const success = this.approvalManager.resolve(approvalId, status);
+          const success = this.approvalManager.resolve(id, status);
 
           if (success) {
             const emoji = action === 'approve' ? '✅' : '❌';
             const label = action === 'approve' ? '승인됨' : '거부됨';
             this.bot.answerCallbackQuery(query.id, { text: `${emoji} ${label}` }).catch(() => {});
-            await this._updateMessage(approvalId, status);
+            await this._updateMessage(id, status);
           } else {
-            console.warn(`[Telegram] resolve 실패 - 이미 처리됐거나 없는 ID: ${approvalId}`);
+            console.warn(`[Telegram] resolve 실패 - 이미 처리됐거나 없는 ID: ${id}`);
             this.bot.answerCallbackQuery(query.id, { text: '⏳ 이미 처리된 요청입니다' }).catch(() => {});
           }
+
+        // ── Task 승인/거부 (TaskManager) ──────────────────
+        } else if ((action === 'task_approve' || action === 'task_reject') && this.taskManager) {
+          const task = action === 'task_approve'
+            ? this.taskManager.approveTask(id)
+            : this.taskManager.rejectTask(id);
+
+          if (task) {
+            const emoji = action === 'task_approve' ? '✅' : '❌';
+            const label = action === 'task_approve' ? '작업 승인됨' : '작업 거부됨';
+            this.bot.answerCallbackQuery(query.id, { text: `${emoji} ${label}` }).catch(() => {});
+            await this._updateTaskMessage(id, task.status);
+          } else {
+            console.warn(`[Telegram] Task resolve 실패: ${id}`);
+            this.bot.answerCallbackQuery(query.id, { text: '⏳ 이미 처리된 작업입니다' }).catch(() => {});
+          }
+
         } else {
           // 알 수 없는 action - 항상 응답해야 버튼 스피너가 멈춤
           this.bot.answerCallbackQuery(query.id, {}).catch(() => {});
@@ -386,13 +409,56 @@ class TelegramNotifier {
       this.bot.sendMessage(
         msg.chat.id,
         `📖 *명령어 목록*\n\n` +
+        `*Claude Code Hook 승인:*\n` +
         `/pending - 대기 중인 승인 목록\n` +
         `/approveall - 모두 승인\n` +
-        `/history - 최근 처리 내역\n` +
+        `/history - 최근 처리 내역\n\n` +
+        `*에이전트 작업:*\n` +
+        `/tasks - 승인 대기 중인 작업 목록\n` +
+        `/taskhistory - 최근 작업 결과\n\n` +
+        `*기타:*\n` +
         `/status - 서버 상태\n` +
         `/help - 이 도움말`,
         { parse_mode: 'Markdown' }
       );
+    });
+
+    // /tasks - 작업 승인 대기 목록
+    this.bot.onText(/\/tasks/, (msg) => {
+      if (!this.taskManager) {
+        this.bot.sendMessage(msg.chat.id, '⚠️ Task 시스템이 비활성화되어 있습니다.');
+        return;
+      }
+      const tasks = this.taskManager.getPendingApprovalTasks();
+      if (tasks.length === 0) {
+        this.bot.sendMessage(msg.chat.id, '✨ 승인 대기 중인 작업이 없습니다.');
+        return;
+      }
+      let text = `📋 *승인 대기 작업 (${tasks.length}건)*\n\n`;
+      for (const t of tasks) {
+        const elapsed = Math.round((Date.now() - new Date(t.createdAt)) / 1000);
+        text += `• [${t.type}] *${t.title.slice(0, 60)}*\n  Commander: \`${t.commanderId}\` | ⏱ ${elapsed}초 전\n\n`;
+      }
+      this.bot.sendMessage(msg.chat.id, text, { parse_mode: 'Markdown' });
+    });
+
+    // /taskhistory - 최근 작업 결과
+    this.bot.onText(/\/taskhistory/, (msg) => {
+      if (!this.taskManager) {
+        this.bot.sendMessage(msg.chat.id, '⚠️ Task 시스템이 비활성화되어 있습니다.');
+        return;
+      }
+      const history = this.taskManager.getTaskHistory(10);
+      if (history.length === 0) {
+        this.bot.sendMessage(msg.chat.id, '📭 작업 내역이 없습니다.');
+        return;
+      }
+      let text = `📜 *최근 작업 결과*\n\n`;
+      for (const t of history) {
+        const emoji = t.status === 'completed' ? '✅' : t.status === 'failed' ? '❌' : t.status === 'rejected' ? '🚫' : '⏳';
+        text += `${emoji} *${t.title.slice(0, 50)}*\n  [${t.type}] ${t.status}\n\n`;
+      }
+      this.bot.sendMessage(msg.chat.id, text, { parse_mode: 'Markdown' });
     });
   }
 
@@ -437,6 +503,113 @@ class TelegramNotifier {
     });
 
     this.messageMap.set(approval.id, msg.message_id);
+  }
+
+  /**
+   * Task 승인 요청 메시지 전송
+   */
+  async sendTaskApprovalRequest(task) {
+    if (!this.connected) return;
+
+    const typeLabel = {
+      bash: '🖥 쉘 명령어',
+      file_read: '📄 파일 읽기',
+      file_write: '✏️ 파일 쓰기',
+      file_edit: '🔧 파일 수정',
+      custom: '⚙️ 커스텀 작업',
+    }[task.type] || task.type;
+
+    const payloadStr = task.type === 'bash' && task.payload.command
+      ? `\`\`\`\n${task.payload.command.slice(0, 300)}\n\`\`\``
+      : task.description
+        ? `\`${task.description.slice(0, 200)}\``
+        : '';
+
+    const text =
+      `🤖 *에이전트 작업 승인 요청*\n\n` +
+      `${typeLabel}\n` +
+      `📌 *${task.title.slice(0, 100)}*\n` +
+      `👤 Commander: \`${task.commanderId}\`\n\n` +
+      (payloadStr ? `${payloadStr}\n\n` : '') +
+      `⏱ 대기 중...`;
+
+    try {
+      const msg = await this.bot.sendMessage(this.chatId, text, {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [[
+            { text: '✅ 승인', callback_data: `task_approve:${task.id}` },
+            { text: '❌ 거부', callback_data: `task_reject:${task.id}` },
+          ]],
+        },
+      });
+      this.taskMessageMap.set(task.id, msg.message_id);
+    } catch (e) {
+      console.error('[Telegram] Task 승인 요청 전송 실패:', e.message);
+    }
+  }
+
+  /**
+   * Task 상태 업데이트 알림 (완료/실패/거부)
+   */
+  async sendTaskStatusUpdate(task, status) {
+    if (!this.connected) return;
+
+    // 버튼 업데이트
+    await this._updateTaskMessage(task.id, status);
+
+    // 별도 알림 메시지
+    const emoji = status === 'completed' ? '✅' : status === 'failed' ? '❌' : '🚫';
+    const label = status === 'completed' ? '작업 완료' : status === 'failed' ? '작업 실패' : '작업 거부됨';
+
+    let resultStr = '';
+    if (task.result) {
+      if (task.result.stdout) resultStr += `\n\`\`\`\n${task.result.stdout.slice(0, 300)}\n\`\`\``;
+      if (task.result.stderr) resultStr += `\n⚠️ stderr:\n\`\`\`\n${task.result.stderr.slice(0, 200)}\n\`\`\``;
+      if (task.result.error) resultStr += `\n❗ ${task.result.error}`;
+    }
+
+    try {
+      await this.bot.sendMessage(
+        this.chatId,
+        `${emoji} *${label}*\n📌 ${task.title.slice(0, 100)}${resultStr}`,
+        { parse_mode: 'Markdown' }
+      );
+    } catch (e) {
+      // 전송 실패 시 조용히 무시
+    }
+  }
+
+  /**
+   * Task 메시지의 버튼을 상태로 업데이트
+   */
+  async _updateTaskMessage(taskId, status) {
+    const messageId = this.taskMessageMap.get(taskId);
+    if (!messageId) return;
+
+    const emoji = status === 'approved' ? '✅' : status === 'rejected' ? '❌'
+      : status === 'completed' ? '✅' : status === 'failed' ? '❌' : '⏳';
+    const label = {
+      approved: '승인됨 (실행 대기)',
+      rejected: '거부됨',
+      executing: '실행 중...',
+      completed: '완료됨',
+      failed: '실패',
+      timeout: '타임아웃',
+    }[status] || status;
+
+    try {
+      await this.bot.editMessageReplyMarkup(
+        { inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]] },
+        { chat_id: this.chatId, message_id: messageId }
+      );
+    } catch (e) {
+      // 메시지 이미 변경된 경우 무시
+    } finally {
+      if (['completed', 'failed', 'rejected', 'timeout'].includes(status)) {
+        this.taskMessageMap.delete(taskId);
+      }
+    }
   }
 
   /**
