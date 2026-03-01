@@ -159,6 +159,14 @@ class TelegramNotifier {
 
     this.bot = new TelegramBot(this._token, botOptions);
 
+    // webhook이 남아있으면 callback_query가 polling으로 오지 않음 → 명시적 제거
+    try {
+      await this.bot.deleteWebhook();
+      console.log('[Telegram] webhook 제거 완료 (polling 모드 전환)');
+    } catch (e) {
+      // 무시 (이미 없거나 네트워크 오류)
+    }
+
     this.bot.on('polling_error', (err) => {
       this._consecutiveErrors++;
 
