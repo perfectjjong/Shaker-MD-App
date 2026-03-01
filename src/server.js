@@ -7,6 +7,7 @@ const { ApprovalManager } = require('./services/approval-manager');
 const { TelegramNotifier } = require('./services/telegram-notifier');
 const { AutoApprover } = require('./services/auto-approver');
 const { PushNotifier } = require('./services/push-notifier');
+const { TunnelService } = require('./services/tunnel-service');
 const apiRoutes = require('./routes/api');
 
 const app = express();
@@ -235,17 +236,44 @@ server.listen(PORT, '0.0.0.0', async () => {
   telegramNotifier = await initTelegram();
   app.locals.telegramNotifier = telegramNotifier;
 
+  // 터널 초기화 (외부 접속용)
+  let tunnelUrl = process.env.EXTERNAL_URL || null;
+  const tunnelEnabled = process.env.TUNNEL_ENABLED === 'true';
+  let tunnelService = null;
+
+  if (tunnelEnabled && !tunnelUrl) {
+    try {
+      tunnelService = new TunnelService(PORT, {
+        subdomain: process.env.TUNNEL_SUBDOMAIN || null,
+      });
+      tunnelUrl = await tunnelService.start();
+    } catch (e) {
+      console.error('[Tunnel] 터널 시작 실패:', e.message);
+    }
+  }
+
+  // tunnelService를 app.locals에 저장 (shutdown 시 사용)
+  app.locals.tunnelService = tunnelService;
+
   console.log('');
   console.log('╔══════════════════════════════════════════════╗');
   console.log('║   Claude Code Mobile Approver v1.0          ║');
   console.log('╠══════════════════════════════════════════════╣');
   console.log(`║   ${pad('Local: ' + localUrl, W)}║`);
   console.log(`║   ${pad('API:   ' + apiUrl, W)}║`);
+  if (tunnelUrl) {
+    console.log('║                                              ║');
+    console.log(`║   ${pad('📱 외부 접속:', W)}║`);
+    console.log(`║   ${pad(tunnelUrl, W)}║`);
+  }
   console.log('║                                              ║');
   if (telegramNotifier) {
     console.log(`║   ${pad('✓ Telegram 알림 활성화', W)}║`);
   } else {
     console.log(`║   ${pad('✗ Telegram 미연결 (웹 대시보드 사용)', W)}║`);
+  }
+  if (tunnelUrl) {
+    console.log(`║   ${pad('✓ 외부 터널 활성화', W)}║`);
   }
   if (pushNotifier.enabled) {
     console.log(`║   ${pad('✓ Web Push 알림 활성화', W)}║`);
@@ -254,6 +282,13 @@ server.listen(PORT, '0.0.0.0', async () => {
     console.log(`║   ${pad('✓ API 키 인증 활성화', W)}║`);
   }
   console.log('╚══════════════════════════════════════════════╝');
+
+  if (tunnelUrl) {
+    console.log('');
+    console.log('📱 모바일에서 아래 주소로 접속하세요 (Wi-Fi 무관):');
+    console.log(`   ${tunnelUrl}`);
+  }
+
   console.log('');
 });
 
@@ -270,6 +305,11 @@ function shutdown(signal) {
   // WebSocket 연결 종료
   for (const client of wsClients) {
     client.close(1001, '서버 종료');
+  }
+
+  // 터널 중지
+  if (app.locals.tunnelService) {
+    app.locals.tunnelService.stop();
   }
 
   // Telegram 폴링 중지
