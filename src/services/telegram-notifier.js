@@ -140,11 +140,15 @@ class TelegramNotifier {
    * 봇 시작 (연결 검사 후)
    */
   async start() {
+    const ALLOWED_UPDATES = JSON.stringify(['message', 'callback_query']);
+
     const botOptions = {
       polling: {
         autoStart: false, // webhook 제거 후 수동으로 polling 시작 (409 Conflict 방지)
         params: {
-          allowed_updates: ['message', 'callback_query'],
+          // qs.stringify는 배열을 allowed_updates[0]=... 형식으로 직렬화하여
+          // Telegram API가 무시하므로 반드시 JSON 문자열로 전달해야 함
+          allowed_updates: ALLOWED_UPDATES,
         },
       },
     };
@@ -192,9 +196,9 @@ class TelegramNotifier {
       console.warn('[Telegram] webhook 제거 실패 (무시):', e.message);
     }
 
-    // webhook 제거 완료 후 polling 시작
-    await this.bot.startPolling();
-    console.log('[Telegram] polling 시작 완료');
+    // webhook 제거 완료 후 polling 시작 (allowed_updates 명시 - qs 직렬화 우회)
+    await this.bot.startPolling({ params: { allowed_updates: ALLOWED_UPDATES } });
+    console.log('[Telegram] polling 시작 완료 (allowed_updates: message, callback_query)');
 
     // 타임아웃 알림 연동
     this.approvalManager.on('resolved', (record) => {
@@ -251,9 +255,10 @@ class TelegramNotifier {
       this._reconnectTimer = null;
       this._consecutiveErrors = 0;
       try {
-        await this.bot.startPolling({ restart: true });
+        const allowedUpdates = JSON.stringify(['message', 'callback_query']);
+        await this.bot.startPolling({ restart: true, params: { allowed_updates: allowedUpdates } });
         this.connected = true;
-        console.log('[Telegram] 폴링 재연결 성공');
+        console.log('[Telegram] 폴링 재연결 성공 (allowed_updates 포함)');
       } catch (e) {
         console.error('[Telegram] 폴링 재연결 실패:', e.message);
         this._scheduleReconnect();
