@@ -11,9 +11,10 @@ class ApprovalManager extends EventEmitter {
 
   /**
    * 새 승인 요청 생성
+   * @param {Function} [onId] - ID 생성 직후 호출되는 콜백 (연결 감시 등에 사용)
    * @returns {Promise<string>} 'approved' | 'rejected' | 'timeout'
    */
-  create({ command, tool, workdir, sessionId }) {
+  create({ command, tool, workdir, sessionId, onId }) {
     const id = uuidv4();
     const approval = {
       id,
@@ -39,6 +40,9 @@ class ApprovalManager extends EventEmitter {
         _resolve: resolve,
         _timer: timer,
       });
+
+      // ID를 호출자에게 콜백으로 노출 (연결 끊김 감지 등에 활용)
+      if (onId) onId(id);
 
       console.log(`[Approval] 새 요청: ${id.slice(0, 8)}... | ${command}`);
       this.emit('new', approval);

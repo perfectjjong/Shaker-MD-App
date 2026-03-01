@@ -141,7 +141,14 @@ class TelegramNotifier {
    */
   async start() {
     // 프록시 설정 구성
-    const botOptions = { polling: true };
+    const botOptions = {
+      polling: {
+        // callback_query를 명시적으로 요청 (webhook 잔재로 인한 누락 방지)
+        params: {
+          allowed_updates: ['message', 'callback_query'],
+        },
+      },
+    };
 
     if (this._options.proxy) {
       botOptions.request = {
@@ -257,9 +264,10 @@ class TelegramNotifier {
 
         // 이미 처리된 버튼 (noop) - 응답만 하고 종료
         if (action === 'noop') {
-          await this.bot.answerCallbackQuery(query.id, {
+          // answerCallbackQuery 실패를 무시 (쿼리 만료 등)
+          this.bot.answerCallbackQuery(query.id, {
             text: '⏳ 이미 처리된 요청입니다',
-          });
+          }).catch(() => {});
           return;
         }
 
@@ -270,14 +278,15 @@ class TelegramNotifier {
           if (success) {
             const emoji = action === 'approve' ? '✅' : '❌';
             const label = action === 'approve' ? '승인됨' : '거부됨';
-            await this.bot.answerCallbackQuery(query.id, {
+            // answerCallbackQuery가 실패해도(쿼리 만료 등) _updateMessage는 반드시 실행
+            this.bot.answerCallbackQuery(query.id, {
               text: `${emoji} ${label}`,
-            });
+            }).catch(() => {});
             await this._updateMessage(approvalId, status);
           } else {
-            await this.bot.answerCallbackQuery(query.id, {
+            this.bot.answerCallbackQuery(query.id, {
               text: '⏳ 이미 처리된 요청입니다',
-            });
+            }).catch(() => {});
           }
         }
       } catch (e) {
