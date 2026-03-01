@@ -219,9 +219,9 @@ function shutdown(signal) {
     client.close(1001, '서버 종료');
   }
 
-  // Telegram 폴링 중지
-  if (telegramNotifier && telegramNotifier.bot) {
-    telegramNotifier.bot.stopPolling();
+  // Telegram 폴링 중지 (재연결 타이머 포함)
+  if (telegramNotifier) {
+    telegramNotifier.stop();
   }
 
   server.close(() => {

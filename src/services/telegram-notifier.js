@@ -14,6 +14,8 @@ class TelegramNotifier {
     this._options = options;
     this._consecutiveErrors = 0;
     this._maxConsecutiveErrors = 5;
+    this._reconnectAttempts = 0;
+    this._reconnectTimer = null;
   }
 
   /**
@@ -158,22 +160,25 @@ class TelegramNotifier {
         console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
       }
 
-      // 연속 에러가 임계값 초과 시 폴링 중지
+      // 연속 에러가 임계값 초과 시 폴링 중지 후 재연결 예약
       if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
-        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지. 웹 대시보드만 사용 가능.`);
+        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지 후 재연결 시도.`);
         this.connected = false;
         this.bot.stopPolling();
+        this._scheduleReconnect();
       }
     });
 
-    // 정상 수신 시 에러 카운터 리셋
+    // 정상 수신 시 에러 카운터 및 재연결 카운터 리셋
     this.bot.on('message', () => {
       this._consecutiveErrors = 0;
+      this._reconnectAttempts = 0;
       this.connected = true;
     });
 
     this.bot.on('callback_query', () => {
       this._consecutiveErrors = 0;
+      this._reconnectAttempts = 0;
       this.connected = true;
     });
 
@@ -208,27 +213,75 @@ class TelegramNotifier {
     };
   }
 
+  /**
+   * 봇 정지 (재연결 타이머 포함)
+   */
+  stop() {
+    if (this._reconnectTimer) {
+      clearTimeout(this._reconnectTimer);
+      this._reconnectTimer = null;
+    }
+    this.connected = false;
+    if (this.bot) {
+      this.bot.stopPolling();
+    }
+  }
+
+  /**
+   * 폴링 재연결 (지수 백오프)
+   */
+  _scheduleReconnect() {
+    if (this._reconnectTimer) return;
+    const delayMs = Math.min(60000, 5000 * Math.pow(2, this._reconnectAttempts));
+    this._reconnectAttempts++;
+    console.log(`[Telegram] ${delayMs / 1000}초 후 폴링 재연결 시도... (${this._reconnectAttempts}회차)`);
+    this._reconnectTimer = setTimeout(async () => {
+      this._reconnectTimer = null;
+      this._consecutiveErrors = 0;
+      try {
+        await this.bot.startPolling({ restart: true });
+        this.connected = true;
+        console.log('[Telegram] 폴링 재연결 성공');
+      } catch (e) {
+        console.error('[Telegram] 폴링 재연결 실패:', e.message);
+        this._scheduleReconnect();
+      }
+    }, delayMs);
+  }
+
   _setupHandlers() {
     // 콜백 쿼리 (인라인 버튼 클릭)
     this.bot.on('callback_query', async (query) => {
-      const [action, approvalId] = query.data.split(':');
+      try {
+        const [action, approvalId] = query.data.split(':');
 
-      if (action === 'approve' || action === 'reject') {
-        const status = action === 'approve' ? 'approved' : 'rejected';
-        const success = this.approvalManager.resolve(approvalId, status);
-
-        if (success) {
-          const emoji = action === 'approve' ? '✅' : '❌';
-          const label = action === 'approve' ? '승인됨' : '거부됨';
-          await this.bot.answerCallbackQuery(query.id, {
-            text: `${emoji} ${label}`,
-          });
-          await this._updateMessage(approvalId, status);
-        } else {
+        // 이미 처리된 버튼 (noop) - 응답만 하고 종료
+        if (action === 'noop') {
           await this.bot.answerCallbackQuery(query.id, {
             text: '⏳ 이미 처리된 요청입니다',
           });
+          return;
         }
+
+        if (action === 'approve' || action === 'reject') {
+          const status = action === 'approve' ? 'approved' : 'rejected';
+          const success = this.approvalManager.resolve(approvalId, status);
+
+          if (success) {
+            const emoji = action === 'approve' ? '✅' : '❌';
+            const label = action === 'approve' ? '승인됨' : '거부됨';
+            await this.bot.answerCallbackQuery(query.id, {
+              text: `${emoji} ${label}`,
+            });
+            await this._updateMessage(approvalId, status);
+          } else {
+            await this.bot.answerCallbackQuery(query.id, {
+              text: '⏳ 이미 처리된 요청입니다',
+            });
+          }
+        }
+      } catch (e) {
+        console.error('[Telegram] 콜백 쿼리 처리 오류:', e.message);
       }
     });
 
