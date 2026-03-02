@@ -17,6 +17,10 @@
  *   EXECUTOR_MAX_CONCURRENT 1                              (최대 동시 실행)
  *   MAX_OUTPUT_SIZE        1048576                         (stdout 최대 크기)
  *   POLL_INTERVAL_MS       5000                            (HTTP polling 간격)
+ *   EXECUTOR_WEBHOOK_URL   (선택) 작업 완료/실패 시 POST 알림을 보낼 URL
+ *                          예: http://localhost:8765/executor-webhook
+ *                          Payload: { taskId, title, type, status, exitCode,
+ *                                     stdout, stderr, error, durationMs, executorId }
  */
 
 'use strict';
@@ -39,6 +43,7 @@ const API_KEY = process.env.API_KEY || '';
 const MAX_CONCURRENT = parseInt(process.env.EXECUTOR_MAX_CONCURRENT) || 1;
 const MAX_OUTPUT = parseInt(process.env.MAX_OUTPUT_SIZE) || 1024 * 1024;
 const POLL_INTERVAL = parseInt(process.env.POLL_INTERVAL_MS) || 5000;
+const WEBHOOK_URL = process.env.EXECUTOR_WEBHOOK_URL || '';
 
 const ALLOWED_DIRS = (process.env.EXECUTOR_ALLOWED_DIRS || '')
   .split(',')
@@ -262,6 +267,56 @@ async function executeTask(task) {
   }
 }
 
+// ─── Webhook 알림 ────────────────────────────────────────
+
+async function notifyWebhook(task, result) {
+  if (!WEBHOOK_URL) return;
+  const payload = JSON.stringify({
+    taskId: task.id,
+    title: task.title,
+    type: task.type,
+    status: result.exitCode === 0 ? 'completed' : 'failed',
+    exitCode: result.exitCode,
+    stdout: (result.stdout || '').slice(0, 2000),
+    stderr: (result.stderr || '').slice(0, 500),
+    error: result.error || null,
+    durationMs: result.durationMs || null,
+    executorId: EXECUTOR_ID,
+  });
+
+  try {
+    const urlObj = new URL(WEBHOOK_URL);
+    const isHttps = WEBHOOK_URL.startsWith('https');
+    const mod = isHttps ? https : http;
+    await new Promise((resolve, reject) => {
+      const req = mod.request(
+        {
+          hostname: urlObj.hostname,
+          port: urlObj.port || (isHttps ? 443 : 80),
+          path: urlObj.pathname + urlObj.search,
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': Buffer.byteLength(payload),
+          },
+          timeout: 10000,
+        },
+        (res) => {
+          res.resume();
+          resolve(res.statusCode);
+        }
+      );
+      req.on('error', reject);
+      req.on('timeout', () => { req.destroy(); reject(new Error('webhook timeout')); });
+      req.write(payload);
+      req.end();
+    });
+    console.log(`[Executor] Webhook 알림 전송 완료: ${WEBHOOK_URL}`);
+  } catch (e) {
+    console.warn(`[Executor] Webhook 알림 실패 (무시):`, e.message);
+  }
+}
+
 // ─── Task 처리 파이프라인 ─────────────────────────────────
 
 async function processTask(task) {
@@ -297,14 +352,17 @@ async function processTask(task) {
       result,
     });
     console.log(`[Executor] 결과 보고 완료: ${claimedTask.id.slice(0, 8)}... (exit=${result.exitCode})`);
+    await notifyWebhook(claimedTask, result);
   } catch (e) {
     console.error(`[Executor] 실행/보고 오류:`, e.message);
     // 오류 결과 보고 시도
     try {
+      const errResult = { exitCode: -1, error: e.message };
       await apiRequest('POST', `/api/tasks/executor/result/${claimedTask.id}`, {
         executorId: EXECUTOR_ID,
-        result: { exitCode: -1, error: e.message },
+        result: errResult,
       });
+      await notifyWebhook(claimedTask, errResult);
     } catch {
       // 무시
     }
@@ -450,6 +508,9 @@ async function main() {
     console.log(`║   허용경로: ${ALLOWED_DIRS.join(', ').slice(0, 33)}║`);
   } else {
     console.log('║   허용경로: 제한 없음                         ║');
+  }
+  if (WEBHOOK_URL) {
+    console.log(`║   Webhook: ${WEBHOOK_URL.slice(0, 34)}║`);
   }
   console.log(`║   최대동시실행: ${String(MAX_CONCURRENT).padEnd(28)}║`);
   console.log('╚══════════════════════════════════════════════╝');
