@@ -11,11 +11,15 @@ const { v4: uuidv4 } = require('uuid');
  *                 → timeout
  */
 class TaskManager extends EventEmitter {
-  constructor() {
+  /**
+   * @param {import('./task-auto-approver').TaskAutoApprover|null} taskAutoApprover
+   */
+  constructor(taskAutoApprover = null) {
     super();
 
     this.tasks = new Map();   // id → task (pending + active)
     this.history = [];        // 완료된 작업 (최대 200건)
+    this.taskAutoApprover = taskAutoApprover;
 
     this.approvalTimeoutMs =
       (parseInt(process.env.TASK_APPROVAL_TIMEOUT) || 600) * 1000;
@@ -86,6 +90,7 @@ class TaskManager extends EventEmitter {
       description: (description || '').slice(0, 2000),
       payload: payload || {},
       status: 'pending_approval',
+      autoApproved: false,
       result: null,
       createdAt: now,
       approvedAt: null,
@@ -93,7 +98,34 @@ class TaskManager extends EventEmitter {
       completedAt: null,
     };
 
-    // 승인 타임아웃
+    console.log(`[TaskManager] 작업 생성: ${id.slice(0, 8)}... | ${title}`);
+
+    // ── 자동 승인 사전 체크 ──────────────────────────────
+    if (this.taskAutoApprover) {
+      const autoResult = this.taskAutoApprover.shouldAutoApprove(task);
+      if (autoResult === 'approve') {
+        task.status = 'approved';
+        task.approvedAt = now;
+        task.autoApproved = true;
+
+        // 실행 타임아웃 설정
+        const execTimer = setTimeout(() => {
+          if (this.tasks.has(id)) {
+            const t = this.tasks.get(id);
+            if (t.status === 'approved' || t.status === 'executing') {
+              this._finalizeTask(id, 'timeout', { error: '실행 타임아웃' }, 'execTimer');
+            }
+          }
+        }, this.executionTimeoutMs);
+
+        this.tasks.set(id, { ...task, _approvalTimer: null, _execTimer: execTimer });
+        console.log(`[TaskManager] 자동 승인: ${id.slice(0, 8)}... (위험도/이력 기반)`);
+        this.emit('task:approved', task);
+        return task;
+      }
+    }
+
+    // ── 수동 승인 대기 ───────────────────────────────────
     const approvalTimer = setTimeout(() => {
       if (this.tasks.has(id)) {
         const t = this.tasks.get(id);
@@ -104,8 +136,6 @@ class TaskManager extends EventEmitter {
     }, this.approvalTimeoutMs);
 
     this.tasks.set(id, { ...task, _approvalTimer: approvalTimer, _execTimer: null });
-
-    console.log(`[TaskManager] 작업 생성: ${id.slice(0, 8)}... | ${title}`);
     this.emit('task:created', task);
     return task;
   }
@@ -132,6 +162,11 @@ class TaskManager extends EventEmitter {
       }
     }, this.executionTimeoutMs);
     entry._execTimer = execTimer;
+
+    // 수동 승인 → fingerprint 기록 (다음 번 자동 승인에 활용)
+    if (this.taskAutoApprover && !entry.autoApproved) {
+      this.taskAutoApprover.recordApproval(entry);
+    }
 
     const task = this._publicTask(entry);
     console.log(`[TaskManager] 승인: ${id.slice(0, 8)}...`);

@@ -8,6 +8,7 @@ const { TelegramNotifier } = require('./services/telegram-notifier');
 const { AutoApprover } = require('./services/auto-approver');
 const { PushNotifier } = require('./services/push-notifier');
 const { TaskManager } = require('./services/task-manager');
+const { TaskAutoApprover } = require('./services/task-auto-approver');
 const apiRoutes = require('./routes/api');
 const taskApiRoutes = require('./routes/task-api');
 
@@ -22,7 +23,8 @@ const wssCommander = new WebSocketServer({ noServer: true }); // Commander /ws/c
 // 서비스 초기화
 const approvalManager = new ApprovalManager();
 const autoApprover = new AutoApprover();
-const taskManager = new TaskManager();
+const taskAutoApprover = new TaskAutoApprover();
+const taskManager = new TaskManager(taskAutoApprover);
 let telegramNotifier = null;
 
 // Push 알림 초기화
