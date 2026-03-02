@@ -56,6 +56,29 @@ class TaskManager extends EventEmitter {
     return Array.from(this.executors.values());
   }
 
+  /**
+   * executor 연결 해제 시 호출.
+   * 해당 executor가 맡고 있던 executing 작업을 approved로 되돌려 다른 executor가 재시도할 수 있게 함.
+   * _execTimer는 approveTask()에서 'approved' || 'executing' 양쪽을 체크하므로 그대로 유지.
+   * @param {string} executorId
+   * @returns {number} 복구된 작업 수
+   */
+  markExecutorOffline(executorId) {
+    let resetCount = 0;
+    for (const entry of this.tasks.values()) {
+      if (entry.status === 'executing' && entry.executorId === executorId) {
+        entry.status = 'approved';
+        entry.executorId = null;
+        entry.claimedAt = null;
+        resetCount++;
+        console.log(`[TaskManager] executor 오프라인으로 작업 복구: ${entry.id.slice(0, 8)}... → approved`);
+        this.emit('task:approved', this._publicTask(entry));
+      }
+    }
+    this.executors.delete(executorId);
+    return resetCount;
+  }
+
   // ─── Task 생성 ─────────────────────────────────────────
 
   /**

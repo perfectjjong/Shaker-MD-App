@@ -142,6 +142,10 @@ function handleExecutorWs(ws, req) {
   ws.on('close', () => {
     executorClients.delete(executorId);
     console.log(`[WS/Executor] 연결 해제: ${executorId}`);
+    const reset = taskManager.markExecutorOffline(executorId);
+    if (reset > 0) {
+      console.log(`[WS/Executor] ${reset}개 작업 approved로 복구 (재실행 대기)`);
+    }
   });
 
   ws.on('message', (raw) => {
