@@ -88,6 +88,12 @@ class TaskAutoApprover {
   // ─── 위험도 평가 ──────────────────────────────────────
 
   _assessBashRisk(command) {
+    // 소놀봇 reply 함수(report_telegram, mark_done_telegram 등)는 항상 low
+    // Claude Code가 단순 텍스트 답변을 전송하는 용도이므로 승인 불필요
+    if (/\b(report_telegram|mark_done_telegram|remove_working_lock)\b/.test(command)) {
+      return 'low';
+    }
+
     const high = [
       /rm\s+-rf\s*\/[\s$]/i,          // rm -rf /
       /rm\s+(-[a-z]*r[a-z]*f|-f[a-z]*r)\s/i, // rm -rf or rm -fr
