@@ -29,8 +29,19 @@ router.post('/approval', async (req, res) => {
 
   // 수동 승인 대기
   try {
-    const status = await approvalManager.create({ command, tool, workdir, sessionId });
-    res.json({ status });
+    const status = await approvalManager.create({
+      command, tool, workdir, sessionId,
+      onId: (id) => {
+        // 클라이언트(hook)가 연결을 끊으면 즉시 timeout 처리
+        // (좀비 승인이 300초 동안 메모리에 남는 것을 방지)
+        req.on('close', () => {
+          approvalManager.resolve(id, 'timeout');
+        });
+      },
+    });
+    if (!res.headersSent) {
+      res.json({ status });
+    }
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
