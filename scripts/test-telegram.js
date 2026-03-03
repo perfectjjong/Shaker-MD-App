@@ -13,36 +13,38 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 
 const SERVER_URL = process.env.CLAUDE_APPROVER_URL || `http://localhost:${process.env.PORT || 3847}`;
 
-function post(url, data) {
+function post(url, data, socketTimeoutMs = 10000) {
   return new Promise((resolve, reject) => {
     const parsed = new URL(url);
     const postData = JSON.stringify(data);
-    const req = http.request(
-      {
-        hostname: parsed.hostname,
-        port: parsed.port,
-        path: parsed.pathname,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(postData),
-        },
-        timeout: 10000,
+    const options = {
+      hostname: parsed.hostname,
+      port: parsed.port,
+      path: parsed.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData),
       },
-      (res) => {
-        const chunks = [];
-        res.on('data', (c) => chunks.push(c));
-        res.on('end', () => {
-          try {
-            resolve(JSON.parse(Buffer.concat(chunks).toString()));
-          } catch (e) {
-            reject(new Error('응답 파싱 실패'));
-          }
-        });
-      }
-    );
-    req.on('error', reject);
-    req.on('timeout', () => { req.destroy(); reject(new Error('타임아웃')); });
+    };
+    if (socketTimeoutMs > 0) options.timeout = socketTimeoutMs;
+    const req = http.request(options, (res) => {
+      const chunks = [];
+      res.on('data', (c) => chunks.push(c));
+      res.on('end', () => {
+        try {
+          resolve(JSON.parse(Buffer.concat(chunks).toString()));
+        } catch (e) {
+          reject(new Error('응답 파싱 실패'));
+        }
+      });
+    });
+    req.on('error', (e) => {
+      if (e.code !== 'ECONNRESET') reject(e);
+    });
+    if (socketTimeoutMs > 0) {
+      req.on('timeout', () => { req.destroy(); reject(new Error('타임아웃')); });
+    }
     req.write(postData);
     req.end();
   });
@@ -81,13 +83,15 @@ async function main() {
   const startTime = Date.now();
 
   try {
+    // 소켓 타임아웃 없이 호출 (Promise.race의 30초가 클라이언트 타임아웃 역할)
+    // 소켓 타임아웃이 10초이면 텔레그램에서 응답하기 전에 연결이 끊겨 승인이 취소됨
     const result = await Promise.race([
       post(`${SERVER_URL}/api/approval`, {
         command: 'echo "Hello from test!" && ls -la /home/user',
         tool: 'Bash',
         workdir: '/home/user/test-project',
         sessionId: 'test-session',
-      }),
+      }, 0),
       new Promise((_, reject) => setTimeout(() => reject(new Error('30초 타임아웃')), 30000)),
     ]);
 
@@ -113,6 +117,8 @@ async function main() {
 
   console.log('');
   console.log('테스트 완료!');
+  // 소켓 타임아웃 없이 장기 폴링 요청을 사용하므로 열린 핸들을 정리하기 위해 명시적으로 종료
+  process.exit(0);
 }
 
 main().catch((e) => {
