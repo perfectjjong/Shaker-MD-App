@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>대시보드 허브</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f0f1a;
+      --surface: #1a1a2e;
+      --surface2: #232342;
+      --accent: #e94560;
+      --text: #eee;
+      --text-dim: #8888aa;
+      --border: #2a2a4a;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 헤더 */
+    .header {
+      background: var(--surface);
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .header .subtitle {
+      font-size: 14px;
+      color: var(--text-dim);
+    }
+
+    /* 카드 그리드 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      flex: 1;
+    }
+
+    .card-link {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15);
+    }
+
+    .card-icon {
+      font-size: 40px;
+      margin-bottom: 14px;
+    }
+
+    .card-name {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-dim);
+      line-height: 1.5;
+    }
+
+    .card-badge {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--surface2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    /* 진입 애니메이션 */
+    @keyframes slideIn {
+      from { transform: translateY(-10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .card-link {
+      animation: slideIn 0.3s ease both;
+    }
+
+    /* 푸터 */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* 반응형 */
+    @media (max-width: 600px) {
+      .header h1 { font-size: 20px; }
+      .grid { padding: 16px; gap: 14px; }
+      .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Dashboard Hub</h1>
+    <div class="subtitle">All dashboards in one place</div>
+  </div>
+
+  <div class="grid" id="dashboardGrid"></div>
+
+  <div class="footer">
+    <a href="https://github.com/perfectjjong" target="_blank" rel="noopener">github.com/perfectjjong</a>
+  </div>
+
+  <script>
+    // ============================================
+    // 대시보드 설정 - 여기만 수정하세요!
+    // Dashboard Config - Edit only this section!
+    // ============================================
+    const DASHBOARDS = [
+      {
+        name: 'IR Dashboard',
+        description: 'IR 데이터 분석 대시보드',
+        url: '#',
+        icon: '📊',
+      },
+      {
+        name: 'Extra Dashboard',
+        description: '추가 데이터 대시보드',
+        url: '#',
+        icon: '📈',
+      },
+      {
+        name: 'Blackbox AC Price Tracker',
+        description: '블랙박스 에어컨 가격 추적기',
+        url: '#',
+        icon: '🏷️',
+      },
+      {
+        name: 'Extra AC Price Tracker',
+        description: '추가 에어컨 가격 추적기',
+        url: '#',
+        icon: '💰',
+      },
+      {
+        name: 'Extra Sellout Dashboard',
+        description: '추가 셀아웃 대시보드',
+        url: '#',
+        icon: '🛒',
+      },
+      {
+        name: 'Shaker MD App',
+        description: 'Claude Code 모바일 승인 시스템',
+        url: '#',
+        icon: '🤖',
+      },
+    ];
+
+    // ============================================
+    // 아래 코드는 수정할 필요 없습니다
+    // ============================================
+
+    function esc(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    function renderDashboards() {
+      const grid = document.getElementById('dashboardGrid');
+      grid.innerHTML = DASHBOARDS.map((d, i) => {
+        const isPlaceholder = !d.url || d.url === '#';
+        const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
+        const href = isPlaceholder ? '#' : esc(d.url);
+        const badge = isPlaceholder ? '<span class="card-badge">준비 중</span>' : '';
+        const delay = `animation-delay: ${i * 0.05}s`;
+
+        return `
+          <a class="card-link" href="${href}"${target} style="${delay}"${isPlaceholder ? ' onclick="return false;"' : ''}>
+            <div class="card">
+              <div class="card-icon">${d.icon}</div>
+              <div class="card-name">${esc(d.name)}</div>
+              <div class="card-desc">${esc(d.description)}</div>
+              ${badge}
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    renderDashboards();
+  </script>
+</body>
+</html>
