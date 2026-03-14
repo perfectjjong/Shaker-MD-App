@@ -107,13 +107,109 @@
       border: 1px solid var(--border);
     }
 
+    /* 아코디언 카드 */
+    .accordion-card {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .accordion-card .card {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .accordion-card .card-name {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .accordion-arrow {
+      font-size: 12px;
+      transition: transform 0.3s ease;
+      color: var(--text-dim);
+    }
+
+    .accordion-card.open .accordion-arrow {
+      transform: rotate(180deg);
+    }
+
+    .accordion-card.open .card {
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15);
+    }
+
+    .accordion-card.open .card:hover {
+      transform: none;
+    }
+
+    .sub-list {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 0;
+    }
+
+    .accordion-card.open .sub-list {
+      max-height: 400px;
+      padding: 12px 0 0;
+    }
+
+    .sub-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      margin-top: 4px;
+      border-radius: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
+
+    .sub-item:hover {
+      border-color: var(--accent);
+      background: #2a2a50;
+    }
+
+    .sub-item-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .sub-item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sub-item-name {
+      font-weight: 500;
+      font-size: 13px;
+    }
+
+    .sub-item-desc {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
+    .sub-item-arrow {
+      color: var(--text-dim);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
     /* 진입 애니메이션 */
     @keyframes slideIn {
       from { transform: translateY(-10px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
-    .card-link {
+    .card-link, .accordion-card {
       animation: slideIn 0.3s ease both;
     }
 
@@ -160,25 +256,42 @@
     // 대시보드 설정 - 여기만 수정하세요!
     // Dashboard Config - Edit only this section!
     // ============================================
+
+    // eXtra 그룹 (아코디언 카드)
+    const EXTRA_GROUP = {
+      name: 'eXtra Dashboard',
+      description: '추가 대시보드 모음 (4개)',
+      icon: '🛒',
+      children: [
+        {
+          name: 'Sell out Weekly',
+          description: '셀아웃 주간 대시보드',
+          url: 'https://perfectjjong.github.io/extra-sellout-dashboard/',
+          icon: '📦',
+        },
+        {
+          name: 'Price Tracking',
+          description: '에어컨 가격 추적기',
+          url: 'https://perfectjjong.github.io/extra-ac-price-tracker/',
+          icon: '💰',
+        },
+        {
+          name: 'AC Business Dashboard',
+          description: 'AC 비즈니스 대시보드',
+          url: 'https://perfectjjong.github.io/extra-dashboard/',
+          icon: '📈',
+        },
+        {
+          name: 'Management Dashboard',
+          description: '경영 대시보드',
+          url: 'https://perfectjjong.github.io/extra-dashboard/executive/',
+          icon: '📋',
+        },
+      ],
+    };
+
+    // 일반 대시보드 카드
     const DASHBOARDS = [
-      {
-        name: 'eXtra Sell out Weekly Dashboard',
-        description: '추가 셀아웃 주간 대시보드',
-        url: 'https://perfectjjong.github.io/extra-sellout-dashboard/',
-        icon: '🛒',
-      },
-      {
-        name: 'eXtra Price Tracking',
-        description: '추가 에어컨 가격 추적기',
-        url: 'https://perfectjjong.github.io/extra-ac-price-tracker/',
-        icon: '💰',
-      },
-      {
-        name: 'eXtra AC Business Dashboard',
-        description: '추가 AC 비즈니스 대시보드',
-        url: 'https://perfectjjong.github.io/extra-dashboard/',
-        icon: '📈',
-      },
       {
         name: 'IR Dashboard',
         description: 'IR 데이터 분석 대시보드',
@@ -211,12 +324,42 @@
 
     function renderDashboards() {
       const grid = document.getElementById('dashboardGrid');
-      grid.innerHTML = DASHBOARDS.map((d, i) => {
+      let html = '';
+
+      // eXtra 아코디언 카드
+      const g = EXTRA_GROUP;
+      const subItems = g.children.map(c => `
+        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+          <span class="sub-item-icon">${c.icon}</span>
+          <div class="sub-item-info">
+            <div class="sub-item-name">${esc(c.name)}</div>
+            <div class="sub-item-desc">${esc(c.description)}</div>
+          </div>
+          <span class="sub-item-arrow">→</span>
+        </a>
+      `).join('');
+
+      html += `
+        <div class="accordion-card" style="animation-delay: 0s" onclick="this.classList.toggle('open')">
+          <div class="card">
+            <div class="card-icon">${g.icon}</div>
+            <div class="card-name">
+              ${esc(g.name)}
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="card-desc">${esc(g.description)}</div>
+            <div class="sub-list">${subItems}</div>
+          </div>
+        </div>
+      `;
+
+      // 일반 카드
+      html += DASHBOARDS.map((d, i) => {
         const isPlaceholder = !d.url || d.url === '#';
         const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
         const href = isPlaceholder ? '#' : esc(d.url);
         const badge = isPlaceholder ? '<span class="card-badge">준비 중</span>' : '';
-        const delay = `animation-delay: ${i * 0.05}s`;
+        const delay = `animation-delay: ${(i + 1) * 0.05}s`;
 
         return `
           <a class="card-link" href="${href}"${target} style="${delay}"${isPlaceholder ? ' onclick="return false;"' : ''}>
@@ -229,6 +372,13 @@
           </a>
         `;
       }).join('');
+
+      grid.innerHTML = html;
+
+      // 서브 아이템 클릭 시 이벤트 전파 차단
+      grid.querySelectorAll('.sub-item').forEach(el => {
+        el.addEventListener('click', e => e.stopPropagation());
+      });
     }
 
     renderDashboards();
