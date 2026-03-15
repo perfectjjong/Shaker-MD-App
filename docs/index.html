@@ -290,14 +290,29 @@
       ],
     };
 
+    // IR 그룹 (아코디언 카드)
+    const IR_GROUP = {
+      name: 'IR Dashboard',
+      description: 'IR 대시보드 모음 (2개)',
+      icon: '📊',
+      children: [
+        {
+          name: 'Monthly IR Ch. Dashboard',
+          description: 'IR 채널 월간 대시보드',
+          url: 'https://perfectjjong.github.io/IR-Dashboard/',
+          icon: '📅',
+        },
+        {
+          name: 'Bin Hamoud Price Tracking',
+          description: '빈 하무드 가격 추적',
+          url: 'https://perfectjjong.github.io/bh-ac-dashboard/',
+          icon: '💲',
+        },
+      ],
+    };
+
     // 일반 대시보드 카드
     const DASHBOARDS = [
-      {
-        name: 'IR Dashboard',
-        description: 'IR 데이터 분석 대시보드',
-        url: 'https://perfectjjong.github.io/IR-Dashboard/',
-        icon: '📊',
-      },
       {
         name: 'Blackbox AC Price Tracker',
         description: '블랙박스 에어컨 가격 추적기',
@@ -353,13 +368,40 @@
         </div>
       `;
 
+      // IR 아코디언 카드
+      const ir = IR_GROUP;
+      const irSubItems = ir.children.map(c => `
+        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+          <span class="sub-item-icon">${c.icon}</span>
+          <div class="sub-item-info">
+            <div class="sub-item-name">${esc(c.name)}</div>
+            <div class="sub-item-desc">${esc(c.description)}</div>
+          </div>
+          <span class="sub-item-arrow">→</span>
+        </a>
+      `).join('');
+
+      html += `
+        <div class="accordion-card" style="animation-delay: 0.05s" onclick="this.classList.toggle('open')">
+          <div class="card">
+            <div class="card-icon">${ir.icon}</div>
+            <div class="card-name">
+              ${esc(ir.name)}
+              <span class="accordion-arrow">▼</span>
+            </div>
+            <div class="card-desc">${esc(ir.description)}</div>
+            <div class="sub-list">${irSubItems}</div>
+          </div>
+        </div>
+      `;
+
       // 일반 카드
       html += DASHBOARDS.map((d, i) => {
         const isPlaceholder = !d.url || d.url === '#';
         const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
         const href = isPlaceholder ? '#' : esc(d.url);
         const badge = isPlaceholder ? '<span class="card-badge">준비 중</span>' : '';
-        const delay = `animation-delay: ${(i + 1) * 0.05}s`;
+        const delay = `animation-delay: ${(i + 2) * 0.05}s`;
 
         return `
           <a class="card-link" href="${href}"${target} style="${delay}"${isPlaceholder ? ' onclick="return false;"' : ''}>
