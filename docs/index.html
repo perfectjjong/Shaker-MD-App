@@ -256,42 +256,48 @@
     // Dashboard Config - Edit only this section!
     // ============================================
 
-    // eXtra group (accordion card)
-    const EXTRA_GROUP = {
-      name: 'eXtra Dashboard',
-      description: 'Extra dashboards (3)',
-      icon: '🛒',
+    // Management Dashboard group (accordion card)
+    const MGMT_GROUP = {
+      name: 'Management Dashboard',
+      description: 'Management dashboards (2)',
+      icon: '📋',
       children: [
         {
-          name: 'Sell out Weekly',
-          description: 'Sell out weekly dashboard',
-          url: 'https://perfectjjong.github.io/extra-sellout-dashboard/',
-          icon: '📦',
+          name: 'Sell Thru Progress Dashboard',
+          description: 'Sell thru progress dashboard',
+          url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/',
+          icon: '📊',
         },
         {
-          name: 'AC Business Dashboard',
-          description: 'AC business dashboard',
-          url: 'https://perfectjjong.github.io/extra-dashboard/',
-          icon: '📈',
-        },
-        {
-          name: 'Management Dashboard',
-          description: 'Management dashboard',
+          name: 'eXtra Management Dashboard',
+          description: 'eXtra management dashboard',
           url: 'https://perfectjjong.github.io/extra-dashboard/executive/',
-          icon: '📋',
+          icon: '🛒',
         },
       ],
     };
 
-    // IR group (accordion card)
-    const IR_GROUP = {
-      name: 'IR Dashboard',
-      description: 'IR dashboards (1)',
-      icon: '📊',
+    // Sell out Dashboard group (accordion card)
+    const SELLOUT_GROUP = {
+      name: 'Sell out Dashboard',
+      description: 'Sell out dashboards (3)',
+      icon: '📦',
       children: [
         {
-          name: 'Monthly IR Ch. Dashboard',
-          description: 'Monthly IR channel dashboard',
+          name: 'eXtra Weekly Sell out Dashboard',
+          description: 'eXtra weekly sell out dashboard',
+          url: 'https://perfectjjong.github.io/extra-sellout-dashboard/',
+          icon: '🛒',
+        },
+        {
+          name: 'eXtra AC Business Sell out Dashboard',
+          description: 'eXtra AC business sell out dashboard',
+          url: 'https://perfectjjong.github.io/extra-dashboard/',
+          icon: '📈',
+        },
+        {
+          name: 'IR Total Dashboard',
+          description: 'IR total dashboard',
           url: 'https://perfectjjong.github.io/IR-Dashboard/',
           icon: '📅',
         },
@@ -361,9 +367,9 @@
       const grid = document.getElementById('dashboardGrid');
       let html = '';
 
-      // eXtra accordion card
-      const g = EXTRA_GROUP;
-      const subItems = g.children.map(c => `
+      // Management accordion card
+      const mg = MGMT_GROUP;
+      const mgSubItems = mg.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
           <span class="sub-item-icon">${c.icon}</span>
           <div class="sub-item-info">
@@ -377,20 +383,20 @@
       html += `
         <div class="accordion-card" style="animation-delay: 0s" onclick="this.classList.toggle('open')">
           <div class="card">
-            <div class="card-icon">${g.icon}</div>
+            <div class="card-icon">${mg.icon}</div>
             <div class="card-name">
-              ${esc(g.name)}
+              ${esc(mg.name)}
               <span class="accordion-arrow">▼</span>
             </div>
-            <div class="card-desc">${esc(g.description)}</div>
-            <div class="sub-list">${subItems}</div>
+            <div class="card-desc">${esc(mg.description)}</div>
+            <div class="sub-list">${mgSubItems}</div>
           </div>
         </div>
       `;
 
-      // IR accordion card
-      const ir = IR_GROUP;
-      const irSubItems = ir.children.map(c => `
+      // Sell out accordion card
+      const so = SELLOUT_GROUP;
+      const soSubItems = so.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
           <span class="sub-item-icon">${c.icon}</span>
           <div class="sub-item-info">
@@ -404,13 +410,13 @@
       html += `
         <div class="accordion-card" style="animation-delay: 0.05s" onclick="this.classList.toggle('open')">
           <div class="card">
-            <div class="card-icon">${ir.icon}</div>
+            <div class="card-icon">${so.icon}</div>
             <div class="card-name">
-              ${esc(ir.name)}
+              ${esc(so.name)}
               <span class="accordion-arrow">▼</span>
             </div>
-            <div class="card-desc">${esc(ir.description)}</div>
-            <div class="sub-list">${irSubItems}</div>
+            <div class="card-desc">${esc(so.description)}</div>
+            <div class="sub-list">${soSubItems}</div>
           </div>
         </div>
       `;
