@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1a1a2e">
-  <title>대시보드 허브</title>
+  <title>Dashboard Hub</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -27,7 +27,7 @@
       flex-direction: column;
     }
 
-    /* 헤더 */
+    /* Header */
     .header {
       background: var(--surface);
       padding: 24px 20px;
@@ -46,7 +46,7 @@
       color: var(--text-dim);
     }
 
-    /* 카드 그리드 */
+    /* Card grid */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -107,7 +107,7 @@
       border: 1px solid var(--border);
     }
 
-    /* 아코디언 카드 */
+    /* Accordion card */
     .accordion-card {
       text-decoration: none;
       color: inherit;
@@ -203,7 +203,7 @@
       flex-shrink: 0;
     }
 
-    /* 진입 애니메이션 */
+    /* Entry animation */
     @keyframes slideIn {
       from { transform: translateY(-10px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
@@ -213,7 +213,7 @@
       animation: slideIn 0.3s ease both;
     }
 
-    /* 푸터 */
+    /* Footer */
     .footer {
       text-align: center;
       padding: 20px;
@@ -231,7 +231,7 @@
       text-decoration: underline;
     }
 
-    /* 반응형 */
+    /* Responsive */
     @media (max-width: 600px) {
       .header h1 { font-size: 20px; }
       .grid { padding: 16px; gap: 14px; }
@@ -253,103 +253,102 @@
 
   <script>
     // ============================================
-    // 대시보드 설정 - 여기만 수정하세요!
     // Dashboard Config - Edit only this section!
     // ============================================
 
-    // eXtra 그룹 (아코디언 카드)
+    // eXtra group (accordion card)
     const EXTRA_GROUP = {
       name: 'eXtra Dashboard',
-      description: '추가 대시보드 모음 (3개)',
+      description: 'Extra dashboards (3)',
       icon: '🛒',
       children: [
         {
           name: 'Sell out Weekly',
-          description: '셀아웃 주간 대시보드',
+          description: 'Sell out weekly dashboard',
           url: 'https://perfectjjong.github.io/extra-sellout-dashboard/',
           icon: '📦',
         },
         {
           name: 'AC Business Dashboard',
-          description: 'AC 비즈니스 대시보드',
+          description: 'AC business dashboard',
           url: 'https://perfectjjong.github.io/extra-dashboard/',
           icon: '📈',
         },
         {
           name: 'Management Dashboard',
-          description: '경영 대시보드',
+          description: 'Management dashboard',
           url: 'https://perfectjjong.github.io/extra-dashboard/executive/',
           icon: '📋',
         },
       ],
     };
 
-    // IR 그룹 (아코디언 카드)
+    // IR group (accordion card)
     const IR_GROUP = {
       name: 'IR Dashboard',
-      description: 'IR 대시보드 모음 (1개)',
+      description: 'IR dashboards (1)',
       icon: '📊',
       children: [
         {
           name: 'Monthly IR Ch. Dashboard',
-          description: 'IR 채널 월간 대시보드',
+          description: 'Monthly IR channel dashboard',
           url: 'https://perfectjjong.github.io/IR-Dashboard/',
           icon: '📅',
         },
       ],
     };
 
-    // Price Tracking 그룹 (아코디언 카드)
+    // Price Tracking group (accordion card)
     const PRICE_GROUP = {
       name: 'Price Tracking',
-      description: '가격 추적 모음 (5개)',
+      description: 'Price tracking (5)',
       icon: '💰',
       children: [
         {
           name: 'eXtra Price Tracking',
-          description: '엑스트라 에어컨 가격 추적기',
+          description: 'eXtra AC price tracker',
           url: 'https://perfectjjong.github.io/extra-ac-price-tracker/',
           icon: '🛒',
         },
         {
           name: 'Al Manea Price Tracking',
-          description: '알 마니아 에어컨 가격 추적기',
+          description: 'Al Manea AC price tracker',
           url: 'https://perfectjjong.github.io/almanea-ac-price-tracker/',
           icon: '🏪',
         },
         {
           name: 'Black Box Price Tracking',
-          description: '블랙박스 에어컨 가격 추적기',
+          description: 'Black Box AC price tracker',
           url: 'https://perfectjjong.github.io/blackbox-ac-price-tracker/',
           icon: '🏷️',
         },
         {
           name: 'Al Khunizan Price Tracking',
-          description: '알 쿠나이잔 에어컨 가격 추적기',
+          description: 'Al Khunizan AC price tracker',
           url: 'https://perfectjjong.github.io/alkhunaizan-ac-dashboard/',
           icon: '🏬',
         },
         {
           name: 'Bin Hamoud Price Tracking',
-          description: '빈 하무드 가격 추적',
+          description: 'Bin Hamoud price tracker',
           url: 'https://perfectjjong.github.io/bh-ac-dashboard/',
           icon: '💲',
         },
       ],
     };
 
-    // 일반 대시보드 카드
+    // Standard dashboard cards
     const DASHBOARDS = [
       {
         name: 'Shaker MD App',
-        description: 'Claude Code 모바일 승인 시스템',
+        description: 'Claude Code mobile approval system',
         url: '#',
         icon: '🤖',
       },
     ];
 
     // ============================================
-    // 아래 코드는 수정할 필요 없습니다
+    // No need to modify the code below
     // ============================================
 
     function esc(str) {
@@ -362,7 +361,7 @@
       const grid = document.getElementById('dashboardGrid');
       let html = '';
 
-      // eXtra 아코디언 카드
+      // eXtra accordion card
       const g = EXTRA_GROUP;
       const subItems = g.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
@@ -389,7 +388,7 @@
         </div>
       `;
 
-      // IR 아코디언 카드
+      // IR accordion card
       const ir = IR_GROUP;
       const irSubItems = ir.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
@@ -416,7 +415,7 @@
         </div>
       `;
 
-      // Price Tracking 아코디언 카드
+      // Price Tracking accordion card
       const pt = PRICE_GROUP;
       const ptSubItems = pt.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
@@ -443,12 +442,12 @@
         </div>
       `;
 
-      // 일반 카드
+      // Standard cards
       html += DASHBOARDS.map((d, i) => {
         const isPlaceholder = !d.url || d.url === '#';
         const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
         const href = isPlaceholder ? '#' : esc(d.url);
-        const badge = isPlaceholder ? '<span class="card-badge">준비 중</span>' : '';
+        const badge = isPlaceholder ? '<span class="card-badge">Coming Soon</span>' : '';
         const delay = `animation-delay: ${(i + 3) * 0.05}s`;
 
         return `
@@ -465,7 +464,7 @@
 
       grid.innerHTML = html;
 
-      // 서브 아이템 클릭 시 이벤트 전파 차단
+      // Stop event propagation on sub-item click
       grid.querySelectorAll('.sub-item').forEach(el => {
         el.addEventListener('click', e => e.stopPropagation());
       });
