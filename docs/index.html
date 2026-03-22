@@ -152,7 +152,9 @@
     }
 
     .accordion-card.open .sub-list {
-      max-height: 400px;
+      max-height: 800px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       padding: 12px 0 0;
     }
 
@@ -236,6 +238,9 @@
       .header h1 { font-size: 20px; }
       .grid { padding: 16px; gap: 14px; }
       .card { padding: 18px; }
+      .accordion-card.open .sub-list {
+        max-height: 60vh;
+      }
     }
   </style>
 </head>
@@ -502,6 +507,12 @@
 
       // Stop event propagation on sub-item click
       grid.querySelectorAll('.sub-item').forEach(el => {
+        el.addEventListener('click', e => e.stopPropagation());
+      });
+
+      // Prevent sub-list scroll from toggling accordion on mobile
+      grid.querySelectorAll('.sub-list').forEach(el => {
+        el.addEventListener('touchmove', e => e.stopPropagation(), { passive: true });
         el.addEventListener('click', e => e.stopPropagation());
       });
     }
