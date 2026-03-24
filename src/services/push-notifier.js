@@ -1,4 +1,5 @@
 const webpush = require('web-push');
+const { assessRisk } = require('./risk-assessor');
 
 class PushNotifier {
   constructor(options = {}) {
@@ -78,7 +79,7 @@ class PushNotifier {
    * 승인 요청 알림 전송
    */
   async sendApprovalRequest(approval) {
-    const risk = this._assessRisk(approval.command);
+    const risk = assessRisk(approval.command);
     const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
 
     return this.sendToAll({
@@ -109,17 +110,6 @@ class PushNotifier {
       title: `${emoji} ${label}`,
       body: `${record.command.slice(0, 80)}`,
     });
-  }
-
-  /**
-   * 명령어 위험도 평가
-   */
-  _assessRisk(command) {
-    const highRisk = /(rm\s+-rf|sudo|chmod\s+777|mkfs|dd\s+if|>\s*\/dev\/|shutdown|reboot|kill\s+-9)/i;
-    const medRisk = /(rm\s|mv\s|cp\s+-r|git\s+(push|reset|rebase)|npm\s+(publish|unpublish)|docker\s+rm)/i;
-    if (highRisk.test(command)) return 'high';
-    if (medRisk.test(command)) return 'medium';
-    return 'low';
   }
 
   getStatus() {

@@ -2,12 +2,13 @@ const TelegramBot = require('node-telegram-bot-api');
 const https = require('https');
 const http = require('http');
 const { URL } = require('url');
+const { assessRisk } = require('./risk-assessor');
 
 class TelegramNotifier {
   constructor(token, chatId, approvalManager, options = {}) {
     this.chatId = chatId;
     this.approvalManager = approvalManager;
-    this.messageMap = new Map(); // approvalId -> telegramMessageId
+    this.messageMap = new Map(); // approvalId -> { messageId, approval }
     this.stats = { approved: 0, rejected: 0, timeout: 0 };
     this.connected = false;
     this._token = token;
@@ -138,8 +139,14 @@ class TelegramNotifier {
    * 봇 시작 (연결 검사 후)
    */
   async start() {
-    // 프록시 설정 구성
-    const botOptions = { polling: true };
+    // 프록시 설정 구성 + callback_query 명시적 수신 설정
+    const botOptions = {
+      polling: {
+        params: {
+          allowed_updates: ['message', 'callback_query'],
+        },
+      },
+    };
 
     if (this._options.proxy) {
       botOptions.request = {
@@ -158,21 +165,25 @@ class TelegramNotifier {
         console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
       }
 
-      // 연속 에러가 임계값 초과 시 폴링 중지
+      // 연속 에러 초과 시 폴링 재시작 (중지하지 않음)
       if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
-        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 중지. 웹 대시보드만 사용 가능.`);
-        this.connected = false;
-        this.bot.stopPolling();
+        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 재시작 시도...`);
+        this._consecutiveErrors = 0;
+        this.bot.stopPolling().then(() => {
+          setTimeout(() => {
+            if (this.connected !== false) {
+              this.bot.startPolling({
+                params: { allowed_updates: ['message', 'callback_query'] },
+              });
+              console.log('[Telegram] 폴링 재시작 완료');
+            }
+          }, 3000);
+        }).catch(() => {});
       }
     });
 
     // 정상 수신 시 에러 카운터 리셋
     this.bot.on('message', () => {
-      this._consecutiveErrors = 0;
-      this.connected = true;
-    });
-
-    this.bot.on('callback_query', () => {
       this._consecutiveErrors = 0;
       this.connected = true;
     });
@@ -192,6 +203,7 @@ class TelegramNotifier {
     });
 
     this.connected = true;
+    console.log('[Telegram] callback_query 수신 활성화 완료');
     return this;
   }
 
@@ -211,24 +223,56 @@ class TelegramNotifier {
   _setupHandlers() {
     // 콜백 쿼리 (인라인 버튼 클릭)
     this.bot.on('callback_query', async (query) => {
-      const [action, approvalId] = query.data.split(':');
+      // 에러 카운터 리셋
+      this._consecutiveErrors = 0;
+      this.connected = true;
 
-      if (action === 'approve' || action === 'reject') {
-        const status = action === 'approve' ? 'approved' : 'rejected';
-        const success = this.approvalManager.resolve(approvalId, status);
+      try {
+        const data = query.data || '';
+        console.log(`[Telegram] 콜백 수신: ${data}`);
 
-        if (success) {
+        if (data === 'noop') {
+          await this.bot.answerCallbackQuery(query.id).catch(() => {});
+          return;
+        }
+
+        const colonIdx = data.indexOf(':');
+        if (colonIdx === -1) {
+          await this.bot.answerCallbackQuery(query.id).catch(() => {});
+          return;
+        }
+
+        const action = data.slice(0, colonIdx);
+        const approvalId = data.slice(colonIdx + 1);
+
+        if (action === 'approve' || action === 'reject') {
+          const status = action === 'approve' ? 'approved' : 'rejected';
           const emoji = action === 'approve' ? '✅' : '❌';
           const label = action === 'approve' ? '승인됨' : '거부됨';
+
+          console.log(`[Telegram] ${label} 처리 시도: ${approvalId.slice(0, 8)}...`);
+
+          const success = this.approvalManager.resolve(approvalId, status);
+
+          // 항상 콜백 응답 (사용자에게 즉시 피드백)
           await this.bot.answerCallbackQuery(query.id, {
-            text: `${emoji} ${label}`,
-          });
-          await this._updateMessage(approvalId, status);
-        } else {
-          await this.bot.answerCallbackQuery(query.id, {
-            text: '⏳ 이미 처리된 요청입니다',
-          });
+            text: success ? `${emoji} ${label}` : '⏳ 이미 처리된 요청입니다',
+          }).catch((e) => console.error('[Telegram] answerCallbackQuery 실패:', e.message));
+
+          if (success) {
+            console.log(`[Telegram] ${label} 성공: ${approvalId.slice(0, 8)}...`);
+            await this._updateMessage(approvalId, status);
+          } else {
+            console.log(`[Telegram] 이미 처리됨: ${approvalId.slice(0, 8)}...`);
+            // 이미 처리된 요청이라도 메시지 버튼 비활성화
+            await this._disableButtons(query.message, `⏳ 처리 완료`);
+          }
         }
+      } catch (e) {
+        console.error('[Telegram] 콜백 처리 오류:', e.message);
+        try {
+          await this.bot.answerCallbackQuery(query.id, { text: '⚠️ 처리 중 오류 발생' });
+        } catch (_) {}
       }
     });
 
@@ -337,7 +381,7 @@ class TelegramNotifier {
       : approval.command;
 
     // 위험도 태그
-    const risk = this._assessRisk(approval.command);
+    const risk = assessRisk(approval.command);
     const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
 
     const pendingCount = this.approvalManager.getPending().length;
@@ -365,18 +409,7 @@ class TelegramNotifier {
       },
     });
 
-    this.messageMap.set(approval.id, msg.message_id);
-  }
-
-  /**
-   * 명령어 위험도 평가
-   */
-  _assessRisk(command) {
-    const highRisk = /(rm\s+-rf|sudo|chmod\s+777|mkfs|dd\s+if|>\s*\/dev\/|shutdown|reboot|kill\s+-9)/i;
-    const medRisk = /(rm\s|mv\s|cp\s+-r|git\s+(push|reset|rebase)|npm\s+(publish|unpublish)|docker\s+rm)/i;
-    if (highRisk.test(command)) return 'high';
-    if (medRisk.test(command)) return 'medium';
-    return 'low';
+    this.messageMap.set(approval.id, { messageId: msg.message_id, approval });
   }
 
   /**
@@ -397,24 +430,74 @@ class TelegramNotifier {
   }
 
   /**
-   * 처리 완료 시 메시지 업데이트
+   * 이미 처리된 요청의 버튼을 비활성화
+   */
+  async _disableButtons(message, label) {
+    if (!message || !message.message_id) return;
+    try {
+      await this.bot.editMessageReplyMarkup(
+        { inline_keyboard: [[{ text: label, callback_data: 'noop' }]] },
+        { chat_id: this.chatId, message_id: message.message_id }
+      );
+    } catch (_) {}
+  }
+
+  /**
+   * Markdown 특수문자 이스케이프
+   */
+  _escapeMarkdown(text) {
+    return text.replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
+  }
+
+  /**
+   * 처리 완료 시 메시지 업데이트 (텍스트 + 버튼 모두 변경)
    */
   async _updateMessage(approvalId, status) {
-    const messageId = this.messageMap.get(approvalId);
-    if (!messageId) return;
+    const entry = this.messageMap.get(approvalId);
+    if (!entry) return;
 
+    const { messageId, approval } = entry;
     const emoji = status === 'approved' ? '✅' : status === 'rejected' ? '❌' : '⏳';
     const label = status === 'approved' ? '승인됨' : status === 'rejected' ? '거부됨' : '타임아웃';
 
+    const cmdDisplay = approval.command.length > 400
+      ? approval.command.slice(0, 397) + '...'
+      : approval.command;
+
     try {
-      await this.bot.editMessageReplyMarkup(
-        { inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]] },
-        { chat_id: this.chatId, message_id: messageId }
-      );
+      // HTML 형식 사용 (Markdown보다 특수문자 이슈가 적음)
+      const toolEsc = approval.tool.replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+      const wdEsc = (approval.workdir || 'N/A').replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+      const cmdEsc = cmdDisplay.replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]));
+
+      const risk = assessRisk(approval.command);
+      const riskLabel = risk === 'high' ? '🔴 위험' : risk === 'medium' ? '🟡 주의' : '🟢 안전';
+
+      const updatedText =
+        `${emoji} <b>${label}</b>\n\n` +
+        `${riskLabel} | 🔧 <code>${toolEsc}</code>\n` +
+        `📂 <code>${wdEsc}</code>\n\n` +
+        `<pre>${cmdEsc}</pre>`;
+
+      await this.bot.editMessageText(updatedText, {
+        chat_id: this.chatId,
+        message_id: messageId,
+        parse_mode: 'HTML',
+        reply_markup: {
+          inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]],
+        },
+      });
+      console.log(`[Telegram] 메시지 업데이트 성공: ${approvalId.slice(0, 8)}...`);
     } catch (e) {
-      // 메시지가 이미 변경된 경우 무시
+      console.error(`[Telegram] 메시지 업데이트 실패: ${e.message}`);
+      // 텍스트 업데이트 실패 시 버튼만이라도 비활성화
+      try {
+        await this.bot.editMessageReplyMarkup(
+          { inline_keyboard: [[{ text: `${emoji} ${label}`, callback_data: 'noop' }]] },
+          { chat_id: this.chatId, message_id: messageId }
+        );
+      } catch (_) {}
     } finally {
-      // 성공/실패 관계없이 항상 맵에서 제거 (메모리 누수 방지)
       this.messageMap.delete(approvalId);
     }
   }

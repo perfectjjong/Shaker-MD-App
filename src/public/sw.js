@@ -1,4 +1,20 @@
 const CACHE_NAME = 'claude-approver-v1';
+let apiKey = '';
+
+// 메인 페이지에서 API 키 수신
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SET_API_KEY') {
+    apiKey = event.data.key || '';
+  }
+});
+
+// 인증 헤더 포함 fetch 헬퍼
+function apiFetchSW(url, options = {}) {
+  if (apiKey) {
+    options.headers = { ...(options.headers || {}), 'x-api-key': apiKey };
+  }
+  return fetch(url, options);
+}
 
 // 푸시 알림 수신
 self.addEventListener('push', (event) => {
@@ -44,7 +60,7 @@ self.addEventListener('notificationclick', (event) => {
     const endpoint = action === 'approve' ? `/api/approve/${approvalId}` : `/api/reject/${approvalId}`;
 
     event.waitUntil(
-      fetch(endpoint, { method: 'POST' })
+      apiFetchSW(endpoint, { method: 'POST' })
         .then((res) => res.json())
         .then((result) => {
           const emoji = action === 'approve' ? '✅' : '❌';
