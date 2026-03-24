@@ -140,7 +140,9 @@ class TelegramNotifier {
    */
   async start() {
     // 프록시 설정 구성
-    const botOptions = {};
+    const botOptions = {
+      polling: true,
+    };
 
     if (this._options.proxy) {
       botOptions.request = {
@@ -149,54 +151,26 @@ class TelegramNotifier {
       console.log(`[Telegram] 프록시 사용: ${this._options.proxy}`);
     }
 
-    // 봇 생성 (polling 없이 먼저 생성)
+    // 봇 생성 + 폴링 자동 시작 (가장 단순한 방식)
     this.bot = new TelegramBot(this._token, botOptions);
 
-    // 기존 webhook 삭제 (polling과 충돌 방지 - 핵심!)
-    try {
-      await this.bot.deleteWebHook({ drop_pending_updates: false });
-      console.log('[Telegram] 기존 webhook 삭제 완료 (polling 준비)');
-    } catch (e) {
-      console.warn('[Telegram] webhook 삭제 실패 (무시):', e.message);
-    }
-
-    // polling 시작 (webhook 삭제 후)
-    await this.bot.startPolling({
-      params: {
-        allowed_updates: ['message', 'callback_query'],
-        timeout: 30,
-      },
-    });
-    console.log('[Telegram] polling 시작 (allowed_updates: message, callback_query)');
+    // webhook 충돌 방지: 비동기로 삭제 시도
+    this.bot.deleteWebHook().then(() => {
+      console.log('[Telegram] webhook 삭제 완료');
+    }).catch(() => {});
 
     this.bot.on('polling_error', (err) => {
       this._consecutiveErrors++;
 
-      if (this._consecutiveErrors <= 3) {
-        console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
-      }
-
-      // 연속 에러 초과 시 폴링 재시작 (중지하지 않음)
-      if (this._consecutiveErrors >= this._maxConsecutiveErrors) {
-        console.error(`[Telegram] 연속 ${this._maxConsecutiveErrors}회 실패 - 폴링 재시작 시도...`);
-        this._consecutiveErrors = 0;
-        this.bot.stopPolling().then(() => {
-          setTimeout(() => {
-            if (this.connected !== false) {
-              this.bot.startPolling({
-                params: { allowed_updates: ['message', 'callback_query'], timeout: 30 },
-              });
-              console.log('[Telegram] 폴링 재시작 완료');
-            }
-          }, 3000);
-        }).catch(() => {});
-      }
+      // 모든 폴링 에러 출력 (디버그용)
+      console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}):`, err.code || err.message);
     });
 
     // 정상 수신 시 에러 카운터 리셋
-    this.bot.on('message', () => {
+    this.bot.on('message', (msg) => {
       this._consecutiveErrors = 0;
       this.connected = true;
+      console.log(`[Telegram] 메시지 수신: ${msg.text || '(비텍스트)'}`);
     });
 
     this._setupHandlers();
@@ -214,7 +188,7 @@ class TelegramNotifier {
     });
 
     this.connected = true;
-    console.log('[Telegram] callback_query 수신 활성화 완료');
+    console.log('[Telegram] 봇 시작 완료 (polling: true)');
     return this;
   }
 
@@ -244,6 +218,17 @@ class TelegramNotifier {
 
         if (data === 'noop') {
           await this.bot.answerCallbackQuery(query.id).catch(() => {});
+          return;
+        }
+
+        // 테스트 버튼 응답
+        if (data === 'test:ping') {
+          console.log('[Telegram] 테스트 버튼 클릭 확인!');
+          await this.bot.answerCallbackQuery(query.id, { text: '✅ 콜백 정상 작동!' });
+          await this.bot.editMessageText('✅ 콜백 정상 작동합니다!\n\n버튼 클릭이 서버까지 도달했습니다.', {
+            chat_id: query.message.chat.id,
+            message_id: query.message.message_id,
+          }).catch(() => {});
           return;
         }
 
@@ -374,9 +359,22 @@ class TelegramNotifier {
         `/approveall - 모두 승인\n` +
         `/history - 최근 처리 내역\n` +
         `/status - 서버 상태\n` +
+        `/test - 버튼 테스트\n` +
         `/help - 이 도움말`,
         { parse_mode: 'Markdown' }
       );
+    });
+
+    // /test - 콜백 버튼 테스트 (디버그용)
+    this.bot.onText(/\/test/, (msg) => {
+      console.log('[Telegram] /test 명령어 수신');
+      this.bot.sendMessage(msg.chat.id, '🧪 버튼 테스트\n\n아래 버튼을 눌러보세요:', {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '🟢 테스트 버튼', callback_data: 'test:ping' }],
+          ],
+        },
+      });
     });
   }
 
