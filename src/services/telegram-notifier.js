@@ -139,14 +139,8 @@ class TelegramNotifier {
    * 봇 시작 (연결 검사 후)
    */
   async start() {
-    // 프록시 설정 구성 + callback_query 명시적 수신 설정
-    const botOptions = {
-      polling: {
-        params: {
-          allowed_updates: ['message', 'callback_query'],
-        },
-      },
-    };
+    // 프록시 설정 구성
+    const botOptions = {};
 
     if (this._options.proxy) {
       botOptions.request = {
@@ -155,12 +149,29 @@ class TelegramNotifier {
       console.log(`[Telegram] 프록시 사용: ${this._options.proxy}`);
     }
 
+    // 봇 생성 (polling 없이 먼저 생성)
     this.bot = new TelegramBot(this._token, botOptions);
+
+    // 기존 webhook 삭제 (polling과 충돌 방지 - 핵심!)
+    try {
+      await this.bot.deleteWebHook({ drop_pending_updates: false });
+      console.log('[Telegram] 기존 webhook 삭제 완료 (polling 준비)');
+    } catch (e) {
+      console.warn('[Telegram] webhook 삭제 실패 (무시):', e.message);
+    }
+
+    // polling 시작 (webhook 삭제 후)
+    await this.bot.startPolling({
+      params: {
+        allowed_updates: ['message', 'callback_query'],
+        timeout: 30,
+      },
+    });
+    console.log('[Telegram] polling 시작 (allowed_updates: message, callback_query)');
 
     this.bot.on('polling_error', (err) => {
       this._consecutiveErrors++;
 
-      // 연속 에러 횟수에 따라 로그 레벨 조절
       if (this._consecutiveErrors <= 3) {
         console.warn(`[Telegram] 폴링 오류 (${this._consecutiveErrors}/${this._maxConsecutiveErrors}):`, err.message);
       }
@@ -173,7 +184,7 @@ class TelegramNotifier {
           setTimeout(() => {
             if (this.connected !== false) {
               this.bot.startPolling({
-                params: { allowed_updates: ['message', 'callback_query'] },
+                params: { allowed_updates: ['message', 'callback_query'], timeout: 30 },
               });
               console.log('[Telegram] 폴링 재시작 완료');
             }
