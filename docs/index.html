@@ -386,93 +386,68 @@
         </a>
       `).join('');
 
-      html += `
-        <div class="accordion-card" style="animation-delay: 0s" onclick="this.classList.toggle('open')">
-          <div class="card">
-            <div class="card-icon">${mg.icon}</div>
-            <div class="card-name">
-              ${esc(mg.name)}
-              <span class="accordion-arrow">▼</span>
+      // Accordion groups with IDs for hash filtering
+      const GROUPS = [
+        { id: 'mgmt', data: MGMT_GROUP, delay: 0 },
+        { id: 'sellout', data: SELLOUT_GROUP, delay: 0.05 },
+        { id: 'price', data: PRICE_GROUP, delay: 0.1 },
+      ];
+
+      const hash = window.location.hash.replace('#', '');
+      const filterGroup = hash ? hash.toLowerCase() : null;
+
+      GROUPS.forEach(({ id, data, delay }) => {
+        if (filterGroup && filterGroup !== id) return;
+
+        const subItems = data.children.map(c => `
+          <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+            <span class="sub-item-icon">${c.icon}</span>
+            <div class="sub-item-info">
+              <div class="sub-item-name">${esc(c.name)}</div>
+              <div class="sub-item-desc">${esc(c.description)}</div>
             </div>
-            <div class="card-desc">${esc(mg.description)}</div>
-            <div class="sub-list">${mgSubItems}</div>
-          </div>
-        </div>
-      `;
-
-      // Sell out accordion card
-      const so = SELLOUT_GROUP;
-      const soSubItems = so.children.map(c => `
-        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
-          <span class="sub-item-icon">${c.icon}</span>
-          <div class="sub-item-info">
-            <div class="sub-item-name">${esc(c.name)}</div>
-            <div class="sub-item-desc">${esc(c.description)}</div>
-          </div>
-          <span class="sub-item-arrow">→</span>
-        </a>
-      `).join('');
-
-      html += `
-        <div class="accordion-card" style="animation-delay: 0.05s" onclick="this.classList.toggle('open')">
-          <div class="card">
-            <div class="card-icon">${so.icon}</div>
-            <div class="card-name">
-              ${esc(so.name)}
-              <span class="accordion-arrow">▼</span>
-            </div>
-            <div class="card-desc">${esc(so.description)}</div>
-            <div class="sub-list">${soSubItems}</div>
-          </div>
-        </div>
-      `;
-
-      // Price Tracking accordion card
-      const pt = PRICE_GROUP;
-      const ptSubItems = pt.children.map(c => `
-        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
-          <span class="sub-item-icon">${c.icon}</span>
-          <div class="sub-item-info">
-            <div class="sub-item-name">${esc(c.name)}</div>
-            <div class="sub-item-desc">${esc(c.description)}</div>
-          </div>
-          <span class="sub-item-arrow">→</span>
-        </a>
-      `).join('');
-
-      html += `
-        <div class="accordion-card" style="animation-delay: 0.1s" onclick="this.classList.toggle('open')">
-          <div class="card">
-            <div class="card-icon">${pt.icon}</div>
-            <div class="card-name">
-              ${esc(pt.name)}
-              <span class="accordion-arrow">▼</span>
-            </div>
-            <div class="card-desc">${esc(pt.description)}</div>
-            <div class="sub-list">${ptSubItems}</div>
-          </div>
-        </div>
-      `;
-
-      // Standard cards
-      html += DASHBOARDS.map((d, i) => {
-        const isPlaceholder = !d.url || d.url === '#';
-        const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
-        const href = isPlaceholder ? '#' : esc(d.url);
-        const badge = isPlaceholder ? '<span class="card-badge">Coming Soon</span>' : '';
-        const delay = `animation-delay: ${(i + 3) * 0.05}s`;
-
-        return `
-          <a class="card-link" href="${href}"${target} style="${delay}"${isPlaceholder ? ' onclick="return false;"' : ''}>
-            <div class="card">
-              <div class="card-icon">${d.icon}</div>
-              <div class="card-name">${esc(d.name)}</div>
-              <div class="card-desc">${esc(d.description)}</div>
-              ${badge}
-            </div>
+            <span class="sub-item-arrow">→</span>
           </a>
+        `).join('');
+
+        const autoOpen = filterGroup === id ? ' open' : '';
+
+        html += `
+          <div class="accordion-card${autoOpen}" id="${id}" style="animation-delay: ${delay}s" onclick="this.classList.toggle('open')">
+            <div class="card">
+              <div class="card-icon">${data.icon}</div>
+              <div class="card-name">
+                ${esc(data.name)}
+                <span class="accordion-arrow">▼</span>
+              </div>
+              <div class="card-desc">${esc(data.description)}</div>
+              <div class="sub-list">${subItems}</div>
+            </div>
+          </div>
         `;
-      }).join('');
+      });
+
+      // Standard cards (hidden when filtering by group)
+      if (!filterGroup) {
+        html += DASHBOARDS.map((d, i) => {
+          const isPlaceholder = !d.url || d.url === '#';
+          const target = isPlaceholder ? '' : ' target="_blank" rel="noopener"';
+          const href = isPlaceholder ? '#' : esc(d.url);
+          const badge = isPlaceholder ? '<span class="card-badge">Coming Soon</span>' : '';
+          const delay = `animation-delay: ${(i + 3) * 0.05}s`;
+
+          return `
+            <a class="card-link" href="${href}"${target} style="${delay}"${isPlaceholder ? ' onclick="return false;"' : ''}>
+              <div class="card">
+                <div class="card-icon">${d.icon}</div>
+                <div class="card-name">${esc(d.name)}</div>
+                <div class="card-desc">${esc(d.description)}</div>
+                ${badge}
+              </div>
+            </a>
+          `;
+        }).join('');
+      }
 
       grid.innerHTML = html;
 
@@ -483,6 +458,11 @@
     }
 
     renderDashboards();
+
+    // Re-render when hash changes
+    window.addEventListener('hashchange', () => {
+      renderDashboards();
+    });
   </script>
 </body>
 </html>
