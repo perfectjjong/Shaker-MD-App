@@ -286,16 +286,46 @@
   </div>
 
   <script>
-    const MGMT_GROUP = {
-      name: 'Management Dashboard',
-      description: 'Management dashboards (3)',
-      icon: '📋',
-      children: [
-        { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/', icon: '📊' },
-        { name: 'eXtra Management Dashboard', description: 'eXtra management dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/executive/', icon: '🛒' },
-        { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: 'https://junecarloosorio-3789.github.io/AR/', icon: '📄' },
-      ],
-    };
+    const GROUPS = [
+      {
+        name: 'Management Dashboard',
+        description: 'Management dashboards (3)',
+        icon: '📋',
+        children: [
+          { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/', icon: '📊' },
+          { name: 'eXtra Management Dashboard', description: 'eXtra management dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/executive/', icon: '🛒' },
+          { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: 'https://junecarloosorio-3789.github.io/AR/', icon: '📄' },
+        ],
+      },
+      {
+        name: 'Sell out Dashboard',
+        description: 'Sell out dashboards (4)',
+        icon: '📦',
+        children: [
+          { name: 'eXtra Weekly Sell out Dashboard', description: 'eXtra weekly sell out dashboard', url: 'https://perfectjjong.github.io/extra-sellout-dashboard/', icon: '🛒' },
+          { name: 'eXtra AC Business Sell out Dashboard', description: 'eXtra AC business sell out dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/', icon: '📈' },
+          { name: 'BH Weekly Sell-out Dashboard', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: 'https://perfectjjong.github.io/bh-sellout-dashboard/', icon: '🏪' },
+          { name: 'IR Total Dashboard', description: 'IR total dashboard', url: 'https://perfectjjong.github.io/IR-Dashboard/', icon: '📅' },
+        ],
+      },
+      {
+        name: 'Price Tracking',
+        description: 'Price tracking (10)',
+        icon: '💰',
+        children: [
+          { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: 'https://perfectjjong.github.io/extra-ac-price-tracker/', icon: '🛒' },
+          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: 'https://perfectjjong.github.io/almanea-ac-price-tracker/', icon: '🏪' },
+          { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: 'https://perfectjjong.github.io/blackbox-ac-price-tracker/', icon: '🏷️' },
+          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: 'https://perfectjjong.github.io/alkhunaizan-ac-dashboard/', icon: '🏬' },
+          { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: 'https://perfectjjong.github.io/bh-ac-dashboard/', icon: '💲' },
+          { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: 'https://perfectjjong.github.io/binmomen-ac-dashboard/', icon: '🏠' },
+          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: 'https://perfectjjong.github.io/sws-ac-dashboard/', icon: '🔧' },
+          { name: 'Najm Store Price Tracking', description: 'Najm Store AC price tracker', url: 'https://perfectjjong.github.io/najm-ac-dashboard/', icon: '⭐' },
+          { name: 'TechnoBest Price Tracking', description: 'TechnoBest AC price tracker', url: 'https://perfectjjong.github.io/technobest-ac-dashboard/', icon: '💻' },
+          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: 'https://perfectjjong.github.io/tamkeen-ac-dashboard/', icon: '🏗️' },
+        ],
+      },
+    ];
 
     function esc(str) {
       const div = document.createElement('div');
@@ -305,28 +335,28 @@
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
-      const g = MGMT_GROUP;
-      const subItems = g.children.map(c => `
-        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
-          <span class="sub-item-icon">${c.icon}</span>
-          <div class="sub-item-info">
-            <div class="sub-item-name">${esc(c.name)}</div>
-            <div class="sub-item-desc">${esc(c.description)}</div>
+      grid.innerHTML = GROUPS.map((g, i) => {
+        const subItems = g.children.map(c => `
+          <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+            <span class="sub-item-icon">${c.icon}</span>
+            <div class="sub-item-info">
+              <div class="sub-item-name">${esc(c.name)}</div>
+              <div class="sub-item-desc">${esc(c.description)}</div>
+            </div>
+            <span class="sub-item-arrow">&rarr;</span>
+          </a>
+        `).join('');
+        return `
+          <div class="accordion-card open" onclick="this.classList.toggle('open')">
+            <div class="card">
+              <div class="card-icon">${g.icon}</div>
+              <div class="card-name">${esc(g.name)} <span class="accordion-arrow">&#9660;</span></div>
+              <div class="card-desc">${esc(g.description)}</div>
+              <div class="sub-list">${subItems}</div>
+            </div>
           </div>
-          <span class="sub-item-arrow">&rarr;</span>
-        </a>
-      `).join('');
-
-      grid.innerHTML = `
-        <div class="accordion-card open" onclick="this.classList.toggle('open')">
-          <div class="card">
-            <div class="card-icon">${g.icon}</div>
-            <div class="card-name">${esc(g.name)} <span class="accordion-arrow">&#9660;</span></div>
-            <div class="card-desc">${esc(g.description)}</div>
-            <div class="sub-list">${subItems}</div>
-          </div>
-        </div>
-      `;
+        `;
+      }).join('');
 
       grid.querySelectorAll('.sub-item').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
       grid.querySelectorAll('.sub-list').forEach(el => {
