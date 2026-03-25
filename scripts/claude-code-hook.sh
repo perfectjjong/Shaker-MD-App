@@ -63,17 +63,19 @@ if [ -z "$POST_DATA" ]; then
   exit 0
 fi
 
-# API 키 헤더 (설정된 경우)
-AUTH_HEADER=""
+# API 호출 (eval 제거 - 안전한 직접 실행)
 if [ -n "$CLAUDE_APPROVER_API_KEY" ]; then
-  AUTH_HEADER="-H \"x-api-key: $CLAUDE_APPROVER_API_KEY\""
+  RESPONSE=$(curl -s -m 300 \
+    -X POST "${SERVER_URL}/api/approval" \
+    -H "Content-Type: application/json" \
+    -H "x-api-key: ${CLAUDE_APPROVER_API_KEY}" \
+    -d "$POST_DATA" 2>/dev/null)
+else
+  RESPONSE=$(curl -s -m 300 \
+    -X POST "${SERVER_URL}/api/approval" \
+    -H "Content-Type: application/json" \
+    -d "$POST_DATA" 2>/dev/null)
 fi
-
-RESPONSE=$(eval curl -s -m 300 \
-  -X POST "${SERVER_URL}/api/approval" \
-  -H "Content-Type: application/json" \
-  $AUTH_HEADER \
-  -d "'$POST_DATA'" 2>/dev/null)
 
 # 응답 파싱
 STATUS=$(echo "$RESPONSE" | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('status',''))" 2>/dev/null)

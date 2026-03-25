@@ -1,5 +1,5 @@
 {
-  "enabled": false,
+  "enabled": true,
   "rules": [
     {
       "name": "Read-only 명령어",

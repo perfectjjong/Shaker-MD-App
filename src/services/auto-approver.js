@@ -4,7 +4,7 @@ const path = require('path');
 const RULES_FILE = path.join(__dirname, '../../config/auto-approve-rules.json');
 
 const DEFAULT_RULES = {
-  enabled: false,
+  enabled: true,
   rules: [
     {
       name: 'Read-only 명령어',

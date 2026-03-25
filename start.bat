@@ -1,5 +1,7 @@
 @echo off
+setlocal enabledelayedexpansion
 chcp 65001 >nul 2>&1
+
 title Claude Code Approver
 
 echo ========================================
@@ -7,39 +9,55 @@ echo   Claude Code Mobile Approver
 echo ========================================
 echo.
 
-:: Node.js 확인
+REM --- Check Node.js ---
 where node >nul 2>&1
 if %errorlevel% neq 0 (
-    echo [오류] Node.js가 설치되어 있지 않습니다.
-    echo https://nodejs.org 에서 설치해주세요.
-    pause
-    exit /b 1
+    REM Try common Node.js install paths
+    if exist "%ProgramFiles%\nodejs\node.exe" (
+        set "PATH=%ProgramFiles%\nodejs;%PATH%"
+    ) else if exist "%ProgramFiles(x86)%\nodejs\node.exe" (
+        set "PATH=%ProgramFiles(x86)%\nodejs;%PATH%"
+    ) else if exist "%APPDATA%\nvm\current\node.exe" (
+        set "PATH=%APPDATA%\nvm\current;%PATH%"
+    ) else if exist "%USERPROFILE%\.nvm\current\node.exe" (
+        set "PATH=%USERPROFILE%\.nvm\current;%PATH%"
+    ) else (
+        echo [ERROR] Node.js not found!
+        echo   Install from: https://nodejs.org
+        echo.
+        pause
+        exit /b 1
+    )
+    echo [OK] Node.js found: added to PATH
 )
 
-:: 프로젝트 디렉토리로 이동
+for /f "tokens=*" %%v in ('node -v 2^>nul') do echo [OK] Node.js %%v
+
+REM --- Move to project directory ---
 cd /d "%~dp0"
 
-:: node_modules 확인
+REM --- Install npm packages if needed ---
 if not exist "node_modules" (
-    echo [설치] npm 패키지 설치 중...
-    npm install
+    echo [SETUP] Installing npm packages...
+    call npm install
     echo.
 )
 
-:: 서버 IP 표시
-echo [정보] 모바일에서 아래 주소로 접속하세요:
+REM --- Show access URLs ---
+echo.
+echo [INFO] Access from mobile:
 echo.
 for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /c:"IPv4"') do (
-    set IP=%%a
-    call set IP=%%IP: =%%
-    call echo   http://%%IP%%:3847
+    set "IP=%%a"
+    set "IP=!IP: =!"
+    echo   http://!IP!:3847
 )
 echo   http://localhost:3847
 echo.
-echo [정보] 종료하려면 Ctrl+C 를 누르세요.
+echo [INFO] Press Ctrl+C to stop the server.
 echo ========================================
 echo.
 
-:: 서버 실행
+REM --- Start server ---
 node src/server.js
 pause
