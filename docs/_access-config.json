@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "/": {
+      "name": "Management Dashboard",
+      "emails": []
+    },
+    "/sellout/": {
+      "name": "Sell out Dashboard",
+      "emails": []
+    },
+    "/price/": {
+      "name": "Price Tracking",
+      "emails": []
+    }
+  }
+}

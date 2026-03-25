@@ -1,3 +1,4 @@
 # Cloudflare Pages redirects
-# All paths serve the main dashboard
-/*  /index.html  200
+# Trailing slash normalization
+/sellout  /sellout/  301
+/price    /price/    301

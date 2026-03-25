@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1a1a2e">
-  <title>Dashboard Hub - Management</title>
+  <title>Dashboard Hub - Price Tracking</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -38,43 +38,15 @@
       font-size: 13px;
     }
 
-    .auth-bar .auth-user {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text-dim);
-    }
-
-    .auth-bar .auth-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #00d26a;
-      flex-shrink: 0;
-    }
-
-    .auth-bar .auth-email {
-      color: var(--text);
-      font-weight: 500;
-    }
-
+    .auth-bar .auth-user { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
+    .auth-bar .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d26a; flex-shrink: 0; }
+    .auth-bar .auth-email { color: var(--text); font-weight: 500; }
     .auth-bar .auth-logout {
-      padding: 4px 12px;
-      border-radius: 6px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text-dim);
-      text-decoration: none;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
+      padding: 4px 12px; border-radius: 6px; background: var(--surface2);
+      border: 1px solid var(--border); color: var(--text-dim); text-decoration: none;
+      font-size: 12px; cursor: pointer; transition: all 0.2s ease;
     }
-
-    .auth-bar .auth-logout:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
+    .auth-bar .auth-logout:hover { border-color: var(--accent); color: var(--accent); }
     .auth-bar.auth-hidden { display: none; }
 
     .header {
@@ -83,168 +55,58 @@
       text-align: center;
       border-bottom: 1px solid var(--border);
     }
-
-    .header h1 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 6px;
-    }
-
-    .header .subtitle {
-      font-size: 14px;
-      color: var(--text-dim);
-    }
+    .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .header .subtitle { font-size: 14px; color: var(--text-dim); }
 
     .nav-links {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      padding: 16px 20px;
-      flex-wrap: wrap;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
+      display: flex; justify-content: center; gap: 12px; padding: 16px 20px;
+      flex-wrap: wrap; background: var(--surface); border-bottom: 1px solid var(--border);
     }
-
     .nav-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      border-radius: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+      border-radius: 8px; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
       transition: all 0.2s ease;
     }
-
-    .nav-link:hover {
-      border-color: var(--accent);
-      background: #2a2a50;
-    }
-
-    .nav-link.active {
-      border-color: var(--accent);
-      background: rgba(233, 69, 96, 0.15);
-    }
-
+    .nav-link:hover { border-color: var(--accent); background: #2a2a50; }
+    .nav-link.active { border-color: var(--accent); background: rgba(233, 69, 96, 0.15); }
     .nav-link-icon { font-size: 16px; }
 
     .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 24px;
-      max-width: 1200px;
-      margin: 0 auto;
-      width: 100%;
-      flex: 1;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px; padding: 24px; max-width: 1200px; margin: 0 auto; width: 100%; flex: 1;
     }
 
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      transition: all 0.3s ease;
-      height: 100%;
-      cursor: pointer;
-      user-select: none;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; transition: all 0.3s ease; height: 100%; cursor: pointer; user-select: none;
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15);
-    }
-
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15); }
     .card-icon { font-size: 40px; margin-bottom: 14px; }
-
-    .card-name {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .card-desc {
-      font-size: 13px;
-      color: var(--text-dim);
-      line-height: 1.5;
-    }
-
-    .accordion-arrow {
-      font-size: 12px;
-      transition: transform 0.3s ease;
-      color: var(--text-dim);
-    }
-
+    .card-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
+    .card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+    .accordion-arrow { font-size: 12px; transition: transform 0.3s ease; color: var(--text-dim); }
     .accordion-card.open .accordion-arrow { transform: rotate(180deg); }
-    .accordion-card.open .card {
-      border-color: var(--accent);
-      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15);
-    }
+    .accordion-card.open .card { border-color: var(--accent); box-shadow: 0 8px 24px rgba(233, 69, 96, 0.15); }
     .accordion-card.open .card:hover { transform: none; }
-
-    .sub-list {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.35s ease, padding 0.35s ease;
-      padding: 0;
-    }
-
-    .accordion-card.open .sub-list {
-      max-height: 800px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding: 12px 0 0;
-    }
-
+    .sub-list { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0; }
+    .accordion-card.open .sub-list { max-height: 800px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 0 0; }
     .sub-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      margin-top: 4px;
-      border-radius: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      text-decoration: none;
-      color: var(--text);
-      transition: all 0.2s ease;
-      font-size: 14px;
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px; margin-top: 4px;
+      border-radius: 8px; background: var(--surface2); border: 1px solid var(--border);
+      text-decoration: none; color: var(--text); transition: all 0.2s ease; font-size: 14px;
     }
-
-    .sub-item:hover {
-      border-color: var(--accent);
-      background: #2a2a50;
-    }
-
+    .sub-item:hover { border-color: var(--accent); background: #2a2a50; }
     .sub-item-icon { font-size: 20px; flex-shrink: 0; }
     .sub-item-info { flex: 1; min-width: 0; }
     .sub-item-name { font-weight: 500; font-size: 13px; }
     .sub-item-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
     .sub-item-arrow { color: var(--text-dim); font-size: 12px; flex-shrink: 0; }
 
-    @keyframes slideIn {
-      from { transform: translateY(-10px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
+    @keyframes slideIn { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     .accordion-card { animation: slideIn 0.3s ease both; text-decoration: none; color: inherit; display: block; }
 
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 13px;
-      color: var(--text-dim);
-      border-top: 1px solid var(--border);
-    }
-
+    .footer { text-align: center; padding: 20px; font-size: 13px; color: var(--text-dim); border-top: 1px solid var(--border); }
     .footer a { color: var(--accent); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
 
@@ -269,13 +131,13 @@
 
   <div class="header">
     <h1>Dashboard Hub</h1>
-    <div class="subtitle">Management Dashboard</div>
+    <div class="subtitle">Price Tracking</div>
   </div>
 
   <nav class="nav-links">
-    <a class="nav-link active" href="/"><span class="nav-link-icon">📋</span> Management</a>
+    <a class="nav-link" href="/"><span class="nav-link-icon">📋</span> Management</a>
     <a class="nav-link" href="/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
-    <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
+    <a class="nav-link active" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -285,14 +147,21 @@
   </div>
 
   <script>
-    const MGMT_GROUP = {
-      name: 'Management Dashboard',
-      description: 'Management dashboards (3)',
-      icon: '📋',
+    const PRICE_GROUP = {
+      name: 'Price Tracking',
+      description: 'Price tracking (10)',
+      icon: '💰',
       children: [
-        { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/', icon: '📊' },
-        { name: 'eXtra Management Dashboard', description: 'eXtra management dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/executive/', icon: '🛒' },
-        { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: 'https://junecarloosorio-3789.github.io/AR/', icon: '📄' },
+        { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: 'https://perfectjjong.github.io/extra-ac-price-tracker/', icon: '🛒' },
+        { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: 'https://perfectjjong.github.io/almanea-ac-price-tracker/', icon: '🏪' },
+        { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: 'https://perfectjjong.github.io/blackbox-ac-price-tracker/', icon: '🏷️' },
+        { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: 'https://perfectjjong.github.io/alkhunaizan-ac-dashboard/', icon: '🏬' },
+        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: 'https://perfectjjong.github.io/bh-ac-dashboard/', icon: '💲' },
+        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: 'https://perfectjjong.github.io/binmomen-ac-dashboard/', icon: '🏠' },
+        { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: 'https://perfectjjong.github.io/sws-ac-dashboard/', icon: '🔧' },
+        { name: 'Najm Store Price Tracking', description: 'Najm Store AC price tracker', url: 'https://perfectjjong.github.io/najm-ac-dashboard/', icon: '⭐' },
+        { name: 'TechnoBest Price Tracking', description: 'TechnoBest AC price tracker', url: 'https://perfectjjong.github.io/technobest-ac-dashboard/', icon: '💻' },
+        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: 'https://perfectjjong.github.io/tamkeen-ac-dashboard/', icon: '🏗️' },
       ],
     };
 
@@ -304,7 +173,7 @@
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
-      const g = MGMT_GROUP;
+      const g = PRICE_GROUP;
       const subItems = g.children.map(c => `
         <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
           <span class="sub-item-icon">${c.icon}</span>
@@ -336,7 +205,6 @@
 
     render();
 
-    // Cloudflare Access authentication
     (function initAuth() {
       const authBar = document.getElementById('authBar');
       const authEmail = document.getElementById('authEmail');
