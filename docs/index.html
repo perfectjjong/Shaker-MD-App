@@ -275,6 +275,7 @@
   <nav class="nav-links">
     <a class="nav-link" href="/Shaker-MD-App/" id="navHome"><span class="nav-link-icon">🏠</span> Home</a>
     <a class="nav-link" href="/Shaker-MD-App/#management" id="navMgmt"><span class="nav-link-icon">📋</span> Management</a>
+    <a class="nav-link" href="/Shaker-MD-App/#sellthru" id="navSellThru"><span class="nav-link-icon">📊</span> Sell Thru</a>
     <a class="nav-link" href="/Shaker-MD-App/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
     <a class="nav-link" href="/Shaker-MD-App/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
@@ -294,6 +295,15 @@
         children: [
           { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/', icon: '📊' },
           { name: 'eXtra Management Dashboard', description: 'eXtra management dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/executive/', icon: '🛒' },
+          { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: 'https://junecarloosorio-3789.github.io/AR/', icon: '📄' },
+        ],
+      },
+      {
+        name: 'Sell Thru Dashboard',
+        description: 'Sell Thru dashboards (2)',
+        icon: '📊',
+        children: [
+          { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: 'https://perfectjjong.github.io/Sell-Thru-Progress-Dashboard/', icon: '📊' },
           { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: 'https://junecarloosorio-3789.github.io/AR/', icon: '📄' },
         ],
       },
@@ -334,19 +344,22 @@
     }
 
     function getView() {
-      return location.hash === '#management' ? 'management' : 'home';
+      if (location.hash === '#management') return 'management';
+      if (location.hash === '#sellthru') return 'sellthru';
+      return 'home';
     }
 
     function updateNav() {
       const view = getView();
       document.getElementById('navHome').classList.toggle('active', view === 'home');
       document.getElementById('navMgmt').classList.toggle('active', view === 'management');
+      document.getElementById('navSellThru').classList.toggle('active', view === 'sellthru');
     }
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
       const view = getView();
-      const groups = view === 'management' ? [GROUPS[0]] : GROUPS;
+      const groups = view === 'management' ? [GROUPS[0]] : view === 'sellthru' ? [GROUPS[1]] : GROUPS;
 
       grid.innerHTML = groups.map((g, i) => {
         const subItems = g.children.map(c => `
