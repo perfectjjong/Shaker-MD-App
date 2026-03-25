@@ -1,0 +1,4 @@
+# Cloudflare Pages redirects
+# Trailing slash normalization
+/sellout  /sellout/  301
+/price    /price/    301
