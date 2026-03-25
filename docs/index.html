@@ -273,8 +273,8 @@
   </div>
 
   <nav class="nav-links">
-    <a class="nav-link" href="/Shaker-MD-App/"><span class="nav-link-icon">🏠</span> Home</a>
-    <a class="nav-link active" href="/Shaker-MD-App/"><span class="nav-link-icon">📋</span> Management</a>
+    <a class="nav-link" href="/Shaker-MD-App/" id="navHome"><span class="nav-link-icon">🏠</span> Home</a>
+    <a class="nav-link" href="/Shaker-MD-App/#management" id="navMgmt"><span class="nav-link-icon">📋</span> Management</a>
     <a class="nav-link" href="/Shaker-MD-App/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
     <a class="nav-link" href="/Shaker-MD-App/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
@@ -333,9 +333,22 @@
       return div.innerHTML;
     }
 
+    function getView() {
+      return location.hash === '#management' ? 'management' : 'home';
+    }
+
+    function updateNav() {
+      const view = getView();
+      document.getElementById('navHome').classList.toggle('active', view === 'home');
+      document.getElementById('navMgmt').classList.toggle('active', view === 'management');
+    }
+
     function render() {
       const grid = document.getElementById('dashboardGrid');
-      grid.innerHTML = GROUPS.map((g, i) => {
+      const view = getView();
+      const groups = view === 'management' ? [GROUPS[0]] : GROUPS;
+
+      grid.innerHTML = groups.map((g, i) => {
         const subItems = g.children.map(c => `
           <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
             <span class="sub-item-icon">${c.icon}</span>
@@ -365,6 +378,8 @@
       });
     }
 
+    window.addEventListener('hashchange', () => { updateNav(); render(); });
+    updateNav();
     render();
 
     // Cloudflare Access authentication
