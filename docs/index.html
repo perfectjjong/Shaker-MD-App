@@ -215,6 +215,59 @@
       animation: slideIn 0.3s ease both;
     }
 
+    /* Auth bar */
+    .auth-bar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 8px 20px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .auth-bar .auth-user {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dim);
+    }
+
+    .auth-bar .auth-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #00d26a;
+      flex-shrink: 0;
+    }
+
+    .auth-bar .auth-email {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .auth-bar .auth-logout {
+      padding: 4px 12px;
+      border-radius: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .auth-bar .auth-logout:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .auth-bar.auth-hidden {
+      display: none;
+    }
+
     /* Footer */
     .footer {
       text-align: center;
@@ -282,6 +335,14 @@
   </style>
 </head>
 <body>
+  <div class="auth-bar auth-hidden" id="authBar">
+    <div class="auth-user">
+      <span class="auth-dot"></span>
+      <span class="auth-email" id="authEmail"></span>
+    </div>
+    <a class="auth-logout" id="authLogout" href="#">Logout</a>
+  </div>
+
   <div class="header">
     <h1>Dashboard Hub</h1>
     <div class="subtitle">All dashboards in one place</div>
@@ -554,6 +615,39 @@
     window.addEventListener('hashchange', () => {
       renderDashboards();
     });
+
+    // Cloudflare Access authentication
+    (function initAuth() {
+      const authBar = document.getElementById('authBar');
+      const authEmail = document.getElementById('authEmail');
+      const authLogout = document.getElementById('authLogout');
+
+      // Try to get user info from Cloudflare Access JWT cookie
+      function getCfAccessEmail() {
+        try {
+          const cookie = document.cookie.split(';')
+            .map(c => c.trim())
+            .find(c => c.startsWith('CF_Authorization='));
+          if (!cookie) return null;
+
+          const token = cookie.split('=')[1];
+          const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+          if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) return null;
+          return payload.email || null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      const email = getCfAccessEmail();
+      if (email) {
+        authEmail.textContent = email;
+        authBar.classList.remove('auth-hidden');
+
+        // Cloudflare Access logout URL
+        authLogout.href = '/cdn-cgi/access/logout';
+      }
+    })();
   </script>
 </body>
 </html>
