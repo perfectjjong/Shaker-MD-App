@@ -135,11 +135,11 @@
   </div>
 
   <nav class="nav-links">
-    <a class="nav-link" href="/Shaker-MD-App/"><span class="nav-link-icon">🏠</span> Home</a>
-    <a class="nav-link" href="/Shaker-MD-App/#management"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/Shaker-MD-App/#sellthru"><span class="nav-link-icon">📊</span> Sell Thru</a>
-    <a class="nav-link active" href="/Shaker-MD-App/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
-    <a class="nav-link" href="/Shaker-MD-App/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
+    <a class="nav-link" href="/"><span class="nav-link-icon">🏠</span> Home</a>
+    <a class="nav-link" href="/#management"><span class="nav-link-icon">📋</span> Management</a>
+    <a class="nav-link" href="/#sellthru"><span class="nav-link-icon">📊</span> Sell Thru</a>
+    <a class="nav-link active" href="/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
+    <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -154,10 +154,10 @@
       description: 'Sell out dashboards (4)',
       icon: '📦',
       children: [
-        { name: 'eXtra Weekly Sell out Dashboard', description: 'eXtra weekly sell out dashboard', url: 'https://perfectjjong.github.io/extra-sellout-dashboard/', icon: '🛒' },
-        { name: 'eXtra AC Business Sell out Dashboard', description: 'eXtra AC business sell out dashboard', url: 'https://perfectjjong.github.io/extra-dashboard/', icon: '📈' },
-        { name: 'BH Weekly Sell-out Dashboard', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: 'https://perfectjjong.github.io/bh-sellout-dashboard/', icon: '🏪' },
-        { name: 'IR Total Dashboard', description: 'IR total dashboard', url: 'https://perfectjjong.github.io/IR-Dashboard/', icon: '📅' },
+        { name: 'eXtra Weekly Sell out Dashboard', description: 'eXtra weekly sell out dashboard', url: '/dashboards/extra-sellout/', icon: '🛒' },
+        { name: 'eXtra AC Business Sell out Dashboard', description: 'eXtra AC business sell out dashboard', url: '/dashboards/extra-ac-business/', icon: '📈' },
+        { name: 'BH Weekly Sell-out Dashboard', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
+        { name: 'IR Total Dashboard', description: 'IR total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
       ],
     };
 
@@ -171,7 +171,7 @@
       const grid = document.getElementById('dashboardGrid');
       const g = SELLOUT_GROUP;
       const subItems = g.children.map(c => `
-        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+        <a class="sub-item" href="${esc(c.url)}">
           <span class="sub-item-icon">${c.icon}</span>
           <div class="sub-item-info">
             <div class="sub-item-name">${esc(c.name)}</div>

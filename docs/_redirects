@@ -2,3 +2,22 @@
 # Trailing slash normalization
 /sellout  /sellout/  301
 /price    /price/    301
+
+# Dashboard trailing slash redirects
+/dashboards/sell-thru-progress    /dashboards/sell-thru-progress/    301
+/dashboards/extra-mgmt            /dashboards/extra-mgmt/            301
+/dashboards/ar-detail             /dashboards/ar-detail/             301
+/dashboards/extra-sellout         /dashboards/extra-sellout/         301
+/dashboards/extra-ac-business     /dashboards/extra-ac-business/     301
+/dashboards/bh-sellout            /dashboards/bh-sellout/            301
+/dashboards/ir-total              /dashboards/ir-total/              301
+/dashboards/extra-price           /dashboards/extra-price/           301
+/dashboards/almanea-price         /dashboards/almanea-price/         301
+/dashboards/blackbox-price        /dashboards/blackbox-price/        301
+/dashboards/alkhunaizan-price     /dashboards/alkhunaizan-price/     301
+/dashboards/bh-price              /dashboards/bh-price/              301
+/dashboards/binmomen-price        /dashboards/binmomen-price/        301
+/dashboards/sws-price             /dashboards/sws-price/             301
+/dashboards/najm-price            /dashboards/najm-price/            301
+/dashboards/technobest-price      /dashboards/technobest-price/      301
+/dashboards/tamkeen-price         /dashboards/tamkeen-price/         301

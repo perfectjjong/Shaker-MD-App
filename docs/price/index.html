@@ -135,11 +135,11 @@
   </div>
 
   <nav class="nav-links">
-    <a class="nav-link" href="/Shaker-MD-App/"><span class="nav-link-icon">🏠</span> Home</a>
-    <a class="nav-link" href="/Shaker-MD-App/#management"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/Shaker-MD-App/#sellthru"><span class="nav-link-icon">📊</span> Sell Thru</a>
-    <a class="nav-link" href="/Shaker-MD-App/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
-    <a class="nav-link active" href="/Shaker-MD-App/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
+    <a class="nav-link" href="/"><span class="nav-link-icon">🏠</span> Home</a>
+    <a class="nav-link" href="/#management"><span class="nav-link-icon">📋</span> Management</a>
+    <a class="nav-link" href="/#sellthru"><span class="nav-link-icon">📊</span> Sell Thru</a>
+    <a class="nav-link" href="/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
+    <a class="nav-link active" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -154,16 +154,16 @@
       description: 'Price tracking (10)',
       icon: '💰',
       children: [
-        { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: 'https://perfectjjong.github.io/extra-ac-price-tracker/', icon: '🛒' },
-        { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: 'https://perfectjjong.github.io/almanea-ac-price-tracker/', icon: '🏪' },
-        { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: 'https://perfectjjong.github.io/blackbox-ac-price-tracker/', icon: '🏷️' },
-        { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: 'https://perfectjjong.github.io/alkhunaizan-ac-dashboard/', icon: '🏬' },
-        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: 'https://perfectjjong.github.io/bh-ac-dashboard/', icon: '💲' },
-        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: 'https://perfectjjong.github.io/binmomen-ac-dashboard/', icon: '🏠' },
-        { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: 'https://perfectjjong.github.io/sws-ac-dashboard/', icon: '🔧' },
-        { name: 'Najm Store Price Tracking', description: 'Najm Store AC price tracker', url: 'https://perfectjjong.github.io/najm-ac-dashboard/', icon: '⭐' },
-        { name: 'TechnoBest Price Tracking', description: 'TechnoBest AC price tracker', url: 'https://perfectjjong.github.io/technobest-ac-dashboard/', icon: '💻' },
-        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: 'https://perfectjjong.github.io/tamkeen-ac-dashboard/', icon: '🏗️' },
+        { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '🛒' },
+        { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '🏪' },
+        { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '🏷️' },
+        { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '🏬' },
+        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: '/dashboards/bh-price/', icon: '💲' },
+        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '🏠' },
+        { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '🔧' },
+        { name: 'Najm Store Price Tracking', description: 'Najm Store AC price tracker', url: '/dashboards/najm-price/', icon: '⭐' },
+        { name: 'TechnoBest Price Tracking', description: 'TechnoBest AC price tracker', url: '/dashboards/technobest-price/', icon: '💻' },
+        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '🏗️' },
       ],
     };
 
@@ -177,7 +177,7 @@
       const grid = document.getElementById('dashboardGrid');
       const g = PRICE_GROUP;
       const subItems = g.children.map(c => `
-        <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+        <a class="sub-item" href="${esc(c.url)}">
           <span class="sub-item-icon">${c.icon}</span>
           <div class="sub-item-info">
             <div class="sub-item-name">${esc(c.name)}</div>
