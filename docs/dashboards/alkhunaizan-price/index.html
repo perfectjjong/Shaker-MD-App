@@ -60,13 +60,13 @@ section{background:#1e293b!important;border-color:#334155!important}
 .tbl-wrap tr:nth-child(even) td{background:#1e293b!important}
 .tbl-wrap tr:nth-child(odd) td{background:#0f172a!important}
 .tbl-wrap tr:hover td{background:#334155!important}
-.tbl-wrap th{background:#334155!important;color:#cbd5e1!important}
+.tbl-wrap th{background:#334155!important;color:#ffffff!important}
 .tbl-wrap th:hover{background:#475569!important}
 .level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
 .level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
 .level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
 .level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-.ms-btn{background:#0f172a!important;color:#cbd5e1!important;border-color:#475569!important}
+.ms-btn{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
 .ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
 .ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
 .ms-menu .ms-actions{border-bottom-color:#334155!important}
@@ -641,7 +641,7 @@ function renderS5(){
   brandChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:aggLabel,data:vals,backgroundColor:bg,borderColor:bg,borderWidth:1}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},
-        datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},
+        datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},
       scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:vals.length?Math.max(...vals)*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
   const segs=[];const bList=[...new Set(lat.map(r=>r.b))].filter(Boolean).sort();
   const cats=[...new Set(lat.map(r=>r.c))].filter(x=>x!=null).sort();
@@ -685,7 +685,7 @@ function renderS6(){
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},
       plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},
       scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},
-    plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#333';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
+    plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#e2e8f0';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
 }
 
 // ═══ SEC 7: OFFERS & FEATURES ════════════════════════════════════════════════
@@ -718,7 +718,7 @@ function renderFeatures(lat){
   energyChartObj=new Chart(c2,{type:'bar',data:{labels:gLabels,datasets:[{label:'SKUs',data:gVals,backgroundColor:gColors.slice(0,gLabels.length)}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
       title:{display:true,text:'Energy Grade Distribution',font:{size:12}},
-      datalabels:{display:true,anchor:'end',align:'top',color:'#1e3a5f',font:{size:10,weight:'bold'}}},
+      datalabels:{display:true,anchor:'end',align:'top',color:'#e2e8f0',font:{size:10,weight:'bold'}}},
       scales:{y:{ticks:{stepSize:1},beginAtZero:true},x:{ticks:{font:{size:10}}}}}});
 
   // -- Feature Summary Table (Wifi + Color + Stock)

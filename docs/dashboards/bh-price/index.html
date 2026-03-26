@@ -65,13 +65,13 @@ section{background:#1e293b!important;border-color:#334155!important}
 .tbl-wrap tr:nth-child(even) td{background:#1e293b!important}
 .tbl-wrap tr:nth-child(odd) td{background:#0f172a!important}
 .tbl-wrap tr:hover td{background:#334155!important}
-.tbl-wrap th{background:#334155!important;color:#cbd5e1!important}
+.tbl-wrap th{background:#334155!important;color:#ffffff!important}
 .tbl-wrap th:hover{background:#475569!important}
 .level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
 .level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
 .level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
 .level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-.ms-btn{background:#0f172a!important;color:#cbd5e1!important;border-color:#475569!important}
+.ms-btn{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
 .ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
 .ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
 .ms-menu .ms-actions{border-bottom-color:#334155!important}
@@ -510,7 +510,7 @@ function sortTbl(id,col){
 }
 
 // ── endLabels Plugin ──
-const endLabelsPlugin={id:'endLabels',afterDatasetsDraw(chart){const ctx=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx.save();ctx.font='bold 10px Inter,sans-serif';ctx.fillStyle=ds.borderColor||'#333';ctx.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx.fillText(lbl,pt.x+6,pt.y);ctx.restore();break;}}});}};
+const endLabelsPlugin={id:'endLabels',afterDatasetsDraw(chart){const ctx=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx.save();ctx.font='bold 10px Inter,sans-serif';ctx.fillStyle=ds.borderColor||'#e2e8f0';ctx.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx.fillText(lbl,pt.x+6,pt.y);ctx.restore();break;}}});}};
 
 // ── KPI Card HTML ──
 function kpiCard(v,l,borderColor,textColor){
@@ -638,7 +638,7 @@ function renderIntCharts(){
   let items=Object.entries(brandMarkup).map(([b,arr])=>({b,avg:Math.round(mean(arr)*10)/10})).sort((a,b)=>a.avg-b.avg);
   const ctx1=document.getElementById('intMarkupBar').getContext('2d');
   if(intMarkupBarObj)intMarkupBarObj.destroy();
-  intMarkupBarObj=new Chart(ctx1,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Markup %',data:items.map(x=>x.avg),backgroundColor:items.map(x=>x.avg>=0?alphaC(colorOf(x.b),.7):alphaC('#dc2626',.5)),borderColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Avg Markup % by Brand (Retail vs Wholesale)',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>v.toFixed(1)+'%',clip:false}},scales:{x:{grid:{color:'#f0f0f0'},ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:10}}}}}});
+  intMarkupBarObj=new Chart(ctx1,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Markup %',data:items.map(x=>x.avg),backgroundColor:items.map(x=>x.avg>=0?alphaC(colorOf(x.b),.7):alphaC('#dc2626',.5)),borderColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Avg Markup % by Brand (Retail vs Wholesale)',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>v.toFixed(1)+'%',clip:false}},scales:{x:{grid:{color:'#f0f0f0'},ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:10}}}}}});
 
   // Category donut
   const catMarkup={};
@@ -907,7 +907,7 @@ function renderWsBrandBar(){
   let items=Object.entries(bAvg).map(([b,v])=>({b,avg:Math.round(mean(v))})).sort((a,b)=>a.avg-b.avg);
   const ctx=document.getElementById('wsBrandBar').getContext('2d');
   if(wsBrandBarObj)wsBrandBarObj.destroy();
-  wsBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Wholesale Avg Price by Brand',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  wsBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Wholesale Avg Price by Brand',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
 }
 
 function renderWsTrend(){
@@ -1118,7 +1118,7 @@ function renderRtBrandBar(){
   let items=Object.entries(bAvg).map(([b,v])=>({b,avg:Math.round(mean(v))})).sort((a,b)=>a.avg-b.avg);
   const ctx=document.getElementById('rtBrandBar').getContext('2d');
   if(rtBrandBarObj)rtBrandBarObj.destroy();
-  rtBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Retail Avg Price by Brand ('+pk.toUpperCase()+')',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  rtBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Retail Avg Price by Brand ('+pk.toUpperCase()+')',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
 }
 
 function renderRtTrend(){

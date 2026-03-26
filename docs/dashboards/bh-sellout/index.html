@@ -13,17 +13,17 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:46px}
 .header h1{font-size:15px;font-weight:700}.header .sub{font-size:11px;color:#94a3b8}.header .badge{background:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;margin-left:auto}
 .tabs{background:#1e293b;border-bottom:1px solid var(--border);display:flex;gap:0;position:sticky;top:46px;z-index:99}
-.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.2s}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:#cbd5e1;border-bottom:2px solid transparent;transition:.2s}
 .tab:hover{color:var(--text)}.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
 .filters{background:#1e293b;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:86px;z-index:98}
-.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:#e2e8f0;font-weight:600;margin-bottom:2px}
 .ms-wrap{position:relative;min-width:120px}
-.ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#1e293b;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
+.ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#1e293b;color:#e2e8f0;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
 .ms-btn::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
 .ms-btn.active-filter{border-color:var(--primary);background:#1e3a5f;font-weight:600}
 .ms-drop{display:none;position:absolute;top:100%;left:0;background:#1e293b;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.4);z-index:200;min-width:160px;max-height:260px;overflow-y:auto;padding:4px 0;margin-top:2px}
 .ms-drop.open{display:block}
-.ms-drop label{display:flex;align-items:center;gap:6px;padding:5px 10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.ms-drop label{display:flex;align-items:center;gap:6px;padding:5px 10px;font-size:12px;color:#e2e8f0;cursor:pointer;white-space:nowrap}
 .ms-drop label:hover{background:#334155}
 .ms-drop input[type=checkbox]{accent-color:var(--primary);width:14px;height:14px}
 .ms-drop .ms-all{border-bottom:1px solid var(--border);font-weight:600;color:var(--primary)}
@@ -35,7 +35,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
 .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
 .kpi{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border-left:3px solid var(--primary)}
-.kpi-val{font-size:20px;font-weight:800}.kpi-label{font-size:9.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+.kpi-val{font-size:20px;font-weight:800}.kpi-label{font-size:9.5px;text-transform:uppercase;color:#cbd5e1;font-weight:600;margin-top:2px}
 .kpi-sub{font-size:11px;margin-top:4px}.up{color:var(--green)}.down{color:var(--red)}
 .card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
 .card h3{font-size:12px;font-weight:700;margin-bottom:12px}
@@ -220,9 +220,9 @@ document.querySelectorAll('.tab').forEach(t=>{
 
 // ===== CHART HELPERS =====
 const charts={};
-const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#e2e8f0',formatter:v=>v>0?v.toLocaleString():''};
 const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
-const DL_LINE={display:true,anchor:'end',align:'top',font:{size:9},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+const DL_LINE={display:true,anchor:'end',align:'top',font:{size:9},color:'#e2e8f0',formatter:v=>v>0?v.toLocaleString():''};
 const DL_NONE={display:false};
 
 function mk(id,type,data,opts={}){
@@ -364,8 +364,8 @@ function showCatPrice(cat){
     labels:WEEKS,
     datasets:[
       {type:'line',label:'Wholesale (SAR)',data:wsData,borderColor:'#2563eb',backgroundColor:'#2563eb22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'top',font:{size:9},color:'#2563eb',formatter:v=>v?v.toLocaleString():''}},
-      {type:'line',label:'Retail Avg (SAR)',data:rtData,borderColor:'#f59e0b',backgroundColor:'#f59e0b22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'bottom',font:{size:9},color:'#92400e',formatter:v=>v?v.toLocaleString():''}},
-      {type:'bar',label:'Sell-out Qty',data:qtyData,backgroundColor:'#10b98144',borderColor:'#10b981',borderWidth:1,yAxisID:'yQty',datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#065f46',formatter:v=>v>0?v:''}}
+      {type:'line',label:'Retail Avg (SAR)',data:rtData,borderColor:'#f59e0b',backgroundColor:'#f59e0b22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'bottom',font:{size:9},color:'#fbbf24',formatter:v=>v?v.toLocaleString():''}},
+      {type:'bar',label:'Sell-out Qty',data:qtyData,backgroundColor:'#10b98144',borderColor:'#10b981',borderWidth:1,yAxisID:'yQty',datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#34d399',formatter:v=>v>0?v:''}}
     ]
   },{datalabels:DL_NONE,scales:{yPrice:{position:'left',title:{display:true,text:'Price (SAR)'},beginAtZero:false},yQty:{position:'right',title:{display:true,text:'Qty'},beginAtZero:true,grid:{drawOnChartArea:false}}}});
 }
@@ -391,8 +391,8 @@ function showModelPrice(idx){
     labels:WEEKS,
     datasets:[
       {type:'line',label:'Wholesale (SAR)',data:wsData,borderColor:'#2563eb',backgroundColor:'#2563eb22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'top',font:{size:9},color:'#2563eb',formatter:v=>v?v.toLocaleString():''}},
-      {type:'line',label:'Retail Avg (SAR)',data:rtData,borderColor:'#f59e0b',backgroundColor:'#f59e0b22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'bottom',font:{size:9},color:'#92400e',formatter:v=>v?v.toLocaleString():''}},
-      {type:'bar',label:'Sell-out Qty',data:qtyData,backgroundColor:'#10b98144',borderColor:'#10b981',borderWidth:1,yAxisID:'yQty',datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#065f46',formatter:v=>v>0?v:''}}
+      {type:'line',label:'Retail Avg (SAR)',data:rtData,borderColor:'#f59e0b',backgroundColor:'#f59e0b22',tension:.3,borderWidth:2,pointRadius:4,yAxisID:'yPrice',datalabels:{display:true,anchor:'end',align:'bottom',font:{size:9},color:'#fbbf24',formatter:v=>v?v.toLocaleString():''}},
+      {type:'bar',label:'Sell-out Qty',data:qtyData,backgroundColor:'#10b98144',borderColor:'#10b981',borderWidth:1,yAxisID:'yQty',datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#34d399',formatter:v=>v>0?v:''}}
     ]
   },{datalabels:DL_NONE,scales:{yPrice:{position:'left',title:{display:true,text:'Price (SAR)'},beginAtZero:false},yQty:{position:'right',title:{display:true,text:'Qty'},beginAtZero:true,grid:{drawOnChartArea:false}}}});
 }
@@ -413,8 +413,8 @@ function renderPriceTable(){
     const margin=wsP&&rtP?rtP-wsP:null;
     const marginPct=wsP&&margin?Math.round(margin/wsP*100):null;
     html+=`<tr><td class="mono">${m.code}</td><td>${m.name}</td><td>${m.category}</td><td>${m.ton}T</td>`;
-    html+=`<td style="text-align:right;color:#1e40af;font-weight:600">${wsP?wsP.toLocaleString():'-'}</td>`;
-    html+=`<td style="text-align:right;color:#92400e;font-weight:600">${rtP?rtP.toLocaleString():'-'}</td>`;
+    html+=`<td style="text-align:right;color:#60a5fa;font-weight:600">${wsP?wsP.toLocaleString():'-'}</td>`;
+    html+=`<td style="text-align:right;color:#fbbf24;font-weight:600">${rtP?rtP.toLocaleString():'-'}</td>`;
     html+=`<td style="text-align:right;color:${margin&&margin>0?'var(--green)':'var(--red)'}font-weight:600">${margin!==null?(margin>0?'+':'')+margin.toLocaleString():'-'}</td>`;
     html+=`<td style="text-align:right">${marginPct!==null?marginPct+'%':'-'}</td>`;
     html+=`<td style="text-align:right;font-weight:700">${m.total_qty.toLocaleString()}</td></tr>`;

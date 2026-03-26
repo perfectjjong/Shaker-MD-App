@@ -31,7 +31,7 @@ body {
 }
 .header {
   background: var(--navy);
-  color: var(--white);
+  color: #e2e8f0;
   padding: 16px 24px;
   display: flex;
   justify-content: space-between;
@@ -79,7 +79,7 @@ body {
   padding: 16px;
   border-left: 4px solid var(--navy);
 }
-.kpi-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.kpi-label { font-size: 11px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
 .kpi-value { font-size: 26px; font-weight: 700; color: #60a5fa; }
 .kpi-change { font-size: 12px; margin-top: 4px; }
 .positive { color: var(--green); }
@@ -106,7 +106,7 @@ body {
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
 thead th {
   background: var(--navy);
-  color: #cbd5e1;
+  color: #ffffff;
   font-weight: 700;
   text-align: center;
   padding: 10px 12px;
@@ -132,7 +132,7 @@ td.ctr { text-align: center; }
   display: inline-block;
   padding: 2px 8px;
   border-radius: 12px;
-  color: var(--white);
+  color: #ffffff;
   font-size: 11px;
   font-weight: 600;
 }
@@ -144,7 +144,7 @@ td.ctr { text-align: center; }
   display: inline-block;
   padding: 4px 14px;
   border-radius: 16px;
-  color: var(--white);
+  color: #ffffff;
   font-size: 13px;
   font-weight: 700;
   margin-right: 8px;
@@ -153,7 +153,7 @@ td.ctr { text-align: center; }
 .badge-green { background: var(--green); }
 .badge-red { background: var(--red); }
 .badge-gray { background: var(--gray); }
-.dealer-count { font-size: 13px; color: var(--gray); margin-bottom: 12px; font-weight: 600; }
+.dealer-count { font-size: 13px; color: #cbd5e1; margin-bottom: 12px; font-weight: 600; }
 .matrix-cell {
   text-align: center;
   font-size: 11px;
@@ -163,7 +163,7 @@ td.ctr { text-align: center; }
 .full-width { grid-column: 1 / -1; }
 .section-title { font-size: 16px; color: #60a5fa; font-weight: 700; margin-bottom: 12px; }
 .table-scroll { max-height: 450px; overflow-y: auto; }
-.no-data { text-align: center; padding: 40px; color: var(--gray); font-size: 14px; }
+.no-data { text-align: center; padding: 40px; color: #cbd5e1; font-size: 14px; }
 
 /* ============ GLOBAL FILTER BAR ============ */
 #globalFilterBar {
@@ -178,7 +178,7 @@ td.ctr { text-align: center; }
 #globalFilterReset {
   padding: 7px 16px;
   background: var(--navy);
-  color: var(--white);
+  color: #e2e8f0;
   border: none;
   border-radius: 4px;
   font-size: 12px;
@@ -208,7 +208,7 @@ td.ctr { text-align: center; }
 .ms-trigger.open { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
 .ms-lbl {
   font-size: 11px;
-  color: var(--gray);
+  color: #cbd5e1;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -218,7 +218,7 @@ td.ctr { text-align: center; }
 .ms-summary {
   flex: 1;
   font-size: 12px;
-  color: #e2e8f0;
+  color: #ffffff;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -45227,7 +45227,7 @@ const stackedTotalPlugin = {
             }
             ctx.save();
             ctx.font = 'bold 11px -apple-system,sans-serif';
-            ctx.fillStyle = '#1F4E79';
+            ctx.fillStyle = '#e2e8f0';
             ctx.textAlign = 'center';
             ctx.fillText(fmt(total), bar.x, topY - 6);
             ctx.restore();
@@ -45283,8 +45283,8 @@ function agg(arr, period) {
         return a;
     }, {stQty:0, stVal:0, soQty:0, soVal:0, stkQty:0, stkVal:0});
 }
-const barOpts = { responsive:true, maintainAspectRatio:false, layout:{padding:{top:20}}, plugins:{legend:{position:'bottom'}, datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
-const hBarDL = { datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0, padding:{left:4}} };
+const barOpts = { responsive:true, maintainAspectRatio:false, layout:{padding:{top:20}}, plugins:{legend:{position:'bottom'}, datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
+const hBarDL = { datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0, padding:{left:4}} };
 const doughnutDL = { datalabels:{color:'#fff', font:{size:11, weight:'bold'}, formatter:(v,ctx)=>{const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); const pct=total>0?(v/total*100).toFixed(0)+'%':''; return v>0?fmtNum(v)+'\n'+pct:'';}, display:ctx=>{ const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return total>0&&ctx.dataset.data[ctx.dataIndex]/total>0.05;}} };
 const stackedDL = { datalabels:{color:'#fff', font:{size:9, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>{ const meta=ctx.chart.getDatasetMeta(ctx.datasetIndex); if(!meta.data[ctx.dataIndex]) return false; const bar=meta.data[ctx.dataIndex]; const h=Math.abs(bar.y-bar.base||0); return ctx.dataset.data[ctx.dataIndex]>0&&h>14;}} };
 
@@ -45832,10 +45832,10 @@ function renderTab0() {
         }},
         plugins:[{ id:'centerText', beforeDraw(chart) {
             const {width,height,ctx:c}=chart; c.save();
-            c.font='bold 28px -apple-system,sans-serif'; c.fillStyle='#1F4E79';
+            c.font='bold 28px -apple-system,sans-serif'; c.fillStyle='#e2e8f0';
             c.textAlign='center'; c.textBaseline='middle';
             c.fillText(totalD, width/2, height/2);
-            c.font='12px -apple-system,sans-serif'; c.fillStyle='#595959';
+            c.font='12px -apple-system,sans-serif'; c.fillStyle='#cbd5e1';
             c.fillText('Dealers', width/2, height/2+20); c.restore();
         }}]
     });
@@ -46133,16 +46133,16 @@ function renderTab2() {
     destroyChart('c2c');
     window.charts.c2c = new Chart(document.getElementById('chart2c'), {
         type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?v.toFixed(1):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0} }, scales:{ y:{ beginAtZero:true } } },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?v.toFixed(1):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0} }, scales:{ y:{ beginAtZero:true } } },
         plugins: [{ id:'refLines', afterDraw(chart) {
             const { ctx, chartArea: { left, right }, scales: { y } } = chart;
             [3, 6].forEach(val => {
                 const yPos = y.getPixelForValue(val);
                 if (yPos >= y.top && yPos <= y.bottom) {
-                    ctx.save(); ctx.strokeStyle = val === 3 ? '#006100' : '#9C0006';
+                    ctx.save(); ctx.strokeStyle = val === 3 ? '#22c55e' : '#f87171';
                     ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
                     ctx.beginPath(); ctx.moveTo(left, yPos); ctx.lineTo(right, yPos); ctx.stroke();
-                    ctx.fillStyle = val === 3 ? '#006100' : '#9C0006';
+                    ctx.fillStyle = val === 3 ? '#22c55e' : '#f87171';
                     ctx.font = '11px sans-serif';
                     ctx.fillText(val === 3 ? 'MOS = 3' : 'MOS = 6', right - 50, yPos - 5);
                     ctx.restore();
@@ -46170,7 +46170,7 @@ function buildTab3() {
     const C = mCL(), P = mPL(), both = showBoth();
     document.getElementById('tab3').innerHTML = `
     <div class="local-search">
-      <label style="font-size:12px;color:var(--gray);font-weight:600;">Search Dealer:</label>
+      <label style="font-size:12px;color:#cbd5e1;font-weight:600;">Search Dealer:</label>
       <input id="f3search" type="text" placeholder="Dealer name...">
     </div>
     <div class="dealer-count" id="dealerCount3"></div>
@@ -46449,7 +46449,7 @@ function renderTab5() {
         const skuArr = Object.values(skuMap).sort((a,b) => ((b[ck]||{}).soQty||0) - ((a[ck]||{}).soQty||0));
 
         detailHTML += `<div class="card" style="margin-bottom:16px;">
-          <h3 style="font-size:14px;color:var(--navy);margin-bottom:8px;">📦 ${cat} <span style="font-size:12px;color:var(--gray);font-weight:400">(${skuArr.length} models)</span></h3>
+          <h3 style="font-size:14px;color:#60a5fa;margin-bottom:8px;">📦 ${cat} <span style="font-size:12px;color:#cbd5e1;font-weight:400">(${skuArr.length} models)</span></h3>
           <div class="table-scroll" style="max-height:350px;"><table>
             <thead><tr><th>SKU / Model</th><th>Class</th><th>${C} Sell-thru</th><th>${C} Sellout</th><th>${C} Stock</th><th>MOS</th><th>Signal</th></tr></thead>
             <tbody>${skuArr.map(s => {
@@ -46591,7 +46591,7 @@ function renderTab6() {
 
     // ===== KPI =====
     set('k6-totalDC', fmtNum(dc.length));
-    set('k6-totalDC-m', `<span style="color:var(--gray)">${fmtNum(totalActive)} active</span>`);
+    set('k6-totalDC-m', `<span style="color:#cbd5e1">${fmtNum(totalActive)} active</span>`);
     set('k6-balanceFail', fmtNum(mismatches.length));
     set('k6-balanceFail-m', mismatches.length > 0
         ? `<span class="negative">${(mismatches.length/dc.length*100).toFixed(1)}% of total</span>`
@@ -46625,7 +46625,7 @@ function renderTab6() {
             datasets:[{ label:'Discrepancy (Qty)', data: top20Disc.map(r=>r.disc),
                 backgroundColor: top20Disc.map(r => r.disc > 0 ? '#2E75B6' : '#9C0006'), borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}}, datalabels:{anchor:'end', align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'end':'start', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>(v>0?'+':'')+fmtNum(v), display:ctx=>ctx.dataset.data[ctx.dataIndex]!==0} },
+            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}}, datalabels:{anchor:'end', align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'end':'start', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>(v>0?'+':'')+fmtNum(v), display:ctx=>ctx.dataset.data[ctx.dataIndex]!==0} },
             scales:{ x:{ticks:{callback:v=>fmtNum(v)}} } }
     });
 
