@@ -74,57 +74,8 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
   .tbl-wrap td{font-size:10px;padding:3px 4px}
   div[style*="height:350px"],div[style*="height:360px"],div[style*="height:400px"],div[style*="height:320px"]{height:180px!important}
 }
-
-/* === DARK MODE OVERRIDE (sell-thru-progress unified) === */
-body{background:#0f172a!important;color:#e2e8f0!important}
-header{background:linear-gradient(135deg,#1e293b,#334155)!important;border-bottom:2px solid #3b82f6}
-.bg-white,.bg-gray-50,.bg-gray-100{background:#1e293b!important}
-.bg-white\/95{background:rgba(30,41,59,.95)!important}
-section{background:#1e293b!important;border-color:#334155!important}
-.border-gray-100,.border-gray-200,.border-gray-300{border-color:#334155!important}
-.text-gray-800,.text-gray-700,.text-gray-600,.text-gray-500{color:#e2e8f0!important}
-.text-gray-400{color:#94a3b8!important}
-.text-navy-800{color:#60a5fa!important}
-.bg-navy-800{background:#3b82f6!important}
-.bg-navy-50{background:#1e3a5f!important}
-.tbl-wrap td{border-bottom-color:#334155!important;color:#e2e8f0}
-.tbl-wrap tr:nth-child(even) td{background:#1e293b!important}
-.tbl-wrap tr:nth-child(odd) td{background:#0f172a!important}
-.tbl-wrap tr:hover td{background:#334155!important}
-.tbl-wrap th{background:#334155!important;color:#ffffff!important}
-.tbl-wrap th:hover{background:#475569!important}
-.level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
-.level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
-.level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
-.level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-.ms-btn{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-.ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
-.ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
-.ms-menu .ms-actions{border-bottom-color:#334155!important}
-.ms-menu label:hover{background:#334155!important}
-.pt-sel,.sec-search{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-.sec-search:focus{border-color:#3b82f6!important;box-shadow:0 0 0 2px rgba(59,130,246,.15)!important}
-.shadow-sm{box-shadow:0 2px 8px rgba(0,0,0,.3)!important}
-.shadow-lg{box-shadow:0 8px 24px rgba(0,0,0,.4)!important}
-.backdrop-blur{backdrop-filter:blur(8px)}
-a[class*="bg-white"]{background:#1e293b!important;color:#94a3b8!important;border-color:#334155!important}
-a[class*="bg-white"]:hover{background:#334155!important}
-.bg-gray-700{background:#334155!important}
-.bg-green-600{background:#10b981!important}
-.bg-green-700{background:#059669!important}
-.text-green-700,.text-green-600{color:#34d399!important}
-.text-red-700,.text-red-600{color:#f87171!important}
-.text-purple-600{color:#a78bfa!important}
-nav .flex .px-3.py-1{border-color:#334155!important}
-.w-px{background:#334155!important}
-input[type=checkbox]{accent-color:#3b82f6}
-.type-cat{background:#3b82f6!important}.type-comp{background:#60a5fa!important}.type-hc{background:#f59e0b!important;color:#422006!important}.type-ton{background:#475569!important;color:#e2e8f0!important}
-.space-y-2>*+*{border-color:#334155}
-.text-blue-200{color:#93c5fd!important}
-.text-blue-100{color:#bfdbfe!important}
-
 </style></head>
-<body class="font-sans text-sm">
+<body class="bg-gray-50 font-sans text-gray-800 text-sm">
 
 <header class="bg-gradient-to-r from-navy-900 to-navy-700 text-white shadow-lg">
   <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
@@ -692,7 +643,7 @@ function renderS5(){
   const labels=items.map(x=>x.b),vals=items.map(x=>x.avg),bg=labels.map(b=>colorOf(b));
   const ctx=document.getElementById('brandBarChart').getContext('2d');
   if(brandChart)brandChart.destroy();
-  brandChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:aggLabel5,data:vals,backgroundColor:bg,borderColor:bg,borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'SAR '+fmtSAR(c.raw)}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:vals.length?Math.max(...vals)*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  brandChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:aggLabel5,data:vals,backgroundColor:bg,borderColor:bg,borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'SAR '+fmtSAR(c.raw)}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:vals.length?Math.max(...vals)*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
   // Segment table
   const segs=[];const bList=[...new Set(lat.map(r=>r.b))].filter(Boolean).sort();
   const cats=[...new Set(lat.map(r=>r.c))].filter(x=>x!=null).sort();
@@ -730,7 +681,7 @@ function renderS6(){
   });
   const ctx=document.getElementById('trendChart').getContext('2d');
   if(trendChartObj)trendChartObj.destroy();
-  trendChartObj=new Chart(ctx,{type:'line',data:{labels:DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#e2e8f0';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
+  trendChartObj=new Chart(ctx,{type:'line',data:{labels:DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#333';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
 }
 
 // ═══ SEC 7: FULL SKU ═══════════════════════════════════════════════════════
