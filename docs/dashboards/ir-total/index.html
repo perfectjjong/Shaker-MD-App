@@ -45279,7 +45279,10 @@ function agg(arr, period) {
         return a;
     }, {stQty:0, stVal:0, soQty:0, soVal:0, stkQty:0, stkVal:0});
 }
-const barOpts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
+const barOpts = { responsive:true, maintainAspectRatio:false, layout:{padding:{top:20}}, plugins:{legend:{position:'bottom'}, datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
+const hBarDL = { datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0, padding:{left:4}} };
+const doughnutDL = { datalabels:{color:'#fff', font:{size:11, weight:'bold'}, formatter:(v,ctx)=>{const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); const pct=total>0?(v/total*100).toFixed(0)+'%':''; return v>0?fmtNum(v)+'\n'+pct:'';}, display:ctx=>{ const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return total>0&&ctx.dataset.data[ctx.dataIndex]/total>0.05;}} };
+const stackedDL = { datalabels:{color:'#fff', font:{size:9, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>{ const meta=ctx.chart.getDatasetMeta(ctx.datasetIndex); if(!meta.data[ctx.dataIndex]) return false; const bar=meta.data[ctx.dataIndex]; const h=Math.abs(bar.y-bar.base||0); return ctx.dataset.data[ctx.dataIndex]>0&&h>14;}} };
 
 /* =========================================================
    MULTI-SELECT DROPDOWN COMPONENT
@@ -45820,7 +45823,7 @@ function renderTab0() {
                 backgroundColor:['#1A7A3C','#B8860B','#9C0006','#595959'] }]
         },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{
-            legend:{position:'bottom'},
+            legend:{position:'bottom'}, ...doughnutDL,
             tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${totalD>0?(ctx.raw/totalD*100).toFixed(1):0}%)`}}
         }},
         plugins:[{ id:'centerText', beforeDraw(chart) {
@@ -45878,7 +45881,7 @@ function renderTab0() {
     window.charts.c0d = new Chart(document.getElementById('chart0d'), {
         type:'doughnut',
         data:{ labels:catKeys, datasets:[{ data:catKeys.map(c=>catShare[c]), backgroundColor:CAT_COLORS.slice(0,catKeys.length) }] },
-        options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{position:'bottom'}} }
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{position:'bottom'}, ...doughnutDL} }
     });
 
     // Top 10 Dealers
@@ -45973,7 +45976,7 @@ function renderTab1() {
     window.charts.c1b = new Chart(document.getElementById('chart1b'), {
         type: 'bar',
         data: { labels: sigLabels, datasets: [{ data: sigVals, backgroundColor: sigLabels.map(s=>SIGNAL_COLORS[s]), borderRadius:4 }] },
-        options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true } } }
+        options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false }, ...hBarDL }, scales:{ x:{ beginAtZero:true } } }
     });
 
     // Chart 1c
@@ -45993,7 +45996,7 @@ function renderTab1() {
             backgroundColor: SIGNAL_COLORS[sig], borderRadius: 0
         }))},
         options: { responsive:true, maintainAspectRatio:false,
-            plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw}%`}} },
+            plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw}%`}}, datalabels:{color:'#fff', font:{size:9, weight:'bold'}, formatter:v=>parseFloat(v)>5?v+'%':'', display:ctx=>parseFloat(ctx.dataset.data[ctx.dataIndex])>5} },
             scales:{ x:{stacked:true}, y:{stacked:true, max:100, ticks:{callback:v=>v+'%'}} }
         }
     });
@@ -46118,7 +46121,7 @@ function renderTab2() {
     destroyChart('c2b');
     window.charts.c2b = new Chart(document.getElementById('chart2b'), {
         type:'bar', data:{ labels: salesSorted.map(s=>s.name), datasets:[{ label:C+' Sellout', data: salesSorted.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
+        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false }, ...hBarDL }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 
     // Chart 2c
@@ -46126,7 +46129,7 @@ function renderTab2() {
     destroyChart('c2c');
     window.charts.c2c = new Chart(document.getElementById('chart2c'), {
         type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, datalabels:{anchor:'end', align:'end', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?v.toFixed(1):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0} }, scales:{ y:{ beginAtZero:true } } },
         plugins: [{ id:'refLines', afterDraw(chart) {
             const { ctx, chartArea: { left, right }, scales: { y } } = chart;
             [3, 6].forEach(val => {
@@ -46242,7 +46245,7 @@ function renderTab3() {
         type:'bar', data:{
             labels: top20.map(d=>d.name.length > 20 ? d.name.substring(0,20)+'...' : d.name),
             datasets:[{ label:mCL()+' Sellout', data: top20.map(d=>(d[ck]||{}).soQty||0), backgroundColor: top20.map(d=>signalColor(d.signal)), borderRadius:4 }]
-        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
+        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false }, ...hBarDL }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 
     document.getElementById('tbl3dealers').innerHTML = filtered.map(d => {
@@ -46340,7 +46343,7 @@ function renderTab4() {
     destroyChart('c4b');
     window.charts.c4b = new Chart(document.getElementById('chart4b'), {
         type:'bar', data:{ labels: topClass.map(c=>c.name), datasets:[{ label:C+' Sellout', data: topClass.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
+        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false }, ...hBarDL }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 
     // Chart 4c
@@ -46350,7 +46353,7 @@ function renderTab4() {
         type:'bar', data:{
             labels: topSkuChart.map(s=> s.sku.length > 25 ? s.sku.substring(0,25)+'...' : s.sku),
             datasets:[{ label:C+' Sellout', data: topSkuChart.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
+        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false }, ...hBarDL }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 }
 
@@ -46618,7 +46621,7 @@ function renderTab6() {
             datasets:[{ label:'Discrepancy (Qty)', data: top20Disc.map(r=>r.disc),
                 backgroundColor: top20Disc.map(r => r.disc > 0 ? '#2E75B6' : '#9C0006'), borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}} },
+            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}}, datalabels:{anchor:'end', align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'end':'start', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>(v>0?'+':'')+fmtNum(v), display:ctx=>ctx.dataset.data[ctx.dataIndex]!==0} },
             scales:{ x:{ticks:{callback:v=>fmtNum(v)}} } }
     });
 
@@ -46642,7 +46645,7 @@ function renderTab6() {
             { label:'Missing', data:rNames.map(r=>regionMap[r].missing), backgroundColor:'#9C0006' },
             { label:'Inactive', data:rNames.map(r=>regionMap[r].inactive), backgroundColor:'#595959' }
         ]},
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}, ...stackedDL},
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} } }
     });
 
