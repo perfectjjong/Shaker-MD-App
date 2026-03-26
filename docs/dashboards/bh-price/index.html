@@ -142,6 +142,40 @@ select{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569
 .bg-gray-50{background:#1e293b!important}
 .text-gray-600{color:#e2e8f0!important}
 
+
+/* === DARK MODE: READABILITY FIX v2 (2026-03-26) === */
+/* Filter bar text brightness */
+.text-navy-700{color:#93c5fd!important}
+.bg-gray-300,.w-px.bg-gray-300{background:#475569!important}
+/* Global filter bar sticky */
+.sticky.top-0{background:rgba(15,23,42,.95)!important;border-bottom-color:#334155!important}
+/* Nav pills */
+nav a.rounded-full{color:#94a3b8!important;border-color:#475569!important}
+nav a.rounded-full:hover{background:#334155!important;color:#e2e8f0!important}
+nav a.bg-navy-800.rounded-full{color:#fff!important}
+/* Section filter bars */
+.text-\[10px\].font-bold.text-gray-400.uppercase{color:#64748b!important}
+.text-gray-500.font-medium{color:#94a3b8!important}
+/* New/Disc cards - force bright brand text */
+#newCards span[style*="color"],#discCards span[style*="color"]{color:#e2e8f0!important;text-shadow:none}
+/* New/Disc card text */
+.border-green-200,.border-red-200{border-color:#475569!important}
+.bg-green-50 .text-gray-700,.bg-red-50 .text-gray-700{color:#f1f5f9!important}
+.bg-green-50 .text-gray-400,.bg-red-50 .text-gray-400{color:#94a3b8!important}
+.bg-green-50,.bg-red-50{color:#e2e8f0!important}
+.bg-green-50 a,.bg-red-50 a{color:#93c5fd!important}
+/* Price text in cards */
+.text-sm.font-bold.text-gray-700{color:#f1f5f9!important}
+/* Section heading visibility */
+.border-navy-800{border-color:#3b82f6!important}
+/* Mode buttons: active state */
+.dir-btn.active,.s5agg-btn.active,.agg-btn.active{background:#3b82f6!important;color:#fff!important}
+.dir-btn:not(.active),.s5agg-btn:not(.active),.agg-btn:not(.active){background:#1e293b!important;color:#94a3b8!important;border-color:#475569!important}
+/* Alerts table: improve alternating row contrast */
+.tbl-wrap td{color:#e2e8f0!important}
+/* Full SKU table links */
+.tbl-wrap a{color:#93c5fd!important}
+
 </style></head>
 <body class="bg-gray-50 font-sans text-gray-800 text-sm">
 <!-- Header -->
@@ -477,6 +511,11 @@ const GENERATED_AT='2026-03-26 13:07';
 Chart.register(ChartDataLabels);
 Chart.defaults.plugins.datalabels={display:false};
 
+Chart.defaults.color='#94a3b8';
+Chart.defaults.borderColor='#334155';
+Chart.defaults.scale={...Chart.defaults.scale,grid:{color:'#1e293b',drawBorder:true},ticks:{color:'#94a3b8'}};
+
+
 // ── Utilities ──
 const fmtSAR=v=>v==null?'-':Number(v).toLocaleString('en-SA',{maximumFractionDigits:0});
 const fmtPct=v=>v==null?'-':(v*100).toFixed(1)+'%';
@@ -683,7 +722,7 @@ function renderIntCharts(){
   let items=Object.entries(brandMarkup).map(([b,arr])=>({b,avg:Math.round(mean(arr)*10)/10})).sort((a,b)=>a.avg-b.avg);
   const ctx1=document.getElementById('intMarkupBar').getContext('2d');
   if(intMarkupBarObj)intMarkupBarObj.destroy();
-  intMarkupBarObj=new Chart(ctx1,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Markup %',data:items.map(x=>x.avg),backgroundColor:items.map(x=>x.avg>=0?alphaC(colorOf(x.b),.7):alphaC('#dc2626',.5)),borderColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Avg Markup % by Brand (Retail vs Wholesale)',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>v.toFixed(1)+'%',clip:false}},scales:{x:{grid:{color:'#f0f0f0'},ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:10}}}}}});
+  intMarkupBarObj=new Chart(ctx1,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Markup %',data:items.map(x=>x.avg),backgroundColor:items.map(x=>x.avg>=0?alphaC(colorOf(x.b),.7):alphaC('#dc2626',.5)),borderColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Avg Markup % by Brand (Retail vs Wholesale)',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>v.toFixed(1)+'%',clip:false}},scales:{x:{grid:{color:'#1e293b'},ticks:{callback:v=>v+'%'}},y:{ticks:{font:{size:10}}}}}});
 
   // Category donut
   const catMarkup={};
@@ -952,7 +991,7 @@ function renderWsBrandBar(){
   let items=Object.entries(bAvg).map(([b,v])=>({b,avg:Math.round(mean(v))})).sort((a,b)=>a.avg-b.avg);
   const ctx=document.getElementById('wsBrandBar').getContext('2d');
   if(wsBrandBarObj)wsBrandBarObj.destroy();
-  wsBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Wholesale Avg Price by Brand',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  wsBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Wholesale Avg Price by Brand',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
 }
 
 function renderWsTrend(){
@@ -969,7 +1008,7 @@ function renderWsTrend(){
   });
   const ctx=document.getElementById('wsTrendChart').getContext('2d');
   if(wsTrendObj)wsTrendObj.destroy();
-  wsTrendObj=new Chart(ctx,{type:'line',data:{labels:WS_DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},plugins:[endLabelsPlugin]});
+  wsTrendObj=new Chart(ctx,{type:'line',data:{labels:WS_DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#1e293b'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'}}}},plugins:[endLabelsPlugin]});
 }
 
 function renderWsFull(){
@@ -1163,7 +1202,7 @@ function renderRtBrandBar(){
   let items=Object.entries(bAvg).map(([b,v])=>({b,avg:Math.round(mean(v))})).sort((a,b)=>a.avg-b.avg);
   const ctx=document.getElementById('rtBrandBar').getContext('2d');
   if(rtBrandBarObj)rtBrandBarObj.destroy();
-  rtBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Retail Avg Price by Brand ('+pk.toUpperCase()+')',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  rtBrandBarObj=new Chart(ctx,{type:'bar',data:{labels:items.map(x=>x.b),datasets:[{label:'Avg Price',data:items.map(x=>x.avg),backgroundColor:items.map(x=>colorOf(x.b)),borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},title:{display:true,text:'Retail Avg Price by Brand ('+pk.toUpperCase()+')',font:{size:12}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'},suggestedMax:items.length?Math.max(...items.map(x=>x.avg))*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
 }
 
 function renderRtTrend(){
@@ -1180,7 +1219,7 @@ function renderRtTrend(){
   });
   const ctx=document.getElementById('rtTrendChart').getContext('2d');
   if(rtTrendObj)rtTrendObj.destroy();
-  rtTrendObj=new Chart(ctx,{type:'line',data:{labels:RT_DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10}},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},plugins:[endLabelsPlugin]});
+  rtTrendObj=new Chart(ctx,{type:'line',data:{labels:RT_DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10}},grid:{color:'#1e293b'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'}}}},plugins:[endLabelsPlugin]});
 }
 
 function renderRtFull(){

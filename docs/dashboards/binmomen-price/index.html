@@ -164,6 +164,40 @@ select{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569
 .bg-gray-50{background:#1e293b!important}
 .text-gray-600{color:#e2e8f0!important}
 
+
+/* === DARK MODE: READABILITY FIX v2 (2026-03-26) === */
+/* Filter bar text brightness */
+.text-navy-700{color:#93c5fd!important}
+.bg-gray-300,.w-px.bg-gray-300{background:#475569!important}
+/* Global filter bar sticky */
+.sticky.top-0{background:rgba(15,23,42,.95)!important;border-bottom-color:#334155!important}
+/* Nav pills */
+nav a.rounded-full{color:#94a3b8!important;border-color:#475569!important}
+nav a.rounded-full:hover{background:#334155!important;color:#e2e8f0!important}
+nav a.bg-navy-800.rounded-full{color:#fff!important}
+/* Section filter bars */
+.text-\[10px\].font-bold.text-gray-400.uppercase{color:#64748b!important}
+.text-gray-500.font-medium{color:#94a3b8!important}
+/* New/Disc cards - force bright brand text */
+#newCards span[style*="color"],#discCards span[style*="color"]{color:#e2e8f0!important;text-shadow:none}
+/* New/Disc card text */
+.border-green-200,.border-red-200{border-color:#475569!important}
+.bg-green-50 .text-gray-700,.bg-red-50 .text-gray-700{color:#f1f5f9!important}
+.bg-green-50 .text-gray-400,.bg-red-50 .text-gray-400{color:#94a3b8!important}
+.bg-green-50,.bg-red-50{color:#e2e8f0!important}
+.bg-green-50 a,.bg-red-50 a{color:#93c5fd!important}
+/* Price text in cards */
+.text-sm.font-bold.text-gray-700{color:#f1f5f9!important}
+/* Section heading visibility */
+.border-navy-800{border-color:#3b82f6!important}
+/* Mode buttons: active state */
+.dir-btn.active,.s5agg-btn.active,.agg-btn.active{background:#3b82f6!important;color:#fff!important}
+.dir-btn:not(.active),.s5agg-btn:not(.active),.agg-btn:not(.active){background:#1e293b!important;color:#94a3b8!important;border-color:#475569!important}
+/* Alerts table: improve alternating row contrast */
+.tbl-wrap td{color:#e2e8f0!important}
+/* Full SKU table links */
+.tbl-wrap a{color:#93c5fd!important}
+
 </style></head>
 <body class="bg-gray-50 font-sans text-gray-800 text-sm">
 
@@ -358,6 +392,11 @@ const STOCK_RULES=[{"label": "Out of Stock", "min": null, "max": 0}, {"label": "
 // ═══ UTILITIES ═══════════════════════════════════════════════════════════════
 Chart.register(ChartDataLabels);
 Chart.defaults.plugins.datalabels={display:false};
+
+Chart.defaults.color='#94a3b8';
+Chart.defaults.borderColor='#334155';
+Chart.defaults.scale={...Chart.defaults.scale,grid:{color:'#1e293b',drawBorder:true},ticks:{color:'#94a3b8'}};
+
 const fmtSAR=v=>v==null?'-':Number(v).toLocaleString('en-SA',{maximumFractionDigits:0});
 const fmtPct=v=>v==null?'-':(v*100).toFixed(1)+'%';
 const fmtPctR=v=>v==null?'-':v.toFixed(1)+'%';
@@ -724,7 +763,7 @@ function renderS5(){
   const labels=items.map(x=>x.b),vals=items.map(x=>x.avg),bg=labels.map(b=>colorOf(b));
   const ctx=document.getElementById('brandBarChart').getContext('2d');
   if(brandChart)brandChart.destroy();
-  brandChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:aggLabel5,data:vals,backgroundColor:bg,borderColor:bg,borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'SAR '+fmtSAR(c.raw)}},datalabels:{display:true,anchor:'end',align:'right',color:'#1e3a5f',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f0f0f0'},suggestedMax:vals.length?Math.max(...vals)*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
+  brandChart=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:aggLabel5,data:vals,backgroundColor:bg,borderColor:bg,borderWidth:1}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'SAR '+fmtSAR(c.raw)}},datalabels:{display:true,anchor:'end',align:'right',color:'#e2e8f0',font:{size:10,weight:'bold'},formatter:v=>fmtSAR(v),clip:false}},scales:{x:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'},suggestedMax:vals.length?Math.max(...vals)*1.15:undefined},y:{ticks:{font:{size:10}}}}}});
   // Segment table
   const segs=[];const bList=[...new Set(lat.map(r=>r.b))].filter(Boolean).sort();
   const cats=[...new Set(lat.map(r=>r.c))].filter(x=>x!=null).sort();
@@ -763,7 +802,7 @@ function renderS6(){
   });
   const ctx=document.getElementById('trendChart').getContext('2d');
   if(trendChartObj)trendChartObj.destroy();
-  trendChartObj=new Chart(ctx,{type:'line',data:{labels:DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#f5f5f5'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#f5f5f5'}}}},plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#333';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
+  trendChartObj=new Chart(ctx,{type:'line',data:{labels:DATES,datasets},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},layout:{padding:{right:90}},plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:10}}},tooltip:{callbacks:{label:c=>c.dataset.label+': SAR '+fmtSAR(c.raw)}},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45},grid:{color:'#1e293b'}},y:{ticks:{callback:v=>fmtSAR(v)},grid:{color:'#1e293b'}}}},plugins:[{id:'endLabels',afterDatasetsDraw(chart){const ctx2=chart.ctx;chart.data.datasets.forEach((ds,i)=>{const meta=chart.getDatasetMeta(i);if(!meta.visible)return;for(let j=meta.data.length-1;j>=0;j--){const pt=meta.data[j];if(pt&&ds.data[j]!=null){ctx2.save();ctx2.font='bold 10px Inter,sans-serif';ctx2.fillStyle=ds.borderColor||'#333';ctx2.textBaseline='middle';const lbl=ds.label.length>18?ds.label.substring(0,18)+'..':ds.label;ctx2.fillText(lbl,pt.x+6,pt.y);ctx2.restore();break;}}});}}]});
 }
 
 // ═══ SEC 7: FULL SKU ═══════════════════════════════════════════════════════
