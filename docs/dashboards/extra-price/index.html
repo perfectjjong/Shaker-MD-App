@@ -52,6 +52,7 @@ section{background:#1e293b!important;border-color:#334155!important}
 .text-gray-800,.text-gray-700,.text-gray-600,.text-gray-500{color:#e2e8f0!important}
 .text-gray-400{color:#94a3b8!important}
 .text-navy-800{color:#60a5fa!important}
+.text-navy-700{color:#93c5fd!important}
 .bg-navy-800{background:#3b82f6!important}
 .bg-navy-50{background:#1e3a5f!important}
 .tbl-wrap td{border-bottom-color:#334155!important;color:#e2e8f0!important}
@@ -60,15 +61,20 @@ section{background:#1e293b!important;border-color:#334155!important}
 .tbl-wrap tr:hover td{background:#334155!important}
 .tbl-wrap th{background:#334155!important;color:#ffffff!important}
 .tbl-wrap th:hover{background:#475569!important}
-.tbl-wrap a{color:#93c5fd!important}
+.tbl-wrap a{color:#60a5fa!important}
+a.text-blue-600{color:#60a5fa!important}
 .level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
 .level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
 .level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
 .level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-.ms-btn{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
+.ms-btn{background:#0f172a!important;color:#f1f5f9!important;border-color:#64748b!important;font-size:12px!important;font-weight:500!important}
 .ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
+.ms-btn b{color:#93c5fd!important}
 .ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
 .ms-menu .ms-actions{border-bottom-color:#334155!important}
+.ms-menu .ms-actions button{color:#60a5fa!important}
+.ms-menu .ms-actions button.ms-none{color:#f87171!important}
+.ms-menu label{color:#e2e8f0!important}
 .ms-menu label:hover{background:#334155!important}
 .pt-sel,.sec-search{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
 .sec-search:focus{border-color:#3b82f6!important;box-shadow:0 0 0 2px rgba(59,130,246,.15)!important}
@@ -545,14 +551,14 @@ function renderAlerts(){
   rows.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   const tbl=document.getElementById('tblAlert');
   tbl.querySelector('thead').innerHTML='<tr>'+AC.map((c,i)=>`<th onclick="sortTbl('tblAlert',${i})">${c.l}</th>`).join('')+'</tr>';
-  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
+  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='n')v=`<a href="https://www.extra.com/en-sa/p/${r.s}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
 }
 
 // ═══ SEC 3: NEW/DISC ═════════════════════════════════════════════════════════
 function renderNewDisc(lat,prev){
   const ls=new Set(lat.map(r=>r.s)),ps=new Set(prev.map(r=>r.s));
   const nw=lat.filter(r=>!ps.has(r.s)),dc=prev.filter(r=>!ls.has(r.s));
-  const card=(r,clr)=>`<div class="border border-${clr}-200 bg-${clr}-50 rounded-lg p-2.5 flex justify-between items-center"><div><span class="text-xs font-bold" style="color:${colorOf(r.b)}">${r.b}</span> <span class="text-[10px] text-gray-400">${r.s}</span><div class="text-[11px] text-gray-600 mt-0.5 truncate max-w-[280px]">${r.n}</div><div class="text-[10px] text-gray-400">${r.c||''} &middot; ${r.t?r.t.toFixed(1)+'T':''}</div></div><div class="text-sm font-bold text-gray-700">${fmtSAR(r.fp)} SAR</div></div>`;
+  const card=(r,clr)=>`<div class="border border-${clr}-200 bg-${clr}-50 rounded-lg p-2.5 flex justify-between items-center"><div><span class="text-xs font-bold" style="color:${colorOf(r.b)}">${r.b}</span> <span class="text-[10px] text-gray-400">${r.s}</span><div class="text-[11px] text-gray-600 mt-0.5 truncate max-w-[280px]"><a href="https://www.extra.com/en-sa/p/${r.s}" target="_blank" class="hover:underline text-blue-600">${r.n}</a></div><div class="text-[10px] text-gray-400">${r.c||''} &middot; ${r.t?r.t.toFixed(1)+'T':''}</div></div><div class="text-sm font-bold text-gray-700">${fmtSAR(r.fp)} SAR</div></div>`;
   document.getElementById('newCards').innerHTML=nw.length?nw.map(r=>card(r,'green')).join(''):'<p class="text-xs text-gray-400 py-3">None</p>';
   document.getElementById('newCount').textContent='('+nw.length+')';
   document.getElementById('discCards').innerHTML=dc.length?dc.map(r=>card(r,'red')).join(''):'<p class="text-xs text-gray-400 py-3">None</p>';
@@ -720,6 +726,7 @@ function renderS8(){
     if((c.k==='chg')&&r.chg!=null)cls=r.chg>0?'up-cell':r.chg<0?'dn-cell':'';
     if((c.k==='chgPct')&&r.chgPct!=null)cls=r.chgPct>0?'up-cell':r.chgPct<0?'dn-cell':'';
     if(c.k==='b')v=`<span style="color:${colorOf(r.b)};font-weight:600">${v}</span>`;
+    if(c.k==='n')v=`<a href="https://www.extra.com/en-sa/p/${r.s}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;
     if(c.k==='pr'&&v&&v!=='-'&&v!=='')v=`<span class="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-full text-[10px] font-semibold">${v}</span>`;
     if(c.k==='ex'&&v==='Yes')v=`<span class="inline-block px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full text-[10px] font-semibold">Excl</span>`;
     return`<td class="${cls}">${v}</td>`;
