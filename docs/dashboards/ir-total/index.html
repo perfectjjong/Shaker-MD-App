@@ -45202,6 +45202,9 @@ const tabInited = {};
 let activeTabIdx = 0;
 if (window.ChartDataLabels) Chart.register(ChartDataLabels);
 Chart.defaults.plugins.datalabels = { display: false };  // disabled globally, enabled per-chart
+Chart.defaults.color = '#ffffff';
+Chart.defaults.scale.ticks.color = '#ffffff';
+Chart.defaults.scale.title.color = '#ffffff';
 
 // Custom plugin: draw total sum label on top of stacked bars
 const stackedTotalPlugin = {
@@ -45227,7 +45230,7 @@ const stackedTotalPlugin = {
             }
             ctx.save();
             ctx.font = 'bold 11px -apple-system,sans-serif';
-            ctx.fillStyle = '#e2e8f0';
+            ctx.fillStyle = '#ffffff';
             ctx.textAlign = 'center';
             ctx.fillText(fmt(total), bar.x, topY - 6);
             ctx.restore();
@@ -45283,8 +45286,8 @@ function agg(arr, period) {
         return a;
     }, {stQty:0, stVal:0, soQty:0, soVal:0, stkQty:0, stkVal:0});
 }
-const barOpts = { responsive:true, maintainAspectRatio:false, layout:{padding:{top:20}}, plugins:{legend:{position:'bottom'}, datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
-const hBarDL = { datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0, padding:{left:4}} };
+const barOpts = { responsive:true, maintainAspectRatio:false, layout:{padding:{top:20}}, plugins:{legend:{position:'bottom', labels:{color:'#ffffff'}}, datalabels:{anchor:'end', align:'end', color:'#ffffff', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0}}, scales:{y:{beginAtZero:true, ticks:{color:'#ffffff', callback:v=>fmtNum(v)}}, x:{ticks:{color:'#ffffff'}}} };
+const hBarDL = { datalabels:{anchor:'end', align:'end', color:'#ffffff', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0, padding:{left:4}} };
 const doughnutDL = { datalabels:{color:'#fff', font:{size:11, weight:'bold'}, formatter:(v,ctx)=>{const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); const pct=total>0?(v/total*100).toFixed(0)+'%':''; return v>0?fmtNum(v)+'\n'+pct:'';}, display:ctx=>{ const total=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0); return total>0&&ctx.dataset.data[ctx.dataIndex]/total>0.05;}} };
 const stackedDL = { datalabels:{color:'#fff', font:{size:9, weight:'bold'}, formatter:v=>v>0?fmtNum(v):'', display:ctx=>{ const meta=ctx.chart.getDatasetMeta(ctx.datasetIndex); if(!meta.data[ctx.dataIndex]) return false; const bar=meta.data[ctx.dataIndex]; const h=Math.abs(bar.y-bar.base||0); return ctx.dataset.data[ctx.dataIndex]>0&&h>14;}} };
 
@@ -46133,7 +46136,7 @@ function renderTab2() {
     destroyChart('c2c');
     window.charts.c2c = new Chart(document.getElementById('chart2c'), {
         type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, datalabels:{anchor:'end', align:'end', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>v>0?v.toFixed(1):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0} }, scales:{ y:{ beginAtZero:true } } },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false }, datalabels:{anchor:'end', align:'end', color:'#ffffff', font:{size:10, weight:'bold'}, formatter:v=>v>0?v.toFixed(1):'', display:ctx=>ctx.dataset.data[ctx.dataIndex]>0} }, scales:{ y:{ beginAtZero:true } } },
         plugins: [{ id:'refLines', afterDraw(chart) {
             const { ctx, chartArea: { left, right }, scales: { y } } = chart;
             [3, 6].forEach(val => {
@@ -46414,12 +46417,12 @@ function renderTab5() {
             totalSo += (cp.soQty || 0);
             const bg = signalBg(d.signal);
             const title = `${dealer} | ${cat} | ST: ${fmtNum(cp.stQty)} | Stk: ${fmtNum(cp.stkQty)} | SO: ${fmtNum(cp.soQty)} | MOS: ${fmtRatio(ratio)}`;
-            return `<td class="matrix-cell" style="background:${bg}" title="${title}"><div style="font-size:12px;font-weight:700">${fmtRatio(ratio)}</div><div style="font-size:9px;color:#555;margin-top:1px">Stk ${fmtNum(cp.stkQty)}</div></td>`;
+            return `<td class="matrix-cell" style="background:${bg};color:#1e293b" title="${title}"><div style="font-size:12px;font-weight:700">${fmtRatio(ratio)}</div><div style="font-size:9px;color:#334155;margin-top:1px">Stk ${fmtNum(cp.stkQty)}</div></td>`;
         }).join('');
         const totalRatio = totalSo > 0 ? (totalStk / totalSo) : null;
         const totalSig = totalRatio == null ? null : totalRatio > 6 ? 'OVERSTOCK' : totalRatio >= 3 ? 'HEALTHY' : 'OPPORTUNITY';
         const totalBg = totalSig ? signalBg(totalSig) : '#FFFFFF';
-        return `<tr><td class="txt">${dealer}</td>${cells}<td class="matrix-cell" style="background:${totalBg}"><div style="font-size:12px;font-weight:700">${fmtRatio(totalRatio)}</div><div style="font-size:9px;color:#555;margin-top:1px">Stk ${fmtNum(totalStk)}</div></td></tr>`;
+        return `<tr><td class="txt">${dealer}</td>${cells}<td class="matrix-cell" style="background:${totalBg};color:#1e293b"><div style="font-size:12px;font-weight:700">${fmtRatio(totalRatio)}</div><div style="font-size:9px;color:#334155;margin-top:1px">Stk ${fmtNum(totalStk)}</div></td></tr>`;
     }).join('');
 
     // Per-category SKU detail tables below the matrix
@@ -46625,7 +46628,7 @@ function renderTab6() {
             datasets:[{ label:'Discrepancy (Qty)', data: top20Disc.map(r=>r.disc),
                 backgroundColor: top20Disc.map(r => r.disc > 0 ? '#2E75B6' : '#9C0006'), borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}}, datalabels:{anchor:'end', align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'end':'start', color:'#e2e8f0', font:{size:10, weight:'bold'}, formatter:v=>(v>0?'+':'')+fmtNum(v), display:ctx=>ctx.dataset.data[ctx.dataIndex]!==0} },
+            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}}, datalabels:{anchor:'end', align:ctx=>ctx.dataset.data[ctx.dataIndex]>=0?'end':'start', color:'#ffffff', font:{size:10, weight:'bold'}, formatter:v=>(v>0?'+':'')+fmtNum(v), display:ctx=>ctx.dataset.data[ctx.dataIndex]!==0} },
             scales:{ x:{ticks:{callback:v=>fmtNum(v)}} } }
     });
 
@@ -46776,7 +46779,7 @@ function buildTab7() {
     </div>
     <div class="card">
       <h3 class="section-title">Dealer OUD Detail (QTY)</h3>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start;padding:10px 12px;background:#E8EDF2;border-radius:6px;">
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start;padding:10px 12px;background:#1e293b;border-radius:6px;border:1px solid #334155;">
         <div class="ms-dropdown" id="oud-ms-region"></div>
         <div class="ms-dropdown" id="oud-ms-salesman"></div>
         <div class="ms-dropdown" id="oud-ms-dealer"></div>
@@ -47172,17 +47175,17 @@ function renderTab7() {
     const tDel = dealerRows.reduce((s,r)=>s+r.del,0), tAdj = dealerRows.reduce((s,r)=>s+r.adj,0);
     const tSo = dealerRows.reduce((s,r)=>s+r.so,0);
     const tMosOH = tSo > 0 ? tStk/tSo : null, tMosA = tSo > 0 ? tAdj/tSo : null;
-    const totStyle = 'style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy)"';
+    const totStyle = 'style="font-weight:700;background:#1e3a5f;color:#ffffff;border-top:2px solid #60a5fa"';
     document.getElementById('tbl7oud').innerHTML += `<tr>
         <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
         <td class="num" ${totStyle}>${fmtNum(tStk)}</td>
         ${pk ? '<td class="num" '+totStyle+'>'+fmtNum(tOudP)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtNum(tOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tDel)+'</td>' : ''}
+        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#4ade80">'+fmtNum(tDel)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtNum(tAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#60a5fa">${fmtRatio(tMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // Dealer OUD Detail (VALUE) — same rows, same local filter, value columns
@@ -47225,11 +47228,11 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tvStk)}</td>
         ${pk ? '<td class="num" '+totStyle+'>'+fmtVal(tvOudP)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtVal(tvOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tvDel)+'</td>' : ''}
+        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#4ade80">'+fmtVal(tvDel)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtVal(tvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#60a5fa">${fmtRatio(tvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // ===== SKU OUD Detail =====
@@ -47342,11 +47345,11 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tsStk)}</td>
         ${pk?'<td class="num" '+totStyle+'>'+fmtNum(tsOudP)+'</td>':''}
         <td class="num" ${totStyle}>${fmtNum(tsOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tsDel)+'</td>':''}
+        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#4ade80">'+fmtNum(tsDel)+'</td>':''}
         <td class="num" ${totStyle}>${fmtNum(tsAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tsSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#60a5fa">${fmtRatio(tsMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // SKU VALUE table
@@ -47388,11 +47391,11 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tsvStk)}</td>
         ${pk?'<td class="num" '+totStyle+'>'+fmtVal(tsvOudP)+'</td>':''}
         <td class="num" ${totStyle}>${fmtVal(tsvOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tsvDel)+'</td>':''}
+        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#4ade80">'+fmtVal(tsvDel)+'</td>':''}
         <td class="num" ${totStyle}>${fmtVal(tsvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tsvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#1e3a5f;border-top:2px solid #60a5fa;color:#60a5fa">${fmtRatio(tsvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 }
 
