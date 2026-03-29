@@ -218,10 +218,6 @@ body{display:block}
     // 2. Initialize Chart.js
     try { Chart.register(ChartDataLabels); } catch(e) { console.error('Chart init error:', e); }
     Chart.defaults.set('plugins.datalabels', {display: false});
-    Chart.defaults.color = '#ffffff';
-    Chart.defaults.scale.ticks.color = '#ffffff';
-    Chart.defaults.scale.title.color = '#ffffff';
-    Chart.defaults.plugins.legend.labels.color = '#ffffff';
     
     // 3. Run the app code
     const DD=RAW.d;
@@ -243,11 +239,10 @@ function dc(id){if(charts[id]){charts[id].destroy();delete charts[id]}}
 function kc(cls,val,label){return '<div class="kpi-card '+cls+'"><div class="kv">'+val+'</div><div class="kl">'+label+'</div></div>'}
 function $(id){return document.getElementById(id)}
 
-const DL_BAR={display:true,anchor:'end',align:'top',color:'#ffffff',font:{size:10,weight:'bold'},formatter:v=>fmt(v)};
-const DL_HBAR={display:true,anchor:'end',align:'right',color:'#ffffff',font:{size:10,weight:'bold'},formatter:v=>fN(v)};
+const DL_BAR={display:true,anchor:'end',align:'top',font:{size:10,weight:'bold'},formatter:v=>fmt(v)};
+const DL_HBAR={display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>fN(v)};
 const DL_LINE={display:false};
-const DL_LINE_WHITE={display:true,anchor:'end',align:'top',color:'#ffffff',font:{size:9,weight:'bold'},formatter:v=>v!==null?fN(v):''};
-const DL_PIE={display:true,color:'#ffffff',font:{size:10,weight:'bold'},formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?(v/t*100).toFixed(1)+'%':''}};
+const DL_PIE={display:true,font:{size:10,weight:'bold'},formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?(v/t*100).toFixed(1)+'%':''}};
 
 const idx={},rev={};
 ['y','day','w','b','sf','t','sz','r','p','br'].forEach(k=>{idx[k]={};rev[k]={};const a=DD[k];if(a)a.forEach((v,i)=>{idx[k][v]=i;rev[k][i]=v})});
@@ -580,7 +575,7 @@ function renderPrice(f){
     {label:'LG Final Price (Rotary)',data:aspA(wd.lgR),borderColor:'#2ecc71',pointRadius:3,tension:.2,borderWidth:2,spanGaps:true},
     {label:'Comp Final Price (Inverter)',data:aspA(wd.cI),borderColor:'#e67e22',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
     {label:'Comp Final Price (Rotary)',data:aspA(wd.cR),borderColor:'#8e44ad',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE_WHITE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
 
   dc('c4');
   const bData=fc({...f,b:[],w:[],d:[]});
@@ -590,7 +585,7 @@ function renderPrice(f){
 
   dc('c5');
   const sc=KB.map(b=>{const d=bAgg[idx.b[b]];if(!d||d[0]<=0)return null;return{x:Math.round(d[2]/d[0]),y:d[0],label:b}}).filter(Boolean);
-  charts.c5=new Chart($('c5'),{type:'scatter',data:{datasets:[{data:sc,backgroundColor:sc.map(s=>BRAND_COLORS[s.label]||'#95a5a6'),pointRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:'#ffffff',font:{size:9,weight:'bold'},formatter:(_,ctx)=>ctx.dataset.data[ctx.dataIndex].label},tooltip:{callbacks:{label:c=>c.raw.label+': Qty='+fN(c.raw.y)+', FP='+fN(c.raw.x)}}},scales:{x:{title:{display:true,text:'Avg Final Price (SAR)'}},y:{title:{display:true,text:'Total Qty'},ticks:{callback:v=>fmt(v)}}}}});
+  charts.c5=new Chart($('c5'),{type:'scatter',data:{datasets:[{data:sc,backgroundColor:sc.map(s=>BRAND_COLORS[s.label]||'#95a5a6'),pointRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},formatter:(_,ctx)=>ctx.dataset.data[ctx.dataIndex].label},tooltip:{callbacks:{label:c=>c.raw.label+': Qty='+fN(c.raw.y)+', FP='+fN(c.raw.x)}}},scales:{x:{title:{display:true,text:'Avg Final Price (SAR)'}},y:{title:{display:true,text:'Total Qty'},ticks:{callback:v=>fmt(v)}}}}});
 }
 
 // ============ OVERVIEW ============
@@ -621,7 +616,7 @@ function renderOverview(f){
   dc('c8');
   const lgW=aggBy(fc({...f,b:[],w:[],d:[]}).filter(r=>r[Bi]===lgBi),r=>rowWeek(r));
   const aw8=Object.keys(lgW).map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
-  charts.c8=new Chart($('c8'),{type:'line',data:{labels:aw8.map(i=>DD.w[i]),datasets:[{label:'LG Qty',data:aw8.map(i=>lgW[i][0]),borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.1)',tension:.3,borderWidth:2,pointRadius:3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',color:'#ffffff',font:{size:9},formatter:v=>fmt(v)}},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+  charts.c8=new Chart($('c8'),{type:'line',data:{labels:aw8.map(i=>DD.w[i]),datasets:[{label:'LG Qty',data:aw8.map(i=>lgW[i][0]),borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.1)',tension:.3,borderWidth:2,pointRadius:3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9},formatter:v=>fmt(v)}},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
 }
 
 // ============ COMPETITION ============
@@ -648,7 +643,7 @@ function renderComp(f){
   charts.c9=new Chart($('c9'),{type:'line',data:{labels:aw9.map(i=>DD.w[i]),datasets:[
     {label:'LG Avg Final Price',data:aw9.map(i=>wD.lg[i]?Math.round(wD.lg[i][0]/wD.lg[i][1]):null),borderColor:'#c0392b',borderWidth:2,tension:.2,pointRadius:3,spanGaps:true},
     {label:'Competitor Avg Final Price',data:aw9.map(i=>wD.comp[i]?Math.round(wD.comp[i][0]/wD.comp[i][1]):null),borderColor:'#3498db',borderWidth:2,tension:.2,pointRadius:3,borderDash:[5,3],spanGaps:true},
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE_WHITE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
 
   dc('c10');
   const bp2=['LG',...comps].map(b=>{const d=bAgg[idx.b[b]];return{n:b,a:d&&d[0]>0?Math.round(d[2]/d[0]):0}}).filter(b=>b.a>0);
