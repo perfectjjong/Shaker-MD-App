@@ -141,7 +141,7 @@ tfoot .fz{background:#0f172a}
 <div class="header">
   <h1>Sell-Thru Dashboard — Account Analysis</h1>
   <div class="header-right">
-    <span><span class="lbl">Updated</span><span class="val">2026-03-25</span></span>
+    <span><span class="lbl">Updated</span><span class="val">2026-03-29</span></span>
     <span><span class="lbl">Period</span><span class="val">2024 ~ 2026</span></span>
     <span><span class="lbl">Accounts</span><span class="val" id="hdrAccounts">-</span></span>
     <span><span class="lbl">OUD Date</span><span class="val" id="hdrOudDate">-</span></span>
@@ -325,32 +325,23 @@ function _rsmAutoPopulateFromIrTarget(){ if(!RAW) return;
     try{localStorage.setItem(_RSM_KEYS.qty,JSON.stringify(_rsmStore.qty));}catch(e){}
   }
 }
-// On page load: fetch RSM FCST from GitHub repo (always latest data)
+// On page load: fetch RSM FCST from GitHub (no token needed — public read)
 // Cloud wins if cloud._updated is newer than local _localUpdated; otherwise local wins (unsaved edits)
 (function _rsmCloudLoad(){
-  function _applyRsmData(d){
+  fetch('./rsm_fcst_data.json?_='+Date.now())
+  .then(function(r){return r.ok?r.json():null;})
+  .then(function(d){
     if(!d||!d._updated){_rsmAutoPopulateFromIrTarget();if(typeof renderAll==='function'){ if(RAW) renderAll(); };return;}
     var cloudTs=new Date(d._updated).getTime()||0;
     var localTs=parseInt(localStorage.getItem(_RSM_LOCAL_TS_KEY)||'0',10);
+    // Cloud wins if it's newer than last local save (or local never saved)
     if(cloudTs>=localTs){
       if(d.value){ _rsmStore.value=d.value; try{localStorage.setItem(_RSM_KEYS.value,JSON.stringify(_rsmStore.value));}catch(e){} }
       if(d.qty){   _rsmStore.qty=d.qty;     try{localStorage.setItem(_RSM_KEYS.qty,  JSON.stringify(_rsmStore.qty));}catch(e){} }
     }
     _rsmAutoPopulateFromIrTarget();
     if(typeof renderAll==='function') { if(RAW) renderAll(); };
-  }
-  // Fetch from GitHub repo (source of truth where RSM Sync pushes)
-  fetch('https://raw.githubusercontent.com/'+_RSM_REPO+'/main/'+_RSM_FILE+'?_='+Date.now())
-  .then(function(r){return r.ok?r.json():null;})
-  .then(function(d){
-    if(d){ _applyRsmData(d); return; }
-    // Fallback to local file if GitHub fetch fails
-    return fetch('./rsm_fcst_data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;}).then(_applyRsmData);
-  }).catch(function(){
-    // Fallback to local file on network error
-    fetch('./rsm_fcst_data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;}).then(_applyRsmData)
-    .catch(function(){_rsmAutoPopulateFromIrTarget();if(typeof renderAll==='function'){ if(RAW) renderAll(); };});
-  });
+  }).catch(function(){_rsmAutoPopulateFromIrTarget();if(typeof renderAll==='function'){ if(RAW) renderAll(); };});
 })();
 
 // ======== STATE ========
@@ -1511,15 +1502,18 @@ function _memoSyncNow(){
   })
   .catch(function(e){if(btn){btn.textContent='☁️ Memo Sync';btn.disabled=false;} alert('❌ Network error: '+e.message);});
 }
-// Auto-load memo from cloud on page open (fetch from GitHub repo for latest data)
+// Auto-load memo from cloud on page open (public read, no token needed)
 (function _memoCloudLoad(){
-  function _applyMemo(cloud){
+  fetch('./memo_data.json?_='+Date.now())
+  .then(function(r){return r.ok?r.json():null;})
+  .then(function(cloud){
     var local=_memoLoad();
     var or=document.getElementById('memo-or'), ir=document.getElementById('memo-ir');
     if(cloud&&cloud._updated){
       var hasLocal=(local.or||'').trim()||(local.ir||'').trim();
       var hasCloud=(cloud.or||'').trim()||(cloud.ir||'').trim();
       if(hasCloud||!hasLocal){
+        // Use cloud data only if cloud has content, or local is also empty
         if(cloud.or!==undefined){local.or=cloud.or;}
         if(cloud.ir!==undefined){local.ir=cloud.ir;}
         try{localStorage.setItem(_MEMO_KEY,JSON.stringify(local));}catch(e){}
@@ -1529,21 +1523,13 @@ function _memoSyncNow(){
     }
     if(or) or.value=local.or||'';
     if(ir) ir.value=local.ir||'';
-  }
-  // Fetch from GitHub repo (source of truth where Memo Sync pushes)
-  fetch('https://raw.githubusercontent.com/'+_RSM_REPO+'/main/'+_MEMO_FILE+'?_='+Date.now())
-  .then(function(r){return r.ok?r.json():null;})
-  .then(function(d){
-    if(d){ _applyMemo(d); return; }
-    return fetch('./memo_data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;}).then(_applyMemo);
-  }).catch(function(){
-    fetch('./memo_data.json?_='+Date.now()).then(function(r){return r.ok?r.json():null;}).then(_applyMemo)
-    .catch(function(){
-      var d=_memoLoad();
-      var or=document.getElementById('memo-or'), ir=document.getElementById('memo-ir');
-      if(or&&d.or) or.value=d.or;
-      if(ir&&d.ir) ir.value=d.ir;
-    });
+  })
+  .catch(function(){
+    // Fallback to localStorage
+    var d=_memoLoad();
+    var or=document.getElementById('memo-or'), ir=document.getElementById('memo-ir');
+    if(or&&d.or) or.value=d.or;
+    if(ir&&d.ir) ir.value=d.ir;
   });
 })();
 </script>
