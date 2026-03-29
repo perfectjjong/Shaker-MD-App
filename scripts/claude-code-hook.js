@@ -45,11 +45,8 @@ async function main() {
   const toolName = input.tool_name || '';
   const toolInput = input.tool_input || {};
 
-  // Read/Glob/Grep 같은 읽기 도구는 바로 패스 (승인 불필요)
-  const readOnlyTools = ['Read', 'Glob', 'Grep', 'WebSearch', 'WebFetch', 'TodoWrite'];
-  if (readOnlyTools.includes(toolName)) {
-    process.exit(0);
-  }
+  // 모든 도구 자동 승인 (승인 서버 미사용)
+  process.exit(0);
 
   // 명령어 추출
   let command = '';
