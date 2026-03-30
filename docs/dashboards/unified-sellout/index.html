@@ -6,6 +6,7 @@
 <title>Weekly IR Sell out - Dashboard - 8 Ch.</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
 :root{--primary:#2563eb;--navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.08);--radius:8px;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--teal:#14b8a6;--rose:#f43f5e;--sky:#0ea5e9}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -28,6 +29,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .ms-drop input[type=checkbox]{accent-color:var(--primary);width:14px;height:14px}
 .ms-drop .ms-all{border-bottom:1px solid var(--border);font-weight:600;color:var(--primary)}
 .btn-reset{padding:4px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;cursor:pointer;background:#fff}.btn-reset:hover{background:var(--bg)}
+.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#ecfdf5;color:#065f46;font-weight:600}.btn-excel:hover{background:#d1fae5}
 .filter-count{font-size:10px;color:var(--muted);margin-left:8px}
 .content{padding:20px 24px;max-width:1400px;margin:0 auto}
 .tab-pane{display:none}.tab-pane.active{display:block}
@@ -71,6 +73,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 <div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
 <div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
 <button class="btn-reset" onclick="resetFilters()">Reset</button>
+<button class="btn-excel" onclick="downloadExcel()">📥 Excel</button>
 <span class="filter-count" id="filterCount"></span>
 </div>
 <div class="content">
@@ -399,6 +402,20 @@ function update(){
 
 // INIT
 update();
+
+function downloadExcel(){
+  var rows=filtered();
+  if(!rows.length){alert('No data to export');return;}
+  var nameMap={w:'Week',m:'Month',c:'Category',q:'Qty',s:'SKU',n:'Name',b:'Brand',r:'Region',ch:'Channel',st:'Sales Type',code:'Code',name:'Name',ton:'Ton',type:'Type',model:'Model',comp:'Compressor',btu:'BTU'};
+  var keys=Object.keys(rows[0]);
+  var data=rows.map(function(r){var o={};keys.forEach(function(k){o[nameMap[k]||k]=r[k]});return o});
+  var ws=XLSX.utils.json_to_sheet(data);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Raw Data');
+  var title=document.title.replace(/[^a-zA-Z0-9\s-]/g,'').trim().replace(/\s+/g,'_');
+  XLSX.writeFile(wb,title+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
 </script>
 </body>
 </html>
