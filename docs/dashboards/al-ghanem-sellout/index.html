@@ -5,6 +5,7 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script>
 tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']},colors:{navy:{50:'#E8F4FD',100:'#D1E9FB',200:'#A3D3F7',500:'#2E75B6',700:'#1E3A5F',800:'#1F4E79',900:'#0F2A42'}}}}}
@@ -103,6 +104,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
         <div class="ms-list" id="oc_list"></div>
       </div>
     </div>
+    <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
     <span class="text-xs text-slate-500" id="ov_filter_info"></span>
   </div>
 

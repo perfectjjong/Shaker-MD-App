@@ -1059,6 +1059,23 @@ document.getElementById('loading').style.display='none';
 
 })();
 }catch(ex){showErr('Init: '+ex.message+'\n'+ex.stack);}
+
+function downloadExcel(){
+  var rows;
+  if(typeof filtered==='function'){rows=filtered();}
+  else if(typeof D!=='undefined'&&D.raw){rows=D.raw;}
+  else{alert('No data available');return;}
+  if(!rows.length){alert('No data to export');return;}
+  var nameMap={w:'Week',m:'Month',c:'Category',q:'Qty',s:'SKU',n:'Name',b:'Brand',r:'Region',ch:'Channel',st:'Sales Type',code:'Code',name:'Name',ton:'Ton',type:'Type',model:'Model',comp:'Compressor',btu:'BTU'};
+  var keys=Object.keys(rows[0]);
+  var data=rows.map(function(r){var o={};keys.forEach(function(k){o[nameMap[k]||k]=r[k]});return o});
+  var ws=XLSX.utils.json_to_sheet(data);
+  var wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Raw Data');
+  var title=document.title.replace(/[^a-zA-Z0-9\s-]/g,'').trim().replace(/\s+/g,'_');
+  XLSX.writeFile(wb,title+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
 </script>
 </body>
 </html>
