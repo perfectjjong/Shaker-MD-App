@@ -274,7 +274,7 @@ function update(){
   mk('cWeekly','bar',{
     labels:WEEKS.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
     datasets:D.dims.channels.map(ch=>({label:ch,data:WEEKS.map(w=>(cwk[ch]||{})[w]||0),backgroundColor:CH_COLORS[ch]||'#999'}))
-  },{datalabels:DL_NONE,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'top'}}});
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'top'}}});
 
   // Monthly bar
   mk('cMonthly','bar',{
