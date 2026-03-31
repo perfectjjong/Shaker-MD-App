@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { assessRisk } = require('../services/risk-assessor');
 
 // POST /api/approval - Claude Code Hook에서 호출
 router.post('/approval', async (req, res) => {
@@ -18,7 +19,7 @@ router.post('/approval', async (req, res) => {
     return res.status(400).json({ error: 'tool은 문자열이어야 합니다' });
   }
 
-  // 자동 승인 사전 체크 (빠른 응답)
+  // 1단계: 자동 승인/거부 규칙 체크 (패턴 매칭)
   const autoResult = autoApprover.shouldAutoApprove({ command, tool });
   if (autoResult === 'approve') {
     return res.json({ status: 'approved', auto: true });
@@ -27,7 +28,17 @@ router.post('/approval', async (req, res) => {
     return res.json({ status: 'rejected', auto: true, reason: '자동 거부 규칙' });
   }
 
-  // 수동 승인 대기
+  // 2단계: 보안등급 기반 자동승인 (risk-assessor 연동)
+  // 보안등급 "안전(low)"이면 자동승인
+  if (command) {
+    const risk = assessRisk(command);
+    if (risk === 'low') {
+      console.log(`[AutoApprove] 보안등급 안전(low) → 자동승인: ${command.slice(0, 80)}`);
+      return res.json({ status: 'approved', auto: true, risk: 'low' });
+    }
+  }
+
+  // 수동 승인 대기 (medium/high 위험도)
   try {
     const status = await approvalManager.create({ command, tool, workdir, sessionId });
     res.json({ status });

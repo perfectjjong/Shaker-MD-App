@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Bin Momen Sell-out Weekly Dashboard</title>
+<title>Dhamin Sell-out Weekly Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -12,13 +12,13 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
 </script>
 <style>
 body{background:#0f172a;color:#e2e8f0;font-family:'Inter',sans-serif}
-header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px solid #3b82f6}
+header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px solid #10b981}
 .tab-btn{padding:8px 20px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.tab-btn.active{background:#1e293b;color:#60a5fa;border-color:#334155;border-bottom-color:#1e293b}
+.tab-btn.active{background:#1e293b;color:#34d399;border-color:#334155;border-bottom-color:#1e293b}
 .tab-btn:not(.active){background:#0f172a;color:#94a3b8}
 .tab-btn:hover:not(.active){color:#e2e8f0;background:#1e293b50}
 .card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155}
-.kpi-card{background:#1e293b;border-radius:12px;padding:16px 20px;border-left:4px solid #3b82f6}
+.kpi-card{background:#1e293b;border-radius:12px;padding:16px 20px;border-left:4px solid #10b981}
 .kpi-val{font-size:28px;font-weight:700;color:#f1f5f9}
 .kpi-label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
 .kpi-change{font-size:12px;font-weight:600}
@@ -33,17 +33,17 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 .tbl-wrap tr:hover td{background:#334155}
 .ms-wrap{position:relative;display:inline-block}
 .ms-btn{display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid #64748b;border-radius:6px;background:#0f172a;color:#f1f5f9;font-size:12px;cursor:pointer;font-weight:500}
-.ms-btn:hover{border-color:#60a5fa;background:#1e293b}
+.ms-btn:hover{border-color:#34d399;background:#1e293b}
 .ms-menu{display:none;position:absolute;top:100%;left:0;z-index:50;min-width:180px;max-height:280px;background:#1e293b;border:1px solid #475569;border-radius:8px;box-shadow:0 8px 25px rgba(0,0,0,.4);margin-top:2px;overflow:hidden}
 .ms-list{max-height:220px;overflow-y:auto}
 .ms-menu.open{display:block}
 .ms-menu label{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:pointer;font-size:11px;color:#e2e8f0}
 .ms-menu label:hover{background:#334155}
 .ms-menu .ms-actions{display:flex;gap:8px;padding:6px 10px;border-bottom:1px solid #334155;font-size:10px}
-.ms-menu .ms-actions button{color:#60a5fa;font-weight:600;cursor:pointer;background:none;border:none}
+.ms-menu .ms-actions button{color:#34d399;font-weight:600;cursor:pointer;background:none;border:none}
 .ms-menu .ms-actions button.ms-none{color:#f87171}
 .progress-bar{height:8px;border-radius:4px;background:#334155;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#10b981,#34d399)}
 .cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
 .cat-split{background:#1e3a5f;color:#60a5fa}
 .cat-window{background:#422006;color:#fbbf24}
@@ -63,12 +63,12 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 <header class="py-4">
 <div class="max-w-[1600px] mx-auto px-6 flex justify-between items-center">
   <div>
-    <h1 class="text-2xl font-bold text-white">Bin Momen Sell-out Weekly Dashboard</h1>
+    <h1 class="text-2xl font-bold text-white">Dhamin Sell-out Weekly Dashboard</h1>
     <p class="text-sm text-slate-400 mt-1">LG Electronics — IR Channel</p>
   </div>
   <div class="text-right text-xs text-slate-400">
-    <div>Updated: 2026-03-30 16:46</div>
-    <div>Data: W1~W13 2026</div>
+    <div>Updated: 2026-03-29 10:30</div>
+    <div>Data: W1~W11 2026</div>
   </div>
 </div>
 </header>
@@ -88,7 +88,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 
 <!-- ===================== TAB 1: OVERVIEW ===================== -->
 <section id="tab-overview">
-  <!-- Filters -->
   <div class="flex flex-wrap gap-3 mb-4 items-center">
     <div class="ms-wrap" id="ow_wrap">
       <button class="ms-btn" id="ow_btn">Week ▾</button>
@@ -108,33 +107,31 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
     <span class="text-xs text-slate-500" id="ov_filter_info"></span>
   </div>
 
-  <!-- KPI Cards -->
   <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
     <div class="kpi-card">
-      <div class="kpi-label">Latest Week (W13)</div>
-      <div class="kpi-val" id="kpi-lq">10</div>
-      <div class="kpi-change dn">-37.5% WoW</div>
+      <div class="kpi-label">Latest Week (W11)</div>
+      <div class="kpi-val" id="kpi-lq">40</div>
+      <div class="kpi-change dn">-2.4% WoW</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Current Month</div>
-      <div class="kpi-val">91</div>
-      <div class="kpi-change up">-52.4% MoM</div>
+      <div class="kpi-val">81</div>
+      <div class="kpi-change up">-39.6% MoM</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">YTD Total</div>
-      <div class="kpi-val">563</div>
+      <div class="kpi-val">306</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Avg / Week</div>
-      <div class="kpi-val">43.3</div>
+      <div class="kpi-val">27.8</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">Models / Categories</div>
-      <div class="kpi-val">23<span class="text-base text-slate-400"> / 4</span></div>
+      <div class="kpi-val">23<span class="text-base text-slate-400"> / 3</span></div>
     </div>
   </div>
 
-  <!-- Charts Row 1: Weekly Bar + Monthly Bar -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
     <div class="card">
       <h3 class="text-sm font-semibold text-slate-300 mb-3">Weekly Sales Trend</h3>
@@ -146,7 +143,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
     </div>
   </div>
 
-  <!-- Charts Row 2: Category Pie + Category Weekly Stacked -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
     <div class="card">
       <h3 class="text-sm font-semibold text-slate-300 mb-3">Sales by Category</h3>
@@ -161,7 +157,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 
 <!-- ===================== TAB 2: WEEKLY TREND ===================== -->
 <section id="tab-trend" style="display:none">
-  <!-- Filters -->
   <div class="flex flex-wrap gap-3 mb-4 items-center">
     <div class="ms-wrap" id="fw_wrap">
       <button class="ms-btn" id="fw_btn">Week ▾</button>
@@ -180,13 +175,11 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
     <span class="text-xs text-slate-500" id="filter_info"></span>
   </div>
 
-  <!-- Model Line Chart -->
   <div class="card mb-4">
     <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Weekly Trend (Top 10)</h3>
     <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
   </div>
 
-  <!-- Model x Week Matrix Table -->
   <div class="card">
     <h3 class="text-sm font-semibold text-slate-300 mb-3">Model × Week Matrix</h3>
     <div class="tbl-wrap" id="matrix_tbl"></div>
@@ -195,7 +188,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 
 <!-- ===================== TAB 3: MODEL RANKING ===================== -->
 <section id="tab-ranking" style="display:none">
-  <!-- Filters -->
   <div class="flex flex-wrap gap-3 mb-4 items-center">
     <div class="ms-wrap" id="rw_wrap">
       <button class="ms-btn" id="rw_btn">Week ▾</button>
@@ -223,11 +215,11 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 </main>
 
 <footer class="text-center text-xs text-slate-600 py-4 border-t border-slate-800">
-  Bin Momen Sell-out Dashboard · Generated 2026-03-30 16:46 · Powered by 소놀봇
+  Dhamin Sell-out Dashboard · Generated 2026-03-29 10:30 · Powered by 소놀봇
 </footer>
 
 <script>
-const D={"meta":{"generated":"2026-03-31 06:52","weeks":["W1","W2","W3","W4","W5","W6","W7","W8","W9","W10","W11","W12","W13"],"months":["Jan","Feb","Mar"],"week_dates":{"W1":"1/1~1/3","W2":"1/4~1/10","W3":"1/11~1/17","W4":"1/18~1/24","W5":"1/25~1/31","W6":"2/1~2/7","W7":"2/8~2/14","W8":"2/15~2/21","W9":"2/22~2/28","W10":"3/1~3/7","W11":"3/8~3/14","W12":"3/15~3/21","W13":"3/22~3/28"},"week_month":{"W1":"Jan","W2":"Jan","W3":"Jan","W4":"Jan","W5":"Jan","W6":"Feb","W7":"Feb","W8":"Feb","W9":"Feb","W10":"Mar","W11":"Mar","W12":"Mar","W13":"Mar"}},"kpi":{"latest_qty":10,"wow":-37.5,"cm_qty":91,"mom":-52.4,"ytd":563,"avg_week":43.3,"models_count":23,"cat_count":4},"dims":{"categories":["Cassette","Concealed","Floor Standing AC","Split AC"]},"raw":[{"w":"W1","m":"Jan","s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","q":7},{"w":"W1","m":"Jan","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":14},{"w":"W1","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":10},{"w":"W1","m":"Jan","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":9},{"w":"W1","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":11},{"w":"W10","m":"Mar","s":"ABNQ60GM3TA","n":"AC LG Concealed 5 Ton Cold - Inverter","b":"LG","c":"Concealed","q":2},{"w":"W10","m":"Mar","s":"ABNW21GM1TA","n":"AC LG Concealed 18 H&C - Inverter","b":"LG","c":"Concealed","q":11},{"w":"W10","m":"Mar","s":"ABNW40GM3TA","n":"AC LG Concealed 3 Ton H&C - Inverter","b":"LG","c":"Concealed","q":1},{"w":"W10","m":"Mar","s":"ABUW28GM1TA","n":"AC LG Concealed 2 Ton H&C - Inverter - Outdoor Only","b":"LG","c":"Concealed","q":1},{"w":"W10","m":"Mar","s":"ABUW60GM3TA","n":"AC LG Concealed 5 Ton H&C - Inverter - Outdoor Only","b":"LG","c":"Concealed","q":2},{"w":"W10","m":"Mar","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W10","m":"Mar","s":"LC242C","n":"LG Split Jet Cool 24 Cold (New)","b":"LG","c":"Split AC","q":5},{"w":"W10","m":"Mar","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W10","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":11},{"w":"W10","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W11","m":"Mar","s":"ND182H","n":"LG Split Fresh 18 H&C","b":"LG","c":"Split AC","q":2},{"w":"W11","m":"Mar","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W11","m":"Mar","s":"NF122H","n":"LG Split Fresh Inverter 12 H&C","b":"LG","c":"Split AC","q":2},{"w":"W11","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":10},{"w":"W11","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W12","m":"Mar","s":"APNW55GT3M","n":"LG Floor Standing Islamic H&C","b":"LG","c":"Floor Standing AC","q":2},{"w":"W12","m":"Mar","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W12","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":7},{"w":"W12","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W12","m":"Mar","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":2},{"w":"W13","m":"Mar","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W13","m":"Mar","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W13","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W13","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W13","m":"Mar","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W2","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W2","m":"Jan","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W2","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":51},{"w":"W2","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":16},{"w":"W2","m":"Jan","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":35},{"w":"W2","m":"Jan","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W3","m":"Jan","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":16},{"w":"W3","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W3","m":"Jan","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W3","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W3","m":"Jan","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W3","m":"Jan","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W4","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":6},{"w":"W4","m":"Jan","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":14},{"w":"W4","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W4","m":"Jan","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":9},{"w":"W4","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W4","m":"Jan","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":6},{"w":"W4","m":"Jan","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":7},{"w":"W5","m":"Jan","s":"GTNW34GNLTA","n":"AC LG Cassette 2.5 Ton H&C - Inverter","b":"LG","c":"Cassette","q":5},{"w":"W5","m":"Jan","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W5","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W5","m":"Jan","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":9},{"w":"W5","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W5","m":"Jan","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W5","m":"Jan","s":"ND242H","n":"LG Split Fresh 24 H&C","b":"LG","c":"Split AC","q":10},{"w":"W5","m":"Jan","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W5","m":"Jan","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W6","m":"Feb","s":"ABNQ55GM3TA","n":"AC LG Concealed 4 Ton Cold - Inverter","b":"LG","c":"Concealed","q":1},{"w":"W6","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W6","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W6","m":"Feb","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W6","m":"Feb","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W6","m":"Feb","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W7","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W7","m":"Feb","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":7},{"w":"W7","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"NF122H","n":"LG Split Fresh Inverter 12 H&C","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":12},{"w":"W8","m":"Feb","s":"APNW55GT3M","n":"LG Floor Standing Islamic H&C","b":"LG","c":"Floor Standing AC","q":6},{"w":"W8","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W8","m":"Feb","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":6},{"w":"W8","m":"Feb","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":11},{"w":"W8","m":"Feb","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W9","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":4},{"w":"W9","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":6},{"w":"W9","m":"Feb","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":8},{"w":"W9","m":"Feb","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":7},{"w":"W9","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W9","m":"Feb","s":"NF122C","n":"LG Split Fresh Inverter 12 Cold","b":"LG","c":"Split AC","q":30},{"w":"W9","m":"Feb","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":56},{"w":"W9","m":"Feb","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":2}],"models":[{"s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","t":155,"wk":{"W10":11,"W11":10,"W12":7,"W13":2,"W2":35,"W3":2,"W4":6,"W5":3,"W7":12,"W8":11,"W9":56}},{"s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","t":88,"wk":{"W1":14,"W10":5,"W11":1,"W12":1,"W2":5,"W3":16,"W4":14,"W5":9,"W6":2,"W7":7,"W8":6,"W9":8}},{"s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","t":78,"wk":{"W1":10,"W2":51,"W3":3,"W4":3,"W5":2,"W6":1,"W8":1,"W9":7}},{"s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","t":39,"wk":{"W1":11,"W11":2,"W13":1,"W2":16,"W3":2,"W4":3,"W7":1,"W8":1,"W9":2}},{"s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","t":36,"wk":{"W10":4,"W11":1,"W13":2,"W2":1,"W4":6,"W5":4,"W6":4,"W7":5,"W8":3,"W9":6}},{"s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","t":32,"wk":{"W10":1,"W11":1,"W12":4,"W13":4,"W2":1,"W3":1,"W4":7,"W5":4,"W6":2,"W8":5,"W9":2}},{"s":"NF122C","n":"LG Split Fresh Inverter 12 Cold","b":"LG","c":"Split AC","t":30,"wk":{"W9":30}},{"s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","t":28,"wk":{"W1":9,"W11":2,"W3":5,"W4":9,"W5":2,"W8":1}},{"s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","t":15,"wk":{"W5":5,"W6":5,"W7":1,"W9":4}},{"s":"ABNW21GM1TA","n":"AC LG Concealed 18 H&C - Inverter","b":"LG","c":"Concealed","t":11,"wk":{"W10":11}},{"s":"ND242H","n":"LG Split Fresh 24 H&C","b":"LG","c":"Split AC","t":10,"wk":{"W5":10}},{"s":"APNW55GT3M","n":"LG Floor Standing Islamic H&C","b":"LG","c":"Floor Standing AC","t":8,"wk":{"W12":2,"W8":6}},{"s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","t":7,"wk":{"W1":7}},{"s":"LC242C","n":"LG Split Jet Cool 24 Cold (New)","b":"LG","c":"Split AC","t":5,"wk":{"W10":5}},{"s":"GTNW34GNLTA","n":"AC LG Cassette 2.5 Ton H&C - Inverter","b":"LG","c":"Cassette","t":5,"wk":{"W5":5}},{"s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","t":4,"wk":{"W11":1,"W12":2,"W13":1}},{"s":"NF122H","n":"LG Split Fresh Inverter 12 H&C","b":"LG","c":"Split AC","t":3,"wk":{"W11":2,"W7":1}},{"s":"ABNQ60GM3TA","n":"AC LG Concealed 5 Ton Cold - Inverter","b":"LG","c":"Concealed","t":2,"wk":{"W10":2}},{"s":"ABUW60GM3TA","n":"AC LG Concealed 5 Ton H&C - Inverter - Outdoor Only","b":"LG","c":"Concealed","t":2,"wk":{"W10":2}},{"s":"ND182H","n":"LG Split Fresh 18 H&C","b":"LG","c":"Split AC","t":2,"wk":{"W11":2}},{"s":"ABNW40GM3TA","n":"AC LG Concealed 3 Ton H&C - Inverter","b":"LG","c":"Concealed","t":1,"wk":{"W10":1}},{"s":"ABUW28GM1TA","n":"AC LG Concealed 2 Ton H&C - Inverter - Outdoor Only","b":"LG","c":"Concealed","t":1,"wk":{"W10":1}},{"s":"ABNQ55GM3TA","n":"AC LG Concealed 4 Ton Cold - Inverter","b":"LG","c":"Concealed","t":1,"wk":{"W6":1}}],"weekly":{"W1":51,"W10":43,"W11":22,"W12":16,"W13":10,"W2":109,"W3":29,"W4":48,"W5":44,"W6":15,"W7":27,"W8":34,"W9":115},"monthly":{"Jan":281,"Mar":91,"Feb":191}};
+const D={"meta":{"generated":"2026-03-30 18:18","weeks":["W1","W2","W3","W4","W5","W6","W7","W8","W9","W10","W11"],"months":["Jan","Feb","Mar"],"week_dates":{"W1":"1/1~1/3","W2":"1/4~1/10","W3":"1/11~1/17","W4":"1/18~1/24","W5":"1/25~1/31","W6":"2/1~2/7","W7":"2/8~2/14","W8":"2/15~2/21","W9":"2/22~2/28","W10":"3/1~3/7","W11":"3/8~3/14"},"week_month":{"W1":"Jan","W2":"Jan","W3":"Jan","W4":"Jan","W5":"Jan","W6":"Feb","W7":"Feb","W8":"Feb","W9":"Feb","W10":"Mar","W11":"Mar"}},"kpi":{"latest_qty":40,"wow":-2.4,"cm_qty":81,"mom":-39.6,"ytd":306,"avg_week":27.8,"models_count":23,"cat_count":3},"dims":{"categories":["Concealed","Floor Standing AC","Split AC"]},"raw":[{"w":"W1","m":"Jan","s":"ABNQ40GM3TA","n":"AC LG Concealed 3 Ton Cold - Inverter","b":"LG","c":"Concealed","q":2},{"w":"W1","m":"Jan","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W1","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":13},{"w":"W1","m":"Jan","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W10","m":"Mar","s":"ABN6536MTA","n":"AC LG Concealed Unit","b":"LG","c":"Concealed","q":1},{"w":"W10","m":"Mar","s":"AM182C","n":"LG Split Art Cool 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W10","m":"Mar","s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","q":2},{"w":"W10","m":"Mar","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":4},{"w":"W10","m":"Mar","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":13},{"w":"W10","m":"Mar","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":3},{"w":"W10","m":"Mar","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W10","m":"Mar","s":"LT302C","n":"LG Split 30K Cold (Dhamin)","b":"LG","c":"Split AC","q":1},{"w":"W10","m":"Mar","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W10","m":"Mar","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W10","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W10","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W10","m":"Mar","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":2},{"w":"W10","m":"Mar","s":"NT382H","n":"LG Split Titan 30K H&C","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":7},{"w":"W11","m":"Mar","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":16},{"w":"W11","m":"Mar","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":5},{"w":"W11","m":"Mar","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W11","m":"Mar","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W11","m":"Mar","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W11","m":"Mar","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W11","m":"Mar","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W2","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":14},{"w":"W2","m":"Jan","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":2},{"w":"W3","m":"Jan","s":"ATNW40GYLT6","n":"AC LG 36 Floor Standing H&C","b":"LG","c":"Floor Standing AC","q":1},{"w":"W3","m":"Jan","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W3","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":17},{"w":"W3","m":"Jan","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":3},{"w":"W3","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W3","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W3","m":"Jan","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W3","m":"Jan","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W4","m":"Jan","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W4","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":7},{"w":"W4","m":"Jan","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W4","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W5","m":"Jan","s":"AM182C","n":"LG Split Art Cool 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W5","m":"Jan","s":"AM242C","n":"LG Split Art Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W5","m":"Jan","s":"ATNW40GYLTAANWBIB","n":"AC LG 36 Floor Standing H&C - Inverter","b":"LG","c":"Floor Standing AC","q":1},{"w":"W5","m":"Jan","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W5","m":"Jan","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":2},{"w":"W5","m":"Jan","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W6","m":"Feb","s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","q":1},{"w":"W6","m":"Feb","s":"APNW55GT3M","n":"LG Floor Standing Islamic H&C","b":"LG","c":"Floor Standing AC","q":1},{"w":"W6","m":"Feb","s":"ATNW40GYLTAANWBIB","n":"AC LG 36 Floor Standing H&C - Inverter","b":"LG","c":"Floor Standing AC","q":1},{"w":"W6","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W6","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W6","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":3},{"w":"W6","m":"Feb","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W6","m":"Feb","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"AM242C","n":"LG Split Art Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"APNQ55GT3E6","n":"LG Floor Standing Standard Cold","b":"LG","c":"Floor Standing AC","q":3},{"w":"W7","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W7","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":10},{"w":"W7","m":"Feb","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W7","m":"Feb","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":2},{"w":"W7","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":4},{"w":"W8","m":"Feb","s":"AM182C","n":"LG Split Art Cool 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"AM242C","n":"LG Split Art Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"APNQ55GT3E6","n":"LG Floor Standing Standard Cold","b":"LG","c":"Floor Standing AC","q":2},{"w":"W8","m":"Feb","s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","q":2},{"w":"W8","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":10},{"w":"W8","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":22},{"w":"W8","m":"Feb","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":3},{"w":"W8","m":"Feb","s":"LC242H","n":"LG Split Jet Cool 24 H&C (New)","b":"LG","c":"Split AC","q":4},{"w":"W8","m":"Feb","s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","q":5},{"w":"W8","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":5},{"w":"W8","m":"Feb","s":"NF122C","n":"LG Split Fresh Inverter 12 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","q":3},{"w":"W8","m":"Feb","s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","q":1},{"w":"W8","m":"Feb","s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","q":1},{"w":"W9","m":"Feb","s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","q":1},{"w":"W9","m":"Feb","s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","q":24},{"w":"W9","m":"Feb","s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","q":5},{"w":"W9","m":"Feb","s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","q":2}],"models":[{"s":"LA242C","n":"LG Split WiFi 24 Cold","b":"LG","c":"Split AC","t":143,"wk":{"W1":13,"W10":13,"W11":16,"W2":14,"W3":17,"W4":7,"W5":2,"W6":5,"W7":10,"W8":22,"W9":24}},{"s":"LA182C","n":"LG Split WiFi 18 Cold","b":"LG","c":"Split AC","t":33,"wk":{"W1":3,"W10":4,"W11":7,"W3":1,"W4":1,"W5":1,"W6":2,"W7":3,"W8":10,"W9":1}},{"s":"ND242C","n":"LG Split Fresh 24 Cold","b":"LG","c":"Split AC","t":24,"wk":{"W10":4,"W11":3,"W3":1,"W4":1,"W5":1,"W6":3,"W7":4,"W8":5,"W9":2}},{"s":"LA302C","n":"LG Split WiFi 30K Cold","b":"LG","c":"Split AC","t":22,"wk":{"W1":1,"W10":3,"W11":5,"W2":2,"W3":3,"W8":3,"W9":5}},{"s":"LO242C","n":"LG Split Jet Cool 24 Cold","b":"LG","c":"Split AC","t":16,"wk":{"W10":3,"W11":1,"W3":5,"W4":5,"W7":1,"W8":1}},{"s":"NS242C","n":"LG Split Smart Inverter 24 Cold","b":"LG","c":"Split AC","t":12,"wk":{"W10":1,"W11":5,"W3":4,"W6":1,"W8":1}},{"s":"ND182C","n":"LG Split Fresh 18 Cold","b":"LG","c":"Split AC","t":10,"wk":{"W10":3,"W7":2,"W8":5}},{"s":"NS182C","n":"LG Split Smart Inverter 18 Cold","b":"LG","c":"Split AC","t":8,"wk":{"W10":2,"W11":2,"W6":1,"W8":3}},{"s":"AM182C","n":"LG Split Art Cool 18 Cold","b":"LG","c":"Split AC","t":5,"wk":{"W10":1,"W5":3,"W8":1}},{"s":"APNQ55GT3M","n":"LG Floor Standing Islamic Cold","b":"LG","c":"Floor Standing AC","t":5,"wk":{"W10":2,"W6":1,"W8":2}},{"s":"NT382C","n":"LG Split Titan 30K Cold","b":"LG","c":"Split AC","t":5,"wk":{"W10":2,"W11":1,"W3":1,"W8":1}},{"s":"APNQ55GT3E6","n":"LG Floor Standing Standard Cold","b":"LG","c":"Floor Standing AC","t":5,"wk":{"W7":3,"W8":2}},{"s":"LC242H","n":"LG Split Jet Cool 24 H&C (New)","b":"LG","c":"Split AC","t":4,"wk":{"W8":4}},{"s":"AM242C","n":"LG Split Art Cool 24 Cold","b":"LG","c":"Split AC","t":3,"wk":{"W5":1,"W7":1,"W8":1}},{"s":"ABNQ40GM3TA","n":"AC LG Concealed 3 Ton Cold - Inverter","b":"LG","c":"Concealed","t":2,"wk":{"W1":2}},{"s":"ATNW40GYLTAANWBIB","n":"AC LG 36 Floor Standing H&C - Inverter","b":"LG","c":"Floor Standing AC","t":2,"wk":{"W5":1,"W6":1}},{"s":"ABN6536MTA","n":"AC LG Concealed Unit","b":"LG","c":"Concealed","t":1,"wk":{"W10":1}},{"s":"LT302C","n":"LG Split 30K Cold (Dhamin)","b":"LG","c":"Split AC","t":1,"wk":{"W10":1}},{"s":"NT382H","n":"LG Split Titan 30K H&C","b":"LG","c":"Split AC","t":1,"wk":{"W10":1}},{"s":"ATNW40GYLT6","n":"AC LG 36 Floor Standing H&C","b":"LG","c":"Floor Standing AC","t":1,"wk":{"W3":1}},{"s":"APNW55GT3M","n":"LG Floor Standing Islamic H&C","b":"LG","c":"Floor Standing AC","t":1,"wk":{"W6":1}},{"s":"LO182C","n":"LG Split Jet Cool 18 Cold","b":"LG","c":"Split AC","t":1,"wk":{"W8":1}},{"s":"NF122C","n":"LG Split Fresh Inverter 12 Cold","b":"LG","c":"Split AC","t":1,"wk":{"W8":1}}],"weekly":{"W1":19,"W10":41,"W11":40,"W2":16,"W3":33,"W4":14,"W5":9,"W6":15,"W7":24,"W8":63,"W9":32},"monthly":{"Jan":91,"Mar":81,"Feb":134}};
 
 // ===== TAB SWITCHING =====
 document.querySelectorAll('.tab-btn').forEach(btn=>{
@@ -242,7 +234,7 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
 });
 
 // ===== CHART COLORS =====
-const COLORS=['#3b82f6','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16'];
+const COLORS=['#10b981','#f59e0b','#3b82f6','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16'];
 const CAT_COLORS={'Split AC':'#3b82f6','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed':'#a855f7','Cassette':'#22d3ee'};
 
 // ===== MULTI-SELECT FILTER =====
@@ -275,7 +267,6 @@ function catBadge(c){
   const cls=c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':c.includes('Floor')?'cat-floor':'cat-floor';
   return `<span class="cat-badge ${cls}">${c}</span>`;
 }">${c}</span>`;
-}">${c}</span>`;
 }
 function destroyChart(id){
   const c=Chart.getChart(id);
@@ -295,11 +286,9 @@ function renderOverview(){
   const filt=D.raw.filter(r=>selW.has(r.w)&&selC.has(r.c));
   const weeks=D.meta.weeks.filter(w=>selW.has(w));
 
-  // KPI update
   const filtTotal=filt.reduce((s,r)=>s+r.q,0);
   document.getElementById('ov_filter_info').textContent=`${filt.length} rows · ${filtTotal.toLocaleString()} units`;
 
-  // Weekly bar (filtered)
   const weeklyF={};
   filt.forEach(r=>{weeklyF[r.w]=(weeklyF[r.w]||0)+r.q});
   destroyChart('c_weekly');
@@ -307,12 +296,11 @@ function renderOverview(){
     type:'bar',
     data:{
       labels:weeks.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
-      datasets:[{label:'Qty',data:weeks.map(w=>weeklyF[w]||0),backgroundColor:'#3b82f6',borderRadius:6}]
+      datasets:[{label:'Qty',data:weeks.map(w=>weeklyF[w]||0),backgroundColor:'#10b981',borderRadius:6}]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:10,weight:600},formatter:v=>v>0?v:''}},scales:{x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{display:false}},y:{ticks:{color:'#64748b'},grid:{color:'#1e293b'}}}}
   });
 
-  // Monthly bar (filtered)
   const monthlyF={};
   filt.forEach(r=>{monthlyF[r.m]=(monthlyF[r.m]||0)+r.q});
   const months=D.meta.months.filter(m=>Object.keys(monthlyF).includes(m));
@@ -326,7 +314,6 @@ function renderOverview(){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:11,weight:600},formatter:v=>v>0?v:''}},scales:{x:{ticks:{color:'#94a3b8'},grid:{display:false}},y:{ticks:{color:'#64748b'},grid:{color:'#1e293b'}}}}
   });
 
-  // Category pie (filtered)
   destroyChart('c_cat_pie');
   const catTotals={};
   filt.forEach(r=>{catTotals[r.c]=(catTotals[r.c]||0)+r.q});
@@ -340,7 +327,6 @@ function renderOverview(){
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',padding:15}},datalabels:{color:'#fff',font:{weight:700,size:12},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return t?Math.round(v/t*100)+'%':''}}}}
   });
 
-  // Category weekly trend (stacked, filtered)
   destroyChart('c_cat_trend');
   const catWeekly={};
   filt.forEach(r=>{
@@ -372,12 +358,10 @@ function renderTrend(){
 
   document.getElementById('filter_info').textContent=`${filt.length} rows · ${filt.reduce((s,r)=>s+r.q,0).toLocaleString()} units`;
 
-  // Top 10 models by filtered qty
   const mq={};
   filt.forEach(r=>{mq[r.s]=(mq[r.s]||0)+r.q});
   const top10=Object.entries(mq).sort((a,b)=>b[1]-a[1]).slice(0,10).map(e=>e[0]);
 
-  // Line chart
   destroyChart('c_model_trend');
   const datasets=top10.map((sku,i)=>{
     const md=D.models.find(m=>m.s===sku);
@@ -390,7 +374,6 @@ function renderTrend(){
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'#e2e8f0',boxWidth:12,font:{size:10}}},datalabels:{display:false}},scales:{x:{ticks:{color:'#94a3b8'},grid:{display:false}},y:{ticks:{color:'#64748b'},grid:{color:'#1e293b'}}}}
   });
 
-  // Matrix table
   const allSKUs=[...new Set(filt.map(r=>r.s))];
   const skuQty={};
   filt.forEach(r=>{skuQty[r.s]=(skuQty[r.s]||0)+r.q});
@@ -430,7 +413,6 @@ function renderRanking(){
   const q=document.getElementById('rank_search').value.toLowerCase();
   const filt=D.raw.filter(r=>selW.has(r.w)&&selC.has(r.c));
 
-  // Aggregate by SKU
   const agg={};
   filt.forEach(r=>{
     if(!agg[r.s])agg[r.s]={s:r.s,n:r.n,b:r.b,c:r.c,q:0};
