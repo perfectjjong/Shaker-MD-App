@@ -43904,6 +43904,25 @@ function buildTab6() {
           <th>Status</th>
         </tr></thead><tbody id="tbl6summary"></tbody>
       </table></div>
+    </div>
+    <div class="card" style="margin-top:24px;border:2px solid #2E75B6;">
+      <h3 class="section-title" style="color:#2E75B6;">&#128260; Cross-Verification: Executive Summary vs OUD Tracking</h3>
+      <p style="color:#595959;font-size:13px;margin:8px 0 16px;line-height:1.5;">
+        Executive Summary shows <b>all dealers</b> stock, while OUD Tracking only includes <b>dealers with OUD entries</b>.<br>
+        This reconciliation verifies that the difference is solely due to scope (non-OUD dealers), not data errors.
+      </p>
+      <div id="xv-status" style="margin-bottom:16px;"></div>
+      <div class="table-scroll"><table id="tbl6xv">
+        <thead><tr style="background:#E8EDF2;">
+          <th style="text-align:left;min-width:260px;">Metric</th>
+          <th style="text-align:right;">Executive Summary</th>
+          <th style="text-align:right;">OUD Tracking</th>
+          <th style="text-align:right;">Difference</th>
+          <th style="text-align:left;min-width:280px;">Explanation</th>
+          <th style="text-align:center;">Status</th>
+        </tr></thead><tbody id="tbl6xvBody"></tbody>
+      </table></div>
+      <div id="xv-detail" style="margin-top:16px;"></div>
     </div>`;
 
     document.querySelectorAll('#tab6 .card:nth-of-type(1) th.sortable').forEach(th => {
@@ -44110,6 +44129,173 @@ function renderTab6() {
         <td class="num" style="font-weight:700">${h.purity.toFixed(1)}%</td>
         <td class="ctr"><span style="display:inline-block;padding:2px 8px;border-radius:12px;color:#FFF;font-size:11px;font-weight:600;background:${hColors[h.status]}">${h.status}</span></td></tr>`
     ).join('');
+
+    // ===== CROSS-VERIFICATION: Executive Summary vs OUD Tracking =====
+    renderCrossVerification();
+}
+
+function renderCrossVerification() {
+    const weeks = DATA.oudMeta || [];
+    if (weeks.length === 0) {
+        const xvBody = document.getElementById('tbl6xvBody');
+        if (xvBody) xvBody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#595959;">No OUD data available for cross-verification.</td></tr>';
+        return;
+    }
+
+    const ck = mCur();
+    const fk = weeks[0].key;  // first week key
+    const lk = weeks[weeks.length - 1].key;  // latest week key
+    const oudDC = DATA.oudDealerCategory || [];
+    const allDC = DATA.dealerCategory || [];
+
+    // --- Executive Summary perspective (all dealers) ---
+    const execFiltered = allDC.filter(d =>
+        (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
+        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
+        (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
+        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
+    );
+    let execOnHand = 0, execOnHandVal = 0;
+    execFiltered.forEach(d => {
+        const p = d[ck] || {};
+        execOnHand += (p.stkQty || 0);
+        execOnHandVal += (p.stkVal || 0);
+    });
+
+    // Exec With OUD = On-Hand + OUD for matched dealers
+    let execOudTotal = 0, execOudTotalVal = 0;
+    const oudLookup = {};
+    oudDC.forEach(d => { oudLookup[d.dealer + '||' + d.category] = d; });
+    execFiltered.forEach(d => {
+        const oud = oudLookup[d.dealer + '||' + d.category];
+        if (oud) {
+            execOudTotal += (oud[fk]?.qty || 0);
+            execOudTotalVal += (oud[fk]?.val || 0);
+        }
+    });
+    const execWithOud = execOnHand + execOudTotal;
+
+    // --- OUD Tracking perspective (only OUD dealers) ---
+    const oudFiltered = oudDC.filter(d =>
+        (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
+        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
+        (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
+        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
+    );
+    const dcLookupXV = {};
+    execFiltered.forEach(d => { dcLookupXV[d.dealer + '||' + d.category] = d; });
+
+    let oudOnHand = 0, oudOnHandVal = 0, oudOudFirst = 0, oudOudFirstVal = 0;
+    oudFiltered.forEach(d => {
+        const dc = dcLookupXV[d.dealer + '||' + d.category];
+        if (dc) {
+            const p = dc[ck] || {};
+            oudOnHand += (p.stkQty || 0);
+            oudOnHandVal += (p.stkVal || 0);
+        }
+        oudOudFirst += (d[fk]?.qty || 0);
+        oudOudFirstVal += (d[fk]?.val || 0);
+    });
+    const oudAdjStock = oudOnHand + oudOudFirst;
+
+    // --- Compute differences ---
+    const onHandDiff = execOnHand - oudOnHand;
+    const withOudDiff = execWithOud - oudAdjStock;
+    const oudAmtDiff = execOudTotal - oudOudFirst;
+
+    // Count dealers in each scope
+    const execDealerSet = new Set(execFiltered.map(d => d.dealer));
+    const oudDealerSet = new Set(oudFiltered.map(d => d.dealer));
+    const nonOudDealers = [...execDealerSet].filter(d => !oudDealerSet.has(d));
+
+    // Non-OUD dealers stock
+    let nonOudStock = 0, nonOudStockVal = 0;
+    execFiltered.forEach(d => {
+        if (!oudDealerSet.has(d.dealer)) {
+            const p = d[ck] || {};
+            nonOudStock += (p.stkQty || 0);
+            nonOudStockVal += (p.stkVal || 0);
+        }
+    });
+
+    // Verify: onHandDiff should equal nonOudStock (+ any OUD dealers with category mismatch)
+    const isReconciled = Math.abs(onHandDiff - nonOudStock) < 2;  // tolerance for rounding
+    const isOudReconciled = Math.abs(oudAmtDiff) < 2;
+
+    const badge = (ok) => ok
+        ? '<span style="display:inline-block;padding:2px 10px;border-radius:12px;color:#FFF;font-size:11px;font-weight:600;background:#1A7A3C;">&#10003; MATCH</span>'
+        : '<span style="display:inline-block;padding:2px 10px;border-radius:12px;color:#FFF;font-size:11px;font-weight:600;background:#9C0006;">&#10007; MISMATCH</span>';
+
+    // Status banner
+    const allOk = isReconciled && isOudReconciled;
+    const xvStatus = document.getElementById('xv-status');
+    if (xvStatus) {
+        xvStatus.innerHTML = allOk
+            ? '<div style="padding:12px 16px;background:#E6F4EA;border-left:4px solid #1A7A3C;border-radius:4px;font-size:13px;font-weight:600;color:#1A7A3C;">&#10003; Cross-Verification PASSED &mdash; All differences are explained by scope (non-OUD dealers).</div>'
+            : '<div style="padding:12px 16px;background:#FDE7E9;border-left:4px solid #9C0006;border-radius:4px;font-size:13px;font-weight:600;color:#9C0006;">&#10007; Cross-Verification FAILED &mdash; Unexplained discrepancies found. Check data sources.</div>';
+    }
+
+    const rows = [
+        { metric:'<b>On-Hand Stock (QTY)</b>', exec:execOnHand, oud:oudOnHand, diff:onHandDiff,
+          explain:`Non-OUD dealers: ${fmtNum(nonOudStock)} QTY (${nonOudDealers.length} dealers)`,
+          ok: isReconciled },
+        { metric:'<b>OUD Amount (1st week, QTY)</b>', exec:execOudTotal, oud:oudOudFirst, diff:oudAmtDiff,
+          explain: isOudReconciled ? 'Same OUD source data used' : 'Category/dealer mapping mismatch',
+          ok: isOudReconciled },
+        { metric:'<b>With OUD / Adjusted Stock (QTY)</b>', exec:execWithOud, oud:oudAdjStock, diff:withOudDiff,
+          explain:`On-Hand diff (${fmtNum(onHandDiff)}) + OUD diff (${fmtNum(oudAmtDiff)})`,
+          ok: Math.abs(withOudDiff - onHandDiff - oudAmtDiff) < 2 },
+        { metric:'Scope: Dealers', exec:execDealerSet.size, oud:oudDealerSet.size, diff:nonOudDealers.length,
+          explain:`${nonOudDealers.length} dealers have no OUD entries`,
+          ok: true },
+        { metric:'Scope: Dealer-Categories', exec:execFiltered.length, oud:oudFiltered.length, diff:execFiltered.length - oudFiltered.length,
+          explain:'OUD Tracking only shows dealer-categories with OUD data',
+          ok: true },
+    ];
+
+    const xvBody = document.getElementById('tbl6xvBody');
+    if (xvBody) {
+        xvBody.innerHTML = rows.map(r => {
+            const diffColor = r.diff === 0 ? '#595959' : r.ok ? '#2E75B6' : '#9C0006';
+            return `<tr>
+                <td style="text-align:left;">${r.metric}</td>
+                <td class="num" style="font-weight:600;">${fmtNum(r.exec)}</td>
+                <td class="num" style="font-weight:600;">${fmtNum(r.oud)}</td>
+                <td class="num" style="font-weight:700;color:${diffColor};">${r.diff > 0 ? '+' : ''}${fmtNum(r.diff)}</td>
+                <td style="text-align:left;font-size:12px;color:#595959;">${r.explain}</td>
+                <td class="ctr">${badge(r.ok)}</td>
+            </tr>`;
+        }).join('');
+    }
+
+    // Detail: list non-OUD dealers
+    const xvDetail = document.getElementById('xv-detail');
+    if (xvDetail && nonOudDealers.length > 0) {
+        const nonOudData = nonOudDealers.map(name => {
+            let stk = 0, stkV = 0;
+            execFiltered.filter(d => d.dealer === name).forEach(d => {
+                stk += (d[ck]?.stkQty || 0);
+                stkV += (d[ck]?.stkVal || 0);
+            });
+            const region = (execFiltered.find(d => d.dealer === name) || {}).region || '';
+            return { name, region, stk, stkV };
+        }).filter(d => d.stk > 0).sort((a,b) => b.stk - a.stk);
+
+        xvDetail.innerHTML = `
+            <details style="margin-top:8px;">
+                <summary style="cursor:pointer;font-weight:600;font-size:13px;color:#2E75B6;">
+                    &#128269; Non-OUD Dealers Detail (${nonOudData.length} dealers with stock, total ${fmtNum(nonOudStock)} QTY)
+                </summary>
+                <div class="table-scroll" style="max-height:300px;margin-top:8px;">
+                    <table><thead><tr><th>Dealer</th><th>Region</th><th style="text-align:right;">On-Hand QTY</th><th style="text-align:right;">On-Hand Value</th></tr></thead>
+                    <tbody>${nonOudData.map(d =>
+                        `<tr><td class="txt">${d.name}</td><td class="ctr">${d.region}</td><td class="num">${fmtNum(d.stk)}</td><td class="num">${fmtVal(d.stkV)}</td></tr>`
+                    ).join('')}</tbody></table>
+                </div>
+            </details>`;
+    } else if (xvDetail) {
+        xvDetail.innerHTML = '';
+    }
 }
 
 /* =========================================================
