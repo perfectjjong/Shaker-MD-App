@@ -1,310 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IR Sell-thru Opportunity Dashboard</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
-<style>
-:root {
-  --navy: #1F4E79;
-  --blue: #2E75B6;
-  --light-blue: #BDD7EE;
-  --green: #006100;
-  --red: #9C0006;
-  --gray: #595959;
-  --bg-stripe: #F2F2F2;
-  --white: #FFFFFF;
-  --opportunity: #1A7A3C;
-  --healthy: #B8860B;
-  --overstock: #9C0006;
-  --inactive: #595959;
-}
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #F5F5F5;
-  color: #333;
-  font-size: 14px;
-  line-height: 1.5;
-}
-.header {
-  background: var(--navy);
-  color: var(--white);
-  padding: 16px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.header-left h1 { font-size: 22px; font-weight: 700; }
-.header-left p { font-size: 13px; opacity: 0.85; }
-.header-right { text-align: right; font-size: 12px; opacity: 0.8; }
-.tab-bar {
-  display: flex;
-  background: #D9D9D9;
-  padding: 0 24px;
-  gap: 2px;
-  overflow-x: auto;
-}
-.tab-btn {
-  padding: 10px 20px;
-  cursor: pointer;
-  border: none;
-  border-radius: 4px 4px 0 0;
-  background: #E0E0E0;
-  color: #333;
-  font-size: 13px;
-  font-weight: 600;
-  white-space: nowrap;
-  transition: background 0.2s, color 0.2s;
-}
-.tab-btn:hover { background: #CCC; }
-.tab-btn.active { background: var(--navy); color: var(--white); }
-.tab-content { display: none; padding: 20px 24px; }
-.tab-content.active { display: block; }
-.card {
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  padding: 16px;
-  margin-bottom: 16px;
-}
-.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
-.kpi-card {
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  padding: 16px;
-  border-left: 4px solid var(--navy);
-}
-.kpi-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.kpi-value { font-size: 26px; font-weight: 700; color: var(--navy); }
-.kpi-change { font-size: 12px; margin-top: 4px; }
-.positive { color: var(--green); }
-.negative { color: var(--red); }
-.chart-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-.chart-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
-.chart-box {
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  padding: 16px;
-}
-.chart-box h3 { font-size: 14px; color: var(--navy); margin-bottom: 12px; font-weight: 600; }
-.chart-container { position: relative; height: 300px; }
-.table-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 20px; }
-.table-box {
-  background: var(--white);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  padding: 16px;
-  overflow-x: auto;
-}
-.table-box h3 { font-size: 14px; color: var(--navy); margin-bottom: 12px; font-weight: 600; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-thead th {
-  background: var(--navy);
-  color: var(--white);
-  font-weight: 700;
-  text-align: center;
-  padding: 10px 12px;
-  border: 1px solid #1a4060;
-  white-space: nowrap;
-  cursor: default;
-  position: sticky;
-  top: 0;
-}
-thead th.sortable { cursor: pointer; }
-thead th.sortable:hover { background: #163a5c; }
-tbody td {
-  padding: 8px 12px;
-  border: 1px solid #E0E0E0;
-  white-space: nowrap;
-}
-tbody tr:nth-child(even) { background: var(--bg-stripe); }
-tbody tr:hover { background: #E8F0FE; }
-td.num { text-align: right; }
-td.txt { text-align: left; }
-td.ctr { text-align: center; }
-.signal-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  color: var(--white);
-  font-size: 11px;
-  font-weight: 600;
-}
-.signal-OPPORTUNITY { background: var(--opportunity); }
-.signal-HEALTHY { background: var(--healthy); }
-.signal-OVERSTOCK { background: var(--overstock); }
-.signal-INACTIVE { background: var(--inactive); }
-.badge-count {
-  display: inline-block;
-  padding: 4px 14px;
-  border-radius: 16px;
-  color: var(--white);
-  font-size: 13px;
-  font-weight: 700;
-  margin-right: 8px;
-}
-.badge-navy { background: var(--navy); }
-.badge-green { background: var(--green); }
-.badge-red { background: var(--red); }
-.badge-gray { background: var(--gray); }
-.dealer-count { font-size: 13px; color: var(--gray); margin-bottom: 12px; font-weight: 600; }
-.matrix-cell {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
-  min-width: 60px;
-}
-.full-width { grid-column: 1 / -1; }
-.section-title { font-size: 16px; color: var(--navy); font-weight: 700; margin-bottom: 12px; }
-.table-scroll { max-height: 450px; overflow-y: auto; }
-.no-data { text-align: center; padding: 40px; color: var(--gray); font-size: 14px; }
-
-/* ============ GLOBAL FILTER BAR ============ */
-#globalFilterBar {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  padding: 10px 24px;
-  background: #E8EDF2;
-  border-bottom: 1px solid #D0D0D0;
-}
-#globalFilterReset {
-  padding: 7px 16px;
-  background: var(--navy);
-  color: var(--white);
-  border: none;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  align-self: center;
-  white-space: nowrap;
-}
-#globalFilterReset:hover { background: #163a5c; }
-
-/* ============ MULTI-SELECT DROPDOWN ============ */
-.ms-dropdown { position: relative; min-width: 150px; flex-shrink: 0; }
-.ms-trigger {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: var(--white);
-  border: 1px solid #CCC;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 13px;
-  user-select: none;
-  min-height: 32px;
-}
-.ms-trigger:hover { border-color: var(--blue); }
-.ms-trigger.open { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(46,117,182,0.15); }
-.ms-lbl {
-  font-size: 11px;
-  color: var(--gray);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  white-space: nowrap;
-  margin-right: 2px;
-}
-.ms-summary {
-  flex: 1;
-  font-size: 12px;
-  color: #333;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.ms-arrow { font-size: 10px; color: var(--gray); transition: transform 0.2s; }
-.ms-trigger.open .ms-arrow { transform: rotate(180deg); }
-.ms-panel {
-  display: none;
-  position: absolute;
-  top: 100%;
-  left: 0;
-  min-width: 220px;
-  max-height: 320px;
-  background: var(--white);
-  border: 1px solid #CCC;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 1000;
-  margin-top: 2px;
-  flex-direction: column;
-}
-.ms-panel.open { display: flex; }
-.ms-search {
-  padding: 6px 8px;
-  border: none;
-  border-bottom: 1px solid #E0E0E0;
-  font-size: 12px;
-  outline: none;
-  font-family: inherit;
-}
-.ms-controls {
-  display: flex;
-  gap: 10px;
-  padding: 4px 8px;
-  border-bottom: 1px solid #E0E0E0;
-  font-size: 11px;
-}
-.ms-controls a { color: var(--blue); cursor: pointer; text-decoration: none; }
-.ms-controls a:hover { text-decoration: underline; }
-.ms-options { overflow-y: auto; flex: 1; max-height: 240px; -webkit-overflow-scrolling: touch; }
-.ms-option {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 8px;
-  font-size: 12px;
-  cursor: pointer;
-}
-.ms-option:hover { background: #F0F4FA; }
-.ms-option input[type="checkbox"] { margin: 0; flex-shrink: 0; }
-.ms-option.hidden { display: none; }
-
-/* Local search in Tab 3 */
-.local-search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-.local-search input {
-  padding: 6px 10px;
-  border: 1px solid #CCC;
-  border-radius: 4px;
-  font-size: 13px;
-  font-family: inherit;
-  width: 250px;
-}
-.local-search input:focus { outline: none; border-color: var(--blue); }
-
-@media (max-width: 768px) {
-  .kpi-grid { grid-template-columns: 1fr; }
-  .chart-grid, .chart-grid-3 { grid-template-columns: 1fr; }
-  .table-grid { grid-template-columns: 1fr; }
-  .header { flex-direction: column; text-align: center; }
-  .header-right { text-align: center; margin-top: 8px; }
-  .tab-bar { padding: 0 8px; }
-  .tab-btn { padding: 8px 12px; font-size: 12px; }
-  .tab-content { padding: 12px; }
-  #globalFilterBar { padding: 8px 12px; gap: 8px; }
-  .ms-dropdown { min-width: 100%; }
-  .ms-panel { min-width: 100%; max-width: calc(100vw - 48px); }
-}
-</style>
-<script type="application/json" id="irData">{
+var IR_DATA = {
   "meta": {
-    "generatedAt": "2026-03-15T22:19:30.261519",
+    "generatedAt": "2026-03-31T11:05:04.068160",
     "sourceFile": "All IR - STK & SO as of 28 Feb 2026_Dashboard.xlsx"
   },
   "kpi": {
@@ -36300,31 +35996,917 @@ td.ctr { text-align: center; }
         "soRatio": null
       },
       "signal": "INACTIVE"
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Cassette",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Free Standing",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     }
   ],
   "oudMeta": [
     {
-      "label": "7 mar 2026",
+      "label": "7 Mar 2026",
       "key": "w0"
     },
     {
-      "label": "14 mar 2026",
+      "label": "14 Mar 2026",
       "key": "w1"
+    },
+    {
+      "label": "29 Mar 2026",
+      "key": "w2"
     }
   ],
   "oudDealerCategory": [
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "CAC",
+      "w0": {
+        "qty": 196,
+        "val": 323813
+      },
+      "w1": {
+        "qty": 196,
+        "val": 323813
+      },
+      "w2": {
+        "qty": 176,
+        "val": 296604
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "w0": {
+        "qty": 108,
+        "val": 507176
+      },
+      "w1": {
+        "qty": 108,
+        "val": 507176
+      },
+      "w2": {
+        "qty": 98,
+        "val": 473792
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 50,
+        "val": 149100
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149100
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149100
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "w0": {
+        "qty": 200,
+        "val": 240552
+      },
+      "w1": {
+        "qty": 200,
+        "val": 240552
+      },
+      "w2": {
+        "qty": 200,
+        "val": 240552
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "w0": {
+        "qty": 50,
+        "val": 149098
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149098
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149098
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "w0": {
+        "qty": 1,
+        "val": 5132
+      },
+      "w1": {
+        "qty": 1,
+        "val": 5132
+      },
+      "w2": {
+        "qty": 1,
+        "val": 5132
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 4,
+        "val": 14992
+      },
+      "w1": {
+        "qty": 4,
+        "val": 14992
+      },
+      "w2": {
+        "qty": 4,
+        "val": 14992
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "w0": {
+        "qty": 4,
+        "val": 4006
+      },
+      "w1": {
+        "qty": 4,
+        "val": 4006
+      },
+      "w2": {
+        "qty": 4,
+        "val": 4006
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "w0": {
+        "qty": 4,
+        "val": 11264
+      },
+      "w1": {
+        "qty": 4,
+        "val": 11264
+      },
+      "w2": {
+        "qty": 4,
+        "val": 11264
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "w0": {
+        "qty": 858,
+        "val": 1678879
+      },
+      "w1": {
+        "qty": 728,
+        "val": 1456392
+      },
+      "w2": {
+        "qty": 728,
+        "val": 1456392
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "w0": {
+        "qty": 120,
+        "val": 355723
+      },
+      "w1": {
+        "qty": 100,
+        "val": 296436
+      },
+      "w2": {
+        "qty": 100,
+        "val": 296436
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "w0": {
+        "qty": 454,
+        "val": 2081924
+      },
+      "w1": {
+        "qty": 389,
+        "val": 1776258
+      },
+      "w2": {
+        "qty": 389,
+        "val": 1776258
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 500,
+        "val": 1428507
+      },
+      "w1": {
+        "qty": 430,
+        "val": 1228517
+      },
+      "w2": {
+        "qty": 395,
+        "val": 1128522
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "w0": {
+        "qty": 3190,
+        "val": 4296053
+      },
+      "w1": {
+        "qty": 3190,
+        "val": 4296053
+      },
+      "w2": {
+        "qty": 3000,
+        "val": 3995764
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "w0": {
+        "qty": 2662,
+        "val": 2502301
+      },
+      "w1": {
+        "qty": 2096,
+        "val": 1949094
+      },
+      "w2": {
+        "qty": 1688,
+        "val": 1517532
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "PAC",
+      "w0": {
+        "qty": 500,
+        "val": 1428508
+      },
+      "w1": {
+        "qty": 430,
+        "val": 1228516
+      },
+      "w2": {
+        "qty": 395,
+        "val": 1128520
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Window",
+      "w0": {
+        "qty": 4,
+        "val": 5413
+      },
+      "w1": {
+        "qty": 4,
+        "val": 5413
+      },
+      "w2": {
+        "qty": 4,
+        "val": 5413
+      }
+    },
+    {
+      "dealer": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "w0": {
+        "qty": 16,
+        "val": 19592
+      },
+      "w1": {
+        "qty": 16,
+        "val": 19592
+      },
+      "w2": {
+        "qty": 16,
+        "val": 19592
+      }
+    },
     {
       "dealer": "ABDULAZIZ AL-SHATHERY",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
       "w0": {
+        "qty": 57,
+        "val": 82565
+      },
+      "w1": {
+        "qty": 51,
+        "val": 71404
+      },
+      "w2": {
+        "qty": 51,
+        "val": 71404
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "w0": {
+        "qty": 10,
+        "val": 31517
+      },
+      "w1": {
+        "qty": 10,
+        "val": 31517
+      },
+      "w2": {
+        "qty": 10,
+        "val": 31517
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "w0": {
         "qty": 26,
-        "val": 147058
+        "val": 106826
       },
       "w1": {
         "qty": 23,
-        "val": 126464
+        "val": 91388
+      },
+      "w2": {
+        "qty": 23,
+        "val": 91388
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 95,
+        "val": 283290
+      },
+      "w1": {
+        "qty": 75,
+        "val": 223650
+      },
+      "w2": {
+        "qty": 60,
+        "val": 178920
       }
     },
     {
@@ -36333,26 +36915,16 @@ td.ctr { text-align: center; }
       "salesman": "Ahmed Abd Elhaleem",
       "category": "Inverter",
       "w0": {
-        "qty": 160,
+        "qty": 320,
         "val": 482492
       },
       "w1": {
-        "qty": 130,
+        "qty": 260,
         "val": 374666
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 260,
+        "val": 374666
       }
     },
     {
@@ -36362,2895 +36934,231 @@ td.ctr { text-align: center; }
       "category": "PAC",
       "w0": {
         "qty": 95,
-        "val": 566580
+        "val": 283290
       },
       "w1": {
         "qty": 75,
-        "val": 447300
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
+        "val": 223650
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 60,
+        "val": 178920
       }
     },
     {
-      "dealer": "ABDULLAH  A.ALWAHID AL GHAMDI",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULLAH  A.ALWAHID AL GHAMDI",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULLAH  A.ALWAHID AL GHAMDI",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULLAH  A.ALWAHID AL GHAMDI",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULLAH  A.ALWAHID AL GHAMDI",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ADEL MOHAMMED AL WADHAKHI TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ADEL MOHAMMED AL WADHAKHI TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ADEL MOHAMMED AL WADHAKHI TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ADEL MOHAMMED AL WADHAKHI TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ADEL MOHAMMED AL WADHAKHI TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED IBRAHIM SHAIBA EST.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED IBRAHIM SHAIBA EST.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED IBRAHIM SHAIBA EST.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED IBRAHIM SHAIBA EST.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED IBRAHIM SHAIBA EST.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AIR CARE COMPANY",
+      "dealer": "الأجهزة والتجهيزات",
       "region": "East",
       "salesman": "Talal Adam",
-      "category": "CAC",
+      "category": "Free Standing",
       "w0": {
+        "qty": 10,
+        "val": 28946
+      },
+      "w1": {
         "qty": 0,
         "val": 0
       },
-      "w1": {
+      "w2": {
         "qty": 0,
         "val": 0
       }
     },
     {
-      "dealer": "AIR CARE COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 2,
-        "val": 4006
-      },
-      "w1": {
-        "qty": 2,
-        "val": 4006
-      }
-    },
-    {
-      "dealer": "AIR CARE COMPANY",
+      "dealer": "الأجهزة والتجهيزات",
       "region": "East",
       "salesman": "Talal Adam",
       "category": "ON/OFF",
       "w0": {
+        "qty": 30,
+        "val": 28486
+      },
+      "w1": {
         "qty": 0,
         "val": 0
       },
-      "w1": {
+      "w2": {
         "qty": 0,
         "val": 0
       }
     },
     {
-      "dealer": "AIR CARE COMPANY",
+      "dealer": "الأجهزة والتجهيزات",
       "region": "East",
       "salesman": "Talal Adam",
       "category": "PAC",
       "w0": {
-        "qty": 4,
-        "val": 22529
+        "qty": 10,
+        "val": 28946
       },
       "w1": {
-        "qty": 4,
-        "val": 22529
-      }
-    },
-    {
-      "dealer": "AIR CARE COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
         "qty": 0,
         "val": 0
       },
-      "w1": {
+      "w2": {
         "qty": 0,
         "val": 0
       }
     },
     {
-      "dealer": "AL KHARJ HOUSE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL KHARJ HOUSE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL KHARJ HOUSE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL KHARJ HOUSE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL KHARJ HOUSE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOTAWA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOTAWA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOTAWA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOTAWA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MOTAWA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MUTTMAKEN TREDING EST",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MUTTMAKEN TREDING EST",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MUTTMAKEN TREDING EST",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MUTTMAKEN TREDING EST",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL MUTTMAKEN TREDING EST",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 15,
-        "val": 37358
-      },
-      "w1": {
-        "qty": 15,
-        "val": 37358
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 159,
-        "val": 240000
-      },
-      "w1": {
-        "qty": 159,
-        "val": 240000
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL RROWAD ELECTRONICS",
+      "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 108,
+        "val": 173971
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 108,
+        "val": 173971
+      },
+      "w2": {
+        "qty": 50,
+        "val": 85264
       }
     },
     {
-      "dealer": "AL RROWAD ELECTRONICS",
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "w0": {
+        "qty": 1,
+        "val": 4478
+      },
+      "w1": {
+        "qty": 1,
+        "val": 4478
+      },
+      "w2": {
+        "qty": 1,
+        "val": 4478
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "w0": {
+        "qty": 54,
+        "val": 236047
+      },
+      "w1": {
+        "qty": 54,
+        "val": 236047
+      },
+      "w2": {
+        "qty": 25,
+        "val": 117085
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 100,
+        "val": 290726
+      },
+      "w1": {
+        "qty": 100,
+        "val": 290726
+      },
+      "w2": {
+        "qty": 100,
+        "val": 290726
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "Inverter",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 340,
+        "val": 440022
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 340,
+        "val": 440022
+      },
+      "w2": {
+        "qty": 290,
+        "val": 381546
       }
     },
     {
-      "dealer": "AL RROWAD ELECTRONICS",
+      "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 606,
+        "val": 570740
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 606,
+        "val": 570740
+      },
+      "w2": {
+        "qty": 606,
+        "val": 570740
       }
     },
     {
-      "dealer": "AL RROWAD ELECTRONICS",
+      "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "PAC",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 100,
+        "val": 290726
       },
       "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL RROWAD ELECTRONICS",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAFWA PLUS COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAFWA PLUS COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAFWA PLUS COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAFWA PLUS COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAFWA PLUS COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL YAHIA",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL YAHIA",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL YAHIA",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL YAHIA",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL YAHIA",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 8,
-        "val": 19592
-      },
-      "w1": {
-        "qty": 8,
-        "val": 19592
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL-QAHTANI TRADING CO",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL-QAHTANI TRADING CO",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL-QAHTANI TRADING CO",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL-QAHTANI TRADING CO",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "AL-QAHTANI TRADING CO",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSABAH HOUSING COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSABAH HOUSING COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSABAH HOUSING COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSABAH HOUSING COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSABAH HOUSING COMPANY",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSHUWAIRD",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSHUWAIRD",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSHUWAIRD",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSHUWAIRD",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALSHUWAIRD",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALhawwaa AL Bard Est.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALhawwaa AL Bard Est.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALhawwaa AL Bard Est.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALhawwaa AL Bard Est.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ALhawwaa AL Bard Est.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ANDALUSIAN WAVES",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ANDALUSIAN WAVES",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ANDALUSIAN WAVES",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ANDALUSIAN WAVES",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ANDALUSIAN WAVES",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ARTAL ARABIA COMPANY LIMITED",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ARTAL ARABIA COMPANY LIMITED",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ARTAL ARABIA COMPANY LIMITED",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ARTAL ARABIA COMPANY LIMITED",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ARTAL ARABIA COMPANY LIMITED",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 2,
-        "val": 7668
-      },
-      "w1": {
-        "qty": 2,
-        "val": 7668
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Karim Al-Dahi Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Karim Al-Dahi Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Karim Al-Dahi Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Karim Al-Dahi Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdul Karim Al-Dahi Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ajwaa AL Yamama",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ajwaa AL Yamama",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ajwaa AL Yamama",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ajwaa AL Yamama",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ajwaa AL Yamama",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al Wefaq Platinum Co., Ltd.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al Wefaq Platinum Co., Ltd.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al Wefaq Platinum Co., Ltd.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al Wefaq Platinum Co., Ltd.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al Wefaq Platinum Co., Ltd.",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al-Zaqzouq Home Appliances Co., Ltd",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 100,
+        "val": 290726
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 100,
+        "val": 290726
       }
     },
     {
-      "dealer": "Al-Zaqzouq Home Appliances Co., Ltd",
+      "dealer": "Tamkeen International Co.",
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "Inverter",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 724,
+        "val": 985066
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 652,
+        "val": 892804
+      },
+      "w2": {
+        "qty": 454,
+        "val": 653530
       }
     },
     {
-      "dealer": "Al-Zaqzouq Home Appliances Co., Ltd",
+      "dealer": "Tamkeen International Co.",
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 722,
+        "val": 618282
       },
       "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al-Zaqzouq Home Appliances Co., Ltd",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 456,
+        "val": 363736
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Al-Zaqzouq Home Appliances Co., Ltd",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alharkan",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alharkan",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alharkan",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alharkan",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alharkan",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aljawharah Ibrahim Almuqbil Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aljawharah Ibrahim Almuqbil Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aljawharah Ibrahim Almuqbil Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aljawharah Ibrahim Almuqbil Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aljawharah Ibrahim Almuqbil Est.",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Almasa",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Almasa",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Almasa",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Almasa",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Almasa",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alsudairi",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alsudairi",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alsudairi",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alsudairi",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Alsudairi",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Arab Spring Company for Trading",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Arab Spring Company for Trading",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Arab Spring Company for Trading",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Arab Spring Company for Trading",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Arab Spring Company for Trading",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aser Eltakeef",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aser Eltakeef",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aser Eltakeef",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aser Eltakeef",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Aser Eltakeef",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAHJAT AL- SURUR TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAHJAT AL- SURUR TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAHJAT AL- SURUR TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAHJAT AL- SURUR TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAHJAT AL- SURUR TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAYOTECOM",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAYOTECOM",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 44,
-        "val": 93236
-      },
-      "w1": {
-        "qty": 44,
-        "val": 93236
-      }
-    },
-    {
-      "dealer": "BAYOTECOM",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAYOTECOM",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BAYOTECOM",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 379,
+        "val": 298766
       }
     },
     {
@@ -39259,12 +37167,52 @@ td.ctr { text-align: center; }
       "salesman": "Ahmed Haridi",
       "category": "CAC",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 5,
+        "val": 1470
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 5,
+        "val": 1470
+      },
+      "w2": {
+        "qty": 5,
+        "val": 1470
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Cassette",
+      "w0": {
+        "qty": 10,
+        "val": 23182
+      },
+      "w1": {
+        "qty": 10,
+        "val": 23182
+      },
+      "w2": {
+        "qty": 10,
+        "val": 23182
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 125,
+        "val": 367175
+      },
+      "w1": {
+        "qty": 125,
+        "val": 367175
+      },
+      "w2": {
+        "qty": 125,
+        "val": 367175
       }
     },
     {
@@ -39273,11 +37221,15 @@ td.ctr { text-align: center; }
       "salesman": "Ahmed Haridi",
       "category": "Inverter",
       "w0": {
-        "qty": 254,
+        "qty": 508,
         "val": 671501
       },
       "w1": {
-        "qty": 154,
+        "qty": 308,
+        "val": 390084
+      },
+      "w2": {
+        "qty": 308,
         "val": 390084
       }
     },
@@ -39287,12 +37239,16 @@ td.ctr { text-align: center; }
       "salesman": "Ahmed Haridi",
       "category": "ON/OFF",
       "w0": {
-        "qty": 225,
-        "val": 420802
+        "qty": 350,
+        "val": 332352
       },
       "w1": {
-        "qty": 170,
-        "val": 307146
+        "qty": 240,
+        "val": 218696
+      },
+      "w2": {
+        "qty": 240,
+        "val": 218696
       }
     },
     {
@@ -39302,905 +37258,31 @@ td.ctr { text-align: center; }
       "category": "PAC",
       "w0": {
         "qty": 125,
-        "val": 734350
+        "val": 367175
       },
       "w1": {
         "qty": 125,
-        "val": 734350
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
+        "val": 367175
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Basel Fahd Almazyad Trade Est",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Basel Fahd Almazyad Trade Est",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Basel Fahd Almazyad Trade Est",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Basel Fahd Almazyad Trade Est",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Basel Fahd Almazyad Trade Est",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 98,
-        "val": 590903
-      },
-      "w1": {
-        "qty": 98,
-        "val": 590903
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 100,
-        "val": 240552
-      },
-      "w1": {
-        "qty": 100,
-        "val": 240552
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 50,
-        "val": 298196
-      },
-      "w1": {
-        "qty": 50,
-        "val": 298196
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Cold Corner",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Cold Corner",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Cold Corner",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Cold Corner",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Cold Corner",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Dyar Al-Fares Company",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Dyar Al-Fares Company",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Dyar Al-Fares Company",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Dyar Al-Fares Company",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Dyar Al-Fares Company",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Electronics House For Tra",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Electronics House For Tra",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Electronics House For Tra",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Electronics House For Tra",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Electronics House For Tra",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "FUTURE OF ELECTRICAL DEVICES",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "FUTURE OF ELECTRICAL DEVICES",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "FUTURE OF ELECTRICAL DEVICES",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "FUTURE OF ELECTRICAL DEVICES",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "FUTURE OF ELECTRICAL DEVICES",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fahd Al-Qahtani",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fahd Al-Qahtani",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fahd Al-Qahtani",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fahd Al-Qahtani",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fahd Al-Qahtani",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "GEBAL ASIR EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "GEBAL ASIR EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "GEBAL ASIR EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "GEBAL ASIR EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "GEBAL ASIR EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ICE CIP",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ICE CIP",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ICE CIP",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ICE CIP",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ICE CIP",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 125,
+        "val": 367175
       }
     },
     {
       "dealer": "KHALED AL-MUBAIED TRADING",
       "region": "East",
       "salesman": "Talal Adam",
-      "category": "CAC",
+      "category": "Free Standing",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 6,
+        "val": 17892
       },
       "w1": {
         "qty": 0,
         "val": 0
-      }
-    },
-    {
-      "dealer": "KHALED AL-MUBAIED TRADING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHALED AL-MUBAIED TRADING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
+      "w2": {
         "qty": 0,
         "val": 0
       }
@@ -40212,443 +37294,31 @@ td.ctr { text-align: center; }
       "category": "PAC",
       "w0": {
         "qty": 6,
-        "val": 35784
+        "val": 17892
       },
       "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
         "qty": 0,
         "val": 0
       }
     },
     {
-      "dealer": "KHALED AL-MUBAIED TRADING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Kaya Alawala Trading Co",
+      "dealer": "شركه نجوم العمران للمقاولات",
       "region": "west",
       "salesman": "Ahmed Sharaf",
       "category": "CAC",
       "w0": {
-        "qty": 0,
-        "val": 0
+        "qty": 6,
+        "val": 1568
       },
       "w1": {
         "qty": 0,
         "val": 0
-      }
-    },
-    {
-      "dealer": "Kaya Alawala Trading Co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Kaya Alawala Trading Co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Kaya Alawala Trading Co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Kaya Alawala Trading Co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LCE CAPITAL TRADING EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LCE CAPITAL TRADING EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LCE CAPITAL TRADING EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LCE CAPITAL TRADING EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "LCE CAPITAL TRADING EST",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Lion Technology",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Lion Technology",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Lion Technology",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Lion Technology",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Lion Technology",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "MAHDI HADI  AL-Yami Trade EST",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "MAHDI HADI  AL-Yami Trade EST",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "MAHDI HADI  AL-Yami Trade EST",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "MAHDI HADI  AL-Yami Trade EST",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "MAHDI HADI  AL-Yami Trade EST",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
+      "w2": {
         "qty": 0,
         "val": 0
       }
@@ -40659,12 +37329,70 @@ td.ctr { text-align: center; }
       "salesman": "Mohamed Atta",
       "category": "CAC",
       "w0": {
+        "qty": 189,
+        "val": 301084
+      },
+      "w1": {
+        "qty": 189,
+        "val": 301084
+      },
+      "w2": {
+        "qty": 189,
+        "val": 301084
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "w0": {
+        "qty": 20,
+        "val": 61755
+      },
+      "w1": {
+        "qty": 20,
+        "val": 61755
+      },
+      "w2": {
+        "qty": 20,
+        "val": 61755
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "w0": {
         "qty": 92,
-        "val": 545935
+        "val": 402981
       },
       "w1": {
         "qty": 92,
-        "val": 545935
+        "val": 402981
+      },
+      "w2": {
+        "qty": 92,
+        "val": 402981
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Free Standing",
+      "w0": {
+        "qty": 80,
+        "val": 242432
+      },
+      "w1": {
+        "qty": 80,
+        "val": 242432
+      },
+      "w2": {
+        "qty": 80,
+        "val": 242432
       }
     },
     {
@@ -40673,11 +37401,15 @@ td.ctr { text-align: center; }
       "salesman": "Mohamed Atta",
       "category": "Inverter",
       "w0": {
-        "qty": 220,
+        "qty": 440,
         "val": 491100
       },
       "w1": {
-        "qty": 220,
+        "qty": 440,
+        "val": 491100
+      },
+      "w2": {
+        "qty": 440,
         "val": 491100
       }
     },
@@ -40687,11 +37419,15 @@ td.ctr { text-align: center; }
       "salesman": "Mohamed Atta",
       "category": "ON/OFF",
       "w0": {
-        "qty": 200,
+        "qty": 400,
         "val": 328603
       },
       "w1": {
-        "qty": 200,
+        "qty": 400,
+        "val": 328603
+      },
+      "w2": {
+        "qty": 400,
         "val": 328603
       }
     },
@@ -40702,2803 +37438,33 @@ td.ctr { text-align: center; }
       "category": "PAC",
       "w0": {
         "qty": 80,
-        "val": 484864
+        "val": 242432
       },
       "w1": {
         "qty": 80,
-        "val": 484864
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
+        "val": 242432
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
+      "w2": {
+        "qty": 80,
+        "val": 242432
       }
     },
     {
-      "dealer": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mansha",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mansha",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mansha",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mansha",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mansha",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Milestones Trust Foundation",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Milestones Trust Foundation",
+      "dealer": "AL OTHMAN",
       "region": "East",
       "salesman": "Talal Adam",
       "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Milestones Trust Foundation",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Milestones Trust Foundation",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Milestones Trust Foundation",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Rashed Al Rasheed Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Rashed Al Rasheed Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Rashed Al Rasheed Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Rashed Al Rasheed Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Mohammed Rashed Al Rasheed Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NAJD APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NAJD APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NAJD APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NAJD APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NAJD APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NASSER AL HUWAISH",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NASSER AL HUWAISH",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NASSER AL HUWAISH",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NASSER AL HUWAISH",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "NASSER AL HUWAISH",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Portk Foundation",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Portk Foundation",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Portk Foundation",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Portk Foundation",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Portk Foundation",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "RAMA GULF TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "RAMA GULF TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "RAMA GULF TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "RAMA GULF TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "RAMA GULF TRADING",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAMA AL KHER",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAMA AL KHER",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAMA AL KHER",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAMA AL KHER",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAMA AL KHER",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "w0": {
-        "qty": 458,
-        "val": 2961957
-      },
-      "w1": {
-        "qty": 393,
-        "val": 2554423
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "w0": {
-        "qty": 1595,
-        "val": 4296053
-      },
-      "w1": {
-        "qty": 1595,
-        "val": 4296053
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 1338,
-        "val": 2502307
-      },
-      "w1": {
-        "qty": 1055,
-        "val": 1949100
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "PAC",
-      "w0": {
-        "qty": 500,
-        "val": 2857016
-      },
-      "w1": {
-        "qty": 430,
-        "val": 2457032
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SNOW WHITE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SNOW WHITE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SNOW WHITE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SNOW WHITE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "SNOW WHITE",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 54,
-        "val": 316838
-      },
-      "w1": {
-        "qty": 54,
-        "val": 316838
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 170,
-        "val": 440022
-      },
-      "w1": {
-        "qty": 170,
-        "val": 440022
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 303,
-        "val": 570740
-      },
-      "w1": {
-        "qty": 303,
-        "val": 570740
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 100,
-        "val": 581452
-      },
-      "w1": {
-        "qty": 100,
-        "val": 581452
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saleh and Abd Al-Wahab  Al-Mousa",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saleh and Abd Al-Wahab  Al-Mousa",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saleh and Abd Al-Wahab  Al-Mousa",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saleh and Abd Al-Wahab  Al-Mousa",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saleh and Abd Al-Wahab  Al-Mousa",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saudi Bin Hamoud - Riyadh",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saudi Bin Hamoud - Riyadh",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saudi Bin Hamoud - Riyadh",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saudi Bin Hamoud - Riyadh",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Saudi Bin Hamoud - Riyadh",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Solutions Piece",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Solutions Piece",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Solutions Piece",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Solutions Piece",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Solutions Piece",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Specialization Standard",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Specialization Standard",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Specialization Standard",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Specialization Standard",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Specialization Standard",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "TAMAYEM TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "TAMAYEM TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "TAMAYEM TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "TAMAYEM TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "TAMAYEM TRADING EST.",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tafrood Al Roya For Investment",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tafrood Al Roya For Investment",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tafrood Al Roya For Investment",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tafrood Al Roya For Investment",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tafrood Al Roya For Investment",
-      "region": "South",
-      "salesman": "Ayman Farouk",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "w0": {
-        "qty": 362,
-        "val": 985066
-      },
-      "w1": {
-        "qty": 326,
-        "val": 892804
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 361,
-        "val": 618282
-      },
-      "w1": {
-        "qty": 228,
-        "val": 363736
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Techno Best",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Techno Best",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Techno Best",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Techno Best",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Techno Best",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "WAHJ AL ASSEL",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "WAHJ AL ASSEL",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "WAHJ AL ASSEL",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "WAHJ AL ASSEL",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "WAHJ AL ASSEL",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Winter and Summer Masterpieces",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Winter and Summer Masterpieces",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Winter and Summer Masterpieces",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Winter and Summer Masterpieces",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "Winter and Summer Masterpieces",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "al ajwaa trading",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "al ajwaa trading",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "al ajwaa trading",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "al ajwaa trading",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "al ajwaa trading",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "citywork",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "citywork",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "citywork",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "citywork",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "citywork",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "haram for electronic",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "haram for electronic",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "haram for electronic",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "haram for electronic",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "haram for electronic",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "اجهزة البيت الحديث",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "اجهزة البيت الحديث",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "اجهزة البيت الحديث",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "اجهزة البيت الحديث",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "اجهزة البيت الحديث",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "w0": {
-        "qty": 10,
-        "val": 57892
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الشؤون الخاصة لخادم الحرمين الشريفين",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الشؤون الخاصة لخادم الحرمين الشريفين",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الشؤون الخاصة لخادم الحرمين الشريفين",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الشؤون الخاصة لخادم الحرمين الشريفين",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الشؤون الخاصة لخادم الحرمين الشريفين",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الضاحي - سيهات",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الضاحي - سيهات",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الضاحي - سيهات",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الضاحي - سيهات",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "الضاحي - سيهات",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركة نجمة القيروان",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركة نجمة القيروان",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركة نجمة القيروان",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركة نجمة القيروان",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركة نجمة القيروان",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "CAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Inverter",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "ON/OFF",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "PAC",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "category": "Window",
-      "w0": {
-        "qty": 0,
-        "val": 0
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    }
-  ],
-  "oudSku": [
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ34GM3TA.ANWGIB",
-      "w0": {
-        "qty": 5,
-        "val": 21644
-      },
-      "w1": {
-        "qty": 5,
-        "val": 21644
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ40GM3TA.ANWGIB",
-      "w0": {
-        "qty": 5,
-        "val": 24328
-      },
-      "w1": {
-        "qty": 5,
-        "val": 24328
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ55GM3TA.ANWGIB",
-      "w0": {
-        "qty": 3,
-        "val": 17570
-      },
-      "w1": {
-        "qty": 3,
-        "val": 17570
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNW40GM3TA.ANWGIB",
-      "w0": {
-        "qty": 3,
-        "val": 14868
-      },
-      "w1": {
-        "qty": 3,
-        "val": 14868
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNW60GM3TA.ANWGIB",
-      "w0": {
-        "qty": 10,
-        "val": 68648
-      },
-      "w1": {
-        "qty": 7,
-        "val": 48054
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182C0.NK0",
-      "w0": {
-        "qty": 40,
-        "val": 88400
-      },
-      "w1": {
-        "qty": 40,
-        "val": 88400
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182H0.NK0",
-      "w0": {
-        "qty": 15,
-        "val": 35040
-      },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242C0.NK0",
-      "w0": {
-        "qty": 50,
-        "val": 130050
-      },
-      "w1": {
-        "qty": 50,
-        "val": 130050
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242H0.NK0",
-      "w0": {
-        "qty": 15,
-        "val": 41490
-      },
-      "w1": {
-        "qty": 15,
-        "val": 41490
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382C2.NR2",
       "w0": {
         "qty": 30,
-        "val": 137672
+        "val": 37358
       },
       "w1": {
-        "qty": 25,
-        "val": 114726
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382H2.NR2",
-      "w0": {
-        "qty": 10,
-        "val": 49840
+        "qty": 30,
+        "val": 37358
       },
-      "w1": {
-        "qty": 0,
-        "val": 0
-      }
-    },
-    {
-      "dealer": "ABDULAZIZ AL-SHATHERY",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 95,
-        "val": 566580
-      },
-      "w1": {
-        "qty": 75,
-        "val": 447300
-      }
-    },
-    {
-      "dealer": "AIR CARE COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "className": "Fresh",
-      "sku": "NF122H0.NJ1",
-      "w0": {
-        "qty": 2,
-        "val": 4006
-      },
-      "w1": {
-        "qty": 2,
-        "val": 4006
-      }
-    },
-    {
-      "dealer": "AIR CARE COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 4,
-        "val": 22529
-      },
-      "w1": {
-        "qty": 4,
-        "val": 22529
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
-      "w0": {
-        "qty": 10,
-        "val": 22922
-      },
-      "w1": {
-        "qty": 10,
-        "val": 22922
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 5,
-        "val": 14436
-      },
-      "w1": {
-        "qty": 5,
-        "val": 14436
+      "w2": {
+        "qty": 30,
+        "val": 37358
       }
     },
     {
@@ -43506,63 +37472,17 @@ td.ctr { text-align: center; }
       "region": "East",
       "salesman": "Talal Adam",
       "category": "ON/OFF",
-      "className": "On/Off_LO",
-      "sku": "LO182C0.NK0",
       "w0": {
-        "qty": 59,
-        "val": 75000
+        "qty": 318,
+        "val": 240000
       },
       "w1": {
-        "qty": 59,
-        "val": 75000
-      }
-    },
-    {
-      "dealer": "AL OTHMAN",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "ON/OFF",
-      "className": "On/Off_LO",
-      "sku": "LO242C0.NK0",
-      "w0": {
-        "qty": 100,
-        "val": 165000
+        "qty": 318,
+        "val": 240000
       },
-      "w1": {
-        "qty": 100,
-        "val": 165000
-      }
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 8,
-        "val": 19592
-      },
-      "w1": {
-        "qty": 8,
-        "val": 19592
-      }
-    },
-    {
-      "dealer": "Abduaalah Ali-Dhamin&Sons",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "sku": "LA302C0.NK0",
-      "w0": {
-        "qty": 2,
-        "val": 7668
-      },
-      "w1": {
-        "qty": 2,
-        "val": 7668
+      "w2": {
+        "qty": 318,
+        "val": 240000
       }
     },
     {
@@ -43570,335 +37490,77 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Haridi",
       "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
       "w0": {
-        "qty": 44,
+        "qty": 88,
         "val": 93236
       },
       "w1": {
-        "qty": 44,
+        "qty": 88,
+        "val": 93236
+      },
+      "w2": {
+        "qty": 88,
         "val": 93236
       }
     },
     {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182C0.NK0",
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
       "w0": {
-        "qty": 20,
-        "val": 44200
+        "qty": 4,
+        "val": 7668
       },
       "w1": {
-        "qty": 20,
-        "val": 44200
+        "qty": 4,
+        "val": 7668
+      },
+      "w2": {
+        "qty": 4,
+        "val": 7668
       }
-    },
+    }
+  ],
+  "oudSku": [
     {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182H0.NK0",
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ40GM3TA.ANWGIB",
       "w0": {
-        "qty": 35,
-        "val": 81760
+        "qty": 10,
+        "val": 24329
       },
       "w1": {
+        "qty": 10,
+        "val": 24329
+      },
+      "w2": {
         "qty": 0,
         "val": 0
       }
     },
     {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242C0.NK0",
-      "w0": {
-        "qty": 20,
-        "val": 52020
-      },
-      "w1": {
-        "qty": 20,
-        "val": 52020
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242H0.NK0",
-      "w0": {
-        "qty": 35,
-        "val": 96810
-      },
-      "w1": {
-        "qty": 20,
-        "val": 55320
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
-      "w0": {
-        "qty": 25,
-        "val": 50975
-      },
-      "w1": {
-        "qty": 25,
-        "val": 50975
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182H2.NK2",
-      "w0": {
-        "qty": 25,
-        "val": 53976
-      },
-      "w1": {
-        "qty": 25,
-        "val": 53976
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 44,
-        "val": 107758
-      },
-      "w1": {
-        "qty": 19,
-        "val": 46532
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242H3.NK2",
-      "w0": {
-        "qty": 25,
-        "val": 65326
-      },
-      "w1": {
-        "qty": 15,
-        "val": 39195
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382C2.NR2",
-      "w0": {
-        "qty": 15,
-        "val": 68836
-      },
-      "w1": {
-        "qty": 5,
-        "val": 22946
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382H2.NR2",
-      "w0": {
-        "qty": 10,
-        "val": 49840
-      },
-      "w1": {
-        "qty": 5,
-        "val": 24920
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC182C0.NK0",
-      "w0": {
-        "qty": 50,
-        "val": 74450
-      },
-      "w1": {
-        "qty": 30,
-        "val": 44670
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC182H0.NK0",
-      "w0": {
-        "qty": 25,
-        "val": 40500
-      },
-      "w1": {
-        "qty": 15,
-        "val": 24300
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC242C0.NK0",
-      "w0": {
-        "qty": 100,
-        "val": 176900
-      },
-      "w1": {
-        "qty": 100,
-        "val": 176900
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC242H0.NK0",
-      "w0": {
-        "qty": 25,
-        "val": 47476
-      },
-      "w1": {
-        "qty": 15,
-        "val": 28485
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LT302C0.NK0",
-      "w0": {
-        "qty": 15,
-        "val": 47686
-      },
-      "w1": {
-        "qty": 5,
-        "val": 15896
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LT302H0.NK0",
-      "w0": {
-        "qty": 10,
-        "val": 33790
-      },
-      "w1": {
-        "qty": 5,
-        "val": 16895
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 25,
-        "val": 142850
-      },
-      "w1": {
-        "qty": 25,
-        "val": 142850
-      }
-    },
-    {
-      "dealer": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNW55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 100,
-        "val": 591500
-      },
-      "w1": {
-        "qty": 100,
-        "val": 591500
-      }
-    },
-    {
       "dealer": "COLD WORLD",
       "region": "East",
       "salesman": "Talal Adam",
       "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ40GM3TA.ANWGIB",
-      "w0": {
-        "qty": 10,
-        "val": 48658
-      },
-      "w1": {
-        "qty": 10,
-        "val": 48658
-      }
-    },
-    {
-      "dealer": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNQ55GM3TA.ANWGIB",
       "w0": {
         "qty": 23,
-        "val": 134710
+        "val": 67355
       },
       "w1": {
         "qty": 23,
-        "val": 134710
+        "val": 67355
+      },
+      "w2": {
+        "qty": 23,
+        "val": 67355
       }
     },
     {
@@ -43906,15 +37568,139 @@ td.ctr { text-align: center; }
       "region": "East",
       "salesman": "Talal Adam",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNQ60GM3TA.ANWGIB",
       "w0": {
         "qty": 65,
-        "val": 407534
+        "val": 203767
       },
       "w1": {
         "qty": 65,
-        "val": 407534
+        "val": 203767
+      },
+      "w2": {
+        "qty": 65,
+        "val": 203767
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ28GM1TA.ANWGIB",
+      "w0": {
+        "qty": 3,
+        "val": 7509
+      },
+      "w1": {
+        "qty": 3,
+        "val": 7509
+      },
+      "w2": {
+        "qty": 3,
+        "val": 7509
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 17,
+        "val": 59614
+      },
+      "w1": {
+        "qty": 17,
+        "val": 59614
+      },
+      "w2": {
+        "qty": 7,
+        "val": 26230
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ55GM3TA.ANWGIB",
+      "w0": {
+        "qty": 23,
+        "val": 100972
+      },
+      "w1": {
+        "qty": 23,
+        "val": 100972
+      },
+      "w2": {
+        "qty": 23,
+        "val": 100972
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ60LM3TA.ANWGIB",
+      "w0": {
+        "qty": 65,
+        "val": 339081
+      },
+      "w1": {
+        "qty": 65,
+        "val": 339081
+      },
+      "w2": {
+        "qty": 65,
+        "val": 339081
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 149098
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149098
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149098
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 149100
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149100
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149100
       }
     },
     {
@@ -43922,15 +37708,19 @@ td.ctr { text-align: center; }
       "region": "East",
       "salesman": "Talal Adam",
       "category": "Inverter",
-      "className": "New Fresh",
+      "className": "",
       "sku": "ND182C0.NK0",
       "w0": {
         "qty": 50,
-        "val": 110500
+        "val": 55250
       },
       "w1": {
         "qty": 50,
-        "val": 110500
+        "val": 55250
+      },
+      "w2": {
+        "qty": 50,
+        "val": 55250
       }
     },
     {
@@ -43938,335 +37728,179 @@ td.ctr { text-align: center; }
       "region": "East",
       "salesman": "Talal Adam",
       "category": "Inverter",
-      "className": "New Fresh",
+      "className": "",
+      "sku": "ND182C0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 55250
+      },
+      "w1": {
+        "qty": 50,
+        "val": 55250
+      },
+      "w2": {
+        "qty": 50,
+        "val": 55250
+      }
+    },
+    {
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
       "sku": "ND242C0.NK0",
       "w0": {
         "qty": 50,
-        "val": 130052
+        "val": 65026
       },
       "w1": {
         "qty": 50,
-        "val": 130052
+        "val": 65026
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65026
       }
     },
     {
       "dealer": "COLD WORLD",
       "region": "East",
       "salesman": "Talal Adam",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.UK0",
       "w0": {
         "qty": 50,
-        "val": 298196
+        "val": 65026
       },
       "w1": {
         "qty": 50,
-        "val": 298196
+        "val": 65026
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65026
       }
     },
     {
-      "dealer": "KHALED AL-MUBAIED TRADING",
+      "dealer": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 98,
+        "val": 28362
+      },
+      "w1": {
+        "qty": 98,
+        "val": 28362
+      },
+      "w2": {
+        "qty": 88,
+        "val": 25482
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
       "region": "East",
       "salesman": "Talal Adam",
       "category": "PAC",
-      "className": "PAC - Islamic",
+      "className": "",
       "sku": "APNQ55GT3MA.ANWGIB",
       "w0": {
-        "qty": 6,
-        "val": 35784
+        "qty": 4,
+        "val": 11264
       },
       "w1": {
-        "qty": 0,
-        "val": 0
+        "qty": 4,
+        "val": 11264
+      },
+      "w2": {
+        "qty": 4,
+        "val": 11264
       }
     },
     {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ28GM1TA.ANWGIB",
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
       "w0": {
-        "qty": 5,
-        "val": 16758
+        "qty": 4,
+        "val": 14992
       },
       "w1": {
-        "qty": 5,
-        "val": 16758
+        "qty": 4,
+        "val": 14992
+      },
+      "w2": {
+        "qty": 4,
+        "val": 14992
       }
     },
     {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ34GM3TA.ANWGIB",
-      "w0": {
-        "qty": 5,
-        "val": 21644
-      },
-      "w1": {
-        "qty": 5,
-        "val": 21644
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ40GM3TA.ANWGIB",
-      "w0": {
-        "qty": 10,
-        "val": 48656
-      },
-      "w1": {
-        "qty": 10,
-        "val": 48656
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ60GM3TA.ANWGIB",
-      "w0": {
-        "qty": 35,
-        "val": 219443
-      },
-      "w1": {
-        "qty": 35,
-        "val": 219443
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNW34GM3TA.ANWGIB",
-      "w0": {
-        "qty": 2,
-        "val": 8706
-      },
-      "w1": {
-        "qty": 2,
-        "val": 8706
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNW40GM3TA.ANWGIB",
-      "w0": {
-        "qty": 5,
-        "val": 24780
-      },
-      "w1": {
-        "qty": 5,
-        "val": 24780
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNW60GM3TA.ANWGIB",
-      "w0": {
-        "qty": 30,
-        "val": 205948
-      },
-      "w1": {
-        "qty": 30,
-        "val": 205948
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
-      "w0": {
-        "qty": 100,
-        "val": 203900
-      },
-      "w1": {
-        "qty": 100,
-        "val": 203900
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182H2.NK2",
-      "w0": {
-        "qty": 40,
-        "val": 86360
-      },
-      "w1": {
-        "qty": 40,
-        "val": 86360
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 50,
-        "val": 122450
-      },
-      "w1": {
-        "qty": 50,
-        "val": 122450
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242H3.NK2",
-      "w0": {
-        "qty": 30,
-        "val": 78390
-      },
-      "w1": {
-        "qty": 30,
-        "val": 78390
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC182C0.NK0",
-      "w0": {
-        "qty": 75,
-        "val": 111676
-      },
-      "w1": {
-        "qty": 75,
-        "val": 111676
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC182H0.NK0",
-      "w0": {
-        "qty": 50,
-        "val": 81000
-      },
-      "w1": {
-        "qty": 50,
-        "val": 81000
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC242C0.NK0",
-      "w0": {
-        "qty": 50,
-        "val": 88452
-      },
-      "w1": {
-        "qty": 50,
-        "val": 88452
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LC242H0.NK0",
-      "w0": {
-        "qty": 25,
-        "val": 47476
-      },
-      "w1": {
-        "qty": 25,
-        "val": 47476
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 50,
-        "val": 298204
-      },
-      "w1": {
-        "qty": 50,
-        "val": 298204
-      }
-    },
-    {
-      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNW55GT3MA.ANWGIB",
-      "w0": {
-        "qty": 30,
-        "val": 186660
-      },
-      "w1": {
-        "qty": 30,
-        "val": 186660
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "CAC",
-      "className": "CCD",
-      "sku": "ABNQ28GM1TA.ANWGIB",
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Concealed",
+      "className": "",
+      "sku": "AUUQ60GT6.ABWGIBR",
       "w0": {
         "qty": 1,
-        "val": 3762
+        "val": 5132
       },
       "w1": {
         "qty": 1,
-        "val": 3762
+        "val": 5132
+      },
+      "w2": {
+        "qty": 1,
+        "val": 5132
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NF122H0.NJ1",
+      "w0": {
+        "qty": 2,
+        "val": 2003
+      },
+      "w1": {
+        "qty": 2,
+        "val": 2003
+      },
+      "w2": {
+        "qty": 2,
+        "val": 2003
+      }
+    },
+    {
+      "dealer": "AIR CARE COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NF122H0.UJ1",
+      "w0": {
+        "qty": 2,
+        "val": 2003
+      },
+      "w1": {
+        "qty": 2,
+        "val": 2003
+      },
+      "w2": {
+        "qty": 2,
+        "val": 2003
       }
     },
     {
@@ -44274,15 +37908,39 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "adel abelmasoud",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
+      "sku": "ABNQ28GM1TA.ANWGIB",
+      "w0": {
+        "qty": 1,
+        "val": 1881
+      },
+      "w1": {
+        "qty": 1,
+        "val": 1881
+      },
+      "w2": {
+        "qty": 1,
+        "val": 1881
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "",
       "sku": "ABNQ40GM3TA.ANWGIB",
       "w0": {
         "qty": 50,
-        "val": 243286
+        "val": 121643
       },
       "w1": {
         "qty": 50,
-        "val": 243286
+        "val": 121643
+      },
+      "w2": {
+        "qty": 50,
+        "val": 121643
       }
     },
     {
@@ -44290,15 +37948,19 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "adel abelmasoud",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNQ55GM3TA.ANWGIB",
       "w0": {
         "qty": 53,
-        "val": 355692
+        "val": 177846
       },
       "w1": {
         "qty": 53,
-        "val": 355692
+        "val": 177846
+      },
+      "w2": {
+        "qty": 53,
+        "val": 177846
       }
     },
     {
@@ -44306,15 +37968,99 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "adel abelmasoud",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNQ60GM3TA.ANWGIB",
       "w0": {
         "qty": 350,
-        "val": 2194417
+        "val": 1097208
       },
       "w1": {
         "qty": 285,
-        "val": 1786882
+        "val": 893441
+      },
+      "w2": {
+        "qty": 285,
+        "val": 893441
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ28GM1TA.ANWGIB",
+      "w0": {
+        "qty": 1,
+        "val": 2503
+      },
+      "w1": {
+        "qty": 1,
+        "val": 2503
+      },
+      "w2": {
+        "qty": 1,
+        "val": 2503
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 166919
+      },
+      "w1": {
+        "qty": 50,
+        "val": 166919
+      },
+      "w2": {
+        "qty": 50,
+        "val": 166919
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ55GM3TA.ANWGIB",
+      "w0": {
+        "qty": 53,
+        "val": 266606
+      },
+      "w1": {
+        "qty": 53,
+        "val": 266606
+      },
+      "w2": {
+        "qty": 53,
+        "val": 266606
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 350,
+        "val": 1645896
+      },
+      "w1": {
+        "qty": 285,
+        "val": 1340230
+      },
+      "w2": {
+        "qty": 285,
+        "val": 1340230
       }
     },
     {
@@ -44322,7 +38068,7 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "adel abelmasoud",
       "category": "CAC",
-      "className": "PKG",
+      "className": "",
       "sku": "AK-Q320LC01.ADGGIB",
       "w0": {
         "qty": 4,
@@ -44331,150 +38077,10 @@ td.ctr { text-align: center; }
       "w1": {
         "qty": 4,
         "val": 164801
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182C0.NK0",
-      "w0": {
-        "qty": 230,
-        "val": 613622
       },
-      "w1": {
-        "qty": 230,
-        "val": 613622
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242C0.NK0",
-      "w0": {
-        "qty": 215,
-        "val": 679602
-      },
-      "w1": {
-        "qty": 215,
-        "val": 679602
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
-      "w0": {
-        "qty": 670,
-        "val": 1535826
-      },
-      "w1": {
-        "qty": 670,
-        "val": 1535826
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 480,
-        "val": 1467004
-      },
-      "w1": {
-        "qty": 480,
-        "val": 1467004
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "className": "On/Off_LB",
-      "sku": "LB182C0.NK0",
-      "w0": {
-        "qty": 373,
-        "val": 645928
-      },
-      "w1": {
-        "qty": 230,
-        "val": 388636
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "className": "On/Off_LB",
-      "sku": "LB182H0.NK0",
-      "w0": {
-        "qty": 195,
-        "val": 375270
-      },
-      "w1": {
-        "qty": 140,
-        "val": 269424
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "className": "On/Off_LB",
-      "sku": "LB242C0.NK0",
-      "w0": {
-        "qty": 85,
-        "val": 184198
-      },
-      "w1": {
-        "qty": 50,
-        "val": 108352
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "className": "On/Off_LB",
-      "sku": "LB242H0.NK0",
-      "w0": {
-        "qty": 235,
-        "val": 536849
-      },
-      "w1": {
-        "qty": 185,
-        "val": 422626
-      }
-    },
-    {
-      "dealer": "SAUDI BIN HAMOOD COMPANY",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "category": "ON/OFF",
-      "className": "On/Off_LH",
-      "sku": "LH242C0.NK0",
-      "w0": {
-        "qty": 450,
-        "val": 760062
-      },
-      "w1": {
-        "qty": 450,
-        "val": 760062
+      "w2": {
+        "qty": 4,
+        "val": 164801
       }
     },
     {
@@ -44482,31 +38088,1159 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "adel abelmasoud",
       "category": "PAC",
-      "className": "PAC - Islamic",
+      "className": "",
       "sku": "APNQ55GT3MA.ANWGIB",
       "w0": {
         "qty": 500,
-        "val": 2857016
+        "val": 1428508
       },
       "w1": {
         "qty": 430,
-        "val": 2457032
+        "val": 1228516
+      },
+      "w2": {
+        "qty": 395,
+        "val": 1128520
       }
     },
     {
-      "dealer": "STAR Appliances",
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 500,
+        "val": 1428507
+      },
+      "w1": {
+        "qty": 430,
+        "val": 1228517
+      },
+      "w2": {
+        "qty": 395,
+        "val": 1128522
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATNQ21GPLTA.ANWTIB",
+      "w0": {
+        "qty": 30,
+        "val": 63277
+      },
+      "w1": {
+        "qty": 25,
+        "val": 52731
+      },
+      "w2": {
+        "qty": 25,
+        "val": 52731
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATNQ34GNLTA.ANWTIB",
+      "w0": {
+        "qty": 30,
+        "val": 98604
+      },
+      "w1": {
+        "qty": 25,
+        "val": 82170
+      },
+      "w2": {
+        "qty": 25,
+        "val": 82170
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ21GPLTA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 80190
+      },
+      "w1": {
+        "qty": 25,
+        "val": 66825
+      },
+      "w2": {
+        "qty": 25,
+        "val": 66825
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ34GNLTA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 113652
+      },
+      "w1": {
+        "qty": 25,
+        "val": 94710
+      },
+      "w2": {
+        "qty": 25,
+        "val": 94710
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Window",
+      "className": "",
+      "sku": "C182EC1.SN2",
+      "w0": {
+        "qty": 4,
+        "val": 5413
+      },
+      "w1": {
+        "qty": 4,
+        "val": 5413
+      },
+      "w2": {
+        "qty": 4,
+        "val": 5413
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB182C0.NK0",
+      "w0": {
+        "qty": 373,
+        "val": 322964
+      },
+      "w1": {
+        "qty": 230,
+        "val": 194318
+      },
+      "w2": {
+        "qty": 200,
+        "val": 167330
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB182C0.UK0",
+      "w0": {
+        "qty": 359,
+        "val": 322964
+      },
+      "w1": {
+        "qty": 216,
+        "val": 194318
+      },
+      "w2": {
+        "qty": 186,
+        "val": 167330
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB182H0.NK0",
+      "w0": {
+        "qty": 195,
+        "val": 187635
+      },
+      "w1": {
+        "qty": 140,
+        "val": 134712
+      },
+      "w2": {
+        "qty": 101,
+        "val": 97185
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB182H0.UK0",
+      "w0": {
+        "qty": 195,
+        "val": 187635
+      },
+      "w1": {
+        "qty": 140,
+        "val": 134712
+      },
+      "w2": {
+        "qty": 101,
+        "val": 97185
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB242C0.NK0",
+      "w0": {
+        "qty": 85,
+        "val": 92099
+      },
+      "w1": {
+        "qty": 50,
+        "val": 54176
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB242C0.UK0",
+      "w0": {
+        "qty": 85,
+        "val": 92099
+      },
+      "w1": {
+        "qty": 50,
+        "val": 54176
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB242H0.NK0",
+      "w0": {
+        "qty": 235,
+        "val": 268425
+      },
+      "w1": {
+        "qty": 185,
+        "val": 211313
+      },
+      "w2": {
+        "qty": 100,
+        "val": 114223
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LB242H0.UK0",
+      "w0": {
+        "qty": 235,
+        "val": 268425
+      },
+      "w1": {
+        "qty": 185,
+        "val": 211313
+      },
+      "w2": {
+        "qty": 100,
+        "val": 114223
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LH242C0.NK0",
+      "w0": {
+        "qty": 450,
+        "val": 380031
+      },
+      "w1": {
+        "qty": 450,
+        "val": 380031
+      },
+      "w2": {
+        "qty": 450,
+        "val": 380031
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LH242C0.UK0",
+      "w0": {
+        "qty": 450,
+        "val": 380025
+      },
+      "w1": {
+        "qty": 450,
+        "val": 380025
+      },
+      "w2": {
+        "qty": 450,
+        "val": 380025
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.NK0",
+      "w0": {
+        "qty": 230,
+        "val": 306811
+      },
+      "w1": {
+        "qty": 230,
+        "val": 306811
+      },
+      "w2": {
+        "qty": 230,
+        "val": 306811
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.UK0",
+      "w0": {
+        "qty": 230,
+        "val": 306811
+      },
+      "w1": {
+        "qty": 230,
+        "val": 306811
+      },
+      "w2": {
+        "qty": 230,
+        "val": 306811
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.NK0",
+      "w0": {
+        "qty": 215,
+        "val": 339801
+      },
+      "w1": {
+        "qty": 215,
+        "val": 339801
+      },
+      "w2": {
+        "qty": 120,
+        "val": 189656
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.UK0",
+      "w0": {
+        "qty": 215,
+        "val": 339801
+      },
+      "w1": {
+        "qty": 215,
+        "val": 339801
+      },
+      "w2": {
+        "qty": 120,
+        "val": 189656
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 670,
+        "val": 767913
+      },
+      "w1": {
+        "qty": 670,
+        "val": 767913
+      },
+      "w2": {
+        "qty": 670,
+        "val": 767913
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 670,
+        "val": 767913
+      },
+      "w1": {
+        "qty": 670,
+        "val": 767913
+      },
+      "w2": {
+        "qty": 670,
+        "val": 767913
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 480,
+        "val": 733502
+      },
+      "w1": {
+        "qty": 480,
+        "val": 733502
+      },
+      "w2": {
+        "qty": 480,
+        "val": 733502
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 480,
+        "val": 733502
+      },
+      "w1": {
+        "qty": 480,
+        "val": 733502
+      },
+      "w2": {
+        "qty": 480,
+        "val": 733502
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 400,
+        "val": 115500
+      },
+      "w1": {
+        "qty": 335,
+        "val": 96780
+      },
+      "w2": {
+        "qty": 335,
+        "val": 96780
+      }
+    },
+    {
+      "dealer": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 8,
+        "val": 9796
+      },
+      "w1": {
+        "qty": 8,
+        "val": 9796
+      },
+      "w2": {
+        "qty": 8,
+        "val": 9796
+      }
+    },
+    {
+      "dealer": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 8,
+        "val": 9796
+      },
+      "w1": {
+        "qty": 8,
+        "val": 9796
+      },
+      "w2": {
+        "qty": 8,
+        "val": 9796
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
+      "sku": "ABNQ34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 10822
+      },
+      "w1": {
+        "qty": 5,
+        "val": 10822
+      },
+      "w2": {
+        "qty": 5,
+        "val": 10822
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
       "sku": "ABNQ40GM3TA.ANWGIB",
       "w0": {
         "qty": 5,
-        "val": 24328
+        "val": 12164
       },
       "w1": {
         "qty": 5,
-        "val": 24328
+        "val": 12164
+      },
+      "w2": {
+        "qty": 5,
+        "val": 12164
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ55GM3TA.ANWGIB",
+      "w0": {
+        "qty": 3,
+        "val": 8785
+      },
+      "w1": {
+        "qty": 3,
+        "val": 8785
+      },
+      "w2": {
+        "qty": 3,
+        "val": 8785
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNW40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 3,
+        "val": 7434
+      },
+      "w1": {
+        "qty": 3,
+        "val": 7434
+      },
+      "w2": {
+        "qty": 3,
+        "val": 7434
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNW60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 34324
+      },
+      "w1": {
+        "qty": 7,
+        "val": 24027
+      },
+      "w2": {
+        "qty": 7,
+        "val": 24027
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 14345
+      },
+      "w1": {
+        "qty": 5,
+        "val": 14345
+      },
+      "w2": {
+        "qty": 5,
+        "val": 14345
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 16692
+      },
+      "w1": {
+        "qty": 5,
+        "val": 16692
+      },
+      "w2": {
+        "qty": 5,
+        "val": 16692
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ55GM3TA.ANWGIB",
+      "w0": {
+        "qty": 3,
+        "val": 13170
+      },
+      "w1": {
+        "qty": 3,
+        "val": 13170
+      },
+      "w2": {
+        "qty": 3,
+        "val": 13170
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 3,
+        "val": 11159
+      },
+      "w1": {
+        "qty": 3,
+        "val": 11159
+      },
+      "w2": {
+        "qty": 3,
+        "val": 11159
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 51460
+      },
+      "w1": {
+        "qty": 7,
+        "val": 36022
+      },
+      "w2": {
+        "qty": 7,
+        "val": 36022
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 95,
+        "val": 283290
+      },
+      "w1": {
+        "qty": 75,
+        "val": 223650
+      },
+      "w2": {
+        "qty": 60,
+        "val": 178920
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 95,
+        "val": 283290
+      },
+      "w1": {
+        "qty": 75,
+        "val": 223650
+      },
+      "w2": {
+        "qty": 60,
+        "val": 178920
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATNQ34GNLTA.ANWTIB",
+      "w0": {
+        "qty": 5,
+        "val": 14641
+      },
+      "w1": {
+        "qty": 5,
+        "val": 14641
+      },
+      "w2": {
+        "qty": 5,
+        "val": 14641
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ34GNLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 16876
+      },
+      "w1": {
+        "qty": 5,
+        "val": 16876
+      },
+      "w2": {
+        "qty": 5,
+        "val": 16876
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.NK0",
+      "w0": {
+        "qty": 40,
+        "val": 44200
+      },
+      "w1": {
+        "qty": 40,
+        "val": 44200
+      },
+      "w2": {
+        "qty": 40,
+        "val": 44200
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.UK0",
+      "w0": {
+        "qty": 40,
+        "val": 44200
+      },
+      "w1": {
+        "qty": 40,
+        "val": 44200
+      },
+      "w2": {
+        "qty": 40,
+        "val": 44200
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.NK0",
+      "w0": {
+        "qty": 15,
+        "val": 17520
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.UK0",
+      "w0": {
+        "qty": 15,
+        "val": 17520
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.NK0",
+      "w0": {
+        "qty": 50,
+        "val": 65025
+      },
+      "w1": {
+        "qty": 50,
+        "val": 65025
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65025
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 65025
+      },
+      "w1": {
+        "qty": 50,
+        "val": 65025
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65025
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.NK0",
+      "w0": {
+        "qty": 15,
+        "val": 20745
+      },
+      "w1": {
+        "qty": 15,
+        "val": 20745
+      },
+      "w2": {
+        "qty": 15,
+        "val": 20745
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.UK0",
+      "w0": {
+        "qty": 15,
+        "val": 20745
+      },
+      "w1": {
+        "qty": 15,
+        "val": 20745
+      },
+      "w2": {
+        "qty": 15,
+        "val": 20745
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.NR2",
+      "w0": {
+        "qty": 30,
+        "val": 68836
+      },
+      "w1": {
+        "qty": 25,
+        "val": 57363
+      },
+      "w2": {
+        "qty": 25,
+        "val": 57363
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.UR2",
+      "w0": {
+        "qty": 30,
+        "val": 68836
+      },
+      "w1": {
+        "qty": 25,
+        "val": 57363
+      },
+      "w2": {
+        "qty": 25,
+        "val": 57363
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382H2.NR2",
+      "w0": {
+        "qty": 10,
+        "val": 24920
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382H2.UR2",
+      "w0": {
+        "qty": 10,
+        "val": 24920
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 31,
+        "val": 9036
+      },
+      "w1": {
+        "qty": 28,
+        "val": 8172
+      },
+      "w2": {
+        "qty": 28,
+        "val": 8172
+      }
+    },
+    {
+      "dealer": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 28946
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 28946
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242H0.UK0",
+      "w0": {
+        "qty": 30,
+        "val": 28486
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
@@ -44514,15 +39248,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
+      "sku": "ABNQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 12164
+      },
+      "w1": {
+        "qty": 5,
+        "val": 12164
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
       "sku": "ABNQ55GM3TA.ANWGIB",
       "w0": {
         "qty": 5,
-        "val": 29284
+        "val": 14642
       },
       "w1": {
         "qty": 5,
-        "val": 29284
+        "val": 14642
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
@@ -44530,15 +39288,19 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNW28GM1TA.ANWGIB",
       "w0": {
         "qty": 4,
-        "val": 13670
+        "val": 6835
       },
       "w1": {
         "qty": 4,
-        "val": 13670
+        "val": 6835
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
@@ -44546,15 +39308,19 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNW40GM3TA.ANWGIB",
       "w0": {
         "qty": 10,
-        "val": 49558
+        "val": 24779
       },
       "w1": {
         "qty": 10,
-        "val": 49558
+        "val": 24779
+      },
+      "w2": {
+        "qty": 5,
+        "val": 12390
       }
     },
     {
@@ -44562,15 +39328,19 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNW55GM3TA.ANWGIB",
       "w0": {
         "qty": 10,
-        "val": 62698
+        "val": 31349
       },
       "w1": {
         "qty": 10,
-        "val": 62698
+        "val": 31349
+      },
+      "w2": {
+        "qty": 10,
+        "val": 31349
       }
     },
     {
@@ -44578,127 +39348,239 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "CAC",
-      "className": "CCD",
+      "className": "",
       "sku": "ABNW60GM3TA.ANWGIB",
       "w0": {
         "qty": 20,
-        "val": 137300
+        "val": 68650
       },
       "w1": {
         "qty": 20,
-        "val": 137300
+        "val": 68650
+      },
+      "w2": {
+        "qty": 10,
+        "val": 34325
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182H0.NK0",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ40GM3TA.ANWGIB",
       "w0": {
-        "qty": 20,
-        "val": 46720
+        "qty": 5,
+        "val": 16692
       },
       "w1": {
-        "qty": 20,
-        "val": 46720
+        "qty": 5,
+        "val": 16692
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242H0.NK0",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ55GM3TA.ANWGIB",
       "w0": {
-        "qty": 20,
-        "val": 55320
+        "qty": 5,
+        "val": 21950
       },
       "w1": {
-        "qty": 20,
-        "val": 55320
+        "qty": 5,
+        "val": 21950
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW28GM1TA.ANWGIB",
       "w0": {
-        "qty": 25,
-        "val": 50976
+        "qty": 4,
+        "val": 10261
       },
       "w1": {
-        "qty": 25,
-        "val": 50976
+        "qty": 4,
+        "val": 10261
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182H2.NK2",
-      "w0": {
-        "qty": 25,
-        "val": 58476
-      },
-      "w1": {
-        "qty": 25,
-        "val": 58476
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 50,
-        "val": 130380
-      },
-      "w1": {
-        "qty": 50,
-        "val": 130380
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242H3.NK2",
-      "w0": {
-        "qty": 20,
-        "val": 52260
-      },
-      "w1": {
-        "qty": 20,
-        "val": 52260
-      }
-    },
-    {
-      "dealer": "STAR Appliances",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382C2.NR2",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW40GM3TA.ANWGIB",
       "w0": {
         "qty": 10,
-        "val": 45890
+        "val": 37196
       },
       "w1": {
         "qty": 10,
-        "val": 45890
+        "val": 37196
+      },
+      "w2": {
+        "qty": 5,
+        "val": 18598
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW55GM3TA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 47026
+      },
+      "w1": {
+        "qty": 10,
+        "val": 47026
+      },
+      "w2": {
+        "qty": 10,
+        "val": 47026
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 20,
+        "val": 102922
+      },
+      "w1": {
+        "qty": 20,
+        "val": 102922
+      },
+      "w2": {
+        "qty": 10,
+        "val": 51461
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 142850
+      },
+      "w1": {
+        "qty": 50,
+        "val": 142850
+      },
+      "w2": {
+        "qty": 50,
+        "val": 142850
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 147876
+      },
+      "w1": {
+        "qty": 50,
+        "val": 147876
+      },
+      "w2": {
+        "qty": 50,
+        "val": 147876
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 142850
+      },
+      "w1": {
+        "qty": 50,
+        "val": 142850
+      },
+      "w2": {
+        "qty": 50,
+        "val": 142850
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 147876
+      },
+      "w1": {
+        "qty": 50,
+        "val": 147876
+      },
+      "w2": {
+        "qty": 50,
+        "val": 147876
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Cassette",
+      "className": "",
+      "sku": "AUUW55GT6.ATRGIB",
+      "w0": {
+        "qty": 1,
+        "val": 4478
+      },
+      "w1": {
+        "qty": 1,
+        "val": 4478
+      },
+      "w2": {
+        "qty": 1,
+        "val": 4478
       }
     },
     {
@@ -44706,7 +39588,7 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LA",
+      "className": "",
       "sku": "LA182C0.NK0",
       "w0": {
         "qty": 3,
@@ -44715,6 +39597,10 @@ td.ctr { text-align: center; }
       "w1": {
         "qty": 3,
         "val": 0
+      },
+      "w2": {
+        "qty": 3,
+        "val": 0
       }
     },
     {
@@ -44722,15 +39608,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LA",
+      "className": "",
+      "sku": "LA182C0.UK0",
+      "w0": {
+        "qty": 3,
+        "val": 0
+      },
+      "w1": {
+        "qty": 3,
+        "val": 0
+      },
+      "w2": {
+        "qty": 3,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LA242H0.NK0",
       "w0": {
         "qty": 50,
-        "val": 97786
+        "val": 48893
       },
       "w1": {
         "qty": 50,
-        "val": 97786
+        "val": 48893
+      },
+      "w2": {
+        "qty": 50,
+        "val": 48893
       }
     },
     {
@@ -44738,15 +39648,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LA242H0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 48893
+      },
+      "w1": {
+        "qty": 50,
+        "val": 48893
+      },
+      "w2": {
+        "qty": 50,
+        "val": 48893
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC182C0.NK0",
       "w0": {
         "qty": 60,
-        "val": 89340
+        "val": 44670
       },
       "w1": {
         "qty": 60,
-        "val": 89340
+        "val": 44670
+      },
+      "w2": {
+        "qty": 60,
+        "val": 44670
       }
     },
     {
@@ -44754,15 +39688,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC182C0.UK0",
+      "w0": {
+        "qty": 60,
+        "val": 44670
+      },
+      "w1": {
+        "qty": 60,
+        "val": 44670
+      },
+      "w2": {
+        "qty": 60,
+        "val": 44670
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC182H0.NK0",
       "w0": {
         "qty": 40,
-        "val": 68960
+        "val": 34480
       },
       "w1": {
         "qty": 40,
-        "val": 68960
+        "val": 34480
+      },
+      "w2": {
+        "qty": 40,
+        "val": 34480
       }
     },
     {
@@ -44770,15 +39728,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC182H0.UK0",
+      "w0": {
+        "qty": 40,
+        "val": 34480
+      },
+      "w1": {
+        "qty": 40,
+        "val": 34480
+      },
+      "w2": {
+        "qty": 40,
+        "val": 34480
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC242C0.NK0",
       "w0": {
         "qty": 70,
-        "val": 123832
+        "val": 61916
       },
       "w1": {
         "qty": 70,
-        "val": 123832
+        "val": 61916
+      },
+      "w2": {
+        "qty": 70,
+        "val": 61916
       }
     },
     {
@@ -44786,15 +39768,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC242C0.UK0",
+      "w0": {
+        "qty": 70,
+        "val": 61916
+      },
+      "w1": {
+        "qty": 70,
+        "val": 61916
+      },
+      "w2": {
+        "qty": 70,
+        "val": 61916
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC242H0.NK0",
       "w0": {
         "qty": 50,
-        "val": 94952
+        "val": 47476
       },
       "w1": {
         "qty": 50,
-        "val": 94952
+        "val": 47476
+      },
+      "w2": {
+        "qty": 50,
+        "val": 47476
       }
     },
     {
@@ -44802,15 +39808,39 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC242H0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 47476
+      },
+      "w1": {
+        "qty": 50,
+        "val": 47476
+      },
+      "w2": {
+        "qty": 50,
+        "val": 47476
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LT302C0.NK0",
       "w0": {
         "qty": 20,
-        "val": 62580
+        "val": 31290
       },
       "w1": {
         "qty": 20,
-        "val": 62580
+        "val": 31290
+      },
+      "w2": {
+        "qty": 20,
+        "val": 31290
       }
     },
     {
@@ -44818,47 +39848,359 @@ td.ctr { text-align: center; }
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LT302C0.UK0",
+      "w0": {
+        "qty": 20,
+        "val": 31290
+      },
+      "w1": {
+        "qty": 20,
+        "val": 31290
+      },
+      "w2": {
+        "qty": 20,
+        "val": 31290
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LT302H0.NK0",
       "w0": {
         "qty": 10,
-        "val": 33290
+        "val": 16645
       },
       "w1": {
         "qty": 10,
-        "val": 33290
+        "val": 16645
+      },
+      "w2": {
+        "qty": 10,
+        "val": 16645
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302H0.UK0",
       "w0": {
-        "qty": 50,
-        "val": 285700
+        "qty": 10,
+        "val": 16645
       },
       "w1": {
-        "qty": 50,
-        "val": 285700
+        "qty": 10,
+        "val": 16645
+      },
+      "w2": {
+        "qty": 10,
+        "val": 16645
       }
     },
     {
       "dealer": "STAR Appliances",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNW55GT3MA.ANWGIB",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.NK0",
+      "w0": {
+        "qty": 20,
+        "val": 23360
+      },
+      "w1": {
+        "qty": 20,
+        "val": 23360
+      },
+      "w2": {
+        "qty": 20,
+        "val": 23360
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.UK0",
+      "w0": {
+        "qty": 20,
+        "val": 23360
+      },
+      "w1": {
+        "qty": 20,
+        "val": 23360
+      },
+      "w2": {
+        "qty": 20,
+        "val": 23360
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.NK0",
+      "w0": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w1": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w2": {
+        "qty": 20,
+        "val": 27660
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.UK0",
+      "w0": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w1": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w2": {
+        "qty": 20,
+        "val": 27660
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w1": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w2": {
+        "qty": 25,
+        "val": 25488
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w1": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w2": {
+        "qty": 25,
+        "val": 25488
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.NK2",
+      "w0": {
+        "qty": 25,
+        "val": 29238
+      },
+      "w1": {
+        "qty": 25,
+        "val": 29238
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.UK2",
+      "w0": {
+        "qty": 25,
+        "val": 29238
+      },
+      "w1": {
+        "qty": 25,
+        "val": 29238
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
       "w0": {
         "qty": 50,
-        "val": 295752
+        "val": 65190
       },
       "w1": {
         "qty": 50,
-        "val": 295752
+        "val": 65190
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65190
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 50,
+        "val": 65190
+      },
+      "w1": {
+        "qty": 50,
+        "val": 65190
+      },
+      "w2": {
+        "qty": 50,
+        "val": 65190
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.NK2",
+      "w0": {
+        "qty": 20,
+        "val": 26130
+      },
+      "w1": {
+        "qty": 20,
+        "val": 26130
+      },
+      "w2": {
+        "qty": 20,
+        "val": 26130
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.UK2",
+      "w0": {
+        "qty": 20,
+        "val": 26130
+      },
+      "w1": {
+        "qty": 20,
+        "val": 26130
+      },
+      "w2": {
+        "qty": 20,
+        "val": 26130
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.NR2",
+      "w0": {
+        "qty": 10,
+        "val": 22945
+      },
+      "w1": {
+        "qty": 10,
+        "val": 22945
+      },
+      "w2": {
+        "qty": 10,
+        "val": 22945
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.UR2",
+      "w0": {
+        "qty": 10,
+        "val": 22945
+      },
+      "w1": {
+        "qty": 10,
+        "val": 22945
+      },
+      "w2": {
+        "qty": 10,
+        "val": 22945
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 54,
+        "val": 15552
+      },
+      "w1": {
+        "qty": 54,
+        "val": 15552
+      },
+      "w2": {
+        "qty": 25,
+        "val": 7200
       }
     },
     {
@@ -44866,15 +40208,19 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "Inverter",
-      "className": "Art Cool",
+      "className": "",
       "sku": "AM182C0.NK2",
       "w0": {
         "qty": 7,
-        "val": 21250
+        "val": 10625
       },
       "w1": {
         "qty": 7,
-        "val": 21250
+        "val": 10625
+      },
+      "w2": {
+        "qty": 7,
+        "val": 10625
       }
     },
     {
@@ -44882,15 +40228,39 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "Inverter",
-      "className": "Art Cool",
+      "className": "",
+      "sku": "AM182C0.UK2",
+      "w0": {
+        "qty": 7,
+        "val": 10625
+      },
+      "w1": {
+        "qty": 7,
+        "val": 10625
+      },
+      "w2": {
+        "qty": 7,
+        "val": 10625
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
       "sku": "AM242C0.NK2",
       "w0": {
         "qty": 5,
-        "val": 16940
+        "val": 8470
       },
       "w1": {
         "qty": 5,
-        "val": 16940
+        "val": 8470
+      },
+      "w2": {
+        "qty": 5,
+        "val": 8470
       }
     },
     {
@@ -44898,127 +40268,19 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "Inverter",
-      "className": "Fresh",
-      "sku": "NF122C0.NJ1",
+      "className": "",
+      "sku": "AM242C0.UK2",
       "w0": {
         "qty": 5,
-        "val": 10874
-      },
-      "w1": {
-        "qty": 5,
-        "val": 10874
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND182C0.NK0",
-      "w0": {
-        "qty": 39,
-        "val": 104052
-      },
-      "w1": {
-        "qty": 35,
-        "val": 93380
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "sku": "ND242C0.NK0",
-      "w0": {
-        "qty": 46,
-        "val": 145396
-      },
-      "w1": {
-        "qty": 42,
-        "val": 132752
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182C2.NK2",
-      "w0": {
-        "qty": 130,
-        "val": 298006
-      },
-      "w1": {
-        "qty": 110,
-        "val": 252158
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS182H2.NK2",
-      "w0": {
-        "qty": 7,
-        "val": 18128
-      },
-      "w1": {
-        "qty": 7,
-        "val": 18128
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242C3.UK2",
-      "w0": {
-        "qty": 108,
-        "val": 311812
-      },
-      "w1": {
-        "qty": 100,
-        "val": 288714
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "Smart",
-      "sku": "NS242H3.NK2",
-      "w0": {
-        "qty": 10,
-        "val": 31768
-      },
-      "w1": {
-        "qty": 10,
-        "val": 31768
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "Inverter",
-      "className": "Titan",
-      "sku": "NT382C2.NR2",
-      "w0": {
-        "qty": 5,
-        "val": 26840
+        "val": 8470
       },
       "w1": {
         "qty": 5,
-        "val": 26840
+        "val": 8470
+      },
+      "w2": {
+        "qty": 5,
+        "val": 8470
       }
     },
     {
@@ -45026,15 +40288,19 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
       "sku": "LC182C0.NK0",
       "w0": {
         "qty": 80,
-        "val": 119138
+        "val": 59569
       },
       "w1": {
         "qty": 60,
-        "val": 89354
+        "val": 44677
+      },
+      "w2": {
+        "qty": 49,
+        "val": 36486
       }
     },
     {
@@ -45042,15 +40308,39 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC182C0.UK0",
+      "w0": {
+        "qty": 80,
+        "val": 59569
+      },
+      "w1": {
+        "qty": 60,
+        "val": 44677
+      },
+      "w2": {
+        "qty": 49,
+        "val": 36486
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC182H0.NK0",
       "w0": {
         "qty": 14,
-        "val": 22680
+        "val": 11340
       },
       "w1": {
         "qty": 2,
-        "val": 3240
+        "val": 1620
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
       }
     },
     {
@@ -45058,15 +40348,39 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC182H0.UK0",
+      "w0": {
+        "qty": 14,
+        "val": 11340
+      },
+      "w1": {
+        "qty": 2,
+        "val": 1620
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC242C0.NK0",
       "w0": {
         "qty": 110,
-        "val": 194614
+        "val": 97307
       },
       "w1": {
         "qty": 60,
-        "val": 106154
+        "val": 53077
+      },
+      "w2": {
+        "qty": 45,
+        "val": 39807
       }
     },
     {
@@ -45074,15 +40388,39 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
+      "className": "",
+      "sku": "LC242C0.UK0",
+      "w0": {
+        "qty": 110,
+        "val": 97307
+      },
+      "w1": {
+        "qty": 60,
+        "val": 53077
+      },
+      "w2": {
+        "qty": 48,
+        "val": 42461
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
       "sku": "LC242H0.NK0",
       "w0": {
         "qty": 14,
-        "val": 26590
+        "val": 13295
       },
       "w1": {
         "qty": 7,
-        "val": 13294
+        "val": 6647
+      },
+      "w2": {
+        "qty": 5,
+        "val": 4748
       }
     },
     {
@@ -45090,31 +40428,19 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LT302C0.NK0",
+      "className": "",
+      "sku": "LC242H0.UK0",
       "w0": {
-        "qty": 31,
-        "val": 98558
+        "qty": 14,
+        "val": 13295
       },
       "w1": {
         "qty": 7,
-        "val": 22254
-      }
-    },
-    {
-      "dealer": "Tamkeen International Co.",
-      "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "sku": "LT302H0.NK0",
-      "w0": {
-        "qty": 2,
-        "val": 6758
+        "val": 6647
       },
-      "w1": {
-        "qty": 2,
-        "val": 6758
+      "w2": {
+        "qty": 5,
+        "val": 4748
       }
     },
     {
@@ -45122,2278 +40448,2280 @@ td.ctr { text-align: center; }
       "region": "west",
       "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "category": "ON/OFF",
-      "className": "On/Off_LO",
+      "className": "",
       "sku": "LO182C0.NK0",
       "w0": {
         "qty": 110,
-        "val": 149944
+        "val": 74972
       },
       "w1": {
         "qty": 90,
-        "val": 122682
+        "val": 61341
+      },
+      "w2": {
+        "qty": 82,
+        "val": 55888
       }
     },
     {
-      "dealer": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "sku": "APNQ55GT3MA.ANWGIB",
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LO182C0.UK0",
+      "w0": {
+        "qty": 110,
+        "val": 74972
+      },
+      "w1": {
+        "qty": 90,
+        "val": 61341
+      },
+      "w2": {
+        "qty": 82,
+        "val": 55888
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302C0.NK0",
+      "w0": {
+        "qty": 31,
+        "val": 49279
+      },
+      "w1": {
+        "qty": 7,
+        "val": 11127
+      },
+      "w2": {
+        "qty": 7,
+        "val": 11127
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302C0.UK0",
+      "w0": {
+        "qty": 31,
+        "val": 49279
+      },
+      "w1": {
+        "qty": 7,
+        "val": 11127
+      },
+      "w2": {
+        "qty": 7,
+        "val": 11127
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302H0.NK0",
+      "w0": {
+        "qty": 2,
+        "val": 3379
+      },
+      "w1": {
+        "qty": 2,
+        "val": 3379
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302H0.UK0",
+      "w0": {
+        "qty": 2,
+        "val": 3379
+      },
+      "w1": {
+        "qty": 2,
+        "val": 3379
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.NK0",
+      "w0": {
+        "qty": 39,
+        "val": 52026
+      },
+      "w1": {
+        "qty": 35,
+        "val": 46690
+      },
+      "w2": {
+        "qty": 32,
+        "val": 42688
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.UK0",
+      "w0": {
+        "qty": 39,
+        "val": 52026
+      },
+      "w1": {
+        "qty": 35,
+        "val": 46690
+      },
+      "w2": {
+        "qty": 32,
+        "val": 42688
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.NK0",
+      "w0": {
+        "qty": 46,
+        "val": 72698
+      },
+      "w1": {
+        "qty": 42,
+        "val": 66376
+      },
+      "w2": {
+        "qty": 39,
+        "val": 61635
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.UK0",
+      "w0": {
+        "qty": 46,
+        "val": 72698
+      },
+      "w1": {
+        "qty": 42,
+        "val": 66376
+      },
+      "w2": {
+        "qty": 39,
+        "val": 61635
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NF122C0.NJ1",
+      "w0": {
+        "qty": 5,
+        "val": 5437
+      },
+      "w1": {
+        "qty": 5,
+        "val": 5437
+      },
+      "w2": {
+        "qty": 5,
+        "val": 5437
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NF122C0.UJ1",
+      "w0": {
+        "qty": 5,
+        "val": 5437
+      },
+      "w1": {
+        "qty": 5,
+        "val": 5437
+      },
+      "w2": {
+        "qty": 5,
+        "val": 5437
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 130,
+        "val": 149003
+      },
+      "w1": {
+        "qty": 110,
+        "val": 126079
+      },
+      "w2": {
+        "qty": 30,
+        "val": 34386
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 130,
+        "val": 149003
+      },
+      "w1": {
+        "qty": 110,
+        "val": 126079
+      },
+      "w2": {
+        "qty": 30,
+        "val": 34386
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.NK2",
+      "w0": {
+        "qty": 7,
+        "val": 9064
+      },
+      "w1": {
+        "qty": 7,
+        "val": 9064
+      },
+      "w2": {
+        "qty": 7,
+        "val": 9064
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.UK2",
+      "w0": {
+        "qty": 7,
+        "val": 9064
+      },
+      "w1": {
+        "qty": 7,
+        "val": 9064
+      },
+      "w2": {
+        "qty": 7,
+        "val": 9064
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 108,
+        "val": 155906
+      },
+      "w1": {
+        "qty": 100,
+        "val": 144357
+      },
+      "w2": {
+        "qty": 90,
+        "val": 129921
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 108,
+        "val": 155906
+      },
+      "w1": {
+        "qty": 100,
+        "val": 144357
+      },
+      "w2": {
+        "qty": 90,
+        "val": 129921
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.NK2",
       "w0": {
         "qty": 10,
-        "val": 57892
+        "val": 15884
+      },
+      "w1": {
+        "qty": 10,
+        "val": 15884
+      },
+      "w2": {
+        "qty": 7,
+        "val": 11119
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.UK2",
+      "w0": {
+        "qty": 10,
+        "val": 15884
+      },
+      "w1": {
+        "qty": 10,
+        "val": 15884
+      },
+      "w2": {
+        "qty": 7,
+        "val": 11119
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.NR2",
+      "w0": {
+        "qty": 5,
+        "val": 13420
+      },
+      "w1": {
+        "qty": 5,
+        "val": 13420
+      },
+      "w2": {
+        "qty": 5,
+        "val": 13420
+      }
+    },
+    {
+      "dealer": "Tamkeen International Co.",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.UR2",
+      "w0": {
+        "qty": 5,
+        "val": 13420
+      },
+      "w1": {
+        "qty": 5,
+        "val": 13420
+      },
+      "w2": {
+        "qty": 5,
+        "val": 13420
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 25,
+        "val": 71425
+      },
+      "w1": {
+        "qty": 25,
+        "val": 71425
+      },
+      "w2": {
+        "qty": 25,
+        "val": 71425
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 100,
+        "val": 295750
+      },
+      "w1": {
+        "qty": 100,
+        "val": 295750
+      },
+      "w2": {
+        "qty": 100,
+        "val": 295750
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 25,
+        "val": 71425
+      },
+      "w1": {
+        "qty": 25,
+        "val": 71425
+      },
+      "w2": {
+        "qty": 25,
+        "val": 71425
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 100,
+        "val": 295750
+      },
+      "w1": {
+        "qty": 100,
+        "val": 295750
+      },
+      "w2": {
+        "qty": 100,
+        "val": 295750
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATNQ21GPLTA.ANWTIB",
+      "w0": {
+        "qty": 5,
+        "val": 11275
+      },
+      "w1": {
+        "qty": 5,
+        "val": 11275
+      },
+      "w2": {
+        "qty": 5,
+        "val": 11275
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ21GPLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 11907
+      },
+      "w1": {
+        "qty": 5,
+        "val": 11907
+      },
+      "w2": {
+        "qty": 5,
+        "val": 11907
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182C0.NK0",
+      "w0": {
+        "qty": 50,
+        "val": 37225
+      },
+      "w1": {
+        "qty": 30,
+        "val": 22335
+      },
+      "w2": {
+        "qty": 30,
+        "val": 22335
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182C0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 37225
+      },
+      "w1": {
+        "qty": 30,
+        "val": 22335
+      },
+      "w2": {
+        "qty": 30,
+        "val": 22335
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182H0.NK0",
+      "w0": {
+        "qty": 25,
+        "val": 20250
+      },
+      "w1": {
+        "qty": 15,
+        "val": 12150
+      },
+      "w2": {
+        "qty": 15,
+        "val": 12150
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182H0.UK0",
+      "w0": {
+        "qty": 25,
+        "val": 20250
+      },
+      "w1": {
+        "qty": 15,
+        "val": 12150
+      },
+      "w2": {
+        "qty": 15,
+        "val": 12150
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242C0.NK0",
+      "w0": {
+        "qty": 100,
+        "val": 88450
+      },
+      "w1": {
+        "qty": 100,
+        "val": 88450
+      },
+      "w2": {
+        "qty": 100,
+        "val": 88450
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242H0.NK0",
+      "w0": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w1": {
+        "qty": 15,
+        "val": 14243
+      },
+      "w2": {
+        "qty": 15,
+        "val": 14243
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242H0.UK0",
+      "w0": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w1": {
+        "qty": 15,
+        "val": 14243
+      },
+      "w2": {
+        "qty": 15,
+        "val": 14243
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302C0.NK0",
+      "w0": {
+        "qty": 15,
+        "val": 23843
+      },
+      "w1": {
+        "qty": 5,
+        "val": 7948
+      },
+      "w2": {
+        "qty": 5,
+        "val": 7948
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302C0.UK0",
+      "w0": {
+        "qty": 15,
+        "val": 23843
+      },
+      "w1": {
+        "qty": 5,
+        "val": 7948
+      },
+      "w2": {
+        "qty": 5,
+        "val": 7948
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302H0.NK0",
+      "w0": {
+        "qty": 10,
+        "val": 16895
+      },
+      "w1": {
+        "qty": 5,
+        "val": 8448
+      },
+      "w2": {
+        "qty": 5,
+        "val": 8448
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LT302H0.UK0",
+      "w0": {
+        "qty": 10,
+        "val": 16895
+      },
+      "w1": {
+        "qty": 5,
+        "val": 8448
+      },
+      "w2": {
+        "qty": 5,
+        "val": 8448
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.NK0",
+      "w0": {
+        "qty": 20,
+        "val": 22100
+      },
+      "w1": {
+        "qty": 20,
+        "val": 22100
+      },
+      "w2": {
+        "qty": 20,
+        "val": 22100
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182C0.UK0",
+      "w0": {
+        "qty": 20,
+        "val": 22100
+      },
+      "w1": {
+        "qty": 20,
+        "val": 22100
+      },
+      "w2": {
+        "qty": 20,
+        "val": 22100
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.NK0",
+      "w0": {
+        "qty": 35,
+        "val": 40880
       },
       "w1": {
         "qty": 0,
         "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND182H0.UK0",
+      "w0": {
+        "qty": 35,
+        "val": 40880
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.NK0",
+      "w0": {
+        "qty": 20,
+        "val": 26010
+      },
+      "w1": {
+        "qty": 20,
+        "val": 26010
+      },
+      "w2": {
+        "qty": 20,
+        "val": 26010
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242C0.UK0",
+      "w0": {
+        "qty": 20,
+        "val": 26010
+      },
+      "w1": {
+        "qty": 20,
+        "val": 26010
+      },
+      "w2": {
+        "qty": 20,
+        "val": 26010
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.NK0",
+      "w0": {
+        "qty": 35,
+        "val": 48405
+      },
+      "w1": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w2": {
+        "qty": 20,
+        "val": 27660
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "ND242H0.UK0",
+      "w0": {
+        "qty": 35,
+        "val": 48405
+      },
+      "w1": {
+        "qty": 20,
+        "val": 27660
+      },
+      "w2": {
+        "qty": 20,
+        "val": 27660
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w1": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w2": {
+        "qty": 25,
+        "val": 25488
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w1": {
+        "qty": 25,
+        "val": 25488
+      },
+      "w2": {
+        "qty": 25,
+        "val": 25488
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.NK2",
+      "w0": {
+        "qty": 25,
+        "val": 26988
+      },
+      "w1": {
+        "qty": 25,
+        "val": 26988
+      },
+      "w2": {
+        "qty": 25,
+        "val": 26988
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.UK2",
+      "w0": {
+        "qty": 25,
+        "val": 26988
+      },
+      "w1": {
+        "qty": 25,
+        "val": 26988
+      },
+      "w2": {
+        "qty": 25,
+        "val": 26988
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 44,
+        "val": 53879
+      },
+      "w1": {
+        "qty": 19,
+        "val": 23266
+      },
+      "w2": {
+        "qty": 19,
+        "val": 23266
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 44,
+        "val": 53879
+      },
+      "w1": {
+        "qty": 19,
+        "val": 23266
+      },
+      "w2": {
+        "qty": 19,
+        "val": 23266
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.NK2",
+      "w0": {
+        "qty": 25,
+        "val": 32663
+      },
+      "w1": {
+        "qty": 15,
+        "val": 19598
+      },
+      "w2": {
+        "qty": 15,
+        "val": 19598
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.UK2",
+      "w0": {
+        "qty": 25,
+        "val": 32663
+      },
+      "w1": {
+        "qty": 15,
+        "val": 19598
+      },
+      "w2": {
+        "qty": 15,
+        "val": 19598
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.NR2",
+      "w0": {
+        "qty": 15,
+        "val": 34418
+      },
+      "w1": {
+        "qty": 5,
+        "val": 11473
+      },
+      "w2": {
+        "qty": 5,
+        "val": 11473
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382C2.UR2",
+      "w0": {
+        "qty": 15,
+        "val": 34418
+      },
+      "w1": {
+        "qty": 5,
+        "val": 11473
+      },
+      "w2": {
+        "qty": 5,
+        "val": 11473
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382H2.NR2",
+      "w0": {
+        "qty": 10,
+        "val": 24920
+      },
+      "w1": {
+        "qty": 5,
+        "val": 12460
+      },
+      "w2": {
+        "qty": 5,
+        "val": 12460
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NT382H2.UR2",
+      "w0": {
+        "qty": 10,
+        "val": 24920
+      },
+      "w1": {
+        "qty": 5,
+        "val": 12460
+      },
+      "w2": {
+        "qty": 5,
+        "val": 12460
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 5,
+        "val": 1470
+      },
+      "w1": {
+        "qty": 5,
+        "val": 1470
+      },
+      "w2": {
+        "qty": 5,
+        "val": 1470
+      }
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 6,
+        "val": 17892
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 6,
+        "val": 17892
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "شركه نجوم العمران للمقاولات",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 6,
+        "val": 1568
+      },
+      "w1": {
+        "qty": 0,
+        "val": 0
+      },
+      "w2": {
+        "qty": 0,
+        "val": 0
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ28GM1TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 8379
+      },
+      "w1": {
+        "qty": 5,
+        "val": 8379
+      },
+      "w2": {
+        "qty": 5,
+        "val": 8379
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 10822
+      },
+      "w1": {
+        "qty": 5,
+        "val": 10822
+      },
+      "w2": {
+        "qty": 5,
+        "val": 10822
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 24328
+      },
+      "w1": {
+        "qty": 10,
+        "val": 24328
+      },
+      "w2": {
+        "qty": 10,
+        "val": 24328
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNQ60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 35,
+        "val": 109722
+      },
+      "w1": {
+        "qty": 35,
+        "val": 109722
+      },
+      "w2": {
+        "qty": 35,
+        "val": 109722
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNW34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 2,
+        "val": 4353
+      },
+      "w1": {
+        "qty": 2,
+        "val": 4353
+      },
+      "w2": {
+        "qty": 2,
+        "val": 4353
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNW40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 12390
+      },
+      "w1": {
+        "qty": 5,
+        "val": 12390
+      },
+      "w2": {
+        "qty": 5,
+        "val": 12390
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "ABNW60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 102974
+      },
+      "w1": {
+        "qty": 30,
+        "val": 102974
+      },
+      "w2": {
+        "qty": 30,
+        "val": 102974
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ28GM1TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 11150
+      },
+      "w1": {
+        "qty": 5,
+        "val": 11150
+      },
+      "w2": {
+        "qty": 5,
+        "val": 11150
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 14345
+      },
+      "w1": {
+        "qty": 5,
+        "val": 14345
+      },
+      "w2": {
+        "qty": 5,
+        "val": 14345
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 10,
+        "val": 33384
+      },
+      "w1": {
+        "qty": 10,
+        "val": 33384
+      },
+      "w2": {
+        "qty": 10,
+        "val": 33384
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUQ60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 35,
+        "val": 164589
+      },
+      "w1": {
+        "qty": 35,
+        "val": 164589
+      },
+      "w2": {
+        "qty": 35,
+        "val": 164589
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW34GM3TA.ANWGIB",
+      "w0": {
+        "qty": 2,
+        "val": 6533
+      },
+      "w1": {
+        "qty": 2,
+        "val": 6533
+      },
+      "w2": {
+        "qty": 2,
+        "val": 6533
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW40GM3TA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 18598
+      },
+      "w1": {
+        "qty": 5,
+        "val": 18598
+      },
+      "w2": {
+        "qty": 5,
+        "val": 18598
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Concealed",
+      "className": "",
+      "sku": "ABUW60GM3TA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 154382
+      },
+      "w1": {
+        "qty": 30,
+        "val": 154382
+      },
+      "w2": {
+        "qty": 30,
+        "val": 154382
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 149102
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149102
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149102
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "PAC",
+      "className": "",
+      "sku": "APNW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 93330
+      },
+      "w1": {
+        "qty": 30,
+        "val": 93330
+      },
+      "w2": {
+        "qty": 30,
+        "val": 93330
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUQ55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 50,
+        "val": 149102
+      },
+      "w1": {
+        "qty": 50,
+        "val": 149102
+      },
+      "w2": {
+        "qty": 50,
+        "val": 149102
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Free Standing",
+      "className": "",
+      "sku": "APUW55GT3MA.ANWGIB",
+      "w0": {
+        "qty": 30,
+        "val": 93330
+      },
+      "w1": {
+        "qty": 30,
+        "val": 93330
+      },
+      "w2": {
+        "qty": 30,
+        "val": 93330
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ28GPLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 14083
+      },
+      "w1": {
+        "qty": 5,
+        "val": 14083
+      },
+      "w2": {
+        "qty": 5,
+        "val": 14083
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "className": "",
+      "sku": "ATUQ40GNLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 19448
+      },
+      "w1": {
+        "qty": 5,
+        "val": 19448
+      },
+      "w2": {
+        "qty": 5,
+        "val": 19448
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "className": "",
+      "sku": "GTNQ28GPLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 10672
+      },
+      "w1": {
+        "qty": 5,
+        "val": 10672
+      },
+      "w2": {
+        "qty": 5,
+        "val": 10672
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Cassette",
+      "className": "",
+      "sku": "GTNQ40GNLTA.ANWGIB",
+      "w0": {
+        "qty": 5,
+        "val": 17552
+      },
+      "w1": {
+        "qty": 5,
+        "val": 17552
+      },
+      "w2": {
+        "qty": 5,
+        "val": 17552
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182C0.NK0",
+      "w0": {
+        "qty": 75,
+        "val": 55838
+      },
+      "w1": {
+        "qty": 75,
+        "val": 55838
+      },
+      "w2": {
+        "qty": 75,
+        "val": 55838
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182C0.UK0",
+      "w0": {
+        "qty": 75,
+        "val": 55838
+      },
+      "w1": {
+        "qty": 75,
+        "val": 55838
+      },
+      "w2": {
+        "qty": 75,
+        "val": 55838
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182H0.NK0",
+      "w0": {
+        "qty": 50,
+        "val": 40500
+      },
+      "w1": {
+        "qty": 50,
+        "val": 40500
+      },
+      "w2": {
+        "qty": 50,
+        "val": 40500
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC182H0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 40500
+      },
+      "w1": {
+        "qty": 50,
+        "val": 40500
+      },
+      "w2": {
+        "qty": 50,
+        "val": 40500
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242C0.NK0",
+      "w0": {
+        "qty": 50,
+        "val": 44226
+      },
+      "w1": {
+        "qty": 50,
+        "val": 44226
+      },
+      "w2": {
+        "qty": 50,
+        "val": 44226
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242C0.UK0",
+      "w0": {
+        "qty": 50,
+        "val": 44226
+      },
+      "w1": {
+        "qty": 50,
+        "val": 44226
+      },
+      "w2": {
+        "qty": 50,
+        "val": 44226
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242H0.NK0",
+      "w0": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w1": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w2": {
+        "qty": 25,
+        "val": 23738
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LC242H0.UK0",
+      "w0": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w1": {
+        "qty": 25,
+        "val": 23738
+      },
+      "w2": {
+        "qty": 25,
+        "val": 23738
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 100,
+        "val": 101950
+      },
+      "w1": {
+        "qty": 100,
+        "val": 101950
+      },
+      "w2": {
+        "qty": 100,
+        "val": 101950
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 100,
+        "val": 101950
+      },
+      "w1": {
+        "qty": 100,
+        "val": 101950
+      },
+      "w2": {
+        "qty": 100,
+        "val": 101950
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.NK2",
+      "w0": {
+        "qty": 40,
+        "val": 43180
+      },
+      "w1": {
+        "qty": 40,
+        "val": 43180
+      },
+      "w2": {
+        "qty": 40,
+        "val": 43180
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182H2.UK2",
+      "w0": {
+        "qty": 40,
+        "val": 43180
+      },
+      "w1": {
+        "qty": 40,
+        "val": 43180
+      },
+      "w2": {
+        "qty": 40,
+        "val": 43180
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 50,
+        "val": 61225
+      },
+      "w1": {
+        "qty": 50,
+        "val": 61225
+      },
+      "w2": {
+        "qty": 50,
+        "val": 61225
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 50,
+        "val": 61225
+      },
+      "w1": {
+        "qty": 50,
+        "val": 61225
+      },
+      "w2": {
+        "qty": 50,
+        "val": 61225
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.NK2",
+      "w0": {
+        "qty": 30,
+        "val": 39195
+      },
+      "w1": {
+        "qty": 30,
+        "val": 39195
+      },
+      "w2": {
+        "qty": 30,
+        "val": 39195
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242H3.UK2",
+      "w0": {
+        "qty": 30,
+        "val": 39195
+      },
+      "w1": {
+        "qty": 30,
+        "val": 39195
+      },
+      "w2": {
+        "qty": 30,
+        "val": 39195
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "",
+      "sku": "PREMTB200",
+      "w0": {
+        "qty": 97,
+        "val": 28116
+      },
+      "w1": {
+        "qty": 97,
+        "val": 28116
+      },
+      "w2": {
+        "qty": 97,
+        "val": 28116
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LO182C0.NK0",
+      "w0": {
+        "qty": 59,
+        "val": 37500
+      },
+      "w1": {
+        "qty": 59,
+        "val": 37500
+      },
+      "w2": {
+        "qty": 59,
+        "val": 37500
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LO182C0.UK0",
+      "w0": {
+        "qty": 59,
+        "val": 37500
+      },
+      "w1": {
+        "qty": 59,
+        "val": 37500
+      },
+      "w2": {
+        "qty": 59,
+        "val": 37500
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LO242C0.NK0",
+      "w0": {
+        "qty": 100,
+        "val": 82500
+      },
+      "w1": {
+        "qty": 100,
+        "val": 82500
+      },
+      "w2": {
+        "qty": 100,
+        "val": 82500
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LO242C0.UK0",
+      "w0": {
+        "qty": 100,
+        "val": 82500
+      },
+      "w1": {
+        "qty": 100,
+        "val": 82500
+      },
+      "w2": {
+        "qty": 100,
+        "val": 82500
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.NK2",
+      "w0": {
+        "qty": 10,
+        "val": 11461
+      },
+      "w1": {
+        "qty": 10,
+        "val": 11461
+      },
+      "w2": {
+        "qty": 10,
+        "val": 11461
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS182C2.UK2",
+      "w0": {
+        "qty": 10,
+        "val": 11461
+      },
+      "w1": {
+        "qty": 10,
+        "val": 11461
+      },
+      "w2": {
+        "qty": 10,
+        "val": 11461
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 5,
+        "val": 7218
+      },
+      "w1": {
+        "qty": 5,
+        "val": 7218
+      },
+      "w2": {
+        "qty": 5,
+        "val": 7218
+      }
+    },
+    {
+      "dealer": "AL OTHMAN",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 5,
+        "val": 7218
+      },
+      "w1": {
+        "qty": 5,
+        "val": 7218
+      },
+      "w2": {
+        "qty": 5,
+        "val": 7218
+      }
+    },
+    {
+      "dealer": "BAYOTECOM",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.NK2",
+      "w0": {
+        "qty": 44,
+        "val": 46618
+      },
+      "w1": {
+        "qty": 44,
+        "val": 46618
+      },
+      "w2": {
+        "qty": 44,
+        "val": 46618
+      }
+    },
+    {
+      "dealer": "BAYOTECOM",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "Inverter",
+      "className": "",
+      "sku": "NS242C3.UK2",
+      "w0": {
+        "qty": 44,
+        "val": 46618
+      },
+      "w1": {
+        "qty": 44,
+        "val": 46618
+      },
+      "w2": {
+        "qty": 44,
+        "val": 46618
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LA302C0.NK0",
+      "w0": {
+        "qty": 2,
+        "val": 3834
+      },
+      "w1": {
+        "qty": 2,
+        "val": 3834
+      },
+      "w2": {
+        "qty": 2,
+        "val": 3834
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "",
+      "sku": "LA302C0.UK0",
+      "w0": {
+        "qty": 2,
+        "val": 3834
+      },
+      "w1": {
+        "qty": 2,
+        "val": 3834
+      },
+      "w2": {
+        "qty": 2,
+        "val": 3834
       }
     }
   ]
-}</script>
-</head>
-<body>
-
-<div class="header">
-  <div class="header-left">
-    <h1>IR Sell-thru Opportunity Dashboard</h1>
-    <p>Monthly Report</p>
-  </div>
-  <div class="header-right" id="headerMeta"></div>
-</div>
-
-<div class="tab-bar" id="tabBar"></div>
-<div id="globalFilterBar"></div>
-
-<div id="tab0" class="tab-content"></div>
-<div id="tab1" class="tab-content"></div>
-<div id="tab2" class="tab-content"></div>
-<div id="tab3" class="tab-content"></div>
-<div id="tab4" class="tab-content"></div>
-<div id="tab5" class="tab-content"></div>
-<div id="tab6" class="tab-content"></div>
-<div id="tab7" class="tab-content"></div>
-
-
-<script>
-/* =========================================================
-   DATA LOADING
-   ========================================================= */
-let DATA;
-const embedded = document.getElementById('irData');
-if (embedded) {
-    DATA = JSON.parse(embedded.textContent);
-} else if (typeof IR_DATA !== 'undefined') {
-    DATA = IR_DATA;
-} else {
-    document.body.innerHTML = '<h1 style="padding:40px;color:#9C0006;">Error: No data found.</h1>';
-    throw new Error('No data');
-}
-
-/* =========================================================
-   GLOBALS
-   ========================================================= */
-window.charts = {};
-const tabInited = {};
-let activeTabIdx = 0;
-if (window.ChartDataLabels) Chart.register(ChartDataLabels);
-Chart.defaults.plugins.datalabels = { display: false };  // disabled globally, enabled per-chart
-
-// Custom plugin: draw total sum label on top of stacked bars
-const stackedTotalPlugin = {
-    id: 'stackedTotal',
-    afterDraw(chart, args, options) {
-        if (!options || !options.enable) return;
-        const fmt = options.formatter || (v => fmtNum(v));
-        const {ctx} = chart;
-        const datasets = chart.data.datasets;
-        const meta0 = chart.getDatasetMeta(0);
-        if (!meta0 || !meta0.data) return;
-        meta0.data.forEach((bar, i) => {
-            let total = 0;
-            datasets.forEach(ds => { total += (ds.data[i] || 0); });
-            if (total === 0) return;
-            // Find topmost visible bar for this index
-            let topY = Infinity;
-            for (let di = datasets.length - 1; di >= 0; di--) {
-                const m = chart.getDatasetMeta(di);
-                if (m.hidden) continue;
-                const b = m.data[i];
-                if (b && b.y < topY) topY = b.y;
-            }
-            ctx.save();
-            ctx.font = 'bold 11px -apple-system,sans-serif';
-            ctx.fillStyle = '#1F4E79';
-            ctx.textAlign = 'center';
-            ctx.fillText(fmt(total), bar.x, topY - 6);
-            ctx.restore();
-        });
-    }
 };
-const TAB_NAMES = ['Executive Summary','Sell-thru Health','Regional & Team','Dealer Analysis','Product Analysis','Opportunity Matrix','Data Validation','OUD Tracking'];
-const CAT_COLORS = ['#1F4E79','#2E75B6','#5B9BD5','#9DC3E6','#BDD7EE'];
-const SIGNAL_COLORS = { OPPORTUNITY:'#1A7A3C', HEALTHY:'#B8860B', OVERSTOCK:'#9C0006', INACTIVE:'#595959' };
-
-/* =========================================================
-   HELPER FUNCTIONS
-   ========================================================= */
-function fmtNum(n) { return n == null ? '-' : Number(n).toLocaleString('en-US'); }
-function fmtVal(n) {
-    if (n == null) return '-';
-    if (Math.abs(n) >= 1000000) return (n/1000000).toFixed(1) + 'M';
-    if (Math.abs(n) >= 1000) return (n/1000).toFixed(0) + 'K';
-    return Number(n).toLocaleString('en-US');
-}
-function fmtPct(jan, feb) {
-    if (!jan || jan === 0) return '-';
-    const pct = ((feb - jan) / Math.abs(jan) * 100);
-    const cls = pct >= 0 ? 'positive' : 'negative';
-    const arrow = pct >= 0 ? '&#9650;' : '&#9660;';
-    return `<span class="${cls}">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
-}
-function fmtPctInv(jan, feb) {
-    if (!jan || jan === 0) return '-';
-    const pct = ((feb - jan) / Math.abs(jan) * 100);
-    const cls = pct <= 0 ? 'positive' : 'negative';
-    const arrow = pct >= 0 ? '&#9650;' : '&#9660;';
-    return `<span class="${cls}">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
-}
-function fmtRatio(r) { return r == null ? 'N/A' : Number(r).toFixed(2); }
-function signalColor(s) { return SIGNAL_COLORS[s] || '#595959'; }
-function signalBg(s) { return { OPPORTUNITY:'#D6F0E0', HEALTHY:'#FFF8DC', OVERSTOCK:'#FBE5D6', INACTIVE:'#F2F2F2' }[s] || '#FFFFFF'; }
-function tlDot(soRatio) {
-    if (soRatio == null) return '<span style="color:var(--inactive)">&#9679;</span>';
-    if (soRatio > 6) return '<span style="color:var(--overstock)">&#9679;</span>';
-    if (soRatio >= 3) return '<span style="color:var(--healthy)">&#9679;</span>';
-    return '<span style="color:var(--opportunity)">&#9679;</span>';
-}
-function signalBadge(s) { return `<span class="signal-badge signal-${s}">${s}</span>`; }
-function destroyChart(key) { if (window.charts[key]) { window.charts[key].destroy(); delete window.charts[key]; } }
-function soRatioFromPeriod(p) { if (!p || !p.soQty || p.soQty === 0) return null; return (p.stkQty || 0) / p.soQty; }
-function agg(arr, period) {
-    return arr.reduce((a, d) => {
-        const p = d[period] || {};
-        a.stQty += p.stQty || 0; a.stVal += p.stVal || 0;
-        a.soQty += p.soQty || 0; a.soVal += p.soVal || 0;
-        a.stkQty += p.stkQty || 0; a.stkVal += p.stkVal || 0;
-        return a;
-    }, {stQty:0, stVal:0, soQty:0, soVal:0, stkQty:0, stkVal:0});
-}
-const barOpts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
-
-/* =========================================================
-   MULTI-SELECT DROPDOWN COMPONENT
-   ========================================================= */
-function createMultiSelect(containerId, label, onChange) {
-    const container = document.getElementById(containerId);
-    const selected = new Set();
-    let allOptions = [];
-
-    container.innerHTML = `
-      <div class="ms-trigger">
-        <span class="ms-lbl">${label}</span>
-        <span class="ms-summary">All</span>
-        <span class="ms-arrow">&#9660;</span>
-      </div>
-      <div class="ms-panel">
-        <input class="ms-search" type="text" placeholder="Search...">
-        <div class="ms-controls"><a class="ms-all">Select All</a><a class="ms-none">Deselect All</a></div>
-        <div class="ms-options"></div>
-      </div>`;
-
-    const trigger = container.querySelector('.ms-trigger');
-    const panel = container.querySelector('.ms-panel');
-    const summary = container.querySelector('.ms-summary');
-    const search = container.querySelector('.ms-search');
-    const optionsDiv = container.querySelector('.ms-options');
-    const selAllBtn = container.querySelector('.ms-all');
-    const desAllBtn = container.querySelector('.ms-none');
-
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = panel.classList.contains('open');
-        closeAllPanels();
-        if (!isOpen) { panel.classList.add('open'); trigger.classList.add('open'); search.focus(); }
-    });
-
-    search.addEventListener('input', () => {
-        const q = search.value.toLowerCase();
-        optionsDiv.querySelectorAll('.ms-option').forEach(opt => {
-            opt.classList.toggle('hidden', q && !opt.dataset.val.toLowerCase().includes(q));
-        });
-    });
-    search.addEventListener('click', e => e.stopPropagation());
-
-    selAllBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        allOptions.forEach(v => selected.add(v));
-        optionsDiv.querySelectorAll('input').forEach(cb => cb.checked = true);
-        updateSummary(); onChange(getSelected());
-    });
-    desAllBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        selected.clear();
-        optionsDiv.querySelectorAll('input').forEach(cb => cb.checked = false);
-        updateSummary(); onChange(getSelected());
-    });
-
-    function updateSummary() {
-        if (selected.size === 0 || selected.size === allOptions.length) {
-            summary.textContent = 'All';
-        } else if (selected.size <= 2) {
-            summary.textContent = [...selected].join(', ');
-        } else {
-            summary.textContent = selected.size + ' selected';
-        }
-    }
-
-    function getSelected() { return selected.size === allOptions.length ? [] : [...selected]; }
-
-    function setOptions(opts) {
-        allOptions = opts;
-        const validSet = new Set(opts);
-        const toRemove = [];
-        selected.forEach(v => { if (!validSet.has(v)) toRemove.push(v); });
-        toRemove.forEach(v => selected.delete(v));
-
-        search.value = '';
-        optionsDiv.innerHTML = opts.map(v => {
-            const checked = selected.has(v) ? 'checked' : '';
-            return `<label class="ms-option" data-val="${v}"><input type="checkbox" ${checked} value="${v}"><span>${v}</span></label>`;
-        }).join('');
-
-        optionsDiv.querySelectorAll('input').forEach(cb => {
-            cb.addEventListener('change', (e) => {
-                e.stopPropagation();
-                if (cb.checked) selected.add(cb.value); else selected.delete(cb.value);
-                updateSummary(); onChange(getSelected());
-            });
-        });
-        updateSummary();
-    }
-
-    function reset() { selected.clear(); updateSummary(); }
-
-    return { setOptions, getSelected, reset, setOptions };
-}
-
-function closeAllPanels() {
-    document.querySelectorAll('.ms-panel.open').forEach(p => p.classList.remove('open'));
-    document.querySelectorAll('.ms-trigger.open').forEach(t => t.classList.remove('open'));
-}
-document.addEventListener('click', closeAllPanels);
-
-/* =========================================================
-   GLOBAL FILTER STATE & LOGIC
-   ========================================================= */
-const FILTERS = { month:[], region:[], salesman:[], dealer:[], category:[], signal:[] };
-let msMonth, msRegion, msSalesman, msDealer, msCategory, msSignal;
-let filterDebounce = null;
-let OUD_MODE = false;  // true = Stock includes OUD
-
-/* OUD lookup: dealer||category → FIRST week OUD qty/val (total pipeline) */
-function buildOudLookup() {
-    const lk = {};
-    const meta = DATA.oudMeta;
-    if (!meta || meta.length === 0) return lk;
-    const firstKey = meta[0].key;  // 최초 주차 = 총 파이프라인 재고
-    (DATA.oudDealerCategory || []).forEach(d => {
-        lk[d.dealer + '||' + d.category] = d[firstKey] || {qty:0, val:0};
-    });
-    return lk;
-}
-function buildOudSkuLookup() {
-    const lk = {};
-    const meta = DATA.oudMeta;
-    if (!meta || meta.length === 0) return lk;
-    const firstKey = meta[0].key;  // 최초 주차
-    (DATA.oudSku || []).forEach(d => {
-        lk[d.dealer + '||' + d.sku] = d[firstKey] || {qty:0, val:0};
-    });
-    return lk;
-}
-const _oudDCLookup = buildOudLookup();
-const _oudSkuLookup = buildOudSkuLookup();
-
-function toggleOudMode() {
-    OUD_MODE = !OUD_MODE;
-    const btn = document.getElementById('oudToggleBtn');
-    if (btn) {
-        btn.textContent = OUD_MODE ? 'Stock: On-Hand + OUD' : 'Stock: On-Hand Only';
-        btn.style.background = OUD_MODE ? '#2E75B6' : 'var(--navy)';
-    }
-    Object.keys(tabInited).forEach(k => { tabInited[k] = false; });
-    initTab(activeTabIdx);
-    tabInited[activeTabIdx] = true;
-}
-
-function buildGlobalFilters() {
-    const bar = document.getElementById('globalFilterBar');
-    bar.innerHTML = `
-        <div class="ms-dropdown" id="ms-month"></div>
-        <div class="ms-dropdown" id="ms-region"></div>
-        <div class="ms-dropdown" id="ms-salesman"></div>
-        <div class="ms-dropdown" id="ms-dealer"></div>
-        <div class="ms-dropdown" id="ms-category"></div>
-        <div class="ms-dropdown" id="ms-signal"></div>
-        ${(DATA.oudMeta && DATA.oudMeta.length > 0) ? '<button id="oudToggleBtn" style="padding:7px 16px;background:var(--navy);color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;align-self:center">Stock: On-Hand Only</button>' : ''}
-        <button id="globalFilterReset">Reset All</button>`;
-
-    msMonth    = createMultiSelect('ms-month',     'Month',    sel => { FILTERS.month = sel; monthChanged(); });
-    msRegion   = createMultiSelect('ms-region',   'Region',   sel => { FILTERS.region = sel; cascadeAndRender(); });
-    msSalesman = createMultiSelect('ms-salesman', 'Salesman', sel => { FILTERS.salesman = sel; cascadeAndRender(); });
-    msDealer   = createMultiSelect('ms-dealer',   'Dealer',   sel => { FILTERS.dealer = sel; cascadeAndRender(); });
-    msCategory = createMultiSelect('ms-category', 'Category', sel => { FILTERS.category = sel; cascadeAndRender(); });
-    msSignal   = createMultiSelect('ms-signal',   'Signal',   sel => { FILTERS.signal = sel; debouncedRender(); });
-
-    document.getElementById('globalFilterReset').addEventListener('click', resetAllFilters);
-    const oudBtn = document.getElementById('oudToggleBtn');
-    if (oudBtn) oudBtn.addEventListener('click', toggleOudMode);
-    msMonth.setOptions(['Jan', 'Feb']);
-    populateFilterOptions();
-}
-
-function monthChanged() {
-    Object.keys(tabInited).forEach(k => { tabInited[k] = false; });
-    populateFilterOptions();
-    initTab(activeTabIdx);
-    tabInited[activeTabIdx] = true;
-}
-
-function cascadeAndRender() {
-    populateFilterOptions();
-    debouncedRender();
-}
-
-function debouncedRender() {
-    clearTimeout(filterDebounce);
-    filterDebounce = setTimeout(renderActiveTab, 100);
-}
-
-function populateFilterOptions() {
-    const ck = mCur();
-    const dc = DATA.dealerCategory;
-
-    const regions = [...new Set(dc.map(d => d.region))].sort();
-    msRegion.setOptions(regions);
-
-    const dcR = dc.filter(d => FILTERS.region.length === 0 || FILTERS.region.includes(d.region));
-    const salesmen = [...new Set(dcR.map(d => d.salesman))].sort();
-    msSalesman.setOptions(salesmen);
-
-    const dcS = dcR.filter(d => FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman));
-    const dealers = [...new Set(dcS.map(d => d.dealer))].sort();
-    msDealer.setOptions(dealers);
-
-    const dcD = dcS.filter(d => FILTERS.dealer.length === 0 || FILTERS.dealer.includes(d.dealer));
-    const categories = [...new Set(dcD.map(d => d.category))].sort();
-    msCategory.setOptions(categories);
-
-    const dcC = dcD.filter(d => FILTERS.category.length === 0 || FILTERS.category.includes(d.category));
-    const signals = [...new Set(dcC.map(d => calcSignal(d[ck])))].filter(Boolean).sort();
-    msSignal.setOptions(signals);
-}
-
-function resetAllFilters() {
-    const monthWas = FILTERS.month.length;
-    FILTERS.month = []; FILTERS.region = []; FILTERS.salesman = []; FILTERS.dealer = [];
-    FILTERS.category = []; FILTERS.signal = [];
-    msMonth.reset(); msRegion.reset(); msSalesman.reset(); msDealer.reset();
-    msCategory.reset(); msSignal.reset();
-    populateFilterOptions();
-    if (monthWas > 0) {
-        Object.keys(tabInited).forEach(k => { tabInited[k] = false; });
-        initTab(activeTabIdx); tabInited[activeTabIdx] = true;
-    } else {
-        renderActiveTab();
-    }
-}
-
-/* =========================================================
-   FILTER APPLICATION HELPERS
-   ========================================================= */
-/* ---- Month context helpers ---- */
-function mCur() { return (FILTERS.month.length === 1 && FILTERS.month[0] === 'Jan') ? 'jan' : 'feb'; }
-function mPrev() { return (FILTERS.month.length === 1) ? null : 'jan'; }
-function mCL() { return mCur() === 'jan' ? 'Jan' : 'Feb'; }
-function mPL() { return mPrev() ? 'Jan' : ''; }
-function showBoth() { return FILTERS.month.length !== 1; }
-
-const AGG_KEYS = ['stQty','stVal','soQty','soVal','stkQty','stkVal'];
-function zeroPeriod() { return {stQty:0,stVal:0,soQty:0,soVal:0,stkQty:0,stkVal:0}; }
-function addPeriod(t, s) { AGG_KEYS.forEach(k => { t[k] += (s[k]||0); }); }
-function calcSignal(p) {
-    if (!p) return 'INACTIVE';
-    if (!p.soQty && !p.stkQty) return 'INACTIVE';
-    if (!p.soQty && p.stkQty > 0) return 'OVERSTOCK';
-    const mos = p.stkQty / p.soQty;
-    return mos < 3 ? 'OPPORTUNITY' : mos <= 6 ? 'HEALTHY' : 'OVERSTOCK';
-}
-
-/* ---- Core filtered source (all filters) ---- */
-function filteredDealerCategory() {
-    const ck = mCur();
-    return DATA.dealerCategory.filter(d => {
-        const p = OUD_MODE ? applyOudDC(d, ck) : d[ck];
-        const sig = calcSignal(p);
-        return (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
-            (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-            (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
-            (FILTERS.category.length === 0 || FILTERS.category.includes(d.category)) &&
-            (FILTERS.signal.length === 0   || FILTERS.signal.includes(sig));
-    }).map(d => {
-        if (!OUD_MODE) return {...d, signal: calcSignal(d[ck])};
-        const clone = JSON.parse(JSON.stringify(d));
-        const oud = _oudDCLookup[d.dealer + '||' + d.category];
-        if (oud && clone[ck]) {
-            clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
-            clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
-        }
-        clone.signal = calcSignal(clone[ck]);
-        return clone;
-    });
-}
-
-function applyOudDC(d, ck) {
-    const oud = _oudDCLookup[d.dealer + '||' + d.category];
-    if (!oud || !d[ck]) return d[ck];
-    return {...d[ck], stkQty: (d[ck].stkQty||0) + (oud.qty||0), stkVal: (d[ck].stkVal||0) + (oud.val||0)};
-}
-
-/* Aggregate DC → Dealer level (all filters applied) */
-function filteredByDealer() {
-    const dc = filteredDealerCategory();
-    const ck = mCur();
-    const map = {};
-    dc.forEach(d => {
-        if (!map[d.dealer]) map[d.dealer] = { name:d.dealer, region:d.region, salesman:d.salesman, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[d.dealer].jan, d.jan);
-        addPeriod(map[d.dealer].feb, d.feb);
-    });
-    return Object.values(map).map(d => { d.signal = calcSignal(d[ck]); return d; });
-}
-
-/* Aggregate DC → Region level (all 5 filters applied) */
-function filteredByRegion() {
-    const dc = filteredDealerCategory();
-    const map = {};
-    dc.forEach(d => {
-        if (!map[d.region]) map[d.region] = { name:d.region, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[d.region].jan, d.jan);
-        addPeriod(map[d.region].feb, d.feb);
-    });
-    return Object.values(map);
-}
-
-/* Aggregate DC → Salesman level (all 5 filters applied) */
-function filteredBySalesman() {
-    const dc = filteredDealerCategory();
-    const map = {};
-    dc.forEach(d => {
-        if (!map[d.salesman]) {
-            const orig = DATA.bySalesman.find(s => s.name === d.salesman);
-            map[d.salesman] = { name:d.salesman, region:d.region, manager: orig ? orig.manager : '', jan:zeroPeriod(), feb:zeroPeriod() };
-        }
-        addPeriod(map[d.salesman].jan, d.jan);
-        addPeriod(map[d.salesman].feb, d.feb);
-    });
-    return Object.values(map);
-}
-
-/* Aggregate DC → Manager level (all 5 filters applied) */
-function filteredByManager() {
-    const salesmen = filteredBySalesman();
-    const map = {};
-    salesmen.forEach(s => {
-        if (!s.manager) return;
-        if (!map[s.manager]) map[s.manager] = { name:s.manager, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[s.manager].jan, s.jan);
-        addPeriod(map[s.manager].feb, s.feb);
-    });
-    return Object.values(map);
-}
-
-/* Aggregate DC → Category level (all 5 filters applied) */
-function filteredByCategory() {
-    const dc = filteredDealerCategory();
-    const map = {};
-    dc.forEach(d => {
-        if (!map[d.category]) map[d.category] = { name:d.category, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[d.category].jan, d.jan);
-        addPeriod(map[d.category].feb, d.feb);
-    });
-    return Object.values(map);
-}
-
-/* Filtered skuDetail (all filters applied) */
-function filteredSkuDetail() {
-    const ck = mCur();
-    return DATA.skuDetail.filter(d => {
-        const p = OUD_MODE ? applyOudSku(d, ck) : d[ck];
-        const sig = calcSignal(p);
-        return (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
-            (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-            (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
-            (FILTERS.category.length === 0 || FILTERS.category.includes(d.category)) &&
-            (FILTERS.signal.length === 0   || FILTERS.signal.includes(sig));
-    }).map(d => {
-        if (!OUD_MODE) return d;
-        const clone = JSON.parse(JSON.stringify(d));
-        const oud = _oudSkuLookup[d.dealer + '||' + d.sku];
-        if (oud && clone[ck]) {
-            clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
-            clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
-        }
-        return clone;
-    });
-}
-
-function applyOudSku(d, ck) {
-    const oud = _oudSkuLookup[d.dealer + '||' + d.sku];
-    if (!oud || !d[ck]) return d[ck];
-    return {...d[ck], stkQty: (d[ck].stkQty||0) + (oud.qty||0), stkVal: (d[ck].stkVal||0) + (oud.val||0)};
-}
-
-/* Aggregate skuDetail → Class level (all 5 filters applied) */
-function filteredByClass() {
-    const sd = filteredSkuDetail();
-    const map = {};
-    sd.forEach(d => {
-        const key = d.category + '||' + d.className;
-        if (!map[key]) map[key] = { name:d.className, category:d.category, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[key].jan, d.jan);
-        addPeriod(map[key].feb, d.feb);
-    });
-    return Object.values(map);
-}
-
-/* Aggregate skuDetail → SKU level (all 5 filters applied) */
-function filteredTopSkus() {
-    const sd = filteredSkuDetail();
-    const map = {};
-    sd.forEach(d => {
-        if (!map[d.sku]) map[d.sku] = { sku:d.sku, category:d.category, className:d.className, jan:zeroPeriod(), feb:zeroPeriod() };
-        addPeriod(map[d.sku].jan, d.jan);
-        addPeriod(map[d.sku].feb, d.feb);
-    });
-    return Object.values(map);
-}
-
-/* =========================================================
-   HEADER & TAB SETUP
-   ========================================================= */
-document.getElementById('headerMeta').innerHTML = `Generated: ${DATA.meta ? DATA.meta.generatedAt : 'N/A'}<br>Source: ${DATA.meta ? DATA.meta.sourceFile : 'N/A'}`;
-
-const tabBar = document.getElementById('tabBar');
-TAB_NAMES.forEach((name, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
-    btn.textContent = name;
-    btn.onclick = () => switchTab(i);
-    tabBar.appendChild(btn);
-});
-
-function switchTab(idx) {
-    activeTabIdx = idx;
-    document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
-    document.querySelectorAll('.tab-content').forEach((t,i) => t.classList.toggle('active', i === idx));
-    const oudBtn = document.getElementById('oudToggleBtn');
-    if (oudBtn) oudBtn.style.display = (idx === 7) ? 'none' : '';
-    if (!tabInited[idx]) { initTab(idx); tabInited[idx] = true; }
-    else { renderActiveTab(); }
-}
-
-function initTab(idx) {
-    switch(idx) {
-        case 0: buildTab0(); break;
-        case 1: buildTab1(); break;
-        case 2: buildTab2(); break;
-        case 3: buildTab3(); break;
-        case 4: buildTab4(); break;
-        case 5: buildTab5(); break;
-        case 6: buildTab6(); break;
-        case 7: buildTab7(); break;
-    }
-}
-
-function renderActiveTab() {
-    if (!tabInited[activeTabIdx]) return;
-    switch(activeTabIdx) {
-        case 0: renderTab0(); break;
-        case 1: renderTab1(); break;
-        case 2: renderTab2(); break;
-        case 3: renderTab3(); break;
-        case 4: renderTab4(); break;
-        case 5: renderTab5(); break;
-        case 6: renderTab6(); break;
-        case 7: renderTab7(); break;
-    }
-}
-
-/* =========================================================
-   TAB 0 - EXECUTIVE SUMMARY
-   ========================================================= */
-function buildTab0() {
-    const C = mCL(), P = mPL(), both = showBoth();
-    const stLabel = both ? 'SELL-THRU QTY (TOTAL)' : 'SELL-THRU QTY';
-    const soLabel = both ? 'SELLOUT QTY (TOTAL)' : 'SELLOUT QTY';
-    const stVLabel = both ? 'SELL-THRU VALUE (TOTAL)' : 'SELL-THRU VALUE';
-    const soVLabel = both ? 'SELLOUT VALUE (TOTAL)' : 'SELLOUT VALUE';
-    document.getElementById('tab0').innerHTML = `
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label" id="k0-stLbl">${stLabel}</div><div class="kpi-value" id="k0-stQty">-</div><div class="kpi-change" id="k0-stQty-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label" id="k0-soLbl">${soLabel}</div><div class="kpi-value" id="k0-soQty">-</div><div class="kpi-change" id="k0-soQty-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label">STOCK QTY</div><div class="kpi-value" id="k0-stkQty">-</div><div class="kpi-change" id="k0-stkQty-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label">MOS</div><div class="kpi-value" id="k0-mos">-</div><div class="kpi-change" id="k0-mos-m"></div></div>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label" id="k0-stVLbl">${stVLabel}</div><div class="kpi-value" id="k0-stVal">-</div><div class="kpi-change" id="k0-stVal-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label" id="k0-soVLbl">${soVLabel}</div><div class="kpi-value" id="k0-soVal">-</div><div class="kpi-change" id="k0-soVal-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label">STOCK VALUE</div><div class="kpi-value" id="k0-stkVal">-</div><div class="kpi-change" id="k0-stkVal-m"></div></div>
-      <div class="kpi-card"><div class="kpi-label">ACTIVE DEALERS</div><div class="kpi-value" id="k0-dealers">-</div><div class="kpi-change" id="k0-dealers-m"></div></div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box"><h3>${both ? P+' vs '+C+' Comparison (QTY)' : C+' Summary (QTY)'}</h3><div class="chart-container"><canvas id="chart0a"></canvas></div></div>
-      <div class="chart-box"><h3>Stock Health Distribution</h3><div class="chart-container"><canvas id="chart0b"></canvas></div></div>
-      <div class="chart-box"><h3 id="lbl0c">Regional Sellout (QTY)</h3><div class="chart-container"><canvas id="chart0c"></canvas></div></div>
-      <div class="chart-box"><h3>Category Sellout Share (${C})</h3><div class="chart-container"><canvas id="chart0d"></canvas></div></div>
-    </div>
-    <div class="table-grid">
-      <div class="table-box"><h3>Top 10 Dealers by ${C} Sellout</h3><div class="table-scroll"><table><thead><tr><th>Rank</th><th>Dealer</th><th>Region</th>${both?'<th>'+P+' SO</th>':''}<th>${C} SO</th>${both?'<th>MoM%</th>':''}<th>${C} Stock</th><th>${C} MOS</th><th>Signal</th></tr></thead><tbody id="tbl0dealers"></tbody></table></div></div>
-      <div class="table-box"><h3>Top 10 Products by ${C} Sellout</h3><div class="table-scroll"><table><thead><tr><th>Rank</th><th>SKU</th><th>Category</th><th>Class</th>${both?'<th>'+P+' SO</th>':''}<th>${C} SO</th>${both?'<th>MoM%</th>':''}<th>${C} Stock</th><th>${C} MOS</th><th>Signal</th></tr></thead><tbody id="tbl0skus"></tbody></table></div></div>
-    </div>`;
-    renderTab0();
-}
-
-function renderTab0() {
-    const fDealers = filteredByDealer();
-    const fDC = filteredDealerCategory();
-    const fSkus = filteredTopSkus();
-    const ck = mCur(), pk = mPrev(), both = showBoth();
-
-    const cur = agg(fDealers, ck);
-    const prev = pk ? agg(fDealers, pk) : null;
-    cur.soRatio = cur.soQty > 0 ? cur.stkQty / cur.soQty : null;
-    if (prev) prev.soRatio = prev.soQty > 0 ? prev.stkQty / prev.soQty : null;
-    cur.activeDealers = fDealers.filter(d => ((d[ck]||{}).stkQty || 0) > 0).length;
-    if (prev) prev.activeDealers = fDealers.filter(d => ((d[pk]||{}).stkQty || 0) > 0).length;
-
-    const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
-
-    // Sell-thru & Sellout: cumulative (Jan+Feb) when both months, otherwise single month
-    if (both && prev) {
-        set('k0-stQty', fmtNum(cur.stQty + prev.stQty));  set('k0-stQty-m', fmtPct(prev.stQty, cur.stQty));
-        set('k0-soQty', fmtNum(cur.soQty + prev.soQty));  set('k0-soQty-m', fmtPct(prev.soQty, cur.soQty));
-        set('k0-stVal', fmtVal(cur.stVal + prev.stVal));   set('k0-stVal-m', fmtPct(prev.stVal, cur.stVal));
-        set('k0-soVal', fmtVal(cur.soVal + prev.soVal));   set('k0-soVal-m', fmtPct(prev.soVal, cur.soVal));
-    } else {
-        set('k0-stQty', fmtNum(cur.stQty));    set('k0-stQty-m', '');
-        set('k0-soQty', fmtNum(cur.soQty));    set('k0-soQty-m', '');
-        set('k0-stVal', fmtVal(cur.stVal));     set('k0-stVal-m', '');
-        set('k0-soVal', fmtVal(cur.soVal));     set('k0-soVal-m', '');
-    }
-    set('k0-stkQty', fmtNum(cur.stkQty));  set('k0-stkQty-m', prev ? fmtPct(prev.stkQty, cur.stkQty) : '');
-    set('k0-mos', fmtRatio(cur.soRatio));   set('k0-mos-m', prev ? fmtPctInv(prev.soRatio, cur.soRatio) : '');
-    set('k0-stkVal', fmtVal(cur.stkVal));   set('k0-stkVal-m', prev ? fmtPct(prev.stkVal, cur.stkVal) : '');
-    set('k0-dealers', fmtNum(cur.activeDealers)); set('k0-dealers-m', prev ? fmtPct(prev.activeDealers, cur.activeDealers) : '');
-
-    // Chart 0a
-    const C = mCL(), P = mPL();
-    destroyChart('c0a');
-    const ds0a = both
-        ? [{ label:P, data:[prev.stQty, prev.soQty, prev.stkQty], backgroundColor:'#2E75B6', borderRadius:4 },
-           { label:C, data:[cur.stQty, cur.soQty, cur.stkQty], backgroundColor:'#1F4E79', borderRadius:4 }]
-        : [{ label:C, data:[cur.stQty, cur.soQty, cur.stkQty], backgroundColor:'#1F4E79', borderRadius:4 }];
-    window.charts.c0a = new Chart(document.getElementById('chart0a'), {
-        type:'bar', data:{ labels:['Sell-Thru','Sellout','Stock'], datasets:ds0a }, options: barOpts
-    });
-
-    // Chart 0b
-    const sigCounts = {OPPORTUNITY:0, HEALTHY:0, OVERSTOCK:0, INACTIVE:0};
-    fDealers.forEach(d => { if (sigCounts.hasOwnProperty(d.signal)) sigCounts[d.signal]++; });
-    const totalD = fDealers.length;
-    destroyChart('c0b');
-    window.charts.c0b = new Chart(document.getElementById('chart0b'), {
-        type:'doughnut',
-        data:{ labels:['Opportunity','Healthy','Overstock','Inactive'],
-            datasets:[{ data:[sigCounts.OPPORTUNITY, sigCounts.HEALTHY, sigCounts.OVERSTOCK, sigCounts.INACTIVE],
-                backgroundColor:['#1A7A3C','#B8860B','#9C0006','#595959'] }]
-        },
-        options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{
-            legend:{position:'bottom'},
-            tooltip:{callbacks:{label:ctx=>`${ctx.label}: ${ctx.raw} (${totalD>0?(ctx.raw/totalD*100).toFixed(1):0}%)`}}
-        }},
-        plugins:[{ id:'centerText', beforeDraw(chart) {
-            const {width,height,ctx:c}=chart; c.save();
-            c.font='bold 28px -apple-system,sans-serif'; c.fillStyle='#1F4E79';
-            c.textAlign='center'; c.textBaseline='middle';
-            c.fillText(totalD, width/2, height/2);
-            c.font='12px -apple-system,sans-serif'; c.fillStyle='#595959';
-            c.fillText('Dealers', width/2, height/2+20); c.restore();
-        }}]
-    });
-
-    // Chart 0c: Regional vs Category
-    const lbl0c = document.getElementById('lbl0c');
-    destroyChart('c0c');
-    if (FILTERS.region.length !== 1) {
-        const rMap = {};
-        fDealers.forEach(d => {
-            if (!rMap[d.region]) rMap[d.region] = {prev:0, cur:0};
-            if (pk) rMap[d.region].prev += (d[pk]||{}).soQty||0;
-            rMap[d.region].cur += (d[ck]||{}).soQty||0;
-        });
-        const rNames = Object.keys(rMap).sort();
-        if (lbl0c) lbl0c.textContent = 'Regional Sellout (QTY)';
-        const ds0c = both
-            ? [{ label:P+' SO', data:rNames.map(r=>rMap[r].prev), backgroundColor:'#2E75B6', borderRadius:4 },
-               { label:C+' SO', data:rNames.map(r=>rMap[r].cur), backgroundColor:'#1F4E79', borderRadius:4 }]
-            : [{ label:C+' SO', data:rNames.map(r=>rMap[r].cur), backgroundColor:'#1F4E79', borderRadius:4 }];
-        window.charts.c0c = new Chart(document.getElementById('chart0c'), {
-            type:'bar', data:{ labels:rNames, datasets:ds0c }, options: barOpts
-        });
-    } else {
-        const cMap = {};
-        fDC.forEach(d => {
-            if (!cMap[d.category]) cMap[d.category] = {prev:0, cur:0};
-            if (pk) cMap[d.category].prev += (d[pk]||{}).soQty||0;
-            cMap[d.category].cur += (d[ck]||{}).soQty||0;
-        });
-        const cNames = Object.keys(cMap).sort();
-        if (lbl0c) lbl0c.textContent = `Category Sellout — ${FILTERS.region[0]}`;
-        const ds0c = both
-            ? [{ label:P+' SO', data:cNames.map(c=>cMap[c].prev), backgroundColor:'#2E75B6', borderRadius:4 },
-               { label:C+' SO', data:cNames.map(c=>cMap[c].cur), backgroundColor:'#1F4E79', borderRadius:4 }]
-            : [{ label:C+' SO', data:cNames.map(c=>cMap[c].cur), backgroundColor:'#1F4E79', borderRadius:4 }];
-        window.charts.c0c = new Chart(document.getElementById('chart0c'), {
-            type:'bar', data:{ labels:cNames, datasets:ds0c }, options: barOpts
-        });
-    }
-
-    // Chart 0d
-    const catShare = {};
-    fDC.forEach(d => { catShare[d.category] = (catShare[d.category]||0) + ((d[ck]||{}).soQty||0); });
-    const catKeys = Object.keys(catShare).sort();
-    destroyChart('c0d');
-    window.charts.c0d = new Chart(document.getElementById('chart0d'), {
-        type:'doughnut',
-        data:{ labels:catKeys, datasets:[{ data:catKeys.map(c=>catShare[c]), backgroundColor:CAT_COLORS.slice(0,catKeys.length) }] },
-        options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{legend:{position:'bottom'}} }
-    });
-
-    // Top 10 Dealers
-    const topDealers = [...fDealers].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,10);
-    document.getElementById('tbl0dealers').innerHTML = topDealers.map((d,i) => {
-        const cp = d[ck]||{};
-        const pp = pk ? d[pk]||{} : null;
-        const mos = fmtRatio(soRatioFromPeriod(cp));
-        return `<tr><td class="ctr">${i+1}</td><td class="txt">${d.name}</td><td class="ctr">${d.region}</td>
-        ${both?'<td class="num">'+fmtNum(pp.soQty)+'</td>':''}
-        <td class="num">${fmtNum(cp.soQty)}</td>
-        ${both?'<td class="ctr">'+fmtPct(pp.soQty, cp.soQty)+'</td>':''}
-        <td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${mos}</td>
-        <td class="ctr">${signalBadge(d.signal)}</td></tr>`;
-    }).join('');
-
-    // Top 10 SKUs
-    const topSkus = [...fSkus].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,10);
-    document.getElementById('tbl0skus').innerHTML = topSkus.map((s,i) => {
-        const cp = s[ck]||{};
-        const pp = pk ? s[pk]||{} : null;
-        const ratio = soRatioFromPeriod(cp);
-        const mos = fmtRatio(ratio);
-        const sig = calcSignal(cp);
-        return `<tr><td class="ctr">${i+1}</td><td class="txt">${s.sku}</td><td class="txt">${s.category}</td><td class="txt">${s.className}</td>
-        ${both?'<td class="num">'+fmtNum(pp.soQty)+'</td>':''}
-        <td class="num">${fmtNum(cp.soQty)}</td>
-        ${both?'<td class="ctr">'+fmtPct(pp.soQty, cp.soQty)+'</td>':''}
-        <td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${mos}</td>
-        <td class="ctr">${signalBadge(sig)}</td></tr>`;
-    }).join('');
-}
-
-/* =========================================================
-   TAB 1 - SELL-THRU HEALTH
-   ========================================================= */
-function buildTab1() {
-    const C = mCL();
-    document.getElementById('tab1').innerHTML = `
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">SELL-THRU EFFICIENCY</div><div class="kpi-value" id="k1-eff">-</div><div class="kpi-change">Sellout / Sell-thru</div></div>
-      <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">OPPORTUNITY DEALERS</div><div class="kpi-value" id="k1-opp">-</div></div>
-      <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">OVERSTOCK DEALERS</div><div class="kpi-value" id="k1-over">-</div></div>
-      <div class="kpi-card" style="border-left-color:var(--healthy)"><div class="kpi-label">HEALTHY DEALERS</div><div class="kpi-value" id="k1-healthy">-</div></div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box"><h3>Sell-thru vs Sellout by Category (${C})</h3><div class="chart-container"><canvas id="chart1a"></canvas></div></div>
-      <div class="chart-box"><h3>Dealer Signal Distribution</h3><div class="chart-container"><canvas id="chart1b"></canvas></div></div>
-      <div class="chart-box"><h3>Category x Signal (Stacked 100%)</h3><div class="chart-container"><canvas id="chart1c"></canvas></div></div>
-      <div class="chart-box"><h3>Dealer Scatter: Sellout vs Stock (${C})</h3><div class="chart-container"><canvas id="chart1d"></canvas></div></div>
-    </div>
-    <div class="table-grid">
-      <div class="table-box"><h3>Sell-thru Opportunity List</h3><div class="table-scroll"><table><thead><tr><th>Dealer</th><th>Region</th><th>Salesman</th><th>${C} ST</th><th>${C} Stock</th><th>${C} SO</th><th>MOS</th><th>Signal</th></tr></thead><tbody id="tbl1opp"></tbody></table></div></div>
-      <div class="table-box"><h3>Overstock Warning List</h3><div class="table-scroll"><table><thead><tr><th>Dealer</th><th>Region</th><th>Salesman</th><th>${C} ST</th><th>${C} Stock</th><th>${C} SO</th><th>MOS</th><th>Signal</th></tr></thead><tbody id="tbl1over"></tbody></table></div></div>
-    </div>`;
-    renderTab1();
-}
-
-function renderTab1() {
-    const fDealers = filteredByDealer();
-    const fCats = filteredByCategory();
-    const fDC = filteredDealerCategory();
-    const ck = mCur(), C = mCL();
-
-    const cur = agg(fDealers, ck);
-    const efficiency = cur.stQty > 0 ? (cur.soQty / cur.stQty * 100).toFixed(1) : '0.0';
-    const oppCount = fDealers.filter(d=>d.signal==='OPPORTUNITY').length;
-    const overCount = fDealers.filter(d=>d.signal==='OVERSTOCK').length;
-    const healthyCount = fDealers.filter(d=>d.signal==='HEALTHY').length;
-
-    const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
-    set('k1-eff', efficiency + '%');
-    set('k1-opp', oppCount);
-    set('k1-over', overCount);
-    set('k1-healthy', healthyCount);
-
-    // Chart 1a
-    destroyChart('c1a');
-    window.charts.c1a = new Chart(document.getElementById('chart1a'), {
-        type: 'bar',
-        data: { labels: fCats.map(c=>c.name), datasets: [
-            { label:C+' Sell-Thru', data: fCats.map(c=>(c[ck]||{}).stQty||0), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:C+' Sellout', data: fCats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }
-        ]},
-        options: barOpts
-    });
-
-    // Chart 1b
-    const sigLabels = ['OPPORTUNITY','HEALTHY','OVERSTOCK','INACTIVE'];
-    const sigVals = sigLabels.map(s => fDealers.filter(d=>d.signal===s).length);
-    destroyChart('c1b');
-    window.charts.c1b = new Chart(document.getElementById('chart1b'), {
-        type: 'bar',
-        data: { labels: sigLabels, datasets: [{ data: sigVals, backgroundColor: sigLabels.map(s=>SIGNAL_COLORS[s]), borderRadius:4 }] },
-        options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true } } }
-    });
-
-    // Chart 1c
-    const catSigData = {};
-    fDC.forEach(dc => {
-        if (!catSigData[dc.category]) catSigData[dc.category] = { OPPORTUNITY:0, HEALTHY:0, OVERSTOCK:0, INACTIVE:0 };
-        const sig = dc.signal || 'INACTIVE';
-        if (catSigData[dc.category].hasOwnProperty(sig)) catSigData[dc.category][sig]++;
-    });
-    const catNames = Object.keys(catSigData);
-    destroyChart('c1c');
-    window.charts.c1c = new Chart(document.getElementById('chart1c'), {
-        type: 'bar',
-        data: { labels: catNames, datasets: sigLabels.map(sig => ({
-            label: sig,
-            data: catNames.map(c => { const t = Object.values(catSigData[c]).reduce((a,b)=>a+b,0); return t > 0 ? (catSigData[c][sig]/t*100).toFixed(1) : 0; }),
-            backgroundColor: SIGNAL_COLORS[sig], borderRadius: 0
-        }))},
-        options: { responsive:true, maintainAspectRatio:false,
-            plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.raw}%`}} },
-            scales:{ x:{stacked:true}, y:{stacked:true, max:100, ticks:{callback:v=>v+'%'}} }
-        }
-    });
-
-    // Chart 1d
-    const scatterData = fDealers
-        .filter(d => ((d[ck]||{}).soQty||0) > 0 || ((d[ck]||{}).stkQty||0) > 0)
-        .map(d => ({ x: (d[ck]||{}).soQty||0, y: (d[ck]||{}).stkQty||0, label: d.name, signal: d.signal }));
-    const scatterLabelsMap = {};
-    scatterData.forEach(p => { scatterLabelsMap[`${p.x}_${p.y}`] = p.label; });
-    destroyChart('c1d');
-    window.charts.c1d = new Chart(document.getElementById('chart1d'), {
-        type: 'scatter',
-        data: { datasets: Object.keys(SIGNAL_COLORS).map(sig => ({
-            label: sig,
-            data: scatterData.filter(p=>p.signal===sig).map(p=>({x:p.x, y:p.y})),
-            backgroundColor: SIGNAL_COLORS[sig], pointRadius: 5, pointHoverRadius: 8
-        }))},
-        options: { responsive:true, maintainAspectRatio:false,
-            plugins:{ legend:{position:'bottom'}, tooltip:{callbacks:{label:ctx=>{
-                const key = `${ctx.raw.x}_${ctx.raw.y}`;
-                return `${scatterLabelsMap[key]||''}: SO=${fmtNum(ctx.raw.x)}, Stk=${fmtNum(ctx.raw.y)}`;
-            }}}},
-            scales:{ x:{title:{display:true, text:C+' Sellout QTY'}, beginAtZero:true}, y:{title:{display:true, text:C+' Stock QTY'}, beginAtZero:true} }
-        }
-    });
-
-    // Tables
-    const oppList = fDealers.filter(d=>d.signal==='OPPORTUNITY').sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0));
-    document.getElementById('tbl1opp').innerHTML = oppList.map(d => {
-        const cp = d[ck]||{};
-        const ratio = soRatioFromPeriod(cp);
-        return `<tr><td class="txt">${d.name}</td><td class="ctr">${d.region}</td><td class="txt">${d.salesman}</td>
-        <td class="num">${fmtNum(cp.stQty)}</td><td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${fmtNum(cp.soQty)}</td>
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${signalBadge(d.signal)}</td></tr>`;
-    }).join('');
-
-    const overList = fDealers.filter(d=>d.signal==='OVERSTOCK').sort((a,b)=>((b[ck]||{}).stkQty||0)-((a[ck]||{}).stkQty||0));
-    document.getElementById('tbl1over').innerHTML = overList.map(d => {
-        const cp = d[ck]||{};
-        const ratio = soRatioFromPeriod(cp);
-        return `<tr><td class="txt">${d.name}</td><td class="ctr">${d.region}</td><td class="txt">${d.salesman}</td>
-        <td class="num">${fmtNum(cp.stQty)}</td><td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${fmtNum(cp.soQty)}</td>
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${signalBadge(d.signal)}</td></tr>`;
-    }).join('');
-}
-
-/* =========================================================
-   TAB 2 - REGIONAL & TEAM PERFORMANCE
-   ========================================================= */
-function buildTab2() {
-    const C = mCL(), P = mPL(), both = showBoth();
-    const pCols = (label) => both ? `<th>${P} ${label}</th><th>${C} ${label}</th><th>${label} MoM%</th>` : `<th>${C} ${label}</th>`;
-    document.getElementById('tab2').innerHTML = `
-    <div class="card"><h3 class="section-title">Regional Performance</h3><div class="table-scroll"><table>
-      <thead><tr><th>Region</th>${pCols('ST')}${pCols('Stk')}${pCols('SO')}<th>${C} MOS</th><th>TL</th></tr></thead>
-      <tbody id="tbl2region"></tbody>
-    </table></div></div>
-    <div class="card"><h3 class="section-title">Manager Performance</h3><div class="table-scroll"><table>
-      <thead><tr><th>Manager</th>${pCols('ST')}${pCols('Stk')}${pCols('SO')}<th>${C} MOS</th><th>TL</th></tr></thead>
-      <tbody id="tbl2manager"></tbody>
-    </table></div></div>
-    <div class="card"><h3 class="section-title">Salesman Performance</h3><div class="table-scroll"><table>
-      <thead><tr><th>Salesman</th><th>Manager</th><th>Region</th>${pCols('ST')}${pCols('SO')}<th>${C} MOS</th><th>TL</th></tr></thead>
-      <tbody id="tbl2salesman"></tbody>
-    </table></div></div>
-    <div class="chart-grid-3">
-      <div class="chart-box"><h3>${both ? 'Regional Sellout ('+P+' vs '+C+')' : 'Regional Sellout ('+C+')'}</h3><div class="chart-container"><canvas id="chart2a"></canvas></div></div>
-      <div class="chart-box"><h3>Salesman ${C} Sellout Ranking</h3><div class="chart-container"><canvas id="chart2b"></canvas></div></div>
-      <div class="chart-box"><h3>Regional MOS Comparison (${C})</h3><div class="chart-container"><canvas id="chart2c"></canvas></div></div>
-    </div>`;
-    renderTab2();
-}
-
-function renderTab2() {
-    const regions = filteredByRegion();
-    const managers = filteredByManager();
-    const salesmen = filteredBySalesman();
-    const ck = mCur(), pk = mPrev(), both = showBoth(), C = mCL(), P = mPL();
-
-    const pCells = (d, key) => {
-        const cp = d[ck]||{}, pp = pk ? d[pk]||{} : null;
-        return both
-            ? `<td class="num">${fmtNum(pp[key])}</td><td class="num">${fmtNum(cp[key])}</td><td class="ctr">${fmtPct(pp[key], cp[key])}</td>`
-            : `<td class="num">${fmtNum(cp[key])}</td>`;
-    };
-
-    // Regional table
-    document.getElementById('tbl2region').innerHTML = regions.map(r => {
-        const ratio = soRatioFromPeriod(r[ck]);
-        return `<tr><td class="txt">${r.name}</td>${pCells(r,'stQty')}${pCells(r,'stkQty')}${pCells(r,'soQty')}
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td></tr>`;
-    }).join('');
-
-    // Manager table
-    document.getElementById('tbl2manager').innerHTML = managers.map(m => {
-        const ratio = soRatioFromPeriod(m[ck]);
-        return `<tr><td class="txt">${m.name}</td>${pCells(m,'stQty')}${pCells(m,'stkQty')}${pCells(m,'soQty')}
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td></tr>`;
-    }).join('');
-
-    // Salesman table
-    document.getElementById('tbl2salesman').innerHTML = salesmen.map(s => {
-        const ratio = soRatioFromPeriod(s[ck]);
-        return `<tr><td class="txt">${s.name}</td><td class="txt">${s.manager}</td><td class="ctr">${s.region}</td>
-        ${pCells(s,'stQty')}${pCells(s,'soQty')}
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td></tr>`;
-    }).join('');
-
-    // Chart 2a
-    destroyChart('c2a');
-    const ds2a = both
-        ? [{ label:P+' SO', data: regions.map(r=>(r[pk]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 },
-           { label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        : [{ label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }];
-    window.charts.c2a = new Chart(document.getElementById('chart2a'), {
-        type:'bar', data:{ labels: regions.map(r=>r.name), datasets:ds2a }, options: barOpts
-    });
-
-    // Chart 2b
-    const salesSorted = [...salesmen].sort((a,b)=>((a[ck]||{}).soQty||0)-((b[ck]||{}).soQty||0));
-    destroyChart('c2b');
-    window.charts.c2b = new Chart(document.getElementById('chart2b'), {
-        type:'bar', data:{ labels: salesSorted.map(s=>s.name), datasets:[{ label:C+' Sellout', data: salesSorted.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
-    });
-
-    // Chart 2c
-    const regionRatios = regions.map(r => soRatioFromPeriod(r[ck]) || 0);
-    destroyChart('c2c');
-    window.charts.c2c = new Chart(document.getElementById('chart2c'), {
-        type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } },
-        plugins: [{ id:'refLines', afterDraw(chart) {
-            const { ctx, chartArea: { left, right }, scales: { y } } = chart;
-            [3, 6].forEach(val => {
-                const yPos = y.getPixelForValue(val);
-                if (yPos >= y.top && yPos <= y.bottom) {
-                    ctx.save(); ctx.strokeStyle = val === 3 ? '#006100' : '#9C0006';
-                    ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
-                    ctx.beginPath(); ctx.moveTo(left, yPos); ctx.lineTo(right, yPos); ctx.stroke();
-                    ctx.fillStyle = val === 3 ? '#006100' : '#9C0006';
-                    ctx.font = '11px sans-serif';
-                    ctx.fillText(val === 3 ? 'MOS = 3' : 'MOS = 6', right - 50, yPos - 5);
-                    ctx.restore();
-                }
-            });
-        }}]
-    });
-}
-
-/* =========================================================
-   TAB 3 - DEALER ANALYSIS
-   ========================================================= */
-let dealerSortCol = null;
-let dealerSortAsc = true;
-let tab6BalSortCol = 'disc', tab6BalSortAsc = false;
-let tab6SumSortCol = 'purity', tab6SumSortAsc = true;
-let tab7DealerSortCol = 'oudF', tab7DealerSortAsc = false;
-let tab7ValSortCol = 'oudFV', tab7ValSortAsc = false;
-let tab7SkuSortCol = 'oudF', tab7SkuSortAsc = false;
-let tab7SkuValSortCol = 'oudFV', tab7SkuValSortAsc = false;
-const OUD_LOCAL = { region:[], salesman:[], dealer:[], category:[], signal:[] };
-let oudMsRegion, oudMsSalesman, oudMsDealer, oudMsCategory, oudMsSignal;
-
-function buildTab3() {
-    const C = mCL(), P = mPL(), both = showBoth();
-    document.getElementById('tab3').innerHTML = `
-    <div class="local-search">
-      <label style="font-size:12px;color:var(--gray);font-weight:600;">Search Dealer:</label>
-      <input id="f3search" type="text" placeholder="Dealer name...">
-    </div>
-    <div class="dealer-count" id="dealerCount3"></div>
-    <div class="chart-box" style="margin-bottom:16px"><h3>Top 20 Dealers by ${C} Sellout</h3><div class="chart-container"><canvas id="chart3a"></canvas></div></div>
-    <div class="card"><h3 class="section-title">Full Dealer Table</h3><div class="table-scroll" style="max-height:600px;"><table>
-      <thead><tr>
-        <th class="sortable" data-col="name">Dealer</th>
-        <th class="sortable" data-col="region">Region</th>
-        <th class="sortable" data-col="salesman">Salesman</th>
-        ${both?'<th class="sortable" data-col="jan_st">'+P+' ST</th>':''}
-        <th class="sortable" data-col="feb_st">${C} ST</th>
-        ${both?'<th class="sortable" data-col="jan_stk">'+P+' Stk</th>':''}
-        <th class="sortable" data-col="feb_stk">${C} Stk</th>
-        ${both?'<th class="sortable" data-col="jan_so">'+P+' SO</th>':''}
-        <th class="sortable" data-col="feb_so">${C} SO</th>
-        ${both?'<th class="sortable" data-col="so_mom">SO MoM%</th>':''}
-        <th class="sortable" data-col="feb_ratio">${C} MOS</th>
-        <th>TL</th>
-        <th class="sortable" data-col="signal">Signal</th>
-      </tr></thead>
-      <tbody id="tbl3dealers"></tbody>
-    </table></div></div>`;
-
-    document.getElementById('f3search').addEventListener('input', renderTab3);
-    document.querySelectorAll('#tab3 th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (dealerSortCol === col) dealerSortAsc = !dealerSortAsc;
-            else { dealerSortCol = col; dealerSortAsc = true; }
-            renderTab3();
-        });
-    });
-    renderTab3();
-}
-
-function getDealerSortVal(d, col) {
-    const ck = mCur(), pk = mPrev();
-    const cp = d[ck]||{}, pp = pk ? d[pk]||{} : {};
-    switch(col) {
-        case 'name': return d.name;
-        case 'region': return d.region;
-        case 'salesman': return d.salesman;
-        case 'jan_st': return pp.stQty || 0;
-        case 'feb_st': return cp.stQty || 0;
-        case 'jan_stk': return pp.stkQty || 0;
-        case 'feb_stk': return cp.stkQty || 0;
-        case 'jan_so': return pp.soQty || 0;
-        case 'feb_so': return cp.soQty || 0;
-        case 'so_mom': return (pp.soQty && pp.soQty !== 0) ? ((cp.soQty - pp.soQty) / Math.abs(pp.soQty)) : -9999;
-        case 'feb_ratio': return soRatioFromPeriod(cp) || 9999;
-        case 'signal': return d.signal;
-        default: return 0;
-    }
-}
-
-function renderTab3() {
-    let filtered = filteredByDealer();
-    const search = (document.getElementById('f3search') || {}).value;
-    if (search) filtered = filtered.filter(d => d.name.toLowerCase().includes(search.toLowerCase()));
-    const ck = mCur(), pk = mPrev(), both = showBoth();
-
-    document.getElementById('dealerCount3').textContent = `Showing ${filtered.length} of ${DATA.byDealer.length} dealers`;
-
-    if (dealerSortCol) {
-        filtered = [...filtered].sort((a, b) => {
-            let va = getDealerSortVal(a, dealerSortCol);
-            let vb = getDealerSortVal(b, dealerSortCol);
-            if (typeof va === 'string') { const cmp = va.localeCompare(vb); return dealerSortAsc ? cmp : -cmp; }
-            return dealerSortAsc ? va - vb : vb - va;
-        });
-    }
-
-    const top20 = [...filtered].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,20);
-    destroyChart('c3a');
-    window.charts.c3a = new Chart(document.getElementById('chart3a'), {
-        type:'bar', data:{
-            labels: top20.map(d=>d.name.length > 20 ? d.name.substring(0,20)+'...' : d.name),
-            datasets:[{ label:mCL()+' Sellout', data: top20.map(d=>(d[ck]||{}).soQty||0), backgroundColor: top20.map(d=>signalColor(d.signal)), borderRadius:4 }]
-        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
-    });
-
-    document.getElementById('tbl3dealers').innerHTML = filtered.map(d => {
-        const cp = d[ck]||{}, pp = pk ? d[pk]||{} : null;
-        const ratio = soRatioFromPeriod(cp);
-        return `<tr><td class="txt">${d.name}</td><td class="ctr">${d.region}</td><td class="txt">${d.salesman}</td>
-        ${both?'<td class="num">'+fmtNum(pp.stQty)+'</td>':''}<td class="num">${fmtNum(cp.stQty)}</td>
-        ${both?'<td class="num">'+fmtNum(pp.stkQty)+'</td>':''}<td class="num">${fmtNum(cp.stkQty)}</td>
-        ${both?'<td class="num">'+fmtNum(pp.soQty)+'</td>':''}<td class="num">${fmtNum(cp.soQty)}</td>
-        ${both?'<td class="ctr">'+fmtPct(pp.soQty, cp.soQty)+'</td>':''}
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td>
-        <td class="ctr">${signalBadge(d.signal)}</td></tr>`;
-    }).join('');
-}
-
-/* =========================================================
-   TAB 4 - PRODUCT ANALYSIS
-   ========================================================= */
-function buildTab4() {
-    const C = mCL(), P = mPL(), both = showBoth();
-    const pCols = (label) => both ? `<th>${P} ${label}</th><th>${C} ${label}</th><th>${label} MoM%</th>` : `<th>${C} ${label}</th>`;
-    const pCols2 = (label) => both ? `<th>${P} ${label}</th><th>${C} ${label}</th><th>${label} MoM%</th>` : `<th>${C} ${label}</th>`;
-    document.getElementById('tab4').innerHTML = `
-    <div class="card"><h3 class="section-title">Category Performance</h3><div class="table-scroll"><table>
-      <thead><tr><th>Category</th>${pCols('ST')}${pCols('Stk')}${pCols('SO')}<th>${C} MOS</th><th>TL</th></tr></thead>
-      <tbody id="tbl4cat"></tbody>
-    </table></div></div>
-    <div class="card"><h3 class="section-title">Class Performance</h3><div class="table-scroll"><table>
-      <thead><tr><th>Class</th><th>Category</th>${pCols2('ST')}${pCols2('SO')}<th>${C} Stk</th><th>${C} MOS</th><th>TL</th></tr></thead>
-      <tbody id="tbl4class"></tbody>
-    </table></div></div>
-    <div class="card"><h3 class="section-title">Top 20 SKUs by ${C} Sellout</h3><div class="table-scroll"><table>
-      <thead><tr><th>Rank</th><th>SKU</th><th>Category</th><th>Class</th>${pCols2('ST')}${pCols2('SO')}<th>${C} Stk</th><th>${C} MOS</th></tr></thead>
-      <tbody id="tbl4sku"></tbody>
-    </table></div></div>
-    <div class="chart-grid-3">
-      <div class="chart-box"><h3>${both ? 'Category Sellout ('+P+' vs '+C+')' : 'Category Sellout ('+C+')'}</h3><div class="chart-container"><canvas id="chart4a"></canvas></div></div>
-      <div class="chart-box"><h3>Top 10 Class by ${C} Sellout</h3><div class="chart-container"><canvas id="chart4b"></canvas></div></div>
-      <div class="chart-box"><h3>Top 10 SKU by ${C} Sellout</h3><div class="chart-container"><canvas id="chart4c"></canvas></div></div>
-    </div>`;
-    renderTab4();
-}
-
-function renderTab4() {
-    const cats = filteredByCategory();
-    const classes = filteredByClass();
-    const skus = filteredTopSkus();
-    const ck = mCur(), pk = mPrev(), both = showBoth(), C = mCL(), P = mPL();
-
-    const pCells = (d, key) => {
-        const cp = d[ck]||{}, pp = pk ? d[pk]||{} : null;
-        return both
-            ? `<td class="num">${fmtNum(pp[key])}</td><td class="num">${fmtNum(cp[key])}</td><td class="ctr">${fmtPct(pp[key], cp[key])}</td>`
-            : `<td class="num">${fmtNum((d[ck]||{})[key])}</td>`;
-    };
-
-    // Category table
-    document.getElementById('tbl4cat').innerHTML = cats.map(c => {
-        const ratio = soRatioFromPeriod(c[ck]);
-        return `<tr><td class="txt">${c.name}</td>${pCells(c,'stQty')}${pCells(c,'stkQty')}${pCells(c,'soQty')}
-        <td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td></tr>`;
-    }).join('');
-
-    // Class table
-    document.getElementById('tbl4class').innerHTML = classes.map(c => {
-        const cp = c[ck]||{}, pp = pk ? c[pk]||{} : null;
-        const ratio = soRatioFromPeriod(cp);
-        return `<tr><td class="txt">${c.name}</td><td class="txt">${c.category}</td>
-        ${pCells(c,'stQty')}${pCells(c,'soQty')}
-        <td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${fmtRatio(ratio)}</td><td class="ctr">${tlDot(ratio)}</td></tr>`;
-    }).join('');
-
-    // SKU table
-    const topSkus = [...skus].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,20);
-    document.getElementById('tbl4sku').innerHTML = topSkus.map((s,i) => {
-        const cp = s[ck]||{}, pp = pk ? s[pk]||{} : null;
-        const ratio = soRatioFromPeriod(cp);
-        return `<tr><td class="ctr">${i+1}</td><td class="txt">${s.sku}</td><td class="txt">${s.category}</td><td class="txt">${s.className}</td>
-        ${pCells(s,'stQty')}${pCells(s,'soQty')}
-        <td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${fmtRatio(ratio)}</td></tr>`;
-    }).join('');
-
-    // Chart 4a
-    destroyChart('c4a');
-    const ds4a = both
-        ? [{ label:P+' SO', data: cats.map(c=>(c[pk]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 },
-           { label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        : [{ label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }];
-    window.charts.c4a = new Chart(document.getElementById('chart4a'), {
-        type:'bar', data:{ labels: cats.map(c=>c.name), datasets:ds4a }, options: barOpts
-    });
-
-    // Chart 4b
-    const topClass = [...classes].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,10).reverse();
-    destroyChart('c4b');
-    window.charts.c4b = new Chart(document.getElementById('chart4b'), {
-        type:'bar', data:{ labels: topClass.map(c=>c.name), datasets:[{ label:C+' Sellout', data: topClass.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
-    });
-
-    // Chart 4c
-    const topSkuChart = [...skus].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,10).reverse();
-    destroyChart('c4c');
-    window.charts.c4c = new Chart(document.getElementById('chart4c'), {
-        type:'bar', data:{
-            labels: topSkuChart.map(s=> s.sku.length > 25 ? s.sku.substring(0,25)+'...' : s.sku),
-            datasets:[{ label:C+' Sellout', data: topSkuChart.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
-    });
-}
-
-/* =========================================================
-   TAB 5 - OPPORTUNITY MATRIX
-   ========================================================= */
-function buildTab5() {
-    document.getElementById('tab5').innerHTML = `
-    <div id="matrixBadges" style="margin-bottom:12px;"></div>
-    <div class="card"><div class="table-scroll" style="max-height:700px;"><table id="matrixTable">
-      <thead id="matrixHead"></thead>
-      <tbody id="matrixBody"></tbody>
-    </table></div></div>
-    <div id="tab5SkuDetail"></div>`;
-    renderTab5();
-}
-
-function renderTab5() {
-    const dc = filteredDealerCategory();
-    const fCats = filteredByCategory();
-    const ck = mCur(), C = mCL();
-
-    const dealerMap = {};
-    dc.forEach(row => {
-        if (!dealerMap[row.dealer]) dealerMap[row.dealer] = {};
-        dealerMap[row.dealer][row.category] = row;
-    });
-
-    const dealers = Object.keys(dealerMap).sort();
-    const categories = fCats.map(c => c.name);
-
-    let oppCount = 0, healthyCount = 0, overCount = 0;
-    dc.forEach(row => {
-        if (row.signal === 'OPPORTUNITY') oppCount++;
-        else if (row.signal === 'HEALTHY') healthyCount++;
-        else if (row.signal === 'OVERSTOCK') overCount++;
-    });
-
-    document.getElementById('matrixBadges').innerHTML = `
-        <span class="badge-count badge-navy">${oppCount} Opportunities</span>
-        <span class="badge-count badge-green">${healthyCount} Healthy</span>
-        <span class="badge-count badge-red">${overCount} Overstock</span>`;
-
-    document.getElementById('matrixHead').innerHTML = `<tr><th>Dealer</th>${categories.map(c=>`<th>${c}</th>`).join('')}<th>Total</th></tr>`;
-
-    document.getElementById('matrixBody').innerHTML = dealers.map(dealer => {
-        let totalStk = 0, totalSo = 0;
-        const cells = categories.map(cat => {
-            const d = dealerMap[dealer][cat];
-            if (!d) return '<td class="matrix-cell"></td>';
-            const cp = d[ck]||{};
-            const ratio = soRatioFromPeriod(cp);
-            totalStk += (cp.stkQty || 0);
-            totalSo += (cp.soQty || 0);
-            const bg = signalBg(d.signal);
-            const title = `${dealer} | ${cat} | ST: ${fmtNum(cp.stQty)} | Stk: ${fmtNum(cp.stkQty)} | SO: ${fmtNum(cp.soQty)} | MOS: ${fmtRatio(ratio)}`;
-            return `<td class="matrix-cell" style="background:${bg}" title="${title}"><div style="font-size:12px;font-weight:700">${fmtRatio(ratio)}</div><div style="font-size:9px;color:#555;margin-top:1px">Stk ${fmtNum(cp.stkQty)}</div></td>`;
-        }).join('');
-        const totalRatio = totalSo > 0 ? (totalStk / totalSo) : null;
-        const totalSig = totalRatio == null ? null : totalRatio > 6 ? 'OVERSTOCK' : totalRatio >= 3 ? 'HEALTHY' : 'OPPORTUNITY';
-        const totalBg = totalSig ? signalBg(totalSig) : '#FFFFFF';
-        return `<tr><td class="txt">${dealer}</td>${cells}<td class="matrix-cell" style="background:${totalBg}"><div style="font-size:12px;font-weight:700">${fmtRatio(totalRatio)}</div><div style="font-size:9px;color:#555;margin-top:1px">Stk ${fmtNum(totalStk)}</div></td></tr>`;
-    }).join('');
-
-    // Per-category SKU detail tables below the matrix
-    const skuData = filteredSkuDetail();
-    const detailDiv = document.getElementById('tab5SkuDetail');
-    if (categories.length === 0) { detailDiv.innerHTML = ''; return; }
-
-    // Group SKU data by category
-    const skuByCat = {};
-    skuData.forEach(s => {
-        if (!skuByCat[s.category]) skuByCat[s.category] = [];
-        skuByCat[s.category].push(s);
-    });
-
-    let detailHTML = '<h3 class="section-title" style="margin-top:20px;margin-bottom:16px;">Category SKU Detail</h3>';
-    categories.forEach(cat => {
-        const catSkus = skuByCat[cat] || [];
-        if (catSkus.length === 0) return;
-
-        // Aggregate by SKU within this category
-        const skuMap = {};
-        catSkus.forEach(s => {
-            if (!skuMap[s.sku]) skuMap[s.sku] = { sku:s.sku, className:s.className, jan:zeroPeriod(), feb:zeroPeriod() };
-            addPeriod(skuMap[s.sku].jan, s.jan);
-            addPeriod(skuMap[s.sku].feb, s.feb);
-        });
-        const skuArr = Object.values(skuMap).sort((a,b) => ((b[ck]||{}).soQty||0) - ((a[ck]||{}).soQty||0));
-
-        detailHTML += `<div class="card" style="margin-bottom:16px;">
-          <h3 style="font-size:14px;color:var(--navy);margin-bottom:8px;">📦 ${cat} <span style="font-size:12px;color:var(--gray);font-weight:400">(${skuArr.length} models)</span></h3>
-          <div class="table-scroll" style="max-height:350px;"><table>
-            <thead><tr><th>SKU / Model</th><th>Class</th><th>${C} Sell-thru</th><th>${C} Sellout</th><th>${C} Stock</th><th>MOS</th><th>Signal</th></tr></thead>
-            <tbody>${skuArr.map(s => {
-                const cp = s[ck]||{};
-                const ratio = soRatioFromPeriod(cp);
-                const sig = calcSignal(cp);
-                return `<tr><td class="txt">${s.sku}</td><td class="txt">${s.className}</td>
-                    <td class="num">${fmtNum(cp.stQty)}</td><td class="num">${fmtNum(cp.soQty)}</td>
-                    <td class="num">${fmtNum(cp.stkQty)}</td><td class="num">${fmtRatio(ratio)}</td>
-                    <td class="ctr">${signalBadge(sig)}</td></tr>`;
-            }).join('')}</tbody>
-          </table></div></div>`;
-    });
-    detailDiv.innerHTML = detailHTML;
-}
-
-/* =========================================================
-   TAB 6 - DATA VALIDATION
-   ========================================================= */
-function buildTab6() {
-    document.getElementById('tab6').innerHTML = `
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">DEALER-CATEGORIES</div><div class="kpi-value" id="k6-totalDC">-</div><div class="kpi-change" id="k6-totalDC-m"></div></div>
-      <div class="kpi-card" id="kc6-bal"><div class="kpi-label">BALANCE MISMATCHES</div><div class="kpi-value" id="k6-balanceFail">-</div><div class="kpi-change" id="k6-balanceFail-m"></div></div>
-      <div class="kpi-card" id="kc6-miss"><div class="kpi-label">MISSING DATA</div><div class="kpi-value" id="k6-missingData">-</div><div class="kpi-change" id="k6-missingData-m"></div></div>
-      <div class="kpi-card" id="kc6-purity"><div class="kpi-label">DATA PURITY SCORE</div><div class="kpi-value" id="k6-purityScore">-</div><div class="kpi-change" id="k6-purityScore-m"></div></div>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">DROPPED DEALERS</div><div class="kpi-value" id="k6-droppedDealers">-</div><div class="kpi-change">Jan active, Feb zero</div></div>
-      <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">NEW DEALERS</div><div class="kpi-value" id="k6-newDealers">-</div><div class="kpi-change">Jan zero, Feb active</div></div>
-      <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">DROPPED CHANNELS</div><div class="kpi-value" id="k6-droppedDC">-</div><div class="kpi-change">Dealer-Category level</div></div>
-      <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">NEW CHANNELS</div><div class="kpi-value" id="k6-newDC">-</div><div class="kpi-change">Dealer-Category level</div></div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box"><h3>Top 20 Stock Balance Discrepancies</h3><div class="chart-container"><canvas id="chart6a"></canvas></div></div>
-      <div class="chart-box"><h3>Data Completeness by Region</h3><div class="chart-container"><canvas id="chart6b"></canvas></div></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">Stock Balance Mismatches</h3>
-      <div class="dealer-count" id="balMismatchCount"></div>
-      <div class="table-scroll" style="max-height:400px;"><table>
-        <thead><tr>
-          <th class="sortable" data-col="dealer">Dealer</th>
-          <th class="sortable" data-col="category">Category</th>
-          <th class="sortable" data-col="region">Region</th>
-          <th class="sortable" data-col="salesman">Salesman</th>
-          <th class="sortable" data-col="jan_stk">Jan Stock</th>
-          <th class="sortable" data-col="feb_st">+ Feb ST</th>
-          <th class="sortable" data-col="feb_so">- Feb SO</th>
-          <th class="sortable" data-col="expected">= Expected</th>
-          <th class="sortable" data-col="actual">Actual Feb Stk</th>
-          <th class="sortable" data-col="disc">Discrepancy</th>
-          <th class="sortable" data-col="disc_pct">Disc %</th>
-          <th>Signal</th>
-        </tr></thead><tbody id="tbl6balance"></tbody>
-      </table></div>
-    </div>
-    <div class="table-grid">
-      <div class="table-box"><h3>Dropped Channels (Jan &#8594; Feb)</h3><div class="dealer-count" id="droppedCount"></div><div class="table-scroll" style="max-height:350px;"><table>
-        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>Jan ST</th><th>Jan SO</th><th>Jan Stock</th></tr></thead>
-        <tbody id="tbl6dropped"></tbody>
-      </table></div></div>
-      <div class="table-box"><h3>New Channels (Feb)</h3><div class="dealer-count" id="newCount"></div><div class="table-scroll" style="max-height:350px;"><table>
-        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>Feb ST</th><th>Feb SO</th><th>Feb Stock</th></tr></thead>
-        <tbody id="tbl6new"></tbody>
-      </table></div></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">Dealer Data Health Summary</h3>
-      <div class="table-scroll" style="max-height:500px;"><table>
-        <thead><tr>
-          <th class="sortable" data-col="name">Dealer</th>
-          <th class="sortable" data-col="region">Region</th>
-          <th class="sortable" data-col="salesman">Salesman</th>
-          <th class="sortable" data-col="totalCat">Categories</th>
-          <th class="sortable" data-col="cleanCat">Clean</th>
-          <th class="sortable" data-col="mismatch">Mismatches</th>
-          <th class="sortable" data-col="janOnly">Dropped</th>
-          <th class="sortable" data-col="febOnly">New</th>
-          <th class="sortable" data-col="purity">Purity %</th>
-          <th>Status</th>
-        </tr></thead><tbody id="tbl6summary"></tbody>
-      </table></div>
-    </div>`;
-
-    document.querySelectorAll('#tab6 .card:nth-of-type(1) th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab6BalSortCol === col) tab6BalSortAsc = !tab6BalSortAsc;
-            else { tab6BalSortCol = col; tab6BalSortAsc = true; }
-            renderTab6();
-        });
-    });
-    document.querySelectorAll('#tab6 .card:last-child th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab6SumSortCol === col) tab6SumSortAsc = !tab6SumSortAsc;
-            else { tab6SumSortCol = col; tab6SumSortAsc = true; }
-            renderTab6();
-        });
-    });
-    renderTab6();
-}
-
-function renderTab6() {
-    const dc = filteredDealerCategory();
-    const dealers = filteredByDealer();
-    const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
-
-    const hasJan = d => ((d.jan.stQty||0) > 0 || (d.jan.soQty||0) > 0 || (d.jan.stkQty||0) > 0);
-    const hasFeb = d => ((d.feb.stQty||0) > 0 || (d.feb.soQty||0) > 0 || (d.feb.stkQty||0) > 0);
-    const allFebZero = d => ((d.feb.stQty||0) === 0 && (d.feb.soQty||0) === 0 && (d.feb.stkQty||0) === 0);
-    const allJanZero = d => ((d.jan.stQty||0) === 0 && (d.jan.soQty||0) === 0 && (d.jan.stkQty||0) === 0);
-
-    // 1. Stock balance check
-    const balanceResults = dc.map(d => {
-        const expected = (d.jan.stkQty||0) + (d.feb.stQty||0) - (d.feb.soQty||0);
-        const actual = d.feb.stkQty||0;
-        const disc = actual - expected;
-        const abDisc = Math.abs(disc);
-        const discPct = expected !== 0 ? Math.abs(disc / expected * 100) : (disc !== 0 ? 999 : 0);
-        const isMismatch = abDisc > 5 && discPct > 10;
-        return { dealer:d.dealer, category:d.category, region:d.region, salesman:d.salesman, jan:d.jan, feb:d.feb, signal:d.signal, expected, actual, disc, discPct, isMismatch };
-    });
-    const mismatches = balanceResults.filter(r => r.isMismatch);
-
-    // 2. Dropped & New (DC level)
-    const missingDC = dc.filter(d => hasJan(d) && allFebZero(d));
-    const newDC = dc.filter(d => allJanZero(d) && hasFeb(d));
-
-    // 3. Dropped & New (Dealer level)
-    const droppedDealers = dealers.filter(d => hasJan(d) && allFebZero(d));
-    const newDealers = dealers.filter(d => allJanZero(d) && hasFeb(d));
-
-    // 4. Purity
-    const totalActive = dc.filter(d => hasJan(d) || hasFeb(d)).length;
-    const issueCount = mismatches.length + missingDC.length;
-    const purity = totalActive > 0 ? ((totalActive - issueCount) / totalActive * 100) : 100;
-
-    // ===== KPI =====
-    set('k6-totalDC', fmtNum(dc.length));
-    set('k6-totalDC-m', `<span style="color:var(--gray)">${fmtNum(totalActive)} active</span>`);
-    set('k6-balanceFail', fmtNum(mismatches.length));
-    set('k6-balanceFail-m', mismatches.length > 0
-        ? `<span class="negative">${(mismatches.length/dc.length*100).toFixed(1)}% of total</span>`
-        : '<span class="positive">All balanced</span>');
-    const balCard = document.getElementById('kc6-bal');
-    if (balCard) balCard.style.borderLeftColor = mismatches.length > 0 ? 'var(--overstock)' : 'var(--opportunity)';
-
-    set('k6-missingData', fmtNum(missingDC.length));
-    set('k6-missingData-m', missingDC.length > 0
-        ? `<span class="negative">${(missingDC.length/dc.length*100).toFixed(1)}% of total</span>`
-        : '<span class="positive">No gaps</span>');
-    const missCard = document.getElementById('kc6-miss');
-    if (missCard) missCard.style.borderLeftColor = missingDC.length > 0 ? 'var(--overstock)' : 'var(--opportunity)';
-
-    set('k6-purityScore', purity.toFixed(1) + '%');
-    const purityCard = document.getElementById('kc6-purity');
-    if (purityCard) purityCard.style.borderLeftColor = purity >= 90 ? 'var(--opportunity)' : purity >= 70 ? 'var(--healthy)' : 'var(--overstock)';
-
-    set('k6-droppedDealers', fmtNum(droppedDealers.length));
-    set('k6-newDealers', fmtNum(newDealers.length));
-    set('k6-droppedDC', fmtNum(missingDC.length));
-    set('k6-newDC', fmtNum(newDC.length));
-
-    // ===== CHART 6a =====
-    const top20Disc = [...balanceResults].filter(r => Math.abs(r.disc) > 0)
-        .sort((a,b) => Math.abs(b.disc) - Math.abs(a.disc)).slice(0, 20);
-    destroyChart('c6a');
-    window.charts.c6a = new Chart(document.getElementById('chart6a'), {
-        type:'bar',
-        data:{ labels: top20Disc.map(r => { const l = r.dealer+' | '+r.category; return l.length > 28 ? l.substring(0,28)+'...' : l; }),
-            datasets:[{ label:'Discrepancy (Qty)', data: top20Disc.map(r=>r.disc),
-                backgroundColor: top20Disc.map(r => r.disc > 0 ? '#2E75B6' : '#9C0006'), borderRadius:4 }] },
-        options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
-            plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}} },
-            scales:{ x:{ticks:{callback:v=>fmtNum(v)}} } }
-    });
-
-    // ===== CHART 6b =====
-    const regionMap = {};
-    balanceResults.forEach(r => {
-        if (!regionMap[r.region]) regionMap[r.region] = {clean:0, mismatch:0, missing:0, inactive:0};
-        const e = regionMap[r.region];
-        if (!hasJan(r) && !hasFeb(r)) e.inactive++;
-        else if (hasJan(r) && allFebZero(r)) e.missing++;
-        else if (r.isMismatch) e.mismatch++;
-        else e.clean++;
-    });
-    const rNames = Object.keys(regionMap).sort();
-    destroyChart('c6b');
-    window.charts.c6b = new Chart(document.getElementById('chart6b'), {
-        type:'bar',
-        data:{ labels:rNames, datasets:[
-            { label:'Clean', data:rNames.map(r=>regionMap[r].clean), backgroundColor:'#1A7A3C' },
-            { label:'Mismatch', data:rNames.map(r=>regionMap[r].mismatch), backgroundColor:'#B8860B' },
-            { label:'Missing', data:rNames.map(r=>regionMap[r].missing), backgroundColor:'#9C0006' },
-            { label:'Inactive', data:rNames.map(r=>regionMap[r].inactive), backgroundColor:'#595959' }
-        ]},
-        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
-            scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} } }
-    });
-
-    // ===== TABLE: Balance Mismatches =====
-    let sortedMis = [...mismatches];
-    if (tab6BalSortCol) {
-        sortedMis.sort((a,b) => {
-            let va, vb;
-            switch(tab6BalSortCol) {
-                case 'dealer': va=a.dealer; vb=b.dealer; break;
-                case 'category': va=a.category; vb=b.category; break;
-                case 'region': va=a.region; vb=b.region; break;
-                case 'salesman': va=a.salesman; vb=b.salesman; break;
-                case 'jan_stk': va=a.jan.stkQty||0; vb=b.jan.stkQty||0; break;
-                case 'feb_st': va=a.feb.stQty||0; vb=b.feb.stQty||0; break;
-                case 'feb_so': va=a.feb.soQty||0; vb=b.feb.soQty||0; break;
-                case 'expected': va=a.expected; vb=b.expected; break;
-                case 'actual': va=a.actual; vb=b.actual; break;
-                case 'disc': va=Math.abs(a.disc); vb=Math.abs(b.disc); break;
-                case 'disc_pct': va=a.discPct; vb=b.discPct; break;
-                default: va=0; vb=0;
-            }
-            if (typeof va==='string') { const c=va.localeCompare(vb); return tab6BalSortAsc?c:-c; }
-            return tab6BalSortAsc ? va-vb : vb-va;
-        });
-    }
-    set('balMismatchCount', `${sortedMis.length} mismatches found`);
-    document.getElementById('tbl6balance').innerHTML = sortedMis.map(r => {
-        const cls = r.disc > 0 ? 'positive' : 'negative';
-        return `<tr><td class="txt">${r.dealer}</td><td class="ctr">${r.category}</td><td class="ctr">${r.region}</td><td class="txt">${r.salesman}</td>
-        <td class="num">${fmtNum(r.jan.stkQty)}</td><td class="num">${fmtNum(r.feb.stQty)}</td><td class="num">${fmtNum(r.feb.soQty)}</td>
-        <td class="num" style="font-weight:600">${fmtNum(r.expected)}</td><td class="num" style="font-weight:600">${fmtNum(r.actual)}</td>
-        <td class="num"><span class="${cls}" style="font-weight:700">${r.disc>0?'+':''}${fmtNum(r.disc)}</span></td>
-        <td class="num">${r.discPct.toFixed(1)}%</td><td class="ctr">${signalBadge(r.signal)}</td></tr>`;
-    }).join('');
-
-    // ===== TABLE: Dropped Channels =====
-    set('droppedCount', `${missingDC.length} channels dropped`);
-    document.getElementById('tbl6dropped').innerHTML = missingDC
-        .sort((a,b)=>(b.jan.stkQty||0)-(a.jan.stkQty||0))
-        .map(d => `<tr><td class="txt">${d.dealer}</td><td class="ctr">${d.category}</td><td class="ctr">${d.region}</td><td class="txt">${d.salesman}</td>
-        <td class="num">${fmtNum(d.jan.stQty)}</td><td class="num">${fmtNum(d.jan.soQty)}</td><td class="num">${fmtNum(d.jan.stkQty)}</td></tr>`).join('');
-
-    // ===== TABLE: New Channels =====
-    set('newCount', `${newDC.length} new channels`);
-    document.getElementById('tbl6new').innerHTML = newDC
-        .sort((a,b)=>(b.feb.stkQty||0)-(a.feb.stkQty||0))
-        .map(d => `<tr><td class="txt">${d.dealer}</td><td class="ctr">${d.category}</td><td class="ctr">${d.region}</td><td class="txt">${d.salesman}</td>
-        <td class="num">${fmtNum(d.feb.stQty)}</td><td class="num">${fmtNum(d.feb.soQty)}</td><td class="num">${fmtNum(d.feb.stkQty)}</td></tr>`).join('');
-
-    // ===== TABLE: Dealer Health Summary =====
-    const dealerHealth = {};
-    balanceResults.forEach(r => {
-        if (!dealerHealth[r.dealer]) dealerHealth[r.dealer] = { name:r.dealer, region:r.region, salesman:r.salesman, totalCat:0, cleanCat:0, mismatch:0, janOnly:0, febOnly:0 };
-        const h = dealerHealth[r.dealer];
-        h.totalCat++;
-        if (!hasJan(r) && !hasFeb(r)) { /* inactive */ }
-        else if (hasJan(r) && allFebZero(r)) h.janOnly++;
-        else if (allJanZero(r) && hasFeb(r)) h.febOnly++;
-        else if (r.isMismatch) h.mismatch++;
-        else h.cleanCat++;
-    });
-
-    let summaryRows = Object.values(dealerHealth).map(h => {
-        const activeCat = h.cleanCat + h.mismatch + h.janOnly + h.febOnly;
-        h.purity = activeCat > 0 ? (h.cleanCat / activeCat * 100) : 100;
-        h.status = h.purity >= 95 ? 'CLEAN' : h.purity >= 70 ? 'WARNING' : 'ALERT';
-        return h;
-    });
-
-    if (tab6SumSortCol) {
-        summaryRows.sort((a,b) => {
-            let va = a[tab6SumSortCol] ?? '', vb = b[tab6SumSortCol] ?? '';
-            if (typeof va === 'string' && isNaN(va)) { const c = va.localeCompare(vb); return tab6SumSortAsc?c:-c; }
-            return tab6SumSortAsc ? va-vb : vb-va;
-        });
-    }
-
-    const hColors = {CLEAN:'#1A7A3C', WARNING:'#B8860B', ALERT:'#9C0006'};
-    document.getElementById('tbl6summary').innerHTML = summaryRows.map(h =>
-        `<tr><td class="txt">${h.name}</td><td class="ctr">${h.region}</td><td class="txt">${h.salesman}</td>
-        <td class="num">${h.totalCat}</td>
-        <td class="num">${h.cleanCat}</td>
-        <td class="num" style="color:${h.mismatch>0?'#9C0006':'inherit'};font-weight:${h.mismatch>0?'700':'normal'}">${h.mismatch}</td>
-        <td class="num" style="color:${h.janOnly>0?'#B8860B':'inherit'}">${h.janOnly}</td>
-        <td class="num" style="color:${h.febOnly>0?'#1A7A3C':'inherit'}">${h.febOnly}</td>
-        <td class="num" style="font-weight:700">${h.purity.toFixed(1)}%</td>
-        <td class="ctr"><span style="display:inline-block;padding:2px 8px;border-radius:12px;color:#FFF;font-size:11px;font-weight:600;background:${hColors[h.status]}">${h.status}</span></td></tr>`
-    ).join('');
-}
-
-/* =========================================================
-   TAB 7 - OUD TRACKING
-   ========================================================= */
-function buildTab7() {
-    const weeks = DATA.oudMeta || [];
-    if (weeks.length === 0) {
-        document.getElementById('tab7').innerHTML = '<div class="no-data">No OUD data available.</div>';
-        return;
-    }
-    const latest = weeks[weeks.length - 1];
-    const prev = weeks.length > 1 ? weeks[weeks.length - 2] : null;
-
-    document.getElementById('tab7').innerHTML = `
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (28 Feb)</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Monthly stock as of 28 Feb</div></div>
-      <div class="kpi-card"><div class="kpi-label">UPDATED ON-HAND (${latest.label})</div><div class="kpi-value" id="k7-updatedOnhand">-</div><div class="kpi-change" id="k7-updatedOnhandSub"></div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">ADJUSTED STOCK (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#2E75B6">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
-      <div class="kpi-card"><div class="kpi-label">LATEST OUD QTY (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
-    </div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">MOS (ON-HAND / 28 Feb)</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">Based on Feb Sellout</div></div>
-      <div class="kpi-card"><div class="kpi-label">MOS (UPDATED ON-HAND)</div><div class="kpi-value" id="k7-mosUpdated">-</div><div class="kpi-change">On-Hand + delivered OUD</div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">MOS (ON-HAND + OUD)</div><div class="kpi-value" id="k7-mosAdj" style="color:#2E75B6">-</div><div class="kpi-change">Including pending deliveries</div></div>
-      <div class="kpi-card"><div class="kpi-label">DELIVERED QTY</div><div class="kpi-value" id="k7-delivered" style="color:var(--opportunity)">-</div><div class="kpi-change" id="k7-deliveredSub"></div></div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box"><h3>OUD Weekly Trend (QTY)</h3><div class="chart-container"><canvas id="chart7a"></canvas></div></div>
-      <div class="chart-box"><h3>Stock Comparison by Category (QTY)</h3><div class="chart-container"><canvas id="chart7b"></canvas></div></div>
-    </div>
-    <div class="chart-grid">
-      <div class="chart-box"><h3>OUD Weekly Trend (VALUE)</h3><div class="chart-container"><canvas id="chart7c"></canvas></div></div>
-      <div class="chart-box"><h3>Stock Comparison by Category (VALUE)</h3><div class="chart-container"><canvas id="chart7d"></canvas></div></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">Dealer OUD Detail (QTY)</h3>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start;padding:10px 12px;background:#E8EDF2;border-radius:6px;">
-        <div class="ms-dropdown" id="oud-ms-region"></div>
-        <div class="ms-dropdown" id="oud-ms-salesman"></div>
-        <div class="ms-dropdown" id="oud-ms-dealer"></div>
-        <div class="ms-dropdown" id="oud-ms-category"></div>
-        <div class="ms-dropdown" id="oud-ms-signal"></div>
-        <button id="oud-f-reset" style="padding:7px 16px;background:var(--navy);color:#fff;border:none;border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;align-self:center;white-space:nowrap">Reset</button>
-        <div style="margin-left:auto;align-self:center;"><input id="oud-f-dealer" type="text" placeholder="Dealer Search..." style="padding:6px 10px;border:1px solid #ccc;border-radius:4px;font-size:12px;width:180px;"></div>
-      </div>
-      <div class="dealer-count" id="oudDealerCount"></div>
-      <div class="table-scroll" style="max-height:500px;"><table id="tbl7oudTable">
-        <thead><tr>
-          <th class="sortable" data-col="dealer">Dealer</th>
-          <th class="sortable" data-col="region">Region</th>
-          <th class="sortable" data-col="category">Category</th>
-          <th class="sortable" data-col="stk">On-Hand Stock</th>
-          ${prev ? '<th class="sortable" data-col="oudP">OUD '+prev.label+'</th>' : ''}
-          <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
-          <th class="sortable" data-col="adj">Adjusted Stock</th>
-          <th class="sortable" data-col="so">Feb SO</th>
-          <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
-          <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
-          <th>Signal Change</th>
-        </tr></thead><tbody id="tbl7oud"></tbody>
-      </table></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">Dealer OUD Detail (VALUE)</h3>
-      <div class="dealer-count" id="oudDealerValCount"></div>
-      <div class="table-scroll" style="max-height:500px;"><table id="tbl7oudValTable">
-        <thead><tr>
-          <th class="sortable" data-col="dealer">Dealer</th>
-          <th class="sortable" data-col="region">Region</th>
-          <th class="sortable" data-col="category">Category</th>
-          <th class="sortable" data-col="stkV">On-Hand Stock</th>
-          ${prev ? '<th class="sortable" data-col="oudPV">OUD '+prev.label+'</th>' : ''}
-          <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
-          <th class="sortable" data-col="adjV">Adjusted Stock</th>
-          <th class="sortable" data-col="soV">Feb SO</th>
-          <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
-          <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
-          <th>Signal Change</th>
-        </tr></thead><tbody id="tbl7oudVal"></tbody>
-      </table></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">SKU OUD Detail (QTY)</h3>
-      <div class="dealer-count" id="oudSkuCount"></div>
-      <div class="table-scroll" style="max-height:500px;"><table id="tbl7skuTable">
-        <thead><tr>
-          <th class="sortable" data-col="sku">SKU / Model</th>
-          <th class="sortable" data-col="className">Class</th>
-          <th class="sortable" data-col="category">Category</th>
-          <th class="sortable" data-col="stk">On-Hand Stock</th>
-          ${prev ? '<th class="sortable" data-col="oudP">OUD '+prev.label+'</th>' : ''}
-          <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
-          <th class="sortable" data-col="adj">Adjusted Stock</th>
-          <th class="sortable" data-col="so">Feb SO</th>
-          <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
-          <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
-          <th>Signal Change</th>
-        </tr></thead><tbody id="tbl7sku"></tbody>
-      </table></div>
-    </div>
-    <div class="card">
-      <h3 class="section-title">SKU OUD Detail (VALUE)</h3>
-      <div class="dealer-count" id="oudSkuValCount"></div>
-      <div class="table-scroll" style="max-height:500px;"><table id="tbl7skuValTable">
-        <thead><tr>
-          <th class="sortable" data-col="sku">SKU / Model</th>
-          <th class="sortable" data-col="className">Class</th>
-          <th class="sortable" data-col="category">Category</th>
-          <th class="sortable" data-col="stkV">On-Hand Stock</th>
-          ${prev ? '<th class="sortable" data-col="oudPV">OUD '+prev.label+'</th>' : ''}
-          <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
-          <th class="sortable" data-col="adjV">Adjusted Stock</th>
-          <th class="sortable" data-col="soV">Feb SO</th>
-          <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
-          <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
-          <th>Signal Change</th>
-        </tr></thead><tbody id="tbl7skuVal"></tbody>
-      </table></div>
-    </div>`;
-    document.querySelectorAll('#tbl7oudTable th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab7DealerSortCol === col) tab7DealerSortAsc = !tab7DealerSortAsc;
-            else { tab7DealerSortCol = col; tab7DealerSortAsc = true; }
-            renderTab7();
-        });
-    });
-    document.querySelectorAll('#tbl7oudValTable th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab7ValSortCol === col) tab7ValSortAsc = !tab7ValSortAsc;
-            else { tab7ValSortCol = col; tab7ValSortAsc = true; }
-            renderTab7();
-        });
-    });
-    document.querySelectorAll('#tbl7skuTable th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab7SkuSortCol === col) tab7SkuSortAsc = !tab7SkuSortAsc;
-            else { tab7SkuSortCol = col; tab7SkuSortAsc = true; }
-            renderTab7();
-        });
-    });
-    document.querySelectorAll('#tbl7skuValTable th.sortable').forEach(th => {
-        th.addEventListener('click', () => {
-            const col = th.getAttribute('data-col');
-            if (tab7SkuValSortCol === col) tab7SkuValSortAsc = !tab7SkuValSortAsc;
-            else { tab7SkuValSortCol = col; tab7SkuValSortAsc = true; }
-            renderTab7();
-        });
-    });
-
-    // Local multi-select filters with cascading for Dealer OUD Detail
-    const oudCascade = () => { populateOudLocalOptions(); renderTab7(); };
-    oudMsRegion   = createMultiSelect('oud-ms-region',   'Region',   sel => { OUD_LOCAL.region = sel; oudCascade(); });
-    oudMsSalesman = createMultiSelect('oud-ms-salesman', 'Salesman', sel => { OUD_LOCAL.salesman = sel; oudCascade(); });
-    oudMsDealer   = createMultiSelect('oud-ms-dealer',   'Dealer',   sel => { OUD_LOCAL.dealer = sel; oudCascade(); });
-    oudMsCategory = createMultiSelect('oud-ms-category', 'Category', sel => { OUD_LOCAL.category = sel; oudCascade(); });
-    oudMsSignal   = createMultiSelect('oud-ms-signal',   'Signal',   sel => { OUD_LOCAL.signal = sel; renderTab7(); });
-
-    populateOudLocalOptions();
-
-    document.getElementById('oud-f-dealer').addEventListener('input', () => renderTab7());
-    document.getElementById('oud-f-reset').addEventListener('click', () => {
-        OUD_LOCAL.region = []; OUD_LOCAL.salesman = []; OUD_LOCAL.dealer = [];
-        OUD_LOCAL.category = []; OUD_LOCAL.signal = [];
-        oudMsRegion.reset(); oudMsSalesman.reset(); oudMsDealer.reset();
-        oudMsCategory.reset(); oudMsSignal.reset();
-        document.getElementById('oud-f-dealer').value = '';
-        populateOudLocalOptions();
-        renderTab7();
-    });
-
-    renderTab7();
-}
-
-function populateOudLocalOptions() {
-    const oudAll = DATA.oudDealerCategory || [];
-    const ck = mCur();
-    // Step 1: Region (always all)
-    const regions = [...new Set(oudAll.map(d => d.region))].filter(Boolean).sort();
-    oudMsRegion.setOptions(regions);
-
-    // Step 2: Filter by region → Salesman
-    const byR = OUD_LOCAL.region.length === 0 ? oudAll : oudAll.filter(d => OUD_LOCAL.region.includes(d.region));
-    const salesmen = [...new Set(byR.map(d => d.salesman))].filter(Boolean).sort();
-    oudMsSalesman.setOptions(salesmen);
-
-    // Step 3: Filter by region+salesman → Dealer
-    const byRS = OUD_LOCAL.salesman.length === 0 ? byR : byR.filter(d => OUD_LOCAL.salesman.includes(d.salesman));
-    const dealers = [...new Set(byRS.map(d => d.dealer))].filter(Boolean).sort();
-    oudMsDealer.setOptions(dealers);
-
-    // Step 4: Filter by region+salesman+dealer → Category
-    const byRSD = OUD_LOCAL.dealer.length === 0 ? byRS : byRS.filter(d => OUD_LOCAL.dealer.includes(d.dealer));
-    const cats = [...new Set(byRSD.map(d => d.category))].filter(Boolean).sort();
-    oudMsCategory.setOptions(cats);
-
-    // Step 5: Filter by all above → Signal
-    const byRSDC = OUD_LOCAL.category.length === 0 ? byRSD : byRSD.filter(d => OUD_LOCAL.category.includes(d.category));
-    const dcLookup = {};
-    DATA.dealerCategory.forEach(d => { dcLookup[d.dealer + '||' + d.category] = d; });
-    const fk = (DATA.oudMeta || [])[0]?.key;
-    const signals = [...new Set(byRSDC.map(d => {
-        const dc = dcLookup[d.dealer + '||' + d.category];
-        const cp = dc ? (dc[ck] || {}) : {};
-        const adj = (cp.stkQty||0) + (d[fk]?.qty||0);
-        return calcSignal({soQty: cp.soQty||0, stkQty: adj});
-    }))].filter(Boolean).sort();
-    oudMsSignal.setOptions(signals);
-}
-
-function renderTab7() {
-    const weeks = DATA.oudMeta || [];
-    if (weeks.length === 0) return;
-    const oudDC = DATA.oudDealerCategory || [];
-    const oudSkuData = DATA.oudSku || [];
-    // OUD Tracking always uses RAW data (no OUD adjustment) to avoid double-counting
-    const ck = mCur();
-    const rawDC = DATA.dealerCategory.filter(d =>
-        (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
-        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-        (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
-        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
-    );
-    const latest = weeks[weeks.length - 1];
-    const prev = weeks.length > 1 ? weeks[weeks.length - 2] : null;
-    const lk = latest.key, pk = prev ? prev.key : null;
-
-    // Build lookup: dealer+cat → raw stock/so data (never includes OUD)
-    const dcLookup = {};
-    rawDC.forEach(d => {
-        dcLookup[d.dealer + '||' + d.category] = d;
-    });
-
-    // Filter OUD data by current filters
-    const filteredOudDC = oudDC.filter(d =>
-        (FILTERS.region.length === 0 || FILTERS.region.includes(d.region)) &&
-        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-        (FILTERS.dealer.length === 0 || FILTERS.dealer.includes(d.dealer)) &&
-        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
-    );
-
-    // Aggregate KPIs
-    const fk = weeks[0].key;  // first week key (initial OUD = total pipeline)
-    let totalOnHand = 0, totalSO = 0, totalOudFirst = 0, totalOudLatest = 0, totalOudPrev = 0;
-    filteredOudDC.forEach(d => {
-        const dc = dcLookup[d.dealer + '||' + d.category];
-        if (dc) {
-            const cp = dc[ck] || {};
-            totalOnHand += (cp.stkQty || 0);
-            totalSO += (cp.soQty || 0);
-        }
-        totalOudFirst += (d[fk]?.qty || 0);
-        totalOudLatest += (d[lk]?.qty || 0);
-        if (pk) totalOudPrev += (d[pk]?.qty || 0);
-    });
-
-    const totalDelivered = totalOudFirst - totalOudLatest;  // 최초 OUD 대비 전체 배송량
-    const weekDelivered = pk ? totalOudPrev - totalOudLatest : 0;  // 직전 주 대비 배송량
-    const adjStock = totalOnHand + totalOudFirst;  // 총 파이프라인 = On-Hand + 최초 OUD
-    const updatedOnHand = totalOnHand + totalDelivered;  // 현재 On-Hand = Feb + 전체 배송량
-    const mosOnHand = totalSO > 0 ? totalOnHand / totalSO : null;
-    const mosAdj = totalSO > 0 ? adjStock / totalSO : null;
-    const mosUpdated = totalSO > 0 ? updatedOnHand / totalSO : null;
-
-    const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
-    set('k7-onhand', fmtNum(totalOnHand));
-    set('k7-oudLatest', fmtNum(totalOudLatest));
-    set('k7-oudChg', `Initial (${weeks[0].label}): ${fmtNum(totalOudFirst)}`);
-    set('k7-adjStock', fmtNum(adjStock));
-    set('k7-adjStockSub', `On-Hand ${fmtNum(totalOnHand)} + Initial OUD ${fmtNum(totalOudFirst)}`);
-    set('k7-delivered', fmtNum(totalDelivered));
-    set('k7-deliveredSub', `Initial OUD ${fmtNum(totalOudFirst)} → Latest ${fmtNum(totalOudLatest)}${pk ? ' (This week: '+fmtNum(weekDelivered)+')' : ''}`);
-    set('k7-mosOnhand', fmtRatio(mosOnHand));
-    set('k7-mosAdj', fmtRatio(mosAdj));
-    set('k7-updatedOnhand', fmtNum(updatedOnHand));
-    set('k7-updatedOnhandSub', `Feb Stock + ${fmtNum(totalDelivered)} delivered`);
-    set('k7-mosUpdated', fmtRatio(mosUpdated));
-
-    // Datalabel options for stacked bars (show value inside segment if > 0)
-    const dlOpts = { plugins:{ datalabels:{ color:'#fff', font:{size:10, weight:'bold'},
-        formatter: v => v > 0 ? fmtNum(v) : '', display: ctx => ctx.dataset.data[ctx.dataIndex] > 0 } } };
-    const dlOptsVal = { plugins:{ datalabels:{ color:'#fff', font:{size:10, weight:'bold'},
-        formatter: v => v > 0 ? fmtVal(v) : '', display: ctx => ctx.dataset.data[ctx.dataIndex] > 0 } } };
-
-    // Chart 7a: OUD Weekly Trend QTY (by category)
-    const catOudQtyMap = {}, catOudValMap = {};
-    filteredOudDC.forEach(d => {
-        if (!catOudQtyMap[d.category]) { catOudQtyMap[d.category] = weeks.map(() => 0); catOudValMap[d.category] = weeks.map(() => 0); }
-        weeks.forEach((w, i) => { catOudQtyMap[d.category][i] += (d[w.key]?.qty || 0); catOudValMap[d.category][i] += (d[w.key]?.val || 0); });
-    });
-    const catNames7 = Object.keys(catOudQtyMap).sort();
-    destroyChart('c7a');
-    window.charts.c7a = new Chart(document.getElementById('chart7a'), {
-        type: 'bar', plugins: [stackedTotalPlugin],
-        data: { labels: weeks.map(w => w.label), datasets: catNames7.map((cat, i) => ({
-            label: cat, data: catOudQtyMap[cat], backgroundColor: CAT_COLORS[i % CAT_COLORS.length], borderRadius: 4
-        })) },
-        options: { responsive:true, maintainAspectRatio:false, ...dlOpts,
-            scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} },
-            plugins:{...dlOpts.plugins, legend:{position:'bottom'}, stackedTotal:{enable:true}} }
-    });
-
-    // Chart 7b: Stock comparison by category QTY
-    const catStockMap = {};
-    filteredOudDC.forEach(d => {
-        const dc = dcLookup[d.dealer + '||' + d.category];
-        const cp = dc ? (dc[ck] || {}) : {};
-        const stk = cp.stkQty || 0; const stkV = cp.stkVal || 0;
-        const oudF = d[fk]?.qty || 0; const oudFV = d[fk]?.val || 0;
-        const oudL = d[lk]?.qty || 0; const oudLV = d[lk]?.val || 0;
-        if (!catStockMap[d.category]) catStockMap[d.category] = {onhand:0,onhandV:0,remainingOud:0,remainingOudV:0,delivered:0,deliveredV:0};
-        catStockMap[d.category].onhand += stk; catStockMap[d.category].onhandV += stkV;
-        catStockMap[d.category].remainingOud += oudL; catStockMap[d.category].remainingOudV += oudLV;
-        catStockMap[d.category].delivered += (oudF - oudL); catStockMap[d.category].deliveredV += (oudFV - oudLV);
-    });
-    const cats7 = Object.keys(catStockMap).sort();
-    destroyChart('c7b');
-    window.charts.c7b = new Chart(document.getElementById('chart7b'), {
-        type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
-            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhand), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'Remaining OUD', data: cats7.map(c=>catStockMap[c].remainingOud), backgroundColor:'#2E75B6', borderRadius:4 },
-            { label:'Delivered', data: cats7.map(c=>catStockMap[c].delivered), backgroundColor:'#5B9BD5', borderRadius:4 },
-        ] },
-        options:{ responsive:true, maintainAspectRatio:false, ...dlOpts,
-            scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} },
-            plugins:{...dlOpts.plugins, legend:{position:'bottom'}, stackedTotal:{enable:true}} }
-    });
-
-    // Chart 7c: OUD Weekly Trend VALUE
-    destroyChart('c7c');
-    window.charts.c7c = new Chart(document.getElementById('chart7c'), {
-        type: 'bar', plugins: [stackedTotalPlugin],
-        data: { labels: weeks.map(w => w.label), datasets: catNames7.map((cat, i) => ({
-            label: cat, data: catOudValMap[cat], backgroundColor: CAT_COLORS[i % CAT_COLORS.length], borderRadius: 4
-        })) },
-        options: { responsive:true, maintainAspectRatio:false, ...dlOptsVal,
-            scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtVal(v)}} },
-            plugins:{...dlOptsVal.plugins, legend:{position:'bottom'}, stackedTotal:{enable:true, formatter:v=>fmtVal(v)}} }
-    });
-
-    // Chart 7d: Stock comparison by category VALUE
-    destroyChart('c7d');
-    window.charts.c7d = new Chart(document.getElementById('chart7d'), {
-        type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
-            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhandV), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'Remaining OUD', data: cats7.map(c=>catStockMap[c].remainingOudV), backgroundColor:'#2E75B6', borderRadius:4 },
-            { label:'Delivered', data: cats7.map(c=>catStockMap[c].deliveredV), backgroundColor:'#5B9BD5', borderRadius:4 },
-        ] },
-        options:{ responsive:true, maintainAspectRatio:false, ...dlOptsVal,
-            scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtVal(v)}} },
-            plugins:{...dlOptsVal.plugins, legend:{position:'bottom'}, stackedTotal:{enable:true, formatter:v=>fmtVal(v)}} }
-    });
-
-    // Dealer OUD table (QTY + VALUE)
-    const allDealerRows = filteredOudDC.map(d => {
-        const dc = dcLookup[d.dealer + '||' + d.category];
-        const cp = dc ? (dc[ck] || {}) : {};
-        const stk = cp.stkQty || 0;
-        const so = cp.soQty || 0;
-        const oudF = d[fk]?.qty || 0;
-        const oudL = d[lk]?.qty || 0;
-        const oudP = pk ? (d[pk]?.qty || 0) : 0;
-        const del = oudF - oudL;
-        const adj = stk + oudF;
-        const mosOH = so > 0 ? stk / so : null;
-        const mosA = so > 0 ? adj / so : null;
-        const sigOH = calcSignal({soQty:so, stkQty:stk});
-        const sigA = calcSignal({soQty:so, stkQty:adj});
-        const sigChange = sigOH !== sigA ? `${sigOH} → ${sigA}` : '-';
-        // Value fields
-        const stkV = cp.stkVal || 0;
-        const soV = cp.soVal || 0;
-        const oudFV = d[fk]?.val || 0;
-        const oudLV = d[lk]?.val || 0;
-        const oudPV = pk ? (d[pk]?.val || 0) : 0;
-        const delV = oudFV - oudLV;
-        const adjV = stkV + oudFV;
-        return {d, stk, oudF, oudP, oudL, del, adj, so, mosOH, mosA, sigChange, sigOH, sigA,
-                stkV, soV, oudFV, oudLV, oudPV, delV, adjV};
-    }).filter(r => r.oudF > 0 || r.oudL > 0);
-
-    // Apply local OUD filters (multi-select + dealer search)
-    const lfSearch = (document.getElementById('oud-f-dealer')?.value || '').toLowerCase();
-    const dealerRows = allDealerRows.filter(r =>
-        (!lfSearch || r.d.dealer.toLowerCase().includes(lfSearch)) &&
-        (OUD_LOCAL.region.length === 0   || OUD_LOCAL.region.includes(r.d.region)) &&
-        (OUD_LOCAL.salesman.length === 0 || OUD_LOCAL.salesman.includes(r.d.salesman)) &&
-        (OUD_LOCAL.dealer.length === 0   || OUD_LOCAL.dealer.includes(r.d.dealer)) &&
-        (OUD_LOCAL.category.length === 0 || OUD_LOCAL.category.includes(r.d.category)) &&
-        (OUD_LOCAL.signal.length === 0   || OUD_LOCAL.signal.includes(r.sigA))
-    );
-
-    // Sort dealer rows
-    const dsc = tab7DealerSortCol, dasc = tab7DealerSortAsc;
-    dealerRows.sort((a,b) => {
-        let va, vb;
-        if (['dealer','region','category'].includes(dsc)) { va = a.d[dsc]||''; vb = b.d[dsc]||''; }
-        else { va = a[dsc]||0; vb = b[dsc]||0; }
-        const cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
-        return dasc ? cmp : -cmp;
-    });
-
-    set('oudDealerCount', `${dealerRows.length} / ${allDealerRows.length} dealer-category combinations with OUD`);
-    document.getElementById('tbl7oud').innerHTML = dealerRows.map(r => {
-        const sigBadge = r.sigChange !== '-'
-            ? `<span class="signal-badge signal-${r.sigOH}" style="font-size:9px">${r.sigOH}</span> → <span class="signal-badge signal-${r.sigA}" style="font-size:9px">${r.sigA}</span>`
-            : '-';
-        return `<tr>
-            <td class="txt">${r.d.dealer}</td><td class="ctr">${r.d.region}</td><td class="txt">${r.d.category}</td>
-            <td class="num">${fmtNum(r.stk)}</td>
-            ${pk ? '<td class="num">'+fmtNum(r.oudP)+'</td>' : ''}
-            <td class="num">${fmtNum(r.oudL)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtNum(r.del)+'</td>' : ''}
-            <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
-            <td class="num">${fmtNum(r.so)}</td>
-            <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
-            <td class="ctr">${sigBadge}</td></tr>`;
-    }).join('');
-
-    // QTY totals row
-    const tStk = dealerRows.reduce((s,r)=>s+r.stk,0), tOudF = dealerRows.reduce((s,r)=>s+r.oudF,0);
-    const tOudP = dealerRows.reduce((s,r)=>s+r.oudP,0), tOudL = dealerRows.reduce((s,r)=>s+r.oudL,0);
-    const tDel = dealerRows.reduce((s,r)=>s+r.del,0), tAdj = dealerRows.reduce((s,r)=>s+r.adj,0);
-    const tSo = dealerRows.reduce((s,r)=>s+r.so,0);
-    const tMosOH = tSo > 0 ? tStk/tSo : null, tMosA = tSo > 0 ? tAdj/tSo : null;
-    const totStyle = 'style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy)"';
-    document.getElementById('tbl7oud').innerHTML += `<tr>
-        <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
-        <td class="num" ${totStyle}>${fmtNum(tStk)}</td>
-        ${pk ? '<td class="num" '+totStyle+'>'+fmtNum(tOudP)+'</td>' : ''}
-        <td class="num" ${totStyle}>${fmtNum(tOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tDel)+'</td>' : ''}
-        <td class="num" ${totStyle}>${fmtNum(tAdj)}</td>
-        <td class="num" ${totStyle}>${fmtNum(tSo)}</td>
-        <td class="num" ${totStyle}>${fmtRatio(tMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tMosA)}</td>
-        <td ${totStyle}></td></tr>`;
-
-    // Dealer OUD Detail (VALUE) — same rows, same local filter, value columns
-    const valRows = [...dealerRows];
-    const vsc = tab7ValSortCol, vasc = tab7ValSortAsc;
-    valRows.sort((a,b) => {
-        let va, vb;
-        if (['dealer','region','category'].includes(vsc)) { va = a.d[vsc]||''; vb = b.d[vsc]||''; }
-        else { va = a[vsc]||0; vb = b[vsc]||0; }
-        const cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
-        return vasc ? cmp : -cmp;
-    });
-
-    set('oudDealerValCount', `${valRows.length} / ${allDealerRows.length} dealer-category combinations with OUD`);
-    document.getElementById('tbl7oudVal').innerHTML = valRows.map(r => {
-        const sigBadge = r.sigChange !== '-'
-            ? `<span class="signal-badge signal-${r.sigOH}" style="font-size:9px">${r.sigOH}</span> → <span class="signal-badge signal-${r.sigA}" style="font-size:9px">${r.sigA}</span>`
-            : '-';
-        return `<tr>
-            <td class="txt">${r.d.dealer}</td><td class="ctr">${r.d.region}</td><td class="txt">${r.d.category}</td>
-            <td class="num">${fmtVal(r.stkV)}</td>
-            ${pk ? '<td class="num">'+fmtVal(r.oudPV)+'</td>' : ''}
-            <td class="num">${fmtVal(r.oudLV)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtVal(r.delV)+'</td>' : ''}
-            <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
-            <td class="num">${fmtVal(r.soV)}</td>
-            <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
-            <td class="ctr">${sigBadge}</td></tr>`;
-    }).join('');
-
-    // VALUE totals row
-    const tvStk = valRows.reduce((s,r)=>s+r.stkV,0), tvOudF = valRows.reduce((s,r)=>s+r.oudFV,0);
-    const tvOudP = valRows.reduce((s,r)=>s+r.oudPV,0), tvOudL = valRows.reduce((s,r)=>s+r.oudLV,0);
-    const tvDel = valRows.reduce((s,r)=>s+r.delV,0), tvAdj = valRows.reduce((s,r)=>s+r.adjV,0);
-    const tvSo = valRows.reduce((s,r)=>s+r.soV,0);
-    const tvMosOH = tSo > 0 ? tStk/tSo : null, tvMosA = tSo > 0 ? tAdj/tSo : null;
-    document.getElementById('tbl7oudVal').innerHTML += `<tr>
-        <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
-        <td class="num" ${totStyle}>${fmtVal(tvStk)}</td>
-        ${pk ? '<td class="num" '+totStyle+'>'+fmtVal(tvOudP)+'</td>' : ''}
-        <td class="num" ${totStyle}>${fmtVal(tvOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tvDel)+'</td>' : ''}
-        <td class="num" ${totStyle}>${fmtVal(tvAdj)}</td>
-        <td class="num" ${totStyle}>${fmtVal(tvSo)}</td>
-        <td class="num" ${totStyle}>${fmtRatio(tvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tvMosA)}</td>
-        <td ${totStyle}></td></tr>`;
-
-    // ===== SKU OUD Detail =====
-    // Apply BOTH global + local filters BEFORE aggregation so totals match Dealer tables
-    const rawSkuFiltered = DATA.skuDetail.filter(d =>
-        (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
-        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-        (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
-        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category)) &&
-        (OUD_LOCAL.region.length === 0   || OUD_LOCAL.region.includes(d.region)) &&
-        (OUD_LOCAL.salesman.length === 0 || OUD_LOCAL.salesman.includes(d.salesman)) &&
-        (OUD_LOCAL.dealer.length === 0   || OUD_LOCAL.dealer.includes(d.dealer)) &&
-        (OUD_LOCAL.category.length === 0 || OUD_LOCAL.category.includes(d.category)) &&
-        (!lfSearch || d.sku.toLowerCase().includes(lfSearch) || d.dealer.toLowerCase().includes(lfSearch))
-    );
-
-    const oudSkuFiltered = oudSkuData.filter(d =>
-        (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
-        (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
-        (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
-        (FILTERS.category.length === 0 || FILTERS.category.includes(d.category)) &&
-        (OUD_LOCAL.region.length === 0   || OUD_LOCAL.region.includes(d.region)) &&
-        (OUD_LOCAL.salesman.length === 0 || OUD_LOCAL.salesman.includes(d.salesman)) &&
-        (OUD_LOCAL.dealer.length === 0   || OUD_LOCAL.dealer.includes(d.dealer)) &&
-        (OUD_LOCAL.category.length === 0 || OUD_LOCAL.category.includes(d.category))
-    );
-
-    // Aggregate OUD by SKU (after filters applied)
-    const skuOudMap = {};
-    oudSkuFiltered.forEach(d => {
-        if (!skuOudMap[d.sku]) skuOudMap[d.sku] = { sku:d.sku, className:d.className||'', category:d.category, region:d.region, salesman:d.salesman||'' };
-        weeks.forEach(w => {
-            if (!skuOudMap[d.sku][w.key]) skuOudMap[d.sku][w.key] = {qty:0, val:0};
-            skuOudMap[d.sku][w.key].qty += (d[w.key]?.qty || 0);
-            skuOudMap[d.sku][w.key].val += (d[w.key]?.val || 0);
-        });
-    });
-
-    // Aggregate raw stock/SO by SKU (after filters applied)
-    const skuStockMap = {};
-    rawSkuFiltered.forEach(d => {
-        if (!skuStockMap[d.sku]) skuStockMap[d.sku] = { sku:d.sku, className:d.className, category:d.category, region:d.region, salesman:d.salesman||'', stk:0, stkV:0, so:0, soV:0 };
-        const cp = d[ck] || {};
-        skuStockMap[d.sku].stk += (cp.stkQty||0);
-        skuStockMap[d.sku].stkV += (cp.stkVal||0);
-        skuStockMap[d.sku].so += (cp.soQty||0);
-        skuStockMap[d.sku].soV += (cp.soVal||0);
-    });
-
-    // Total SKU count (before signal filter)
-    const allSkuKeys = new Set([...Object.keys(skuOudMap), ...Object.keys(skuStockMap)]);
-    const allSkuRows = [...allSkuKeys].map(sku => {
-        const d = skuOudMap[sku] || { sku, className:'', category:'', region:'', salesman:'' };
-        const ss = skuStockMap[sku] || {stk:0,stkV:0,so:0,soV:0,className:'',category:''};
-        if (!d.className && ss.className) { d.className = ss.className; d.category = ss.category; }
-        const oudF = d[fk]?.qty || 0, oudL = d[lk]?.qty || 0, oudP = pk ? (d[pk]?.qty || 0) : 0;
-        const oudFV = d[fk]?.val || 0, oudLV = d[lk]?.val || 0, oudPV = pk ? (d[pk]?.val || 0) : 0;
-        const del = oudF - oudL, delV = oudFV - oudLV;
-        const adj = ss.stk + oudF, adjV = ss.stkV + oudFV;
-        const mosOH = ss.so > 0 ? ss.stk / ss.so : null;
-        const mosA = ss.so > 0 ? adj / ss.so : null;
-        const sigOH = calcSignal({soQty:ss.so, stkQty:ss.stk});
-        const sigA = calcSignal({soQty:ss.so, stkQty:adj});
-        const sigChange = sigOH !== sigA ? `${sigOH} → ${sigA}` : '-';
-        return { d, sku:d.sku||sku, className:d.className||ss.className||'', category:d.category||ss.category||'',
-                 stk:ss.stk, stkV:ss.stkV, so:ss.so, soV:ss.soV,
-                 oudF, oudL, oudP, del, adj, oudFV, oudLV, oudPV, delV, adjV, mosOH, mosA, sigOH, sigA, sigChange };
-    }).filter(r => r.oudF > 0 || r.oudL > 0);
-
-    // Apply signal filter only (other filters already applied above)
-    const skuRows = allSkuRows.filter(r =>
-        (OUD_LOCAL.signal.length === 0 || OUD_LOCAL.signal.includes(r.sigA))
-    );
-
-    // SKU QTY table
-    const ssc = tab7SkuSortCol, sasc = tab7SkuSortAsc;
-    skuRows.sort((a,b) => {
-        let va, vb;
-        if (['sku','className','category'].includes(ssc)) { va = a[ssc]||''; vb = b[ssc]||''; }
-        else { va = a[ssc]||0; vb = b[ssc]||0; }
-        const cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
-        return sasc ? cmp : -cmp;
-    });
-
-    set('oudSkuCount', `${skuRows.length} / ${allSkuRows.length} SKUs with OUD`);
-    document.getElementById('tbl7sku').innerHTML = skuRows.map(r => {
-        const sigBadge = r.sigChange !== '-'
-            ? `<span class="signal-badge signal-${r.sigOH}" style="font-size:9px">${r.sigOH}</span> → <span class="signal-badge signal-${r.sigA}" style="font-size:9px">${r.sigA}</span>`
-            : '-';
-        return `<tr>
-            <td class="txt">${r.sku}</td><td class="txt">${r.className}</td><td class="txt">${r.category}</td>
-            <td class="num">${fmtNum(r.stk)}</td>
-            ${pk ? '<td class="num">'+fmtNum(r.oudP)+'</td>' : ''}
-            <td class="num">${fmtNum(r.oudL)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtNum(r.del)+'</td>' : ''}
-            <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
-            <td class="num">${fmtNum(r.so)}</td>
-            <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
-            <td class="ctr">${sigBadge}</td></tr>`;
-    }).join('');
-
-    // SKU QTY totals
-    const tsStk=skuRows.reduce((s,r)=>s+r.stk,0), tsOudP=skuRows.reduce((s,r)=>s+r.oudP,0);
-    const tsOudL=skuRows.reduce((s,r)=>s+r.oudL,0), tsDel=skuRows.reduce((s,r)=>s+r.del,0);
-    const tsAdj=skuRows.reduce((s,r)=>s+r.adj,0), tsSo=skuRows.reduce((s,r)=>s+r.so,0);
-    const tsMosOH=tsSo>0?tsStk/tsSo:null, tsMosA=tsSo>0?tsAdj/tsSo:null;
-    document.getElementById('tbl7sku').innerHTML += `<tr>
-        <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
-        <td class="num" ${totStyle}>${fmtNum(tsStk)}</td>
-        ${pk?'<td class="num" '+totStyle+'>'+fmtNum(tsOudP)+'</td>':''}
-        <td class="num" ${totStyle}>${fmtNum(tsOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tsDel)+'</td>':''}
-        <td class="num" ${totStyle}>${fmtNum(tsAdj)}</td>
-        <td class="num" ${totStyle}>${fmtNum(tsSo)}</td>
-        <td class="num" ${totStyle}>${fmtRatio(tsMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsMosA)}</td>
-        <td ${totStyle}></td></tr>`;
-
-    // SKU VALUE table
-    const skuValRows = [...skuRows];
-    const svsc = tab7SkuValSortCol, svasc = tab7SkuValSortAsc;
-    skuValRows.sort((a,b) => {
-        let va, vb;
-        if (['sku','className','category'].includes(svsc)) { va = a[svsc]||''; vb = b[svsc]||''; }
-        else { va = a[svsc]||0; vb = b[svsc]||0; }
-        const cmp = typeof va === 'string' ? va.localeCompare(vb) : va - vb;
-        return svasc ? cmp : -cmp;
-    });
-
-    set('oudSkuValCount', `${skuValRows.length} / ${allSkuRows.length} SKUs with OUD`);
-    document.getElementById('tbl7skuVal').innerHTML = skuValRows.map(r => {
-        const sigBadge = r.sigChange !== '-'
-            ? `<span class="signal-badge signal-${r.sigOH}" style="font-size:9px">${r.sigOH}</span> → <span class="signal-badge signal-${r.sigA}" style="font-size:9px">${r.sigA}</span>`
-            : '-';
-        return `<tr>
-            <td class="txt">${r.sku}</td><td class="txt">${r.className}</td><td class="txt">${r.category}</td>
-            <td class="num">${fmtVal(r.stkV)}</td>
-            ${pk ? '<td class="num">'+fmtVal(r.oudPV)+'</td>' : ''}
-            <td class="num">${fmtVal(r.oudLV)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtVal(r.delV)+'</td>' : ''}
-            <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
-            <td class="num">${fmtVal(r.soV)}</td>
-            <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
-            <td class="ctr">${sigBadge}</td></tr>`;
-    }).join('');
-
-    // SKU VALUE totals
-    const tsvStk=skuValRows.reduce((s,r)=>s+r.stkV,0), tsvOudP=skuValRows.reduce((s,r)=>s+r.oudPV,0);
-    const tsvOudL=skuValRows.reduce((s,r)=>s+r.oudLV,0), tsvDel=skuValRows.reduce((s,r)=>s+r.delV,0);
-    const tsvAdj=skuValRows.reduce((s,r)=>s+r.adjV,0), tsvSo=skuValRows.reduce((s,r)=>s+r.soV,0);
-    const tsvMosOH=tsSo>0?tsStk/tsSo:null, tsvMosA=tsSo>0?tsAdj/tsSo:null;
-    document.getElementById('tbl7skuVal').innerHTML += `<tr>
-        <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
-        <td class="num" ${totStyle}>${fmtVal(tsvStk)}</td>
-        ${pk?'<td class="num" '+totStyle+'>'+fmtVal(tsvOudP)+'</td>':''}
-        <td class="num" ${totStyle}>${fmtVal(tsvOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tsvDel)+'</td>':''}
-        <td class="num" ${totStyle}>${fmtVal(tsvAdj)}</td>
-        <td class="num" ${totStyle}>${fmtVal(tsvSo)}</td>
-        <td class="num" ${totStyle}>${fmtRatio(tsvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsvMosA)}</td>
-        <td ${totStyle}></td></tr>`;
-}
-
-/* =========================================================
-   INIT
-   ========================================================= */
-buildGlobalFilters();
-switchTab(0);
-</script>
-</body>
-</html>
