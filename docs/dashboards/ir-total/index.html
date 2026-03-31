@@ -44175,30 +44175,28 @@ function renderCrossVerification() {
     });
     const execWithOud = execOnHand + execOudTotal;
 
-    // --- OUD Tracking perspective (only OUD dealers) ---
+    // --- OUD Tracking perspective (개선방안 1번: On-Hand = ALL dealerCategory) ---
     const oudFiltered = oudDC.filter(d =>
         (FILTERS.region.length === 0   || FILTERS.region.includes(d.region)) &&
         (FILTERS.salesman.length === 0 || FILTERS.salesman.includes(d.salesman)) &&
         (FILTERS.dealer.length === 0   || FILTERS.dealer.includes(d.dealer)) &&
         (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
     );
-    const dcLookupXV = {};
-    execFiltered.forEach(d => { dcLookupXV[d.dealer + '||' + d.category] = d; });
 
+    // OUD Tracking On-Hand now uses ALL dealerCategory (same as Executive Summary)
     let oudOnHand = 0, oudOnHandVal = 0, oudOudFirst = 0, oudOudFirstVal = 0;
+    execFiltered.forEach(d => {
+        const p = d[ck] || {};
+        oudOnHand += (p.stkQty || 0);
+        oudOnHandVal += (p.stkVal || 0);
+    });
     oudFiltered.forEach(d => {
-        const dc = dcLookupXV[d.dealer + '||' + d.category];
-        if (dc) {
-            const p = dc[ck] || {};
-            oudOnHand += (p.stkQty || 0);
-            oudOnHandVal += (p.stkVal || 0);
-        }
         oudOudFirst += (d[fk]?.qty || 0);
         oudOudFirstVal += (d[fk]?.val || 0);
     });
     const oudAdjStock = oudOnHand + oudOudFirst;
 
-    // --- Compute differences ---
+    // --- Compute differences (should now be 0 for On-Hand) ---
     const onHandDiff = execOnHand - oudOnHand;
     const withOudDiff = execWithOud - oudAdjStock;
     const oudAmtDiff = execOudTotal - oudOudFirst;
@@ -44208,18 +44206,8 @@ function renderCrossVerification() {
     const oudDealerSet = new Set(oudFiltered.map(d => d.dealer));
     const nonOudDealers = [...execDealerSet].filter(d => !oudDealerSet.has(d));
 
-    // Non-OUD dealers stock
-    let nonOudStock = 0, nonOudStockVal = 0;
-    execFiltered.forEach(d => {
-        if (!oudDealerSet.has(d.dealer)) {
-            const p = d[ck] || {};
-            nonOudStock += (p.stkQty || 0);
-            nonOudStockVal += (p.stkVal || 0);
-        }
-    });
-
-    // Verify: onHandDiff should equal nonOudStock (+ any OUD dealers with category mismatch)
-    const isReconciled = Math.abs(onHandDiff - nonOudStock) < 2;  // tolerance for rounding
+    // On-Hand is now identical (both use all dealerCategory)
+    const isReconciled = Math.abs(onHandDiff) < 2;
     const isOudReconciled = Math.abs(oudAmtDiff) < 2;
 
     const badge = (ok) => ok
@@ -44231,25 +44219,25 @@ function renderCrossVerification() {
     const xvStatus = document.getElementById('xv-status');
     if (xvStatus) {
         xvStatus.innerHTML = allOk
-            ? '<div style="padding:12px 16px;background:#E6F4EA;border-left:4px solid #1A7A3C;border-radius:4px;font-size:13px;font-weight:600;color:#1A7A3C;">&#10003; Cross-Verification PASSED &mdash; All differences are explained by scope (non-OUD dealers).</div>'
+            ? '<div style="padding:12px 16px;background:#E6F4EA;border-left:4px solid #1A7A3C;border-radius:4px;font-size:13px;font-weight:600;color:#1A7A3C;">&#10003; Cross-Verification PASSED &mdash; Executive Summary and OUD Tracking On-Hand Stock are now aligned (same scope).</div>'
             : '<div style="padding:12px 16px;background:#FDE7E9;border-left:4px solid #9C0006;border-radius:4px;font-size:13px;font-weight:600;color:#9C0006;">&#10007; Cross-Verification FAILED &mdash; Unexplained discrepancies found. Check data sources.</div>';
     }
 
     const rows = [
         { metric:'<b>On-Hand Stock (QTY)</b>', exec:execOnHand, oud:oudOnHand, diff:onHandDiff,
-          explain:`Non-OUD dealers: ${fmtNum(nonOudStock)} QTY (${nonOudDealers.length} dealers)`,
+          explain: isReconciled ? 'Same scope (all dealerCategory)' : 'Unexpected mismatch',
           ok: isReconciled },
         { metric:'<b>OUD Amount (1st week, QTY)</b>', exec:execOudTotal, oud:oudOudFirst, diff:oudAmtDiff,
           explain: isOudReconciled ? 'Same OUD source data used' : 'Category/dealer mapping mismatch',
           ok: isOudReconciled },
         { metric:'<b>With OUD / Adjusted Stock (QTY)</b>', exec:execWithOud, oud:oudAdjStock, diff:withOudDiff,
-          explain:`On-Hand diff (${fmtNum(onHandDiff)}) + OUD diff (${fmtNum(oudAmtDiff)})`,
-          ok: Math.abs(withOudDiff - onHandDiff - oudAmtDiff) < 2 },
-        { metric:'Scope: Dealers', exec:execDealerSet.size, oud:oudDealerSet.size, diff:nonOudDealers.length,
-          explain:`${nonOudDealers.length} dealers have no OUD entries`,
+          explain: Math.abs(withOudDiff) < 2 ? 'Fully aligned' : `On-Hand diff (${fmtNum(onHandDiff)}) + OUD diff (${fmtNum(oudAmtDiff)})`,
+          ok: Math.abs(withOudDiff) < 2 },
+        { metric:'Scope: Dealers', exec:execDealerSet.size, oud:`${oudDealerSet.size} (OUD) / ${execDealerSet.size} (All)`, diff:nonOudDealers.length,
+          explain:`${nonOudDealers.length} dealers have no OUD entries (included in On-Hand)`,
           ok: true },
         { metric:'Scope: Dealer-Categories', exec:execFiltered.length, oud:oudFiltered.length, diff:execFiltered.length - oudFiltered.length,
-          explain:'OUD Tracking only shows dealer-categories with OUD data',
+          explain:'OUD detail table shows OUD entries only; On-Hand uses all dealer-categories',
           ok: true },
     ];
 
@@ -44544,16 +44532,15 @@ function renderTab7() {
         (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
     );
 
-    // Aggregate KPIs
+    // Aggregate KPIs — On-Hand from ALL dealerCategory (개선방안 1번: Executive Summary와 동일 범위)
     const fk = weeks[0].key;  // first week key (initial OUD = total pipeline)
     let totalOnHand = 0, totalSO = 0, totalOudFirst = 0, totalOudLatest = 0, totalOudPrev = 0;
+    rawDC.forEach(d => {
+        const cp = d[ck] || {};
+        totalOnHand += (cp.stkQty || 0);
+        totalSO += (cp.soQty || 0);
+    });
     filteredOudDC.forEach(d => {
-        const dc = dcLookup[d.dealer + '||' + d.category];
-        if (dc) {
-            const cp = dc[ck] || {};
-            totalOnHand += (cp.stkQty || 0);
-            totalSO += (cp.soQty || 0);
-        }
         totalOudFirst += (d[fk]?.qty || 0);
         totalOudLatest += (d[lk]?.qty || 0);
         if (pk) totalOudPrev += (d[pk]?.qty || 0);
