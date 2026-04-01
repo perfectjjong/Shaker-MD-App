@@ -79,6 +79,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
   <button class="tab-btn active" data-tab="overview">Overview</button>
   <button class="tab-btn" data-tab="trend">Weekly Trend</button>
   <button class="tab-btn" data-tab="ranking">Model Ranking</button>
+  <button class="tab-btn" data-tab="wos">WOS (Stock)</button>
 </nav>
 </div>
 </div>
@@ -214,6 +215,24 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
     <div class="tbl-wrap" id="rank_tbl"></div>
   </div>
 </section>
+<section id="tab-wos" style="display:none">
+
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
+<div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
+<div class="card"><h3>Stock Weekly Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
+</div></div>
+
+</section>
+
 
 </main>
 
@@ -499,5 +518,168 @@ function downloadExcel(){
   var title=document.title.replace(/[^a-zA-Z0-9\s-]/g,'').trim().replace(/\s+/g,'_');
   XLSX.writeFile(wb,title+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
+
+
+// ===== WOS (STOCK) TAB DATA & RENDERING =====
+const _WOS_STOCK_DATA = {"2025": {"wos_thresholds": {}, "weeks": ["W20", "W21", "W22", "W23", "W24", "W25", "W26", "W27", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51", "W52"], "total_by_week": {"W20": 186, "W21": 182, "W22": 176, "W23": 176, "W24": 176, "W25": 176, "W26": 176, "W27": 176, "W28": 173, "W29": 161, "W30": 159, "W31": 578, "W32": 565, "W33": 550, "W34": 539, "W35": 572, "W36": 557, "W37": 538, "W38": 525, "W39": 493, "W40": 485, "W41": 479, "W42": 474, "W43": 474, "W44": 470, "W45": 466, "W46": 462, "W47": 462, "W48": 460, "W49": 454, "W50": 440, "W51": 438, "W52": 433}, "by_category": {"Floor Standing AC": {"W20": 186, "W21": 182, "W22": 176, "W23": 176, "W24": 176, "W25": 176, "W26": 176, "W27": 176, "W28": 173, "W29": 161, "W30": 159, "W31": 107, "W32": 104, "W33": 91, "W34": 86, "W35": 96, "W36": 89, "W37": 85, "W38": 79, "W39": 64, "W40": 59, "W41": 58, "W42": 53, "W43": 53, "W44": 53, "W45": 53, "W46": 53, "W47": 53, "W48": 51, "W49": 49, "W50": 44, "W51": 44, "W52": 44}, "Split AC": {"W31": 471, "W32": 461, "W33": 459, "W34": 453, "W35": 476, "W36": 468, "W37": 453, "W38": 446, "W39": 429, "W40": 426, "W41": 421, "W42": 421, "W43": 421, "W44": 417, "W45": 413, "W46": 409, "W47": 409, "W48": 409, "W49": 405, "W50": 396, "W51": 394, "W52": 389}}, "wos_by_week": {"W20": {"wos_m8": null, "wos_p8": 126.4, "signal_m8": "INACTIVE", "signal_p8": "OVERSTOCK"}, "W21": {"wos_m8": 104.2, "wos_p8": 69.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W22": {"wos_m8": 80.0, "wos_p8": 158.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W23": {"wos_m8": 62.9, "wos_p8": 203.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W24": {"wos_m8": 62.9, "wos_p8": 118.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W25": {"wos_m8": 62.9, "wos_p8": 62.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W26": {"wos_m8": 62.9, "wos_p8": 56.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W27": {"wos_m8": 62.9, "wos_p8": 56.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W28": {"wos_m8": 61.5, "wos_p8": 40.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W29": {"wos_m8": 108.2, "wos_p8": 59.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W30": {"wos_m8": 60.7, "wos_p8": 45.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W31": {"wos_m8": 33.2, "wos_p8": 153.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W32": {"wos_m8": 34.4, "wos_p8": 170.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W33": {"wos_m8": 44.3, "wos_p8": 174.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W34": {"wos_m8": 38.2, "wos_p8": 178.3, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W35": {"wos_m8": 50.8, "wos_p8": 199.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W36": {"wos_m8": 100.9, "wos_p8": 175.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W37": {"wos_m8": 70.0, "wos_p8": 112.3, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W38": {"wos_m8": 40.7, "wos_p8": 111.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W39": {"wos_m8": 38.8, "wos_p8": 241.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W40": {"wos_m8": 172.1, "wos_p8": 229.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W41": {"wos_m8": 189.6, "wos_p8": 118.6, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W42": {"wos_m8": 191.7, "wos_p8": 243.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W43": {"wos_m8": 192.2, "wos_p8": 178.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W44": {"wos_m8": 223.7, "wos_p8": 209.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W45": {"wos_m8": 190.7, "wos_p8": 214.3, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W46": {"wos_m8": 115.1, "wos_p8": 186.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W47": {"wos_m8": 112.7, "wos_p8": 155.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W48": {"wos_m8": 246.6, "wos_p8": 124.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W49": {"wos_m8": 225.7, "wos_p8": 42.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W50": {"wos_m8": 115.2, "wos_p8": 43.6, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W51": {"wos_m8": 245.0, "wos_p8": 0.4, "signal_m8": "OVERSTOCK", "signal_p8": "OPPORTUNITY"}, "W52": {"wos_m8": 180.1, "wos_p8": null, "signal_m8": "OVERSTOCK", "signal_p8": "INACTIVE"}}, "models": [{"model": "APNQ55GT3M", "category": "Floor Standing AC", "type": "CO", "stock": {"W20": 56, "W21": 56, "W22": 50, "W23": 50, "W24": 50, "W25": 50, "W26": 50, "W27": 50, "W28": 50, "W29": 50, "W30": 49, "W31": 46, "W32": 44, "W33": 43, "W34": 43, "W35": 48, "W36": 42, "W37": 38, "W38": 38, "W39": 34, "W40": 29, "W41": 28, "W42": 23, "W43": 23, "W44": 23, "W45": 23, "W46": 23, "W47": 23, "W48": 21, "W49": 20, "W50": 15, "W51": 15, "W52": 15}, "wos": {"W20": {"m8": null, "p8": 74.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W21": {"m8": 112.0, "p8": 74.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W22": {"m8": 100.0, "p8": 400.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W23": {"m8": 40.0, "p8": 400.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W24": {"m8": 40.0, "p8": 133.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W25": {"m8": 40.0, "p8": 100.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W26": {"m8": 40.0, "p8": 100.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W27": {"m8": 40.0, "p8": 100.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W28": {"m8": 40.0, "p8": 40.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W29": {"m8": 66.7, "p8": 28.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W30": {"m8": 65.3, "p8": 30.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W31": {"m8": 368.0, "p8": 21.6, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W32": {"m8": 352.0, "p8": 17.6, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W33": {"m8": 114.7, "p8": 17.2, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W34": {"m8": 86.0, "p8": 13.8, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W35": {"m8": 96.0, "p8": 15.4, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W36": {"m8": 84.0, "p8": 17.7, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W37": {"m8": 30.4, "p8": 20.3, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W38": {"m8": 21.7, "p8": 20.3, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W39": {"m8": 20.9, "p8": 24.7, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W40": {"m8": 13.6, "p8": 29.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W41": {"m8": 11.2, "p8": 28.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W42": {"m8": 9.2, "p8": 23.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W43": {"m8": 7.4, "p8": 23.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W44": {"m8": 7.4, "p8": 23.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W45": {"m8": 9.7, "p8": 20.1, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W46": {"m8": 12.3, "p8": 17.2, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W47": {"m8": 12.3, "p8": 14.4, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W48": {"m8": 15.3, "p8": 14.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W49": {"m8": 20.0, "p8": 12.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W50": {"m8": 15.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W51": {"m8": 15.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W52": {"m8": 15.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}}}, {"model": "APNW55GT3M", "category": "Floor Standing AC", "type": "HP", "stock": {"W20": 130, "W21": 126, "W22": 126, "W23": 126, "W24": 126, "W25": 126, "W26": 126, "W27": 126, "W28": 123, "W29": 111, "W30": 110, "W31": 61, "W32": 60, "W33": 48, "W34": 43, "W35": 48, "W36": 47, "W37": 47, "W38": 41, "W39": 30, "W40": 30, "W41": 30, "W42": 30, "W43": 30, "W44": 30, "W45": 30, "W46": 30, "W47": 30, "W48": 30, "W49": 29, "W50": 29, "W51": 29, "W52": 29}, "wos": {"W20": {"m8": null, "p8": 148.6, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W21": {"m8": 100.8, "p8": 67.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W22": {"m8": 72.0, "p8": 63.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W23": {"m8": 72.0, "p8": 126.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W24": {"m8": 72.0, "p8": 112.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W25": {"m8": 72.0, "p8": 48.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W26": {"m8": 72.0, "p8": 38.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W27": {"m8": 72.0, "p8": 38.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W28": {"m8": 70.3, "p8": 41.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W29": {"m8": 126.9, "p8": 74.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W30": {"m8": 58.7, "p8": 51.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W31": {"m8": 30.5, "p8": 13.6, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W32": {"m8": 60.0, "p8": 13.7, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W33": {"m8": 42.7, "p8": 16.7, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W34": {"m8": 16.4, "p8": 19.1, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W35": {"m8": 14.8, "p8": 21.3, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W36": {"m8": 14.5, "p8": 22.1, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W37": {"m8": 15.7, "p8": 22.1, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W38": {"m8": 27.3, "p8": 29.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 14.1, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W40": {"m8": 6.7, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W41": {"m8": 6.9, "p8": 240.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W42": {"m8": 10.4, "p8": 240.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W43": {"m8": 13.3, "p8": 240.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W44": {"m8": 13.3, "p8": 240.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W45": {"m8": 14.1, "p8": 210.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W46": {"m8": 14.1, "p8": 180.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W47": {"m8": 21.8, "p8": 150.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W48": {"m8": null, "p8": 120.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W49": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W50": {"m8": 232.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W51": {"m8": 232.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W52": {"m8": 232.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LA182C", "category": "Split AC", "type": "CO", "stock": {"W31": 85, "W32": 85, "W33": 85, "W34": 85, "W35": 88, "W36": 88, "W37": 86, "W38": 86, "W39": 86, "W40": 86, "W41": 86, "W42": 86, "W43": 86, "W44": 86, "W45": 86, "W46": 86, "W47": 86, "W48": 86, "W49": 86, "W50": 85, "W51": 84, "W52": 84}, "wos": {"W31": {"m8": null, "p8": 170.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": null, "p8": 170.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W33": {"m8": null, "p8": 170.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W34": {"m8": null, "p8": 170.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W35": {"m8": null, "p8": 352.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W36": {"m8": 352.0, "p8": 352.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 344.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W38": {"m8": 172.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W39": {"m8": 172.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W40": {"m8": 172.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W41": {"m8": 172.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W42": {"m8": 172.0, "p8": 688.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 172.0, "p8": 344.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 344.0, "p8": 344.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 344.0, "p8": 301.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": null, "p8": 258.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W47": {"m8": null, "p8": 215.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W48": {"m8": null, "p8": 172.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W49": {"m8": null, "p8": 129.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W50": {"m8": null, "p8": 170.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W51": {"m8": 672.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W52": {"m8": 336.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LA182H", "category": "Split AC", "type": "HP", "stock": {"W31": 160, "W32": 160, "W33": 160, "W34": 160, "W35": 160, "W36": 160, "W37": 160, "W38": 160, "W39": 157, "W40": 157, "W41": 157, "W42": 157, "W43": 157, "W44": 156, "W45": 155, "W46": 155, "W47": 155, "W48": 155, "W49": 152, "W50": 152, "W51": 152, "W52": 152}, "wos": {"W31": {"m8": null, "p8": 426.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": null, "p8": 426.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W33": {"m8": null, "p8": 426.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W34": {"m8": null, "p8": 426.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W35": {"m8": null, "p8": 426.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W36": {"m8": null, "p8": 320.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W37": {"m8": null, "p8": 256.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W38": {"m8": null, "p8": 256.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W39": {"m8": null, "p8": 628.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W40": {"m8": 418.7, "p8": 628.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 418.7, "p8": 251.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 418.7, "p8": 251.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 418.7, "p8": 251.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 416.0, "p8": 312.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 310.0, "p8": 361.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 248.0, "p8": 310.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 248.0, "p8": 258.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 620.0, "p8": 206.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 608.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W50": {"m8": 243.2, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W51": {"m8": 243.2, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W52": {"m8": 243.2, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LA242C", "category": "Split AC", "type": "CO", "stock": {"W31": 20, "W32": 20, "W33": 20, "W34": 16, "W35": 26, "W36": 26, "W37": 26, "W38": 26, "W39": 21, "W40": 21, "W41": 16, "W42": 16, "W43": 16, "W44": 16, "W45": 16, "W46": 16, "W47": 16, "W48": 16, "W49": 16, "W50": 15, "W51": 15, "W52": 15}, "wos": {"W31": {"m8": null, "p8": 17.8, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W32": {"m8": null, "p8": 17.8, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W33": {"m8": null, "p8": 11.4, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W34": {"m8": null, "p8": 12.8, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W35": {"m8": 52.0, "p8": 20.8, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W36": {"m8": 52.0, "p8": 20.8, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W37": {"m8": 52.0, "p8": 20.8, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W38": {"m8": 52.0, "p8": 20.8, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W39": {"m8": 42.0, "p8": 33.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 18.7, "p8": 33.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W41": {"m8": 14.2, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W42": {"m8": 9.1, "p8": 128.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W43": {"m8": 12.8, "p8": 128.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W44": {"m8": 12.8, "p8": 128.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W45": {"m8": 12.8, "p8": 112.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W46": {"m8": 12.8, "p8": 96.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W47": {"m8": 12.8, "p8": 80.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W48": {"m8": 25.6, "p8": 64.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 25.6, "p8": 48.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W51": {"m8": 120.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W52": {"m8": 120.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LA242H", "category": "Split AC", "type": "HP", "stock": {"W31": 80, "W32": 72, "W33": 70, "W34": 68, "W35": 64, "W36": 62, "W37": 59, "W38": 55, "W39": 51, "W40": 51, "W41": 51, "W42": 51, "W43": 51, "W44": 48, "W45": 48, "W46": 48, "W47": 48, "W48": 48, "W49": 47, "W50": 47, "W51": 46, "W52": 46}, "wos": {"W31": {"m8": null, "p8": 23.7, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W32": {"m8": null, "p8": 30.3, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W33": {"m8": 70.0, "p8": 32.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 54.4, "p8": 36.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 42.7, "p8": 39.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 35.4, "p8": 35.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 29.5, "p8": 42.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 23.2, "p8": 62.9, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W39": {"m8": 17.7, "p8": 136.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W40": {"m8": 15.1, "p8": 136.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W41": {"m8": 21.5, "p8": 102.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W42": {"m8": 24.0, "p8": 102.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W43": {"m8": 27.2, "p8": 81.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 29.5, "p8": 192.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 27.4, "p8": 168.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 34.9, "p8": 144.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 54.9, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 128.0, "p8": 96.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 125.3, "p8": 141.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 94.0, "p8": 94.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 92.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W52": {"m8": 73.6, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LA302C", "category": "Split AC", "type": "CO", "stock": {"W31": 9, "W32": 9, "W33": 9, "W34": 9, "W35": 9, "W36": 9, "W37": 9, "W38": 9, "W39": 9, "W40": 9, "W41": 9, "W42": 9, "W43": 9, "W44": 9, "W45": 9, "W46": 9, "W47": 9, "W48": 9, "W49": 9, "W50": 9, "W51": 9, "W52": 9}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W33": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W34": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W35": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W36": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W37": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W38": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W39": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W40": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W41": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W42": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W43": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W44": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W45": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W46": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W47": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W48": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W49": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W50": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W51": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W52": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "LA302H", "category": "Split AC", "type": "HP", "stock": {"W31": 11, "W32": 11, "W33": 11, "W34": 11, "W35": 11, "W36": 11, "W37": 11, "W38": 11, "W39": 11, "W40": 11, "W41": 11, "W42": 11, "W43": 11, "W44": 11, "W45": 11, "W46": 11, "W47": 11, "W48": 11, "W49": 11, "W50": 11, "W51": 11, "W52": 11}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W33": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W34": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W35": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W36": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W37": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W38": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W39": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W40": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W41": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W42": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W43": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W44": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W45": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W46": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W47": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W48": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W49": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W50": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W51": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W52": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "ND182C", "category": "Split AC", "type": "CO", "stock": {"W31": 31, "W32": 31, "W33": 31, "W34": 31, "W35": 31, "W36": 31, "W37": 31, "W38": 31, "W39": 31, "W40": 30, "W41": 30, "W42": 30, "W43": 30, "W44": 30, "W45": 30, "W46": 30, "W47": 30, "W48": 30, "W49": 30, "W50": 30, "W51": 30, "W52": 30}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W33": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W34": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W35": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W36": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W37": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W38": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W39": {"m8": null, "p8": 248.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W40": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W41": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W42": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W43": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W44": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W45": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W46": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W47": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W48": {"m8": 240.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W49": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W50": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W51": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W52": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "ND182H", "category": "Split AC", "type": "HP", "stock": {"W31": 40, "W32": 39, "W33": 39, "W34": 39, "W35": 49, "W36": 44, "W37": 39, "W38": 38, "W39": 37, "W40": 37, "W41": 37, "W42": 37, "W43": 37, "W44": 37, "W45": 37, "W46": 34, "W47": 34, "W48": 34, "W49": 34, "W50": 28, "W51": 28, "W52": 23}, "wos": {"W31": {"m8": null, "p8": 24.6, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": null, "p8": 26.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W33": {"m8": 312.0, "p8": 26.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 312.0, "p8": 26.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 392.0, "p8": 32.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 352.0, "p8": 50.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 52.0, "p8": 156.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 27.6, "p8": 76.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 24.7, "p8": 98.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 22.8, "p8": 98.7, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W41": {"m8": 24.7, "p8": 98.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 24.7, "p8": 32.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 24.7, "p8": 32.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 24.7, "p8": 21.1, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W45": {"m8": 42.3, "p8": 18.5, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W46": {"m8": 136.0, "p8": 18.5, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W47": {"m8": 68.0, "p8": 15.5, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W48": {"m8": 90.7, "p8": 12.4, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W49": {"m8": 90.7, "p8": 9.3, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W50": {"m8": 74.7, "p8": 11.2, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W51": {"m8": 24.9, "p8": 5.6, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W52": {"m8": 20.4, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}}}, {"model": "ND242C", "category": "Split AC", "type": "CO", "stock": {"W31": 15, "W32": 15, "W33": 15, "W34": 15, "W35": 15, "W36": 14, "W37": 14, "W38": 12, "W39": 8, "W40": 8, "W41": 8, "W42": 8, "W43": 8, "W44": 8, "W45": 8, "W46": 8, "W47": 8, "W48": 8, "W49": 8, "W50": 8, "W51": 8, "W52": 8}, "wos": {"W31": {"m8": null, "p8": 15.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W32": {"m8": null, "p8": 15.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W33": {"m8": null, "p8": 15.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W34": {"m8": null, "p8": 15.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W35": {"m8": null, "p8": 17.1, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W36": {"m8": 112.0, "p8": 18.7, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W37": {"m8": 56.0, "p8": 18.7, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W38": {"m8": 48.0, "p8": 24.0, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W39": {"m8": 16.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W40": {"m8": 8.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W41": {"m8": 8.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W42": {"m8": 8.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W43": {"m8": 8.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W44": {"m8": 9.1, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W45": {"m8": 10.7, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W46": {"m8": 10.7, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W47": {"m8": 16.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W48": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W49": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W50": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W51": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W52": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "ND242H", "category": "Split AC", "type": "HP", "stock": {"W31": 20, "W32": 19, "W33": 19, "W34": 19, "W35": 23, "W36": 23, "W37": 18, "W38": 18, "W39": 18, "W40": 16, "W41": 16, "W42": 16, "W43": 16, "W44": 16, "W45": 13, "W46": 12, "W47": 12, "W48": 12, "W49": 12, "W50": 11, "W51": 11, "W52": 11}, "wos": {"W31": {"m8": 20.0, "p8": 22.9, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W32": {"m8": 19.0, "p8": 19.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W33": {"m8": 16.9, "p8": 19.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W34": {"m8": 16.9, "p8": 19.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W35": {"m8": 20.4, "p8": 26.3, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W36": {"m8": 18.4, "p8": 26.3, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W37": {"m8": 14.4, "p8": 28.8, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W38": {"m8": 20.6, "p8": 24.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W39": {"m8": 20.6, "p8": 24.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W40": {"m8": 18.3, "p8": 32.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W41": {"m8": 16.0, "p8": 32.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W42": {"m8": 16.0, "p8": 25.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W43": {"m8": 16.0, "p8": 25.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W44": {"m8": 18.3, "p8": 25.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W45": {"m8": 14.9, "p8": 45.5, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W46": {"m8": 19.2, "p8": 72.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W47": {"m8": 16.0, "p8": 60.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W48": {"m8": 16.0, "p8": 48.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W49": {"m8": 24.0, "p8": 36.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W50": {"m8": 22.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W51": {"m8": 17.6, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W52": {"m8": 17.6, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}}}]}};
+const _WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
+const _WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
+
+function _getWosYear(){
+  // Support year switching: check _currentYear, currentYear, or default
+  if(typeof _currentYear!=='undefined') return _currentYear;
+  if(typeof currentYear!=='undefined') return currentYear;
+  return '2026';
+}
+
+function updateWOS(){
+  const yr=_getWosYear();
+  const sd=_WOS_STOCK_DATA[yr];
+  const kpiEl=document.getElementById('wosKpi');
+  if(!kpiEl) return;
+  if(!sd||!sd.models||sd.models.length===0){
+    kpiEl.innerHTML='<div style="grid-column:1/-1;padding:20px;text-align:center;color:#64748b">No stock/WOS data for '+yr+'</div>';
+    ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{const c=document.getElementById(id);if(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}});
+    document.getElementById('tblWosDetail').innerHTML='';
+    document.getElementById('wosDetailCount').textContent='';
+    return;
+  }
+
+  const allWeeks=sd.weeks||[];
+  const latestW=allWeeks.length?allWeeks[allWeeks.length-1]:'';
+  const models=sd.models;
+
+  // Aggregate
+  let totalStock=0;
+  const stockByCat={};
+  const signalCounts={OPPORTUNITY:0,HEALTHY:0,OVERSTOCK:0,INACTIVE:0};
+  models.forEach(m=>{
+    const s=(m.stock||{})[latestW]||0;
+    totalStock+=s;
+    const cat=m.category||'Other';
+    stockByCat[cat]=(stockByCat[cat]||0)+s;
+    const wos=(m.wos||{})[latestW];
+    if(wos){
+      const sig=wos.sm8||'INACTIVE';
+      signalCounts[sig]=(signalCounts[sig]||0)+1;
+    }else{
+      signalCounts.INACTIVE++;
+    }
+  });
+
+  // Overall WOS
+  const wbw=sd.wos_by_week||{};
+  const latestWos=wbw[latestW]||{};
+  const wosM8=latestWos.wos_m8;
+  const wosP8=latestWos.wos_p8;
+  const sigM8=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+  const sigP8=wosP8!==null&&wosP8!==undefined?(wosP8<=12?'OPPORTUNITY':wosP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+
+  // KPI
+  const kpiStyle='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
+  kpiEl.innerHTML=[
+    {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:models.length+' models',b:'#2563eb'},
+    {l:'WOS-8 (Past 8wk)',v:wosM8!==null&&wosM8!==undefined?wosM8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigM8],b:_WOS_COLORS[sigM8]},
+    {l:'WOS+8 (Next 8wk)',v:wosP8!==null&&wosP8!==undefined?wosP8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigP8],b:_WOS_COLORS[sigP8]},
+    {l:'Signal Summary',v:signalCounts.OPPORTUNITY+'/'+signalCounts.HEALTHY+'/'+signalCounts.OVERSTOCK,s:'Need/Optimal/Excess',b:'#8b5cf6'},
+  ].map(k=>'<div style="'+kpiStyle+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
+
+  // Charts (using Chart.js if available)
+  if(typeof Chart==='undefined') return;
+
+  // Destroy existing WOS charts
+  ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{
+    if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
+  });
+
+  const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1'];
+  const DL_NONE={display:false};
+  const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+  const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
+
+  function _wosMk(id,type,data,opts={}){
+    const ctx=document.getElementById(id);
+    if(!ctx)return null;
+    const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:opts.legend!==false,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
+    if(opts.scales)defaults.scales=opts.scales;
+    if(opts.indexAxis)defaults.indexAxis=opts.indexAxis;
+    if(opts.plugins)Object.assign(defaults.plugins,opts.plugins);
+    const chart=new Chart(ctx,{type,data,options:defaults});
+    window['_wosChart_'+id]=chart;
+    return chart;
+  }
+
+  // Stock by Category
+  const catLabels=Object.keys(stockByCat).filter(c=>stockByCat[c]>0).sort((a,b)=>stockByCat[b]-stockByCat[a]);
+  _wosMk('cWosCatBar','bar',{
+    labels:catLabels,
+    datasets:[{label:'Stock',data:catLabels.map(c=>stockByCat[c]),backgroundColor:COLORS}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // WOS Weekly Trend
+  const trendWeeks=allWeeks.slice(-20);
+  const m8Data=[],p8Data=[];
+  trendWeeks.forEach(w=>{
+    const wd=wbw[w];
+    m8Data.push(wd&&wd.wos_m8!==null&&wd.wos_m8!==undefined?Math.round(wd.wos_m8*10)/10:null);
+    p8Data.push(wd&&wd.wos_p8!==null&&wd.wos_p8!==undefined?Math.round(wd.wos_p8*10)/10:null);
+  });
+  _wosMk('cWosTrend','line',{
+    labels:trendWeeks,
+    datasets:[
+      {label:'WOS-8',data:m8Data,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'WOS+8',data:p8Data,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'12wk',data:trendWeeks.map(()=>12),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0},
+      {label:'24wk',data:trendWeeks.map(()=>24),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0},
+    ]
+  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // WOS Signal Distribution
+  const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
+  _wosMk('cWosSignal','doughnut',{
+    labels:sigLabels.map(k=>_WOS_LABELS[k]||k),
+    datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>_WOS_COLORS[k])}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  // Stock Weekly Trend (total)
+  const totalByWeek=sd.total_by_week||{};
+  const stkTrendWeeks=allWeeks.slice(-20);
+  _wosMk('cWosStockTrend','bar',{
+    labels:stkTrendWeeks,
+    datasets:[{label:'Total Stock',data:stkTrendWeeks.map(w=>totalByWeek[w]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // Model Detail Table
+  const modelRows=models.map(m=>{
+    const stk=(m.stock||{})[latestW]||0;
+    const wos=(m.wos||{})[latestW]||{};
+    return {model:m.model,cat:m.category,type:m.type,stock:stk,m8:wos.m8,p8:wos.p8,sm8:wos.sm8||'INACTIVE',sp8:wos.sp8||'INACTIVE'};
+  }).sort((a,b)=>b.stock-a.stock);
+  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+')';
+  document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
+    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(1):'N/A';
+    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(1):'N/A';
+    const m8c=_WOS_COLORS[r.sm8]||'#999';
+    const p8c=_WOS_COLORS[r.sp8]||'#999';
+    return '<tr><td style="font-family:monospace;font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(_WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(_WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';
+  }).join('');
+}
+
+// Hook into existing update/render cycle
+(function(){
+  // Try to hook into year switching
+  const origUpdate=typeof update==='function'?update:typeof render==='function'?render:null;
+  if(origUpdate){
+    const _origFn=origUpdate;
+    const fnName=typeof update==='function'?'update':'render';
+    window[fnName]=function(){
+      _origFn.apply(this,arguments);
+      try{updateWOS()}catch(e){console.error('WOS update error:',e)}
+    };
+  }
+  // Initial render
+  try{updateWOS()}catch(e){console.error('WOS init error:',e)}
+})();
+
 </script>
 </body></html>
