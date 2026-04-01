@@ -179,10 +179,110 @@ var D = _ALL_YEAR_DATA.data[_currentYear];
 // === Year switching (robust global approach) ===
 // switchYear is global — no IIFE closure issues
 function _yrSwitchYear(yr){
-  if(yr === _currentYear) return;
-  var url = new URL(window.location.href);
-  url.searchParams.set('year', yr);
-  window.location.href = url.toString();
+  try{
+    if(yr === _currentYear) return;
+    _currentYear = yr;
+    D = _ALL_YEAR_DATA.data[yr];
+    if(!D){ console.error('No data for year:', yr); return; }
+
+    // Highlight active button
+    document.querySelectorAll('#_yearSelector button').forEach(function(b){
+      var isActive = b.textContent.trim() === yr;
+      var isDark = !!document.querySelector('.tab-btn') || document.body.style.background==='#0f172a' || getComputedStyle(document.body).backgroundColor.includes('15');
+      if(isDark){
+        b.style.background = isActive ? '#2563eb' : '#1e293b';
+        b.style.color = isActive ? '#fff' : '#94a3b8';
+        b.style.borderColor = isActive ? '#2563eb' : '#475569';
+      } else {
+        b.style.background = isActive ? '#2563eb' : '#fff';
+        b.style.color = isActive ? '#fff' : '#1e293b';
+      }
+    });
+
+    // Update WEEKS/MONTHS arrays
+    if(typeof WEEKS !== 'undefined' && D.meta && D.meta.weeks){
+      WEEKS.length = 0; D.meta.weeks.forEach(function(w){ WEEKS.push(w); });
+    }
+    if(typeof MONTHS !== 'undefined' && D.meta && D.meta.months){
+      MONTHS.length = 0; D.meta.months.forEach(function(m){ MONTHS.push(m); });
+    }
+
+    // Rebuild unified filters (FILTER_MAP/FILTER_STATE style)
+    if(typeof FILTER_MAP !== 'undefined' && typeof FILTER_STATE !== 'undefined'){
+      if(typeof rebuildFilters === 'function'){
+        rebuildFilters();
+      } else {
+        // Manual rebuild
+        if(FILTER_MAP.fMonth) FILTER_MAP.fMonth.items = D.meta.months||[];
+        if(FILTER_MAP.fWeek) FILTER_MAP.fWeek.items = D.meta.weeks||[];
+        if(D.dims){
+          if(FILTER_MAP.fCat) FILTER_MAP.fCat.items = D.dims.categories || [];
+          if(FILTER_MAP.fRegion) FILTER_MAP.fRegion.items = D.dims.regions || [];
+          if(FILTER_MAP.fChannel) FILTER_MAP.fChannel.items = D.dims.channels || [];
+          if(FILTER_MAP.fComp) FILTER_MAP.fComp.items = D.dims.compressors || [];
+          if(FILTER_MAP.fType) FILTER_MAP.fType.items = D.dims.types || [];
+          if(FILTER_MAP.fBtu) FILTER_MAP.fBtu.items = [...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b));
+        }
+        Object.keys(FILTER_STATE).forEach(function(k){ FILTER_STATE[k].clear(); });
+        Object.keys(FILTER_MAP).forEach(function(id){
+          var el = document.getElementById(id);
+          if(el) el.innerHTML = '';
+          if(typeof buildMultiSelect === 'function') buildMultiSelect(id);
+        });
+      }
+    }
+
+    // Reset BM-style filter init flags
+    if(typeof ovInit !== 'undefined') ovInit = false;
+    if(typeof trendInit !== 'undefined') trendInit = false;
+    if(typeof rankInit !== 'undefined') rankInit = false;
+    // Clear BM-style filter dropdowns
+    if(typeof FILTERS !== 'undefined'){
+      Object.keys(FILTERS).forEach(function(id){
+        var listEl = document.getElementById(id + '_list');
+        if(listEl) listEl.innerHTML = '';
+        delete FILTERS[id];
+      });
+    }
+
+    // Re-render active tab
+    var activeTab = 'overview';
+    var activeEl = document.querySelector('.tab-btn.active') || document.querySelector('.tab.active');
+    if(activeEl) activeTab = activeEl.dataset.tab;
+
+    if(typeof update === 'function'){
+      try{ update(); }catch(e){ console.error('update() error:', e); }
+    }
+    if(typeof renderOverview === 'function'){
+      try{ renderOverview(); }catch(e){ console.error('renderOverview error:', e); }
+    }
+    if(typeof renderTrend === 'function' && activeTab === 'trend'){
+      try{ renderTrend(); }catch(e){ console.error('renderTrend error:', e); }
+    }
+    if(typeof renderRanking === 'function' && activeTab === 'ranking'){
+      try{ renderRanking(); }catch(e){ console.error('renderRanking error:', e); }
+    }
+    if(typeof updateWOS === 'function'){
+      try{ updateWOS(); }catch(e){ console.error('updateWOS error:', e); }
+    }
+    if(typeof updateSD === 'function'){
+      try{ updateSD(); }catch(e){ console.error('updateSD error:', e); }
+    }
+    if(typeof _globalUpdate === 'function'){
+      try{ _globalUpdate(); }catch(e){}
+    }
+
+    // Update header
+    var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
+    if(badge){ badge.textContent = badge.textContent.replace(/20\d{2}/, yr); }
+    document.querySelectorAll('header h1, header p, .text-blue-400').forEach(function(el){
+      el.textContent = el.textContent.replace(/20\d{2}/g, yr);
+    });
+
+    console.log('[YearSwitch] Switched to', yr, '- D.raw:', (D.raw||[]).length, 'rows');
+  }catch(err){
+    console.error('[YearSwitch] Error:', err);
+  }
 }
 
 // Build year selector UI (runs immediately after DOM is ready)
