@@ -516,14 +516,14 @@ function downloadExcel(){
   // Summary by Channel sheet
   const chSum={};
   rows.forEach(r=>{chSum[r.ch]=(chSum[r.ch]||0)+r.q});
-  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(1)+'%'}));
+  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100)+'%'}));
   const ws2=XLSX.utils.json_to_sheet(chData);
   ws2['!cols']=[{wch:15},{wch:10},{wch:8}];
 
   // Summary by Category sheet
   const catSum={};
   rows.forEach(r=>{catSum[r.c]=(catSum[r.c]||0)+r.q});
-  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(1)+'%'}));
+  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100)+'%'}));
   const ws3=XLSX.utils.json_to_sheet(catData);
   ws3['!cols']=[{wch:20},{wch:10},{wch:8}];
 
@@ -758,8 +758,8 @@ function updateWOS(){
       }
     });
   });
-  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt*10)/10:null;
-  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt*10)/10:null;
+  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt):null;
+  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt):null;
   const totalModels=Object.values(signalCounts).reduce((a,b)=>a+b,0);
 
   // KPI row
@@ -767,8 +767,8 @@ function updateWOS(){
   const sigP8=avgP8!==null?(avgP8<=12?'OPPORTUNITY':avgP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
   document.getElementById('wosKpi').innerHTML=[
     {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:activeChannels.length+' channels',b:'#2563eb'},
-    {l:'WOS-8 (Avg)',v:avgM8!==null?avgM8.toFixed(1)+' wks':'N/A',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
-    {l:'WOS+8 (Avg)',v:avgP8!==null?avgP8.toFixed(1)+' wks':'N/A',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
+    {l:'WOS-8 (Avg)',v:avgM8!==null?Math.round(avgM8)+' wks':'N/A',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
+    {l:'WOS+8 (Avg)',v:avgP8!==null?Math.round(avgP8)+' wks':'N/A',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
     {l:'Signal Summary',v:signalCounts.OPPORTUNITY+' / '+signalCounts.HEALTHY+' / '+signalCounts.OVERSTOCK,s:'Need / Optimal / Excess',b:'#8b5cf6'},
     {l:'Models Tracked',v:totalModels,s:'Inactive: '+signalCounts.INACTIVE,b:'#f59e0b'},
   ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
@@ -793,8 +793,8 @@ function updateWOS(){
         if(wd.wos_p8!==null&&wd.wos_p8!==undefined){p8s+=wd.wos_p8;p8c++}
       }
     });
-    m8Data.push(m8c?Math.round(m8s/m8c*10)/10:null);
-    p8Data.push(p8c?Math.round(p8s/p8c*10)/10:null);
+    m8Data.push(m8c?Math.round(m8s/m8c):null);
+    p8Data.push(p8c?Math.round(p8s/p8c):null);
   });
   mk('cWosTrend','line',{
     labels:trendWeeks,
@@ -855,20 +855,20 @@ function updateWOS(){
           const w=(m.wos||{})[latestW];
           if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
         });
-        if(catSoSum>0)catWos=Math.round(catWos/catSoSum*10)/10;
+        if(catSoSum>0)catWos=Math.round(catWos/catSoSum);
       }
       const sig=catWos!==null?(catWos<=12?'OPPORTUNITY':catWos<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
       const sc=WOS_COLORS[sig]||'#999';
       wosTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(s>0?s.toLocaleString():'-')+'</td>';
-      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos.toFixed(1):'-')+'</td>';
+      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos:'-')+'</td>';
     });
     // Total
     const chWos=(sd.channels[ch]||{}).wos_by_week||{};
     const chWosData=chWos[latestW];
-    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8*10)/10:null;
+    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8):null;
     const chSig=chWosM8!==null?(chWosM8<=12?'OPPORTUNITY':chWosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
     wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chTotS.toLocaleString()+'</td>';
-    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(1):'N/A')+'</td>';
+    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8:'N/A')+'</td>';
     wosTbl+='</tr>';
   });
   // Total row
@@ -901,8 +901,8 @@ function updateWOS(){
   modelRows.sort((a,b)=>b.stock-a.stock);
   document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+')';
   document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
-    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(1):'N/A';
-    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(1):'N/A';
+    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8:'N/A';
+    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8:'N/A';
     const m8c=WOS_COLORS[r.sm8]||'#999';
     const p8c=WOS_COLORS[r.sp8]||'#999';
     return '<tr><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td><span class="ch-badge" style="background:'+(CH_COLORS[r.ch]||'#ddd')+'22;color:'+(CH_COLORS[r.ch]||'#333')+'">'+r.ch+'</span></td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';
