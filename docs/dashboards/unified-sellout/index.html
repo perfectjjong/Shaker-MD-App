@@ -167,7 +167,8 @@ const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5
 const CH_COLORS={'BH':'#2563eb','BM':'#f59e0b','Tamkeen':'#10b981','Zagzoog':'#8b5cf6','Dhamin':'#f43f5e','Star Appliance':'#14b8a6','Al Ghanem':'#0ea5e9','Al Shathri':'#6366f1'};
 
 // Year switching
-let currentYear = _ALL.current || '2026';
+var _urlYear = new URLSearchParams(window.location.search).get('year');
+let currentYear = (_urlYear && _ALL.data[_urlYear]) ? _urlYear : (_ALL.current || '2026');
 let D = _ALL.data[currentYear];
 let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
 
@@ -180,7 +181,8 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     btn.className='ms-btn';
     btn.style.cssText='padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:4px;background:'+(yr===currentYear?'var(--primary)':'#fff')+';color:'+(yr===currentYear?'#fff':'var(--text)');
     btn.addEventListener('click',()=>{
-      currentYear=yr;
+      if(yr===currentYear)return;
+      var url=new URL(window.location.href);url.searchParams.set('year',yr);window.location.href=url.toString();return;
       D=_ALL.data[yr];
       WEEKS=D.meta.weeks;MONTHS=D.meta.months;
       wrap.querySelectorAll('button').forEach(b=>{b.style.background='#fff';b.style.color='var(--text)'});
