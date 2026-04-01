@@ -80,6 +80,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
   <button class="tab-btn" data-tab="trend">Weekly Trend</button>
   <button class="tab-btn" data-tab="ranking">Model Ranking</button>
   <button class="tab-btn" data-tab="wos">WOS (Stock)</button>
+  <button class="tab-btn" data-tab="sd">Supply vs Demand</button>
 </nav>
 </div>
 </div>
@@ -232,6 +233,26 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 </div></div>
 
 </section>
+<section id="tab-sd" style="display:none">
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px" id="sdKpi"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div style="height:300px"><canvas id="cSdCategory"></canvas></div></div>
+<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div style="height:300px"><canvas id="cSdWeekly"></canvas></div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div style="height:250px"><canvas id="cSdMonthly"></canvas></div></div>
+<div class="card"><h3>Weekly: SO vs ST vs Stock Trend</h3><div style="height:250px"><canvas id="cSdTriple"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Category Breakdown: Supply vs Demand vs Stock</h3>
+<div style="max-height:400px;overflow-y:auto"><table id="tblSdCat"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail: All 4 Metrics <span id="sdModelCount" style="font-weight:400;color:#64748b"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
+</div></div>
+
+</section>
+
 
 
 </main>
@@ -679,6 +700,261 @@ function updateWOS(){
   }
   // Initial render
   try{updateWOS()}catch(e){console.error('WOS init error:',e)}
+})();
+
+
+
+// ===== SUPPLY vs DEMAND TAB =====
+const _SD_WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
+const _SD_WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
+
+function _sdGetYear(){
+  if(typeof _currentYear!=='undefined') return _currentYear;
+  if(typeof currentYear!=='undefined') return currentYear;
+  return '2026';
+}
+
+function _sdSumBy(rows,key){
+  const m={};
+  rows.forEach(r=>{const k=r[key]||'Other';m[k]=(m[k]||0)+(r.q||0)});
+  return m;
+}
+
+function updateSD(){
+  const kpiEl=document.getElementById('sdKpi');
+  if(!kpiEl) return;
+
+  // Get sell-out data from D.raw
+  const soRows=(D&&D.raw)||[];
+  // Get sell-thru data from D.sellthru
+  const stRows=(D&&D.sellthru)||[];
+
+  const soTotal=soRows.reduce((a,r)=>a+(r.q||0),0);
+  const stTotal=stRows.reduce((a,r)=>a+(r.q||0),0);
+  const gap=stTotal-soTotal;
+  const fillRate=stTotal>0?Math.round(soTotal/stTotal*100):0;
+
+  // Stock data from WOS tab if available
+  const yr=_sdGetYear();
+  let totalStock=0,wosM8=null,wosM8Sig='INACTIVE';
+  let stockByModel={},wosByModel={};
+  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
+    const sd=_WOS_STOCK_DATA[yr];
+    const wks=sd.weeks||[];
+    const latW=wks.length?wks[wks.length-1]:'';
+    (sd.models||[]).forEach(m=>{
+      const stk=(m.stock||{})[latW]||0;
+      totalStock+=stk;
+      stockByModel[m.model]=stk;
+      const wos=(m.wos||{})[latW]||{};
+      wosByModel[m.model]={m8:wos.m8,sm8:wos.sm8||'INACTIVE'};
+    });
+    const wbw=sd.wos_by_week||{};
+    const lw=wbw[latW];
+    if(lw){wosM8=lw.wos_m8;wosM8Sig=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';}
+  }
+
+  // KPI
+  const ks='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
+  const kpis=[
+    {l:'Sell-thru (Supply)',v:stTotal.toLocaleString(),s:'SAP '+yr,b:'#2563eb'},
+    {l:'Sell-out (Demand)',v:soTotal.toLocaleString(),s:yr+' YTD',b:'#10b981'},
+    {l:'Gap (Thru-Out)',v:(gap>=0?'+':'')+gap.toLocaleString(),s:gap>0?'Inventory buildup':'Shortage risk',b:gap>0?'#f59e0b':'#ef4444'},
+    {l:'Fill Rate',v:fillRate+'%',s:fillRate>=80?'Healthy':'Needs attention',b:fillRate>=80?'#10b981':'#f59e0b'},
+  ];
+  if(totalStock>0){
+    kpis.push({l:'Total Stock',v:totalStock.toLocaleString(),s:'Latest week',b:'#8b5cf6'});
+    kpis.push({l:'WOS-8',v:wosM8!==null&&wosM8!==undefined?wosM8.toFixed(1)+' wks':'N/A',s:_SD_WOS_LABELS[wosM8Sig],b:_SD_WOS_COLORS[wosM8Sig]});
+  }
+  kpiEl.innerHTML=kpis.map(k=>'<div style="'+ks+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
+
+  if(typeof Chart==='undefined') return;
+
+  // Destroy existing SD charts
+  ['cSdCategory','cSdWeekly','cSdMonthly','cSdTriple'].forEach(id=>{
+    if(window['_sdChart_'+id]){window['_sdChart_'+id].destroy();window['_sdChart_'+id]=null}
+  });
+
+  const SDCOLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e'];
+  const DL_NONE={display:false};
+  const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+
+  function _sdMk(id,type,data,opts={}){
+    const ctx=document.getElementById(id);
+    if(!ctx) return null;
+    const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
+    if(opts.scales)defaults.scales=opts.scales;
+    if(opts.indexAxis)defaults.indexAxis=opts.indexAxis;
+    if(opts.plugins)Object.assign(defaults.plugins,opts.plugins);
+    const chart=new Chart(ctx,{type,data,options:defaults});
+    window['_sdChart_'+id]=chart;
+    return chart;
+  }
+
+  // Category comparison
+  const stCat=_sdSumBy(stRows,'c'),soCat=_sdSumBy(soRows,'c');
+  const allCats=[...new Set([...Object.keys(stCat),...Object.keys(soCat)])].filter(c=>c).sort();
+  _sdMk('cSdCategory','bar',{
+    labels:allCats,
+    datasets:[
+      {label:'Sell-thru',data:allCats.map(c=>stCat[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
+      {label:'Sell-out',data:allCats.map(c=>soCat[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
+    ]
+  },{indexAxis:'y',scales:{x:{beginAtZero:true}}});
+
+  // Weekly trend (line)
+  const weeks=(D&&D.meta&&D.meta.weeks)||[];
+  const stW=_sdSumBy(stRows,'w'),soW=_sdSumBy(soRows,'w');
+  _sdMk('cSdWeekly','line',{
+    labels:weeks,
+    datasets:[
+      {label:'Sell-thru',data:weeks.map(w=>stW[w]||0),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:2},
+      {label:'Sell-out',data:weeks.map(w=>soW[w]||0),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:2}
+    ]
+  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
+
+  // Monthly trend
+  const _months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const stM=_sdSumBy(stRows,'m'),soM=_sdSumBy(soRows,'m');
+  const months=_months.filter(m=>(stM[m]||0)>0||(soM[m]||0)>0);
+  _sdMk('cSdMonthly','bar',{
+    labels:months,
+    datasets:[
+      {label:'Sell-thru',data:months.map(m=>stM[m]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1},
+      {label:'Sell-out',data:months.map(m=>soM[m]||0),backgroundColor:'rgba(16,185,129,0.6)',borderColor:'#10b981',borderWidth:1}
+    ]
+  },{scales:{y:{beginAtZero:true}}});
+
+  // Triple trend: SO vs ST vs Stock (weekly)
+  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
+    const sd=_WOS_STOCK_DATA[yr];
+    const stockWeeks=sd.weeks||[];
+    const stockTotal=sd.total_by_week||{};
+    const tripleWeeks=[...new Set([...weeks,...stockWeeks])].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
+    _sdMk('cSdTriple','line',{
+      labels:tripleWeeks,
+      datasets:[
+        {label:'Sell-thru',data:tripleWeeks.map(w=>stW[w]||0),borderColor:'#2563eb',tension:.3,borderWidth:2,pointRadius:2,fill:false},
+        {label:'Sell-out',data:tripleWeeks.map(w=>soW[w]||0),borderColor:'#10b981',tension:.3,borderWidth:2,pointRadius:2,fill:false},
+        {label:'Stock',data:tripleWeeks.map(w=>stockTotal[w]||0),borderColor:'#8b5cf6',tension:.3,borderWidth:2,pointRadius:2,fill:false,borderDash:[5,3]}
+      ]
+    },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
+  } else {
+    // No stock data, show just SO vs ST
+    _sdMk('cSdTriple','line',{
+      labels:weeks,
+      datasets:[
+        {label:'Sell-thru',data:weeks.map(w=>stW[w]||0),borderColor:'#2563eb',tension:.3,borderWidth:2,pointRadius:2,fill:false},
+        {label:'Sell-out',data:weeks.map(w=>soW[w]||0),borderColor:'#10b981',tension:.3,borderWidth:2,pointRadius:2,fill:false}
+      ]
+    },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
+  }
+
+  // Category breakdown table
+  let catTbl='<thead><tr><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th>';
+  if(totalStock>0) catTbl+='<th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th>';
+  catTbl+='</tr></thead><tbody>';
+
+  // Stock by category
+  const stockByCat={};
+  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
+    const sd=_WOS_STOCK_DATA[yr];
+    const wks=sd.weeks||[];
+    const latW=wks.length?wks[wks.length-1]:'';
+    (sd.models||[]).forEach(m=>{
+      const cat=m.category||'Other';
+      const stk=(m.stock||{})[latW]||0;
+      stockByCat[cat]=(stockByCat[cat]||0)+stk;
+    });
+  }
+
+  let totSt=0,totSo=0,totStk=0;
+  allCats.forEach(c=>{
+    const si=stCat[c]||0,so=soCat[c]||0,g=si-so;
+    const fill=si>0?Math.round(so/si*100):0;
+    const stk=stockByCat[c]||0;
+    totSt+=si;totSo+=so;totStk+=stk;
+    const gc=g>0?'color:#f59e0b':g<0?'color:#ef4444':'color:#94a3b8';
+    const fc=fill>=80?'color:#10b981':fill>=40?'color:#f59e0b':'color:#ef4444';
+    catTbl+='<tr><td style="font-weight:600">'+c+'</td>';
+    catTbl+='<td style="text-align:right">'+si.toLocaleString()+'</td>';
+    catTbl+='<td style="text-align:right">'+so.toLocaleString()+'</td>';
+    catTbl+='<td style="text-align:right;font-weight:600;'+gc+'">'+(g>=0?'+':'')+g.toLocaleString()+'</td>';
+    catTbl+='<td style="text-align:right;font-weight:600;'+fc+'">'+fill+'%</td>';
+    if(totalStock>0) catTbl+='<td style="text-align:right">'+stk.toLocaleString()+'</td><td style="text-align:right">-</td>';
+    catTbl+='</tr>';
+  });
+  // Total row
+  const tg=totSt-totSo;
+  const tfc=totSt>0?Math.round(totSo/totSt*100):0;
+  catTbl+='<tr style="border-top:2px solid #1e293b;font-weight:800"><td>Total</td>';
+  catTbl+='<td style="text-align:right">'+totSt.toLocaleString()+'</td>';
+  catTbl+='<td style="text-align:right">'+totSo.toLocaleString()+'</td>';
+  catTbl+='<td style="text-align:right;'+(tg>0?'color:#f59e0b':'color:#ef4444')+'">'+(tg>=0?'+':'')+tg.toLocaleString()+'</td>';
+  catTbl+='<td style="text-align:right">'+tfc+'%</td>';
+  if(totalStock>0) catTbl+='<td style="text-align:right">'+totStk.toLocaleString()+'</td><td style="text-align:right">'+(wosM8!==null?wosM8.toFixed(1):'N/A')+'</td>';
+  catTbl+='</tr></tbody>';
+  document.getElementById('tblSdCat').innerHTML=catTbl;
+
+  // Model detail table (all 4 metrics)
+  const modelSt={},modelSo={},modelCat={};
+  stRows.forEach(r=>{
+    const m=r.model||r.s||'';
+    if(!m) return;
+    modelSt[m]=(modelSt[m]||0)+(r.q||0);
+    if(!modelCat[m]) modelCat[m]=r.c||'';
+  });
+  soRows.forEach(r=>{
+    const m=r.model||r.s||r.code||'';
+    if(!m) return;
+    modelSo[m]=(modelSo[m]||0)+(r.q||0);
+    if(!modelCat[m]) modelCat[m]=r.c||'';
+  });
+  const allModels=[...new Set([...Object.keys(modelSt),...Object.keys(modelSo),...Object.keys(stockByModel)])];
+  const modelList=allModels.map(m=>{
+    const st=modelSt[m]||0,so=modelSo[m]||0;
+    const stk=stockByModel[m]||0;
+    const wos=wosByModel[m]||{};
+    return {m,st,so,gap:st-so,fill:st>0?Math.round(so/st*100):so>0?999:0,cat:modelCat[m]||'',stk,wm8:wos.m8,wsm8:wos.sm8||'INACTIVE'};
+  }).filter(r=>r.st>0||r.so>0||r.stk>0).sort((a,b)=>(b.st+b.so+b.stk)-(a.st+a.so+a.stk));
+
+  document.getElementById('sdModelCount').textContent='('+modelList.length+' models)';
+  document.getElementById('tblSdModel').innerHTML=modelList.slice(0,100).map(r=>{
+    const gc=r.gap>0?'color:#f59e0b':r.gap<0?'color:#ef4444':'';
+    const fc=r.fill>=100?'color:#10b981':r.fill>=70?'color:#2563eb':r.fill>=40?'color:#f59e0b':'color:#ef4444';
+    const status=r.fill>=100?'<span style="color:#10b981;font-weight:700">Sold Out</span>':
+                 r.fill>=70?'<span style="color:#2563eb;font-weight:600">Good</span>':
+                 r.fill>=40?'<span style="color:#f59e0b;font-weight:600">Moderate</span>':
+                 r.st>0?'<span style="color:#ef4444;font-weight:600">Slow</span>':
+                 '<span style="color:#8b5cf6">Out only</span>';
+    const wm8Str=r.wm8!==null&&r.wm8!==undefined?r.wm8.toFixed(1):'N/A';
+    const wc=_SD_WOS_COLORS[r.wsm8]||'#999';
+    const sigBadge=r.stk>0?'<span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+wc+'">'+(_SD_WOS_LABELS[r.wsm8]||'-')+'</span>':'-';
+    return '<tr><td style="font-family:monospace;font-weight:600">'+r.m+'</td><td>'+r.cat+'</td>'+
+      '<td style="text-align:right">'+r.st.toLocaleString()+'</td>'+
+      '<td style="text-align:right">'+r.so.toLocaleString()+'</td>'+
+      '<td style="text-align:right;font-weight:600;'+gc+'">'+(r.gap>=0?'+':'')+r.gap.toLocaleString()+'</td>'+
+      '<td style="text-align:right;font-weight:600;'+fc+'">'+(r.fill===999?'-':r.fill+'%')+'</td>'+
+      '<td style="text-align:right;font-weight:700">'+(r.stk>0?r.stk.toLocaleString():'-')+'</td>'+
+      '<td style="text-align:right;color:'+wc+';font-weight:600">'+wm8Str+'</td>'+
+      '<td>'+sigBadge+'</td>'+
+      '<td>'+status+'</td></tr>';
+  }).join('');
+}
+
+// Hook into existing update/render cycle
+(function(){
+  const origUpdate=typeof update==='function'?update:typeof render==='function'?render:null;
+  if(origUpdate){
+    const _origFn=origUpdate;
+    const fnName=typeof update==='function'?'update':'render';
+    const _prevFn=window[fnName];
+    window[fnName]=function(){
+      _prevFn.apply(this,arguments);
+      try{updateSD()}catch(e){console.error('SD update error:',e)}
+    };
+  }
+  try{updateSD()}catch(e){console.error('SD init error:',e)}
 })();
 
 </script>
