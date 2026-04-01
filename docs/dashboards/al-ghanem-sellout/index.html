@@ -1,21 +1,248 @@
 <!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Al Ghanem Sell-out Weekly Dashboard</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Al Ghanem Sell-out Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{--primary:#2563eb;--navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.08);--radius:8px;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--teal:#14b8a6;--rose:#f43f5e;--sky:#0ea5e9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:46px}
+.header h1{font-size:15px;font-weight:700}.header .sub{font-size:11px;color:#94a3b8}.header .badge{background:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;margin-left:auto}
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;gap:0;position:sticky;top:46px;z-index:99}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.2s}
+.tab:hover{color:var(--text)}.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
+.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.ms-wrap{position:relative;min-width:100px}
+.ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
+.ms-btn::after{content:'\25be';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
+.ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
+.ms-drop{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:200;min-width:160px;max-height:260px;overflow-y:auto;padding:4px 0;margin-top:2px}
+.ms-drop.open{display:block}
+.ms-drop label{display:flex;align-items:center;gap:6px;padding:5px 10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.ms-drop label:hover{background:var(--bg)}
+.ms-drop input[type=checkbox]{accent-color:var(--primary);width:14px;height:14px}
+.ms-drop .ms-all{border-bottom:1px solid var(--border);font-weight:600;color:var(--primary)}
+.btn-reset{padding:4px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;cursor:pointer;background:#fff}.btn-reset:hover{background:var(--bg)}
+.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#ecfdf5;color:#065f46;font-weight:600}.btn-excel:hover{background:#d1fae5}
+#fYear button{transition:.2s}#fYear button:hover{opacity:.85}
+.filter-count{font-size:10px;color:var(--muted);margin-left:8px}
+.content{padding:20px 24px;max-width:1400px;margin:0 auto}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.kpi{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border-left:3px solid var(--primary)}
+.kpi-val{font-size:20px;font-weight:800}.kpi-label{font-size:9.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+.kpi-sub{font-size:11px;margin-top:4px}.up{color:var(--green)}.down{color:var(--red)}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.card h3{font-size:12px;font-weight:700;margin-bottom:12px}
+.ch-300{height:300px;position:relative}.ch-250{height:250px;position:relative}.ch-400{height:400px;position:relative}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--bg);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--border);position:sticky;top:0}
+td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background:#f8fafc}
+.mono{font-family:monospace;font-size:11px}
+.pct-bar{display:inline-block;height:6px;border-radius:3px;background:var(--primary)}
+.footer{text-align:center;padding:16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:24px}
+.ch-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:#dbeafe;color:#1e40af;margin-right:4px}
+.cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
+.cat-split{background:#dbeafe;color:#1e40af}
+.cat-window{background:#fef3c7;color:#92400e}
+.cat-floor{background:#d1fae5;color:#065f46}
+.cat-concealed{background:#ede9fe;color:#5b21b6}
+.cat-cassette{background:#cffafe;color:#155e75}
+.progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--sky))}
+.tbl-wrap{overflow-x:auto}
+.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px}
+.tbl-wrap th{background:var(--bg);color:var(--text);padding:8px 12px;text-align:left;position:sticky;top:0;z-index:2;white-space:nowrap;cursor:pointer;user-select:none;font-weight:600;font-size:11px;border-bottom:1px solid var(--border)}
+.tbl-wrap th:hover{background:#e2e8f0}
+.tbl-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text)}
+.tbl-wrap tr:nth-child(even) td{background:#fff}
+.tbl-wrap tr:nth-child(odd) td{background:var(--bg)}
+.tbl-wrap tr:hover td{background:#e2e8f0}
+@media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="header">
+<h1>📊 Al Ghanem Sell-out Dashboard</h1>
+<span class="sub">LG AC · Al Ghanem · IR Channel</span>
+<span class="badge" id="yearBadge">2026 · W13</span>
+</div>
+<div class="tabs" id="tabBar">
+<div class="tab active" data-tab="overview">Overview</div>
+<div class="tab" data-tab="trend">Weekly Trend</div>
+<div class="tab" data-tab="ranking">Model Ranking</div>
+<div class="tab" data-tab="wos">WOS (Stock)</div>
+<div class="tab" data-tab="sd">Supply vs Demand</div>
+</div>
+<div class="filters">
+<div class="filter-group"><div class="filter-label">Year</div><div id="fYear" style="display:flex;gap:4px"></div></div>
+<div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
+<div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
+<div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
+<div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
+<div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
+<div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
+<button class="btn-reset" onclick="resetFilters()">Reset</button>
+<button class="btn-excel" onclick="downloadExcel()">📥 Excel Download</button>
+<span class="filter-count" id="filterCount"></span>
+</div>
+<div class="content">
+<div class="tab-pane active" id="pane-overview">
+<!-- Filters -->
+  
+
+  <!-- KPI Cards -->
+  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+    <div class="kpi">
+      <div class="kpi-label">Latest Week (W13)</div>
+      <div class="kpi-val" id="kpi-lq">6</div>
+      <div class="kpi-sub up">-33.3% WoW</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Current Month</div>
+      <div class="kpi-val">41</div>
+      <div class="kpi-sub dn">+127.8% MoM</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">YTD Total</div>
+      <div class="kpi-val">106</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg / Week</div>
+      <div class="kpi-val">8.2</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Models / Categories</div>
+      <div class="kpi-val">12<span class="text-base text-slate-400"> / 4</span></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <div class="card">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Weekly Sales Trend</h3>
+      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
+    </div>
+    <div class="card">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Monthly Sales</h3>
+      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="card">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Sales by Category</h3>
+      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
+    </div>
+    <div class="card">
+      <h3 class="text-sm font-semibold text-slate-300 mb-3">Category Weekly Trend</h3>
+      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
+    </div>
+  </div>
+</div>
+<div class="tab-pane" id="pane-trend">
+<div class="card mb-4">
+    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Weekly Trend (Top 10)</h3>
+    <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
+  </div>
+
+  <div class="card">
+    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model × Week Matrix</h3>
+    <div class="tbl-wrap" id="matrix_tbl"></div>
+  </div>
+</div>
+<div class="tab-pane" id="pane-ranking">
+<div style="margin-bottom:8px"><input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px" oninput="if(typeof renderRanking==="function")renderRanking()"/></div>
+  
+
+  <div class="card">
+    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Ranking</h3>
+    <div class="tbl-wrap" id="rank_tbl"></div>
+  </div>
+</div>
+<div class="tab-pane" id="pane-wos">
+<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
+
+
+<div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
+<div class="card"><h3>Stock vs Sell-out vs Sell-thru Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
+</div></div>
+</div>
+<div class="tab-pane" id="pane-sd">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px" id="sdKpi"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div style="height:300px"><canvas id="cSdCategory"></canvas></div></div>
+<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div style="height:300px"><canvas id="cSdWeekly"></canvas></div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div style="height:250px"><canvas id="cSdMonthly"></canvas></div></div>
+<div class="card"><h3>Weekly: SO vs ST vs Stock Trend</h3><div style="height:250px"><canvas id="cSdTriple"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Category Breakdown: Supply vs Demand vs Stock</h3>
+<div style="max-height:400px;overflow-y:auto"><table id="tblSdCat"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail: All 4 Metrics <span id="sdModelCount" style="font-weight:400;color:#64748b"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
+</div></div>
+</div>
+</div>
+
+<div class="footer">Generated: 2026-04-01 14:38 · Al Ghanem · IR Channel</div>
+
 <script>
+const _ALL = {"years": ["2025", "2026"], "current": "2026", "data": {"2025": {"meta": {"weeks": ["W20", "W21", "W22", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W48", "W49", "W50", "W51", "W52"], "months": ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "week_dates": {"W18": "04/27~05/03", "W19": "05/04~05/10", "W20": "05/11~05/17", "W21": "05/18~05/24", "W22": "05/25~05/31", "W26": "06/22~06/28", "W28": "07/06~07/12", "W29": "07/13~07/19", "W30": "07/20~07/26", "W31": "07/27~08/02", "W32": "08/03~08/09", "W33": "08/10~08/16", "W34": "08/17~08/23", "W35": "08/24~08/30", "W36": "08/31~09/06", "W37": "09/07~09/13", "W38": "09/14~09/20", "W39": "09/21~09/27", "W40": "09/28~10/04", "W41": "10/05~10/11", "W42": "10/12~10/18", "W43": "10/19~10/25", "W44": "10/26~11/01", "W45": "11/02~11/08", "W46": "11/09~11/15", "W48": "11/23~11/29", "W49": "11/30~12/06", "W50": "12/07~12/13", "W51": "12/14~12/20", "W52": "12/21~12/27"}, "week_month": {"W18": "Apr", "W19": "May", "W20": "May", "W21": "May", "W22": "May", "W26": "Jun", "W28": "Jul", "W29": "Jul", "W30": "Jul", "W31": "Jul", "W32": "Aug", "W33": "Aug", "W34": "Aug", "W35": "Aug", "W36": "Aug", "W37": "Sep", "W38": "Sep", "W39": "Sep", "W40": "Sep", "W41": "Oct", "W42": "Oct", "W43": "Oct", "W44": "Oct", "W45": "Nov", "W46": "Nov", "W48": "Nov", "W49": "Nov", "W50": "Dec", "W51": "Dec", "W52": "Dec"}}, "dims": {"categories": ["Floor Standing AC", "Split AC"], "regions": [], "channels": ["Al Ghanem"], "compressors": ["Rotary"], "types": ["CO", "HP"], "btus": ["12000", "18000", "24000"]}, "raw": [{"w": "W20", "m": "May", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W20", "m": "May", "q": 10, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W21", "m": "May", "q": 4, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W22", "m": "May", "q": 20, "s": "ND182C", "c": "Split AC", "code": "ND182C", "type": "CO", "model": "ND182C", "comp": "Rotary", "btu": "18000"}, {"w": "W22", "m": "May", "q": 6, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W28", "m": "Jul", "q": 3, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W29", "m": "Jul", "q": 8, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W29", "m": "Jul", "q": 12, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W30", "m": "Jul", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W30", "m": "Jul", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W31", "m": "Jul", "q": -8, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W32", "m": "Aug", "q": 8, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W32", "m": "Aug", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W32", "m": "Aug", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W32", "m": "Aug", "q": 2, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W32", "m": "Aug", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W33", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W33", "m": "Aug", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W33", "m": "Aug", "q": 12, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W34", "m": "Aug", "q": 4, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W34", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W34", "m": "Aug", "q": 5, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W35", "m": "Aug", "q": 2, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W35", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W35", "m": "Aug", "q": 1, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W35", "m": "Aug", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W36", "m": "Aug", "q": 1, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 6, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W36", "m": "Aug", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W37", "m": "Sep", "q": 2, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W37", "m": "Sep", "q": 3, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W37", "m": "Sep", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W37", "m": "Sep", "q": 5, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W37", "m": "Sep", "q": 3, "s": "NT382C", "c": "Split AC", "code": "NT382C", "type": "CO", "model": "NT382C", "comp": "Rotary"}, {"w": "W37", "m": "Sep", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W38", "m": "Sep", "q": 4, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W38", "m": "Sep", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W38", "m": "Sep", "q": 2, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W38", "m": "Sep", "q": 6, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W39", "m": "Sep", "q": 3, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W39", "m": "Sep", "q": 5, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W39", "m": "Sep", "q": 11, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W40", "m": "Sep", "q": 1, "s": "ND182C", "c": "Split AC", "code": "ND182C", "type": "CO", "model": "ND182C", "comp": "Rotary", "btu": "18000"}, {"w": "W40", "m": "Sep", "q": 2, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W40", "m": "Sep", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W41", "m": "Oct", "q": 5, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W41", "m": "Oct", "q": 1, "s": "NS242H", "c": "Split AC", "code": "NS242H", "type": "HP", "model": "NS242H", "btu": "24000"}, {"w": "W41", "m": "Oct", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W42", "m": "Oct", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W43", "m": "Oct", "q": 1, "s": "NT382C", "c": "Split AC", "code": "NT382C", "type": "CO", "model": "NT382C", "comp": "Rotary"}, {"w": "W44", "m": "Oct", "q": 1, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W44", "m": "Oct", "q": 3, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W45", "m": "Nov", "q": 1, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W45", "m": "Nov", "q": 3, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W46", "m": "Nov", "q": 3, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W46", "m": "Nov", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W48", "m": "Nov", "q": 2, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W49", "m": "Nov", "q": 3, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W49", "m": "Nov", "q": 1, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W49", "m": "Nov", "q": 2, "s": "NF182H", "c": "Split AC", "code": "NF182H", "type": "HP", "model": "NF182H", "comp": "Rotary", "btu": "18000"}, {"w": "W49", "m": "Nov", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W49", "m": "Nov", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W50", "m": "Dec", "q": 1, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W50", "m": "Dec", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W50", "m": "Dec", "q": 2, "s": "NF122H", "c": "Split AC", "code": "NF122H", "type": "HP", "model": "NF122H", "comp": "Rotary", "btu": "12000"}, {"w": "W50", "m": "Dec", "q": 6, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W50", "m": "Dec", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W50", "m": "Dec", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W52", "m": "Dec", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}], "sellthru": [{"w": "W18", "m": "Apr", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 54.5, "v": 774981.15}, {"w": "W18", "m": "Apr", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 42.5, "v": 577605.84}, {"w": "W19", "m": "May", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 2.0, "v": 43725.5}, {"w": "W22", "m": "May", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 10.0, "v": 53358.42}, {"w": "W26", "m": "Jun", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 5.0, "v": 65642.5}, {"w": "W26", "m": "Jun", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 1.0, "v": 31889.0}, {"w": "W29", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 4.0, "v": 28230.16}, {"w": "W30", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 30717.9}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 44.0, "v": 204926.5}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 93.0, "v": 375076.18}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 0.0, "v": 20974.65}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 5.0, "v": 19540.14}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 95.0, "v": 354669.3}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 7.0, "v": 32960.32}, {"w": "W32", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 19939.2}, {"w": "W33", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 20478.6}, {"w": "W35", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": -2.0, "v": 0}, {"w": "W36", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 4.0, "v": 80803.8}, {"w": "W38", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 1.0, "v": 16103.74}, {"w": "W39", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 12662.0}, {"w": "W39", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 1.0, "v": 17244.7}, {"w": "W43", "m": "Oct", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 0.0, "v": 5964.34}, {"w": "W50", "m": "Dec", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 1.0, "v": 4506.28}]}, "2026": {"meta": {"generated": "2026-03-31 21:34", "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "months": ["Jan", "Feb", "Mar"], "week_dates": {"W1": "1/1~1/3", "W2": "1/4~1/10", "W3": "1/11~1/17", "W4": "1/18~1/24", "W5": "1/25~1/31", "W6": "2/1~2/7", "W7": "2/8~2/14", "W8": "2/15~2/21", "W9": "2/22~2/28", "W10": "3/1~3/7", "W11": "3/8~3/14", "W12": "3/15~3/21", "W13": "3/22~3/28"}, "week_month": {"W1": "Jan", "W2": "Jan", "W3": "Jan", "W4": "Jan", "W5": "Jan", "W6": "Feb", "W7": "Feb", "W8": "Feb", "W9": "Feb", "W10": "Mar", "W11": "Mar", "W12": "Mar", "W13": "Mar"}}, "kpi": {"latest_qty": 6, "wow": -33.3, "cm_qty": 41, "mom": 127.8, "ytd": 106, "avg_week": 8.2, "models_count": 12, "cat_count": 4}, "dims": {"categories": ["Cassette", "Concealed Set", "Floor Standing AC", "Split AC"], "compressors": ["Rotary"], "types": [], "btus": ["18000", "24000"]}, "raw": [{"w": "W1", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": -1}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 6}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 6}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": -1}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W1", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W10", "m": "Mar", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 3}, {"w": "W10", "m": "Mar", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 16}, {"w": "W10", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W10", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W10", "m": "Mar", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W11", "m": "Mar", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W11", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W12", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "ATNW21GPLTA.ANWGIB", "n": "AC LG Cassette 1.5 Ton H&C - Inverter", "b": "LG", "c": "Cassette", "q": 1}, {"w": "W12", "m": "Mar", "s": "ABNW55GM3TA.ANWGIB", "n": "AC LG Concealed 4 Ton H&C - Inverter", "b": "LG", "c": "Concealed Set", "q": 1}, {"w": "W12", "m": "Mar", "s": "ABNW21GMITA", "n": "AC LG Concealed 18 H&C - Inverter", "b": "LG", "c": "Concealed Set", "q": 4}, {"w": "W13", "m": "Mar", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W13", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "24000"}, {"w": "W13", "m": "Mar", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W2", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 7}, {"w": "W2", "m": "Jan", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W2", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 4, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 3}, {"w": "W3", "m": "Jan", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W4", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W4", "m": "Jan", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W4", "m": "Jan", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": -1, "btu": "18000"}, {"w": "W5", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W6", "m": "Feb", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W7", "m": "Feb", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "ND242C0.NK0", "n": "AC LG Wall Fresh 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W8", "m": "Feb", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W8", "m": "Feb", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W8", "m": "Feb", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W8", "m": "Feb", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W8", "m": "Feb", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W9", "m": "Feb", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W9", "m": "Feb", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W9", "m": "Feb", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}], "models": [{"s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "t": 31, "wk": {"W1": 2, "W10": 19, "W2": 7, "W8": 1, "W9": 2}}, {"s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "t": 20, "wk": {"W1": 14, "W13": 1, "W3": 3, "W8": 1, "W9": 1}}, {"s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 10, "wk": {"W1": 6, "W7": 2, "W8": 2}}, {"s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W1": 4, "W3": 3, "W6": 1, "W8": 1}}, {"s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W10": 4, "W12": 1, "W13": 2, "W2": 1, "W7": 1}}, {"s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W10": 1, "W13": 3, "W4": 1, "W7": 3, "W8": 1}}, {"s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 7, "wk": {"W11": 1, "W2": 4, "W4": 1, "W5": 1}}, {"s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 4, "wk": {"W11": 1, "W12": 2, "W3": 1, "W4": -1, "W9": 1}}, {"s": "ABNW21GMITA", "n": "AC LG Concealed 18 H&C - Inverter", "b": "LG", "c": "Concealed Set", "t": 4, "wk": {"W12": 4}}, {"s": "ATNW21GPLTA.ANWGIB", "n": "AC LG Cassette 1.5 Ton H&C - Inverter", "b": "LG", "c": "Cassette", "t": 1, "wk": {"W12": 1}}, {"s": "ABNW55GM3TA.ANWGIB", "n": "AC LG Concealed 4 Ton H&C - Inverter", "b": "LG", "c": "Concealed Set", "t": 1, "wk": {"W12": 1}}, {"s": "ND242C0.NK0", "n": "AC LG Wall Fresh 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 1, "wk": {"W7": 1}}], "weekly": {"W1": 26, "W10": 24, "W11": 2, "W12": 9, "W13": 6, "W2": 12, "W3": 7, "W4": 1, "W5": 1, "W6": 1, "W7": 7, "W8": 6, "W9": 4}, "monthly": {"Jan": 47, "Feb": 18, "Mar": 41}, "sellthru": [{"w": "W10", "m": "Mar", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 0.0, "v": 5233.2}, {"w": "W10", "m": "Mar", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 3.5, "v": 24656.2}]}}};
+// Year switching (unified design - URL reload approach)
+var _urlYear = new URLSearchParams(window.location.search).get('year');
+let currentYear = (_urlYear && _ALL.data[_urlYear]) ? _urlYear : (_ALL.current || '2026');
+let D = _ALL.data[currentYear];
+let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
+
+// Build year selector (left-side filter-group style)
+(function(){
+  const wrap=document.getElementById('fYear');
+  if(!wrap) return;
+  _ALL.years.forEach(yr=>{
+    const btn=document.createElement('button');
+    btn.textContent=yr;
+    btn.className='ms-btn';
+    btn.style.cssText='padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:4px;background:'+(yr===currentYear?'var(--primary)':'#fff')+';color:'+(yr===currentYear?'#fff':'var(--text)');
+    btn.addEventListener('click',()=>{
+      if(yr===currentYear)return;
+      var url=new URL(window.location.href);url.searchParams.set('year',yr);window.location.href=url.toString();
+    });
+    wrap.appendChild(btn);
+  });
+})();
+
+
 tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']},colors:{navy:{50:'#E8F4FD',100:'#D1E9FB',200:'#A3D3F7',500:'#2E75B6',700:'#1E3A5F',800:'#1F4E79',900:'#0F2A42'}}}}}
 </script>
 <style>
 body{background:#0f172a;color:#e2e8f0;font-family:'Inter',sans-serif}
 header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px solid #3b82f6}
-.tab-btn{padding:8px 20px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.tab-btn.active{background:#1e293b;color:#60a5fa;border-color:#334155;border-bottom-color:#1e293b}
-.tab-btn:not(.active){background:#0f172a;color:#94a3b8}
-.tab-btn:hover:not(.active){color:#e2e8f0;background:#1e293b50}
+.tab{padding:8px 20px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.tab.active{background:#1e293b;color:#60a5fa;border-color:#334155;border-bottom-color:#1e293b}
+.tab:not(.active){background:#0f172a;color:#94a3b8}
+.tab:hover:not(.active){color:#e2e8f0;background:#1e293b50}
 .card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155}
 .kpi-card{background:#1e293b;border-radius:12px;padding:16px 20px;border-left:4px solid #3b82f6}
 .kpi-val{font-size:28px;font-weight:700;color:#f1f5f9}
@@ -51,7 +278,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 .cat-cassette{background:#1e3a4f;color:#67e8f9}
 @media(max-width:640px){
   .kpi-val{font-size:20px}
-  .tab-btn{padding:6px 12px;font-size:11px}
+  .tab{padding:6px 12px;font-size:11px}
   .card{padding:12px}
   .tbl-wrap td,.tbl-wrap th{padding:4px 6px;font-size:10px}
   canvas{max-height:250px!important}
@@ -92,11 +319,11 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 <div class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-700">
 <div class="max-w-[1600px] mx-auto px-6">
 <nav class="flex gap-1 pt-2" id="tabs">
-  <button class="tab-btn active" data-tab="overview">Overview</button>
-  <button class="tab-btn" data-tab="trend">Weekly Trend</button>
-  <button class="tab-btn" data-tab="ranking">Model Ranking</button>
-  <button class="tab-btn" data-tab="wos">WOS (Stock)</button>
-  <button class="tab-btn" data-tab="sd">Supply vs Demand</button>
+  <button class="tab active" data-tab="overview">Overview</button>
+  <button class="tab" data-tab="trend">Weekly Trend</button>
+  <button class="tab" data-tab="ranking">Model Ranking</button>
+  <button class="tab" data-tab="wos">WOS (Stock)</button>
+  <button class="tab" data-tab="sd">Supply vs Demand</button>
 </nav>
 </div>
 </div>
@@ -235,7 +462,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 </section>
 
 
-
 </main>
 
 <footer class="text-center text-xs text-slate-600 py-4 border-t border-slate-800">
@@ -245,69 +471,18 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 <script>
 
 
-
-
-
-var _ALL_YEAR_DATA = {"years": ["2025", "2026"], "current": "2026", "data": {"2025": {"meta": {"weeks": ["W20", "W21", "W22", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W48", "W49", "W50", "W51", "W52"], "months": ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "week_dates": {"W18": "04/27~05/03", "W19": "05/04~05/10", "W20": "05/11~05/17", "W21": "05/18~05/24", "W22": "05/25~05/31", "W26": "06/22~06/28", "W28": "07/06~07/12", "W29": "07/13~07/19", "W30": "07/20~07/26", "W31": "07/27~08/02", "W32": "08/03~08/09", "W33": "08/10~08/16", "W34": "08/17~08/23", "W35": "08/24~08/30", "W36": "08/31~09/06", "W37": "09/07~09/13", "W38": "09/14~09/20", "W39": "09/21~09/27", "W40": "09/28~10/04", "W41": "10/05~10/11", "W42": "10/12~10/18", "W43": "10/19~10/25", "W44": "10/26~11/01", "W45": "11/02~11/08", "W46": "11/09~11/15", "W48": "11/23~11/29", "W49": "11/30~12/06", "W50": "12/07~12/13", "W51": "12/14~12/20", "W52": "12/21~12/27"}, "week_month": {"W18": "Apr", "W19": "May", "W20": "May", "W21": "May", "W22": "May", "W26": "Jun", "W28": "Jul", "W29": "Jul", "W30": "Jul", "W31": "Jul", "W32": "Aug", "W33": "Aug", "W34": "Aug", "W35": "Aug", "W36": "Aug", "W37": "Sep", "W38": "Sep", "W39": "Sep", "W40": "Sep", "W41": "Oct", "W42": "Oct", "W43": "Oct", "W44": "Oct", "W45": "Nov", "W46": "Nov", "W48": "Nov", "W49": "Nov", "W50": "Dec", "W51": "Dec", "W52": "Dec"}}, "dims": {"categories": ["Floor Standing AC", "Split AC"], "regions": [], "channels": ["Al Ghanem"], "compressors": ["Rotary"], "types": ["CO", "HP"], "btus": ["12000", "18000", "24000"]}, "raw": [{"w": "W20", "m": "May", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W20", "m": "May", "q": 10, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W21", "m": "May", "q": 4, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W22", "m": "May", "q": 20, "s": "ND182C", "c": "Split AC", "code": "ND182C", "type": "CO", "model": "ND182C", "comp": "Rotary", "btu": "18000"}, {"w": "W22", "m": "May", "q": 6, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W28", "m": "Jul", "q": 3, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W29", "m": "Jul", "q": 8, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W29", "m": "Jul", "q": 12, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W30", "m": "Jul", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W30", "m": "Jul", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W31", "m": "Jul", "q": -8, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W32", "m": "Aug", "q": 8, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W32", "m": "Aug", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W32", "m": "Aug", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W32", "m": "Aug", "q": 2, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W32", "m": "Aug", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W33", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W33", "m": "Aug", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W33", "m": "Aug", "q": 12, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W34", "m": "Aug", "q": 4, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W34", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W34", "m": "Aug", "q": 5, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W35", "m": "Aug", "q": 2, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W35", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W35", "m": "Aug", "q": 1, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W35", "m": "Aug", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 2, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W36", "m": "Aug", "q": 1, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W36", "m": "Aug", "q": 6, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W36", "m": "Aug", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W37", "m": "Sep", "q": 2, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W37", "m": "Sep", "q": 3, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W37", "m": "Sep", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W37", "m": "Sep", "q": 5, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W37", "m": "Sep", "q": 3, "s": "NT382C", "c": "Split AC", "code": "NT382C", "type": "CO", "model": "NT382C", "comp": "Rotary"}, {"w": "W37", "m": "Sep", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W38", "m": "Sep", "q": 4, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W38", "m": "Sep", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W38", "m": "Sep", "q": 2, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W38", "m": "Sep", "q": 6, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W39", "m": "Sep", "q": 3, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W39", "m": "Sep", "q": 5, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 1, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "ND242C", "c": "Split AC", "code": "ND242C", "type": "CO", "model": "ND242C", "comp": "Rotary", "btu": "24000"}, {"w": "W39", "m": "Sep", "q": 4, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W39", "m": "Sep", "q": 11, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W40", "m": "Sep", "q": 1, "s": "ND182C", "c": "Split AC", "code": "ND182C", "type": "CO", "model": "ND182C", "comp": "Rotary", "btu": "18000"}, {"w": "W40", "m": "Sep", "q": 2, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W40", "m": "Sep", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W41", "m": "Oct", "q": 5, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W41", "m": "Oct", "q": 1, "s": "NS242H", "c": "Split AC", "code": "NS242H", "type": "HP", "model": "NS242H", "btu": "24000"}, {"w": "W41", "m": "Oct", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W42", "m": "Oct", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W43", "m": "Oct", "q": 1, "s": "NT382C", "c": "Split AC", "code": "NT382C", "type": "CO", "model": "NT382C", "comp": "Rotary"}, {"w": "W44", "m": "Oct", "q": 1, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W44", "m": "Oct", "q": 3, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W45", "m": "Nov", "q": 1, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W45", "m": "Nov", "q": 3, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W46", "m": "Nov", "q": 3, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W46", "m": "Nov", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W48", "m": "Nov", "q": 2, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W49", "m": "Nov", "q": 3, "s": "LA182H", "c": "Split AC", "code": "LA182H", "type": "HP", "model": "LA182H", "btu": "18000"}, {"w": "W49", "m": "Nov", "q": 1, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W49", "m": "Nov", "q": 2, "s": "NF182H", "c": "Split AC", "code": "NF182H", "type": "HP", "model": "NF182H", "comp": "Rotary", "btu": "18000"}, {"w": "W49", "m": "Nov", "q": 1, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W49", "m": "Nov", "q": 1, "s": "APNW55GT3M", "c": "Floor Standing AC", "code": "APNW55GT3M7", "type": "HP", "model": "APNW55GT3M"}, {"w": "W50", "m": "Dec", "q": 1, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W50", "m": "Dec", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C", "btu": "24000"}, {"w": "W50", "m": "Dec", "q": 2, "s": "NF122H", "c": "Split AC", "code": "NF122H", "type": "HP", "model": "NF122H", "comp": "Rotary", "btu": "12000"}, {"w": "W50", "m": "Dec", "q": 6, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}, {"w": "W50", "m": "Dec", "q": 1, "s": "ND242H", "c": "Split AC", "code": "ND242H", "type": "HP", "model": "ND242H", "comp": "Rotary", "btu": "24000"}, {"w": "W50", "m": "Dec", "q": 5, "s": "APNQ55GT3M", "c": "Floor Standing AC", "code": "APNQ55GT3M7", "type": "CO", "model": "APNQ55GT3M"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LA182C", "c": "Split AC", "code": "LA182C", "type": "CO", "model": "LA182C", "btu": "18000"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LA242H", "c": "Split AC", "code": "LA242H", "type": "HP", "model": "LA242H", "btu": "24000"}, {"w": "W52", "m": "Dec", "q": 5, "s": "ND182H", "c": "Split AC", "code": "ND182H", "type": "HP", "model": "ND182H", "comp": "Rotary", "btu": "18000"}], "sellthru": [{"w": "W18", "m": "Apr", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 54.5, "v": 774981.15}, {"w": "W18", "m": "Apr", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 42.5, "v": 577605.84}, {"w": "W19", "m": "May", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 2.0, "v": 43725.5}, {"w": "W22", "m": "May", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 10.0, "v": 53358.42}, {"w": "W26", "m": "Jun", "ch": "Al Ghanem", "model": "", "c": "Floor Standing AC", "type": "", "q": 5.0, "v": 65642.5}, {"w": "W26", "m": "Jun", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 1.0, "v": 31889.0}, {"w": "W29", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 4.0, "v": 28230.16}, {"w": "W30", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 30717.9}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 44.0, "v": 204926.5}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 93.0, "v": 375076.18}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 0.0, "v": 20974.65}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 5.0, "v": 19540.14}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 95.0, "v": 354669.3}, {"w": "W31", "m": "Jul", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 7.0, "v": 32960.32}, {"w": "W32", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 19939.2}, {"w": "W33", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 20478.6}, {"w": "W35", "m": "Aug", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": -2.0, "v": 0}, {"w": "W36", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 4.0, "v": 80803.8}, {"w": "W38", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 1.0, "v": 16103.74}, {"w": "W39", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 1.0, "v": 12662.0}, {"w": "W39", "m": "Sep", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 1.0, "v": 17244.7}, {"w": "W43", "m": "Oct", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 0.0, "v": 5964.34}, {"w": "W50", "m": "Dec", "ch": "Al Ghanem", "model": "", "c": "Split AC", "type": "", "q": 1.0, "v": 4506.28}]}, "2026": {"meta": {"generated": "2026-03-31 21:34", "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "months": ["Jan", "Feb", "Mar"], "week_dates": {"W1": "1/1~1/3", "W2": "1/4~1/10", "W3": "1/11~1/17", "W4": "1/18~1/24", "W5": "1/25~1/31", "W6": "2/1~2/7", "W7": "2/8~2/14", "W8": "2/15~2/21", "W9": "2/22~2/28", "W10": "3/1~3/7", "W11": "3/8~3/14", "W12": "3/15~3/21", "W13": "3/22~3/28"}, "week_month": {"W1": "Jan", "W2": "Jan", "W3": "Jan", "W4": "Jan", "W5": "Jan", "W6": "Feb", "W7": "Feb", "W8": "Feb", "W9": "Feb", "W10": "Mar", "W11": "Mar", "W12": "Mar", "W13": "Mar"}}, "kpi": {"latest_qty": 6, "wow": -33.3, "cm_qty": 41, "mom": 127.8, "ytd": 106, "avg_week": 8.2, "models_count": 12, "cat_count": 4}, "dims": {"categories": ["Cassette", "Concealed Set", "Floor Standing AC", "Split AC"], "compressors": ["Rotary"], "types": [], "btus": ["18000", "24000"]}, "raw": [{"w": "W1", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": -1}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 6}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 6}, {"w": "W1", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": -1}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W1", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W1", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W10", "m": "Mar", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 3}, {"w": "W10", "m": "Mar", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 16}, {"w": "W10", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W10", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W10", "m": "Mar", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W11", "m": "Mar", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W11", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W12", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W12", "m": "Mar", "s": "ATNW21GPLTA.ANWGIB", "n": "AC LG Cassette 1.5 Ton H&C - Inverter", "b": "LG", "c": "Cassette", "q": 1}, {"w": "W12", "m": "Mar", "s": "ABNW55GM3TA.ANWGIB", "n": "AC LG Concealed 4 Ton H&C - Inverter", "b": "LG", "c": "Concealed Set", "q": 1}, {"w": "W12", "m": "Mar", "s": "ABNW21GMITA", "n": "AC LG Concealed 18 H&C - Inverter", "b": "LG", "c": "Concealed Set", "q": 4}, {"w": "W13", "m": "Mar", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W13", "m": "Mar", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "24000"}, {"w": "W13", "m": "Mar", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W2", "m": "Jan", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 7}, {"w": "W2", "m": "Jan", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W2", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 4, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2, "comp": "Rotary", "btu": "18000"}, {"w": "W3", "m": "Jan", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 3}, {"w": "W3", "m": "Jan", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W4", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W4", "m": "Jan", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W4", "m": "Jan", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": -1, "btu": "18000"}, {"w": "W5", "m": "Jan", "s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W6", "m": "Feb", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W7", "m": "Feb", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "ND242C0.NK0", "n": "AC LG Wall Fresh 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 3, "btu": "24000"}, {"w": "W7", "m": "Feb", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W8", "m": "Feb", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W8", "m": "Feb", "s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 2, "btu": "18000"}, {"w": "W8", "m": "Feb", "s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "24000"}, {"w": "W8", "m": "Feb", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}, {"w": "W8", "m": "Feb", "s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "comp": "Rotary", "btu": "18000"}, {"w": "W9", "m": "Feb", "s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 1, "btu": "18000"}, {"w": "W9", "m": "Feb", "s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "q": 2}, {"w": "W9", "m": "Feb", "s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "q": 1}], "models": [{"s": "APNQ55GT3M7.ENWGIB", "n": "AC LG 55 Floor Standing Islamic H&C", "b": "LG", "c": "Floor Standing AC", "t": 31, "wk": {"W1": 2, "W10": 19, "W2": 7, "W8": 1, "W9": 2}}, {"s": "APNW55GT3M7.ENWGIB", "n": "AC LG Floor Standing Islamic 46 H&C", "b": "LG", "c": "Floor Standing AC", "t": 20, "wk": {"W1": 14, "W13": 1, "W3": 3, "W8": 1, "W9": 1}}, {"s": "LA182H0.NK0", "n": "AC LG Wall 18 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 10, "wk": {"W1": 6, "W7": 2, "W8": 2}}, {"s": "ND182C0.NK0", "n": "AC LG Wall Fresh 18 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W1": 4, "W3": 3, "W6": 1, "W8": 1}}, {"s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W10": 4, "W12": 1, "W13": 2, "W2": 1, "W7": 1}}, {"s": "LA242H0.NK0", "n": "AC LG Wall 24 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 9, "wk": {"W10": 1, "W13": 3, "W4": 1, "W7": 3, "W8": 1}}, {"s": "ND182H0.NK0", "n": "AC LG Wall Fresh 18 H&C - WiFi", "b": "LG", "c": "Split AC", "t": 7, "wk": {"W11": 1, "W2": 4, "W4": 1, "W5": 1}}, {"s": "LA182C0.NK0", "n": "AC LG Wall 18 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 4, "wk": {"W11": 1, "W12": 2, "W3": 1, "W4": -1, "W9": 1}}, {"s": "ABNW21GMITA", "n": "AC LG Concealed 18 H&C - Inverter", "b": "LG", "c": "Concealed Set", "t": 4, "wk": {"W12": 4}}, {"s": "ATNW21GPLTA.ANWGIB", "n": "AC LG Cassette 1.5 Ton H&C - Inverter", "b": "LG", "c": "Cassette", "t": 1, "wk": {"W12": 1}}, {"s": "ABNW55GM3TA.ANWGIB", "n": "AC LG Concealed 4 Ton H&C - Inverter", "b": "LG", "c": "Concealed Set", "t": 1, "wk": {"W12": 1}}, {"s": "ND242C0.NK0", "n": "AC LG Wall Fresh 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 1, "wk": {"W7": 1}}], "weekly": {"W1": 26, "W10": 24, "W11": 2, "W12": 9, "W13": 6, "W2": 12, "W3": 7, "W4": 1, "W5": 1, "W6": 1, "W7": 7, "W8": 6, "W9": 4}, "monthly": {"Jan": 47, "Feb": 18, "Mar": 41}, "sellthru": [{"w": "W10", "m": "Mar", "ch": "Al Ghanem", "model": "", "c": "Cassette AC", "type": "", "q": 0.0, "v": 5233.2}, {"w": "W10", "m": "Mar", "ch": "Al Ghanem", "model": "", "c": "Concealed Set", "type": "", "q": 3.5, "v": 24656.2}]}}};
-var _urlYear = new URLSearchParams(window.location.search).get('year');
-var _currentYear = (_urlYear && _ALL_YEAR_DATA.data[_urlYear]) ? _urlYear : _ALL_YEAR_DATA.current;
-var D = _ALL_YEAR_DATA.data[_currentYear];
-
 // === Year switching (robust global approach) ===
 // switchYear is global — no IIFE closure issues
-function _yrSwitchYear(yr){
-  if(yr === _currentYear) return;
-  var url = new URL(window.location.href);
-  url.searchParams.set('year', yr);
-  window.location.href = url.toString();
-}
+
 
 // Build year selector UI (runs immediately after DOM is ready)
-(function(){
-  var yearHost = document.querySelector('.filters');
-  if(!yearHost){ console.warn('[YearSel] No .filters found'); return; }
-  var isDark = !!document.querySelector('.tab-btn') || getComputedStyle(document.body).backgroundColor.match(/1[0-5],/);
-  var yearDiv = document.createElement('div');
-  yearDiv.id = '_yearSelector';
-  yearDiv.style.cssText = 'display:flex;gap:4px;align-items:center;margin-left:auto;padding:0 8px';
-  var label = document.createElement('span');
-  label.textContent = 'Year:';
-  label.style.cssText = 'font-size:10px;text-transform:uppercase;font-weight:600;margin-right:4px;'
-    + (isDark ? 'color:#94a3b8' : 'color:#64748b');
-  yearDiv.appendChild(label);
-  _ALL_YEAR_DATA.years.forEach(function(yr){
-    var btn = document.createElement('button');
-    btn.textContent = yr;
-    var isActive = yr === _currentYear;
-    btn.style.cssText = 'padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;border-radius:4px;transition:.2s;'
-      + (isDark
-        ? 'border:1px solid '+(isActive?'#2563eb':'#475569')+';background:'+(isActive?'#2563eb':'#1e293b')+';color:'+(isActive?'#fff':'#94a3b8')
-        : 'border:1px solid '+(isActive?'#2563eb':'#e2e8f0')+';background:'+(isActive?'#2563eb':'#fff')+';color:'+(isActive?'#fff':'#1e293b'));
-    btn.onclick = function(){ _yrSwitchYear(yr); };
-    yearDiv.appendChild(btn);
-  });
-  yearHost.appendChild(yearDiv);
-})();
-
-
-
-
 
 
 // ===== TAB SWITCHING =====
-document.querySelectorAll('.tab-btn').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('main>section').forEach(s=>s.style.display='none');
-    document.getElementById('tab-'+btn.dataset.tab).style.display='';
-    if(btn.dataset.tab==='trend')renderTrend();
-    if(btn.dataset.tab==='ranking')renderRanking();
-  });
+;
 });
 
 // ===== CHART COLORS =====
-const COLORS=['#3b82f6','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16'];
 const CAT_COLORS={'Split AC':'#3b82f6','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed':'#a855f7','Concealed Set':'#a855f7','Concealed Outdoor':'#7c3aed','Concealed Indoor':'#c084fc','Cassette':'#22d3ee'};
 
 // ===== MULTI-SELECT FILTER =====
@@ -333,7 +508,6 @@ function destroyChart(id){
 let ovInit=false;
 
 // ===== UNIFIED MULTI-SELECT FILTERS =====
-const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
 let FILTER_MAP={
   fMonth:{key:'m',items:D.meta.months||[]},
   fWeek:{key:'w',items:D.meta.weeks||[]},
@@ -343,98 +517,6 @@ let FILTER_MAP={
   fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
 };
 
-function rebuildFilters(){
-  FILTER_MAP={
-    fMonth:{key:'m',items:D.meta.months||[]},
-    fWeek:{key:'w',items:D.meta.weeks||[]},
-    fCat:{key:'c',items:(D.dims&&D.dims.categories)||[]},
-    fComp:{key:'comp',items:(D.dims&&D.dims.compressors)||[]},
-    fType:{key:'type',items:(D.dims&&D.dims.types)||[]},
-    fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
-  };
-  Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
-  Object.keys(FILTER_MAP).forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.innerHTML='';
-    buildMultiSelect(id);
-  });
-}
-
-function buildMultiSelect(wrapperId){
-  const wrap=document.getElementById(wrapperId);
-  if(!wrap)return;
-  const cfg=FILTER_MAP[wrapperId];
-  if(!cfg)return;
-  const state=FILTER_STATE[cfg.key];
-  const btn=document.createElement('button');
-  btn.className='ms-btn';btn.type='button';
-  const drop=document.createElement('div');
-  drop.className='ms-drop';
-  const allLabel=document.createElement('label');
-  allLabel.className='ms-all';
-  const allCb=document.createElement('input');
-  allCb.type='checkbox';allCb.checked=true;
-  allLabel.appendChild(allCb);allLabel.appendChild(document.createTextNode(' Select All'));
-  drop.appendChild(allLabel);
-  const cbs=[];
-  cfg.items.forEach(item=>{
-    const label=document.createElement('label');
-    const cb=document.createElement('input');
-    cb.type='checkbox';cb.value=item;cb.checked=true;
-    label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
-    drop.appendChild(label);
-    cbs.push(cb);
-    label.addEventListener('click',(e)=>{
-      e.preventDefault();e.stopPropagation();
-      cb.checked=!cb.checked;
-      if(cb.checked)state.delete(item);else state.add(item);
-      allCb.checked=state.size===0;
-      updateBtnLabel();_globalUpdate();
-    });
-  });
-  allLabel.addEventListener('click',(e)=>{
-    e.preventDefault();e.stopPropagation();
-    const newState=!allCb.checked;
-    allCb.checked=newState;
-    cbs.forEach(cb=>{cb.checked=newState});
-    state.clear();
-    if(!newState){cfg.items.forEach(i=>state.add(i))}
-    updateBtnLabel();_globalUpdate();
-  });
-  function updateBtnLabel(){
-    const total=cfg.items.length;
-    const selected=total-state.size;
-    if(selected===total){btn.textContent='All ('+total+')';btn.classList.remove('active-filter')}
-    else if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
-    else if(selected<=2){btn.textContent=cfg.items.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
-    else{btn.textContent=selected+' of '+total;btn.classList.add('active-filter')}
-  }
-  updateBtnLabel();
-  wrap.setAttribute('tabindex','-1');wrap.style.outline='none';
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.ms-drop.open').forEach(d=>{if(d!==drop)d.classList.remove('open')});
-    drop.classList.toggle('open');
-    if(drop.classList.contains('open'))wrap.focus();
-  });
-  wrap.addEventListener('focusout',(e)=>{
-    setTimeout(()=>{if(!wrap.contains(document.activeElement))drop.classList.remove('open')},150);
-  });
-  wrap.appendChild(btn);wrap.appendChild(drop);
-  wrap._reset=()=>{cbs.forEach(cb=>{cb.checked=true});allCb.checked=true;state.clear();updateBtnLabel()};
-}
-Object.keys(FILTER_MAP).forEach(id=>buildMultiSelect(id));
-
-function filtered(){
-  return (D.raw||[]).filter(r=>{
-    if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
-    if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
-    if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
-    if(FILTER_STATE.comp.size>0&&r.comp&&FILTER_STATE.comp.has(r.comp))return false;
-    if(FILTER_STATE.type.size>0&&r.type&&FILTER_STATE.type.has(r.type))return false;
-    if(FILTER_STATE.btu.size>0&&r.btu&&FILTER_STATE.btu.has(r.btu))return false;
-    return true;
-  });
-}
 
 function filteredSellthru(){
   return (D.sellthru||[]).filter(r=>{
@@ -446,28 +528,7 @@ function filteredSellthru(){
   });
 }
 
-function resetFilters(){Object.keys(FILTER_MAP).forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});_globalUpdate()}
-
-function _globalUpdate(){
-  // Update filter count
-  var rows=filtered();
-  var total=rows.reduce((s,r)=>s+(r.q||0),0);
-  var fc=document.getElementById('filterCount');
-  if(fc) fc.textContent=rows.length+' rows / '+Math.round(total).toLocaleString()+' units';
-  // Re-render active tab
-  var activeTab='overview';
-  var activeEl=document.querySelector('.tab-btn.active')||document.querySelector('.tab.active');
-  if(activeEl) activeTab=activeEl.dataset.tab;
-  if(activeTab==='overview'&&typeof renderOverview==='function') renderOverview();
-  else if(activeTab==='trend'&&typeof renderTrend==='function') renderTrend();
-  else if(activeTab==='ranking'&&typeof renderRanking==='function') renderRanking();
-  else if(activeTab==='region'&&typeof update==='function') update();
-  else if(activeTab==='product'&&typeof update==='function') update();
-  else if(activeTab==='price'&&typeof update==='function') update();
-  else if(activeTab==='wos'&&typeof updateWOS==='function') updateWOS();
-  else if((activeTab==='sd'||activeTab==='supplydemand')&&typeof updateSD==='function') updateSD();
-  else if(typeof update==='function') update();
-}
+);_globalUpdate()}
 
 
 // ===== UNIFIED MULTI-SELECT FILTERS =====
@@ -591,10 +652,10 @@ function _globalUpdate(){
   var rows=filtered();
   var total=rows.reduce((s,r)=>s+(r.q||0),0);
   var fc=document.getElementById('filterCount');
-  if(fc) fc.textContent=rows.length+' rows / '+Math.round(total).toLocaleString()+' units';
+  if(fc) fc.textContent=currentYear+' · '+rows.length+' rows / '+Math.round(total).toLocaleString()+' units';
   // Re-render active tab
   var activeTab='overview';
-  var activeEl=document.querySelector('.tab-btn.active')||document.querySelector('.tab.active');
+  var activeEl=document.querySelector('.tab.active')||document.querySelector('.tab.active');
   if(activeEl) activeTab=activeEl.dataset.tab;
   if(activeTab==='overview'&&typeof renderOverview==='function') renderOverview();
   else if(activeTab==='trend'&&typeof renderTrend==='function') renderTrend();
@@ -775,8 +836,8 @@ const _WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',I
 const _WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
 
 function _getWosYear(){
-  // Support year switching: check _currentYear, currentYear, or default
-  if(typeof _currentYear!=='undefined') return _currentYear;
+  // Support year switching: check currentYear, currentYear, or default
+  if(typeof currentYear!=='undefined') return currentYear;
   if(typeof currentYear!=='undefined') return currentYear;
   return '2026';
 }
@@ -931,13 +992,12 @@ function updateWOS(){
 })();
 
 
-
 // ===== SUPPLY vs DEMAND TAB =====
 const _SD_WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
 const _SD_WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
 
 function _sdGetYear(){
-  if(typeof _currentYear!=='undefined') return _currentYear;
+  if(typeof currentYear!=='undefined') return currentYear;
   if(typeof currentYear!=='undefined') return currentYear;
   return '2026';
 }
@@ -1186,7 +1246,6 @@ function updateSD(){
 })();
 
 
-
 // ===== _WOS_ENHANCED: SO/ST overlay on WOS Stock Trend =====
 const _WOS_ENHANCED=true;
 (function(){
@@ -1258,10 +1317,10 @@ const _WOS_ENHANCED=true;
 // Update badge/header with current year
 (function(){
   var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
-  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, _currentYear);
+  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, currentYear);
   document.querySelectorAll('header h1, header p, .text-blue-400, .text-sm.text-slate-400').forEach(function(el){
     if(el.textContent.match(/20\d{2}/)){
-      el.textContent = el.textContent.replace(/20\d{2}/g, _currentYear);
+      el.textContent = el.textContent.replace(/20\d{2}/g, currentYear);
     }
   });
 })();
@@ -1270,10 +1329,10 @@ const _WOS_ENHANCED=true;
 // Update badge/header with current year
 (function(){
   var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
-  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, _currentYear);
+  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, currentYear);
   document.querySelectorAll('header h1, header p, .text-blue-400, .text-sm.text-slate-400').forEach(function(el){
     if(el.textContent.match(/20\d{2}/)){
-      el.textContent = el.textContent.replace(/20\d{2}/g, _currentYear);
+      el.textContent = el.textContent.replace(/20\d{2}/g, currentYear);
     }
   });
 })();
@@ -1282,13 +1341,32 @@ const _WOS_ENHANCED=true;
 // Update badge/header with current year
 (function(){
   var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
-  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, _currentYear);
+  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, currentYear);
   document.querySelectorAll('header h1, header p, .text-blue-400, .text-sm.text-slate-400').forEach(function(el){
     if(el.textContent.match(/20\d{2}/)){
-      el.textContent = el.textContent.replace(/20\d{2}/g, _currentYear);
+      el.textContent = el.textContent.replace(/20\d{2}/g, currentYear);
     }
   });
 })();
 
+
+// Tab switching (unified design)
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    var pane = document.getElementById('pane-'+t.dataset.tab);
+    if(pane) pane.classList.add('active');
+    if(typeof _globalUpdate==='function') _globalUpdate();
+  });
+});
+
+// Initial render
+if(typeof _globalUpdate==="function") _globalUpdate();
+
+// Update year badge
+document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
 </script>
-</body></html>
+</body>
+</html>
