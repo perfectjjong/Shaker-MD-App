@@ -536,5 +536,17 @@ function downloadExcel(){
   var title=document.title.replace(/[^a-zA-Z0-9\s-]/g,'').trim().replace(/\s+/g,'_');
   XLSX.writeFile(wb,title+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
+
+// Update badge/header with current year
+(function(){
+  var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
+  if(badge) badge.textContent = badge.textContent.replace(/20\d{2}/, _currentYear);
+  document.querySelectorAll('header h1, header p, .text-blue-400, .text-sm.text-slate-400').forEach(function(el){
+    if(el.textContent.match(/20\d{2}/)){
+      el.textContent = el.textContent.replace(/20\d{2}/g, _currentYear);
+    }
+  });
+})();
+
 </script>
 </body></html>
