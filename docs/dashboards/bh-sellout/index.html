@@ -176,6 +176,26 @@ var _ALL = {"years":["2024","2025","2026"],"current":"2026","data":{"2024":{"met
 
 var _urlYear = new URLSearchParams(window.location.search).get('year');
 var currentYear = (_urlYear && _ALL.data[_urlYear]) ? _urlYear : _ALL.current;
+
+// Build year selector (auto-generated fix)
+(function(){
+  const sel=document.getElementById('yearSelect');
+  if(!sel)return;
+  _ALL.years.forEach(yr=>{
+    const opt=document.createElement('option');
+    opt.value=yr;opt.textContent=yr;
+    if(yr===currentYear)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change',()=>{
+    currentYear=sel.value;
+    D=_ALL.data[currentYear];
+    WEEKS=D.meta.weeks;MONTHS=D.meta.months;
+    rebuildFilters();
+    _globalUpdate();
+  });
+})();
+
 var D = _ALL.data[currentYear];
 
 // === Year switching (robust global approach) ===
@@ -190,7 +210,11 @@ var WEEKS=D.meta.weeks, MONTHS=D.meta.months;
 
 // ===== MULTI-SELECT FILTERS =====
 const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),r:new Set(),ch:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
-const FILTER_MAP={fMonth:{key:'m',items:MONTHS},fWeek:{key:'w',items:WEEKS},fCat:{key:'c',items:D.dims.categories},fRegion:{key:'r',items:D.dims.regions},fChannel:{key:'ch',items:D.dims.channels}};
+const FILTER_MAP={fMonth:{key:'m',items:MONTHS},fWeek:{key:'w',items:WEEKS},fCat:{key:'c',items:D.dims.categories},fRegion:{key:'r',items:D.dims.regions},fChannel:{key:'ch',items:D.dims.channels},
+  fComp:{key:'comp',items:(D.dims&&D.dims.compressors)||[]},
+  fType:{key:'type',items:(D.dims&&D.dims.types)||[]},
+  fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+};
 
 function buildMultiSelect(wrapperId){
   const wrap=document.getElementById(wrapperId);

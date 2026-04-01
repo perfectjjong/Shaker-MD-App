@@ -234,233 +234,6 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
 
 tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-serif']},colors:{navy:{50:'#E8F4FD',100:'#D1E9FB',200:'#A3D3F7',500:'#2E75B6',700:'#1E3A5F',800:'#1F4E79',900:'#0F2A42'}}}}}
 </script>
-<style>
-body{background:#0f172a;color:#e2e8f0;font-family:'Inter',sans-serif}
-header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px solid #10b981}
-.tab{padding:8px 20px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;border:1px solid transparent}
-.tab.active{background:#1e293b;color:#34d399;border-color:#334155;border-bottom-color:#1e293b}
-.tab:not(.active){background:#0f172a;color:#94a3b8}
-.tab:hover:not(.active){color:#e2e8f0;background:#1e293b50}
-.card{background:#1e293b;border-radius:12px;padding:20px;border:1px solid #334155}
-.kpi-card{background:#1e293b;border-radius:12px;padding:16px 20px;border-left:4px solid #10b981}
-.kpi-val{font-size:28px;font-weight:700;color:#f1f5f9}
-.kpi-label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:.5px}
-.kpi-change{font-size:12px;font-weight:600}
-.up{color:#f87171}.dn{color:#4ade80}
-.tbl-wrap{overflow-x:auto}
-.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px}
-.tbl-wrap th{background:#334155;color:#fff;padding:8px 12px;text-align:left;position:sticky;top:0;z-index:2;white-space:nowrap;cursor:pointer;user-select:none;font-weight:600;font-size:11px}
-.tbl-wrap th:hover{background:#475569}
-.tbl-wrap td{padding:6px 12px;border-bottom:1px solid #334155;white-space:nowrap;color:#e2e8f0}
-.tbl-wrap tr:nth-child(even) td{background:#1e293b}
-.tbl-wrap tr:nth-child(odd) td{background:#0f172a}
-.tbl-wrap tr:hover td{background:#334155}
-.ms-wrap{position:relative;display:inline-block}
-.ms-btn{display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid #64748b;border-radius:6px;background:#0f172a;color:#f1f5f9;font-size:12px;cursor:pointer;font-weight:500}
-.ms-btn:hover{border-color:#34d399;background:#1e293b}
-.ms-menu{display:none;position:absolute;top:100%;left:0;z-index:50;min-width:180px;max-height:280px;background:#1e293b;border:1px solid #475569;border-radius:8px;box-shadow:0 8px 25px rgba(0,0,0,.4);margin-top:2px;overflow:hidden}
-.ms-list{max-height:220px;overflow-y:auto}
-.ms-menu.open{display:block}
-.ms-menu label{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:pointer;font-size:11px;color:#e2e8f0}
-.ms-menu label:hover{background:#334155}
-.ms-menu .ms-actions{display:flex;gap:8px;padding:6px 10px;border-bottom:1px solid #334155;font-size:10px}
-.ms-menu .ms-actions button{color:#34d399;font-weight:600;cursor:pointer;background:none;border:none}
-.ms-menu .ms-actions button.ms-none{color:#f87171}
-.progress-bar{height:8px;border-radius:4px;background:#334155;overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#10b981,#34d399)}
-.cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
-.cat-split{background:#1e3a5f;color:#60a5fa}
-.cat-window{background:#422006;color:#fbbf24}
-.cat-floor{background:#14532d;color:#4ade80}
-.cat-concealed{background:#3b1f4e;color:#c084fc}
-.cat-cassette{background:#1e3a4f;color:#67e8f9}
-@media(max-width:640px){
-  .kpi-val{font-size:20px}
-  .tab{padding:6px 12px;font-size:11px}
-  .card{padding:12px}
-  .tbl-wrap td,.tbl-wrap th{padding:4px 6px;font-size:10px}
-  canvas{max-height:250px!important}
-}
-
-.filters{background:#1e293b;border-bottom:1px solid #334155;padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:0;z-index:98;flex-wrap:wrap}
-.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;margin-bottom:2px}
-.ms-btn{padding:4px 12px;border:1px solid #475569;border-radius:6px;background:#1e293b;color:#e2e8f0;cursor:pointer;font-size:12px;white-space:nowrap;min-width:60px;text-align:left}
-.ms-btn.active-filter{border-color:#3b82f6;background:#1e3a5f;font-weight:600}
-.ms-drop{display:none;position:absolute;top:100%;left:0;background:#1e293b;border:1px solid #475569;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);padding:8px;min-width:160px;max-height:300px;overflow-y:auto;z-index:200;color:#e2e8f0}
-.ms-drop.open{display:block}
-.ms-drop label{display:block;padding:3px 6px;font-size:12px;cursor:pointer;border-radius:4px;color:#cbd5e1}
-.ms-drop label:hover{background:#334155}
-.ms-drop label.ms-all{font-weight:600;border-bottom:1px solid #475569;margin-bottom:4px;padding-bottom:6px}
-.ms-drop input{margin-right:6px}
-.btn-reset{padding:4px 12px;border:1px solid #475569;border-radius:6px;background:#1e293b;cursor:pointer;font-size:12px;color:#94a3b8}
-.btn-reset:hover{background:#7f1d1d;border-color:#dc2626;color:#fca5a5}
-.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:6px;background:#064e3b;cursor:pointer;font-size:12px;color:#d1fae5;font-weight:600}
-.filter-count{font-size:10px;color:#94a3b8;margin-left:8px}
-
-</style>
-</head>
-<body>
-<header class="py-4">
-<div class="max-w-[1600px] mx-auto px-6 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-white">Tamkeen Sell-out Weekly Dashboard</h1>
-    <p class="text-sm text-slate-400 mt-1">LG Electronics — IR Channel</p>
-  </div>
-  <div class="text-right text-xs text-slate-400">
-    <div>Updated: 2026-03-30 16:46</div>
-    <div>Data: W1~W13 2026</div>
-  </div>
-</div>
-</header>
-
-<!-- Tabs -->
-<div class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-700">
-<div class="max-w-[1600px] mx-auto px-6">
-<nav class="flex gap-1 pt-2" id="tabs">
-  <button class="tab active" data-tab="overview">Overview</button>
-  <button class="tab" data-tab="trend">Weekly Trend</button>
-  <button class="tab" data-tab="ranking">Model Ranking</button>
-  <button class="tab" data-tab="wos">WOS (Stock)</button>
-  <button class="tab" data-tab="sd">Supply vs Demand</button>
-</nav>
-</div>
-</div>
-
-<div class="filters">
-<div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
-<div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
-<div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
-<div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
-<div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
-<div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
-<button class="btn-reset" onclick="resetFilters()">Reset</button>
-<button class="btn-excel" onclick="downloadExcel()">📥 Excel Download</button>
-<span class="filter-count" id="filterCount"></span>
-</div>
-<main class="max-w-[1600px] mx-auto px-6 py-6">
-
-<!-- ===================== TAB 1: OVERVIEW ===================== -->
-<section id="tab-overview">
-  
-
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-    <div class="kpi-card">
-      <div class="kpi-label">Latest Week (W13)</div>
-      <div class="kpi-val" id="kpi-lq">30</div>
-      <div class="kpi-change up">-34.8% WoW</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Current Month</div>
-      <div class="kpi-val">165</div>
-      <div class="kpi-change up">-10.3% MoM</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">YTD Total</div>
-      <div class="kpi-val">518</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Avg / Week</div>
-      <div class="kpi-val">39.8</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Models / Categories</div>
-      <div class="kpi-val">19<span class="text-base text-slate-400"> / 3</span></div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Weekly Sales Trend</h3>
-      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Monthly Sales</h3>
-      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Sales by Category</h3>
-      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Category Weekly Trend</h3>
-      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== TAB 2: WEEKLY TREND ===================== -->
-<section id="tab-trend" style="display:none">
-  
-
-  <div class="card mb-4">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Weekly Trend (Top 10)</h3>
-    <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
-  </div>
-
-  <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model × Week Matrix</h3>
-    <div class="tbl-wrap" id="matrix_tbl"></div>
-  </div>
-</section>
-
-<!-- ===================== TAB 3: MODEL RANKING ===================== -->
-<section id="tab-ranking" style="display:none">
-<div style="margin-bottom:8px"><input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px" oninput="if(typeof renderRanking==="function")renderRanking()"/></div>
-  
-
-  <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Ranking</h3>
-    <div class="tbl-wrap" id="rank_tbl"></div>
-  </div>
-</section>
-<section id="tab-wos" style="display:none">
-
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
-
-
-<div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
-<div class="card"><h3>Stock vs Sell-out vs Sell-thru Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
-</div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
-<div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
-</div></div>
-
-</section>
-<section id="tab-sd" style="display:none">
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px" id="sdKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div style="height:300px"><canvas id="cSdCategory"></canvas></div></div>
-<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div style="height:300px"><canvas id="cSdWeekly"></canvas></div></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div style="height:250px"><canvas id="cSdMonthly"></canvas></div></div>
-<div class="card"><h3>Weekly: SO vs ST vs Stock Trend</h3><div style="height:250px"><canvas id="cSdTriple"></canvas></div></div>
-</div>
-<div class="card" style="margin-bottom:16px"><h3>Category Breakdown: Supply vs Demand vs Stock</h3>
-<div style="max-height:400px;overflow-y:auto"><table id="tblSdCat"></table></div></div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail: All 4 Metrics <span id="sdModelCount" style="font-weight:400;color:#64748b"></span></h3>
-<div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
-</div></div>
-
-</section>
-
-
-</main>
-
-<footer class="text-center text-xs text-slate-600 py-4 border-t border-slate-800">
-  Tamkeen Sell-out Dashboard · Generated 2026-03-30 16:46 · Powered by 소놀봇
-</footer>
 
 <script>
 
@@ -473,8 +246,6 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 
 
 // ===== TAB SWITCHING =====
-;
-});
 
 // ===== CHART COLORS =====
 const CAT_COLORS={'Split AC':'#3b82f6','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed':'#a855f7','Concealed Set':'#a855f7','Concealed Outdoor':'#7c3aed','Concealed Indoor':'#c084fc','Cassette':'#22d3ee'};
@@ -502,30 +273,7 @@ function destroyChart(id){
 let ovInit=false;
 
 // ===== UNIFIED MULTI-SELECT FILTERS =====
-let FILTER_MAP={
-  fMonth:{key:'m',items:D.meta.months||[]},
-  fWeek:{key:'w',items:D.meta.weeks||[]},
-  fCat:{key:'c',items:(D.dims&&D.dims.categories)||[]},
-  fComp:{key:'comp',items:(D.dims&&D.dims.compressors)||[]},
-  fType:{key:'type',items:(D.dims&&D.dims.types)||[]},
-  fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
-};
 
-
-function filteredSellthru(){
-  return (D.sellthru||[]).filter(r=>{
-    if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
-    if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
-    if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
-    if(FILTER_STATE.type.size>0&&r.type&&FILTER_STATE.type.has(r.type))return false;
-    return true;
-  });
-}
-
-);_globalUpdate()}
-
-
-// ===== UNIFIED MULTI-SELECT FILTERS =====
 const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
 let FILTER_MAP={
   fMonth:{key:'m',items:D.meta.months||[]},
@@ -639,7 +387,7 @@ function filteredSellthru(){
   });
 }
 
-function resetFilters(){Object.keys(FILTER_MAP).forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});_globalUpdate()}
+function resetFilters(){Object.keys(FILTER_MAP).forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()}// (removed orphaned fragment)
 
 function _globalUpdate(){
   // Update filter count
@@ -1347,5 +1095,6 @@ if(typeof _globalUpdate==="function") _globalUpdate();
 // Update year badge
 document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
 </script>
+
 </body>
 </html>

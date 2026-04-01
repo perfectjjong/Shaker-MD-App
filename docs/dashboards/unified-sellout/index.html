@@ -713,6 +713,9 @@ function updateWOS(){
   // Get filtered channels
   const activeChannels=Object.keys(sd.channels).filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
   const activeCats=D.dims.categories.filter(c=>FILTER_STATE.c.size===0||!FILTER_STATE.c.has(c));
+    const activeComps=D.dims&&D.dims.compressors?D.dims.compressors.filter(cp=>FILTER_STATE.comp.size===0||!FILTER_STATE.comp.has(cp)):[];
+    const activeTypes=D.dims&&D.dims.types?D.dims.types.filter(t=>FILTER_STATE.type.size===0||!FILTER_STATE.type.has(t)):[];
+    const activeBtus=FILTER_STATE.btu.size===0?null:[...FILTER_STATE.btu];
   const allWeeks=sd.weeks||[];
   const latestW=allWeeks.length?allWeeks[allWeeks.length-1]:'';
   const thresholds=sd.wos_thresholds||{};
@@ -725,7 +728,7 @@ function updateWOS(){
     const cd=sd.channels[ch];
     if(!cd)return;
     // Filter models by category
-    const models=cd.models.filter(m=>activeCats.length===0||activeCats.includes(m.category));
+    const models=cd.models.filter(m=>activeCats.length===0||activeCats.includes(m.category)&&(FILTER_STATE.comp.size===0||!m.comp||!FILTER_STATE.comp.has(m.comp))&&(FILTER_STATE.type.size===0||!m.type||!FILTER_STATE.type.has(m.type))&&(FILTER_STATE.btu.size===0||!m.btu||!FILTER_STATE.btu.has(m.btu)));
     let chStock=0;
     models.forEach(m=>{
       const s=(m.stock||{})[latestW]||0;
