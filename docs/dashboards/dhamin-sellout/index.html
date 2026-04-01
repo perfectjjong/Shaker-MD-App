@@ -57,21 +57,20 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
   canvas{max-height:250px!important}
 }
 
-.filters{background:#fff;border-bottom:1px solid var(--border,#e2e8f0);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
-.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted,#64748b);font-weight:600;margin-bottom:2px}
-.ms-wrap{position:relative;display:inline-block}
-.ms-btn{padding:4px 12px;border:1px solid var(--border,#e2e8f0);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;white-space:nowrap;min-width:60px;text-align:left}
-.ms-btn.active-filter{border-color:var(--primary,#2563eb);background:#eff6ff;font-weight:600}
-.ms-drop{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border,#e2e8f0);border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.15);padding:8px;min-width:160px;max-height:300px;overflow-y:auto;z-index:200}
+.filters{background:#1e293b;border-bottom:1px solid #334155;padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:0;z-index:98;flex-wrap:wrap}
+.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:#94a3b8;font-weight:600;margin-bottom:2px}
+.ms-btn{padding:4px 12px;border:1px solid #475569;border-radius:6px;background:#1e293b;color:#e2e8f0;cursor:pointer;font-size:12px;white-space:nowrap;min-width:60px;text-align:left}
+.ms-btn.active-filter{border-color:#3b82f6;background:#1e3a5f;font-weight:600}
+.ms-drop{display:none;position:absolute;top:100%;left:0;background:#1e293b;border:1px solid #475569;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.3);padding:8px;min-width:160px;max-height:300px;overflow-y:auto;z-index:200;color:#e2e8f0}
 .ms-drop.open{display:block}
-.ms-drop label{display:block;padding:3px 6px;font-size:12px;cursor:pointer;border-radius:4px}
-.ms-drop label:hover{background:#f1f5f9}
-.ms-drop label.ms-all{font-weight:600;border-bottom:1px solid #e2e8f0;margin-bottom:4px;padding-bottom:6px}
+.ms-drop label{display:block;padding:3px 6px;font-size:12px;cursor:pointer;border-radius:4px;color:#cbd5e1}
+.ms-drop label:hover{background:#334155}
+.ms-drop label.ms-all{font-weight:600;border-bottom:1px solid #475569;margin-bottom:4px;padding-bottom:6px}
 .ms-drop input{margin-right:6px}
-.btn-reset{padding:4px 12px;border:1px solid var(--border,#e2e8f0);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;color:var(--muted,#64748b)}
-.btn-reset:hover{background:#fee2e2;border-color:#fca5a5;color:#dc2626}
-.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:6px;background:#ecfdf5;cursor:pointer;font-size:12px;color:#065f46;font-weight:600}
-.filter-count{font-size:10px;color:var(--muted,#64748b);margin-left:8px}
+.btn-reset{padding:4px 12px;border:1px solid #475569;border-radius:6px;background:#1e293b;cursor:pointer;font-size:12px;color:#94a3b8}
+.btn-reset:hover{background:#7f1d1d;border-color:#dc2626;color:#fca5a5}
+.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:6px;background:#064e3b;cursor:pointer;font-size:12px;color:#d1fae5;font-weight:600}
+.filter-count{font-size:10px;color:#94a3b8;margin-left:8px}
 
 </style>
 </head>
@@ -102,6 +101,17 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 </div>
 </div>
 
+<div class="filters">
+<div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
+<div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
+<div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
+<div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
+<div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
+<div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
+<button class="btn-reset" onclick="resetFilters()">Reset</button>
+<button class="btn-excel" onclick="downloadExcel()">📥 Excel Download</button>
+<span class="filter-count" id="filterCount"></span>
+</div>
 <main class="max-w-[1600px] mx-auto px-6 py-6">
 
 <!-- ===================== TAB 1: OVERVIEW ===================== -->
@@ -173,6 +183,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 
 <!-- ===================== TAB 3: MODEL RANKING ===================== -->
 <section id="tab-ranking" style="display:none">
+<div style="margin-bottom:8px"><input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px" oninput="if(typeof renderRanking==="function")renderRanking()"/></div>
   
 
   <div class="card">
@@ -185,17 +196,7 @@ header{background:linear-gradient(135deg,#1e293b,#334155);border-bottom:2px soli
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
 <div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
-<div class="filters">
-<div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
-<div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
-<div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
-<div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
-<div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
-<div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
-<button class="btn-reset" onclick="resetFilters()">Reset</button>
-<button class="btn-excel" onclick="downloadExcel()">📥 Excel Download</button>
-<span class="filter-count" id="filterCount"></span>
-</div>
+
 
 <div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
 </div>
@@ -410,21 +411,6 @@ const CAT_COLORS={'Split AC':'#3b82f6','Window AC':'#f59e0b','Floor Standing AC'
 // ===== MULTI-SELECT FILTER =====
 // FILTERS replaced by unified system
 function initMS(){/* replaced by unified filter */};
-  const list=document.getElementById(id+'_list');
-  items.forEach(it=>{
-    const lbl=document.createElement('label');
-    lbl.innerHTML=`<input type="checkbox" checked value="${it}"/> <span>${it}</span>`;
-    lbl.querySelector('input').addEventListener('change',e=>{
-      if(e.target.checked)FILTERS[id].selected.add(it);else FILTERS[id].selected.delete(it);
-      onChange();
-    });
-    list.appendChild(lbl);
-  });
-  document.getElementById(id+'_btn').addEventListener('click',e=>{
-    e.stopPropagation();
-    document.getElementById(id+'_menu').classList.toggle('open');
-  });
-}
 function msAll(){}
 function msNone(){}
 document.addEventListener('click',()=>document.querySelectorAll('.ms-menu.open').forEach(m=>m.classList.remove('open')));
@@ -583,9 +569,7 @@ function _globalUpdate(){
 
 function renderOverview(){
   /* init handled by unified filter */
-  const selW=FILTERS.ow.selected;
-  const selC=FILTERS.oc.selected;
-  const filt=D.raw.filter(r=>selW.has(r.w)&&selC.has(r.c));
+  const filt=filtered();
   const weeks=D.meta.weeks.filter(w=>!FILTER_STATE.w.has(w));
 
   const filtTotal=filt.reduce((s,r)=>s+r.q,0);
@@ -649,9 +633,7 @@ function renderOverview(){
 let trendInit=false;
 function renderTrend(){
   /* init handled by unified filter */
-  const selW=FILTERS.fw.selected;
-  const selC=FILTERS.fc.selected;
-  const filt=D.raw.filter(r=>selW.has(r.w)&&selC.has(r.c));
+  const filt=filtered();
   const weeks=[...selW].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
 
   /* filter info moved to unified bar */
@@ -701,10 +683,9 @@ function renderTrend(){
 let rankInit=false;
 function renderRanking(){
   /* init handled by unified filter */
-  const selW=FILTERS.rw.selected;
-  const selC=FILTERS.rc.selected;
+  // Using unified filter
   const q=document.getElementById('rank_search').value.toLowerCase();
-  const filt=D.raw.filter(r=>selW.has(r.w)&&selC.has(r.c));
+  const filt=filtered();
 
   const agg={};
   filt.forEach(r=>{
