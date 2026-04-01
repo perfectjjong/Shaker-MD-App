@@ -185,7 +185,7 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
     rebuildFilters();
-    update();updateSD();updateWOS();
+    update();
     // Reset cascade after year change
     Object.keys(FILTER_MAP).forEach(id=>{const w=document.getElementById(id);if(w&&w._update)w._update(null)});
   });
