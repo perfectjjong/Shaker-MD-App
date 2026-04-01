@@ -132,7 +132,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
 <div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
-<div class="card"><h3>Stock Weekly Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
+<div class="card"><h3>Stock vs Sell-out vs Sell-thru Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
 </div>
 <div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
 <div style="max-height:600px;overflow-y:auto">
@@ -947,6 +947,75 @@ function updateSD(){
     };
   }
   try{updateSD()}catch(e){console.error('SD init error:',e)}
+})();
+
+
+
+// ===== _WOS_ENHANCED: SO/ST overlay on WOS Stock Trend =====
+const _WOS_ENHANCED=true;
+(function(){
+  const _origWOS=typeof updateWOS==='function'?updateWOS:null;
+  if(!_origWOS) return;
+  window.updateWOS=function(){
+    _origWOS.apply(this,arguments);
+    // After original WOS renders, enhance stock trend chart with SO/ST lines
+    try{_enhanceWosStockTrend()}catch(e){console.error('WOS enhance error:',e)}
+  };
+
+  function _enhanceWosStockTrend(){
+    const yr=_getWosYear();
+    const sd=_WOS_STOCK_DATA[yr];
+    if(!sd||!sd.weeks) return;
+
+    // Get SO/ST data from D
+    const soRows=(D&&D.raw)||[];
+    const stRows=(D&&D.sellthru)||[];
+    if(soRows.length===0&&stRows.length===0) return;
+
+    // Sum by week
+    const soW={},stW={};
+    soRows.forEach(r=>{const w=r.w;if(w)soW[w]=(soW[w]||0)+(r.q||0)});
+    stRows.forEach(r=>{const w=r.w;if(w)stW[w]=(stW[w]||0)+(r.q||0)});
+
+    // Get the stock trend chart and add datasets
+    const chartKey='_wosChart_cWosStockTrend';
+    const chart=window[chartKey];
+    if(!chart) return;
+
+    const weeks=chart.data.labels;
+
+    // Check if already enhanced (has >1 dataset)
+    if(chart.data.datasets.length>1) return;
+
+    // Add SO and ST lines
+    chart.data.datasets.push({
+      label:'Sell-out',
+      data:weeks.map(w=>soW[w]||0),
+      type:'line',
+      borderColor:'#10b981',
+      backgroundColor:'rgba(16,185,129,0.1)',
+      tension:.3,
+      borderWidth:2,
+      pointRadius:2,
+      yAxisID:'y',
+      order:0
+    });
+    chart.data.datasets.push({
+      label:'Sell-thru',
+      data:weeks.map(w=>stW[w]||0),
+      type:'line',
+      borderColor:'#2563eb',
+      backgroundColor:'rgba(37,99,235,0.1)',
+      tension:.3,
+      borderWidth:2,
+      pointRadius:2,
+      yAxisID:'y',
+      order:0
+    });
+
+    chart.options.plugins.legend.display=true;
+    chart.update();
+  }
 })();
 
 </script>
