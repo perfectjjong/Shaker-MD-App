@@ -188,10 +188,17 @@ var currentYear = (_urlYear && _ALL.data[_urlYear]) ? _urlYear : _ALL.current;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
+    // Save SELECTED items for ALL filters before year change
+    const prevSelected={};
+    Object.keys(FILTER_MAP).forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const st=FILTER_STATE[cfg.key];
+      prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
+    });
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
-    rebuildFilters();
+    rebuildFilters(prevSelected);
     _globalUpdate();
   });
 })();
@@ -210,11 +217,36 @@ var WEEKS=D.meta.weeks, MONTHS=D.meta.months;
 
 // ===== MULTI-SELECT FILTERS =====
 const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),r:new Set(),ch:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
-const FILTER_MAP={fMonth:{key:'m',items:MONTHS},fWeek:{key:'w',items:WEEKS},fCat:{key:'c',items:D.dims.categories},fRegion:{key:'r',items:D.dims.regions},fChannel:{key:'ch',items:D.dims.channels},
+let FILTER_MAP={fMonth:{key:'m',items:MONTHS},fWeek:{key:'w',items:WEEKS},fCat:{key:'c',items:D.dims.categories},fRegion:{key:'r',items:D.dims.regions},fChannel:{key:'ch',items:D.dims.channels},
   fComp:{key:'comp',items:(D.dims&&D.dims.compressors)||[]},
   fType:{key:'type',items:(D.dims&&D.dims.types)||[]},
   fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
 };
+function rebuildFilters(prevSelected){
+  FILTER_MAP={fMonth:{key:'m',items:MONTHS},fWeek:{key:'w',items:WEEKS},fCat:{key:'c',items:D.dims.categories},fRegion:{key:'r',items:D.dims.regions||[]},fChannel:{key:'ch',items:D.dims.channels},
+    fComp:{key:'comp',items:(D.dims&&D.dims.compressors)||[]},
+    fType:{key:'type',items:(D.dims&&D.dims.types)||[]},
+    fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+  };
+  Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+  if(prevSelected){
+    Object.keys(FILTER_MAP).forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const prev=new Set(prevSelected[cfg.key]||[]);
+      const overlap=cfg.items.filter(item=>prev.has(item));
+      if(overlap.length>0){
+        cfg.items.forEach(item=>{
+          if(!prev.has(item))FILTER_STATE[cfg.key].add(item);
+        });
+      }
+    });
+  }
+  Object.keys(FILTER_MAP).forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML='';
+    buildMultiSelect(id);
+  });
+}
 
 function buildMultiSelect(wrapperId){
   const wrap=document.getElementById(wrapperId);
