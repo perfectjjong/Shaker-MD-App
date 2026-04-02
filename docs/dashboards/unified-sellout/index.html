@@ -51,6 +51,9 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 .footer{text-align:center;padding:16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:24px}
 .ch-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:#dbeafe;color:#1e40af;margin-right:4px}
 @media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
+
+.ms-drop label.ms-disabled{opacity:0.35;pointer-events:none;text-decoration:line-through}
+
 </style>
 </head>
 <body>
@@ -181,16 +184,53 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
+    // Save SELECTED items for ALL filters (positive set, not exclusion set)
+    const prevSelected={};
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const st=FILTER_STATE[cfg.key];
+      prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
+    });
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
-    rebuildFilters();
-    update();updateSD();updateWOS();
+    // Rebuild FILTER_MAP with new year data
+    FILTER_MAP={
+      fMonth:{key:'m',items:MONTHS},
+      fWeek:{key:'w',items:WEEKS},
+      fChannel:{key:'ch',items:D.dims.channels},
+      fCat:{key:'c',items:D.dims.categories},
+      fComp:{key:'comp',items:D.dims.compressors},
+      fType:{key:'type',items:D.dims.types},
+      fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+    };
+    // Clear all filter states
+    Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+    // Restore ALL filters: keep only previously selected items that exist in new year
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const prev=new Set(prevSelected[cfg.key]||[]);
+      const overlap=cfg.items.filter(item=>prev.has(item));
+      if(overlap.length>0){
+        cfg.items.forEach(item=>{
+          if(!prev.has(item))FILTER_STATE[cfg.key].add(item);
+        });
+      }
+    });
+    // Rebuild DOM
+    FILTER_ORDER.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML='';
+      buildMultiSelect(id);
+    });
+    cascadeAndUpdate();
+    updateSD();updateWOS();
   });
 })();
 
 // ===== MULTI-SELECT FILTERS =====
 const FILTER_STATE={m:new Set(),w:new Set(),ch:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
+const FILTER_ORDER=['fMonth','fWeek','fChannel','fCat','fComp','fType','fBtu'];
 let FILTER_MAP={
   fMonth:{key:'m',items:MONTHS},
   fWeek:{key:'w',items:WEEKS},
@@ -200,6 +240,56 @@ let FILTER_MAP={
   fType:{key:'type',items:D.dims.types},
   fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
 };
+
+// --- Cascading: compute available items for each filter ---
+function getAvailable(excludeKey, source){
+  const rows=(source||D.raw).filter(r=>{
+    for(const[fk,st]of Object.entries(FILTER_STATE)){
+      if(fk===excludeKey)continue;
+      if(st.size>0&&st.has(r[fk]))return false;
+    }
+    return true;
+  });
+  return rows;
+}
+
+function computeAvailableItems(){
+  const avail={};
+  FILTER_ORDER.forEach(id=>{
+    const cfg=FILTER_MAP[id];
+    const rows=getAvailable(cfg.key);
+    const vals=new Set(rows.map(r=>r[cfg.key]).filter(v=>v&&v!==''));
+    avail[id]=vals;
+  });
+  if(FILTER_STATE.m.size>0&&D.meta.week_month){
+    const activeMonths=MONTHS.filter(m=>!FILTER_STATE.m.has(m));
+    const validWeeks=new Set();
+    Object.entries(D.meta.week_month).forEach(([w,m])=>{
+      if(activeMonths.includes(m))validWeeks.add(w);
+    });
+    const dataWeeks=avail['fWeek'];
+    avail['fWeek']=new Set([...validWeeks].filter(w=>dataWeeks.has(w)));
+  }
+  return avail;
+}
+
+function rebuildFilters(){
+  FILTER_MAP={
+    fMonth:{key:'m',items:MONTHS},
+    fWeek:{key:'w',items:WEEKS},
+    fChannel:{key:'ch',items:D.dims.channels},
+    fCat:{key:'c',items:D.dims.categories},
+    fComp:{key:'comp',items:D.dims.compressors},
+    fType:{key:'type',items:D.dims.types},
+    fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+  };
+  Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+  FILTER_ORDER.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML='';
+    buildMultiSelect(id);
+  });
+}
 
 function rebuildFilters(){
   // Update filter items for new year
@@ -234,41 +324,57 @@ function buildMultiSelect(wrapperId){
   const allLabel=document.createElement('label');
   allLabel.className='ms-all';
   const allCb=document.createElement('input');
-  allCb.type='checkbox';allCb.checked=true;
+  allCb.type='checkbox';allCb.checked=state.size===0;
   allLabel.appendChild(allCb);allLabel.appendChild(document.createTextNode(' Select All'));
   drop.appendChild(allLabel);
   const cbs=[];
+  const labels=[];
   cfg.items.forEach(item=>{
     const label=document.createElement('label');
     const cb=document.createElement('input');
-    cb.type='checkbox';cb.value=item;cb.checked=true;
+    cb.type='checkbox';cb.value=item;cb.checked=!state.has(item);
     label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
     drop.appendChild(label);
     cbs.push(cb);
+    labels.push(label);
     label.addEventListener('click',(e)=>{
       e.preventDefault();e.stopPropagation();
+      if(label.classList.contains('ms-disabled'))return;
       cb.checked=!cb.checked;
       if(cb.checked)state.delete(item);else state.add(item);
       allCb.checked=state.size===0;
-      updateBtnLabel();update();
+      updateBtnLabel();
+      cascadeAndUpdate();
     });
   });
   allLabel.addEventListener('click',(e)=>{
     e.preventDefault();e.stopPropagation();
     const newState=!allCb.checked;
     allCb.checked=newState;
-    cbs.forEach(cb=>{cb.checked=newState});
+    cbs.forEach((cb,i)=>{
+      if(!labels[i].classList.contains('ms-disabled')){
+        cb.checked=newState;
+      }
+    });
     state.clear();
-    if(!newState){cfg.items.forEach(i=>state.add(i))}
-    updateBtnLabel();update();
+    if(!newState){
+      cfg.items.forEach((item,i)=>{
+        if(!labels[i].classList.contains('ms-disabled'))state.add(item);
+      });
+    }
+    updateBtnLabel();
+    cascadeAndUpdate();
   });
   function updateBtnLabel(){
-    const total=cfg.items.length;
-    const selected=total-state.size;
-    if(selected===total){btn.textContent='All ('+total+')';btn.classList.remove('active-filter')}
-    else if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
-    else if(selected<=2){btn.textContent=cfg.items.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
-    else{btn.textContent=selected+' of '+total;btn.classList.add('active-filter')}
+    const visibleItems=cfg.items.filter((_,i)=>!labels[i].classList.contains('ms-disabled'));
+    const totalAll=cfg.items.length;
+    const totalVisible=visibleItems.length;
+    const selected=visibleItems.filter(i=>!state.has(i)).length;
+    const cascaded=totalVisible<totalAll;
+    if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
+    else if(!cascaded&&state.size===0){btn.textContent='All ('+totalAll+')';btn.classList.remove('active-filter')}
+    else if(selected<=2&&!cascaded){btn.textContent=visibleItems.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
+    else{btn.textContent=selected+' of '+totalAll;btn.classList.add('active-filter')}
   }
   updateBtnLabel();
   wrap.setAttribute('tabindex','-1');wrap.style.outline='none';
@@ -281,9 +387,40 @@ function buildMultiSelect(wrapperId){
     setTimeout(()=>{if(!wrap.contains(document.activeElement))drop.classList.remove('open')},150);
   });
   wrap.appendChild(btn);wrap.appendChild(drop);
-  wrap._reset=()=>{cbs.forEach(cb=>{cb.checked=true});allCb.checked=true;state.clear();updateBtnLabel()};
+  wrap._reset=()=>{cbs.forEach(cb=>{cb.checked=true});labels.forEach(l=>l.classList.remove('ms-disabled'));allCb.checked=true;state.clear();updateBtnLabel()};
+  wrap._updateAvailable=(availSet)=>{
+    cbs.forEach((cb,i)=>{
+      const item=cfg.items[i];
+      const avail=availSet.has(item);
+      if(!avail){
+        labels[i].classList.add('ms-disabled');
+        labels[i].style.opacity='0.35';
+        labels[i].style.pointerEvents='none';
+      }else{
+        labels[i].classList.remove('ms-disabled');
+        labels[i].style.opacity='1';
+        labels[i].style.pointerEvents='auto';
+      }
+    });
+    updateBtnLabel();
+  };
 }
-Object.keys(FILTER_MAP).forEach(id=>buildMultiSelect(id));
+
+// --- Cascade: update available options after any filter change ---
+function cascadeAndUpdate(){
+  const avail=computeAvailableItems();
+  FILTER_ORDER.forEach(id=>{
+    const wrap=document.getElementById(id);
+    if(wrap&&wrap._updateAvailable){
+      wrap._updateAvailable(avail[id]);
+    }
+  });
+  update();updateSD();updateWOS();
+}
+
+FILTER_ORDER.forEach(id=>buildMultiSelect(id));
+// Initial cascade
+setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{const w=document.getElementById(id);if(w&&w._updateAvailable)w._updateAvailable(avail[id])})},0);
 
 function filtered(){
   return D.raw.filter(r=>{
@@ -297,7 +434,7 @@ function filtered(){
     return true;
   });
 }
-function resetFilters(){Object.keys(FILTER_MAP).forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});update()}
+function resetFilters(){FILTER_ORDER.forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});cascadeAndUpdate()}
 
 // ===== TABS =====
 document.querySelectorAll('.tab').forEach(t=>{
