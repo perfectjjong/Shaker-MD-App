@@ -184,9 +184,6 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
-    // Save current filter states before year switch
-    const savedState={};
-    Object.entries(FILTER_STATE).forEach(([k,s])=>{savedState[k]=new Set(s)});
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
@@ -200,15 +197,9 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
       fType:{key:'type',items:D.dims.types},
       fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
     };
-    // Restore valid filter states (only items that exist in new year)
-    Object.keys(FILTER_STATE).forEach(k=>{
-      FILTER_STATE[k].clear();
-      if(savedState[k]&&savedState[k].size>0){
-        const cfg=Object.values(FILTER_MAP).find(c=>c.key===k);
-        if(cfg){savedState[k].forEach(item=>{if(cfg.items.includes(item))FILTER_STATE[k].add(item)})}
-      }
-    });
-    // Rebuild DOM with restored states
+    // Clear all filter states on year change (prevents cross-year filter contamination)
+    Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+    // Rebuild DOM
     FILTER_ORDER.forEach(id=>{
       const el=document.getElementById(id);
       if(el)el.innerHTML='';
