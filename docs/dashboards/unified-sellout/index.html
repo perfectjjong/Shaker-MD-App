@@ -184,6 +184,9 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
+    // Save currently SELECTED months (checked = not in FILTER_STATE.m)
+    const prevSelectedMonths=MONTHS.filter(m=>!FILTER_STATE.m.has(m));
+    const hadMonthFilter=FILTER_STATE.m.size>0;
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
@@ -197,8 +200,14 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
       fType:{key:'type',items:D.dims.types},
       fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
     };
-    // Clear all filter states on year change (prevents cross-year filter contamination)
+    // Clear all filter states (other filters reset for new year)
     Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+    // Restore month selection: keep only previously selected months, exclude the rest
+    if(hadMonthFilter){
+      MONTHS.forEach(m=>{
+        if(!prevSelectedMonths.includes(m))FILTER_STATE.m.add(m);
+      });
+    }
     // Rebuild DOM
     FILTER_ORDER.forEach(id=>{
       const el=document.getElementById(id);
