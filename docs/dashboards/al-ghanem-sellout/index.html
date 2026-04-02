@@ -229,17 +229,10 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
-    // Save SELECTED items for ALL filters before year change
-    const prevSelected={};
-    Object.keys(FILTER_MAP).forEach(id=>{
-      const cfg=FILTER_MAP[id];
-      const st=FILTER_STATE[cfg.key];
-      prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
-    });
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
-    rebuildFilters(prevSelected);
+    rebuildFilters();
     update();if(typeof updateSD==='function')updateSD();if(typeof updateWOS==='function')updateWOS();
   });
 })();
@@ -297,7 +290,7 @@ let FILTER_MAP={
   fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
 };
 
-function rebuildFilters(prevSelected){
+function rebuildFilters(){
   FILTER_MAP={
     fMonth:{key:'m',items:D.meta.months||[]},
     fWeek:{key:'w',items:D.meta.weeks||[]},
@@ -307,19 +300,6 @@ function rebuildFilters(prevSelected){
     fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
   };
   Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
-  // Restore filter selections from previous year
-  if(prevSelected){
-    Object.keys(FILTER_MAP).forEach(id=>{
-      const cfg=FILTER_MAP[id];
-      const prev=new Set(prevSelected[cfg.key]||[]);
-      const overlap=cfg.items.filter(item=>prev.has(item));
-      if(overlap.length>0){
-        cfg.items.forEach(item=>{
-          if(!prev.has(item))FILTER_STATE[cfg.key].add(item);
-        });
-      }
-    });
-  }
   Object.keys(FILTER_MAP).forEach(id=>{
     const el=document.getElementById(id);
     if(el)el.innerHTML='';
@@ -624,10 +604,25 @@ function updateWOS(){
   }
 
   const allWeeks=sd.weeks||[];
-  const latestW=allWeeks.length?allWeeks[allWeeks.length-1]:'';
-  const models=sd.models;
 
-  // Aggregate
+  // ===== FILTER-AWARE: Read filter state if available =====
+  const hasFilters=typeof FILTER_STATE!=='undefined';
+  let selWeeks=allWeeks;
+  if(hasFilters&&FILTER_STATE.w&&FILTER_STATE.w.size>0){
+    selWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w));
+  }
+  const latestW=selWeeks.length?selWeeks[selWeeks.length-1]:(allWeeks.length?allWeeks[allWeeks.length-1]:'');
+
+  // Filter models by Category, Type, Compressor, BTU
+  let models=sd.models;
+  if(hasFilters){
+    if(FILTER_STATE.c&&FILTER_STATE.c.size>0) models=models.filter(m=>!FILTER_STATE.c.has(m.category));
+    if(FILTER_STATE.type&&FILTER_STATE.type.size>0) models=models.filter(m=>!FILTER_STATE.type.has(m.type));
+    if(FILTER_STATE.comp&&FILTER_STATE.comp.size>0) models=models.filter(m=>!m.compressor||!FILTER_STATE.comp.has(m.compressor));
+    if(FILTER_STATE.btu&&FILTER_STATE.btu.size>0) models=models.filter(m=>!m.btu||!FILTER_STATE.btu.has(m.btu));
+  }
+
+  // Aggregate for selected week
   let totalStock=0;
   const stockByCat={};
   const signalCounts={OPPORTUNITY:0,HEALTHY:0,OVERSTOCK:0,INACTIVE:0};
@@ -645,27 +640,41 @@ function updateWOS(){
     }
   });
 
-  // Overall WOS
+  // Overall WOS for selected week
   const wbw=sd.wos_by_week||{};
+  let wosM8=null,wosP8=null;
   const latestWos=wbw[latestW]||{};
-  const wosM8=latestWos.wos_m8;
-  const wosP8=latestWos.wos_p8;
+  if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
+    let stockSum=0,m8WeightedSum=0,p8WeightedSum=0,m8HasData=false,p8HasData=false;
+    models.forEach(m=>{
+      const stk=(m.stock||{})[latestW]||0;
+      const wos=(m.wos||{})[latestW];
+      if(wos){
+        if(wos.m8!==null&&wos.m8!==undefined){m8WeightedSum+=wos.m8*stk;m8HasData=true}
+        if(wos.p8!==null&&wos.p8!==undefined){p8WeightedSum+=wos.p8*stk;p8HasData=true}
+      }
+      stockSum+=stk;
+    });
+    if(m8HasData&&stockSum>0)wosM8=Math.round(m8WeightedSum/stockSum*10)/10;
+    if(p8HasData&&stockSum>0)wosP8=Math.round(p8WeightedSum/stockSum*10)/10;
+  }else{
+    wosM8=latestWos.wos_m8;
+    wosP8=latestWos.wos_p8;
+  }
   const sigM8=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
   const sigP8=wosP8!==null&&wosP8!==undefined?(wosP8<=12?'OPPORTUNITY':wosP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
 
-  // KPI
+  const isFiltered=hasFilters&&(FILTER_STATE.w&&FILTER_STATE.w.size>0||FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0);
+  const filterTag=isFiltered?' [Filtered]':'';
   const kpiStyle='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
   kpiEl.innerHTML=[
-    {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:models.length+' models',b:'#2563eb'},
-    {l:'WOS-8 (Past 8wk)',v:wosM8!==null&&wosM8!==undefined?wosM8+' wks':'N/A',s:_WOS_LABELS[sigM8],b:_WOS_COLORS[sigM8]},
-    {l:'WOS+8 (Next 8wk)',v:wosP8!==null&&wosP8!==undefined?wosP8+' wks':'N/A',s:_WOS_LABELS[sigP8],b:_WOS_COLORS[sigP8]},
+    {l:'Total Stock ('+latestW+')'+filterTag,v:totalStock.toLocaleString(),s:models.length+' models',b:'#2563eb'},
+    {l:'WOS-8 (Past 8wk)',v:wosM8!==null&&wosM8!==undefined?wosM8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigM8],b:_WOS_COLORS[sigM8]},
+    {l:'WOS+8 (Next 8wk)',v:wosP8!==null&&wosP8!==undefined?wosP8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigP8],b:_WOS_COLORS[sigP8]},
     {l:'Signal Summary',v:signalCounts.OPPORTUNITY+'/'+signalCounts.HEALTHY+'/'+signalCounts.OVERSTOCK,s:'Need/Optimal/Excess',b:'#8b5cf6'},
   ].map(k=>'<div style="'+kpiStyle+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
 
-  // Charts (using Chart.js if available)
   if(typeof Chart==='undefined') return;
-
-  // Destroy existing WOS charts
   ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{
     if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
   });
@@ -687,20 +696,33 @@ function updateWOS(){
     return chart;
   }
 
-  // Stock by Category
   const catLabels=Object.keys(stockByCat).filter(c=>stockByCat[c]>0).sort((a,b)=>stockByCat[b]-stockByCat[a]);
   _wosMk('cWosCatBar','bar',{
     labels:catLabels,
-    datasets:[{label:'Stock',data:catLabels.map(c=>stockByCat[c]),backgroundColor:COLORS}]
+    datasets:[{label:'Stock ('+latestW+')',data:catLabels.map(c=>stockByCat[c]),backgroundColor:COLORS}]
   },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
 
-  // WOS Weekly Trend
-  const trendWeeks=allWeeks.slice(-20);
+  const trendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
   const m8Data=[],p8Data=[];
   trendWeeks.forEach(w=>{
-    const wd=wbw[w];
-    m8Data.push(wd&&wd.wos_m8!==null&&wd.wos_m8!==undefined?Math.round(wd.wos_m8):null);
-    p8Data.push(wd&&wd.wos_p8!==null&&wd.wos_p8!==undefined?Math.round(wd.wos_p8):null);
+    if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
+      let stockS=0,m8ws=0,p8ws=0,m8h=false,p8h=false;
+      models.forEach(m=>{
+        const stk=(m.stock||{})[w]||0;
+        const wos=(m.wos||{})[w];
+        if(wos){
+          if(wos.m8!==null&&wos.m8!==undefined){m8ws+=wos.m8*stk;m8h=true}
+          if(wos.p8!==null&&wos.p8!==undefined){p8ws+=wos.p8*stk;p8h=true}
+        }
+        stockS+=stk;
+      });
+      m8Data.push(m8h&&stockS>0?Math.round(m8ws/stockS*10)/10:null);
+      p8Data.push(p8h&&stockS>0?Math.round(p8ws/stockS*10)/10:null);
+    }else{
+      const wd=wbw[w];
+      m8Data.push(wd&&wd.wos_m8!==null&&wd.wos_m8!==undefined?Math.round(wd.wos_m8*10)/10:null);
+      p8Data.push(wd&&wd.wos_p8!==null&&wd.wos_p8!==undefined?Math.round(wd.wos_p8*10)/10:null);
+    }
   });
   _wosMk('cWosTrend','line',{
     labels:trendWeeks,
@@ -712,31 +734,29 @@ function updateWOS(){
     ]
   },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
 
-  // WOS Signal Distribution
   const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
   _wosMk('cWosSignal','doughnut',{
     labels:sigLabels.map(k=>_WOS_LABELS[k]||k),
     datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>_WOS_COLORS[k])}]
   },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
 
-  // Stock Weekly Trend (total)
-  const totalByWeek=sd.total_by_week||{};
-  const stkTrendWeeks=allWeeks.slice(-20);
+  const stkTrendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
   _wosMk('cWosStockTrend','bar',{
     labels:stkTrendWeeks,
-    datasets:[{label:'Total Stock',data:stkTrendWeeks.map(w=>totalByWeek[w]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1}]
+    datasets:[{label:'Total Stock',data:stkTrendWeeks.map(w=>{
+      let s=0;models.forEach(m=>{s+=(m.stock||{})[w]||0});return s;
+    }),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1}]
   },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
 
-  // Model Detail Table
   const modelRows=models.map(m=>{
     const stk=(m.stock||{})[latestW]||0;
     const wos=(m.wos||{})[latestW]||{};
     return {model:m.model,cat:m.category,type:m.type,stock:stk,m8:wos.m8,p8:wos.p8,sm8:wos.sm8||'INACTIVE',sp8:wos.sp8||'INACTIVE'};
   }).sort((a,b)=>b.stock-a.stock);
-  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+')';
+  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+filterTag+')';
   document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
-    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8:'N/A';
-    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8:'N/A';
+    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(1):'N/A';
+    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(1):'N/A';
     const m8c=_WOS_COLORS[r.sm8]||'#999';
     const p8c=_WOS_COLORS[r.sp8]||'#999';
     return '<tr><td style="font-family:monospace;font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(_WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(_WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';

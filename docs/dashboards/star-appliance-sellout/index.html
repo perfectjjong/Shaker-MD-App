@@ -660,7 +660,6 @@ function updateWOS(){
 
   // ===== FILTER-AWARE: Read filter state if available =====
   const hasFilters=typeof FILTER_STATE!=='undefined';
-  // Selected weeks = all weeks minus excluded ones
   let selWeeks=allWeeks;
   if(hasFilters&&FILTER_STATE.w&&FILTER_STATE.w.size>0){
     selWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w));
@@ -696,12 +695,9 @@ function updateWOS(){
 
   // Overall WOS for selected week
   const wbw=sd.wos_by_week||{};
-  // Recalculate WOS from filtered models for the selected week
   let wosM8=null,wosP8=null;
   const latestWos=wbw[latestW]||{};
-  // If no category/type filter, use pre-calculated overall WOS
   if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
-    // Recalculate from filtered models: weighted average
     let stockSum=0,m8WeightedSum=0,p8WeightedSum=0,m8HasData=false,p8HasData=false;
     models.forEach(m=>{
       const stk=(m.stock||{})[latestW]||0;
@@ -721,7 +717,6 @@ function updateWOS(){
   const sigM8=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
   const sigP8=wosP8!==null&&wosP8!==undefined?(wosP8<=12?'OPPORTUNITY':wosP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
 
-  // KPI
   const isFiltered=hasFilters&&(FILTER_STATE.w&&FILTER_STATE.w.size>0||FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0);
   const filterTag=isFiltered?' [Filtered]':'';
   const kpiStyle='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
@@ -732,10 +727,7 @@ function updateWOS(){
     {l:'Signal Summary',v:signalCounts.OPPORTUNITY+'/'+signalCounts.HEALTHY+'/'+signalCounts.OVERSTOCK,s:'Need/Optimal/Excess',b:'#8b5cf6'},
   ].map(k=>'<div style="'+kpiStyle+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
 
-  // Charts (using Chart.js if available)
   if(typeof Chart==='undefined') return;
-
-  // Destroy existing WOS charts
   ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{
     if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
   });
@@ -757,19 +749,16 @@ function updateWOS(){
     return chart;
   }
 
-  // Stock by Category (filtered)
   const catLabels=Object.keys(stockByCat).filter(c=>stockByCat[c]>0).sort((a,b)=>stockByCat[b]-stockByCat[a]);
   _wosMk('cWosCatBar','bar',{
     labels:catLabels,
     datasets:[{label:'Stock ('+latestW+')',data:catLabels.map(c=>stockByCat[c]),backgroundColor:COLORS}]
   },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
 
-  // WOS Weekly Trend (show only selected weeks, recalculate from filtered models)
   const trendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
   const m8Data=[],p8Data=[];
   trendWeeks.forEach(w=>{
     if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
-      // Recalculate from filtered models
       let stockS=0,m8ws=0,p8ws=0,m8h=false,p8h=false;
       models.forEach(m=>{
         const stk=(m.stock||{})[w]||0;
@@ -798,14 +787,12 @@ function updateWOS(){
     ]
   },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
 
-  // WOS Signal Distribution (filtered)
   const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
   _wosMk('cWosSignal','doughnut',{
     labels:sigLabels.map(k=>_WOS_LABELS[k]||k),
     datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>_WOS_COLORS[k])}]
   },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
 
-  // Stock Weekly Trend (recalculate from filtered models)
   const stkTrendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
   _wosMk('cWosStockTrend','bar',{
     labels:stkTrendWeeks,
@@ -814,7 +801,6 @@ function updateWOS(){
     }),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1}]
   },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
 
-  // Model Detail Table (filtered, for selected week)
   const modelRows=models.map(m=>{
     const stk=(m.stock||{})[latestW]||0;
     const wos=(m.wos||{})[latestW]||{};
