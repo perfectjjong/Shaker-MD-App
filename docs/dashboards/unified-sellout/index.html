@@ -847,6 +847,12 @@ function updateWOS(){
     return;
   }
 
+  // Build model → {comp, btu} lookup from raw sell-out data
+  const modelAttrMap={};
+  (D.raw||[]).forEach(r=>{
+    if(!modelAttrMap[r.model])modelAttrMap[r.model]={comp:r.comp||'',btu:r.btu||''};
+  });
+
   // Get filtered channels
   const activeChannels=Object.keys(sd.channels).filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
   const activeCats=D.dims.categories.filter(c=>FILTER_STATE.c.size===0||!FILTER_STATE.c.has(c));
@@ -854,11 +860,19 @@ function updateWOS(){
   const allWeeks=sd.weeks||[];
   // Filter-aware: use selected week instead of always latest
   let selWeeks=allWeeks;
+  // Apply month filter → convert to week filter
+  if(FILTER_STATE.m&&FILTER_STATE.m.size>0&&D.meta.week_month){
+    const activeMonths=MONTHS.filter(m=>!FILTER_STATE.m.has(m));
+    selWeeks=allWeeks.filter(w=>{
+      const wMonth=D.meta.week_month[w];
+      return wMonth&&activeMonths.includes(wMonth);
+    });
+  }
   if(FILTER_STATE.w&&FILTER_STATE.w.size>0){
-    selWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w));
+    selWeeks=selWeeks.filter(w=>!FILTER_STATE.w.has(w));
   }
   const latestW=selWeeks.length?selWeeks[selWeeks.length-1]:(allWeeks.length?allWeeks[allWeeks.length-1]:'');
-  const isWosFiltered=FILTER_STATE.w.size>0||FILTER_STATE.c.size>0||FILTER_STATE.type.size>0||FILTER_STATE.ch.size>0;
+  const isWosFiltered=FILTER_STATE.w.size>0||FILTER_STATE.c.size>0||FILTER_STATE.type.size>0||FILTER_STATE.ch.size>0||FILTER_STATE.m.size>0||FILTER_STATE.comp.size>0||FILTER_STATE.btu.size>0;
   const wosFilterTag=isWosFiltered?' [Filtered]':'';
   const thresholds=sd.wos_thresholds||{};
 
@@ -869,8 +883,15 @@ function updateWOS(){
   activeChannels.forEach(ch=>{
     const cd=sd.channels[ch];
     if(!cd)return;
-    // Filter models by category and type
-    const models=cd.models.filter(m=>(activeCats.length===0||activeCats.includes(m.category))&&(activeTypes.length===0||activeTypes.includes(m.type)));
+    // Filter models by category, type, compressor, BTU
+    const models=cd.models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(activeTypes.length>0&&!activeTypes.includes(m.type))return false;
+      const attr=modelAttrMap[m.model]||{};
+      if(FILTER_STATE.comp.size>0&&attr.comp&&FILTER_STATE.comp.has(attr.comp))return false;
+      if(FILTER_STATE.btu.size>0&&attr.btu&&FILTER_STATE.btu.has(attr.btu))return false;
+      return true;
+    });
     let chStock=0;
     models.forEach(m=>{
       const s=(m.stock||{})[latestW]||0;
@@ -914,8 +935,15 @@ function updateWOS(){
     if(p8Data){
       if(p8Data.wos_p8!==null&&p8Data.wos_p8!==undefined){wosP8Sum+=p8Data.wos_p8;wosP8Cnt++}
     }
-    // Count signals per model (filtered by category and type)
-    cd.models.filter(m=>(activeCats.length===0||activeCats.includes(m.category))&&(activeTypes.length===0||activeTypes.includes(m.type))).forEach(m=>{
+    // Count signals per model (filtered by all filters)
+    cd.models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(activeTypes.length>0&&!activeTypes.includes(m.type))return false;
+      const attr=modelAttrMap[m.model]||{};
+      if(FILTER_STATE.comp.size>0&&attr.comp&&FILTER_STATE.comp.has(attr.comp))return false;
+      if(FILTER_STATE.btu.size>0&&attr.btu&&FILTER_STATE.btu.has(attr.btu))return false;
+      return true;
+    }).forEach(m=>{
       const wos=(m.wos||{})[latestW];
       if(wos){
         const sig=wos.sm8||wos.sp8||'INACTIVE';
@@ -993,7 +1021,14 @@ function updateWOS(){
     chCatStock[ch]={};
     const cd=sd.channels[ch];
     if(!cd)return;
-    cd.models.filter(m=>(activeCats.length===0||activeCats.includes(m.category))&&(activeTypes.length===0||activeTypes.includes(m.type))).forEach(m=>{
+    cd.models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(activeTypes.length>0&&!activeTypes.includes(m.type))return false;
+      const attr=modelAttrMap[m.model]||{};
+      if(FILTER_STATE.comp.size>0&&attr.comp&&FILTER_STATE.comp.has(attr.comp))return false;
+      if(FILTER_STATE.btu.size>0&&attr.btu&&FILTER_STATE.btu.has(attr.btu))return false;
+      return true;
+    }).forEach(m=>{
       const cat=m.category||'Other';
       const s=(m.stock||{})[latestW]||0;
       chCatStock[ch][cat]=(chCatStock[ch][cat]||0)+s;
@@ -1017,7 +1052,14 @@ function updateWOS(){
       const cd=sd.channels[ch];
       let catWos=null;
       if(cd){
-        let catSoSum=0,catModels=cd.models.filter(m=>m.category===c);
+        let catSoSum=0,catModels=cd.models.filter(m=>{
+          if(m.category!==c)return false;
+          if(activeTypes.length>0&&!activeTypes.includes(m.type))return false;
+          const attr=modelAttrMap[m.model]||{};
+          if(FILTER_STATE.comp.size>0&&attr.comp&&FILTER_STATE.comp.has(attr.comp))return false;
+          if(FILTER_STATE.btu.size>0&&attr.btu&&FILTER_STATE.btu.has(attr.btu))return false;
+          return true;
+        });
         catModels.forEach(m=>{
           const w=(m.wos||{})[latestW];
           if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
@@ -1056,7 +1098,14 @@ function updateWOS(){
   activeChannels.forEach(ch=>{
     const cd=sd.channels[ch];
     if(!cd)return;
-    cd.models.filter(m=>(activeCats.length===0||activeCats.includes(m.category))&&(activeTypes.length===0||activeTypes.includes(m.type))).forEach(m=>{
+    cd.models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(activeTypes.length>0&&!activeTypes.includes(m.type))return false;
+      const attr=modelAttrMap[m.model]||{};
+      if(FILTER_STATE.comp.size>0&&attr.comp&&FILTER_STATE.comp.has(attr.comp))return false;
+      if(FILTER_STATE.btu.size>0&&attr.btu&&FILTER_STATE.btu.has(attr.btu))return false;
+      return true;
+    }).forEach(m=>{
       const stk=(m.stock||{})[latestW]||0;
       const wos=(m.wos||{})[latestW]||{};
       modelRows.push({
