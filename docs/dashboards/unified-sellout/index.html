@@ -184,10 +184,37 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     sel.appendChild(opt);
   });
   sel.addEventListener('change',()=>{
+    // Save current filter states before year switch
+    const savedState={};
+    Object.entries(FILTER_STATE).forEach(([k,s])=>{savedState[k]=new Set(s)});
     currentYear=sel.value;
     D=_ALL.data[currentYear];
     WEEKS=D.meta.weeks;MONTHS=D.meta.months;
-    rebuildFilters();
+    // Rebuild FILTER_MAP with new year data
+    FILTER_MAP={
+      fMonth:{key:'m',items:MONTHS},
+      fWeek:{key:'w',items:WEEKS},
+      fChannel:{key:'ch',items:D.dims.channels},
+      fCat:{key:'c',items:D.dims.categories},
+      fComp:{key:'comp',items:D.dims.compressors},
+      fType:{key:'type',items:D.dims.types},
+      fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+    };
+    // Restore valid filter states (only items that exist in new year)
+    Object.keys(FILTER_STATE).forEach(k=>{
+      FILTER_STATE[k].clear();
+      if(savedState[k]&&savedState[k].size>0){
+        const cfg=Object.values(FILTER_MAP).find(c=>c.key===k);
+        if(cfg){savedState[k].forEach(item=>{if(cfg.items.includes(item))FILTER_STATE[k].add(item)})}
+      }
+    });
+    // Rebuild DOM with restored states
+    FILTER_ORDER.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML='';
+      buildMultiSelect(id);
+    });
+    cascadeAndUpdate();
     update();updateSD();updateWOS();
   });
 })();
@@ -270,7 +297,7 @@ function buildMultiSelect(wrapperId){
   const allLabel=document.createElement('label');
   allLabel.className='ms-all';
   const allCb=document.createElement('input');
-  allCb.type='checkbox';allCb.checked=true;
+  allCb.type='checkbox';allCb.checked=state.size===0;
   allLabel.appendChild(allCb);allLabel.appendChild(document.createTextNode(' Select All'));
   drop.appendChild(allLabel);
   const cbs=[];
@@ -278,7 +305,7 @@ function buildMultiSelect(wrapperId){
   cfg.items.forEach(item=>{
     const label=document.createElement('label');
     const cb=document.createElement('input');
-    cb.type='checkbox';cb.value=item;cb.checked=true;
+    cb.type='checkbox';cb.value=item;cb.checked=!state.has(item);
     label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
     drop.appendChild(label);
     cbs.push(cb);
@@ -313,12 +340,14 @@ function buildMultiSelect(wrapperId){
   });
   function updateBtnLabel(){
     const visibleItems=cfg.items.filter((_,i)=>!labels[i].classList.contains('ms-disabled'));
-    const total=visibleItems.length;
+    const totalAll=cfg.items.length;
+    const totalVisible=visibleItems.length;
     const selected=visibleItems.filter(i=>!state.has(i)).length;
-    if(state.size===0||selected===cfg.items.length){btn.textContent='All ('+cfg.items.length+')';btn.classList.remove('active-filter')}
-    else if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
-    else if(selected<=2){btn.textContent=cfg.items.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
-    else{btn.textContent=selected+' of '+cfg.items.length;btn.classList.add('active-filter')}
+    const cascaded=totalVisible<totalAll;
+    if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
+    else if(!cascaded&&state.size===0){btn.textContent='All ('+totalAll+')';btn.classList.remove('active-filter')}
+    else if(selected<=2&&!cascaded){btn.textContent=visibleItems.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
+    else{btn.textContent=selected+' of '+totalAll;btn.classList.add('active-filter')}
   }
   updateBtnLabel();
   wrap.setAttribute('tabindex','-1');wrap.style.outline='none';
