@@ -183,9 +183,11 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
   sel.addEventListener('change',()=>{
     // Save SELECTED items for ALL filters (positive set)
     const prevSelected={};
+    const prevAllSelected={};
     FILTER_ORDER.forEach(id=>{
       const cfg=FILTER_MAP[id];
       const st=FILTER_STATE[cfg.key];
+      prevAllSelected[cfg.key]=(st.size===0);
       prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
     });
     currentYear=sel.value;
@@ -206,6 +208,7 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     // Restore ALL filters: keep only previously selected items that exist in new year
     FILTER_ORDER.forEach(id=>{
       const cfg=FILTER_MAP[id];
+      if(prevAllSelected[cfg.key])return;
       const prev=new Set(prevSelected[cfg.key]||[]);
       const overlap=cfg.items.filter(item=>prev.has(item));
       if(overlap.length>0){
