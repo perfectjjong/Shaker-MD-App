@@ -3,11 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Zagzoog Sell-out Dashboard</title>
+<title>Weekly IR Sell out - Zagzoog Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
+
 :root{--primary:#2563eb;--navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.08);--radius:8px;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--teal:#14b8a6;--rose:#f43f5e;--sky:#0ea5e9}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
@@ -20,7 +21,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
 .ms-wrap{position:relative;min-width:100px}
 .ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
-.ms-btn::after{content:'\25be';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
+.ms-btn::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
 .ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
 .ms-drop{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:200;min-width:160px;max-height:260px;overflow-y:auto;padding:4px 0;margin-top:2px}
 .ms-drop.open{display:block}
@@ -50,159 +51,131 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 .pct-bar{display:inline-block;height:6px;border-radius:3px;background:var(--primary)}
 .footer{text-align:center;padding:16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:24px}
 .ch-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:#dbeafe;color:#1e40af;margin-right:4px}
-.cat-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
-.cat-split{background:#dbeafe;color:#1e40af}
-.cat-window{background:#fef3c7;color:#92400e}
-.cat-floor{background:#d1fae5;color:#065f46}
-.cat-concealed{background:#ede9fe;color:#5b21b6}
-.cat-cassette{background:#cffafe;color:#155e75}
-.progress-bar{height:8px;border-radius:4px;background:var(--border);overflow:hidden}
-.progress-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--primary),var(--sky))}
-.tbl-wrap{overflow-x:auto;max-height:500px;overflow-y:auto}
-.tbl-wrap table{width:100%;border-collapse:collapse;font-size:12px}
-.tbl-wrap th{background:var(--bg);color:var(--text);padding:8px 12px;text-align:left;position:sticky;top:0;z-index:2;white-space:nowrap;cursor:pointer;user-select:none;font-weight:600;font-size:11px;border-bottom:1px solid var(--border)}
-.tbl-wrap th:hover{background:#e2e8f0}
-.tbl-wrap td{padding:6px 12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--text)}
-.tbl-wrap tr:nth-child(even) td{background:#fff}
-.tbl-wrap tr:nth-child(odd) td{background:var(--bg)}
-.tbl-wrap tr:hover td{background:#e2e8f0}
-.mb-4{margin-bottom:16px}
 @media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
 <div class="header">
-<h1>📊 Zagzoog Sell-out Dashboard</h1>
-<span class="sub">LG AC · Zagzoog · IR Channel</span>
-<span class="badge" id="yearBadge">2026</span>
+<h1>Weekly IR Sell out - Zagzoog Dashboard</h1>
+<span class="sub">LG AC · Zagzoog · Unified Model Mapping</span>
+<span class="badge" id="yearBadge">2026 · W13</span>
 </div>
 <div class="tabs" id="tabBar">
 <div class="tab active" data-tab="overview">Overview</div>
-<div class="tab" data-tab="trend">Weekly Trend</div>
-<div class="tab" data-tab="ranking">Model Ranking</div>
+<div class="tab" data-tab="channel">Channel Analysis</div>
+<div class="tab" data-tab="product">Product Analysis</div>
+<div class="tab" data-tab="supplydemand">Supply vs Demand</div>
 <div class="tab" data-tab="wos">WOS (Stock)</div>
-<div class="tab" data-tab="sd">Supply vs Demand</div>
+<div class="tab" data-tab="detail">Detail Table</div>
 </div>
 <div class="filters">
 <div class="filter-group"><div class="filter-label">Year</div><div class="ms-wrap" id="fYear"><select id="yearSelect" class="ms-btn" style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;background:var(--primary);color:#fff"></select></div></div>
 <div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
 <div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
+<div class="filter-group" style="display:none"><div class="filter-label">Channel</div><div class="ms-wrap" id="fChannel"></div></div>
 <div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
 <div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
 <div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
 <div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
 <button class="btn-reset" onclick="resetFilters()">Reset</button>
-<button class="btn-excel" onclick="downloadExcel()">📥 Excel Download</button>
+<button class="btn-excel" onclick="downloadExcel()">Excel Download</button>
 <span class="filter-count" id="filterCount"></span>
 </div>
 <div class="content">
+<!-- OVERVIEW -->
 <div class="tab-pane active" id="pane-overview">
-<span class="filter-count" id="ov_filter_info" style="display:block;padding:4px 24px;font-size:11px;color:var(--muted)"></span>
-
-    
-    <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
-    
-  </div>
-
-  <div class="grid-5" id="kpiCards"></div>
-
-  <div class="grid-2">
-    <div class="card">
-      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Weekly Sales Trend</h3>
-      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Monthly Sales</h3>
-      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
-    </div>
-  </div>
-
-  <div class="grid-2">
-    <div class="card">
-      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Sales by Category</h3>
-      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Category Weekly Trend</h3>
-      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
-    </div>
-  </div>
+<div class="grid-5" id="kpiRow"></div>
+<div class="grid-2">
+<div class="card"><h3>Weekly Sales Trend</h3><div class="ch-300"><canvas id="cWeekly"></canvas></div></div>
+<div class="card"><h3>Monthly Sales</h3><div class="ch-300"><canvas id="cMonthly"></canvas></div></div>
 </div>
-<div class="tab-pane" id="pane-trend">
-
-    
-    </div>
-    <span style="font-size:11px;color:var(--muted)" id="filter_info"></span>
-
-  <div class="card mb-4">
-    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Weekly Trend (Top 10)</h3>
-    <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
-  </div>
-
-  <div class="card">
-    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model × Week Matrix</h3>
-    <div class="tbl-wrap" id="matrix_tbl"></div>
-  </div>
+<div class="grid-2">
+<div class="card"><h3>Sales by Category</h3><div class="ch-250"><canvas id="cCatPie"></canvas></div></div>
+<div class="card"><h3>Category Weekly Trend</h3><div class="ch-300"><canvas id="cCatWeek"></canvas></div></div>
 </div>
-<div class="tab-pane" id="pane-ranking">
-
-    
-    </div>
-    <input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px"/>
-
-  <div class="card">
-    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Ranking</h3>
-    <div class="tbl-wrap" id="rank_tbl"></div>
-  </div>
 </div>
+<!-- CHANNEL -->
+<div class="tab-pane" id="pane-channel">
+<div class="grid-2">
+<div class="card"><h3>Sales by Channel</h3><div class="ch-300"><canvas id="cChBar"></canvas></div></div>
+<div class="card"><h3>Channel Weekly Trend</h3><div class="ch-300"><canvas id="cChLine"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Channel x Category Heatmap</h3><div class="ch-400"><canvas id="cHeatmap"></canvas></div></div>
+<div class="card"><h3>Channel Share by Category</h3><div class="ch-400"><canvas id="cChCatStack"></canvas></div></div>
+</div>
+</div>
+<!-- PRODUCT -->
+<div class="tab-pane" id="pane-product">
+<div class="grid-3">
+<div class="card"><h3>CO vs HP</h3><div class="ch-250"><canvas id="cType"></canvas></div></div>
+<div class="card"><h3>Compressor Type</h3><div class="ch-250"><canvas id="cComp"></canvas></div></div>
+<div class="card"><h3>Category Breakdown</h3><div class="ch-250"><canvas id="cCatBar"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Top 20 Unified Models</h3>
+<table><thead><tr><th>#</th><th>Unified Model</th><th>Category</th><th>Type</th><th>Channels</th><th style="text-align:right">Qty</th><th style="text-align:right">Share</th><th>Bar</th></tr></thead><tbody id="tblTop20"></tbody></table>
+</div>
+</div>
+<!-- SUPPLY vs DEMAND -->
+<div class="tab-pane" id="pane-supplydemand">
+<div class="grid-5" id="sdKpi"></div>
+<div class="grid-2">
+<div class="card"><h3>Channel: Sell-thru vs Sell-out (QTY)</h3><div class="ch-400"><canvas id="cSdChannel"></canvas></div></div>
+<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div class="ch-400"><canvas id="cSdCategory"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div class="ch-300"><canvas id="cSdMonthly"></canvas></div></div>
+<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div class="ch-300"><canvas id="cSdWeekly"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Channel x Category: Sell-thru vs Sell-out Comparison</h3>
+<div style="max-height:500px;overflow-y:auto"><table id="tblSdHeatmap"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Top 20 Models: Supply vs Demand</h3>
+<table><thead><tr><th>#</th><th>Model</th><th>Category</th><th>Channels</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Sell-thru %</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
+</div>
+</div>
+<!-- WOS (STOCK) -->
 <div class="tab-pane" id="pane-wos">
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
-<div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
+<div class="grid-5" id="wosKpi"></div>
+<div class="grid-2">
+<div class="card"><h3>Stock by Channel (Latest Week)</h3><div class="ch-300"><canvas id="cWosChBar"></canvas></div></div>
+<div class="card"><h3>WOS Weekly Trend</h3><div class="ch-300"><canvas id="cWosTrend"></canvas></div></div>
 </div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
-<div class="card"><h3>Stock Weekly Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
+<div class="grid-2">
+<div class="card"><h3>Stock by Category (Latest Week)</h3><div class="ch-300"><canvas id="cWosCatBar"></canvas></div></div>
+<div class="card"><h3>WOS Signal Distribution (Latest Week)</h3><div class="ch-250"><canvas id="cWosSignal"></canvas></div></div>
 </div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
+<div class="card" style="margin-bottom:16px"><h3>Channel x Category Stock (Latest Week)</h3>
+<div style="max-height:500px;overflow-y:auto"><table id="tblWosHeatmap"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:var(--muted)"></span></h3>
 <div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
+<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th>Channel</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
 </div></div>
 </div>
-<div class="tab-pane" id="pane-sd">
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px" id="sdKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div style="height:300px"><canvas id="cSdCategory"></canvas></div></div>
-<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div style="height:300px"><canvas id="cSdWeekly"></canvas></div></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div style="height:250px"><canvas id="cSdMonthly"></canvas></div></div>
-<div class="card"><h3>Weekly: SO vs ST vs Stock Trend</h3><div style="height:250px"><canvas id="cSdTriple"></canvas></div></div>
-</div>
-<div class="card" style="margin-bottom:16px"><h3>Category Breakdown: Supply vs Demand vs Stock</h3>
-<div style="max-height:400px;overflow-y:auto"><table id="tblSdCat"></table></div></div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail: All 4 Metrics <span id="sdModelCount" style="font-weight:400;color:#64748b"></span></h3>
+<!-- DETAIL -->
+<div class="tab-pane" id="pane-detail">
+<div class="card"><h3>All Data (filtered) <span id="detailCount" style="font-weight:400;color:var(--muted)"></span></h3>
 <div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
+<table><thead><tr><th>Week</th><th>Channel</th><th>Unified Model</th><th>Category</th><th>Type</th><th>Comp.</th><th style="text-align:right">Qty</th></tr></thead><tbody id="tblDetail"></tbody></table>
 </div></div>
 </div>
 </div>
-<div class="footer">Generated: 2026-04-04 14:24 · Zagzoog · IR Channel</div>
+<div class="footer">Generated: 2026-04-04 13:58 · Zagzoog · Unified Model Mapping</div>
+
 <script>
-const _ALL = {"years": ["2025", "2026"], "current": "2026", "data": {"2025": {"meta": {"weeks": ["W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51"], "months": ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "week_dates": {"W18": "04/27~05/03", "W22": "05/25~05/31", "W24": "06/08~06/14", "W31": "07/27~08/02", "W32": "08/03~08/09", "W33": "08/10~08/16", "W34": "08/17~08/23", "W35": "08/24~08/30", "W36": "08/31~09/06", "W37": "09/07~09/13", "W38": "09/14~09/20", "W39": "09/21~09/27", "W40": "09/28~10/04", "W41": "10/05~10/11", "W42": "10/12~10/18", "W43": "10/19~10/25", "W44": "10/26~11/01", "W45": "11/02~11/08", "W46": "11/09~11/15", "W47": "11/16~11/22", "W48": "11/23~11/29", "W49": "11/30~12/06", "W50": "12/07~12/13", "W51": "12/14~12/20"}, "week_month": {"W18": "Apr", "W22": "May", "W24": "Jun", "W31": "Jul", "W32": "Aug", "W33": "Aug", "W34": "Aug", "W35": "Aug", "W36": "Aug", "W37": "Sep", "W38": "Sep", "W39": "Sep", "W40": "Sep", "W41": "Oct", "W42": "Oct", "W43": "Oct", "W44": "Oct", "W45": "Nov", "W46": "Nov", "W47": "Nov", "W48": "Nov", "W49": "Nov", "W50": "Dec", "W51": "Dec"}}, "dims": {"categories": ["Split AC"], "regions": [], "channels": ["Zagzoog"], "compressors": [], "types": ["CO", "HP"], "btus": []}, "raw": [{"w": "W31", "m": "Jul", "q": 17, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W31", "m": "Jul", "q": 3, "s": "LO182H", "c": "Split AC", "code": "LO182H", "type": "HP", "model": "LO182H"}, {"w": "W31", "m": "Jul", "q": 3, "s": "LO242C", "c": "Split AC", "code": "LO242C", "type": "CO", "model": "LO242C"}, {"w": "W31", "m": "Jul", "q": 12, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W31", "m": "Jul", "q": 17, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W31", "m": "Jul", "q": 1, "s": "NS182H", "c": "Split AC", "code": "NS182H", "type": "HP", "model": "NS182H"}, {"w": "W31", "m": "Jul", "q": 4, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W31", "m": "Jul", "q": 1, "s": "NS242H", "c": "Split AC", "code": "NS242H", "type": "HP", "model": "NS242H"}, {"w": "W32", "m": "Aug", "q": 2, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W32", "m": "Aug", "q": 2, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W32", "m": "Aug", "q": 1, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W33", "m": "Aug", "q": 4, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W34", "m": "Aug", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W34", "m": "Aug", "q": 3, "s": "LO242C", "c": "Split AC", "code": "LO242C", "type": "CO", "model": "LO242C"}, {"w": "W34", "m": "Aug", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W34", "m": "Aug", "q": 2, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W34", "m": "Aug", "q": 4, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W35", "m": "Aug", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W35", "m": "Aug", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W35", "m": "Aug", "q": 3, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W35", "m": "Aug", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W36", "m": "Aug", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W36", "m": "Aug", "q": 5, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W36", "m": "Aug", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W36", "m": "Aug", "q": 1, "s": "NS242H", "c": "Split AC", "code": "NS242H", "type": "HP", "model": "NS242H"}, {"w": "W37", "m": "Sep", "q": 16, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W37", "m": "Sep", "q": 6, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W37", "m": "Sep", "q": 2, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W37", "m": "Sep", "q": 2, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W38", "m": "Sep", "q": 5, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W38", "m": "Sep", "q": 4, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W38", "m": "Sep", "q": 2, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W38", "m": "Sep", "q": 4, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W39", "m": "Sep", "q": 6, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W39", "m": "Sep", "q": 2, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W39", "m": "Sep", "q": 4, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W39", "m": "Sep", "q": 10, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W40", "m": "Sep", "q": 6, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W40", "m": "Sep", "q": 2, "s": "LO182H", "c": "Split AC", "code": "LO182H", "type": "HP", "model": "LO182H"}, {"w": "W40", "m": "Sep", "q": 6, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W40", "m": "Sep", "q": 10, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W40", "m": "Sep", "q": 6, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W41", "m": "Oct", "q": 10, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W41", "m": "Oct", "q": 2, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W42", "m": "Oct", "q": 4, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W42", "m": "Oct", "q": 2, "s": "LO182H", "c": "Split AC", "code": "LO182H", "type": "HP", "model": "LO182H"}, {"w": "W42", "m": "Oct", "q": 6, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W42", "m": "Oct", "q": 13, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W42", "m": "Oct", "q": 6, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W43", "m": "Oct", "q": -1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W43", "m": "Oct", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W43", "m": "Oct", "q": 3, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W43", "m": "Oct", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W44", "m": "Oct", "q": 2, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W44", "m": "Oct", "q": 4, "s": "LO182H", "c": "Split AC", "code": "LO182H", "type": "HP", "model": "LO182H"}, {"w": "W44", "m": "Oct", "q": 3, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W44", "m": "Oct", "q": 1, "s": "NS182H", "c": "Split AC", "code": "NS182H", "type": "HP", "model": "NS182H"}, {"w": "W44", "m": "Oct", "q": 19, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W45", "m": "Nov", "q": 2, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W45", "m": "Nov", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W46", "m": "Nov", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W46", "m": "Nov", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W46", "m": "Nov", "q": 1, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W46", "m": "Nov", "q": 2, "s": "NS182H", "c": "Split AC", "code": "NS182H", "type": "HP", "model": "NS182H"}, {"w": "W47", "m": "Nov", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W47", "m": "Nov", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W48", "m": "Nov", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W48", "m": "Nov", "q": 1, "s": "NS242C", "c": "Split AC", "code": "NS242C", "type": "CO", "model": "NS242C"}, {"w": "W49", "m": "Nov", "q": 1, "s": "LO242H", "c": "Split AC", "code": "LO242H", "type": "HP", "model": "LO242H"}, {"w": "W50", "m": "Dec", "q": 3, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W50", "m": "Dec", "q": 1, "s": "LO242H", "c": "Split AC", "code": "LO242H", "type": "HP", "model": "LO242H"}, {"w": "W50", "m": "Dec", "q": 1, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LO182C", "c": "Split AC", "code": "LO182C", "type": "CO", "model": "LO182C"}, {"w": "W51", "m": "Dec", "q": 5, "s": "LO182H", "c": "Split AC", "code": "LO182H", "type": "HP", "model": "LO182H"}, {"w": "W51", "m": "Dec", "q": 2, "s": "LO242H", "c": "Split AC", "code": "LO242H", "type": "HP", "model": "LO242H"}, {"w": "W51", "m": "Dec", "q": 1, "s": "LA242C", "c": "Split AC", "code": "LA242C", "type": "CO", "model": "LA242C"}, {"w": "W51", "m": "Dec", "q": 1, "s": "NS182C", "c": "Split AC", "code": "NS182C", "type": "CO", "model": "NS182C"}], "sellthru": [{"w": "W18", "m": "Apr", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 150.0, "v": 747175.18}, {"w": "W18", "m": "Apr", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 381.0, "v": 1414799.06}, {"w": "W22", "m": "May", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 75.0, "v": 334449.38}, {"w": "W22", "m": "May", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 75.0, "v": 334449.38}, {"w": "W24", "m": "Jun", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 1.0, "v": 5179.34}, {"w": "W24", "m": "Jun", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "q": 2.0, "v": 11532.54}]}, "2026": {"meta": {"generated": "2026-04-03 23:41", "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "months": ["Jan", "Feb", "Mar"], "week_dates": {"W1": "1/1~1/3", "W2": "1/4~1/10", "W3": "1/11~1/17", "W4": "1/18~1/24", "W5": "1/25~1/31", "W6": "2/1~2/7", "W7": "2/8~2/14", "W8": "2/15~2/21", "W9": "2/22~2/28", "W10": "3/1~3/7", "W11": "3/8~3/14", "W12": "3/15~3/21", "W13": "3/22~3/28"}, "week_month": {"W1": "Jan", "W2": "Jan", "W3": "Jan", "W4": "Jan", "W5": "Jan", "W6": "Feb", "W7": "Feb", "W8": "Feb", "W9": "Feb", "W10": "Mar", "W11": "Mar", "W12": "Mar", "W13": "Mar"}}, "kpi": {"latest_qty": 5, "wow": -28.6, "cm_qty": 45, "mom": -36.6, "ytd": 208, "avg_week": 16.0, "models_count": 12, "cat_count": 1}, "dims": {"categories": ["Split AC"]}, "raw": [{"w": "W1", "m": "Jan", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 17}, {"w": "W1", "m": "Jan", "s": "LA242C0UK0", "n": "AC LG Wall 24 Cold WiFi", "b": "LG", "c": "Split AC", "q": 17}, {"w": "W1", "m": "Jan", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 5}, {"w": "W1", "m": "Jan", "s": "LO182C0UK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 5}, {"w": "W1", "m": "Jan", "s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "LO182H0UK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W1", "m": "Jan", "s": "LO242H0NK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W1", "m": "Jan", "s": "LO242H0UK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W10", "m": "Mar", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 8}, {"w": "W10", "m": "Mar", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 13}, {"w": "W10", "m": "Mar", "s": "NS242C2NK2", "n": "AC LG Wall 24 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W11", "m": "Mar", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 5}, {"w": "W11", "m": "Mar", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 4}, {"w": "W11", "m": "Mar", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W12", "m": "Mar", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 5}, {"w": "W12", "m": "Mar", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W12", "m": "Mar", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 0}, {"w": "W13", "m": "Mar", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W13", "m": "Mar", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 3}, {"w": "W13", "m": "Mar", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 0}, {"w": "W2", "m": "Jan", "s": "LO242H0UK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "LO242H0NK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W2", "m": "Jan", "s": "LO182C0UK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W2", "m": "Jan", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "LO182C0UK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "NS182C2UK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "LO242H0UK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W2", "m": "Jan", "s": "LO242H0NK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W3", "m": "Jan", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W3", "m": "Jan", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W3", "m": "Jan", "s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W4", "m": "Jan", "s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 2}, {"w": "W5", "m": "Jan", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 12}, {"w": "W5", "m": "Jan", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 11}, {"w": "W5", "m": "Jan", "s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W6", "m": "Feb", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 5}, {"w": "W6", "m": "Feb", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 13}, {"w": "W6", "m": "Feb", "s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W7", "m": "Feb", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 4}, {"w": "W7", "m": "Feb", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 11}, {"w": "W7", "m": "Feb", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W8", "m": "Feb", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 4}, {"w": "W8", "m": "Feb", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 13}, {"w": "W9", "m": "Feb", "s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "q": 9}, {"w": "W9", "m": "Feb", "s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "q": 8}, {"w": "W9", "m": "Feb", "s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "q": 1}, {"w": "W9", "m": "Feb", "s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "q": 1}], "models": [{"s": "LO182C0NK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "t": 87, "wk": {"W1": 5, "W10": 13, "W11": 4, "W12": 2, "W13": 3, "W2": 3, "W3": 1, "W5": 11, "W6": 13, "W7": 11, "W8": 13, "W9": 8}}, {"s": "LA242C0NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 71, "wk": {"W1": 17, "W10": 8, "W11": 5, "W12": 5, "W13": 2, "W5": 12, "W6": 5, "W7": 4, "W8": 4, "W9": 9}}, {"s": "LA242C0UK0", "n": "AC LG Wall 24 Cold WiFi", "b": "LG", "c": "Split AC", "t": 17, "wk": {"W1": 17}}, {"s": "LO182C0UK0", "n": "AC LG Jet Cool 18 Split Cold", "b": "LG", "c": "Split AC", "t": 8, "wk": {"W1": 5, "W2": 3}}, {"s": "LO182H0NK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "t": 5, "wk": {"W1": 1, "W3": 1, "W5": 1, "W6": 1, "W9": 1}}, {"s": "NS182C2NK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "t": 5, "wk": {"W11": 2, "W12": 0, "W13": 0, "W2": 1, "W7": 1, "W9": 1}}, {"s": "LO242H0NK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "t": 4, "wk": {"W1": 2, "W2": 2}}, {"s": "LO242H0UK0", "n": "AC LG Jet Cool 24 Split H&C", "b": "LG", "c": "Split AC", "t": 4, "wk": {"W1": 2, "W2": 2}}, {"s": "LA242C0.NK0", "n": "AC LG Wall 24 Cold - WiFi", "b": "LG", "c": "Split AC", "t": 4, "wk": {"W3": 2, "W4": 2}}, {"s": "LO182H0UK0", "n": "AC LG Jet Cool 18 Split H&C", "b": "LG", "c": "Split AC", "t": 1, "wk": {"W1": 1}}, {"s": "NS242C2NK2", "n": "AC LG Wall 24 Cold Smart Inverter", "b": "LG", "c": "Split AC", "t": 1, "wk": {"W10": 1}}, {"s": "NS182C2UK2", "n": "AC LG Wall 18 Cold Smart Inverter", "b": "LG", "c": "Split AC", "t": 1, "wk": {"W2": 1}}], "weekly": {"W1": 50, "W10": 22, "W11": 11, "W12": 7, "W13": 5, "W2": 12, "W3": 4, "W4": 2, "W5": 24, "W6": 19, "W7": 16, "W8": 17, "W9": 19}, "monthly": {"Jan": 92, "Feb": 71, "Mar": 45}, "sellthru": [{"w": "W5", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 100, "v": 68150.18, "code": "LO182C0.NK0", "name": "18.4K C/O Jet Cool, Split On Off, Rotary"}]}}};
+const _ALL = {"years": ["2024", "2025", "2026"], "current": "2026", "data": {"2024": {"meta": {"generated": "2026-04-04 13:58", "weeks": [], "months": [], "week_dates": {}, "week_month": {}, "channel_stats": {"Zagzoog": 0}}, "kpi": {"lq": 3437, "wow": 0, "cm": 0, "mom": 0, "ytd": 44267}, "dims": {"categories": [], "channels": ["Zagzoog"], "compressors": [], "types": []}, "raw": [], "sellthru": []}, "2025": {"meta": {"generated": "2026-04-04 13:58", "weeks": ["W18", "W22", "W24", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51"], "months": ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], "week_dates": {"W18": "04/27~05/03", "W22": "05/25~05/31", "W24": "06/08~06/14", "W31": "07/27~08/02", "W32": "08/03~08/09", "W33": "08/10~08/16", "W34": "08/17~08/23", "W35": "08/24~08/30", "W36": "08/31~09/06", "W37": "09/07~09/13", "W38": "09/14~09/20", "W39": "09/21~09/27", "W40": "09/28~10/04", "W41": "10/05~10/11", "W42": "10/12~10/18", "W43": "10/19~10/25", "W44": "10/26~11/01", "W45": "11/02~11/08", "W46": "11/09~11/15", "W47": "11/16~11/22", "W48": "11/23~11/29", "W49": "11/30~12/06", "W50": "12/07~12/13", "W51": "12/14~12/20"}, "week_month": {"W18": "Apr", "W22": "May", "W24": "Jun", "W31": "Jul", "W32": "Aug", "W33": "Aug", "W34": "Aug", "W35": "Aug", "W36": "Aug", "W37": "Sep", "W38": "Sep", "W39": "Sep", "W40": "Sep", "W41": "Oct", "W42": "Oct", "W43": "Oct", "W44": "Oct", "W45": "Nov", "W46": "Nov", "W47": "Nov", "W48": "Nov", "W49": "Nov", "W50": "Dec", "W51": "Dec"}, "channel_stats": {"Zagzoog": 77}}, "kpi": {"lq": 190, "wow": -31.9, "cm": 0, "mom": 0, "ytd": 32881}, "dims": {"categories": ["Split AC"], "channels": ["Zagzoog"], "compressors": ["Inverter", "Rotary"], "types": ["CO", "HP"]}, "raw": [{"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 17, "code": "LO182C", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 3, "code": "LO182H", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "LO242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 3, "code": "LO242C", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 12, "code": "LA242C", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 17, "code": "NS182C", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "NS182H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182H", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 4, "code": "NS242C", "name": ""}, {"w": "W31", "m": "Jul", "ch": "Zagzoog", "model": "NS242H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242H", "name": ""}, {"w": "W32", "m": "Aug", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182C", "name": ""}, {"w": "W32", "m": "Aug", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C", "name": ""}, {"w": "W32", "m": "Aug", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C", "name": ""}, {"w": "W33", "m": "Aug", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 4, "code": "LO182C", "name": ""}, {"w": "W34", "m": "Aug", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W34", "m": "Aug", "ch": "Zagzoog", "model": "LO242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 3, "code": "LO242C", "name": ""}, {"w": "W34", "m": "Aug", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W34", "m": "Aug", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 2, "code": "NS182C", "name": ""}, {"w": "W34", "m": "Aug", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 4, "code": "NS242C", "name": ""}, {"w": "W35", "m": "Aug", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W35", "m": "Aug", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W35", "m": "Aug", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 3, "code": "NS182C", "name": ""}, {"w": "W35", "m": "Aug", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W36", "m": "Aug", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W36", "m": "Aug", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 5, "code": "NS182C", "name": ""}, {"w": "W36", "m": "Aug", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W36", "m": "Aug", "ch": "Zagzoog", "model": "NS242H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242H", "name": ""}, {"w": "W37", "m": "Sep", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 16, "code": "LO182C", "name": ""}, {"w": "W37", "m": "Sep", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 6, "code": "LA242C", "name": ""}, {"w": "W37", "m": "Sep", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 2, "code": "NS182C", "name": ""}, {"w": "W37", "m": "Sep", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 2, "code": "NS242C", "name": ""}, {"w": "W38", "m": "Sep", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 5, "code": "LO182C", "name": ""}, {"w": "W38", "m": "Sep", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 4, "code": "LA242C", "name": ""}, {"w": "W38", "m": "Sep", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 2, "code": "NS182C", "name": ""}, {"w": "W38", "m": "Sep", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 4, "code": "NS242C", "name": ""}, {"w": "W39", "m": "Sep", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 6, "code": "LO182C", "name": ""}, {"w": "W39", "m": "Sep", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C", "name": ""}, {"w": "W39", "m": "Sep", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 4, "code": "NS182C", "name": ""}, {"w": "W39", "m": "Sep", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 10, "code": "NS242C", "name": ""}, {"w": "W40", "m": "Sep", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 6, "code": "LO182C", "name": ""}, {"w": "W40", "m": "Sep", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182H", "name": ""}, {"w": "W40", "m": "Sep", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 6, "code": "LA242C", "name": ""}, {"w": "W40", "m": "Sep", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 10, "code": "NS182C", "name": ""}, {"w": "W40", "m": "Sep", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 6, "code": "NS242C", "name": ""}, {"w": "W41", "m": "Oct", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 10, "code": "LO182C", "name": ""}, {"w": "W41", "m": "Oct", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 2, "code": "NS242C", "name": ""}, {"w": "W42", "m": "Oct", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 4, "code": "LO182C", "name": ""}, {"w": "W42", "m": "Oct", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182H", "name": ""}, {"w": "W42", "m": "Oct", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 6, "code": "LA242C", "name": ""}, {"w": "W42", "m": "Oct", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 13, "code": "NS182C", "name": ""}, {"w": "W42", "m": "Oct", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 6, "code": "NS242C", "name": ""}, {"w": "W43", "m": "Oct", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": -1, "code": "LO182C", "name": ""}, {"w": "W43", "m": "Oct", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W43", "m": "Oct", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 3, "code": "NS182C", "name": ""}, {"w": "W43", "m": "Oct", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W44", "m": "Oct", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182C", "name": ""}, {"w": "W44", "m": "Oct", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 4, "code": "LO182H", "name": ""}, {"w": "W44", "m": "Oct", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 3, "code": "NS182C", "name": ""}, {"w": "W44", "m": "Oct", "ch": "Zagzoog", "model": "NS182H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182H", "name": ""}, {"w": "W44", "m": "Oct", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 19, "code": "NS242C", "name": ""}, {"w": "W45", "m": "Nov", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C", "name": ""}, {"w": "W45", "m": "Nov", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W46", "m": "Nov", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W46", "m": "Nov", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W46", "m": "Nov", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C", "name": ""}, {"w": "W46", "m": "Nov", "ch": "Zagzoog", "model": "NS182H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "18000", "q": 2, "code": "NS182H", "name": ""}, {"w": "W47", "m": "Nov", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W47", "m": "Nov", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W48", "m": "Nov", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W48", "m": "Nov", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C", "name": ""}, {"w": "W49", "m": "Nov", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H", "name": ""}, {"w": "W50", "m": "Dec", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 3, "code": "LO182C", "name": ""}, {"w": "W50", "m": "Dec", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H", "name": ""}, {"w": "W50", "m": "Dec", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C", "name": ""}, {"w": "W51", "m": "Dec", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C", "name": ""}, {"w": "W51", "m": "Dec", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 5, "code": "LO182H", "name": ""}, {"w": "W51", "m": "Dec", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LO242H", "name": ""}, {"w": "W51", "m": "Dec", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LA242C", "name": ""}, {"w": "W51", "m": "Dec", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C", "name": ""}], "sellthru": [{"w": "W18", "m": "Apr", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 150.0, "v": 747175.18, "code": "", "name": ""}, {"w": "W18", "m": "Apr", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 381.0, "v": 1414799.06, "code": "", "name": ""}, {"w": "W22", "m": "May", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 75.0, "v": 334449.38, "code": "", "name": ""}, {"w": "W22", "m": "May", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 75.0, "v": 334449.38, "code": "", "name": ""}, {"w": "W24", "m": "Jun", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 5179.34, "code": "", "name": ""}, {"w": "W24", "m": "Jun", "ch": "Zagzoog", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 2.0, "v": 11532.54, "code": "", "name": ""}], "stock": {"wos_thresholds": {"OPPORTUNITY": {"min": 0, "max": 12, "color": "#1A7A3C", "label": "Need Supply"}, "HEALTHY": {"min": 12, "max": 24, "color": "#B8860B", "label": "Optimal"}, "OVERSTOCK": {"min": 24, "max": null, "color": "#9C0006", "label": "Excess"}, "INACTIVE": {"color": "#595959", "label": "No Sales"}}, "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13", "W14", "W15", "W16", "W17", "W18", "W19", "W20", "W21", "W22", "W23", "W24", "W25", "W26", "W27", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51", "W52"], "channels": {"Zagzoog": {"total_by_week": {"W31": 1232, "W32": 1227, "W33": 1223, "W34": 1215, "W35": 1209, "W36": 1201, "W37": 1175, "W38": 1160, "W39": 1138, "W40": 1108, "W41": 1096, "W42": 1065, "W43": 1061, "W44": 1032, "W45": 1029, "W46": 1024, "W47": 1022, "W48": 1020, "W49": 1019, "W50": 1014, "W51": 1004, "W52": 1004}, "by_category": {"Split AC": {"W31": 1232, "W32": 1227, "W33": 1223, "W34": 1215, "W35": 1209, "W36": 1201, "W37": 1175, "W38": 1160, "W39": 1138, "W40": 1108, "W41": 1096, "W42": 1065, "W43": 1061, "W44": 1032, "W45": 1029, "W46": 1024, "W47": 1022, "W48": 1020, "W49": 1019, "W50": 1014, "W51": 1004, "W52": 1004}}, "wos_by_week": {"W31": {"wos_m8": null, "wos_p8": 71.6, "signal_m8": "INACTIVE", "signal_p8": "OVERSTOCK"}, "W32": {"wos_m8": 23.4, "wos_p8": 67.4, "signal_m8": "HEALTHY", "signal_p8": "OVERSTOCK"}, "W33": {"wos_m8": 36.4, "wos_p8": 63.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W34": {"wos_m8": 40.8, "wos_p8": 55.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W35": {"wos_m8": 51.5, "wos_p8": 52.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W36": {"wos_m8": 61.4, "wos_p8": 50.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W37": {"wos_m8": 62.5, "wos_p8": 58.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W38": {"wos_m8": 51.2, "wos_p8": 64.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W39": {"wos_m8": 51.8, "wos_p8": 70.3, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W40": {"wos_m8": 64.5, "wos_p8": 85.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W41": {"wos_m8": 61.8, "wos_p8": 130.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W42": {"wos_m8": 57.1, "wos_p8": 165.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W43": {"wos_m8": 50.8, "wos_p8": 172.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W44": {"wos_m8": 48.0, "wos_p8": 187.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W45": {"wos_m8": 46.7, "wos_p8": 118.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W46": {"wos_m8": 55.6, "wos_p8": 103.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W47": {"wos_m8": 62.6, "wos_p8": 106.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W48": {"wos_m8": 68.3, "wos_p8": 100.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W49": {"wos_m8": 84.2, "wos_p8": 79.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W50": {"wos_m8": 131.6, "wos_p8": 67.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W51": {"wos_m8": 166.4, "wos_p8": 65.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W52": {"wos_m8": 173.1, "wos_p8": 63.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}}, "models": [{"model": "LA242C", "category": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "stock": {"W31": 278, "W32": 276, "W33": 276, "W34": 275, "W35": 274, "W36": 273, "W37": 267, "W38": 263, "W39": 261, "W40": 255, "W41": 255, "W42": 249, "W43": 248, "W44": 248, "W45": 246, "W46": 245, "W47": 245, "W48": 245, "W49": 245, "W50": 245, "W51": 244, "W52": 244}, "wos": {"W31": {"m8": null, "p8": 114.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 23.0, "p8": 92.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W33": {"m8": 39.4, "p8": 92.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 39.3, "p8": 74.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 54.8, "p8": 73.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 68.2, "p8": 65.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 78.5, "p8": 76.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 68.6, "p8": 87.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 67.7, "p8": 81.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 105.0, "p8": 102.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 85.0, "p8": 102.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 83.0, "p8": 186.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 66.8, "p8": 186.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 66.8, "p8": 186.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 59.0, "p8": 38.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 70.0, "p8": 27.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 81.7, "p8": 36.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 76.6, "p8": 44.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 98.0, "p8": 44.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 98.0, "p8": 45.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 183.0, "p8": 40.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 183.0, "p8": 43.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO182C", "category": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "stock": {"W31": 470, "W32": 468, "W33": 464, "W34": 463, "W35": 462, "W36": 462, "W37": 446, "W38": 441, "W39": 435, "W40": 429, "W41": 419, "W42": 415, "W43": 416, "W44": 414, "W45": 414, "W46": 413, "W47": 412, "W48": 411, "W49": 411, "W50": 408, "W51": 407, "W52": 407}, "wos": {"W31": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 27.5, "p8": 84.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W33": {"m8": 48.8, "p8": 72.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 60.4, "p8": 67.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 77.0, "p8": 59.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 92.4, "p8": 66.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 89.2, "p8": 81.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 64.5, "p8": 91.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 66.2, "p8": 108.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 85.8, "p8": 135.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 75.2, "p8": 232.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 64.6, "p8": 259.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 60.7, "p8": 277.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 52.9, "p8": 295.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 59.1, "p8": 207.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 75.1, "p8": 177.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 85.2, "p8": 176.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 102.8, "p8": 158.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 129.8, "p8": 102.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 226.7, "p8": 72.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 254.4, "p8": 55.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 271.3, "p8": 50.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO182H", "category": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "stock": {"W31": 137, "W32": 137, "W33": 137, "W34": 137, "W35": 137, "W36": 137, "W37": 137, "W38": 137, "W39": 137, "W40": 135, "W41": 135, "W42": 133, "W43": 133, "W44": 129, "W45": 129, "W46": 129, "W47": 129, "W48": 129, "W49": 129, "W50": 129, "W51": 124, "W52": 124}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W33": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": null, "p8": 45.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W41": {"m8": 67.5, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 66.5, "p8": 33.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 66.5, "p8": 29.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 64.5, "p8": 25.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 48.4, "p8": 43.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 48.4, "p8": 43.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 48.4, "p8": 55.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 48.4, "p8": 55.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 43.0, "p8": 64.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 43.0, "p8": 71.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 31.0, "p8": 124.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 27.6, "p8": 124.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO242H", "category": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "stock": {"W31": 94, "W32": 94, "W33": 94, "W34": 94, "W35": 94, "W36": 94, "W37": 94, "W38": 94, "W39": 94, "W40": 94, "W41": 94, "W42": 94, "W43": 94, "W44": 94, "W45": 94, "W46": 94, "W47": 94, "W48": 94, "W49": 93, "W50": 92, "W51": 90, "W52": 90}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W33": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W34": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W35": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W36": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W37": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W38": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W39": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W40": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W41": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W42": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W43": {"m8": null, "p8": 70.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W44": {"m8": null, "p8": 70.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W45": {"m8": null, "p8": 62.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W46": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W47": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W48": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W49": {"m8": null, "p8": 53.1, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W50": {"m8": 92.0, "p8": 46.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 90.0, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 67.5, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "NS182C", "category": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "stock": {"W31": 168, "W32": 167, "W33": 167, "W34": 165, "W35": 162, "W36": 157, "W37": 155, "W38": 153, "W39": 149, "W40": 139, "W41": 139, "W42": 126, "W43": 123, "W44": 120, "W45": 120, "W46": 119, "W47": 119, "W48": 119, "W49": 119, "W50": 118, "W51": 117, "W52": 117}, "wos": {"W31": {"m8": null, "p8": 61.9, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 9.8, "p8": 41.8, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W33": {"m8": 18.6, "p8": 41.8, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W34": {"m8": 18.3, "p8": 29.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W35": {"m8": 24.3, "p8": 29.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 27.3, "p8": 29.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 27.7, "p8": 26.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 30.6, "p8": 27.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 32.6, "p8": 24.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 51.2, "p8": 27.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 34.8, "p8": 27.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 31.5, "p8": 63.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 22.1, "p8": 82.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W44": {"m8": 21.5, "p8": 120.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W45": {"m8": 22.7, "p8": 120.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W46": {"m8": 20.4, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W47": {"m8": 21.0, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W48": {"m8": 19.8, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W49": {"m8": 23.8, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W50": {"m8": 23.6, "p8": 118.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W51": {"m8": 58.5, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 78.0, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "NS182H", "category": "Split AC", "type": "HP", "comp": "Inverter", "btu": "18000", "stock": {"W31": 3, "W32": 3, "W33": 3, "W34": 3, "W35": 3, "W36": 3, "W37": 3, "W38": 3, "W39": 3, "W40": 3, "W41": 3, "W42": 3, "W43": 3, "W44": 2, "W45": 2}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W33": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W34": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W35": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W36": {"m8": 3.0, "p8": 3.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W37": {"m8": 3.0, "p8": 3.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W38": {"m8": 3.0, "p8": 2.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W39": {"m8": 3.0, "p8": 2.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W40": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W41": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W42": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W43": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W44": {"m8": null, "p8": 1.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W45": {"m8": 2.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}}}, {"model": "NS242C", "category": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "stock": {"W31": 81, "W32": 81, "W33": 81, "W34": 77, "W35": 76, "W36": 75, "W37": 73, "W38": 69, "W39": 59, "W40": 53, "W41": 51, "W42": 45, "W43": 44, "W44": 25, "W45": 24, "W46": 24, "W47": 23, "W48": 22, "W49": 22, "W50": 22, "W51": 22, "W52": 22}, "wos": {"W31": {"m8": null, "p8": 22.1, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W32": {"m8": 20.2, "p8": 20.2, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W33": {"m8": 20.2, "p8": 21.6, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W34": {"m8": 19.2, "p8": 19.2, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W35": {"m8": 19.0, "p8": 19.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W36": {"m8": 25.0, "p8": 12.0, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W37": {"m8": 29.2, "p8": 11.9, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W38": {"m8": 28.8, "p8": 10.7, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W39": {"m8": 22.1, "p8": 11.5, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W40": {"m8": 14.5, "p8": 12.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W41": {"m8": 12.8, "p8": 10.6, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W42": {"m8": 12.0, "p8": 9.8, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W43": {"m8": 11.0, "p8": 8.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W44": {"m8": 6.2, "p8": 25.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W45": {"m8": 3.8, "p8": 24.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W46": {"m8": 3.9, "p8": 24.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W47": {"m8": 3.6, "p8": 23.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W48": {"m8": 4.3, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W49": {"m8": 5.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W50": {"m8": 4.6, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W51": {"m8": 4.8, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W52": {"m8": 4.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}}}, {"model": "NS242H", "category": "Split AC", "type": "HP", "comp": "Inverter", "btu": "24000", "stock": {"W31": 1, "W32": 1, "W33": 1, "W34": 1, "W35": 1}, "wos": {"W31": {"m8": null, "p8": 1.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W32": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W33": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W34": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W35": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}}}]}}}}, "2026": {"meta": {"generated": "2026-04-04 13:58", "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "months": ["Jan", "Feb", "Mar"], "week_dates": {"W1": "01/01~01/03", "W2": "01/04~01/10", "W3": "01/11~01/17", "W4": "01/18~01/24", "W5": "01/25~01/31", "W6": "02/01~02/07", "W7": "02/08~02/14", "W8": "02/15~02/21", "W9": "02/22~02/28", "W10": "03/01~03/07", "W11": "03/08~03/14", "W12": "03/15~03/21", "W13": "03/22~03/28"}, "week_month": {"W1": "Jan", "W2": "Jan", "W3": "Jan", "W4": "Jan", "W5": "Jan", "W6": "Feb", "W7": "Feb", "W8": "Feb", "W9": "Feb", "W10": "Mar", "W11": "Mar", "W12": "Mar", "W13": "Mar"}, "channel_stats": {"Zagzoog": 47}}, "kpi": {"lq": 255, "wow": -29.4, "cm": 1989, "mom": -11.2, "ytd": 5970}, "dims": {"categories": ["Split AC"], "channels": ["Zagzoog"], "compressors": ["Inverter", "Rotary"], "types": ["CO", "HP"]}, "raw": [{"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 17, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 17, "code": "LA242C0UK0", "name": "AC LG Wall 24 Cold WiFi"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 5, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 5, "code": "LO182C0UK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0NK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0UK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LO242H0NK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W1", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LO242H0UK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W10", "m": "Mar", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 8, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W10", "m": "Mar", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 13, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W10", "m": "Mar", "ch": "Zagzoog", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "NS242C2NK2", "name": "AC LG Wall 24 Cold Smart Inverter"}, {"w": "W11", "m": "Mar", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 5, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W11", "m": "Mar", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 4, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W11", "m": "Mar", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 2, "code": "NS182C2NK2", "name": "AC LG Wall 18 Cold Smart Inverter"}, {"w": "W12", "m": "Mar", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 5, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W12", "m": "Mar", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W13", "m": "Mar", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W13", "m": "Mar", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 3, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H0UK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H0NK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LO182C0UK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C0UK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C2NK2", "name": "AC LG Wall 18 Cold Smart Inverter"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C2UK2", "name": "AC LG Wall 18 Cold Smart Inverter"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H0UK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W2", "m": "Jan", "ch": "Zagzoog", "model": "LO242H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "q": 1, "code": "LO242H0NK0", "name": "AC LG Jet Cool 24 Split H&C"}, {"w": "W3", "m": "Jan", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C0.NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W3", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W3", "m": "Jan", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0NK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W4", "m": "Jan", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LA242C0.NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W5", "m": "Jan", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 12, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W5", "m": "Jan", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 11, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W5", "m": "Jan", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0NK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W6", "m": "Feb", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 5, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W6", "m": "Feb", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 13, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W6", "m": "Feb", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0NK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W7", "m": "Feb", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 4, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W7", "m": "Feb", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 11, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W7", "m": "Feb", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C2NK2", "name": "AC LG Wall 18 Cold Smart Inverter"}, {"w": "W8", "m": "Feb", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 4, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W8", "m": "Feb", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 13, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W9", "m": "Feb", "ch": "Zagzoog", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 9, "code": "LA242C0NK0", "name": "AC LG Wall 24 Cold - WiFi"}, {"w": "W9", "m": "Feb", "ch": "Zagzoog", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 8, "code": "LO182C0NK0", "name": "AC LG Jet Cool 18 Split Cold"}, {"w": "W9", "m": "Feb", "ch": "Zagzoog", "model": "LO182H", "c": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "q": 1, "code": "LO182H0NK0", "name": "AC LG Jet Cool 18 Split H&C"}, {"w": "W9", "m": "Feb", "ch": "Zagzoog", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182C2NK2", "name": "AC LG Wall 18 Cold Smart Inverter"}], "sellthru": [], "stock": {"wos_thresholds": {"OPPORTUNITY": {"min": 0, "max": 12, "color": "#1A7A3C", "label": "Need Supply"}, "HEALTHY": {"min": 12, "max": 24, "color": "#B8860B", "label": "Optimal"}, "OVERSTOCK": {"min": 24, "max": null, "color": "#9C0006", "label": "Excess"}, "INACTIVE": {"color": "#595959", "label": "No Sales"}}, "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "channels": {"Zagzoog": {"total_by_week": {"W1": 979, "W2": 973, "W3": 969, "W4": 967, "W5": 1055, "W6": 1036, "W7": 1020, "W8": 1003, "W9": 984, "W10": 962, "W11": 951, "W12": 944, "W13": 939}, "by_category": {"Split AC": {"W1": 979, "W2": 973, "W3": 969, "W4": 967, "W5": 1055, "W6": 1036, "W7": 1020, "W8": 1003, "W9": 984, "W10": 962, "W11": 951, "W12": 944, "W13": 939}}, "wos_by_week": {"W1": {"wos_m8": 180.9, "wos_p8": 64.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W2": {"wos_m8": 114.7, "wos_p8": 57.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W3": {"wos_m8": 100.2, "wos_p8": 51.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W4": {"wos_m8": 103.7, "wos_p8": 52.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W5": {"wos_m8": 118.1, "wos_p8": 59.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W6": {"wos_m8": 86.6, "wos_p8": 60.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W7": {"wos_m8": 69.8, "wos_p8": 60.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W8": {"wos_m8": 66.1, "wos_p8": 64.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W9": {"wos_m8": 63.0, "wos_p8": 51.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W10": {"wos_m8": 63.3, "wos_p8": 80.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W11": {"wos_m8": 55.2, "wos_p8": 86.6, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W12": {"wos_m8": 50.3, "wos_p8": 80.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W13": {"wos_m8": 51.7, "wos_p8": null, "signal_m8": "OVERSTOCK", "signal_p8": "INACTIVE"}}, "models": [{"model": "LA242C", "category": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "stock": {"W1": 227, "W2": 227, "W3": 225, "W4": 223, "W5": 223, "W6": 218, "W7": 214, "W8": 210, "W9": 201, "W10": 193, "W11": 188, "W12": 183, "W13": 181}, "wos": {"W1": {"m8": 170.2, "p8": 52.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 35.8, "p8": 46.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 25.0, "p8": 42.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 33.4, "p8": 39.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 40.5, "p8": 42.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 39.6, "p8": 41.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 39.6, "p8": 38.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 35.0, "p8": 36.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 35.5, "p8": 40.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 44.5, "p8": 48.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 38.7, "p8": 53.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W12": {"m8": 34.6, "p8": 91.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W13": {"m8": 31.7, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO182C", "category": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "stock": {"W1": 402, "W2": 399, "W3": 398, "W4": 398, "W5": 487, "W6": 474, "W7": 463, "W8": 450, "W9": 442, "W10": 429, "W11": 425, "W12": 423, "W13": 420}, "wos": {"W1": {"m8": 287.1, "p8": 46.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 199.5, "p8": 39.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 170.6, "p8": 38.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 170.6, "p8": 42.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 187.3, "p8": 58.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 118.5, "p8": 61.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 81.7, "p8": 64.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 61.4, "p8": 75.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 54.3, "p8": 80.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 50.1, "p8": 143.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 42.5, "p8": 170.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W12": {"m8": 40.6, "p8": 141.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W13": {"m8": 44.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO182H", "category": "Split AC", "type": "HP", "comp": "Rotary", "btu": "18000", "stock": {"W1": 123, "W2": 123, "W3": 122, "W4": 122, "W5": 121, "W6": 120, "W7": 120, "W8": 120, "W9": 119, "W10": 119, "W11": 119, "W12": 119, "W13": 119}, "wos": {"W1": {"m8": 24.6, "p8": 123.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 41.0, "p8": 123.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 40.7, "p8": 122.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 52.3, "p8": 122.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 51.9, "p8": 121.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 60.0, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 66.7, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 120.0, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W10": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W11": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W12": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W13": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO242H", "category": "Split AC", "type": "HP", "comp": "Rotary", "btu": "24000", "stock": {"W1": 88, "W2": 86, "W3": 86, "W4": 86, "W5": 86, "W6": 86, "W7": 86, "W8": 86, "W9": 86, "W10": 86, "W11": 86, "W12": 86, "W13": 86}, "wos": {"W1": {"m8": 66.0, "p8": 44.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 57.3, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W3": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W4": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W5": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W6": {"m8": 49.1, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W7": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W8": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W9": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W10": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W11": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W12": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W13": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "NS182C", "category": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "stock": {"W1": 117, "W2": 116, "W3": 116, "W4": 116, "W5": 116, "W6": 116, "W7": 115, "W8": 115, "W9": 114, "W10": 114, "W11": 112, "W12": 112, "W13": 112}, "wos": {"W1": {"m8": 117.0, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 116.0, "p8": 116.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 115.0, "p8": 76.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 115.0, "p8": 76.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 114.0, "p8": 57.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 114.0, "p8": 57.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 112.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W12": {"m8": 84.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W13": {"m8": 84.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "NS242C", "category": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "stock": {"W1": 22, "W2": 22, "W3": 22, "W4": 22, "W5": 22, "W6": 22, "W7": 22, "W8": 22, "W9": 22, "W10": 21, "W11": 21, "W12": 21, "W13": 21}, "wos": {"W1": {"m8": 22.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W2": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W3": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W4": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W5": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W6": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W7": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W8": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W9": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W10": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W11": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W12": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W13": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}}}]}}}}}};
 Chart.register(ChartDataLabels);
 const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16','#ef4444','#06b6d4'];
-const CAT_COLORS={'Split AC':'#2563eb','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed Duct':'#8b5cf6','Cassette':'#14b8a6','Multi V':'#f43f5e','System AC':'#0ea5e9','Commercial AC':'#6366f1'};
+const CH_COLORS={'BH':'#2563eb','BM':'#f59e0b','Tamkeen':'#10b981','Zagzoog':'#8b5cf6','Dhamin':'#f43f5e','Star Appliance':'#14b8a6','Al Ghanem':'#0ea5e9','Al Shathri':'#6366f1'};
 
+// Year switching
 let currentYear = _ALL.current || '2026';
 let D = _ALL.data[currentYear];
 let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
 
-// Build year selector (dropdown - matching unified dashboard)
+// Build year selector
 (function(){
   const sel=document.getElementById('yearSelect');
-  if(!sel) return;
   _ALL.years.forEach(yr=>{
     const opt=document.createElement('option');
     opt.value=yr;opt.textContent=yr;
@@ -226,10 +199,11 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
     FILTER_MAP={
       fMonth:{key:'m',items:MONTHS},
       fWeek:{key:'w',items:WEEKS},
-      fCat:{key:'c',items:D.dims.categories||[]},
-      fComp:{key:'comp',items:D.dims.compressors||[]},
-      fType:{key:'type',items:D.dims.types||[]},
-      fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+      fChannel:{key:'ch',items:D.dims.channels},
+      fCat:{key:'c',items:D.dims.categories},
+      fComp:{key:'comp',items:D.dims.compressors},
+      fType:{key:'type',items:D.dims.types},
+      fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
     };
     // Clear all filter states
     Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
@@ -251,32 +225,33 @@ let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
       if(el)el.innerHTML='';
       buildMultiSelect(id);
     });
-    // Update yearBadge
-    const yb=document.getElementById('yearBadge');
-    if(yb)yb.textContent=currentYear;
     cascadeAndUpdate();
   });
 })();
-// ===== GLOBAL FILTER SYSTEM =====
-const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
-const FILTER_ORDER=['fMonth','fWeek','fCat','fComp','fType','fBtu'];
+
+// ===== MULTI-SELECT FILTERS =====
+const FILTER_STATE={m:new Set(),w:new Set(),ch:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
+const FILTER_ORDER=['fMonth','fWeek','fChannel','fCat','fComp','fType','fBtu'];
 let FILTER_MAP={
   fMonth:{key:'m',items:MONTHS},
   fWeek:{key:'w',items:WEEKS},
-  fCat:{key:'c',items:D.dims.categories||[]},
-  fComp:{key:'comp',items:D.dims.compressors||[]},
-  fType:{key:'type',items:D.dims.types||[]},
-  fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+  fChannel:{key:'ch',items:D.dims.channels},
+  fCat:{key:'c',items:D.dims.categories},
+  fComp:{key:'comp',items:D.dims.compressors},
+  fType:{key:'type',items:D.dims.types},
+  fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
 };
 
-function getAvailable(excludeKey){
-  return D.raw.filter(r=>{
+// --- Cascading: compute available items for each filter ---
+function getAvailable(excludeKey, source){
+  const rows=(source||D.raw).filter(r=>{
     for(const[fk,st]of Object.entries(FILTER_STATE)){
       if(fk===excludeKey)continue;
       if(st.size>0&&st.has(r[fk]))return false;
     }
     return true;
   });
+  return rows;
 }
 
 function computeAvailableItems(){
@@ -303,10 +278,11 @@ function rebuildFilters(){
   FILTER_MAP={
     fMonth:{key:'m',items:MONTHS},
     fWeek:{key:'w',items:WEEKS},
-    fCat:{key:'c',items:D.dims.categories||[]},
-    fComp:{key:'comp',items:D.dims.compressors||[]},
-    fType:{key:'type',items:D.dims.types||[]},
-    fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+    fChannel:{key:'ch',items:D.dims.channels},
+    fCat:{key:'c',items:D.dims.categories},
+    fComp:{key:'comp',items:D.dims.compressors},
+    fType:{key:'type',items:D.dims.types},
+    fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
   };
   Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
   FILTER_ORDER.forEach(id=>{
@@ -321,7 +297,6 @@ function buildMultiSelect(wrapperId){
   const wrap=document.getElementById(wrapperId);
   if(!wrap)return;
   const cfg=FILTER_MAP[wrapperId];
-  if(!cfg)return;
   const state=FILTER_STATE[cfg.key];
   const btn=document.createElement('button');
   btn.className='ms-btn';btn.type='button';
@@ -333,14 +308,16 @@ function buildMultiSelect(wrapperId){
   allCb.type='checkbox';allCb.checked=state.size===0;
   allLabel.appendChild(allCb);allLabel.appendChild(document.createTextNode(' Select All'));
   drop.appendChild(allLabel);
-  const cbs=[],labels=[];
+  const cbs=[];
+  const labels=[];
   cfg.items.forEach(item=>{
     const label=document.createElement('label');
     const cb=document.createElement('input');
     cb.type='checkbox';cb.value=item;cb.checked=!state.has(item);
     label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
     drop.appendChild(label);
-    cbs.push(cb);labels.push(label);
+    cbs.push(cb);
+    labels.push(label);
     label.addEventListener('click',(e)=>{
       e.preventDefault();e.stopPropagation();
       if(label.classList.contains('ms-disabled'))return;
@@ -355,9 +332,17 @@ function buildMultiSelect(wrapperId){
     e.preventDefault();e.stopPropagation();
     const newState=!allCb.checked;
     allCb.checked=newState;
-    cbs.forEach((cb,i)=>{if(!labels[i].classList.contains('ms-disabled'))cb.checked=newState});
+    cbs.forEach((cb,i)=>{
+      if(!labels[i].classList.contains('ms-disabled')){
+        cb.checked=newState;
+      }
+    });
     state.clear();
-    if(!newState){cfg.items.forEach((item,i)=>{if(!labels[i].classList.contains('ms-disabled'))state.add(item)})}
+    if(!newState){
+      cfg.items.forEach((item,i)=>{
+        if(!labels[i].classList.contains('ms-disabled'))state.add(item);
+      });
+    }
     updateBtnLabel();
     cascadeAndUpdate();
   });
@@ -388,38 +373,43 @@ function buildMultiSelect(wrapperId){
     cbs.forEach((cb,i)=>{
       const item=cfg.items[i];
       const avail=availSet.has(item);
-      if(!avail){labels[i].classList.add('ms-disabled');labels[i].style.opacity='0.35';labels[i].style.pointerEvents='none'}
-      else{labels[i].classList.remove('ms-disabled');labels[i].style.opacity='1';labels[i].style.pointerEvents='auto'}
+      if(!avail){
+        labels[i].classList.add('ms-disabled');
+        labels[i].style.opacity='0.35';
+        labels[i].style.pointerEvents='none';
+      }else{
+        labels[i].classList.remove('ms-disabled');
+        labels[i].style.opacity='1';
+        labels[i].style.pointerEvents='auto';
+      }
     });
     updateBtnLabel();
   };
 }
 
+// --- Cascade: update available options after any filter change ---
 function cascadeAndUpdate(){
   const avail=computeAvailableItems();
   FILTER_ORDER.forEach(id=>{
     const wrap=document.getElementById(id);
-    if(wrap&&wrap._updateAvailable)wrap._updateAvailable(avail[id]);
+    if(wrap&&wrap._updateAvailable){
+      wrap._updateAvailable(avail[id]);
+    }
   });
-  // Update all visible tabs
-  var activeTab='overview';
-  var activeEl=document.querySelector('.tab.active');
-  if(activeEl)activeTab=activeEl.dataset.tab;
-  if(activeTab==='overview'&&typeof renderOverview==='function')renderOverview();
-  else if(activeTab==='trend'&&typeof renderTrend==='function')renderTrend();
-  else if(activeTab==='ranking'&&typeof renderRanking==='function')renderRanking();
+  update();
   if(typeof updateSD==='function')updateSD();
   if(typeof updateWOS==='function')updateWOS();
-  // Update filter count
-  var rows=filtered();
-  var el=document.getElementById('filterCount');
-  if(el)el.textContent=currentYear+' · '+rows.length+' rows / '+rows.reduce((a,r)=>a+r.q,0).toLocaleString()+' units';
 }
+
+FILTER_ORDER.forEach(id=>buildMultiSelect(id));
+// Initial cascade
+setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{const w=document.getElementById(id);if(w&&w._updateAvailable)w._updateAvailable(avail[id])})},0);
 
 function filtered(){
   return D.raw.filter(r=>{
     if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
     if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
+    if(FILTER_STATE.ch.size>0&&FILTER_STATE.ch.has(r.ch))return false;
     if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
     if(FILTER_STATE.comp.size>0&&FILTER_STATE.comp.has(r.comp))return false;
     if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(r.type))return false;
@@ -427,714 +417,659 @@ function filtered(){
     return true;
   });
 }
-
 function resetFilters(){FILTER_ORDER.forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});cascadeAndUpdate()}
 
-FILTER_ORDER.forEach(id=>buildMultiSelect(id));
-setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{const w=document.getElementById(id);if(w&&w._updateAvailable)w._updateAvailable(avail[id])})},0);
-
-// ===== CHART HELPERS =====
-const _charts={};
-function destroyChart(id){if(_charts[id]){_charts[id].destroy();delete _charts[id]}}
-
-
-// ===== HELPER FUNCTIONS =====
-function catBadge(c){
-  if(!c) return '';
-  var cls = c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':'cat-floor';
-  return '<span class="cat-badge '+cls+'">'+c+'</span>';
-}
-var fmt = function(n){ return n==null?'-':Number(n).toLocaleString(); };
-
-
-// ===== SELL-THRU & STOCK DATA =====
-D.sellthru=[{"w": "W18", "m": "Apr", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 150.0, "v": 747175.18, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 381.0, "v": 1414799.06, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 75.0, "v": 334449.38, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 75.0, "v": 334449.38, "code": "", "name": "", "year": "2025"}, {"w": "W24", "m": "Jun", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 5179.34, "code": "", "name": "", "year": "2025"}, {"w": "W24", "m": "Jun", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 2.0, "v": 11532.54, "code": "", "name": "", "year": "2025"}];
-
-// ===== TAB 1: OVERVIEW =====
-function renderOverview(){
-  
-  const filt=filtered();
-  // Dynamic KPI cards
-  const lastWeek = WEEKS[WEEKS.length-1];
-  const lwRows = filt.filter(r=>r.w===lastWeek);
-  const lwQty = lwRows.reduce((s,r)=>s+r.q,0);
-  const prevWeek = WEEKS.length>=2 ? WEEKS[WEEKS.length-2] : null;
-  const pwRows = prevWeek ? filt.filter(r=>r.w===prevWeek) : [];
-  const pwQty = pwRows.reduce((s,r)=>s+r.q,0);
-  const wowPct = pwQty>0 ? ((lwQty-pwQty)/pwQty*100).toFixed(1) : '0';
-  const wowClass = lwQty>=pwQty ? 'up' : 'down';
-  const wowSign = lwQty>=pwQty ? '+' : '';
-  const lastMonth = MONTHS.length>0 ? MONTHS[MONTHS.length-1] : '';
-  const cmRows = filt.filter(r=>r.m===lastMonth);
-  const cmQty = cmRows.reduce((s,r)=>s+r.q,0);
-  const prevMonth = MONTHS.length>=2 ? MONTHS[MONTHS.length-2] : null;
-  const pmRows = prevMonth ? filt.filter(r=>r.m===prevMonth) : [];
-  const pmQty = pmRows.reduce((s,r)=>s+r.q,0);
-  const momPct = pmQty>0 ? ((cmQty-pmQty)/pmQty*100).toFixed(1) : '0';
-  const momClass = cmQty>=pmQty ? 'up' : 'down';
-  const momSign = cmQty>=pmQty ? '+' : '';
-  const ytdQty = filt.reduce((s,r)=>s+r.q,0);
-  const activeWeeks = [...new Set(filt.map(r=>r.w))];
-  const avgPerWeek = activeWeeks.length>0 ? (ytdQty/activeWeeks.length).toFixed(1) : '0';
-  const _models = new Set(filt.map(r=>r.s));
-  const _cats = new Set(filt.map(r=>r.c));
-  const kpiEl = document.getElementById('kpiCards');
-  if(kpiEl){
-    kpiEl.innerHTML =
-      '<div class="kpi"><div class="kpi-label">Latest Week ('+lastWeek+')</div><div class="kpi-val">'+lwQty.toLocaleString()+'</div><div class="kpi-sub '+wowClass+'">'+wowSign+wowPct+'% WoW</div></div>'+
-      '<div class="kpi"><div class="kpi-label">Current Month</div><div class="kpi-val">'+cmQty.toLocaleString()+'</div><div class="kpi-sub '+momClass+'">'+momSign+momPct+'% MoM</div></div>'+
-      '<div class="kpi"><div class="kpi-label">YTD Total</div><div class="kpi-val">'+ytdQty.toLocaleString()+'</div></div>'+
-      '<div class="kpi"><div class="kpi-label">Avg / Week</div><div class="kpi-val">'+avgPerWeek+'</div></div>'+
-      '<div class="kpi"><div class="kpi-label">Models / Categories</div><div class="kpi-val">'+_models.size+'<span style="font-size:14px;color:var(--muted)"> / '+_cats.size+'</span></div></div>';
-  }
-  const weeks=WEEKS;
-
-  const filtTotal=filt.reduce((s,r)=>s+r.q,0);
-  document.getElementById('ov_filter_info').textContent=`${filt.length} rows · ${filtTotal.toLocaleString()} units`;
-
-  const weeklyF={};
-  filt.forEach(r=>{weeklyF[r.w]=(weeklyF[r.w]||0)+r.q});
-  destroyChart('c_weekly');
-  _charts['c_weekly']=new Chart(document.getElementById('c_weekly'),{
-    type:'bar',
-    data:{
-      labels:weeks.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
-      datasets:[{label:'Qty',data:weeks.map(w=>weeklyF[w]||0),backgroundColor:'#f59e0b',borderRadius:6}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'var(--muted)',font:{size:10,weight:600},formatter:v=>v>0?v:''}},scales:{x:{ticks:{color:'var(--muted)',font:{size:9}},grid:{display:false}},y:{ticks:{color:'var(--muted)'},grid:{color:'#e2e8f0'}}}}
-  });
-
-  const monthlyF={};
-  filt.forEach(r=>{monthlyF[r.m]=(monthlyF[r.m]||0)+r.q});
-  const months=D.meta.months.filter(m=>Object.keys(monthlyF).includes(m));
-  destroyChart('c_monthly');
-  _charts['c_monthly']=new Chart(document.getElementById('c_monthly'),{
-    type:'bar',
-    data:{
-      labels:months,
-      datasets:[{label:'Qty',data:months.map(m=>monthlyF[m]||0),backgroundColor:'#8b5cf6',borderRadius:6}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'var(--muted)',font:{size:11,weight:600},formatter:v=>v>0?v:''}},scales:{x:{ticks:{color:'var(--muted)'},grid:{display:false}},y:{ticks:{color:'var(--muted)'},grid:{color:'#e2e8f0'}}}}
-  });
-
-  destroyChart('c_cat_pie');
-  const catTotals={};
-  filt.forEach(r=>{catTotals[r.c]=(catTotals[r.c]||0)+r.q});
-  const cats=Object.keys(catTotals).sort();
-  _charts['c_cat_pie']=new Chart(document.getElementById('c_cat_pie'),{
-    type:'doughnut',
-    data:{
-      labels:cats,
-      datasets:[{data:cats.map(c=>catTotals[c]),backgroundColor:cats.map(c=>CAT_COLORS[c]||'#64748b')}]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'var(--text)',padding:15}},datalabels:{color:'#fff',font:{weight:700,size:12},formatter:(v,ctx)=>{const t=ctx.dataset.data.reduce((a,b)=>a+b,0);return t?Math.round(v/t*100)+'%':''}}}}
-  });
-
-  destroyChart('c_cat_trend');
-  const catWeekly={};
-  filt.forEach(r=>{
-    if(!catWeekly[r.c])catWeekly[r.c]={};
-    catWeekly[r.c][r.w]=(catWeekly[r.c][r.w]||0)+r.q;
-  });
-  _charts['c_cat_trend']=new Chart(document.getElementById('c_cat_trend'),{
-    type:'bar',
-    data:{
-      labels:weeks,
-      datasets:cats.map(c=>({label:c,data:weeks.map(w=>catWeekly[c]?.[w]||0),backgroundColor:CAT_COLORS[c]||'#64748b'}))
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',labels:{color:'var(--text)',boxWidth:12}},datalabels:{display:false}},scales:{x:{stacked:true,ticks:{color:'var(--muted)'},grid:{display:false}},y:{stacked:true,ticks:{color:'var(--muted)'},grid:{color:'#e2e8f0'}}}}
-  });
-}
-
-// ===== TAB 2: WEEKLY TREND =====
-function renderTrend(){
-  
-  const filt=filtered();
-  var selW=new Set(FILTER_STATE.w.size>0?WEEKS.filter(function(w){return !FILTER_STATE.w.has(w)}):WEEKS);
-  const weeks=[...selW].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
-
-  document.getElementById('filter_info').textContent=`${filt.length} rows · ${filt.reduce((s,r)=>s+r.q,0).toLocaleString()} units`;
-
-  const mq={};
-  filt.forEach(r=>{mq[r.s]=(mq[r.s]||0)+r.q});
-  const top10=Object.entries(mq).sort((a,b)=>b[1]-a[1]).slice(0,10).map(e=>e[0]);
-
-  destroyChart('c_model_trend');
-  const datasets=top10.map((sku,i)=>{
-    const md=(D.models||[]).find(m=>m.s===sku);
-    const label=md?md.n.substring(0,30):sku;
-    return {label,data:weeks.map(w=>{const fr=filt.filter(r=>r.s===sku&&r.w===w);return fr.reduce((s,r)=>s+r.q,0)}),borderColor:COLORS[i%COLORS.length],backgroundColor:COLORS[i%COLORS.length]+'30',tension:.3,fill:false,pointRadius:4};
-  });
-  new Chart(document.getElementById('c_model_trend'),{
-    type:'line',
-    data:{labels:weeks,datasets},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{position:'bottom',labels:{color:'var(--text)',boxWidth:12,font:{size:10}}},datalabels:{display:false}},scales:{x:{ticks:{color:'var(--muted)'},grid:{display:false}},y:{ticks:{color:'var(--muted)'},grid:{color:'#e2e8f0'}}}}
-  });
-
-  const allSKUs=[...new Set(filt.map(r=>r.s))];
-  const skuQty={};
-  filt.forEach(r=>{skuQty[r.s]=(skuQty[r.s]||0)+r.q});
-  const sorted=allSKUs.sort((a,b)=>(skuQty[b]||0)-(skuQty[a]||0));
-
-  let h='<table><thead><tr><th>#</th><th>Model</th><th>Category</th>';
-  weeks.forEach(w=>h+=`<th>${w}</th>`);
-  h+='<th>Total</th></tr></thead><tbody>';
-  sorted.forEach((sku,i)=>{
-    const md=(D.models||[]).find(m=>m.s===sku);
-    const name=md?md.n.substring(0,35):sku;
-    const cat=md?md.c:'';
-    h+=`<tr><td>${i+1}</td><td title="${md?md.n:sku}">${name}</td><td>${catBadge(cat)}</td>`;
-    let total=0;
-    weeks.forEach(w=>{
-      const q=filt.filter(r=>r.s===sku&&r.w===w).reduce((s,r)=>s+r.q,0);
-      total+=q;
-      h+=`<td style="text-align:right">${q||'-'}</td>`;
-    });
-    h+=`<td style="text-align:right;font-weight:700">${total}</td></tr>`;
-  });
-  h+='</tbody></table>';
-  document.getElementById('matrix_tbl').innerHTML=h;
-}
-
-// ===== TAB 3: RANKING =====
-function renderRanking(){
-  
-  const q=document.getElementById('rank_search').value.toLowerCase();
-  const filt=filtered();
-
-  const agg={};
-  filt.forEach(r=>{
-    if(!agg[r.s])agg[r.s]={s:r.s,n:r.n,b:r.b,c:r.c,q:0};
-    agg[r.s].q+=r.q;
-  });
-  let list=Object.values(agg).sort((a,b)=>b.q-a.q);
-  if(q)list=list.filter(m=>(m.n||m.s||'').toLowerCase().includes(q)||m.s.toLowerCase().includes(q));
-  const maxQ=list.length?list[0].q:1;
-  const total=list.reduce((s,m)=>s+m.q,0);
-
-  let h='<table><thead><tr><th>#</th><th>SKU</th><th>Model</th><th>Category</th><th style="text-align:right">Qty</th><th style="text-align:right">Share</th><th style="width:200px">Progress</th></tr></thead><tbody>';
-  list.forEach((m,i)=>{
-    const pct=total?Math.round(m.q/total*100):0;
-    const barW=maxQ?Math.round(m.q/maxQ*100):0;
-    h+=`<tr><td>${i+1}</td><td style="font-family:monospace;font-size:11px">${m.s}</td><td>${m.n}</td><td>${catBadge(m.c)}</td><td style="text-align:right;font-weight:600">${fmt(m.q)}</td><td style="text-align:right">${pct}%</td><td><div class="progress-bar"><div class="progress-fill" style="width:${barW}%"></div></div></td></tr>`;
-  });
-  h+='</tbody></table>';
-  document.getElementById('rank_tbl').innerHTML=h;
-}
-
-// ===== INIT =====
-Chart.register(ChartDataLabels);
-Chart.defaults.color='#94a3b8';
-Chart.defaults.font.family='Inter';
-renderOverview();
-function downloadExcel(){
-  var rows;
-  if(typeof filtered==='function'){rows=filtered();}
-  else if(typeof D!=='undefined'&&D.raw){rows=D.raw;}
-  else{alert('No data available');return;}
-  if(!rows.length){alert('No data to export');return;}
-  var nameMap={w:'Week',m:'Month',c:'Category',q:'Qty',s:'SKU',n:'Name',b:'Brand',r:'Region',ch:'Channel',st:'Sales Type',code:'Code',name:'Name',ton:'Ton',type:'Type',model:'Model',comp:'Compressor',btu:'BTU'};
-  var keys=Object.keys(rows[0]);
-  var data=rows.map(function(r){var o={};keys.forEach(function(k){o[nameMap[k]||k]=r[k]});return o});
-  var ws=XLSX.utils.json_to_sheet(data);
-  var wb=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb,ws,'Raw Data');
-  var title=document.title.replace(/[^a-zA-Z0-9\s-]/g,'').trim().replace(/\s+/g,'_');
-  XLSX.writeFile(wb,title+'_'+new Date().toISOString().slice(0,10)+'.xlsx');
-}
-
-// ===== WOS (STOCK) TAB DATA & RENDERING =====
-const _WOS_STOCK_DATA = {"2025": {"wos_thresholds": {}, "weeks": ["W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51", "W52"], "total_by_week": {"W31": 1232, "W32": 1227, "W33": 1223, "W34": 1215, "W35": 1209, "W36": 1201, "W37": 1175, "W38": 1160, "W39": 1138, "W40": 1108, "W41": 1096, "W42": 1065, "W43": 1061, "W44": 1032, "W45": 1029, "W46": 1024, "W47": 1022, "W48": 1020, "W49": 1019, "W50": 1014, "W51": 1004, "W52": 1004}, "by_category": {"Split AC": {"W31": 1232, "W32": 1227, "W33": 1223, "W34": 1215, "W35": 1209, "W36": 1201, "W37": 1175, "W38": 1160, "W39": 1138, "W40": 1108, "W41": 1096, "W42": 1065, "W43": 1061, "W44": 1032, "W45": 1029, "W46": 1024, "W47": 1022, "W48": 1020, "W49": 1019, "W50": 1014, "W51": 1004, "W52": 1004}}, "wos_by_week": {"W31": {"wos_m8": null, "wos_p8": 71.6, "signal_m8": "INACTIVE", "signal_p8": "OVERSTOCK"}, "W32": {"wos_m8": 23.4, "wos_p8": 67.4, "signal_m8": "HEALTHY", "signal_p8": "OVERSTOCK"}, "W33": {"wos_m8": 36.4, "wos_p8": 63.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W34": {"wos_m8": 40.8, "wos_p8": 55.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W35": {"wos_m8": 51.5, "wos_p8": 52.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W36": {"wos_m8": 61.4, "wos_p8": 50.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W37": {"wos_m8": 62.5, "wos_p8": 58.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W38": {"wos_m8": 51.2, "wos_p8": 64.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W39": {"wos_m8": 51.8, "wos_p8": 70.3, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W40": {"wos_m8": 64.5, "wos_p8": 85.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W41": {"wos_m8": 61.8, "wos_p8": 130.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W42": {"wos_m8": 57.1, "wos_p8": 165.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W43": {"wos_m8": 50.8, "wos_p8": 172.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W44": {"wos_m8": 48.0, "wos_p8": 187.5, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W45": {"wos_m8": 46.7, "wos_p8": 118.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W46": {"wos_m8": 55.6, "wos_p8": 103.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W47": {"wos_m8": 62.6, "wos_p8": 106.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W48": {"wos_m8": 68.3, "wos_p8": 100.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W49": {"wos_m8": 84.2, "wos_p8": 79.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W50": {"wos_m8": 131.6, "wos_p8": 67.0, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W51": {"wos_m8": 166.4, "wos_p8": 65.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W52": {"wos_m8": 173.1, "wos_p8": 63.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}}, "models": [{"model": "LA242C", "category": "Split AC", "type": "CO", "stock": {"W31": 278, "W32": 276, "W33": 276, "W34": 275, "W35": 274, "W36": 273, "W37": 267, "W38": 263, "W39": 261, "W40": 255, "W41": 255, "W42": 249, "W43": 248, "W44": 248, "W45": 246, "W46": 245, "W47": 245, "W48": 245, "W49": 245, "W50": 245, "W51": 244, "W52": 244}, "wos": {"W31": {"m8": null, "p8": 114.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 23.0, "p8": 92.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W33": {"m8": 39.4, "p8": 92.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 39.3, "p8": 74.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 54.8, "p8": 73.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 68.2, "p8": 65.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 78.5, "p8": 76.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 68.6, "p8": 87.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 67.7, "p8": 81.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 105.0, "p8": 102.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 85.0, "p8": 102.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 83.0, "p8": 186.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 66.8, "p8": 186.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 66.8, "p8": 186.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 59.0, "p8": 38.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 70.0, "p8": 27.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 81.7, "p8": 36.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 76.6, "p8": 44.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 98.0, "p8": 44.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 98.0, "p8": 45.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 183.0, "p8": 40.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 183.0, "p8": 43.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO182C", "category": "Split AC", "type": "CO", "stock": {"W31": 470, "W32": 468, "W33": 464, "W34": 463, "W35": 462, "W36": 462, "W37": 446, "W38": 441, "W39": 435, "W40": 429, "W41": 419, "W42": 415, "W43": 416, "W44": 414, "W45": 414, "W46": 413, "W47": 412, "W48": 411, "W49": 411, "W50": 408, "W51": 407, "W52": 407}, "wos": {"W31": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 27.5, "p8": 84.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W33": {"m8": 48.8, "p8": 72.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 60.4, "p8": 67.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 77.0, "p8": 59.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 92.4, "p8": 66.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 89.2, "p8": 81.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 64.5, "p8": 91.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 66.2, "p8": 108.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 85.8, "p8": 135.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 75.2, "p8": 232.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 64.6, "p8": 259.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 60.7, "p8": 277.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 52.9, "p8": 295.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 59.1, "p8": 207.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 75.1, "p8": 177.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 85.2, "p8": 176.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 102.8, "p8": 158.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 129.8, "p8": 102.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 226.7, "p8": 72.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 254.4, "p8": 55.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 271.3, "p8": 50.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO182H", "category": "Split AC", "type": "HP", "stock": {"W31": 137, "W32": 137, "W33": 137, "W34": 137, "W35": 137, "W36": 137, "W37": 137, "W38": 137, "W39": 137, "W40": 135, "W41": 135, "W42": 133, "W43": 133, "W44": 129, "W45": 129, "W46": 129, "W47": 129, "W48": 129, "W49": 129, "W50": 129, "W51": 124, "W52": 124}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W33": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W34": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W35": {"m8": 45.7, "p8": 68.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 45.7, "p8": 51.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": null, "p8": 45.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W41": {"m8": 67.5, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 66.5, "p8": 33.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 66.5, "p8": 29.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W44": {"m8": 64.5, "p8": 25.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W45": {"m8": 48.4, "p8": 43.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W46": {"m8": 48.4, "p8": 43.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W47": {"m8": 48.4, "p8": 55.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W48": {"m8": 48.4, "p8": 55.3, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W49": {"m8": 43.0, "p8": 64.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W50": {"m8": 43.0, "p8": 71.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 31.0, "p8": 124.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 27.6, "p8": 124.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "LO242H", "category": "Split AC", "type": "HP", "stock": {"W31": 94, "W32": 94, "W33": 94, "W34": 94, "W35": 94, "W36": 94, "W37": 94, "W38": 94, "W39": 94, "W40": 94, "W41": 94, "W42": 94, "W43": 94, "W44": 94, "W45": 94, "W46": 94, "W47": 94, "W48": 94, "W49": 93, "W50": 92, "W51": 90, "W52": 90}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W33": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W34": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W35": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W36": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W37": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W38": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W39": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W40": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W41": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W42": {"m8": null, "p8": 94.0, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W43": {"m8": null, "p8": 70.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W44": {"m8": null, "p8": 70.5, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W45": {"m8": null, "p8": 62.7, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W46": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W47": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W48": {"m8": null, "p8": 58.8, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W49": {"m8": null, "p8": 53.1, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W50": {"m8": 92.0, "p8": 46.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W51": {"m8": 90.0, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 67.5, "p8": 45.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "NS182C", "category": "Split AC", "type": "CO", "stock": {"W31": 168, "W32": 167, "W33": 167, "W34": 165, "W35": 162, "W36": 157, "W37": 155, "W38": 153, "W39": 149, "W40": 139, "W41": 139, "W42": 126, "W43": 123, "W44": 120, "W45": 120, "W46": 119, "W47": 119, "W48": 119, "W49": 119, "W50": 118, "W51": 117, "W52": 117}, "wos": {"W31": {"m8": null, "p8": 61.9, "sm8": "INACTIVE", "sp8": "OVERSTOCK"}, "W32": {"m8": 9.8, "p8": 41.8, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W33": {"m8": 18.6, "p8": 41.8, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W34": {"m8": 18.3, "p8": 29.6, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W35": {"m8": 24.3, "p8": 29.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W36": {"m8": 27.3, "p8": 29.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W37": {"m8": 27.7, "p8": 26.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W38": {"m8": 30.6, "p8": 27.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W39": {"m8": 32.6, "p8": 24.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W40": {"m8": 51.2, "p8": 27.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W41": {"m8": 34.8, "p8": 27.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W42": {"m8": 31.5, "p8": 63.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W43": {"m8": 22.1, "p8": 82.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W44": {"m8": 21.5, "p8": 120.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W45": {"m8": 22.7, "p8": 120.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W46": {"m8": 20.4, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W47": {"m8": 21.0, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W48": {"m8": 19.8, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W49": {"m8": 23.8, "p8": 119.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W50": {"m8": 23.6, "p8": 118.0, "sm8": "HEALTHY", "sp8": "OVERSTOCK"}, "W51": {"m8": 58.5, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W52": {"m8": 78.0, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "NS182H", "category": "Split AC", "type": "HP", "stock": {"W31": 3, "W32": 3, "W33": 3, "W34": 3, "W35": 3, "W36": 3, "W37": 3, "W38": 3, "W39": 3, "W40": 3, "W41": 3, "W42": 3, "W43": 3, "W44": 2, "W45": 2}, "wos": {"W31": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W32": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W33": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W34": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W35": {"m8": 3.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W36": {"m8": 3.0, "p8": 3.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W37": {"m8": 3.0, "p8": 3.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W38": {"m8": 3.0, "p8": 2.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W39": {"m8": 3.0, "p8": 2.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W40": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W41": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W42": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W43": {"m8": null, "p8": 2.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W44": {"m8": null, "p8": 1.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W45": {"m8": 2.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}}}, {"model": "NS242C", "category": "Split AC", "type": "CO", "stock": {"W31": 81, "W32": 81, "W33": 81, "W34": 77, "W35": 76, "W36": 75, "W37": 73, "W38": 69, "W39": 59, "W40": 53, "W41": 51, "W42": 45, "W43": 44, "W44": 25, "W45": 24, "W46": 24, "W47": 23, "W48": 22, "W49": 22, "W50": 22, "W51": 22, "W52": 22}, "wos": {"W31": {"m8": null, "p8": 22.1, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W32": {"m8": 20.2, "p8": 20.2, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W33": {"m8": 20.2, "p8": 21.6, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W34": {"m8": 19.2, "p8": 19.2, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W35": {"m8": 19.0, "p8": 19.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W36": {"m8": 25.0, "p8": 12.0, "sm8": "OVERSTOCK", "sp8": "HEALTHY"}, "W37": {"m8": 29.2, "p8": 11.9, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W38": {"m8": 28.8, "p8": 10.7, "sm8": "OVERSTOCK", "sp8": "OPPORTUNITY"}, "W39": {"m8": 22.1, "p8": 11.5, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W40": {"m8": 14.5, "p8": 12.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W41": {"m8": 12.8, "p8": 10.6, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W42": {"m8": 12.0, "p8": 9.8, "sm8": "HEALTHY", "sp8": "OPPORTUNITY"}, "W43": {"m8": 11.0, "p8": 8.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W44": {"m8": 6.2, "p8": 25.0, "sm8": "OPPORTUNITY", "sp8": "OVERSTOCK"}, "W45": {"m8": 3.8, "p8": 24.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W46": {"m8": 3.9, "p8": 24.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W47": {"m8": 3.6, "p8": 23.0, "sm8": "OPPORTUNITY", "sp8": "HEALTHY"}, "W48": {"m8": 4.3, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W49": {"m8": 5.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W50": {"m8": 4.6, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W51": {"m8": 4.8, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}, "W52": {"m8": 4.0, "p8": null, "sm8": "OPPORTUNITY", "sp8": "INACTIVE"}}}, {"model": "NS242H", "category": "Split AC", "type": "HP", "stock": {"W31": 1, "W32": 1, "W33": 1, "W34": 1, "W35": 1}, "wos": {"W31": {"m8": null, "p8": 1.0, "sm8": "INACTIVE", "sp8": "OPPORTUNITY"}, "W32": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W33": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W34": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}, "W35": {"m8": 1.0, "p8": 1.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}}}]}, "2026": {"wos_thresholds": {}, "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13"], "total_by_week": {"W1": 979, "W2": 973, "W3": 969, "W4": 967, "W5": 1055, "W6": 1036, "W7": 1020, "W8": 1003, "W9": 984, "W10": 962, "W11": 951, "W12": 944, "W13": 939}, "by_category": {"Split AC": {"W1": 979, "W2": 973, "W3": 969, "W4": 967, "W5": 1055, "W6": 1036, "W7": 1020, "W8": 1003, "W9": 984, "W10": 962, "W11": 951, "W12": 944, "W13": 939}}, "wos_by_week": {"W1": {"wos_m8": 180.9, "wos_p8": 64.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W2": {"wos_m8": 114.7, "wos_p8": 57.1, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W3": {"wos_m8": 100.2, "wos_p8": 51.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W4": {"wos_m8": 103.7, "wos_p8": 52.8, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W5": {"wos_m8": 118.1, "wos_p8": 59.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W6": {"wos_m8": 86.6, "wos_p8": 60.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W7": {"wos_m8": 69.8, "wos_p8": 60.7, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W8": {"wos_m8": 66.1, "wos_p8": 64.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W9": {"wos_m8": 63.0, "wos_p8": 51.4, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W10": {"wos_m8": 63.3, "wos_p8": 80.2, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W11": {"wos_m8": 55.2, "wos_p8": 86.6, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W12": {"wos_m8": 50.3, "wos_p8": 80.9, "signal_m8": "OVERSTOCK", "signal_p8": "OVERSTOCK"}, "W13": {"wos_m8": 51.7, "wos_p8": null, "signal_m8": "OVERSTOCK", "signal_p8": "INACTIVE"}}, "models": [{"model": "LA242C", "category": "Split AC", "type": "CO", "stock": {"W1": 227, "W2": 227, "W3": 225, "W4": 223, "W5": 223, "W6": 218, "W7": 214, "W8": 210, "W9": 201, "W10": 193, "W11": 188, "W12": 183, "W13": 181}, "wos": {"W1": {"m8": 170.2, "p8": 52.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 35.8, "p8": 46.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 25.0, "p8": 42.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 33.4, "p8": 39.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 40.5, "p8": 42.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 39.6, "p8": 41.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 39.6, "p8": 38.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 35.0, "p8": 36.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 35.5, "p8": 40.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 44.5, "p8": 48.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 38.7, "p8": 53.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W12": {"m8": 34.6, "p8": 91.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W13": {"m8": 31.7, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO182C", "category": "Split AC", "type": "CO", "stock": {"W1": 402, "W2": 399, "W3": 398, "W4": 398, "W5": 487, "W6": 474, "W7": 463, "W8": 450, "W9": 442, "W10": 429, "W11": 425, "W12": 423, "W13": 420}, "wos": {"W1": {"m8": 287.1, "p8": 46.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 199.5, "p8": 39.9, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 170.6, "p8": 38.2, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 170.6, "p8": 42.5, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 187.3, "p8": 58.1, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 118.5, "p8": 61.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 81.7, "p8": 64.6, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 61.4, "p8": 75.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 54.3, "p8": 80.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 50.1, "p8": 143.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 42.5, "p8": 170.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W12": {"m8": 40.6, "p8": 141.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W13": {"m8": 44.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO182H", "category": "Split AC", "type": "HP", "stock": {"W1": 123, "W2": 123, "W3": 122, "W4": 122, "W5": 121, "W6": 120, "W7": 120, "W8": 120, "W9": 119, "W10": 119, "W11": 119, "W12": 119, "W13": 119}, "wos": {"W1": {"m8": 24.6, "p8": 123.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 41.0, "p8": 123.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 40.7, "p8": 122.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 52.3, "p8": 122.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 51.9, "p8": 121.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 60.0, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 66.7, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 120.0, "p8": 120.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W10": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W11": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W12": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W13": {"m8": 119.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "LO242H", "category": "Split AC", "type": "HP", "stock": {"W1": 88, "W2": 86, "W3": 86, "W4": 86, "W5": 86, "W6": 86, "W7": 86, "W8": 86, "W9": 86, "W10": 86, "W11": 86, "W12": 86, "W13": 86}, "wos": {"W1": {"m8": 66.0, "p8": 44.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 57.3, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W3": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W4": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W5": {"m8": 53.8, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W6": {"m8": 49.1, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W7": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W8": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W9": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W10": {"m8": 43.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W11": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W12": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W13": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}}}, {"model": "NS182C", "category": "Split AC", "type": "CO", "stock": {"W1": 117, "W2": 116, "W3": 116, "W4": 116, "W5": 116, "W6": 116, "W7": 115, "W8": 115, "W9": 114, "W10": 114, "W11": 112, "W12": 112, "W13": 112}, "wos": {"W1": {"m8": 117.0, "p8": 117.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W2": {"m8": 116.0, "p8": 116.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W3": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W4": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W5": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W6": {"m8": 116.0, "p8": 87.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W7": {"m8": 115.0, "p8": 76.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W8": {"m8": 115.0, "p8": 76.7, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W9": {"m8": 114.0, "p8": 57.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W10": {"m8": 114.0, "p8": 57.0, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}, "W11": {"m8": 112.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W12": {"m8": 84.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}, "W13": {"m8": 84.0, "p8": null, "sm8": "OVERSTOCK", "sp8": "INACTIVE"}}}, {"model": "NS242C", "category": "Split AC", "type": "CO", "stock": {"W1": 22, "W2": 22, "W3": 22, "W4": 22, "W5": 22, "W6": 22, "W7": 22, "W8": 22, "W9": 22, "W10": 21, "W11": 21, "W12": 21, "W13": 21}, "wos": {"W1": {"m8": 22.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W2": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W3": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W4": {"m8": 22.0, "p8": 22.0, "sm8": "HEALTHY", "sp8": "HEALTHY"}, "W5": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W6": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W7": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W8": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W9": {"m8": null, "p8": 22.0, "sm8": "INACTIVE", "sp8": "HEALTHY"}, "W10": {"m8": null, "p8": null, "sm8": "INACTIVE", "sp8": "INACTIVE"}, "W11": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W12": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}, "W13": {"m8": 21.0, "p8": null, "sm8": "HEALTHY", "sp8": "INACTIVE"}}}]}};
-const _WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
-const _WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
-
-function _getWosYear(){
-  // Support year switching: check currentYear, currentYear, or default
-  if(typeof currentYear!=='undefined') return currentYear;
-  if(typeof currentYear!=='undefined') return currentYear;
-  return '2026';
-}
-
-function updateWOS(){
-  const yr=_getWosYear();
-  const sd=_WOS_STOCK_DATA[yr];
-  const kpiEl=document.getElementById('wosKpi');
-  if(!kpiEl) return;
-  if(!sd||!sd.models||sd.models.length===0){
-    kpiEl.innerHTML='<div style="grid-column:1/-1;padding:20px;text-align:center;color:#64748b">No stock/WOS data for '+yr+'</div>';
-    ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{const c=document.getElementById(id);if(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}});
-    document.getElementById('tblWosDetail').innerHTML='';
-    document.getElementById('wosDetailCount').textContent='';
-    return;
-  }
-
-  const allWeeks=sd.weeks||[];
-
-  // ===== FILTER-AWARE: Read filter state if available =====
-  const hasFilters=typeof FILTER_STATE!=='undefined';
-  // Selected weeks = all weeks minus excluded ones
-  let selWeeks=allWeeks;
-  if(hasFilters&&FILTER_STATE.w&&FILTER_STATE.w.size>0){
-    selWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w));
-  }
-  const latestW=selWeeks.length?selWeeks[selWeeks.length-1]:(allWeeks.length?allWeeks[allWeeks.length-1]:'');
-
-  // Filter models by Category, Type, Compressor, BTU
-  let models=sd.models;
-  if(hasFilters){
-    if(FILTER_STATE.c&&FILTER_STATE.c.size>0) models=models.filter(m=>!FILTER_STATE.c.has(m.category));
-    if(FILTER_STATE.type&&FILTER_STATE.type.size>0) models=models.filter(m=>!FILTER_STATE.type.has(m.type));
-    if(FILTER_STATE.comp&&FILTER_STATE.comp.size>0) models=models.filter(m=>!m.compressor||!FILTER_STATE.comp.has(m.compressor));
-    if(FILTER_STATE.btu&&FILTER_STATE.btu.size>0) models=models.filter(m=>!m.btu||!FILTER_STATE.btu.has(m.btu));
-  }
-
-  // Aggregate for selected week
-  let totalStock=0;
-  const stockByCat={};
-  const signalCounts={OPPORTUNITY:0,HEALTHY:0,OVERSTOCK:0,INACTIVE:0};
-  models.forEach(m=>{
-    const s=(m.stock||{})[latestW]||0;
-    totalStock+=s;
-    const cat=m.category||'Other';
-    stockByCat[cat]=(stockByCat[cat]||0)+s;
-    const wos=(m.wos||{})[latestW];
-    if(wos){
-      const sig=wos.sm8||'INACTIVE';
-      signalCounts[sig]=(signalCounts[sig]||0)+1;
-    }else{
-      signalCounts.INACTIVE++;
-    }
-  });
-
-  // Overall WOS for selected week
-  const wbw=sd.wos_by_week||{};
-  // Recalculate WOS from filtered models for the selected week
-  let wosM8=null,wosP8=null;
-  const latestWos=wbw[latestW]||{};
-  // If no category/type filter, use pre-calculated overall WOS
-  if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
-    // Recalculate from filtered models: weighted average
-    let stockSum=0,m8WeightedSum=0,p8WeightedSum=0,m8HasData=false,p8HasData=false;
-    models.forEach(m=>{
-      const stk=(m.stock||{})[latestW]||0;
-      const wos=(m.wos||{})[latestW];
-      if(wos){
-        if(wos.m8!==null&&wos.m8!==undefined){m8WeightedSum+=wos.m8*stk;m8HasData=true}
-        if(wos.p8!==null&&wos.p8!==undefined){p8WeightedSum+=wos.p8*stk;p8HasData=true}
-      }
-      stockSum+=stk;
-    });
-    if(m8HasData&&stockSum>0)wosM8=Math.round(m8WeightedSum/stockSum*10)/10;
-    if(p8HasData&&stockSum>0)wosP8=Math.round(p8WeightedSum/stockSum*10)/10;
-  }else{
-    wosM8=latestWos.wos_m8;
-    wosP8=latestWos.wos_p8;
-  }
-  const sigM8=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
-  const sigP8=wosP8!==null&&wosP8!==undefined?(wosP8<=12?'OPPORTUNITY':wosP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
-
-  // KPI
-  const isFiltered=hasFilters&&(FILTER_STATE.w&&FILTER_STATE.w.size>0||FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0);
-  const filterTag=isFiltered?' [Filtered]':'';
-  const kpiStyle='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
-  kpiEl.innerHTML=[
-    {l:'Total Stock ('+latestW+')'+filterTag,v:totalStock.toLocaleString(),s:models.length+' models',b:'#2563eb'},
-    {l:'WOS-8 (Past 8wk)',v:wosM8!==null&&wosM8!==undefined?wosM8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigM8],b:_WOS_COLORS[sigM8]},
-    {l:'WOS+8 (Next 8wk)',v:wosP8!==null&&wosP8!==undefined?wosP8.toFixed(1)+' wks':'N/A',s:_WOS_LABELS[sigP8],b:_WOS_COLORS[sigP8]},
-    {l:'Signal Summary',v:signalCounts.OPPORTUNITY+'/'+signalCounts.HEALTHY+'/'+signalCounts.OVERSTOCK,s:'Need/Optimal/Excess',b:'#8b5cf6'},
-  ].map(k=>'<div style="'+kpiStyle+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
-
-  // Charts (using Chart.js if available)
-  if(typeof Chart==='undefined') return;
-
-  // Destroy existing WOS charts
-  ['cWosCatBar','cWosTrend','cWosSignal','cWosStockTrend'].forEach(id=>{
-    if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
-  });
-
-  const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1'];
-  const DL_NONE={display:false};
-  const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
-  const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
-
-  function _wosMk(id,type,data,opts={}){
-    const ctx=document.getElementById(id);
-    if(!ctx)return null;
-    const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:opts.legend!==false,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
-    if(opts.scales)defaults.scales=opts.scales;
-    if(opts.indexAxis)defaults.indexAxis=opts.indexAxis;
-    if(opts.plugins)Object.assign(defaults.plugins,opts.plugins);
-    const chart=new Chart(ctx,{type,data,options:defaults});
-    window['_wosChart_'+id]=chart;
-    return chart;
-  }
-
-  // Stock by Category (filtered)
-  const catLabels=Object.keys(stockByCat).filter(c=>stockByCat[c]>0).sort((a,b)=>stockByCat[b]-stockByCat[a]);
-  _wosMk('cWosCatBar','bar',{
-    labels:catLabels,
-    datasets:[{label:'Stock ('+latestW+')',data:catLabels.map(c=>stockByCat[c]),backgroundColor:COLORS}]
-  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
-
-  // WOS Weekly Trend (show only selected weeks, recalculate from filtered models)
-  const trendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
-  const m8Data=[],p8Data=[];
-  trendWeeks.forEach(w=>{
-    if(hasFilters&&(FILTER_STATE.c&&FILTER_STATE.c.size>0||FILTER_STATE.type&&FILTER_STATE.type.size>0)){
-      // Recalculate from filtered models
-      let stockS=0,m8ws=0,p8ws=0,m8h=false,p8h=false;
-      models.forEach(m=>{
-        const stk=(m.stock||{})[w]||0;
-        const wos=(m.wos||{})[w];
-        if(wos){
-          if(wos.m8!==null&&wos.m8!==undefined){m8ws+=wos.m8*stk;m8h=true}
-          if(wos.p8!==null&&wos.p8!==undefined){p8ws+=wos.p8*stk;p8h=true}
-        }
-        stockS+=stk;
-      });
-      m8Data.push(m8h&&stockS>0?Math.round(m8ws/stockS*10)/10:null);
-      p8Data.push(p8h&&stockS>0?Math.round(p8ws/stockS*10)/10:null);
-    }else{
-      const wd=wbw[w];
-      m8Data.push(wd&&wd.wos_m8!==null&&wd.wos_m8!==undefined?Math.round(wd.wos_m8*10)/10:null);
-      p8Data.push(wd&&wd.wos_p8!==null&&wd.wos_p8!==undefined?Math.round(wd.wos_p8*10)/10:null);
-    }
-  });
-  _wosMk('cWosTrend','line',{
-    labels:trendWeeks,
-    datasets:[
-      {label:'WOS-8',data:m8Data,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
-      {label:'WOS+8',data:p8Data,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
-      {label:'12wk',data:trendWeeks.map(()=>12),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0},
-      {label:'24wk',data:trendWeeks.map(()=>24),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0},
-    ]
-  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
-
-  // WOS Signal Distribution (filtered)
-  const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
-  _wosMk('cWosSignal','doughnut',{
-    labels:sigLabels.map(k=>_WOS_LABELS[k]||k),
-    datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>_WOS_COLORS[k])}]
-  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
-
-  // Stock Weekly Trend (recalculate from filtered models)
-  const stkTrendWeeks=(selWeeks.length>1?selWeeks:allWeeks).slice(-20);
-  _wosMk('cWosStockTrend','bar',{
-    labels:stkTrendWeeks,
-    datasets:[{label:'Total Stock',data:stkTrendWeeks.map(w=>{
-      let s=0;models.forEach(m=>{s+=(m.stock||{})[w]||0});return s;
-    }),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1}]
-  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
-
-  // Model Detail Table (filtered, for selected week)
-  const modelRows=models.map(m=>{
-    const stk=(m.stock||{})[latestW]||0;
-    const wos=(m.wos||{})[latestW]||{};
-    return {model:m.model,cat:m.category,type:m.type,stock:stk,m8:wos.m8,p8:wos.p8,sm8:wos.sm8||'INACTIVE',sp8:wos.sp8||'INACTIVE'};
-  }).sort((a,b)=>b.stock-a.stock);
-  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+filterTag+')';
-  document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
-    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(1):'N/A';
-    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(1):'N/A';
-    const m8c=_WOS_COLORS[r.sm8]||'#999';
-    const p8c=_WOS_COLORS[r.sp8]||'#999';
-    return '<tr><td style="font-family:monospace;font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(_WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(_WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';
-  }).join('');
-}
-
-// Hook into existing update/render cycle
-(function(){
-  // Try to hook into year switching
-  const origUpdate=typeof update==='function'?update:typeof render==='function'?render:null;
-  if(origUpdate){
-    const _origFn=origUpdate;
-    const fnName=typeof update==='function'?'update':'render';
-    window[fnName]=function(){
-      _origFn.apply(this,arguments);
-      try{updateWOS()}catch(e){console.error('WOS update error:',e)}
-    };
-  }
-  // Initial render
-  try{updateWOS()}catch(e){console.error('WOS init error:',e)}
-})();
-
-// ===== SUPPLY vs DEMAND TAB =====
-const _SD_WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
-const _SD_WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
-
-function _sdGetYear(){
-  if(typeof currentYear!=='undefined') return currentYear;
-  if(typeof currentYear!=='undefined') return currentYear;
-  return '2026';
-}
-
-function _sdSumBy(rows,key){
-  const m={};
-  rows.forEach(r=>{const k=r[key]||'Other';m[k]=(m[k]||0)+(r.q||0)});
-  return m;
-}
-
-function updateSD(){
-  const kpiEl=document.getElementById('sdKpi');
-  if(!kpiEl) return;
-
-  // Get sell-out data from D.raw
-  const soRows=(D&&D.raw)||[];
-  // Get sell-thru data from D.sellthru
-  const stRows=(D&&D.sellthru)||[];
-
-  const soTotal=soRows.reduce((a,r)=>a+(r.q||0),0);
-  const stTotal=stRows.reduce((a,r)=>a+(r.q||0),0);
-  const gap=stTotal-soTotal;
-  const fillRate=stTotal>0?Math.round(soTotal/stTotal*100):0;
-
-  // Stock data from WOS tab if available
-  const yr=_sdGetYear();
-  let totalStock=0,wosM8=null,wosM8Sig='INACTIVE';
-  let stockByModel={},wosByModel={};
-  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
-    const sd=_WOS_STOCK_DATA[yr];
-    const wks=sd.weeks||[];
-    const latW=wks.length?wks[wks.length-1]:'';
-    (sd.models||[]).forEach(m=>{
-      const stk=(m.stock||{})[latW]||0;
-      totalStock+=stk;
-      stockByModel[m.model]=stk;
-      const wos=(m.wos||{})[latW]||{};
-      wosByModel[m.model]={m8:wos.m8,sm8:wos.sm8||'INACTIVE'};
-    });
-    const wbw=sd.wos_by_week||{};
-    const lw=wbw[latW];
-    if(lw){wosM8=lw.wos_m8;wosM8Sig=wosM8!==null&&wosM8!==undefined?(wosM8<=12?'OPPORTUNITY':wosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';}
-  }
-
-  // KPI
-  const ks='border-left:3px solid;padding:10px 14px;background:#fff;border-radius:6px;box-shadow:0 1px 3px rgba(0,0,0,.08)';
-  const kpis=[
-    {l:'Sell-thru (Supply)',v:stTotal.toLocaleString(),s:'SAP '+yr,b:'#2563eb'},
-    {l:'Sell-out (Demand)',v:soTotal.toLocaleString(),s:yr+' YTD',b:'#10b981'},
-    {l:'Gap (Thru-Out)',v:(gap>=0?'+':'')+gap.toLocaleString(),s:gap>0?'Inventory buildup':'Shortage risk',b:gap>0?'#f59e0b':'#ef4444'},
-    {l:'Fill Rate',v:fillRate+'%',s:fillRate>=80?'Healthy':'Needs attention',b:fillRate>=80?'#10b981':'#f59e0b'},
-  ];
-  if(totalStock>0){
-    kpis.push({l:'Total Stock',v:totalStock.toLocaleString(),s:'Latest week',b:'#8b5cf6'});
-    kpis.push({l:'WOS-8',v:wosM8!==null&&wosM8!==undefined?wosM8.toFixed(1)+' wks':'N/A',s:_SD_WOS_LABELS[wosM8Sig],b:_SD_WOS_COLORS[wosM8Sig]});
-  }
-  kpiEl.innerHTML=kpis.map(k=>'<div style="'+ks+';border-left-color:'+k.b+'"><div style="font-size:20px;font-weight:700">'+k.v+'</div><div style="font-size:11px;color:#64748b;margin-top:2px">'+k.l+'</div><div style="font-size:10px;color:#94a3b8;margin-top:1px">'+k.s+'</div></div>').join('');
-
-  if(typeof Chart==='undefined') return;
-
-  // Destroy existing SD charts
-  ['cSdCategory','cSdWeekly','cSdMonthly','cSdTriple'].forEach(id=>{
-    if(window['_sdChart_'+id]){window['_sdChart_'+id].destroy();window['_sdChart_'+id]=null}
-  });
-
-  const SDCOLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e'];
-  const DL_NONE={display:false};
-  const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
-
-  function _sdMk(id,type,data,opts={}){
-    const ctx=document.getElementById(id);
-    if(!ctx) return null;
-    const defaults={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
-    if(opts.scales)defaults.scales=opts.scales;
-    if(opts.indexAxis)defaults.indexAxis=opts.indexAxis;
-    if(opts.plugins)Object.assign(defaults.plugins,opts.plugins);
-    const chart=new Chart(ctx,{type,data,options:defaults});
-    window['_sdChart_'+id]=chart;
-    return chart;
-  }
-
-  // Category comparison
-  const stCat=_sdSumBy(stRows,'c'),soCat=_sdSumBy(soRows,'c');
-  const allCats=[...new Set([...Object.keys(stCat),...Object.keys(soCat)])].filter(c=>c).sort();
-  _sdMk('cSdCategory','bar',{
-    labels:allCats,
-    datasets:[
-      {label:'Sell-thru',data:allCats.map(c=>stCat[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
-      {label:'Sell-out',data:allCats.map(c=>soCat[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
-    ]
-  },{indexAxis:'y',scales:{x:{beginAtZero:true}}});
-
-  // Weekly trend (line)
-  const weeks=(D&&D.meta&&D.meta.weeks)||[];
-  const stW=_sdSumBy(stRows,'w'),soW=_sdSumBy(soRows,'w');
-  _sdMk('cSdWeekly','line',{
-    labels:weeks,
-    datasets:[
-      {label:'Sell-thru',data:weeks.map(w=>stW[w]||0),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:2},
-      {label:'Sell-out',data:weeks.map(w=>soW[w]||0),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:2}
-    ]
-  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
-
-  // Monthly trend
-  const _months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const stM=_sdSumBy(stRows,'m'),soM=_sdSumBy(soRows,'m');
-  const months=_months.filter(m=>(stM[m]||0)>0||(soM[m]||0)>0);
-  _sdMk('cSdMonthly','bar',{
-    labels:months,
-    datasets:[
-      {label:'Sell-thru',data:months.map(m=>stM[m]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1},
-      {label:'Sell-out',data:months.map(m=>soM[m]||0),backgroundColor:'rgba(16,185,129,0.6)',borderColor:'#10b981',borderWidth:1}
-    ]
-  },{scales:{y:{beginAtZero:true}}});
-
-  // Triple trend: SO vs ST vs Stock (weekly)
-  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
-    const sd=_WOS_STOCK_DATA[yr];
-    const stockWeeks=sd.weeks||[];
-    const stockTotal=sd.total_by_week||{};
-    const tripleWeeks=[...new Set([...weeks,...stockWeeks])].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
-    _sdMk('cSdTriple','line',{
-      labels:tripleWeeks,
-      datasets:[
-        {label:'Sell-thru',data:tripleWeeks.map(w=>stW[w]||0),borderColor:'#2563eb',tension:.3,borderWidth:2,pointRadius:2,fill:false},
-        {label:'Sell-out',data:tripleWeeks.map(w=>soW[w]||0),borderColor:'#10b981',tension:.3,borderWidth:2,pointRadius:2,fill:false},
-        {label:'Stock',data:tripleWeeks.map(w=>stockTotal[w]||0),borderColor:'#8b5cf6',tension:.3,borderWidth:2,pointRadius:2,fill:false,borderDash:[5,3]}
-      ]
-    },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
-  } else {
-    // No stock data, show just SO vs ST
-    _sdMk('cSdTriple','line',{
-      labels:weeks,
-      datasets:[
-        {label:'Sell-thru',data:weeks.map(w=>stW[w]||0),borderColor:'#2563eb',tension:.3,borderWidth:2,pointRadius:2,fill:false},
-        {label:'Sell-out',data:weeks.map(w=>soW[w]||0),borderColor:'#10b981',tension:.3,borderWidth:2,pointRadius:2,fill:false}
-      ]
-    },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}}});
-  }
-
-  // Category breakdown table
-  let catTbl='<thead><tr><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th>';
-  if(totalStock>0) catTbl+='<th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th>';
-  catTbl+='</tr></thead><tbody>';
-
-  // Stock by category
-  const stockByCat={};
-  if(typeof _WOS_STOCK_DATA!=='undefined'&&_WOS_STOCK_DATA[yr]){
-    const sd=_WOS_STOCK_DATA[yr];
-    const wks=sd.weeks||[];
-    const latW=wks.length?wks[wks.length-1]:'';
-    (sd.models||[]).forEach(m=>{
-      const cat=m.category||'Other';
-      const stk=(m.stock||{})[latW]||0;
-      stockByCat[cat]=(stockByCat[cat]||0)+stk;
-    });
-  }
-
-  let totSt=0,totSo=0,totStk=0;
-  allCats.forEach(c=>{
-    const si=stCat[c]||0,so=soCat[c]||0,g=si-so;
-    const fill=si>0?Math.round(so/si*100):0;
-    const stk=stockByCat[c]||0;
-    totSt+=si;totSo+=so;totStk+=stk;
-    const gc=g>0?'color:#f59e0b':g<0?'color:#ef4444':'color:#94a3b8';
-    const fc=fill>=80?'color:#10b981':fill>=40?'color:#f59e0b':'color:#ef4444';
-    catTbl+='<tr><td style="font-weight:600">'+c+'</td>';
-    catTbl+='<td style="text-align:right">'+si.toLocaleString()+'</td>';
-    catTbl+='<td style="text-align:right">'+so.toLocaleString()+'</td>';
-    catTbl+='<td style="text-align:right;font-weight:600;'+gc+'">'+(g>=0?'+':'')+g.toLocaleString()+'</td>';
-    catTbl+='<td style="text-align:right;font-weight:600;'+fc+'">'+fill+'%</td>';
-    if(totalStock>0) catTbl+='<td style="text-align:right">'+stk.toLocaleString()+'</td><td style="text-align:right">-</td>';
-    catTbl+='</tr>';
-  });
-  // Total row
-  const tg=totSt-totSo;
-  const tfc=totSt>0?Math.round(totSo/totSt*100):0;
-  catTbl+='<tr style="border-top:2px solid #1e293b;font-weight:800"><td>Total</td>';
-  catTbl+='<td style="text-align:right">'+totSt.toLocaleString()+'</td>';
-  catTbl+='<td style="text-align:right">'+totSo.toLocaleString()+'</td>';
-  catTbl+='<td style="text-align:right;'+(tg>0?'color:#f59e0b':'color:#ef4444')+'">'+(tg>=0?'+':'')+tg.toLocaleString()+'</td>';
-  catTbl+='<td style="text-align:right">'+tfc+'%</td>';
-  if(totalStock>0) catTbl+='<td style="text-align:right">'+totStk.toLocaleString()+'</td><td style="text-align:right">'+(wosM8!==null?wosM8.toFixed(1):'N/A')+'</td>';
-  catTbl+='</tr></tbody>';
-  document.getElementById('tblSdCat').innerHTML=catTbl;
-
-  // Model detail table (all 4 metrics)
-  const modelSt={},modelSo={},modelCat={};
-  stRows.forEach(r=>{
-    const m=r.model||r.s||'';
-    if(!m) return;
-    modelSt[m]=(modelSt[m]||0)+(r.q||0);
-    if(!modelCat[m]) modelCat[m]=r.c||'';
-  });
-  soRows.forEach(r=>{
-    const m=r.model||r.s||r.code||'';
-    if(!m) return;
-    modelSo[m]=(modelSo[m]||0)+(r.q||0);
-    if(!modelCat[m]) modelCat[m]=r.c||'';
-  });
-  const allModels=[...new Set([...Object.keys(modelSt),...Object.keys(modelSo),...Object.keys(stockByModel)])];
-  const modelList=allModels.map(m=>{
-    const st=modelSt[m]||0,so=modelSo[m]||0;
-    const stk=stockByModel[m]||0;
-    const wos=wosByModel[m]||{};
-    return {m,st,so,gap:st-so,fill:st>0?Math.round(so/st*100):so>0?999:0,cat:modelCat[m]||'',stk,wm8:wos.m8,wsm8:wos.sm8||'INACTIVE'};
-  }).filter(r=>r.st>0||r.so>0||r.stk>0).sort((a,b)=>(b.st+b.so+b.stk)-(a.st+a.so+a.stk));
-
-  document.getElementById('sdModelCount').textContent='('+modelList.length+' models)';
-  document.getElementById('tblSdModel').innerHTML=modelList.slice(0,100).map(r=>{
-    const gc=r.gap>0?'color:#f59e0b':r.gap<0?'color:#ef4444':'';
-    const fc=r.fill>=100?'color:#10b981':r.fill>=70?'color:#2563eb':r.fill>=40?'color:#f59e0b':'color:#ef4444';
-    const status=r.fill>=100?'<span style="color:#10b981;font-weight:700">Sold Out</span>':
-                 r.fill>=70?'<span style="color:#2563eb;font-weight:600">Good</span>':
-                 r.fill>=40?'<span style="color:#f59e0b;font-weight:600">Moderate</span>':
-                 r.st>0?'<span style="color:#ef4444;font-weight:600">Slow</span>':
-                 '<span style="color:#8b5cf6">Out only</span>';
-    const wm8Str=r.wm8!==null&&r.wm8!==undefined?r.wm8.toFixed(1):'N/A';
-    const wc=_SD_WOS_COLORS[r.wsm8]||'#999';
-    const sigBadge=r.stk>0?'<span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+wc+'">'+(_SD_WOS_LABELS[r.wsm8]||'-')+'</span>':'-';
-    return '<tr><td style="font-family:monospace;font-weight:600">'+r.m+'</td><td>'+r.cat+'</td>'+
-      '<td style="text-align:right">'+r.st.toLocaleString()+'</td>'+
-      '<td style="text-align:right">'+r.so.toLocaleString()+'</td>'+
-      '<td style="text-align:right;font-weight:600;'+gc+'">'+(r.gap>=0?'+':'')+r.gap.toLocaleString()+'</td>'+
-      '<td style="text-align:right;font-weight:600;'+fc+'">'+(r.fill===999?'-':r.fill+'%')+'</td>'+
-      '<td style="text-align:right;font-weight:700">'+(r.stk>0?r.stk.toLocaleString():'-')+'</td>'+
-      '<td style="text-align:right;color:'+wc+';font-weight:600">'+wm8Str+'</td>'+
-      '<td>'+sigBadge+'</td>'+
-      '<td>'+status+'</td></tr>';
-  }).join('');
-}
-
-// Hook into existing update/render cycle
-(function(){
-  const origUpdate=typeof update==='function'?update:typeof render==='function'?render:null;
-  if(origUpdate){
-    const _origFn=origUpdate;
-    const fnName=typeof update==='function'?'update':'render';
-    const _prevFn=window[fnName];
-    window[fnName]=function(){
-      _prevFn.apply(this,arguments);
-      try{updateSD()}catch(e){console.error('SD update error:',e)}
-    };
-  }
-  try{updateSD()}catch(e){console.error('SD init error:',e)}
-})();
-
-
-
-// Tab switching
+// ===== TABS =====
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.tab-pane').forEach(x=>x.classList.remove('active'));
     t.classList.add('active');
-    var pane=document.getElementById('pane-'+t.dataset.tab);
-    if(pane)pane.classList.add('active');
-    // Re-render active tab
-    var tab=t.dataset.tab;
-    if(tab==='overview'&&typeof renderOverview==='function')renderOverview();
-    else if(tab==='trend'&&typeof renderTrend==='function')renderTrend();
-    else if(tab==='ranking'&&typeof renderRanking==='function')renderRanking();
-    else if(tab==='wos'&&typeof updateWOS==='function')updateWOS();
-    else if((tab==='sd'||tab==='supplydemand')&&typeof updateSD==='function')updateSD();
+    document.getElementById('pane-'+t.dataset.tab).classList.add('active');
   });
 });
 
-// Initial render
-if(typeof renderOverview==='function') renderOverview();
-var _rs=document.getElementById('rank_search');if(_rs)_rs.addEventListener('input',function(){if(typeof renderRanking==='function')renderRanking()});
-document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+// ===== CHART HELPERS =====
+const charts={};
+const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
+const DL_NONE={display:false};
+const DL_LINE={display:true,anchor:'end',align:'top',font:{size:8},color:'#374151',formatter:v=>v>0?v.toLocaleString():'',offset:2};
+
+function mk(id,type,data,opts={}){
+  if(charts[id]){charts[id].destroy()}
+  const ctx=document.getElementById(id);
+  if(!ctx)return null;
+  const defaultOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:opts.legend!==false,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
+  if(opts.scales)defaultOpts.scales=opts.scales;
+  if(opts.indexAxis)defaultOpts.indexAxis=opts.indexAxis;
+  if(opts.plugins)Object.assign(defaultOpts.plugins,opts.plugins);
+  charts[id]=new Chart(ctx,{type,data,options:defaultOpts});
+  return charts[id];
+}
+
+function sumBy(rows,key){const m={};rows.forEach(r=>{const k=r[key]||'(empty)';m[k]=(m[k]||0)+r.q});return m}
+function sumByTwo(rows,k1,k2){const m={};rows.forEach(r=>{const a=r[k1]||'',b=r[k2]||'';if(!m[a])m[a]={};m[a][b]=(m[a][b]||0)+r.q});return m}
+
+// ===== RENDER =====
+function update(){
+  const rows=filtered();
+  const total=rows.reduce((a,r)=>a+r.q,0);
+  document.getElementById('filterCount').textContent=currentYear+' · '+rows.length+' rows / '+total.toLocaleString()+' units';
+  document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+
+  // KPI - use filtered data's actual weeks/months
+  const wq=sumBy(rows,'w'),mq=sumBy(rows,'m');
+  const _fWeeks=WEEKS.filter(w=>wq[w]>0);
+  const _fMonths=MONTHS.filter(m=>mq[m]>0);
+  const _lw=_fWeeks.length?_fWeeks[_fWeeks.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+  const _pw=_fWeeks.length>1?_fWeeks[_fWeeks.length-2]:_lw;
+  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*100):0;
+  const _cm=_fMonths.length?_fMonths[_fMonths.length-1]:(MONTHS.length?MONTHS[MONTHS.length-1]:'');
+  const _pm=_fMonths.length>1?_fMonths[_fMonths.length-2]:_cm;
+  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*100):0;
+  const ytd=total;
+  const chCount=new Set(rows.map(r=>r.ch)).size;
+  const modelCount=new Set(rows.map(r=>r.model)).size;
+  const ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
+  const cl=(v)=>v>0?'up':v<0?'down':'';
+  document.getElementById('kpiRow').innerHTML=[
+    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
+    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
+    {l:'Total (Filtered)',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks · '+_fMonths.length+' months',c:'',b:'var(--green)'},
+    {l:'Active Channels',v:chCount+'/8',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
+    {l:'Unified Models',v:modelCount,s:new Set(rows.map(r=>r.c)).size+' categories',c:'',b:'var(--amber)'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join('');
+
+  // Weekly bar (stacked by channel)
+  const cwk=sumByTwo(rows,'ch','w');
+  mk('cWeekly','bar',{
+    labels:WEEKS.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
+    datasets:D.dims.channels.map(ch=>({label:ch,data:WEEKS.map(w=>(cwk[ch]||{})[w]||0),backgroundColor:CH_COLORS[ch]||'#999'}))
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Monthly bar
+  mk('cMonthly','bar',{
+    labels:MONTHS,
+    datasets:[{label:'Qty',data:MONTHS.map(m=>mq[m]||0),backgroundColor:['#2563eb','#10b981','#f59e0b','#8b5cf6','#f43f5e','#14b8a6']}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // Category pie
+  const cq=sumBy(rows,'c');
+  const cats=D.dims.categories.filter(c=>cq[c]);
+  mk('cCatPie','doughnut',{
+    labels:cats,datasets:[{data:cats.map(c=>cq[c]||0),backgroundColor:COLORS}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  // Category weekly stacked
+  const catWk=sumByTwo(rows,'c','w');
+  mk('cCatWeek','bar',{
+    labels:WEEKS,
+    datasets:cats.map((c,i)=>({label:c,data:WEEKS.map(w=>(catWk[c]||{})[w]||0),backgroundColor:COLORS[i]}))
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}});
+
+  // === CHANNEL TAB ===
+  // Channel bar
+  const chq=sumBy(rows,'ch');
+  const chs=D.dims.channels.filter(c=>chq[c]);
+  mk('cChBar','bar',{
+    labels:chs,datasets:[{label:'Qty',data:chs.map(c=>chq[c]||0),backgroundColor:chs.map(c=>CH_COLORS[c]||'#999')}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // Channel line
+  mk('cChLine','line',{
+    labels:WEEKS,
+    datasets:chs.map(ch=>({label:ch,data:WEEKS.map(w=>(cwk[ch]||{})[w]||0),borderColor:CH_COLORS[ch]||'#999',backgroundColor:(CH_COLORS[ch]||'#999')+'22',tension:.3,fill:false,borderWidth:2,pointRadius:3}))
+  },{datalabels:DL_LINE});
+
+  // Heatmap (as a table - more readable)
+  const chCat=sumByTwo(rows,'ch','c');
+  const hmEl=document.getElementById('cHeatmap');
+  if(hmEl){
+    const parent=hmEl.parentElement;
+    const existingTable=parent.querySelector('.hm-table');
+    if(existingTable)existingTable.remove();
+    hmEl.style.display='none';
+    const maxVal=Math.max(...chs.flatMap(ch=>cats.map(c=>(chCat[ch]||{})[c]||0)),1);
+    let tbl='<table class="hm-table" style="width:100%"><thead><tr><th></th>'+cats.map(c=>'<th style="font-size:10px;text-align:center">'+c+'</th>').join('')+'<th style="text-align:right;font-weight:700">Total</th></tr></thead><tbody>';
+    chs.forEach(ch=>{
+      let chTotal=0;
+      tbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+      cats.forEach(c=>{
+        const v=(chCat[ch]||{})[c]||0;
+        chTotal+=v;
+        const intensity=v/maxVal;
+        const bg=v>0?`rgba(37,99,235,${0.1+intensity*0.6})`:'transparent';
+        const color=intensity>0.4?'#fff':'#1e293b';
+        tbl+=`<td style="text-align:center;background:${bg};color:${color};font-weight:${v>0?'600':'400'};font-size:12px">${v>0?v.toLocaleString():'-'}</td>`;
+      });
+      tbl+=`<td style="text-align:right;font-weight:700">${chTotal.toLocaleString()}</td></tr>`;
+    });
+    // Total row
+    tbl+='<tr style="border-top:2px solid var(--border)"><td style="font-weight:700">Total</td>';
+    let grandTotal=0;
+    cats.forEach(c=>{
+      const v=cq[c]||0;grandTotal+=v;
+      tbl+=`<td style="text-align:center;font-weight:700">${v.toLocaleString()}</td>`;
+    });
+    tbl+=`<td style="text-align:right;font-weight:800">${grandTotal.toLocaleString()}</td></tr></tbody></table>`;
+    parent.insertAdjacentHTML('beforeend',tbl);
+  }
+
+  // Channel×Category stacked bar
+  mk('cChCatStack','bar',{
+    labels:chs,
+    datasets:cats.map((c,i)=>({label:c,data:chs.map(ch=>(chCat[ch]||{})[c]||0),backgroundColor:COLORS[i]}))
+  },{datalabels:DL_NONE,scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}});
+
+  // === PRODUCT TAB ===
+  const tyq=sumBy(rows,'type');
+  mk('cType','doughnut',{
+    labels:Object.keys(tyq),datasets:[{data:Object.values(tyq),backgroundColor:['#2563eb','#f59e0b','#ccc']}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  const compq=sumBy(rows,'comp');
+  mk('cComp','doughnut',{
+    labels:Object.keys(compq),datasets:[{data:Object.values(compq),backgroundColor:['#10b981','#8b5cf6','#ccc']}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  mk('cCatBar','bar',{
+    labels:cats,datasets:[{label:'Qty',data:cats.map(c=>cq[c]||0),backgroundColor:COLORS}]
+  },{indexAxis:'y',plugins:{legend:{display:false}}});
+
+  // Top 20 unified models table
+  const modelMap={};
+  rows.forEach(r=>{
+    if(!modelMap[r.model])modelMap[r.model]={cat:r.c,type:r.type,q:0,chs:new Set()};
+    modelMap[r.model].q+=r.q;
+    modelMap[r.model].chs.add(r.ch);
+  });
+  const top20=Object.entries(modelMap).sort((a,b)=>b[1].q-a[1].q).slice(0,20);
+  document.getElementById('tblTop20').innerHTML=top20.map(([model,v],i)=>{
+    const chBadges=[...v.chs].map(c=>`<span class="ch-badge" style="background:${(CH_COLORS[c]||'#ddd')}22;color:${CH_COLORS[c]||'#333'}">${c}</span>`).join('');
+    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*1000)/10:0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
+  }).join('');
+
+  // === DETAIL TAB ===
+  // Aggregate by week+channel+model for detail table
+  const detailMap={};
+  rows.forEach(r=>{
+    const key=r.w+'|'+r.ch+'|'+r.model;
+    if(!detailMap[key])detailMap[key]={w:r.w,ch:r.ch,model:r.model,c:r.c,type:r.type,comp:r.comp,q:0};
+    detailMap[key].q+=r.q;
+  });
+  const detailRows=Object.values(detailMap).sort((a,b)=>{
+    const wA=parseInt(a.w.slice(1)),wB=parseInt(b.w.slice(1));
+    if(wA!==wB)return wB-wA;
+    return b.q-a.q;
+  });
+  document.getElementById('detailCount').textContent=`(${detailRows.length} aggregated rows)`;
+  document.getElementById('tblDetail').innerHTML=detailRows.slice(0,200).map(r=>
+    `<tr><td>${r.w}</td><td><span class="ch-badge" style="background:${(CH_COLORS[r.ch]||'#ddd')}22;color:${CH_COLORS[r.ch]||'#333'}">${r.ch}</span></td><td class="mono">${r.model}</td><td>${r.c}</td><td>${r.type}</td><td>${r.comp}</td><td style="text-align:right;font-weight:600">${r.q.toLocaleString()}</td></tr>`
+  ).join('');
+
+  // Update Supply vs Demand tab
+  if(typeof updateSD==='function')updateSD();
+  // Update WOS tab
+  if(typeof updateWOS==='function')updateWOS();
+}
+
+// ===== EXCEL DOWNLOAD =====
+function downloadExcel(){
+  const rows=filtered();
+  // Aggregate by week+channel+model
+  const agg={};
+  rows.forEach(r=>{
+    const key=r.w+'|'+r.ch+'|'+r.model;
+    if(!agg[key])agg[key]={Week:r.w,Month:r.m,Channel:r.ch,'Unified Model':r.model,Category:r.c,Type:r.type,Compressor:r.comp,BTU:r.btu,'Original SKU':r.code,Qty:0};
+    agg[key].Qty+=r.q;
+  });
+  const data=Object.values(agg).sort((a,b)=>{
+    const wA=parseInt(a.Week.slice(1)),wB=parseInt(b.Week.slice(1));
+    if(wA!==wB)return wA-wB;
+    if(a.Channel!==b.Channel)return a.Channel.localeCompare(b.Channel);
+    return b.Qty-a.Qty;
+  });
+
+  // Raw detail sheet
+  const ws1=XLSX.utils.json_to_sheet(data);
+  // Set column widths
+  ws1['!cols']=[{wch:6},{wch:6},{wch:15},{wch:20},{wch:18},{wch:5},{wch:10},{wch:8},{wch:20},{wch:10}];
+
+  // Summary by Channel sheet
+  const chSum={};
+  rows.forEach(r=>{chSum[r.ch]=(chSum[r.ch]||0)+r.q});
+  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const ws2=XLSX.utils.json_to_sheet(chData);
+  ws2['!cols']=[{wch:15},{wch:10},{wch:8}];
+
+  // Summary by Category sheet
+  const catSum={};
+  rows.forEach(r=>{catSum[r.c]=(catSum[r.c]||0)+r.q});
+  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const ws3=XLSX.utils.json_to_sheet(catData);
+  ws3['!cols']=[{wch:20},{wch:10},{wch:8}];
+
+  // Weekly trend sheet
+  const wkCh={};
+  rows.forEach(r=>{
+    if(!wkCh[r.w])wkCh[r.w]={Week:r.w};
+    wkCh[r.w][r.ch]=(wkCh[r.w][r.ch]||0)+r.q;
+    wkCh[r.w]['Total']=(wkCh[r.w]['Total']||0)+r.q;
+  });
+  const wkData=Object.values(wkCh).sort((a,b)=>parseInt(a.Week.slice(1))-parseInt(b.Week.slice(1)));
+  const ws4=XLSX.utils.json_to_sheet(wkData);
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws1,'Raw Data');
+  XLSX.utils.book_append_sheet(wb,ws2,'By Channel');
+  XLSX.utils.book_append_sheet(wb,ws3,'By Category');
+  XLSX.utils.book_append_sheet(wb,ws4,'Weekly Trend');
+
+  // Supply vs Demand sheet
+  const siRows=filteredSellthru();
+  const modelSi={},modelSo={},modelCat={},modelChs={};
+  siRows.forEach(r=>{modelSi[r.model]=(modelSi[r.model]||0)+r.q;modelCat[r.model]=r.c;if(!modelChs[r.model])modelChs[r.model]=new Set();modelChs[r.model].add(r.ch)});
+  rows.forEach(r=>{modelSo[r.model]=(modelSo[r.model]||0)+r.q;modelCat[r.model]=r.c;if(!modelChs[r.model])modelChs[r.model]=new Set();modelChs[r.model].add(r.ch)});
+  const sdData=[...new Set([...Object.keys(modelSi),...Object.keys(modelSo)])].map(m=>{
+    const si=modelSi[m]||0,so=modelSo[m]||0;
+    return {Model:m,Category:modelCat[m]||'',Channels:[...(modelChs[m]||[])].join(', '),'Sell-thru':si,'Sell-out':so,Gap:si-so,'Sell-thru %':si>0?Math.round(so/si*100)+'%':'N/A'};
+  }).sort((a,b)=>(b['Sell-thru']+b['Sell-out'])-(a['Sell-thru']+a['Sell-out']));
+  const ws5=XLSX.utils.json_to_sheet(sdData);
+  ws5['!cols']=[{wch:20},{wch:18},{wch:30},{wch:10},{wch:10},{wch:10},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws5,'Supply vs Demand');
+
+  XLSX.writeFile(wb,'Unified_Sellout_8Ch_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+// ===== SUPPLY vs DEMAND (Sell-thru) =====
+function filteredSellthru(){
+  return (D.sellthru||[]).filter(r=>{
+    if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
+    if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
+    if(FILTER_STATE.ch.size>0&&FILTER_STATE.ch.has(r.ch))return false;
+    if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
+    if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(r.type))return false;
+    if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(r.btu))return false;
+    return true;
+  });
+}
+
+function updateSD(){
+  const soRows=filtered();
+  const siRows=filteredSellthru();
+  const soTotal=soRows.reduce((a,r)=>a+r.q,0);
+  const siTotal=siRows.reduce((a,r)=>a+r.q,0);
+  const gap=siTotal-soTotal;
+  const sellThru=siTotal>0?Math.round(soTotal/siTotal*100):0;
+
+  // KPI
+  document.getElementById('sdKpi').innerHTML=[
+    {l:'Total Sell-thru (Supply)',v:siTotal.toLocaleString(),s:'SAP '+currentYear+' YTD',b:'#2563eb'},
+    {l:'Total Sell-out (Demand)',v:soTotal.toLocaleString(),s:'8 Ch. '+currentYear+' Data',b:'#10b981'},
+    {l:'Inventory Gap (Thru-Out)',v:(gap>=0?'+':'')+gap.toLocaleString(),s:gap>0?'Inventory buildup':'Shortage risk',b:gap>0?'#f59e0b':'#ef4444'},
+    {l:'Sell-through Rate',v:sellThru+'%',s:sellThru>=80?'Healthy':'Needs attention',b:sellThru>=80?'#10b981':'#f59e0b'},
+    {l:'Models Tracked',v:new Set([...soRows.map(r=>r.model),...siRows.map(r=>r.model)]).size,s:'Sell-thru: '+new Set(siRows.map(r=>r.model)).size+' / Out: '+new Set(soRows.map(r=>r.model)).size,b:'#8b5cf6'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  // Channel comparison bar
+  const siCh=sumBy(siRows,'ch'),soCh=sumBy(soRows,'ch');
+  const allChs=D.dims.channels;
+  mk('cSdChannel','bar',{
+    labels:allChs,
+    datasets:[
+      {label:'Sell-thru',data:allChs.map(c=>siCh[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
+      {label:'Sell-out',data:allChs.map(c=>soCh[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
+    ]
+  },{scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Category comparison bar
+  const siCat=sumBy(siRows,'c'),soCat=sumBy(soRows,'c');
+  const allCats=[...new Set([...Object.keys(siCat),...Object.keys(soCat)])].filter(c=>c).sort();
+  mk('cSdCategory','bar',{
+    labels:allCats,
+    datasets:[
+      {label:'Sell-thru',data:allCats.map(c=>siCat[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
+      {label:'Sell-out',data:allCats.map(c=>soCat[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
+    ]
+  },{indexAxis:'y',scales:{x:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Monthly trend
+  const siM=sumBy(siRows,'m'),soM=sumBy(soRows,'m');
+  mk('cSdMonthly','bar',{
+    labels:MONTHS,
+    datasets:[
+      {label:'Sell-thru',data:MONTHS.map(m=>siM[m]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1},
+      {label:'Sell-out',data:MONTHS.map(m=>soM[m]||0),backgroundColor:'rgba(16,185,129,0.6)',borderColor:'#10b981',borderWidth:1}
+    ]
+  },{scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Weekly trend (line)
+  const siW=sumBy(siRows,'w'),soW=sumBy(soRows,'w');
+  mk('cSdWeekly','line',{
+    labels:WEEKS,
+    datasets:[
+      {label:'Sell-thru',data:WEEKS.map(w=>siW[w]||0),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:3},
+      {label:'Sell-out',data:WEEKS.map(w=>soW[w]||0),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:3}
+    ]
+  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Channel × Category heatmap table
+  const siChCat={},soChCat={};
+  siRows.forEach(r=>{if(!siChCat[r.ch])siChCat[r.ch]={};siChCat[r.ch][r.c]=(siChCat[r.ch][r.c]||0)+r.q});
+  soRows.forEach(r=>{if(!soChCat[r.ch])soChCat[r.ch]={};soChCat[r.ch][r.c]=(soChCat[r.ch][r.c]||0)+r.q});
+  let sdTbl='<thead><tr><th>Channel</th>';
+  allCats.forEach(c=>{sdTbl+='<th colspan="3" style="text-align:center;font-size:10px;border-left:2px solid var(--border)">'+c+'</th>'});
+  sdTbl+='<th colspan="3" style="text-align:center;font-weight:700;border-left:2px solid var(--border)">Total</th></tr>';
+  sdTbl+='<tr><th></th>';
+  allCats.forEach(()=>{sdTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Thru</th><th style="text-align:right;font-size:9px">Out</th><th style="text-align:right;font-size:9px">Gap</th>'});
+  sdTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Thru</th><th style="text-align:right;font-size:9px">Out</th><th style="text-align:right;font-size:9px">Gap</th>';
+  sdTbl+='</tr></thead><tbody>';
+  allChs.forEach(ch=>{
+    let chSiT=0,chSoT=0;
+    sdTbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+    allCats.forEach(c=>{
+      const si=(siChCat[ch]||{})[c]||0;
+      const so=(soChCat[ch]||{})[c]||0;
+      const g=si-so;
+      chSiT+=si;chSoT+=so;
+      const gc=g>0?'color:#f59e0b':g<0?'color:#ef4444':'color:var(--muted)';
+      sdTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(si>0?si.toLocaleString():'-')+'</td>';
+      sdTbl+='<td style="text-align:right">'+(so>0?so.toLocaleString():'-')+'</td>';
+      sdTbl+='<td style="text-align:right;font-weight:600;'+gc+'">'+(g!==0?(g>0?'+':'')+g.toLocaleString():'-')+'</td>';
+    });
+    const tg=chSiT-chSoT;
+    const tgc=tg>0?'color:#f59e0b':tg<0?'color:#ef4444':'color:var(--muted)';
+    sdTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chSiT.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700">'+chSoT.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700;'+tgc+'">'+(tg>0?'+':'')+tg.toLocaleString()+'</td>';
+    sdTbl+='</tr>';
+  });
+  // Total row
+  sdTbl+='<tr style="border-top:2px solid var(--text)"><td style="font-weight:800">Total</td>';
+  let gSi=0,gSo=0;
+  allCats.forEach(c=>{
+    let cSi=0,cSo=0;
+    allChs.forEach(ch=>{cSi+=(siChCat[ch]||{})[c]||0;cSo+=(soChCat[ch]||{})[c]||0});
+    gSi+=cSi;gSo+=cSo;
+    const cg=cSi-cSo;
+    const cgc=cg>0?'color:#f59e0b':cg<0?'color:#ef4444':'';
+    sdTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+cSi.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700">'+cSo.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700;'+cgc+'">'+(cg>0?'+':'')+cg.toLocaleString()+'</td>';
+  });
+  const gg=gSi-gSo;
+  sdTbl+='<td style="text-align:right;font-weight:800;border-left:2px solid var(--border)">'+gSi.toLocaleString()+'</td>';
+  sdTbl+='<td style="text-align:right;font-weight:800">'+gSo.toLocaleString()+'</td>';
+  sdTbl+='<td style="text-align:right;font-weight:800;'+(gg>0?'color:#f59e0b':'color:#ef4444')+'">'+(gg>0?'+':'')+gg.toLocaleString()+'</td>';
+  sdTbl+='</tr></tbody>';
+  document.getElementById('tblSdHeatmap').innerHTML=sdTbl;
+
+  // Top 20 Models by Sell-thru+Sell-out combined
+  const modelSi={},modelSo={},modelMeta={};
+  siRows.forEach(r=>{modelSi[r.model]=(modelSi[r.model]||0)+r.q;if(!modelMeta[r.model])modelMeta[r.model]={c:r.c,chs:new Set()};modelMeta[r.model].chs.add(r.ch)});
+  soRows.forEach(r=>{modelSo[r.model]=(modelSo[r.model]||0)+r.q;if(!modelMeta[r.model])modelMeta[r.model]={c:r.c,chs:new Set()};modelMeta[r.model].chs.add(r.ch)});
+  const allModels=[...new Set([...Object.keys(modelSi),...Object.keys(modelSo)])];
+  const modelList=allModels.map(m=>({model:m,si:modelSi[m]||0,so:modelSo[m]||0,meta:modelMeta[m]})).sort((a,b)=>(b.si+b.so)-(a.si+a.so)).slice(0,20);
+  document.getElementById('tblSdModel').innerHTML=modelList.map((r,i)=>{
+    const gap=r.si-r.so;
+    const pct=r.si>0?Math.round(r.so/r.si*100):'-';
+    const status=typeof pct==='number'?(pct>=100?'<span style="color:#10b981;font-weight:700">✅ Sold Out</span>':pct>=70?'<span style="color:#2563eb;font-weight:600">🔵 Good</span>':pct>=40?'<span style="color:#f59e0b;font-weight:600">🟡 Moderate</span>':'<span style="color:#ef4444;font-weight:600">🔴 Slow</span>'):'<span style="color:#8b5cf6">📦 Out only</span>';
+    const chBadges=r.meta?[...r.meta.chs].map(c=>'<span class="ch-badge" style="background:'+(CH_COLORS[c]||'#ddd')+'22;color:'+(CH_COLORS[c]||'#333')+'">'+c+'</span>').join(''):'';
+    return '<tr><td>'+(i+1)+'</td><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+(r.meta?r.meta.c:'')+'</td><td>'+chBadges+'</td><td style="text-align:right">'+r.si.toLocaleString()+'</td><td style="text-align:right">'+r.so.toLocaleString()+'</td><td style="text-align:right;font-weight:600;'+(gap>0?'color:#f59e0b':gap<0?'color:#ef4444':'')+'">'+(gap>0?'+':'')+gap.toLocaleString()+'</td><td style="text-align:right;font-weight:600">'+(typeof pct==='number'?pct+'%':pct)+'</td><td>'+status+'</td></tr>';
+  }).join('');
+}
+
+// ===== WOS (STOCK) TAB =====
+const WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
+const WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
+
+function updateWOS(){
+  const sd=D.stock;
+  if(!sd||!sd.channels){
+    document.getElementById('wosKpi').innerHTML='<div class="kpi"><div class="kpi-val">N/A</div><div class="kpi-label">No stock data for '+currentYear+'</div></div>';
+    return;
+  }
+
+  // Get filtered channels
+  const activeChannels=Object.keys(sd.channels).filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
+  const activeCats=D.dims.categories.filter(c=>FILTER_STATE.c.size===0||!FILTER_STATE.c.has(c));
+  const allWeeks=sd.weeks||[];
+  // Apply week filter: use selected weeks, or all weeks if no filter
+  const wm=D.meta.week_month||{};
+  let filteredWeeks=allWeeks;
+  if(FILTER_STATE.w.size>0){filteredWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w))}
+  if(FILTER_STATE.m.size>0){filteredWeeks=filteredWeeks.filter(w=>{const m=wm[w];return !m||!FILTER_STATE.m.has(m)})}
+  const latestW=filteredWeeks.length?filteredWeeks[filteredWeeks.length-1]:'';
+  const thresholds=sd.wos_thresholds||{};
+
+  // Model filter helper
+  function filterModels(models){
+    return models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(FILTER_STATE.comp.size>0&&FILTER_STATE.comp.has(m.comp||''))return false;
+      if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(m.type||''))return false;
+      if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(m.btu||''))return false;
+      return true;
+    });
+  }
+
+  // Aggregate stock by channel for latest week
+  let totalStock=0;
+  const stockByCh={};
+  const stockByCat={};
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    const models=filterModels(cd.models);
+    let chStock=0;
+    models.forEach(m=>{
+      const s=(m.stock||{})[latestW]||0;
+      chStock+=s;
+      const cat=m.category||'Other';
+      stockByCat[cat]=(stockByCat[cat]||0)+s;
+    });
+    stockByCh[ch]=chStock;
+    totalStock+=chStock;
+  });
+
+  // Get overall WOS for latest week (WOS-8 from latestW, WOS+8 from last week that has it)
+  let wosM8Sum=0,wosP8Sum=0,wosM8Cnt=0,wosP8Cnt=0;
+  let p8Week=latestW;
+  const signalCounts={OPPORTUNITY:0,HEALTHY:0,OVERSTOCK:0,INACTIVE:0};
+  // First try latestW for WOS+8; if all null, search backwards
+  let foundP8=false;
+  activeChannels.forEach(ch=>{
+    const wbw=(sd.channels[ch]||{}).wos_by_week||{};
+    if((wbw[latestW]||{}).wos_p8!=null)foundP8=true;
+  });
+  if(!foundP8){
+    for(let i=allWeeks.length-2;i>=0;i--){
+      let hasP8=false;
+      activeChannels.forEach(ch=>{
+        const wbw=(sd.channels[ch]||{}).wos_by_week||{};
+        if((wbw[allWeeks[i]]||{}).wos_p8!=null)hasP8=true;
+      });
+      if(hasP8){p8Week=allWeeks[i];break;}
+    }
+  }
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    const wbw=cd.wos_by_week||{};
+    const wData=wbw[latestW];
+    if(wData){
+      if(wData.wos_m8!==null&&wData.wos_m8!==undefined){wosM8Sum+=wData.wos_m8;wosM8Cnt++}
+    }
+    const p8Data=wbw[p8Week];
+    if(p8Data){
+      if(p8Data.wos_p8!==null&&p8Data.wos_p8!==undefined){wosP8Sum+=p8Data.wos_p8;wosP8Cnt++}
+    }
+    // Count signals per model
+    filterModels(cd.models).forEach(m=>{
+      const wos=(m.wos||{})[latestW];
+      if(wos){
+        const sig=wos.sm8||wos.sp8||'INACTIVE';
+        signalCounts[sig]=(signalCounts[sig]||0)+1;
+      }else{
+        signalCounts.INACTIVE++;
+      }
+    });
+  });
+  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt*10)/10:null;
+  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt*10)/10:null;
+  const totalModels=Object.values(signalCounts).reduce((a,b)=>a+b,0);
+
+  // KPI row
+  const sigM8=avgM8!==null?(avgM8<=12?'OPPORTUNITY':avgM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+  const sigP8=avgP8!==null?(avgP8<=12?'OPPORTUNITY':avgP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+  document.getElementById('wosKpi').innerHTML=[
+    {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:activeChannels.length+' channels',b:'#2563eb'},
+    {l:'WOS-8 (Avg)',v:avgM8!==null?avgM8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
+    {l:'WOS+8 (Avg'+(p8Week!==latestW?' @'+p8Week:'')+')' ,v:avgP8!==null?avgP8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
+    {l:'Signal Summary',v:signalCounts.OPPORTUNITY+' / '+signalCounts.HEALTHY+' / '+signalCounts.OVERSTOCK,s:'Need / Optimal / Excess',b:'#8b5cf6'},
+    {l:'Models Tracked',v:totalModels,s:'Inactive: '+signalCounts.INACTIVE,b:'#f59e0b'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  // Stock by Channel bar
+  const chLabels=activeChannels.filter(ch=>stockByCh[ch]>0);
+  mk('cWosChBar','bar',{
+    labels:chLabels,
+    datasets:[{label:'Stock',data:chLabels.map(ch=>stockByCh[ch]||0),backgroundColor:chLabels.map(ch=>CH_COLORS[ch]||'#999')}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // WOS Weekly Trend (line)
+  const trendWeeks=(filteredWeeks.length<=20?filteredWeeks:filteredWeeks.slice(-20));
+  const m8Data=[],p8Data=[];
+  trendWeeks.forEach(w=>{
+    let m8s=0,m8c=0,p8s=0,p8c=0;
+    activeChannels.forEach(ch=>{
+      const wbw=(sd.channels[ch]||{}).wos_by_week||{};
+      const wd=wbw[w];
+      if(wd){
+        if(wd.wos_m8!==null&&wd.wos_m8!==undefined){m8s+=wd.wos_m8;m8c++}
+        if(wd.wos_p8!==null&&wd.wos_p8!==undefined){p8s+=wd.wos_p8;p8c++}
+      }
+    });
+    m8Data.push(m8c?Math.round(m8s/m8c*10)/10:null);
+    p8Data.push(p8c?Math.round(p8s/p8c*10)/10:null);
+  });
+  mk('cWosTrend','line',{
+    labels:trendWeeks,
+    datasets:[
+      {label:'WOS-8 (Past 8wk avg)',data:m8Data,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'WOS+8 (Next 8wk avg)',data:p8Data,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'Healthy Zone (12-24)',data:trendWeeks.map(()=>12),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0,fill:'+1'},
+      {label:'',data:trendWeeks.map(()=>24),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0,backgroundColor:'rgba(184,134,11,0.05)',fill:false},
+    ]
+  },{datalabels:DL_NONE,scales:{y:{beginAtZero:true,max:Math.max(60,...m8Data.filter(v=>v!==null),...p8Data.filter(v=>v!==null))+5}},plugins:{legend:{position:'top'}}});
+
+  // Stock by Category bar
+  const catLabels=activeCats.filter(c=>stockByCat[c]>0);
+  mk('cWosCatBar','bar',{
+    labels:catLabels,
+    datasets:[{label:'Stock',data:catLabels.map(c=>stockByCat[c]||0),backgroundColor:COLORS}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // WOS Signal Distribution pie
+  const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
+  mk('cWosSignal','doughnut',{
+    labels:sigLabels.map(k=>WOS_LABELS[k]||k),
+    datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>WOS_COLORS[k]||'#ccc')}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  // Channel × Category Stock Heatmap
+  const chCatStock={};
+  activeChannels.forEach(ch=>{
+    chCatStock[ch]={};
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const cat=m.category||'Other';
+      const s=(m.stock||{})[latestW]||0;
+      chCatStock[ch][cat]=(chCatStock[ch][cat]||0)+s;
+    });
+  });
+  const hmCats=activeCats.filter(c=>Object.values(chCatStock).some(cc=>cc[c]>0));
+  let wosTbl='<thead><tr><th>Channel</th>';
+  hmCats.forEach(c=>{wosTbl+='<th colspan="2" style="text-align:center;font-size:10px;border-left:2px solid var(--border)">'+c+'</th>'});
+  wosTbl+='<th colspan="2" style="text-align:center;font-weight:700;border-left:2px solid var(--border)">Total</th></tr>';
+  wosTbl+='<tr><th></th>';
+  hmCats.forEach(()=>{wosTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Stock</th><th style="text-align:right;font-size:9px">WOS-8</th>'});
+  wosTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Stock</th><th style="text-align:right;font-size:9px">WOS-8</th>';
+  wosTbl+='</tr></thead><tbody>';
+  activeChannels.forEach(ch=>{
+    let chTotS=0;
+    wosTbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+    hmCats.forEach(c=>{
+      const s=(chCatStock[ch]||{})[c]||0;
+      chTotS+=s;
+      // Get WOS for this channel's category
+      const cd=sd.channels[ch];
+      let catWos=null;
+      if(cd){
+        let catSoSum=0,catModels=cd.models.filter(m=>m.category===c);
+        catModels.forEach(m=>{
+          const w=(m.wos||{})[latestW];
+          if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
+        });
+        if(catSoSum>0)catWos=Math.round(catWos/catSoSum*10)/10;
+      }
+      const sig=catWos!==null?(catWos<=12?'OPPORTUNITY':catWos<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+      const sc=WOS_COLORS[sig]||'#999';
+      wosTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(s>0?s.toLocaleString():'-')+'</td>';
+      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos.toFixed(0):'-')+'</td>';
+    });
+    // Total
+    const chWos=(sd.channels[ch]||{}).wos_by_week||{};
+    const chWosData=chWos[latestW];
+    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8*10)/10:null;
+    const chSig=chWosM8!==null?(chWosM8<=12?'OPPORTUNITY':chWosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+    wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chTotS.toLocaleString()+'</td>';
+    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(0):'-')+'</td>';
+    wosTbl+='</tr>';
+  });
+  // Total row
+  wosTbl+='<tr style="border-top:2px solid var(--text)"><td style="font-weight:800">Total</td>';
+  let gTotS=0;
+  hmCats.forEach(c=>{
+    let cS=0;
+    activeChannels.forEach(ch=>{cS+=(chCatStock[ch]||{})[c]||0});
+    gTotS+=cS;
+    wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+cS.toLocaleString()+'</td><td></td>';
+  });
+  wosTbl+='<td style="text-align:right;font-weight:800;border-left:2px solid var(--border)">'+gTotS.toLocaleString()+'</td><td></td>';
+  wosTbl+='</tr></tbody>';
+  document.getElementById('tblWosHeatmap').innerHTML=wosTbl;
+
+  // Model Detail Table
+  const modelRows=[];
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const stk=(m.stock||{})[latestW]||0;
+      const wos=(m.wos||{})[latestW]||{};
+      modelRows.push({
+        model:m.model,cat:m.category,type:m.type,ch:ch,
+        stock:stk,m8:wos.m8,p8:wos.p8,sm8:wos.sm8||'INACTIVE',sp8:wos.sp8||'INACTIVE'
+      });
+    });
+  });
+  modelRows.sort((a,b)=>b.stock-a.stock);
+  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+')';
+  document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
+    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(0):'-';
+    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(0):'-';
+    const m8c=WOS_COLORS[r.sm8]||'#999';
+    const p8c=WOS_COLORS[r.sp8]||'#999';
+    return '<tr><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td><span class="ch-badge" style="background:'+(CH_COLORS[r.ch]||'#ddd')+'22;color:'+(CH_COLORS[r.ch]||'#333')+'">'+r.ch+'</span></td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';
+  }).join('');
+}
+
+// INIT
+update();
+
 </script>
 </body>
 </html>
