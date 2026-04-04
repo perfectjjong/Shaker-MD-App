@@ -66,6 +66,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 .tbl-wrap tr:nth-child(even) td{background:#fff}
 .tbl-wrap tr:nth-child(odd) td{background:var(--bg)}
 .tbl-wrap tr:hover td{background:#e2e8f0}
+.mb-4{margin-bottom:16px}
 @media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
 </style>
 </head>
@@ -96,38 +97,58 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </div>
 <div class="content">
 <div class="tab-pane active" id="pane-overview">
-<!-- Filters -->
-  
-    
-    </div>
-    <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
+<span class="filter-count" id="ov_filter_info" style="display:block;padding:4px 0;font-size:11px;color:var(--muted)"></span>
+  <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
     
   </div>
 
-  <!-- KPI Cards (Dynamic) -->
-  <div class="grid-5" id="kpiRow"></div>
+  <!-- KPI Cards -->
+  <div class="grid-5">
+    <div class="kpi">
+      <div class="kpi-label">Latest Week (W13)</div>
+      <div class="kpi-val" id="kpi-lq">6</div>
+      <div class="kpi-sub up">-33.3% WoW</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Current Month</div>
+      <div class="kpi-val">41</div>
+      <div class="kpi-sub dn">+127.8% MoM</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">YTD Total</div>
+      <div class="kpi-val">106</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Avg / Week</div>
+      <div class="kpi-val">8.2</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Models / Categories</div>
+      <div class="kpi-val">12<span style="font-size:14px;color:var(--muted)"> / 4</span></div>
+    </div>
+  </div>
 
   <!-- Charts Row 1 -->
-  <div class="grid-2" style="margin-bottom:16px">
+  <div class="grid-2">
     <div class="card">
-      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Weekly Sales Trend</h3>
-      <div class="ch-300"><canvas id="c_weekly"></canvas></div>
+      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Weekly Sales Trend</h3>
+      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
     </div>
     <div class="card">
-      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Monthly Sales</h3>
-      <div class="ch-300"><canvas id="c_monthly"></canvas></div>
+      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Monthly Sales</h3>
+      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
     </div>
   </div>
 
   <!-- Charts Row 2 -->
   <div class="grid-2">
     <div class="card">
-      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Sales by Category</h3>
-      <div class="ch-300"><canvas id="c_cat_pie"></canvas></div>
+      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Sales by Category</h3>
+      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
     </div>
     <div class="card">
-      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Category Weekly Trend</h3>
-      <div class="ch-300"><canvas id="c_cat_trend"></canvas></div>
+      <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Category Weekly Trend</h3>
+      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
     </div>
   </div>
 </div>
@@ -135,16 +156,16 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 
     
     </div>
-    <span style="font-size:10px;color:var(--muted)" id="filter_info"></span>
+    <span style="font-size:11px;color:var(--muted)" id="filter_info"></span>
   </div>
 
-  <div class="card" style="margin-bottom:16px">
-    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model Weekly Trend (Top 10)</h3>
+  <div class="card mb-4">
+    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Weekly Trend (Top 10)</h3>
     <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
   </div>
 
   <div class="card">
-    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model × Week Matrix</h3>
+    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model × Week Matrix</h3>
     <div class="tbl-wrap" id="matrix_tbl"></div>
   </div>
 </div>
@@ -156,7 +177,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
   </div>
 
   <div class="card">
-    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model Ranking</h3>
+    <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Ranking</h3>
     <div class="tbl-wrap" id="rank_tbl"></div>
   </div>
 </div>
@@ -402,15 +423,18 @@ setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{co
 const _charts={};
 function destroyChart(id){if(_charts[id]){_charts[id].destroy();delete _charts[id]}}
 
-D.sellthru=[{"w": "W18", "m": "Apr", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 54.5, "v": 774981.15, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 42.5, "v": 577605.84, "code": "", "name": "", "year": "2025"}, {"w": "W19", "m": "May", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 2.0, "v": 43725.5, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 10.0, "v": 53358.42, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 5.0, "v": 65642.5, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 31889.0, "code": "", "name": "", "year": "2025"}, {"w": "W29", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 4.0, "v": 28230.16, "code": "", "name": "", "year": "2025"}, {"w": "W30", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 30717.9, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 44.0, "v": 204926.5, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 93.0, "v": 375076.18, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 20974.65, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 5.0, "v": 19540.14, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 95.0, "v": 354669.3, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 7.0, "v": 32960.32, "code": "", "name": "", "year": "2025"}, {"w": "W32", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 19939.2, "code": "", "name": "", "year": "2025"}, {"w": "W33", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 20478.6, "code": "", "name": "", "year": "2025"}, {"w": "W35", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": -2.0, "v": 0, "code": "", "name": "", "year": "2025"}, {"w": "W36", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 4.0, "v": 80803.8, "code": "", "name": "", "year": "2025"}, {"w": "W38", "m": "Sep", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 16103.74, "code": "", "name": "", "year": "2025"}, {"w": "W39", "m": "Sep", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 12662.0, "code": "", "name": "", "year": "2025"}, {"w": "W39", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 17244.7, "code": "", "name": "", "year": "2025"}, {"w": "W43", "m": "Oct", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 0.0, "v": 5964.34, "code": "", "name": "", "year": "2025"}, {"w": "W50", "m": "Dec", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 4506.28, "code": "", "name": "", "year": "2025"}, {"w": "W10", "m": "Mar", "model": "ABNW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 0, "v": 3134.88, "code": "ABNW55GM3TA.ANWGIB", "name": "LG CONCEALED  IND  47K  H/C  220V/1", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABUW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 0, "v": 4702.56, "code": "ABUW55GM3TA.ANWGIB", "name": "LG CONCEAL OUT 47K H/C 220V/1PH Inv", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "GTNW21GPLTA", "c": "Cassette AC", "type": "", "btu": "", "q": 0, "v": 2381.4, "code": "GTNW21GPLTA.ANWGIB", "name": "17K H/C CASSETTE  INVERTER-IDU", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ATUW21GPLTA", "c": "Cassette AC", "type": "", "btu": "", "q": 0, "v": 2851.8, "code": "ATUW21GPLTA.ANWGIB", "name": "18K H/C CASSETTE STANDARD INVERTER-", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABNW21GM1", "c": "Concealed Set", "type": "HP", "btu": "18000", "q": 2, "v": 6023.08, "code": "ABNW21GM1TA.ANWGIB", "name": "16.2K H/P CONCEALED INVERTER-IDU", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABUW21GM1", "c": "Concealed Set", "type": "HP", "btu": "18000", "q": 2, "v": 9031.68, "code": "ABUW21GM1TA.ANWGIB", "name": "LG CONCEALED  OUT 17K H/C 220V/1PH", "year": "2026"}];
 
-
-// ===== UTILITY =====
-const fmt=n=>n==null?'-':n.toLocaleString();
+// ===== HELPER FUNCTIONS =====
 function catBadge(c){
-  const cls=c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':'cat-floor';
-  return `<span class="cat-badge ${cls}">${c}</span>`;
+  if(!c) return '';
+  var cls = c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':'cat-floor';
+  return '<span class="cat-badge '+cls+'">'+c+'</span>';
 }
+var fmt = function(n){ return n==null?'-':Number(n).toLocaleString(); };
+
+
+// ===== SELL-THRU & STOCK DATA =====
+D.sellthru=[{"w": "W18", "m": "Apr", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 54.5, "v": 774981.15, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 42.5, "v": 577605.84, "code": "", "name": "", "year": "2025"}, {"w": "W19", "m": "May", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 2.0, "v": 43725.5, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 10.0, "v": 53358.42, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 5.0, "v": 65642.5, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 31889.0, "code": "", "name": "", "year": "2025"}, {"w": "W29", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 4.0, "v": 28230.16, "code": "", "name": "", "year": "2025"}, {"w": "W30", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 30717.9, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 44.0, "v": 204926.5, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 93.0, "v": 375076.18, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 20974.65, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 5.0, "v": 19540.14, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 95.0, "v": 354669.3, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 7.0, "v": 32960.32, "code": "", "name": "", "year": "2025"}, {"w": "W32", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 19939.2, "code": "", "name": "", "year": "2025"}, {"w": "W33", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 20478.6, "code": "", "name": "", "year": "2025"}, {"w": "W35", "m": "Aug", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": -2.0, "v": 0, "code": "", "name": "", "year": "2025"}, {"w": "W36", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 4.0, "v": 80803.8, "code": "", "name": "", "year": "2025"}, {"w": "W38", "m": "Sep", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 16103.74, "code": "", "name": "", "year": "2025"}, {"w": "W39", "m": "Sep", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 12662.0, "code": "", "name": "", "year": "2025"}, {"w": "W39", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 17244.7, "code": "", "name": "", "year": "2025"}, {"w": "W43", "m": "Oct", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 0.0, "v": 5964.34, "code": "", "name": "", "year": "2025"}, {"w": "W50", "m": "Dec", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 4506.28, "code": "", "name": "", "year": "2025"}, {"w": "W10", "m": "Mar", "model": "ABNW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 0, "v": 3134.88, "code": "ABNW55GM3TA.ANWGIB", "name": "LG CONCEALED  IND  47K  H/C  220V/1", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABUW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 0, "v": 4702.56, "code": "ABUW55GM3TA.ANWGIB", "name": "LG CONCEAL OUT 47K H/C 220V/1PH Inv", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "GTNW21GPLTA", "c": "Cassette AC", "type": "", "btu": "", "q": 0, "v": 2381.4, "code": "GTNW21GPLTA.ANWGIB", "name": "17K H/C CASSETTE  INVERTER-IDU", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ATUW21GPLTA", "c": "Cassette AC", "type": "", "btu": "", "q": 0, "v": 2851.8, "code": "ATUW21GPLTA.ANWGIB", "name": "18K H/C CASSETTE STANDARD INVERTER-", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABNW21GM1", "c": "Concealed Set", "type": "HP", "btu": "18000", "q": 2, "v": 6023.08, "code": "ABNW21GM1TA.ANWGIB", "name": "16.2K H/P CONCEALED INVERTER-IDU", "year": "2026"}, {"w": "W10", "m": "Mar", "model": "ABUW21GM1", "c": "Concealed Set", "type": "HP", "btu": "18000", "q": 2, "v": 9031.68, "code": "ABUW21GM1TA.ANWGIB", "name": "LG CONCEALED  OUT 17K H/C 220V/1PH", "year": "2026"}];
 
 // ===== TAB 1: OVERVIEW =====
 function renderOverview(){
@@ -418,65 +442,13 @@ function renderOverview(){
   const filt=filtered();
   const weeks=WEEKS;
 
-  // === Dynamic KPI ===
-  const wq={},mq={};
-  filt.forEach(r=>{wq[r.w]=(wq[r.w]||0)+r.q;mq[r.m]=(mq[r.m]||0)+r.q});
-  const _fWeeks=weeks.filter(w=>wq[w]>0);
-  const _lw=_fWeeks.length?_fWeeks[_fWeeks.length-1]:(weeks.length?weeks[weeks.length-1]:'');
-  const _pw=_fWeeks.length>1?_fWeeks[_fWeeks.length-2]:_lw;
-  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*100):0;
-  const _fMonths=(D.meta.months||[]).filter(m=>mq[m]>0);
-  const _cm=_fMonths.length?_fMonths[_fMonths.length-1]:'';
-  const _pm=_fMonths.length>1?_fMonths[_fMonths.length-2]:_cm;
-  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*100):0;
-  const ytd=filt.reduce((s,r)=>s+r.q,0);
-  const avgW=weeks.length?Math.round(ytd/weeks.length*10)/10:0;
-  const modelCount=new Set(filt.map(r=>r.model||r.code)).size;
-  const catCount=new Set(filt.map(r=>r.c)).size;
-  const _ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
-  const _cl=(v)=>v>0?'up':v<0?'down':'';
-  document.getElementById('kpiRow').innerHTML=[
-    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:_ar(wow)+' '+Math.abs(wow)+'% WoW',c:_cl(wow),b:'var(--primary)'},
-    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:_ar(mom)+' '+Math.abs(mom)+'% MoM',c:_cl(mom),b:'var(--teal)'},
-    {l:'YTD Total',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks',c:'',b:'var(--green)'},
-    {l:'Avg / Week',v:avgW.toLocaleString(),s:'units per week',c:'',b:'var(--purple)'},
-    {l:'Models / Categories',v:modelCount+' / '+catCount,s:'filtered',c:'',b:'var(--amber)'},
-  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join('');
-
-
-  // === Dynamic KPI ===
-  const wq={},mq={};
-  filt.forEach(r=>{wq[r.w]=(wq[r.w]||0)+r.q;mq[r.m]=(mq[r.m]||0)+r.q});
-  const _fWeeks=weeks.filter(w=>wq[w]>0);
-  const _lw=_fWeeks.length?_fWeeks[_fWeeks.length-1]:(weeks.length?weeks[weeks.length-1]:'');
-  const _pw=_fWeeks.length>1?_fWeeks[_fWeeks.length-2]:_lw;
-  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*100):0;
-  const _fMonths=(D.meta.months||[]).filter(m=>mq[m]>0);
-  const _cm=_fMonths.length?_fMonths[_fMonths.length-1]:'';
-  const _pm=_fMonths.length>1?_fMonths[_fMonths.length-2]:_cm;
-  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*100):0;
-  const ytd=filt.reduce((s,r)=>s+r.q,0);
-  const avgW=weeks.length?Math.round(ytd/weeks.length*10)/10:0;
-  const modelCount=new Set(filt.map(r=>r.model||r.code)).size;
-  const catCount=new Set(filt.map(r=>r.c)).size;
-  const ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
-  const cl=(v)=>v>0?'up':v<0?'down':'';
-  document.getElementById('kpiRow').innerHTML=[
-    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
-    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
-    {l:'YTD Total',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks',c:'',b:'var(--green)'},
-    {l:'Avg / Week',v:avgW.toLocaleString(),s:'units per week',c:'',b:'var(--purple)'},
-    {l:'Models / Categories',v:modelCount+' / '+catCount,s:'filtered',c:'',b:'var(--amber)'},
-  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join('');
-
-
   const filtTotal=filt.reduce((s,r)=>s+r.q,0);
   document.getElementById('ov_filter_info').textContent=`${filt.length} rows · ${filtTotal.toLocaleString()} units`;
 
   const weeklyF={};
   filt.forEach(r=>{weeklyF[r.w]=(weeklyF[r.w]||0)+r.q});
   destroyChart('c_weekly');
-  new Chart(document.getElementById('c_weekly'),{
+  _charts['c_weekly']=new Chart(document.getElementById('c_weekly'),{
     type:'bar',
     data:{
       labels:weeks.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
@@ -489,7 +461,7 @@ function renderOverview(){
   filt.forEach(r=>{monthlyF[r.m]=(monthlyF[r.m]||0)+r.q});
   const months=D.meta.months.filter(m=>Object.keys(monthlyF).includes(m));
   destroyChart('c_monthly');
-  new Chart(document.getElementById('c_monthly'),{
+  _charts['c_monthly']=new Chart(document.getElementById('c_monthly'),{
     type:'bar',
     data:{
       labels:months,
@@ -502,7 +474,7 @@ function renderOverview(){
   const catTotals={};
   filt.forEach(r=>{catTotals[r.c]=(catTotals[r.c]||0)+r.q});
   const cats=Object.keys(catTotals).sort();
-  new Chart(document.getElementById('c_cat_pie'),{
+  _charts['c_cat_pie']=new Chart(document.getElementById('c_cat_pie'),{
     type:'doughnut',
     data:{
       labels:cats,
@@ -517,7 +489,7 @@ function renderOverview(){
     if(!catWeekly[r.c])catWeekly[r.c]={};
     catWeekly[r.c][r.w]=(catWeekly[r.c][r.w]||0)+r.q;
   });
-  new Chart(document.getElementById('c_cat_trend'),{
+  _charts['c_cat_trend']=new Chart(document.getElementById('c_cat_trend'),{
     type:'bar',
     data:{
       labels:weeks,
@@ -531,6 +503,7 @@ function renderOverview(){
 function renderTrend(){
   
   const filt=filtered();
+  var selW=new Set(FILTER_STATE.w.size>0?WEEKS.filter(function(w){return !FILTER_STATE.w.has(w)}):WEEKS);
   const weeks=[...selW].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
 
   document.getElementById('filter_info').textContent=`${filt.length} rows · ${filt.reduce((s,r)=>s+r.q,0).toLocaleString()} units`;
@@ -541,7 +514,7 @@ function renderTrend(){
 
   destroyChart('c_model_trend');
   const datasets=top10.map((sku,i)=>{
-    const md=D.models.find(m=>m.s===sku);
+    const md=(D.models||[]).find(m=>m.s===sku);
     const label=md?md.n.substring(0,30):sku;
     return {label,data:weeks.map(w=>{const fr=filt.filter(r=>r.s===sku&&r.w===w);return fr.reduce((s,r)=>s+r.q,0)}),borderColor:COLORS[i%COLORS.length],backgroundColor:COLORS[i%COLORS.length]+'30',tension:.3,fill:false,pointRadius:4};
   });
@@ -560,7 +533,7 @@ function renderTrend(){
   weeks.forEach(w=>h+=`<th>${w}</th>`);
   h+='<th>Total</th></tr></thead><tbody>';
   sorted.forEach((sku,i)=>{
-    const md=D.models.find(m=>m.s===sku);
+    const md=(D.models||[]).find(m=>m.s===sku);
     const name=md?md.n.substring(0,35):sku;
     const cat=md?md.c:'';
     h+=`<tr><td>${i+1}</td><td title="${md?md.n:sku}">${name}</td><td>${catBadge(cat)}</td>`;
@@ -588,7 +561,7 @@ function renderRanking(){
     agg[r.s].q+=r.q;
   });
   let list=Object.values(agg).sort((a,b)=>b.q-a.q);
-  if(q)list=list.filter(m=>m.n.toLowerCase().includes(q)||m.s.toLowerCase().includes(q));
+  if(q)list=list.filter(m=>(m.n||m.s||'').toLowerCase().includes(q)||m.s.toLowerCase().includes(q));
   const maxQ=list.length?list[0].q:1;
   const total=list.reduce((s,m)=>s+m.q,0);
 
@@ -732,6 +705,7 @@ function updateWOS(){
     if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
   });
 
+  const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1'];
   const DL_NONE={display:false};
   const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
   const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
@@ -1112,6 +1086,7 @@ document.querySelectorAll('.tab').forEach(t=>{
 
 // Initial render
 if(typeof renderOverview==='function') renderOverview();
+var _rs=document.getElementById('rank_search');if(_rs)_rs.addEventListener('input',function(){if(typeof renderRanking==='function')renderRanking()});
 document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
 </script>
 </body>
