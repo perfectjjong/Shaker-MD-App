@@ -472,8 +472,8 @@ function update(){
   const ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
   const cl=(v)=>v>0?'up':v<0?'down':'';
   document.getElementById('kpiRow').innerHTML=[
-    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
-    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
+    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.round(Math.abs(wow))+'% WoW',c:cl(wow),b:'var(--primary)'},
+    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.round(Math.abs(mom))+'% MoM',c:cl(mom),b:'var(--teal)'},
     {l:'Total (Filtered)',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks · '+_fMonths.length+' months',c:'',b:'var(--green)'},
     {l:'Active Channels',v:chCount+'/8',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
     {l:'Unified Models',v:modelCount,s:new Set(rows.map(r=>r.c)).size+' categories',c:'',b:'var(--amber)'},
@@ -585,7 +585,7 @@ function update(){
   const top20=Object.entries(modelMap).sort((a,b)=>b[1].q-a[1].q).slice(0,20);
   document.getElementById('tblTop20').innerHTML=top20.map(([model,v],i)=>{
     const chBadges=[...v.chs].map(c=>`<span class="ch-badge" style="background:${(CH_COLORS[c]||'#ddd')}22;color:${CH_COLORS[c]||'#333'}">${c}</span>`).join('');
-    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*1000)/10:0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
+    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*100):0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
   }).join('');
 
   // === DETAIL TAB ===
@@ -914,8 +914,8 @@ function updateWOS(){
       }
     });
   });
-  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt*10)/10:null;
-  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt*10)/10:null;
+  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt):null;
+  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt):null;
   const totalModels=Object.values(signalCounts).reduce((a,b)=>a+b,0);
 
   // KPI row
@@ -949,8 +949,8 @@ function updateWOS(){
         if(wd.wos_p8!==null&&wd.wos_p8!==undefined){p8s+=wd.wos_p8;p8c++}
       }
     });
-    m8Data.push(m8c?Math.round(m8s/m8c*10)/10:null);
-    p8Data.push(p8c?Math.round(p8s/p8c*10)/10:null);
+    m8Data.push(m8c?Math.round(m8s/m8c):null);
+    p8Data.push(p8c?Math.round(p8s/p8c):null);
   });
   mk('cWosTrend','line',{
     labels:trendWeeks,
@@ -1011,7 +1011,7 @@ function updateWOS(){
           const w=(m.wos||{})[latestW];
           if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
         });
-        if(catSoSum>0)catWos=Math.round(catWos/catSoSum*10)/10;
+        if(catSoSum>0)catWos=Math.round(catWos/catSoSum);
       }
       const sig=catWos!==null?(catWos<=12?'OPPORTUNITY':catWos<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
       const sc=WOS_COLORS[sig]||'#999';
@@ -1021,7 +1021,7 @@ function updateWOS(){
     // Total
     const chWos=(sd.channels[ch]||{}).wos_by_week||{};
     const chWosData=chWos[latestW];
-    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8*10)/10:null;
+    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8):null;
     const chSig=chWosM8!==null?(chWosM8<=12?'OPPORTUNITY':chWosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
     wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chTotS.toLocaleString()+'</td>';
     wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(0):'-')+'</td>';
