@@ -103,27 +103,27 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
     
   </div>
 
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6" id="kpiRow"></div>
+  <div class="grid-5" id="kpiRow"></div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+  <div class="grid-2" style="margin-bottom:16px">
     <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Weekly Sales Trend</h3>
-      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
+      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Weekly Sales Trend</h3>
+      <div class="ch-300"><canvas id="c_weekly"></canvas></div>
     </div>
     <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Monthly Sales</h3>
-      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
+      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Monthly Sales</h3>
+      <div class="ch-300"><canvas id="c_monthly"></canvas></div>
     </div>
   </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <div class="grid-2">
     <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Sales by Category</h3>
-      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
+      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Sales by Category</h3>
+      <div class="ch-300"><canvas id="c_cat_pie"></canvas></div>
     </div>
     <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Category Weekly Trend</h3>
-      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
+      <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Category Weekly Trend</h3>
+      <div class="ch-300"><canvas id="c_cat_trend"></canvas></div>
     </div>
   </div>
 </div>
@@ -131,16 +131,16 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 
     
     </div>
-    <span class="text-xs text-slate-500" id="filter_info"></span>
+    <span style="font-size:10px;color:var(--muted)" id="filter_info"></span>
   </div>
 
-  <div class="card mb-4">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Weekly Trend (Top 10)</h3>
+  <div class="card" style="margin-bottom:16px">
+    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model Weekly Trend (Top 10)</h3>
     <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
   </div>
 
   <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model x Week Matrix</h3>
+    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model x Week Matrix</h3>
     <div class="tbl-wrap" id="matrix_tbl"></div>
   </div>
 </div>
@@ -152,7 +152,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
   </div>
 
   <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Ranking</h3>
+    <h3 style="font-size:12px;font-weight:700;margin-bottom:12px">Model Ranking</h3>
     <div class="tbl-wrap" id="rank_tbl"></div>
   </div>
 </div>
@@ -398,328 +398,14 @@ setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{co
 const _charts={};
 function destroyChart(id){if(_charts[id]){_charts[id].destroy();delete _charts[id]}}
 
-// ===== CHANNEL RENDERING CODE =====
-
-
-<header class="py-4">
-<div class="max-w-[1600px] mx-auto px-6 flex justify-between items-center">
-  <div>
-    <h1 class="text-2xl font-bold text-white">Star Appliance Sell-out Weekly Dashboard</h1>
-    <p class="text-sm text-slate-400 mt-1">LG Electronics — IR Channel (Najm)</p>
-  </div>
-  <div class="text-right text-xs text-slate-400">
-    <div>Updated: 2026-04-03 23:42</div>
-    <div>Data: W1~W13 2026</div>
-  </div>
-</div>
-</header>
-
-<!-- Tabs -->
-<div class="sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-700">
-<div class="max-w-[1600px] mx-auto px-6">
-<nav class="flex gap-1 pt-2" id="tabs">
-  <button class="tab-btn active" data-tab="overview">Overview</button>
-  <button class="tab-btn" data-tab="trend">Weekly Trend</button>
-  <button class="tab-btn" data-tab="ranking">Model Ranking</button>
-  <button class="tab-btn" data-tab="wos">WOS (Stock)</button>
-  <button class="tab-btn" data-tab="sd">Supply vs Demand</button>
-</nav>
-</div>
-</div>
-
-<main class="max-w-[1600px] mx-auto px-6 py-6">
-
-<!-- ===================== TAB 1: OVERVIEW ===================== -->
-<section id="tab-overview">
-  <div class="flex flex-wrap gap-3 mb-4 items-center">
-    <div class="ms-wrap" id="ow_wrap">
-      <button class="ms-btn" id="ow_btn">Week &#9662;</button>
-      <div class="ms-menu" id="ow_menu">
-        <div class="ms-actions"><button onclick="msAll('ow')">All</button><button class="ms-none" onclick="msNone('ow')">None</button></div>
-        <div class="ms-list" id="ow_list"></div>
-      </div>
-    </div>
-    <div class="ms-wrap" id="oc_wrap">
-      <button class="ms-btn" id="oc_btn">Category &#9662;</button>
-      <div class="ms-menu" id="oc_menu">
-        <div class="ms-actions"><button onclick="msAll('oc')">All</button><button class="ms-none" onclick="msNone('oc')">None</button></div>
-        <div class="ms-list" id="oc_list"></div>
-      </div>
-    </div>
-    <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
-    <span class="text-xs text-slate-500" id="ov_filter_info"></span>
-  </div>
-
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-    <div class="kpi-card">
-      <div class="kpi-label">Latest Week (W13)</div>
-      <div class="kpi-val" id="kpi-lq">8</div>
-      <div class="kpi-change up">-73.3% WoW</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Current Month</div>
-      <div class="kpi-val">103</div>
-      <div class="kpi-change up">-24.8% MoM</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">YTD Total</div>
-      <div class="kpi-val">445</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Avg / Week</div>
-      <div class="kpi-val">34.2</div>
-    </div>
-    <div class="kpi-card">
-      <div class="kpi-label">Models / Categories</div>
-      <div class="kpi-val">36<span class="text-base text-slate-400"> / 3</span></div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Weekly Sales Trend</h3>
-      <div style="height:320px"><canvas id="c_weekly"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Monthly Sales</h3>
-      <div style="height:320px"><canvas id="c_monthly"></canvas></div>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Sales by Category</h3>
-      <div style="height:320px"><canvas id="c_cat_pie"></canvas></div>
-    </div>
-    <div class="card">
-      <h3 class="text-sm font-semibold text-slate-300 mb-3">Category Weekly Trend</h3>
-      <div style="height:320px"><canvas id="c_cat_trend"></canvas></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== TAB 2: WEEKLY TREND ===================== -->
-<section id="tab-trend" style="display:none">
-  <div class="flex flex-wrap gap-3 mb-4 items-center">
-    <div class="ms-wrap" id="fw_wrap">
-      <button class="ms-btn" id="fw_btn">Week &#9662;</button>
-      <div class="ms-menu" id="fw_menu">
-        <div class="ms-actions"><button onclick="msAll('fw')">All</button><button class="ms-none" onclick="msNone('fw')">None</button></div>
-        <div class="ms-list" id="fw_list"></div>
-      </div>
-    </div>
-    <div class="ms-wrap" id="fc_wrap">
-      <button class="ms-btn" id="fc_btn">Category &#9662;</button>
-      <div class="ms-menu" id="fc_menu">
-        <div class="ms-actions"><button onclick="msAll('fc')">All</button><button class="ms-none" onclick="msNone('fc')">None</button></div>
-        <div class="ms-list" id="fc_list"></div>
-      </div>
-    </div>
-    <span class="text-xs text-slate-500" id="filter_info"></span>
-  </div>
-
-  <div class="card mb-4">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Weekly Trend (Top 10)</h3>
-    <div style="height:400px"><canvas id="c_model_trend"></canvas></div>
-  </div>
-
-  <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model x Week Matrix</h3>
-    <div class="tbl-wrap" id="matrix_tbl"></div>
-  </div>
-</section>
-
-<!-- ===================== TAB 3: MODEL RANKING ===================== -->
-<section id="tab-ranking" style="display:none">
-  <div class="flex flex-wrap gap-3 mb-4 items-center">
-    <div class="ms-wrap" id="rw_wrap">
-      <button class="ms-btn" id="rw_btn">Week &#9662;</button>
-      <div class="ms-menu" id="rw_menu">
-        <div class="ms-actions"><button onclick="msAll('rw')">All</button><button class="ms-none" onclick="msNone('rw')">None</button></div>
-        <div class="ms-list" id="rw_list"></div>
-      </div>
-    </div>
-    <div class="ms-wrap" id="rc_wrap">
-      <button class="ms-btn" id="rc_btn">Category &#9662;</button>
-      <div class="ms-menu" id="rc_menu">
-        <div class="ms-actions"><button onclick="msAll('rc')">All</button><button class="ms-none" onclick="msNone('rc')">None</button></div>
-        <div class="ms-list" id="rc_list"></div>
-      </div>
-    </div>
-    <input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px"/>
-  </div>
-
-  <div class="card">
-    <h3 class="text-sm font-semibold text-slate-300 mb-3">Model Ranking</h3>
-    <div class="tbl-wrap" id="rank_tbl"></div>
-  </div>
-</section>
-<section id="tab-wos" style="display:none">
-
-<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px" id="wosKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Stock by Category (Latest Week)</h3><div style="height:250px"><canvas id="cWosCatBar"></canvas></div></div>
-<div class="card"><h3>WOS Weekly Trend</h3><div style="height:250px"><canvas id="cWosTrend"></canvas></div></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>WOS Signal Distribution</h3><div style="height:200px"><canvas id="cWosSignal"></canvas></div></div>
-<div class="card"><h3>Stock Weekly Trend</h3><div style="height:250px"><canvas id="cWosStockTrend"></canvas></div></div>
-</div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:#64748b"></span></h3>
-<div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
-</div></div>
-
-</section>
-<section id="tab-sd" style="display:none">
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:16px" id="sdKpi"></div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div style="height:300px"><canvas id="cSdCategory"></canvas></div></div>
-<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div style="height:300px"><canvas id="cSdWeekly"></canvas></div></div>
-</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
-<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div style="height:250px"><canvas id="cSdMonthly"></canvas></div></div>
-<div class="card"><h3>Weekly: SO vs ST vs Stock Trend</h3><div style="height:250px"><canvas id="cSdTriple"></canvas></div></div>
-</div>
-<div class="card" style="margin-bottom:16px"><h3>Category Breakdown: Supply vs Demand vs Stock</h3>
-<div style="max-height:400px;overflow-y:auto"><table id="tblSdCat"></table></div></div>
-<div class="card" style="margin-bottom:16px"><h3>Model Detail: All 4 Metrics <span id="sdModelCount" style="font-weight:400;color:#64748b"></span></h3>
-<div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Fill %</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
-</div></div>
-
-</section>
-
-</main>
-
-<footer class="text-center text-xs text-slate-600 py-4 border-t border-slate-800">
-  Star Appliance Sell-out Dashboard &middot; Generated 2026-04-03 23:42 &middot; Powered by Sonol Bot
-</footer>
-
-// === Year switching (robust global approach) ===
-// switchYear is global — no IIFE closure issues
- else {
-        b.style.background = isActive ? '#2563eb' : '#fff';
-        b.style.color = isActive ? '#fff' : '#1e293b';
-      }
-    });
-
-    // Update WEEKS/MONTHS arrays (BH-style)
-    if(typeof WEEKS !== 'undefined' && D.meta && D.meta.weeks){
-      WEEKS.length = 0; D.meta.weeks.forEach(function(w){ WEEKS.push(w); });
-    }
-    if(typeof MONTHS !== 'undefined' && D.meta && D.meta.months){
-      MONTHS.length = 0; D.meta.months.forEach(function(m){ MONTHS.push(m); });
-    }
-
-    // Reset BM-style filter init flags
-    if(typeof ovInit !== 'undefined') ovInit = false;
-    if(typeof trendInit !== 'undefined') trendInit = false;
-    if(typeof rankInit !== 'undefined') rankInit = false;
-    // Clear BM-style filter dropdowns
-    if(typeof FILTERS !== 'undefined'){
-      Object.keys(FILTERS).forEach(function(id){
-        var listEl = document.getElementById(id + '_list');
-        if(listEl) listEl.innerHTML = '';
-        delete FILTERS[id];
-      });
-    }
-
-    // Rebuild BH-style filters
-    if(typeof FILTER_MAP !== 'undefined' && typeof FILTER_STATE !== 'undefined'){
-      if(FILTER_MAP.fMonth) FILTER_MAP.fMonth.items = typeof MONTHS !== 'undefined' ? MONTHS : (D.meta.months||[]);
-      if(FILTER_MAP.fWeek) FILTER_MAP.fWeek.items = typeof WEEKS !== 'undefined' ? WEEKS : (D.meta.weeks||[]);
-      if(D.dims){
-        if(FILTER_MAP.fCat) FILTER_MAP.fCat.items = D.dims.categories || [];
-        if(FILTER_MAP.fRegion) FILTER_MAP.fRegion.items = D.dims.regions || [];
-        if(FILTER_MAP.fChannel) FILTER_MAP.fChannel.items = D.dims.channels || [];
-        if(FILTER_MAP.fComp) FILTER_MAP.fComp.items = D.dims.compressors || [];
-        if(FILTER_MAP.fType) FILTER_MAP.fType.items = D.dims.types || [];
-        if(FILTER_MAP.fBtu) FILTER_MAP.fBtu.items = D.dims.btus || [];
-      }
-      Object.keys(FILTER_STATE).forEach(function(k){ FILTER_STATE[k].clear(); });
-      {
-        var el = document.getElementById(id);
-        if(el) el.innerHTML = '';
-        if(typeof buildMultiSelect === 'function') buildMultiSelect(id);
-      });
-    }
-
-    // Re-render ALL tabs
-    var activeTab = 'overview';
-    var activeEl = document.querySelector('.tab-btn.active') || document.querySelector('.tab.active');
-    if(activeEl) activeTab = activeEl.dataset.tab;
-
-    // BH-style: single update() function
-    if(typeof update === 'function'){
-      try{ update(); }catch(e){ console.error('update() error:', e); }
-    }
-    // BM-style: per-tab render functions
-    if(typeof renderOverview === 'function' && activeTab === 'overview'){
-      try{ renderOverview(); }catch(e){ console.error('renderOverview error:', e); }
-    }
-    if(typeof renderTrend === 'function' && activeTab === 'trend'){
-      try{ renderTrend(); }catch(e){ console.error('renderTrend error:', e); }
-    }
-    if(typeof renderRanking === 'function' && activeTab === 'ranking'){
-      try{ renderRanking(); }catch(e){ console.error('renderRanking error:', e); }
-    }
-    if(typeof updateWOS === 'function' && activeTab === 'wos'){
-      try{ updateWOS(); }catch(e){ console.error('updateWOS error:', e); }
-    }
-    if(typeof updateSD === 'function' && (activeTab === 'sd' || activeTab === 'supplydemand')){
-      try{ updateSD(); }catch(e){ console.error('updateSD error:', e); }
-    }
-
-    // Update header badge/title with year
-    var badge = document.querySelector('.badge') || document.getElementById('yearBadge');
-    if(badge){ badge.textContent = badge.textContent.replace(/20\d{2}/, yr); }
-    // Update subtitle/header text
-    document.querySelectorAll('header h1, header p, .text-blue-400').forEach(function(el){
-      el.textContent = el.textContent.replace(/20\d{2}/g, yr);
-    });
-
-    console.log('[YearSwitch] Switched to', yr, '- D.raw:', (D.raw||[]).length, 'rows');
-  }catch(err){
-    console.error('[YearSwitch] Error:', err);
-  }
-}
-
-// Build year selector UI (runs immediately after DOM is ready)
-
 D.sellthru=[{"w": "W5", "m": "Feb", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": -1.0, "v": -13123.5, "code": "", "name": "", "year": "2025"}, {"w": "W5", "m": "Feb", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": -1.5, "v": -15870.25, "code": "", "name": "", "year": "2025"}, {"w": "W5", "m": "Feb", "model": "", "c": "Split AC", "type": "", "btu": "", "q": -5.0, "v": -18268.64, "code": "", "name": "", "year": "2025"}, {"w": "W5", "m": "Feb", "model": "", "c": "Split AC", "type": "", "btu": "", "q": -5.0, "v": -21063.52, "code": "", "name": "", "year": "2025"}, {"w": "W6", "m": "Feb", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": -0.5, "v": -5265.0, "code": "", "name": "", "year": "2025"}, {"w": "W8", "m": "Feb", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 15.0, "v": 196909.72, "code": "", "name": "", "year": "2025"}, {"w": "W9", "m": "Feb", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 2.0, "v": 32818.28, "code": "", "name": "", "year": "2025"}, {"w": "W9", "m": "Feb", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 32.0, "v": 429485.8, "code": "", "name": "", "year": "2025"}, {"w": "W9", "m": "Feb", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 2.0, "v": 11461.4, "code": "", "name": "", "year": "2025"}, {"w": "W9", "m": "Feb", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 54.0, "v": 222410.34, "code": "", "name": "", "year": "2025"}, {"w": "W11", "m": "Mar", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.5, "v": 1999.14, "code": "", "name": "", "year": "2025"}, {"w": "W17", "m": "Apr", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 17105.0, "code": "", "name": "", "year": "2025"}, {"w": "W17", "m": "Apr", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 21.0, "v": 130517.28, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 8690.0, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 5692.5, "code": "", "name": "", "year": "2025"}, {"w": "W18", "m": "Apr", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 56.0, "v": 320117.87, "code": "", "name": "", "year": "2025"}, {"w": "W21", "m": "May", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 4.0, "v": 52065.0, "code": "", "name": "", "year": "2025"}, {"w": "W21", "m": "May", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 5520.9, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 7.0, "v": 32091.9, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 70.5, "v": 932076.33, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 8.0, "v": 41591.22, "code": "", "name": "", "year": "2025"}, {"w": "W22", "m": "May", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 149.0, "v": 877029.88, "code": "", "name": "", "year": "2025"}, {"w": "W25", "m": "Jun", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": -0.5, "v": -5131.5, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 1.0, "v": 12301.06, "code": "", "name": "", "year": "2025"}, {"w": "W26", "m": "Jun", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 17105.0, "code": "", "name": "", "year": "2025"}, {"w": "W27", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 6331.0, "code": "", "name": "", "year": "2025"}, {"w": "W29", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 5.0, "v": 55180.0, "code": "", "name": "", "year": "2025"}, {"w": "W30", "m": "Jul", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 9880.2, "code": "", "name": "", "year": "2025"}, {"w": "W30", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 7.0, "v": 41779.7, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 20.0, "v": 97632.52, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 4515.5, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 0.0, "v": 6150.52, "code": "", "name": "", "year": "2025"}, {"w": "W31", "m": "Jul", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 4.0, "v": 26439.96, "code": "", "name": "", "year": "2025"}, {"w": "W33", "m": "Aug", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 39.0, "v": 234333.7, "code": "", "name": "", "year": "2025"}, {"w": "W34", "m": "Aug", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 10.0, "v": 57662.7, "code": "", "name": "", "year": "2025"}, {"w": "W35", "m": "Aug", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 3.0, "v": 53882.4, "code": "", "name": "", "year": "2025"}, {"w": "W35", "m": "Aug", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 15.0, "v": 196927.5, "code": "", "name": "", "year": "2025"}, {"w": "W35", "m": "Aug", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 133.0, "v": 494619.86, "code": "", "name": "", "year": "2025"}, {"w": "W36", "m": "Aug", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 60.0, "v": 787710.0, "code": "", "name": "", "year": "2025"}, {"w": "W36", "m": "Aug", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 110.0, "v": 362100.92, "code": "", "name": "", "year": "2025"}, {"w": "W37", "m": "Sep", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 4.0, "v": 20278.3, "code": "", "name": "", "year": "2025"}, {"w": "W40", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 3.0, "v": 55221.1, "code": "", "name": "", "year": "2025"}, {"w": "W40", "m": "Sep", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 9.0, "v": 132181.0, "code": "", "name": "", "year": "2025"}, {"w": "W40", "m": "Sep", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 99.0, "v": 1784486.0, "code": "", "name": "", "year": "2025"}, {"w": "W40", "m": "Sep", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 26.0, "v": 97785.44, "code": "", "name": "", "year": "2025"}, {"w": "W41", "m": "Oct", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 16526.4, "code": "", "name": "", "year": "2025"}, {"w": "W41", "m": "Oct", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 1.0, "v": 32016.6, "code": "", "name": "", "year": "2025"}, {"w": "W42", "m": "Oct", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 4797.1, "code": "", "name": "", "year": "2025"}, {"w": "W43", "m": "Oct", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 10899.9, "code": "", "name": "", "year": "2025"}, {"w": "W44", "m": "Oct", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 14439.15, "code": "", "name": "", "year": "2025"}, {"w": "W45", "m": "Nov", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 18683.5, "code": "", "name": "", "year": "2025"}, {"w": "W46", "m": "Nov", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 8.0, "v": 130008.45, "code": "", "name": "", "year": "2025"}, {"w": "W46", "m": "Nov", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": -1.0, "v": -19451.79, "code": "", "name": "", "year": "2025"}, {"w": "W47", "m": "Nov", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 1.0, "v": 7975.0, "code": "", "name": "", "year": "2025"}, {"w": "W47", "m": "Nov", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 5.0, "v": 68480.5, "code": "", "name": "", "year": "2025"}, {"w": "W47", "m": "Nov", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 9.0, "v": 54579.76, "code": "", "name": "", "year": "2025"}, {"w": "W47", "m": "Nov", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 5.0, "v": 54927.4, "code": "", "name": "", "year": "2025"}, {"w": "W49", "m": "Dec", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 3.0, "v": 41088.3, "code": "", "name": "", "year": "2025"}, {"w": "W50", "m": "Dec", "model": "", "c": "Split AC", "type": "", "btu": "", "q": 7.0, "v": 52931.54, "code": "", "name": "", "year": "2025"}, {"w": "W50", "m": "Dec", "model": "", "c": "Floor Standing AC", "type": "", "btu": "", "q": 7.0, "v": 85399.63, "code": "", "name": "", "year": "2025"}, {"w": "W51", "m": "Dec", "model": "", "c": "Cassette AC", "type": "", "btu": "", "q": 0.0, "v": 7920.0, "code": "", "name": "", "year": "2025"}, {"w": "W51", "m": "Dec", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": 0.0, "v": 261.25, "code": "", "name": "", "year": "2025"}, {"w": "W52", "m": "Dec", "model": "", "c": "Concealed Set", "type": "", "btu": "", "q": -27.0, "v": -323457.75, "code": "", "name": "", "year": "2025"}, {"w": "W2", "m": "Jan", "model": "APNW55GT3E6", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 2, "v": 15374.8, "code": "APNW55GT3E6.ENWGIB", "name": "داخلي-انفيرتر دولابي قياسي1طور55حار", "year": "2026"}, {"w": "W2", "m": "Jan", "model": "APUW55GT3E6", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 2, "v": 15374.91, "code": "APW55GT3E4-C", "name": "خارجي-انفيرتر دولابي قياسي1طور46حار", "year": "2026"}, {"w": "W2", "m": "Jan", "model": "APNW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 0, "v": 3110.04, "code": "APNW55GT3M7.ENWGIB", "name": "و/د،مكيف دولابي اسلامي 46 حار/بارد", "year": "2026"}, {"w": "W2", "m": "Jan", "model": "APUW55GT3E6", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 0, "v": 3110.04, "code": "AUUW55GT6.APMGIBR", "name": "خارجي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ABNW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 1, "v": 5158.14, "code": "ABNW40GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  32k حار\\بارد 230v", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ABUW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 1, "v": 7742.82, "code": "ABUW40GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  32k حار\\با", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ND242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 18, "v": 49787.83, "code": "ND242H0.NK0", "name": "و.د،مكيف فريش جديد،21حار،،واي فاي", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ND242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 18, "v": 49787.83, "code": "ND242H0.UK0", "name": "و.خ مكيف فريش جديد،21حار،واي فاي", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ABUW34GM3", "c": "Concealed Set", "type": "HP", "btu": "26400", "q": 2, "v": 16998.3, "code": "ABUW34GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  26.4k حار\\", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "ABNW34GM3", "c": "Concealed Set", "type": "HP", "btu": "26400", "q": 2, "v": 11327.1, "code": "ABNW34GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  26.4k حار\\بارد 23", "year": "2026"}, {"w": "W4", "m": "Jan", "model": "NF122C", "c": "Split AC", "type": "HP", "btu": "12000", "q": 10, "v": 21798.03, "code": "NF122H0.UJ1", "name": "و.خارجية- فريش انفيرتر 12-حار/بارد", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NS182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 2, "v": 5397.52, "code": "NS182H2.UK2", "name": "و.خارجية- سمارت انفيرتر 18-حار بارد", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NT382H", "c": "Split AC", "type": "HP", "btu": "38000", "q": 7, "v": 37382.92, "code": "NT382H2.NR2", "name": "جداري-تيتان انفيرتر كبير30حار/بارد", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NT382H", "c": "Split AC", "type": "HP", "btu": "38000", "q": 7, "v": 37382.92, "code": "NT382H2.UR2", "name": "خارجي-تيتان انفيرتر كبير30 حار/بارد", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NS182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 2, "v": 5397.52, "code": "NS182H2.NK2", "name": "جداري- سمارت انفيرتر 18-حار بارد 4ج", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NS242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 5, "v": 13065.04, "code": "NS242H3.NK2", "name": "جداري-سمارت انفرتر 21-حار بارد 4جهة", "year": "2026"}, {"w": "W5", "m": "Jan", "model": "NS242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 5, "v": 13065.04, "code": "NS242H3.UK2", "name": "وحدة خارجية-سمارت انفيرتر 21-حاربار", "year": "2026"}, {"w": "W7", "m": "Feb", "model": "NF122C", "c": "Split AC", "type": "HP", "btu": "12000", "q": 10, "v": 21798.03, "code": "NF122H0.NJ1", "name": "جداري- فريش انفيرتر 12-حار/بارد 4جه", "year": "2026"}, {"w": "W7", "m": "Feb", "model": "ABNW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 0, "v": 2477.93, "code": "ABNW40GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  32k حار\\بارد 230v", "year": "2026"}, {"w": "W7", "m": "Feb", "model": "ABUW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 0, "v": 3719.59, "code": "ABUW40GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  32k حار\\با", "year": "2026"}, {"w": "W8", "m": "Feb", "model": "ABUQ60GM3TA", "c": "Concealed Set", "type": "CO", "btu": "52000", "q": 0, "v": 4702.56, "code": "ABUQ60GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  52k بارد 2", "year": "2026"}, {"w": "W8", "m": "Feb", "model": "ABNW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 1, "v": 4955.86, "code": "ABNW40GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  32k حار\\بارد 230v", "year": "2026"}, {"w": "W8", "m": "Feb", "model": "ABUW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 1, "v": 7439.18, "code": "ABUW40GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  32k حار\\با", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "(excluded)", "c": "Floor Standing AC", "type": "HP", "btu": "48000", "q": 2, "v": 21462.0, "code": "ATNW40GYLTA.ANWBIB", "name": "إلـ جي وحدة داخلية كاسيت دائري  36k", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ATUW40GYL", "c": "Cassette AC", "type": "HP", "btu": "34000", "q": 2, "v": 21667.8, "code": "ATUW40GYLTA.ANWGIB", "name": "وحدة خارجية إنفرتر كاسيت دائري  36k", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3E6", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 0, "v": 4478.4, "code": "AUUW55GT6.ATRGIB", "name": "وحدة خارجية إنفرتر كاسيت دائري  48k", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUW60GM3", "c": "Concealed Set", "type": "HP", "btu": "52000", "q": 5, "v": 51460.8, "code": "ABUW60GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  52k حار\\با", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNQ55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 42854.87, "code": "APNQ55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي قياسي طور48بار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 17239.96, "code": "LC182H0.UK0", "name": "18K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 26130.08, "code": "NS242H3.NK2", "name": "جداري-سمارت انفرتر 21-حار بارد 4جهة", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 17239.96, "code": "LC182H0.NK0", "name": "18K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUW60GM3", "c": "Concealed Set", "type": "HP", "btu": "52000", "q": 5, "v": 51460.8, "code": "ABUW60GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  52k حار\\با", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 26130.08, "code": "NS242H3.UK2", "name": "وحدة خارجية-سمارت انفيرتر 21-حاربار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNQ55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 10, "v": 57139.83, "code": "APNQ55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي قياسي طور48بار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 17239.96, "code": "LC182H0.UK0", "name": "18K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 10, "v": 57140.48, "code": "APUQ55GT3MA.ANWGIB", "name": "و/خ،مكيف دولابي اسلامي 48 بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NT382C", "c": "Split AC", "type": "CO", "btu": "38000", "q": 5, "v": 22945.14, "code": "NT382C2.UR2", "name": "خارجي-تيتان انفيرتر كبير30بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NT382C", "c": "Split AC", "type": "CO", "btu": "38000", "q": 5, "v": 22945.14, "code": "NT382C2.NR2", "name": "جداري-تيتان انفيرتر كبير30بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 42855.36, "code": "APUQ55GT3MA.ANWGIB", "name": "و/خ،مكيف دولابي اسلامي 48 بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 42855.36, "code": "APUQ55GT3MA.ANWGIB", "name": "و/خ،مكيف دولابي اسلامي 48 بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 15, "v": 22335.03, "code": "LC182C0.UK0", "name": "18K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 15, "v": 22335.03, "code": "LC182C0.NK0", "name": "18K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 15, "v": 22335.03, "code": "LC182C0.NK0", "name": "18K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 15, "v": 22335.03, "code": "LC182C0.UK0", "name": "18K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302C", "c": "Split AC", "type": "CO", "btu": "30000", "q": 5, "v": 15645.08, "code": "LT302C0.NK0", "name": "30K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302C", "c": "Split AC", "type": "CO", "btu": "30000", "q": 5, "v": 15645.08, "code": "LT302C0.NK0", "name": "30K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302H", "c": "Split AC", "type": "HP", "btu": "30000", "q": 5, "v": 16645.01, "code": "LT302H0.UK0", "name": "30K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302H", "c": "Split AC", "type": "HP", "btu": "30000", "q": 5, "v": 16645.01, "code": "LT302H0.NK0", "name": "30K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNW28GM1", "c": "Concealed Set", "type": "HP", "btu": "22000", "q": 2, "v": 6834.52, "code": "ABNW28GM1TA.ANWGIB", "name": "وحدة داخلية مخفي  22k حار\\بارد 230v", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUW28GM1", "c": "Concealed Set", "type": "HP", "btu": "22000", "q": 2, "v": 10260.6, "code": "ABUW28GM1TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  22k حار\\با", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302C", "c": "Split AC", "type": "CO", "btu": "30000", "q": 5, "v": 15645.08, "code": "LT302C0.UK0", "name": "30K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LT302C", "c": "Split AC", "type": "CO", "btu": "30000", "q": 5, "v": 15645.08, "code": "LT302C0.UK0", "name": "30K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 7, "v": 14242.53, "code": "LC242H0.NK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 18990.04, "code": "LC242H0.NK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 7, "v": 14242.53, "code": "LC242H0.NK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 7, "v": 14242.53, "code": "LC242H0.UK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNQ40GM3", "c": "Concealed Set", "type": "CO", "btu": "34000", "q": 2, "v": 12164.25, "code": "ABNQ40GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  34k بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUQ40GM3TA", "c": "Concealed Set", "type": "CO", "btu": "34000", "q": 2, "v": 16691.85, "code": "ABUQ40GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  34k بارد 2", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 5, "v": 24779.3, "code": "ABNW40GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  32k حار\\بارد 230v", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUW40GM3", "c": "Concealed Set", "type": "HP", "btu": "34000", "q": 5, "v": 37195.9, "code": "ABUW40GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  32k حار\\با", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 7, "v": 14242.53, "code": "LC242H0.UK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 18990.04, "code": "LC242H0.UK0", "name": "24K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 17, "v": 30957.36, "code": "LC242C0.NK0", "name": "24K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNQ55GM3", "c": "Concealed Set", "type": "CO", "btu": "47000", "q": 2, "v": 14642.4, "code": "ABNQ55GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  47k بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUQ55GM3TA", "c": "Concealed Set", "type": "CO", "btu": "47000", "q": 2, "v": 21950.4, "code": "ABUQ55GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي  47k بارد 2", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 17, "v": 30957.36, "code": "LC242C0.NK0", "name": "24K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 17, "v": 30957.36, "code": "LC242C0.UK0", "name": "24K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 17, "v": 30957.36, "code": "LC242C0.UK0", "name": "24K C/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "LC182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 17239.96, "code": "LC182H0.NK0", "name": "18K H/O ،جيت كول روتاري، الوحدة الد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 5, "v": 31348.8, "code": "ABNW55GM3TA.ANWGIB", "name": "وحدة داخلية مخفي 47k حار\\بارد 230v\\", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABUW55GM3", "c": "Concealed Set", "type": "HP", "btu": "47000", "q": 5, "v": 47025.6, "code": "ABUW55GM3TA.ANWGIB", "name": "وحدة خارجية إنفرتر مخفي 47k حار\\بار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNW60GM3", "c": "Concealed Set", "type": "HP", "btu": "52000", "q": 5, "v": 34324.8, "code": "ABNW60GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  52k حار\\بارد 230v", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ABNW60GM3", "c": "Concealed Set", "type": "HP", "btu": "52000", "q": 5, "v": 34324.8, "code": "ABNW60GM3TA.ANWGIB", "name": "وحدة داخلية مخفي  52k حار\\بارد 230v", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 10, "v": 59150.03, "code": "APUW55GT3MA.ANWGIB", "name": "خارجي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ND182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 23359.93, "code": "ND182H0.UK0", "name": "و.خ مكيف فريش جديد،18.حار،واي فاي", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ND182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 10, "v": 23359.93, "code": "ND182H0.NK0", "name": "و.د ،مكيف فريش جديد،18حار،،واي فاي", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ND242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 27659.9, "code": "ND242H0.UK0", "name": "و.خ مكيف فريش جديد،21حار،واي فاي", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "ND242H", "c": "Split AC", "type": "HP", "btu": "24000", "q": 10, "v": 27659.9, "code": "ND242H0.NK0", "name": "و.د،مكيف فريش جديد،21حار،،واي فاي", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 44362.52, "code": "APUW55GT3MA.ANWGIB", "name": "خارجي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 12, "v": 29237.38, "code": "NS182H2.NK2", "name": "جداري- سمارت انفيرتر 18-حار بارد 4ج", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS182H", "c": "Split AC", "type": "HP", "btu": "18000", "q": 12, "v": 29237.38, "code": "NS182H2.UK2", "name": "و.خارجية- سمارت انفيرتر 18-حار بارد", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 12, "v": 32594.52, "code": "NS242C3.UK2", "name": "خارجي-سمارت انفرتر 21.5 بارد  4جهة", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 12, "v": 32594.52, "code": "NS242C3.UK2", "name": "خارجي-سمارت انفرتر 21.5 بارد  4جهة", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 12, "v": 32594.52, "code": "NS242C3.NK2", "name": "جداري-سمارت انفرتر21.5 بارد  4جهة", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS242C", "c": "Split AC", "type": "CO", "btu": "24000", "q": 12, "v": 32594.52, "code": "NS242C3.NK2", "name": "جداري-سمارت انفرتر21.5 بارد  4جهة", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 12, "v": 25487.55, "code": "NS182C2.NK2", "name": "18K C/O SMART SPLIT INVERTER 4WAYS", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 7, "v": 44362.52, "code": "APNW55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 10, "v": 59150.03, "code": "APNW55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APUW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 44362.52, "code": "APUW55GT3MA.ANWGIB", "name": "خارجي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNW55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "46000", "q": 7, "v": 44362.52, "code": "APNW55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي مسجد 1طور55حار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "APNQ55GT3M", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 7, "v": 42854.87, "code": "APNQ55GT3MA.ANWGIB", "name": "داخلي-انفيرتر دولابي قياسي طور48بار", "year": "2026"}, {"w": "W9", "m": "Feb", "model": "NS182C", "c": "Split AC", "type": "CO", "btu": "18000", "q": 12, "v": 25487.55, "code": "NS182C2.UK2", "name": "ODU-18K C/O SMART SPLIT INVERTER 4W", "year": "2026"}, {"w": "W11", "m": "Mar", "model": "ATUQ21GPLTA", "c": "Cassette AC", "type": "", "btu": "", "q": 0, "v": 2381.4, "code": "ATUQ21GPLTA.ANWGIB", "name": "وحدة خارجية إنفرتر كاسيت 17kبارد 23", "year": "2026"}, {"w": "W11", "m": "Mar", "model": "(excluded)", "c": "Floor Standing AC", "type": "CO", "btu": "48000", "q": 0, "v": 2254.98, "code": "ATNQ21GPLTA.ANWTIB", "name": "إلـ جي وحدة داخلية كاسيت  17k بارد ", "year": "2026"}];
 
-// ===== TAB SWITCHING =====
-document.querySelectorAll('.tab').forEach(btn=>{
-  btn.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('main>section').forEach(s=>s.style.display='none');
-    document.getElementById('tab-'+btn.dataset.tab).style.display='';
-    if(btn.dataset.tab==='trend')renderTrend();
-    if(btn.dataset.tab==='ranking')renderRanking();
-  });
-});
-
-// ===== CHART COLORS =====
-const COLORS=['#f59e0b','#3b82f6','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16'];
-const CAT_COLORS={'Split AC':'#3b82f6','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed':'#a855f7','Concealed Set':'#a855f7','Concealed Outdoor':'#7c3aed','Concealed Indoor':'#c084fc','Cassette':'#22d3ee'};
-
-// ===== MULTI-SELECT FILTER =====
-
-document.addEventListener('click',()=>document.querySelectorAll('.ms-menu.open').forEach(m=>m.classList.remove('open')));
-document.querySelectorAll('.ms-wrap').forEach(w=>w.addEventListener('click',e=>e.stopPropagation()));
 
 // ===== UTILITY =====
 const fmt=n=>n==null?'-':n.toLocaleString();
 function catBadge(c){
   const cls=c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':'cat-floor';
   return `<span class="cat-badge ${cls}">${c}</span>`;
-}
-function destroyChart(id){
-  const c=Chart.getChart(id);
-  if(c)c.destroy();
 }
 
 // ===== TAB 1: OVERVIEW =====
@@ -1016,7 +702,6 @@ function updateWOS(){
     if(window['_wosChart_'+id]){window['_wosChart_'+id].destroy();window['_wosChart_'+id]=null}
   });
 
-  const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1'];
   const DL_NONE={display:false};
   const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
   const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
