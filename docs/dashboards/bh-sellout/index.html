@@ -500,7 +500,7 @@ function update(){
 
   // Sales type pie
   const stq=sumBy(rows,'st');
-  const sts=(D.dims.sales_types||[]).filter(s=>stq[s]);
+  const sts=D.dims.sales_types.filter(s=>stq[s]);
   mk('cSalesType','doughnut',{
     labels:sts,datasets:[{data:sts.map(s=>stq[s]||0),backgroundColor:COLORS}]
   },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
@@ -532,7 +532,7 @@ function update(){
 // ===== PRICE TAB =====
 let activeCatPrice=null, activeModelPrice=null;
 
-function renderCatPriceBtns(){if(!D.price)return;
+function renderCatPriceBtns(){
   const cats=Object.keys(D.price.cat).sort();
   document.getElementById('catPriceBtns').innerHTML=cats.map((c,i)=>`<button onclick="showCatPrice('${c}')" style="padding:4px 12px;border:1px solid ${COLORS[i]};border-radius:4px;font-size:11px;cursor:pointer;background:${activeCatPrice===c?COLORS[i]:'#fff'};color:${activeCatPrice===c?'#fff':COLORS[i]};font-weight:600">${c}</button>`).join('');
 }
@@ -559,7 +559,7 @@ function showCatPrice(cat){
   },{datalabels:DL_NONE,scales:{yPrice:{position:'left',title:{display:true,text:'Price (SAR)'},beginAtZero:false},yQty:{position:'right',title:{display:true,text:'Qty'},beginAtZero:true,grid:{drawOnChartArea:false}}}});
 }
 
-function renderModelPriceBtns(){if(!D.price)return;
+function renderModelPriceBtns(){
   const models=D.price.series;
   document.getElementById('modelPriceBtns').innerHTML=models.map((m,i)=>`<button onclick="showModelPrice(${i})" style="padding:4px 10px;border:1px solid var(--border);border-radius:4px;font-size:10px;cursor:pointer;background:${activeModelPrice===i?'var(--primary)':'#fff'};color:${activeModelPrice===i?'#fff':'var(--text)'};font-weight:600" title="${m.name}">${m.code} (${m.total_qty})</button>`).join('');
 }
@@ -587,7 +587,7 @@ function showModelPrice(idx){
 }
 
 // Price comparison table
-function renderPriceTable(){if(!D.price)return;
+function renderPriceTable(){
   const models=D.price.series;
   let html='';
   models.forEach(m=>{
@@ -626,8 +626,8 @@ function downloadExcel(){
 
 // INIT
 update();
-if(D.price){renderCatPriceBtns();
-renderModelPriceBtns();}
+renderCatPriceBtns();
+renderModelPriceBtns();
 renderPriceTable();
 if(Object.keys(D.price.cat).length)showCatPrice(Object.keys(D.price.cat).sort()[0]);
 if(D.price.series.length)showModelPrice(0);
@@ -872,8 +872,9 @@ function updateSD(){
 
   // Get sell-out data from D.raw
   const soRows=(D&&D.raw)||[];
-  // Get sell-thru data from D.sellthru
-  const stRows=(D&&D.sellthru)||[];
+  // Get sell-thru data from D.sellthru (filtered by current year)
+  const _sdYr=(typeof _currentYear!=='undefined')?_currentYear:(typeof currentYear!=='undefined'?currentYear:'2026');
+  const stRows=((D&&D.sellthru)||[]).filter(r=>!r.year||r.year===_sdYr);
 
   const soTotal=soRows.reduce((a,r)=>a+(r.q||0),0);
   const stTotal=stRows.reduce((a,r)=>a+(r.q||0),0);
