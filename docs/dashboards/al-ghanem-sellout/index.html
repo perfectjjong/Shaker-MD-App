@@ -432,7 +432,7 @@ document.querySelectorAll('.tab').forEach(t=>{
 // ===== CHART HELPERS =====
 const charts={};
 const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
-const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
+const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?(Math.round(v/t*1000)/10)+'%':''}};
 const DL_NONE={display:false};
 const DL_LINE={display:true,anchor:'end',align:'top',font:{size:8},color:'#374151',formatter:v=>v>0?v.toLocaleString():'',offset:2};
 
@@ -464,18 +464,18 @@ function update(){
   const _fMonths=MONTHS.filter(m=>mq[m]>0);
   const _lw=_fWeeks.length?_fWeeks[_fWeeks.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
   const _pw=_fWeeks.length>1?_fWeeks[_fWeeks.length-2]:_lw;
-  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*100):0;
+  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*1000)/10:0;
   const _cm=_fMonths.length?_fMonths[_fMonths.length-1]:(MONTHS.length?MONTHS[MONTHS.length-1]:'');
   const _pm=_fMonths.length>1?_fMonths[_fMonths.length-2]:_cm;
-  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*100):0;
+  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*1000)/10:0;
   const ytd=total;
   const chCount=new Set(rows.map(r=>r.ch)).size;
   const modelCount=new Set(rows.map(r=>r.model)).size;
   const ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
   const cl=(v)=>v>0?'up':v<0?'down':'';
   document.getElementById('kpiRow').innerHTML=[
-    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.round(Math.abs(wow))+'% WoW',c:cl(wow),b:'var(--primary)'},
-    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.round(Math.abs(mom))+'% MoM',c:cl(mom),b:'var(--teal)'},
+    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
+    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
     {l:'Total (Filtered)',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks · '+_fMonths.length+' months',c:'',b:'var(--green)'},
     {l:'Active Channels',v:chCount+'/8',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
     {l:'Unified Models',v:modelCount,s:new Set(rows.map(r=>r.c)).size+' categories',c:'',b:'var(--amber)'},
@@ -587,7 +587,7 @@ function update(){
   const top20=Object.entries(modelMap).sort((a,b)=>b[1].q-a[1].q).slice(0,20);
   document.getElementById('tblTop20').innerHTML=top20.map(([model,v],i)=>{
     const chBadges=[...v.chs].map(c=>`<span class="ch-badge" style="background:${(CH_COLORS[c]||'#ddd')}22;color:${CH_COLORS[c]||'#333'}">${c}</span>`).join('');
-    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*100):0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
+    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*1000)/10:0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
   }).join('');
 
   // === DETAIL TAB ===
@@ -639,14 +639,14 @@ function downloadExcel(){
   // Summary by Channel sheet
   const chSum={};
   rows.forEach(r=>{chSum[r.ch]=(chSum[r.ch]||0)+r.q});
-  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(1)+'%'}));
   const ws2=XLSX.utils.json_to_sheet(chData);
   ws2['!cols']=[{wch:15},{wch:10},{wch:8}];
 
   // Summary by Category sheet
   const catSum={};
   rows.forEach(r=>{catSum[r.c]=(catSum[r.c]||0)+r.q});
-  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(1)+'%'}));
   const ws3=XLSX.utils.json_to_sheet(catData);
   ws3['!cols']=[{wch:20},{wch:10},{wch:8}];
 
@@ -673,7 +673,7 @@ function downloadExcel(){
   rows.forEach(r=>{modelSo[r.model]=(modelSo[r.model]||0)+r.q;modelCat[r.model]=r.c;if(!modelChs[r.model])modelChs[r.model]=new Set();modelChs[r.model].add(r.ch)});
   const sdData=[...new Set([...Object.keys(modelSi),...Object.keys(modelSo)])].map(m=>{
     const si=modelSi[m]||0,so=modelSo[m]||0;
-    return {Model:m,Category:modelCat[m]||'',Channels:[...(modelChs[m]||[])].join(', '),'Sell-thru':si,'Sell-out':so,Gap:si-so,'Sell-thru %':si>0?Math.round(so/si*100)+'%':'N/A'};
+    return {Model:m,Category:modelCat[m]||'',Channels:[...(modelChs[m]||[])].join(', '),'Sell-thru':si,'Sell-out':so,Gap:si-so,'Sell-thru %':si>0?(Math.round(so/si*1000)/10)+'%':'N/A'};
   }).sort((a,b)=>(b['Sell-thru']+b['Sell-out'])-(a['Sell-thru']+a['Sell-out']));
   const ws5=XLSX.utils.json_to_sheet(sdData);
   ws5['!cols']=[{wch:20},{wch:18},{wch:30},{wch:10},{wch:10},{wch:10},{wch:12}];
@@ -701,7 +701,7 @@ function updateSD(){
   const soTotal=soRows.reduce((a,r)=>a+r.q,0);
   const siTotal=siRows.reduce((a,r)=>a+r.q,0);
   const gap=siTotal-soTotal;
-  const sellThru=siTotal>0?Math.round(soTotal/siTotal*100):0;
+  const sellThru=siTotal>0?Math.round(soTotal/siTotal*1000)/10:0;
 
   // KPI
   document.getElementById('sdKpi').innerHTML=[
@@ -813,7 +813,7 @@ function updateSD(){
   const modelList=allModels.map(m=>({model:m,si:modelSi[m]||0,so:modelSo[m]||0,meta:modelMeta[m]})).sort((a,b)=>(b.si+b.so)-(a.si+a.so)).slice(0,20);
   document.getElementById('tblSdModel').innerHTML=modelList.map((r,i)=>{
     const gap=r.si-r.so;
-    const pct=r.si>0?Math.round(r.so/r.si*100):'-';
+    const pct=r.si>0?Math.round(r.so/r.si*1000)/10:'-';
     const status=typeof pct==='number'?(pct>=100?'<span style="color:#10b981;font-weight:700">✅ Sold Out</span>':pct>=70?'<span style="color:#2563eb;font-weight:600">🔵 Good</span>':pct>=40?'<span style="color:#f59e0b;font-weight:600">🟡 Moderate</span>':'<span style="color:#ef4444;font-weight:600">🔴 Slow</span>'):'<span style="color:#8b5cf6">📦 Out only</span>';
     const chBadges=r.meta?[...r.meta.chs].map(c=>'<span class="ch-badge" style="background:'+(CH_COLORS[c]||'#ddd')+'22;color:'+(CH_COLORS[c]||'#333')+'">'+c+'</span>').join(''):'';
     return '<tr><td>'+(i+1)+'</td><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+(r.meta?r.meta.c:'')+'</td><td>'+chBadges+'</td><td style="text-align:right">'+r.si.toLocaleString()+'</td><td style="text-align:right">'+r.so.toLocaleString()+'</td><td style="text-align:right;font-weight:600;'+(gap>0?'color:#f59e0b':gap<0?'color:#ef4444':'')+'">'+(gap>0?'+':'')+gap.toLocaleString()+'</td><td style="text-align:right;font-weight:600">'+(typeof pct==='number'?pct+'%':pct)+'</td><td>'+status+'</td></tr>';
@@ -916,8 +916,8 @@ function updateWOS(){
       }
     });
   });
-  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt):null;
-  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt):null;
+  const avgM8=wosM8Cnt?Math.round(wosM8Sum/wosM8Cnt*10)/10:null;
+  const avgP8=wosP8Cnt?Math.round(wosP8Sum/wosP8Cnt*10)/10:null;
   const totalModels=Object.values(signalCounts).reduce((a,b)=>a+b,0);
 
   // KPI row
@@ -925,8 +925,8 @@ function updateWOS(){
   const sigP8=avgP8!==null?(avgP8<=12?'OPPORTUNITY':avgP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
   document.getElementById('wosKpi').innerHTML=[
     {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:activeChannels.length+' channels',b:'#2563eb'},
-    {l:'WOS-8 (Avg)',v:avgM8!==null?avgM8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
-    {l:'WOS+8 (Avg'+(p8Week!==latestW?' @'+p8Week:'')+')' ,v:avgP8!==null?avgP8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
+    {l:'WOS-8 (Avg)',v:avgM8!==null?avgM8.toFixed(1)+' wks':'-',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
+    {l:'WOS+8 (Avg'+(p8Week!==latestW?' @'+p8Week:'')+')' ,v:avgP8!==null?avgP8.toFixed(1)+' wks':'-',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
     {l:'Signal Summary',v:signalCounts.OPPORTUNITY+' / '+signalCounts.HEALTHY+' / '+signalCounts.OVERSTOCK,s:'Need / Optimal / Excess',b:'#8b5cf6'},
     {l:'Models Tracked',v:totalModels,s:'Inactive: '+signalCounts.INACTIVE,b:'#f59e0b'},
   ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
@@ -951,8 +951,8 @@ function updateWOS(){
         if(wd.wos_p8!==null&&wd.wos_p8!==undefined){p8s+=wd.wos_p8;p8c++}
       }
     });
-    m8Data.push(m8c?Math.round(m8s/m8c):null);
-    p8Data.push(p8c?Math.round(p8s/p8c):null);
+    m8Data.push(m8c?Math.round(m8s/m8c*10)/10:null);
+    p8Data.push(p8c?Math.round(p8s/p8c*10)/10:null);
   });
   mk('cWosTrend','line',{
     labels:trendWeeks,
@@ -1013,20 +1013,20 @@ function updateWOS(){
           const w=(m.wos||{})[latestW];
           if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
         });
-        if(catSoSum>0)catWos=Math.round(catWos/catSoSum);
+        if(catSoSum>0)catWos=Math.round(catWos/catSoSum*10)/10;
       }
       const sig=catWos!==null?(catWos<=12?'OPPORTUNITY':catWos<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
       const sc=WOS_COLORS[sig]||'#999';
       wosTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(s>0?s.toLocaleString():'-')+'</td>';
-      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos.toFixed(0):'-')+'</td>';
+      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos.toFixed(1):'-')+'</td>';
     });
     // Total
     const chWos=(sd.channels[ch]||{}).wos_by_week||{};
     const chWosData=chWos[latestW];
-    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8):null;
+    const chWosM8=chWosData&&chWosData.wos_m8!==null?Math.round(chWosData.wos_m8*10)/10:null;
     const chSig=chWosM8!==null?(chWosM8<=12?'OPPORTUNITY':chWosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
     wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chTotS.toLocaleString()+'</td>';
-    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(0):'-')+'</td>';
+    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(1):'-')+'</td>';
     wosTbl+='</tr>';
   });
   // Total row
