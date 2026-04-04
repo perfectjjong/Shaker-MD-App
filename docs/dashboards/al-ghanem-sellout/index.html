@@ -100,33 +100,9 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 <span class="filter-count" id="ov_filter_info" style="display:block;padding:4px 0;font-size:11px;color:var(--muted)"></span>
   <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
     
-  </div>
 
   <!-- KPI Cards -->
-  <div class="grid-5">
-    <div class="kpi">
-      <div class="kpi-label">Latest Week (W13)</div>
-      <div class="kpi-val" id="kpi-lq">6</div>
-      <div class="kpi-sub up">-33.3% WoW</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Current Month</div>
-      <div class="kpi-val">41</div>
-      <div class="kpi-sub dn">+127.8% MoM</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">YTD Total</div>
-      <div class="kpi-val">106</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Avg / Week</div>
-      <div class="kpi-val">8.2</div>
-    </div>
-    <div class="kpi">
-      <div class="kpi-label">Models / Categories</div>
-      <div class="kpi-val">12<span style="font-size:14px;color:var(--muted)"> / 4</span></div>
-    </div>
-  </div>
+  <div class="grid-5" id="kpiCards"></div>
 
   <!-- Charts Row 1 -->
   <div class="grid-2">
@@ -157,7 +133,6 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
     
     </div>
     <span style="font-size:11px;color:var(--muted)" id="filter_info"></span>
-  </div>
 
   <div class="card mb-4">
     <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Weekly Trend (Top 10)</h3>
@@ -174,7 +149,6 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
     
     </div>
     <input type="text" class="ms-btn" id="rank_search" placeholder="Search model..." style="width:180px"/>
-  </div>
 
   <div class="card">
     <h3 style="font-size:12px;font-weight:600;margin-bottom:8px">Model Ranking</h3>
@@ -440,6 +414,39 @@ D.sellthru=[{"w": "W18", "m": "Apr", "model": "", "c": "Floor Standing AC", "typ
 function renderOverview(){
   
   const filt=filtered();
+  // Dynamic KPI cards
+  const lastWeek = WEEKS[WEEKS.length-1];
+  const lwRows = filt.filter(r=>r.w===lastWeek);
+  const lwQty = lwRows.reduce((s,r)=>s+r.q,0);
+  const prevWeek = WEEKS.length>=2 ? WEEKS[WEEKS.length-2] : null;
+  const pwRows = prevWeek ? filt.filter(r=>r.w===prevWeek) : [];
+  const pwQty = pwRows.reduce((s,r)=>s+r.q,0);
+  const wowPct = pwQty>0 ? ((lwQty-pwQty)/pwQty*100).toFixed(1) : '0';
+  const wowClass = lwQty>=pwQty ? 'up' : 'down';
+  const wowSign = lwQty>=pwQty ? '+' : '';
+  const lastMonth = MONTHS.length>0 ? MONTHS[MONTHS.length-1] : '';
+  const cmRows = filt.filter(r=>r.m===lastMonth);
+  const cmQty = cmRows.reduce((s,r)=>s+r.q,0);
+  const prevMonth = MONTHS.length>=2 ? MONTHS[MONTHS.length-2] : null;
+  const pmRows = prevMonth ? filt.filter(r=>r.m===prevMonth) : [];
+  const pmQty = pmRows.reduce((s,r)=>s+r.q,0);
+  const momPct = pmQty>0 ? ((cmQty-pmQty)/pmQty*100).toFixed(1) : '0';
+  const momClass = cmQty>=pmQty ? 'up' : 'down';
+  const momSign = cmQty>=pmQty ? '+' : '';
+  const ytdQty = filt.reduce((s,r)=>s+r.q,0);
+  const activeWeeks = [...new Set(filt.map(r=>r.w))];
+  const avgPerWeek = activeWeeks.length>0 ? (ytdQty/activeWeeks.length).toFixed(1) : '0';
+  const _models = new Set(filt.map(r=>r.s));
+  const _cats = new Set(filt.map(r=>r.c));
+  const kpiEl = document.getElementById('kpiCards');
+  if(kpiEl){
+    kpiEl.innerHTML =
+      '<div class="kpi"><div class="kpi-label">Latest Week ('+lastWeek+')</div><div class="kpi-val">'+lwQty.toLocaleString()+'</div><div class="kpi-sub '+wowClass+'">'+wowSign+wowPct+'% WoW</div></div>'+
+      '<div class="kpi"><div class="kpi-label">Current Month</div><div class="kpi-val">'+cmQty.toLocaleString()+'</div><div class="kpi-sub '+momClass+'">'+momSign+momPct+'% MoM</div></div>'+
+      '<div class="kpi"><div class="kpi-label">YTD Total</div><div class="kpi-val">'+ytdQty.toLocaleString()+'</div></div>'+
+      '<div class="kpi"><div class="kpi-label">Avg / Week</div><div class="kpi-val">'+avgPerWeek+'</div></div>'+
+      '<div class="kpi"><div class="kpi-label">Models / Categories</div><div class="kpi-val">'+_models.size+'<span style="font-size:14px;color:var(--muted)"> / '+_cats.size+'</span></div></div>';
+  }
   const weeks=WEEKS;
 
   const filtTotal=filt.reduce((s,r)=>s+r.q,0);
