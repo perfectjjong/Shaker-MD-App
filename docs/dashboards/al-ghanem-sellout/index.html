@@ -66,6 +66,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 .tbl-wrap tr:nth-child(even) td{background:#fff}
 .tbl-wrap tr:nth-child(odd) td{background:var(--bg)}
 .tbl-wrap tr:hover td{background:#e2e8f0}
+.mb-4{margin-bottom:16px}
 @media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
 </style>
 </head>
@@ -96,12 +97,8 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </div>
 <div class="content">
 <div class="tab-pane active" id="pane-overview">
-<span class="filter-count" id="ov_filter_info" style="display:block;padding:4px 24px;font-size:11px;color:var(--muted)"></span>
-<!-- Filters -->
-  
-    
-    </div>
-    <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
+<span class="filter-count" id="ov_filter_info" style="display:block;padding:4px 0;font-size:11px;color:var(--muted)"></span>
+  <button onclick="downloadExcel()" style="padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#065f46;color:#d1fae5;font-weight:600;margin-left:8px">📥 Excel</button>
     
   </div>
 
@@ -426,6 +423,15 @@ setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{co
 const _charts={};
 function destroyChart(id){if(_charts[id]){_charts[id].destroy();delete _charts[id]}}
 
+
+// ===== HELPER FUNCTIONS =====
+function catBadge(c){
+  if(!c) return '';
+  var cls = c.includes('Split')?'cat-split':c.includes('Window')?'cat-window':c.includes('Concealed')?'cat-concealed':c.includes('Cassette')?'cat-cassette':'cat-floor';
+  return '<span class="cat-badge '+cls+'">'+c+'</span>';
+}
+var fmt = function(n){ return n==null?'-':Number(n).toLocaleString(); };
+
 // ===== TAB 1: OVERVIEW =====
 function renderOverview(){
   
@@ -438,7 +444,7 @@ function renderOverview(){
   const weeklyF={};
   filt.forEach(r=>{weeklyF[r.w]=(weeklyF[r.w]||0)+r.q});
   destroyChart('c_weekly');
-  new Chart(document.getElementById('c_weekly'),{
+  _charts['c_weekly']=new Chart(document.getElementById('c_weekly'),{
     type:'bar',
     data:{
       labels:weeks.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
@@ -451,7 +457,7 @@ function renderOverview(){
   filt.forEach(r=>{monthlyF[r.m]=(monthlyF[r.m]||0)+r.q});
   const months=D.meta.months.filter(m=>Object.keys(monthlyF).includes(m));
   destroyChart('c_monthly');
-  new Chart(document.getElementById('c_monthly'),{
+  _charts['c_monthly']=new Chart(document.getElementById('c_monthly'),{
     type:'bar',
     data:{
       labels:months,
@@ -464,7 +470,7 @@ function renderOverview(){
   const catTotals={};
   filt.forEach(r=>{catTotals[r.c]=(catTotals[r.c]||0)+r.q});
   const cats=Object.keys(catTotals).sort();
-  new Chart(document.getElementById('c_cat_pie'),{
+  _charts['c_cat_pie']=new Chart(document.getElementById('c_cat_pie'),{
     type:'doughnut',
     data:{
       labels:cats,
@@ -479,7 +485,7 @@ function renderOverview(){
     if(!catWeekly[r.c])catWeekly[r.c]={};
     catWeekly[r.c][r.w]=(catWeekly[r.c][r.w]||0)+r.q;
   });
-  new Chart(document.getElementById('c_cat_trend'),{
+  _charts['c_cat_trend']=new Chart(document.getElementById('c_cat_trend'),{
     type:'bar',
     data:{
       labels:weeks,
@@ -493,6 +499,7 @@ function renderOverview(){
 function renderTrend(){
   
   const filt=filtered();
+  var selW=new Set(FILTER_STATE.w.size>0?WEEKS.filter(function(w){return !FILTER_STATE.w.has(w)}):WEEKS);
   const weeks=[...selW].sort((a,b)=>parseInt(a.slice(1))-parseInt(b.slice(1)));
 
   document.getElementById('filter_info').textContent=`${filt.length} rows · ${filt.reduce((s,r)=>s+r.q,0).toLocaleString()} units`;
@@ -503,7 +510,7 @@ function renderTrend(){
 
   destroyChart('c_model_trend');
   const datasets=top10.map((sku,i)=>{
-    const md=D.models.find(m=>m.s===sku);
+    const md=(D.models||[]).find(m=>m.s===sku);
     const label=md?md.n.substring(0,30):sku;
     return {label,data:weeks.map(w=>{const fr=filt.filter(r=>r.s===sku&&r.w===w);return fr.reduce((s,r)=>s+r.q,0)}),borderColor:COLORS[i%COLORS.length],backgroundColor:COLORS[i%COLORS.length]+'30',tension:.3,fill:false,pointRadius:4};
   });
@@ -522,7 +529,7 @@ function renderTrend(){
   weeks.forEach(w=>h+=`<th>${w}</th>`);
   h+='<th>Total</th></tr></thead><tbody>';
   sorted.forEach((sku,i)=>{
-    const md=D.models.find(m=>m.s===sku);
+    const md=(D.models||[]).find(m=>m.s===sku);
     const name=md?md.n.substring(0,35):sku;
     const cat=md?md.c:'';
     h+=`<tr><td>${i+1}</td><td title="${md?md.n:sku}">${name}</td><td>${catBadge(cat)}</td>`;
@@ -550,7 +557,7 @@ function renderRanking(){
     agg[r.s].q+=r.q;
   });
   let list=Object.values(agg).sort((a,b)=>b.q-a.q);
-  if(q)list=list.filter(m=>m.n.toLowerCase().includes(q)||m.s.toLowerCase().includes(q));
+  if(q)list=list.filter(m=>(m.n||m.s||'').toLowerCase().includes(q)||m.s.toLowerCase().includes(q));
   const maxQ=list.length?list[0].q:1;
   const total=list.reduce((s,m)=>s+m.q,0);
 
@@ -1075,6 +1082,7 @@ document.querySelectorAll('.tab').forEach(t=>{
 
 // Initial render
 if(typeof renderOverview==='function') renderOverview();
+var _rs=document.getElementById('rank_search');if(_rs)_rs.addEventListener('input',function(){if(typeof renderRanking==='function')renderRanking()});
 document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
 </script>
 </body>
