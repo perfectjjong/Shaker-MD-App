@@ -84,7 +84,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 <div class="tab" data-tab="sd">Supply vs Demand</div>
 </div>
 <div class="filters">
-<div class="filter-group"><div class="filter-label">Year</div><div id="fYear" style="display:flex;gap:4px"></div></div>
+<div class="filter-group"><div class="filter-label">Year</div><div class="ms-wrap" id="fYear"><select id="yearSelect" class="ms-btn" style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;background:var(--primary);color:#fff"></select></div></div>
 <div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
 <div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
 <div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
@@ -195,28 +195,68 @@ Chart.register(ChartDataLabels);
 const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16','#ef4444','#06b6d4'];
 const CAT_COLORS={'Split AC':'#2563eb','Window AC':'#f59e0b','Floor Standing AC':'#10b981','Concealed Duct':'#8b5cf6','Cassette':'#14b8a6','Multi V':'#f43f5e','System AC':'#0ea5e9','Commercial AC':'#6366f1'};
 
-// Year switching (URL reload approach)
-var _urlYear = new URLSearchParams(window.location.search).get('year');
-let currentYear = (_urlYear && _ALL.data[_urlYear]) ? _urlYear : (_ALL.current || '2026');
+let currentYear = _ALL.current || '2026';
 let D = _ALL.data[currentYear];
 let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
 
+// Build year selector (dropdown - matching unified dashboard)
 (function(){
-  const wrap=document.getElementById('fYear');
-  if(!wrap) return;
+  const sel=document.getElementById('yearSelect');
+  if(!sel) return;
   _ALL.years.forEach(yr=>{
-    const btn=document.createElement('button');
-    btn.textContent=yr;
-    btn.className='ms-btn';
-    btn.style.cssText='padding:4px 12px;cursor:pointer;font-size:12px;font-weight:600;border:1px solid var(--border);border-radius:4px;background:'+(yr===currentYear?'var(--primary)':'#fff')+';color:'+(yr===currentYear?'#fff':'var(--text)');
-    btn.addEventListener('click',()=>{
-      if(yr===currentYear)return;
-      var url=new URL(window.location.href);url.searchParams.set('year',yr);window.location.href=url.toString();
+    const opt=document.createElement('option');
+    opt.value=yr;opt.textContent=yr;
+    if(yr===currentYear)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change',()=>{
+    // Save SELECTED items for ALL filters (positive set)
+    const prevSelected={};
+    const prevAllSelected={};
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const st=FILTER_STATE[cfg.key];
+      prevAllSelected[cfg.key]=(st.size===0);
+      prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
     });
-    wrap.appendChild(btn);
+    currentYear=sel.value;
+    D=_ALL.data[currentYear];
+    WEEKS=D.meta.weeks;MONTHS=D.meta.months;
+    // Rebuild FILTER_MAP with new year data
+    FILTER_MAP={
+      fMonth:{key:'m',items:MONTHS},
+      fWeek:{key:'w',items:WEEKS},
+      fCat:{key:'c',items:D.dims.categories||[]},
+      fComp:{key:'comp',items:D.dims.compressors||[]},
+      fType:{key:'type',items:D.dims.types||[]},
+      fBtu:{key:'btu',items:[...new Set((D.raw||[]).map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+    };
+    // Clear all filter states
+    Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+    // Restore ALL filters: keep only previously selected items that exist in new year
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      if(prevAllSelected[cfg.key])return;
+      const prev=new Set(prevSelected[cfg.key]||[]);
+      const overlap=cfg.items.filter(item=>prev.has(item));
+      if(overlap.length>0){
+        cfg.items.forEach(item=>{
+          if(!prev.has(item))FILTER_STATE[cfg.key].add(item);
+        });
+      }
+    });
+    // Rebuild DOM
+    FILTER_ORDER.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML='';
+      buildMultiSelect(id);
+    });
+    // Update yearBadge
+    const yb=document.getElementById('yearBadge');
+    if(yb)yb.textContent=currentYear;
+    cascadeAndUpdate();
   });
 })();
-
 // ===== GLOBAL FILTER SYSTEM =====
 const FILTER_STATE={m:new Set(),w:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
 const FILTER_ORDER=['fMonth','fWeek','fCat','fComp','fType','fBtu'];
