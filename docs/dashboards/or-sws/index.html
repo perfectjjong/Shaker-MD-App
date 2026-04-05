@@ -167,7 +167,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </div>
 <div class="card" style="margin-bottom:16px"><h3>Model Price Comparison by Channel</h3>
 <div style="max-height:600px;overflow-y:auto">
-<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Al Manea</th><th style="text-align:right">SWS</th><th style="text-align:right">Black Box</th><th style="text-align:right">Al Khunizan</th><th style="text-align:right">eXtra</th><th style="text-align:right">Avg</th></tr></thead><tbody id="tblPtModel"></tbody></table>
+<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">SWS</th><th style="text-align:right">Avg</th></tr></thead><tbody id="tblPtModel"></tbody></table>
 </div></div>
 </div>
 <!-- DETAIL -->
@@ -412,7 +412,7 @@ function update(){
     {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
     {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
     {l:'Total (Filtered)',v:total.toLocaleString(),s:_fWeeks.length+' weeks | '+_fMonths.length+' months',c:'',b:'var(--green)'},
-    {l:'Active Channels',v:chCount+'/5',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
+    {l:'Active Channels',v:chCount+'/1',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
     {l:'Unified Models',v:modelCount,s:new Set(rows.map(r=>r.c)).size+' categories',c:'',b:'var(--amber)'},
   ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join('');
 
@@ -494,7 +494,7 @@ function downloadExcel(){
   const data=Object.values(agg).sort((a,b)=>{const wA=parseInt(a.Week.slice(1)),wB=parseInt(b.Week.slice(1));if(wA!==wB)return wA-wB;if(a.Channel!==b.Channel)return a.Channel.localeCompare(b.Channel);return b.Qty-a.Qty});
   const ws1=XLSX.utils.json_to_sheet(data);ws1['!cols']=[{wch:6},{wch:6},{wch:15},{wch:20},{wch:18},{wch:5},{wch:10},{wch:8},{wch:10}];
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws1,'Raw Data');
-  XLSX.writeFile(wb,'OR_Sellout_5Ch_'+new Date().toISOString().slice(0,10)+'.xlsx');
+  XLSX.writeFile(wb,'OR_Sellout_SWS_'+new Date().toISOString().slice(0,10)+'.xlsx');
 }
 
 // ===== SUPPLY vs DEMAND =====
@@ -702,7 +702,7 @@ function updatePT(){
   document.getElementById('ptKpi').innerHTML=[
     {l:'Avg Price ('+latestW+')',v:'SAR '+overallAvg.toLocaleString(),s:'All channels avg',b:'#2563eb'},
     {l:'Tracked Models',v:totalModels,s:activeChs.length+' channels',b:'#10b981'},
-    {l:'Channels',v:Object.keys(chAvg).length+'/5',s:Object.keys(chAvg).join(', '),b:'#8b5cf6'},
+    {l:'Channels',v:Object.keys(chAvg).length+'/1',s:Object.keys(chAvg).join(', '),b:'#8b5cf6'},
     {l:'Latest Week',v:latestW,s:D.meta.week_dates[latestW]||'',b:'#f59e0b'},
     {l:'Price Range',v:Object.values(chAvg).length>0?'SAR '+Math.min(...Object.values(chAvg)).toLocaleString()+'-'+Math.max(...Object.values(chAvg)).toLocaleString():'-',s:'Channel avg range',b:'var(--teal)'},
   ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
