@@ -373,7 +373,7 @@
 
       grid.innerHTML = groups.map((g, i) => {
         const subItems = g.children.map(c => `
-          <a class="sub-item" href="${esc(c.url)}">
+          <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
             <span class="sub-item-icon">${c.icon}</span>
             <div class="sub-item-info">
               <div class="sub-item-name">${esc(c.name)}</div>
