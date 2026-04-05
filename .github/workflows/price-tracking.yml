@@ -1,0 +1,101 @@
+name: Price Tracking - Nightly Scraping
+
+on:
+  schedule:
+    # UTC 00:00 = KSA 03:00 (Saudi Arabia Time)
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+    inputs:
+      channels:
+        description: 'Specific channels (comma-separated, e.g. "extra,bh") or empty for all'
+        required: false
+        default: ''
+      dashboard_only:
+        description: 'Skip scraping, only rebuild dashboards'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+jobs:
+  scrape-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout (with Git LFS)
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+          cache-dependency-path: 'price-tracking/requirements.txt'
+
+      - name: Install Python dependencies
+        run: pip install -r price-tracking/requirements.txt
+
+      - name: Install Playwright browsers
+        run: playwright install --with-deps chromium firefox
+
+      - name: Run Price Tracking Orchestrator
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.channels }}" ]; then
+            # Convert comma-separated to space-separated
+            CHANNELS=$(echo "${{ github.event.inputs.channels }}" | tr ',' ' ')
+            ARGS="$CHANNELS"
+          fi
+          if [ "${{ github.event.inputs.dashboard_only }}" = "true" ]; then
+            ARGS="$ARGS --dashboard-only"
+          fi
+          python price-tracking/orchestrator.py $ARGS
+        timeout-minutes: 100
+
+      - name: Commit updated data and dashboards
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Stage Excel Masters (Git LFS) and dashboard HTMLs
+          git add price-tracking/data/
+          git add docs/dashboards/
+
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update price data ($(date +%Y-%m-%d))"
+            git push
+          fi
+
+      - name: Send Telegram notification (success)
+        if: success()
+        run: |
+          python -c "
+          import requests
+          msg = '✅ Price Tracking 완료!\n📅 $(date +%Y-%m-%d)\n\n10개 채널 스크래핑 + 대시보드 업데이트 완료.\nCloudflare 배포는 자동으로 트리거됩니다.'
+          requests.post(
+            f'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage',
+            json={'chat_id': '${{ secrets.TELEGRAM_CHAT_ID }}', 'text': msg}
+          )
+          "
+
+      - name: Send Telegram notification (failure)
+        if: failure()
+        run: |
+          python -c "
+          import requests
+          msg = '❌ Price Tracking 실패!\n📅 $(date +%Y-%m-%d)\n\nGitHub Actions 로그를 확인하세요:\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          requests.post(
+            f'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage',
+            json={'chat_id': '${{ secrets.TELEGRAM_CHAT_ID }}', 'text': msg}
+          )
+          " || true
