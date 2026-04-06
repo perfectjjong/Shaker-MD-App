@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0f172a">
-  <title>Dashboard Hub - Price Tracking</title>
+  <title>Dashboard Hub - OR Ch. Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -37,7 +37,6 @@
       border-bottom: 1px solid var(--border);
       font-size: 13px;
     }
-
     .auth-bar .auth-user { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
     .auth-bar .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d26a; flex-shrink: 0; }
     .auth-bar .auth-email { color: var(--text); font-weight: 500; }
@@ -132,15 +131,15 @@
 
   <div class="header">
     <h1>Dashboard Hub</h1>
-    <div class="subtitle">Price Tracking</div>
+    <div class="subtitle">OR Ch. Dashboard</div>
   </div>
 
   <nav class="nav-links">
     <a class="nav-link" href="/"><span class="nav-link-icon">🏠</span> Home</a>
     <a class="nav-link" href="/#management"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/or/"><span class="nav-link-icon">📦</span> OR Ch.</a>
+    <a class="nav-link active" href="/or/"><span class="nav-link-icon">📦</span> OR Ch.</a>
     <a class="nav-link" href="/ir/"><span class="nav-link-icon">📊</span> IR Ch.</a>
-    <a class="nav-link active" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
+    <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -150,21 +149,24 @@
   </div>
 
   <script>
-    const PRICE_GROUP = {
-      name: 'Price Tracking',
-      description: 'Price tracking (10)',
-      icon: '💰',
+    const OR_GROUP = {
+      name: 'OR Ch. Dashboard',
+      description: 'OR channel dashboards (15)',
+      icon: '📦',
       children: [
+        { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
+        { name: 'OR 5 Ch. Weekly Sell out', description: 'OR 5 channels unified sell-out dashboard', url: '/dashboards/or-weekly/', icon: '📦' },
+        { name: 'eXtra Weekly Sell out', description: 'eXtra weekly sell out dashboard', url: '/dashboards/extra-sellout/', icon: '🛒', indent: true },
+        { name: 'eXtra AC Business Sell out', description: 'eXtra AC business sell out dashboard', url: '/dashboards/extra-ac-business/', icon: '📈' },
+        { name: 'Al Manea Weekly Sell out', description: 'Al Manea OR channel sell-out dashboard', url: '/dashboards/or-al-manea/', icon: '🏪' },
+        { name: 'SWS Weekly Sell out', description: 'SWS OR channel sell-out dashboard', url: '/dashboards/or-sws/', icon: '🏬', indent: true },
+        { name: 'Black Box Weekly Sell out', description: 'Black Box OR channel sell-out dashboard', url: '/dashboards/or-black-box/', icon: '🏢' },
+        { name: 'Al Khunizan Weekly Sell out', description: 'Al Khunizan OR channel sell-out dashboard', url: '/dashboards/or-al-khunizan/', icon: '🏗️', indent: true },
         { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '🛒' },
         { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '🏪', indent: true },
         { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '🔧' },
         { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '🏷️' },
         { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '🏬', indent: true },
-        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: '/dashboards/bh-price/', icon: '💲' },
-        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '🏠' },
-        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '🏗️', indent: true },
-        { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '⭐' },
-        { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '🏘️', indent: true },
       ],
     };
 
@@ -176,7 +178,7 @@
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
-      const g = PRICE_GROUP;
+      const g = OR_GROUP;
       const subItems = g.children.map(c => `
         <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}">
           <span class="sub-item-icon">${c.icon}</span>

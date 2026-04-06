@@ -229,6 +229,7 @@
     .sub-item-name { font-weight: 500; font-size: 13px; }
     .sub-item-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
     .sub-item-arrow { color: var(--text-dim); font-size: 12px; flex-shrink: 0; }
+    .sub-item.indent { margin-left: 24px; }
 
     @keyframes slideIn {
       from { transform: translateY(-10px); opacity: 0; }
@@ -275,8 +276,8 @@
   <nav class="nav-links">
     <a class="nav-link" href="/" id="navHome"><span class="nav-link-icon">🏠</span> Home</a>
     <a class="nav-link" href="/#management" id="navMgmt"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/#sellthru" id="navSellThru"><span class="nav-link-icon">📊</span> Sell Thru</a>
-    <a class="nav-link" href="/sellout/"><span class="nav-link-icon">📦</span> Sell out</a>
+    <a class="nav-link" href="/or/" id="navOR"><span class="nav-link-icon">📦</span> OR Ch.</a>
+    <a class="nav-link" href="/ir/" id="navIR"><span class="nav-link-icon">📊</span> IR Ch.</a>
     <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
   </nav>
 
@@ -290,49 +291,57 @@
     const GROUPS = [
       {
         name: 'Management Dashboard',
-        description: 'Management dashboards (7)',
+        description: 'Management dashboards (5)',
         icon: '📋',
         children: [
-          { name: 'B2C 13 Ch. Weekly Sell out', description: 'IR 8 + OR 5 Channels Combined', url: '/dashboards/b2c-unified/', icon: '🌐' },
-          { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-          { name: 'IR Monthly Total Dashboard', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
-          { name: 'IR 8 Ch. Weekly Sell out', description: 'IR 8 channels unified sell-out dashboard', url: '/dashboards/unified-sellout/', icon: '📦' },
-          { name: 'OR 5 Ch. Weekly Sell out', description: 'OR 5 channels unified sell-out dashboard', url: '/dashboards/or-weekly/', icon: '📊' },
-          { name: 'eXtra Management Dashboard', description: 'eXtra management dashboard', url: '/dashboards/extra-mgmt/', icon: '🛒' },
-          { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: '/dashboards/ar-detail/', icon: '📄' },
+          { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
+          { name: 'B2C 13 Ch. Weekly Sell out', description: 'IR 8 + OR 5 Channels Combined', url: '/dashboards/b2c-unified/', icon: '🌐', indent: true },
+          { name: 'eXtra All Division', description: 'eXtra management dashboard', url: '/dashboards/extra-mgmt/', icon: '🛒', indent: true },
+          { name: 'Total IR Monthly', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
+          { name: 'AR Detail', description: 'AR detail dashboard', url: '/dashboards/ar-detail/', icon: '📄', indent: true },
         ],
       },
       {
-        name: 'Sell Thru Dashboard',
-        description: 'Sell Thru dashboards (2)',
+        name: 'OR Ch. Dashboard',
+        description: 'OR channel dashboards (15)',
+        icon: '📦',
+        children: [
+          { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
+          { name: 'OR 5 Ch. Weekly Sell out', description: 'OR 5 channels unified sell-out dashboard', url: '/dashboards/or-weekly/', icon: '📦' },
+          { name: 'eXtra Weekly Sell out', description: 'eXtra weekly sell out dashboard', url: '/dashboards/extra-sellout/', icon: '🛒', indent: true },
+          { name: 'eXtra AC Business Sell out', description: 'eXtra AC business sell out dashboard', url: '/dashboards/extra-ac-business/', icon: '📈' },
+          { name: 'Al Manea Weekly Sell out', description: 'Al Manea OR channel sell-out dashboard', url: '/dashboards/or-al-manea/', icon: '🏪' },
+          { name: 'SWS Weekly Sell out', description: 'SWS OR channel sell-out dashboard', url: '/dashboards/or-sws/', icon: '🏬', indent: true },
+          { name: 'Black Box Weekly Sell out', description: 'Black Box OR channel sell-out dashboard', url: '/dashboards/or-black-box/', icon: '🏢' },
+          { name: 'Al Khunizan Weekly Sell out', description: 'Al Khunizan OR channel sell-out dashboard', url: '/dashboards/or-al-khunizan/', icon: '🏗️', indent: true },
+          { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '🛒' },
+          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '🏪', indent: true },
+          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '🔧' },
+          { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '🏷️' },
+          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '🏬', indent: true },
+        ],
+      },
+      {
+        name: 'IR Ch. Dashboard',
+        description: 'IR channel dashboards (17)',
         icon: '📊',
         children: [
           { name: 'Sell Thru Progress Dashboard', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-          { name: 'AR Detail Dashboard', description: 'AR detail dashboard', url: '/dashboards/ar-detail/', icon: '📄' },
-        ],
-      },
-      {
-        name: 'Sell out Dashboard',
-        description: 'Sell out dashboards (17)',
-        icon: '📦',
-        children: [
-          { name: 'IR Monthly Total Dashboard', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
+          { name: 'Total IR Monthly', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
           { name: 'IR 8 Ch. Weekly Sell out', description: 'IR 8 channels unified sell-out dashboard', url: '/dashboards/unified-sellout/', icon: '📦' },
-          { name: 'OR 5 Ch. Weekly Sell out', description: 'OR 5 channels unified sell-out dashboard', url: '/dashboards/or-weekly/', icon: '📊' },
-          { name: 'OR Al Manea Weekly Sell-out', description: 'Al Manea OR channel sell-out dashboard', url: '/dashboards/or-al-manea/', icon: '🏪' },
-          { name: 'OR SWS Weekly Sell-out', description: 'SWS OR channel sell-out dashboard', url: '/dashboards/or-sws/', icon: '🏬' },
-          { name: 'OR Black Box Weekly Sell-out', description: 'Black Box OR channel sell-out dashboard', url: '/dashboards/or-black-box/', icon: '🏢' },
-          { name: 'OR Al Khunizan Weekly Sell-out', description: 'Al Khunizan OR channel sell-out dashboard', url: '/dashboards/or-al-khunizan/', icon: '🏗️' },
-          { name: 'eXtra Weekly Sell out Dashboard', description: 'eXtra weekly sell out dashboard', url: '/dashboards/extra-sellout/', icon: '🛒' },
-          { name: 'eXtra AC Business Sell out Dashboard', description: 'eXtra AC business sell out dashboard', url: '/dashboards/extra-ac-business/', icon: '📈' },
-          { name: 'BH Weekly Sell-out Dashboard', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
-          { name: 'BM Weekly Sell-out Dashboard', description: 'Bin Momen LG AC weekly sell-out dashboard', url: '/dashboards/bm-sellout/', icon: '🏬' },
-          { name: 'Tamkeen Weekly Sell-out Dashboard', description: 'Tamkeen LG AC weekly sell-out dashboard', url: '/dashboards/tamkeen-sellout/', icon: '🏢' },
-          { name: 'Zagzoog Weekly Sell-out Dashboard', description: 'Zagzoog LG AC weekly sell-out dashboard', url: '/dashboards/zagzoog-sellout/', icon: '🏗️' },
-          { name: 'Dhamin Weekly Sell-out Dashboard', description: 'Dhamin LG AC weekly sell-out dashboard', url: '/dashboards/dhamin-sellout/', icon: '🏛️' },
-          { name: 'Star Appliance Weekly Sell-out Dashboard', description: 'Star Appliance (Najm) LG AC weekly sell-out dashboard', url: '/dashboards/star-appliance-sellout/', icon: '⭐' },
-          { name: 'Al Shathri Weekly Sell-out Dashboard', description: 'Al Shathri LG AC weekly sell-out dashboard', url: '/dashboards/al-shathri-sellout/', icon: '🏠' },
-          { name: 'Al Ghanem Weekly Sell-out Dashboard', description: 'Al Ghanem LG AC weekly sell-out dashboard', url: '/dashboards/al-ghanem-sellout/', icon: '🏘️' },
+          { name: 'BH Weekly Sell out', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
+          { name: 'BM Weekly Sell out', description: 'Bin Momen LG AC weekly sell-out dashboard', url: '/dashboards/bm-sellout/', icon: '🏬', indent: true },
+          { name: 'Tamkeen Weekly Sell out', description: 'Tamkeen LG AC weekly sell-out dashboard', url: '/dashboards/tamkeen-sellout/', icon: '🏢', indent: true },
+          { name: 'Star Appliance Weekly Sell out', description: 'Star Appliance (Najm) LG AC weekly sell-out dashboard', url: '/dashboards/star-appliance-sellout/', icon: '⭐', indent: true },
+          { name: 'Al Shathri Weekly Sell out', description: 'Al Shathri LG AC weekly sell-out dashboard', url: '/dashboards/al-shathri-sellout/', icon: '🏠' },
+          { name: 'Dhamin Weekly Sell out', description: 'Dhamin LG AC weekly sell-out dashboard', url: '/dashboards/dhamin-sellout/', icon: '🏛️', indent: true },
+          { name: 'Al Ghanem Weekly Sell out', description: 'Al Ghanem LG AC weekly sell-out dashboard', url: '/dashboards/al-ghanem-sellout/', icon: '🏘️', indent: true },
+          { name: 'Zagzoog Weekly Sell out', description: 'Zagzoog LG AC weekly sell-out dashboard', url: '/dashboards/zagzoog-sellout/', icon: '🏗️', indent: true },
+          { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: '/dashboards/bh-price/', icon: '💲' },
+          { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '🏠' },
+          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '🏗️', indent: true },
+          { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '⭐' },
+          { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '🏘️', indent: true },
         ],
       },
       {
@@ -341,15 +350,15 @@
         icon: '💰',
         children: [
           { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '🛒' },
-          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '🏪' },
+          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '🏪', indent: true },
+          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '🔧' },
           { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '🏷️' },
-          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '🏬' },
+          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '🏬', indent: true },
           { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud price tracker', url: '/dashboards/bh-price/', icon: '💲' },
           { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '🏠' },
-          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '🔧' },
-          { name: 'Najm Store Price Tracking', description: 'Najm Store AC price tracker', url: '/dashboards/najm-price/', icon: '⭐' },
-          { name: 'TechnoBest Price Tracking', description: 'TechnoBest AC price tracker', url: '/dashboards/technobest-price/', icon: '💻' },
-          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '🏗️' },
+          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '🏗️', indent: true },
+          { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '⭐' },
+          { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '🏘️', indent: true },
         ],
       },
     ];
@@ -362,7 +371,6 @@
 
     function getView() {
       if (location.hash === '#management') return 'management';
-      if (location.hash === '#sellthru') return 'sellthru';
       return 'home';
     }
 
@@ -370,17 +378,16 @@
       const view = getView();
       document.getElementById('navHome').classList.toggle('active', view === 'home');
       document.getElementById('navMgmt').classList.toggle('active', view === 'management');
-      document.getElementById('navSellThru').classList.toggle('active', view === 'sellthru');
     }
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
       const view = getView();
-      const groups = view === 'management' ? [GROUPS[0]] : view === 'sellthru' ? [GROUPS[1]] : GROUPS;
+      const groups = view === 'management' ? [GROUPS[0]] : GROUPS;
 
       grid.innerHTML = groups.map((g, i) => {
         const subItems = g.children.map(c => `
-          <a class="sub-item" href="${esc(c.url)}" target="_blank" rel="noopener">
+          <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener">
             <span class="sub-item-icon">${c.icon}</span>
             <div class="sub-item-info">
               <div class="sub-item-name">${esc(c.name)}</div>
