@@ -25,6 +25,8 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      direction: ltr;
+      text-align: left;
     }
 
     .auth-bar {
@@ -84,7 +86,7 @@
     .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15); }
     .card-icon { font-size: 40px; margin-bottom: 14px; }
     .card-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
-    .card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+    .card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; text-align: left; }
     .accordion-arrow { font-size: 12px; transition: transform 0.3s ease; color: var(--text-dim); }
     .accordion-card.open .accordion-arrow { transform: rotate(180deg); }
     .accordion-card.open .card { border-color: var(--accent); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15); }
@@ -98,9 +100,9 @@
     }
     .sub-item:hover { border-color: var(--accent); background: #1e3a5f; }
     .sub-item-icon { font-size: 20px; flex-shrink: 0; }
-    .sub-item-info { flex: 1; min-width: 0; }
-    .sub-item-name { font-weight: 500; font-size: 13px; }
-    .sub-item-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    .sub-item-info { flex: 1; min-width: 0; text-align: left; }
+    .sub-item-name { font-weight: 500; font-size: 13px; text-align: left; }
+    .sub-item-desc { font-size: 11px; color: var(--text-dim); margin-top: 2px; text-align: left; }
     .sub-item-arrow { color: var(--text-dim); font-size: 12px; flex-shrink: 0; }
     .sub-item.indent { padding-left: 36px; }
 
