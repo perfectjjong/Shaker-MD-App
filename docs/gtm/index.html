@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0f172a">
-  <title>Dashboard Hub - IR Ch. Dashboard</title>
+  <title>Dashboard Hub - GTM Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -39,6 +39,7 @@
       border-bottom: 1px solid var(--border);
       font-size: 13px;
     }
+
     .auth-bar .auth-user { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
     .auth-bar .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d26a; flex-shrink: 0; }
     .auth-bar .auth-email { color: var(--text); font-weight: 500; }
@@ -98,6 +99,7 @@
       text-decoration: none; color: var(--text); transition: all 0.2s ease; font-size: 14px;
     }
     .sub-item:hover { border-color: var(--accent); background: #1e3a5f; }
+    .sub-item.disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
     .sub-item-icon { font-size: 20px; flex-shrink: 0; }
     .sub-item-info { flex: 1; min-width: 0; text-align: left; }
     .sub-item-name { font-weight: 500; font-size: 13px; text-align: left; }
@@ -133,16 +135,16 @@
 
   <div class="header">
     <h1>Dashboard Hub</h1>
-    <div class="subtitle">IR Ch. Dashboard</div>
+    <div class="subtitle">GTM Dashboard</div>
   </div>
 
   <nav class="nav-links">
     <a class="nav-link" href="/"><span class="nav-link-icon">🏠</span> Home</a>
     <a class="nav-link" href="/#management"><span class="nav-link-icon">📋</span> Management</a>
     <a class="nav-link" href="/or/"><span class="nav-link-icon">📦</span> OR Ch.</a>
-    <a class="nav-link active" href="/ir/"><span class="nav-link-icon">📊</span> IR Ch.</a>
+    <a class="nav-link" href="/ir/"><span class="nav-link-icon">📊</span> IR Ch.</a>
     <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
-    <a class="nav-link" href="/gtm/"><span class="nav-link-icon">🎯</span> GTM Dashboard</a>
+    <a class="nav-link active" href="/gtm/"><span class="nav-link-icon">🎯</span> GTM Dashboard</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -152,27 +154,16 @@
   </div>
 
   <script>
-    const IR_GROUP = {
-      name: 'IR Ch. Dashboard',
-      description: 'IR channel dashboards (15)',
-      icon: '📊',
+    const GTM_GROUP = {
+      name: 'GTM Dashboard',
+      description: 'GTM dashboards (5)',
+      icon: '🎯',
       children: [
-        { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-        { name: 'Total IR Monthly', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
-        { name: 'IR 8 Ch. Weekly Sell Out', description: 'IR 8 channels unified sell-out dashboard', url: '/dashboards/unified-sellout/', icon: '📦' },
-        { name: 'BH Weekly Sell Out', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
-        { name: 'BM Weekly Sell Out', description: 'Bin Momen LG AC weekly sell-out dashboard', url: '/dashboards/bm-sellout/', icon: '🏪', indent: true },
-        { name: 'Tamkeen Weekly Sell Out', description: 'Tamkeen LG AC weekly sell-out dashboard', url: '/dashboards/tamkeen-sellout/', icon: '🏪', indent: true },
-        { name: 'Star Appliance Weekly Sell Out', description: 'Star Appliance LG AC weekly sell-out dashboard', url: '/dashboards/star-appliance-sellout/', icon: '🏪', indent: true },
-        { name: 'Al Shathri Weekly Sell Out', description: 'Al Shathri LG AC weekly sell-out dashboard', url: '/dashboards/al-shathri-sellout/', icon: '🏪' },
-        { name: 'Dhamin Weekly Sell Out', description: 'Dhamin LG AC weekly sell-out dashboard', url: '/dashboards/dhamin-sellout/', icon: '🏪', indent: true },
-        { name: 'Al Ghanem Weekly Sell Out', description: 'Al Ghanem LG AC weekly sell-out dashboard', url: '/dashboards/al-ghanem-sellout/', icon: '🏪', indent: true },
-        { name: 'Zagzoog Weekly Sell Out', description: 'Zagzoog LG AC weekly sell-out dashboard', url: '/dashboards/zagzoog-sellout/', icon: '🏪', indent: true },
-        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud AC price tracker', url: '/dashboards/bh-price/', icon: '💰' },
-        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '💰' },
-        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '💰', indent: true },
-        { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '💰' },
-        { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '💰', indent: true },
+        { name: 'GTM Meeting', description: 'GTM weekly meeting plan', url: 'https://perfectjjong.github.io/gtm-weekly-plan/', icon: '📅' },
+        { name: 'Promoter Sell Out', description: 'Promoter sell out - Power BI', url: 'https://app.powerbi.com/groups/me/apps/08977c0d-1567-4f95-9f8a-5b486e2f02b5?ctid=93febad1-5f14-420f-80bc-103c49a53a7c&experience=power-bi', icon: '📊', indent: true },
+        { name: 'Flooring Status', description: 'ISM and Display Final Dashboard - SharePoint', url: 'https://shakergroup-my.sharepoint.com/:u:/r/personal/s_siddique_shaker_com_sa/Documents/Desktop/Master%20Data/Power%20BI/2.%202026%20ISM%20and%20Display%20Final%20Dashboard.pbix?e=4%3a95a4fdcf8ee741b59934fd6b895e3cc2&web=1&sharingv2=true&fromShare=true&at=9', icon: '🏢', indent: true },
+        { name: 'Indirect Sales Team', description: 'Link TBD', url: null, icon: '👥', disabled: true },
+        { name: 'GTM Budget 2026', description: 'GTM Budget 2026 - Google Sheets', url: 'https://docs.google.com/spreadsheets/d/1KFhrKHV2-_YdENeEpbnrmLQNrvE_SlNTWZLWL5JYfHM/edit?gid=0#gid=0', icon: '💼', indent: true },
       ],
     };
 
@@ -184,17 +175,31 @@
 
     function render() {
       const grid = document.getElementById('dashboardGrid');
-      const g = IR_GROUP;
-      const subItems = g.children.map(c => `
-        <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}">
-          <span class="sub-item-icon">${c.icon}</span>
-          <div class="sub-item-info">
-            <div class="sub-item-name">${esc(c.name)}</div>
-            <div class="sub-item-desc">${esc(c.description)}</div>
-          </div>
-          <span class="sub-item-arrow">&rarr;</span>
-        </a>
-      `).join('');
+      const g = GTM_GROUP;
+      const subItems = g.children.map(c => {
+        if (c.disabled) {
+          return `
+            <span class="sub-item${c.indent ? ' indent' : ''} disabled">
+              <span class="sub-item-icon">${c.icon}</span>
+              <div class="sub-item-info">
+                <div class="sub-item-name">${esc(c.name)}</div>
+                <div class="sub-item-desc">${esc(c.description)}</div>
+              </div>
+              <span class="sub-item-arrow">⏳</span>
+            </span>
+          `;
+        }
+        return `
+          <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener">
+            <span class="sub-item-icon">${c.icon}</span>
+            <div class="sub-item-info">
+              <div class="sub-item-name">${esc(c.name)}</div>
+              <div class="sub-item-desc">${esc(c.description)}</div>
+            </div>
+            <span class="sub-item-arrow">&rarr;</span>
+          </a>
+        `;
+      }).join('');
 
       grid.innerHTML = `
         <div class="accordion-card open" onclick="this.classList.toggle('open')">

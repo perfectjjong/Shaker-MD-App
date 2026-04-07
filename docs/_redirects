@@ -2,6 +2,7 @@
 # Trailing slash normalization
 /sellout  /sellout/  301
 /price    /price/    301
+/gtm      /gtm/      301
 
 # Dashboard trailing slash redirects
 /dashboards/sell-thru-progress    /dashboards/sell-thru-progress/    301
