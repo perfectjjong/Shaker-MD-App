@@ -745,7 +745,11 @@ function updatePT(){
   }
 
   const activeChs=D.dims.channels.filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
-  const latestW=WEEKS.length?WEEKS[WEEKS.length-1]:'';
+  const activeCats=D.dims.categories.filter(c=>FILTER_STATE.c.size===0||!FILTER_STATE.c.has(c));
+  const wm=D.meta.week_month||{};let ptWeeks=WEEKS;
+  if(FILTER_STATE.w.size>0){ptWeeks=ptWeeks.filter(w=>!FILTER_STATE.w.has(w))}
+  if(FILTER_STATE.m.size>0){ptWeeks=ptWeeks.filter(w=>{const m=wm[w];return!m||!FILTER_STATE.m.has(m)})}
+  const latestW=ptWeeks.length?ptWeeks[ptWeeks.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
 
   // Compute avg price per channel for latest week
   const chAvg={};let totalPrices=0,totalModels=0;
@@ -772,7 +776,7 @@ function updatePT(){
   mk('cPtChBar','bar',{labels:ptChs,datasets:[{label:'Avg Price (SAR)',data:ptChs.map(ch=>chAvg[ch]||0),backgroundColor:ptChs.map(ch=>CH_COLORS[ch]||'#999')}]},{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
 
   // Weekly trend (avg price per channel)
-  const trendWeeks=WEEKS.slice(-12);
+  const trendWeeks=(ptWeeks.length<=12?ptWeeks:ptWeeks.slice(-12));
   const chTrendData=activeChs.filter(ch=>pt[ch]).map(ch=>{
     const chPt=pt[ch];
     return {label:ch,data:trendWeeks.map(w=>{let sum=0,cnt=0;Object.values(chPt).forEach(weeks=>{const p=weeks[w];if(p&&p>0){sum+=p;cnt++}});return cnt>0?Math.round(sum/cnt):null}),borderColor:CH_COLORS[ch]||'#999',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true};
@@ -782,6 +786,7 @@ function updatePT(){
   // Model price table
   // Build model→category lookup from price_cats (generator-built) + sell-out data fallback
   const ptModelCat=Object.assign({},D.price_cats||{});D.raw.forEach(r=>{if(r.c&&!ptModelCat[r.model])ptModelCat[r.model]=r.c});
+  const ptModelAttrs={};D.raw.forEach(r=>{if(!ptModelAttrs[r.model])ptModelAttrs[r.model]={comp:r.comp,type:r.type,btu:r.btu}});
   const allPtModels=new Set();
   activeChs.forEach(ch=>{if(pt[ch])Object.keys(pt[ch]).forEach(m=>allPtModels.add(m))});
   const modelPrices=[...allPtModels].map(m=>{
@@ -792,7 +797,15 @@ function updatePT(){
       if(lp&&lp>0){prices[ch]=lp;sum+=lp;cnt++}
     });
     return {model:m,cat:ptModelCat[m]||'',prices:prices,avg:cnt>0?Math.round(sum/cnt):0};
-  }).filter(m=>m.avg>0).sort((a,b)=>b.avg-a.avg);
+  }).filter(m=>{
+    if(m.avg===0)return false;
+    if(FILTER_STATE.c.size>0&&m.cat&&!activeCats.includes(m.cat))return false;
+    const a=ptModelAttrs[m.model]||{};
+    if(FILTER_STATE.comp.size>0&&FILTER_STATE.comp.has(a.comp||''))return false;
+    if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(a.type||''))return false;
+    if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(a.btu||''))return false;
+    return true;
+  }).sort((a,b)=>b.avg-a.avg);
 
   document.getElementById('tblPtModel').innerHTML=modelPrices.slice(0,50).map(r=>{
     const chCells=D.dims.channels.map(ch=>{
