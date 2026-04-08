@@ -181,7 +181,7 @@
       const grid = document.getElementById('dashboardGrid');
       const g = PRICE_GROUP;
       const subItems = g.children.map(c => `
-        <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}">
+        <a class="sub-item${c.indent ? ' indent' : ''}" href="${esc(c.url)}" target="_blank" rel="noopener">
           <span class="sub-item-icon">${c.icon}</span>
           <div class="sub-item-info">
             <div class="sub-item-name">${esc(c.name)}</div>
