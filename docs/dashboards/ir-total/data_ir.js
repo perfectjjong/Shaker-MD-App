@@ -1,6 +1,6 @@
 var IR_DATA = {
   "meta": {
-    "generatedAt": "2026-03-31T11:05:04.068160",
+    "generatedAt": "2026-04-10T12:17:07.483547",
     "sourceFile": "All IR - STK & SO as of 28 Feb 2026_Dashboard.xlsx"
   },
   "kpi": {
@@ -25,6 +25,17 @@ var IR_DATA = {
       "soRatio": 5.63,
       "activeDealers": 51,
       "activeSkus": 70
+    },
+    "mar": {
+      "stQty": 0,
+      "stVal": 0,
+      "soQty": 3930,
+      "soVal": 9917622,
+      "stkQty": 15739,
+      "stkVal": 40904800,
+      "soRatio": 4.0,
+      "activeDealers": 36,
+      "activeSkus": 68
     }
   },
   "byRegion": [
@@ -47,6 +58,15 @@ var IR_DATA = {
         "stkQty": 3977,
         "stkVal": 9264289,
         "soRatio": 7.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 593,
+        "soVal": 1825725,
+        "stkQty": 3848,
+        "stkVal": 9278588,
+        "soRatio": 6.49
       }
     },
     {
@@ -68,6 +88,15 @@ var IR_DATA = {
         "stkQty": 1801,
         "stkVal": 4482090,
         "soRatio": 7.63
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 270,
+        "soVal": 660880,
+        "stkQty": 2387,
+        "stkVal": 4868225,
+        "soRatio": 8.84
       }
     },
     {
@@ -89,6 +118,15 @@ var IR_DATA = {
         "stkQty": 588,
         "stkVal": 515123,
         "soRatio": 14.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -110,6 +148,15 @@ var IR_DATA = {
         "stkQty": 11871,
         "stkVal": 32520014,
         "soRatio": 4.82
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3067,
+        "soVal": 7431017,
+        "stkQty": 9504,
+        "stkVal": 26757986,
+        "soRatio": 3.1
       }
     }
   ],
@@ -133,6 +180,15 @@ var IR_DATA = {
         "stkQty": 5778,
         "stkVal": 13746379,
         "soRatio": 7.84
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 863,
+        "soVal": 2486606,
+        "stkQty": 6235,
+        "stkVal": 14146814,
+        "soRatio": 7.22
       }
     },
     {
@@ -154,6 +210,15 @@ var IR_DATA = {
         "stkQty": 12459,
         "stkVal": 33035137,
         "soRatio": 4.98
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3067,
+        "soVal": 7431017,
+        "stkQty": 9504,
+        "stkVal": 26757986,
+        "soRatio": 3.1
       }
     }
   ],
@@ -179,6 +244,15 @@ var IR_DATA = {
         "stkQty": 1403,
         "stkVal": 3565898,
         "soRatio": 5.77
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 301,
+        "soVal": 1085196,
+        "stkQty": 1464,
+        "stkVal": 3524595,
+        "soRatio": 4.86
       }
     },
     {
@@ -202,6 +276,15 @@ var IR_DATA = {
         "stkQty": 1769,
         "stkVal": 3477271,
         "soRatio": 8.23
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 167,
+        "soVal": 287229,
+        "stkQty": 1575,
+        "stkVal": 3634681,
+        "soRatio": 9.43
       }
     },
     {
@@ -225,6 +308,15 @@ var IR_DATA = {
         "stkQty": 1482,
         "stkVal": 2430764,
         "soRatio": 5.72
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 272,
+        "soVal": 383745,
+        "stkQty": 1659,
+        "stkVal": 2919880,
+        "soRatio": 6.1
       }
     },
     {
@@ -248,6 +340,15 @@ var IR_DATA = {
         "stkQty": 1471,
         "stkVal": 3018089,
         "soRatio": 3.79
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 9,
+        "soVal": 16290,
+        "stkQty": 168,
+        "stkVal": 359335,
+        "soRatio": 18.67
       }
     },
     {
@@ -271,6 +372,15 @@ var IR_DATA = {
         "stkQty": 588,
         "stkVal": 515123,
         "soRatio": 14.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -294,6 +404,15 @@ var IR_DATA = {
         "stkQty": 514,
         "stkVal": 1189607,
         "soRatio": 3.78
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 128,
+        "soVal": 160642,
+        "stkQty": 1315,
+        "stkVal": 1689717,
+        "soRatio": 10.27
       }
     },
     {
@@ -317,6 +436,15 @@ var IR_DATA = {
         "stkQty": 805,
         "stkVal": 2221120,
         "soRatio": 18.72
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 125,
+        "soVal": 453300,
+        "stkQty": 809,
+        "stkVal": 2119313,
+        "soRatio": 6.47
       }
     },
     {
@@ -340,6 +468,15 @@ var IR_DATA = {
         "stkQty": 1287,
         "stkVal": 3292484,
         "soRatio": 12.87
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 142,
+        "soVal": 500238,
+        "stkQty": 1072,
+        "stkVal": 3178508,
+        "soRatio": 7.55
       }
     },
     {
@@ -363,6 +500,15 @@ var IR_DATA = {
         "stkQty": 8918,
         "stkVal": 27071161,
         "soRatio": 4.91
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2786,
+        "soVal": 7030981,
+        "stkQty": 7677,
+        "stkVal": 23478771,
+        "soRatio": 2.76
       }
     }
   ],
@@ -389,31 +535,16 @@ var IR_DATA = {
         "stkVal": 23334660,
         "soRatio": 4.67
       },
-      "signal": "HEALTHY"
-    },
-    {
-      "name": "BIN MOMEN TRADING CO.",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "jan": {
-        "stQty": 360,
-        "stVal": 771511,
-        "soQty": 244,
-        "soVal": 452582,
-        "stkQty": 833,
-        "stkVal": 2084840,
-        "soRatio": 3.41
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2557,
+        "soVal": 6503687,
+        "stkQty": 5910,
+        "stkVal": 20134289,
+        "soRatio": 2.31
       },
-      "feb": {
-        "stQty": 141,
-        "stVal": 314126,
-        "soQty": 194,
-        "soVal": 366390,
-        "stkQty": 664,
-        "stkVal": 1476596,
-        "soRatio": 3.42
-      },
-      "signal": "HEALTHY"
+      "signal": "OPPORTUNITY"
     },
     {
       "name": "Tamkeen International Co.",
@@ -436,6 +567,15 @@ var IR_DATA = {
         "stkQty": 642,
         "stkVal": 1393702,
         "soRatio": 3.78
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 196,
+        "soVal": 320819,
+        "stkQty": 895,
+        "stkVal": 1945745,
+        "soRatio": 4.57
       },
       "signal": "HEALTHY"
     },
@@ -461,31 +601,16 @@ var IR_DATA = {
         "stkVal": 1816666,
         "soRatio": 4.61
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 153,
+        "soVal": 296507,
+        "stkQty": 718,
+        "stkVal": 1820264,
+        "soRatio": 4.69
+      },
       "signal": "HEALTHY"
-    },
-    {
-      "name": "AL SAHA Alalamiyah co",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 122,
-        "stVal": 403163,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 34,
-        "stVal": 126835,
-        "soQty": 136,
-        "soVal": 495143,
-        "stkQty": 150,
-        "stkVal": 439448,
-        "soRatio": 1.1
-      },
-      "signal": "OPPORTUNITY"
     },
     {
       "name": "Abduaalah Ali-Dhamin&Sons",
@@ -509,55 +634,49 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "BOX APPLIANCES",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "jan": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 829,
-        "soVal": 4378230,
-        "stkQty": 720,
-        "stkVal": 3105713,
-        "soRatio": 0.87
-      },
-      "feb": {
-        "stQty": 663,
-        "stVal": 2053673,
-        "soQty": 106,
-        "soVal": 257721,
-        "stkQty": 940,
-        "stkVal": 2520918,
-        "soRatio": 8.87
+        "soQty": 120,
+        "soVal": 152991,
+        "stkQty": 925,
+        "stkVal": 907709,
+        "soRatio": 7.71
       },
       "signal": "OVERSTOCK"
     },
     {
-      "name": "Al-Zaqzouq Home Appliances Co., Ltd",
+      "name": "BIN MOMEN TRADING CO.",
       "region": "west",
-      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
+      "salesman": "adel abelmasoud",
       "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 40,
-        "soVal": 33055,
-        "stkQty": 929,
-        "stkVal": 1125729,
-        "soRatio": 23.22
+        "stQty": 360,
+        "stVal": 771511,
+        "soQty": 244,
+        "soVal": 452582,
+        "stkQty": 833,
+        "stkVal": 2084840,
+        "soRatio": 3.41
       },
       "feb": {
+        "stQty": 141,
+        "stVal": 314126,
+        "soQty": 194,
+        "soVal": 366390,
+        "stkQty": 664,
+        "stkVal": 1476596,
+        "soRatio": 3.42
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 89,
-        "soVal": 88668,
-        "stkQty": 840,
-        "stkVal": 1037061,
-        "soRatio": 9.44
+        "soQty": 111,
+        "soVal": 266907,
+        "stkQty": 597,
+        "stkVal": 1394096,
+        "soRatio": 5.38
       },
-      "signal": "OVERSTOCK"
+      "signal": "HEALTHY"
     },
     {
       "name": "ABDULAZIZ AL-SHATHERY",
@@ -581,149 +700,14 @@ var IR_DATA = {
         "stkVal": 953909,
         "soRatio": 2.85
       },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "Ghassan Trading Est.",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 11,
-        "stVal": 30832,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 75,
-        "stVal": 172263,
-        "soQty": 76,
-        "soVal": 178052,
-        "stkQty": 38,
-        "stkVal": 216996,
-        "soRatio": 0.5
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "شركه نجوم العمران للمقاولات",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 14,
-        "stVal": 41210,
-        "soQty": 75,
-        "soVal": 138965,
-        "stkQty": 475,
-        "stkVal": 832440,
-        "soRatio": 6.33
-      },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "Air conditioning land",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "jan": {
-        "stQty": 400,
-        "stVal": 545200,
-        "soQty": 40,
-        "soVal": 69966,
-        "stkQty": 607,
-        "stkVal": 1166645,
-        "soRatio": 15.18
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 61,
-        "soVal": 147885,
-        "stkQty": 952,
-        "stkVal": 1572329,
-        "soRatio": 15.61
-      },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "Asemat Aljaled",
-      "region": "Central",
-      "salesman": "Ahmed Haridi",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 75,
-        "soVal": 6476,
-        "stkQty": 222,
-        "stkVal": 85753,
-        "soRatio": 2.96
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 58,
-        "soVal": 86598,
-        "stkQty": 164,
-        "stkVal": 266440,
-        "soRatio": 2.83
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "United Vision Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "jan": {
-        "stQty": 155,
-        "stVal": 244038,
-        "soQty": 61,
-        "soVal": 64061,
-        "stkQty": 173,
-        "stkVal": 334654,
-        "soRatio": 2.84
-      },
-      "feb": {
-        "stQty": 6,
-        "stVal": 28735,
-        "soQty": 56,
-        "soVal": 140118,
-        "stkQty": 311,
-        "stkVal": 583653,
-        "soRatio": 5.55
-      },
-      "signal": "HEALTHY"
-    },
-    {
-      "name": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "jan": {
-        "stQty": 60,
-        "stVal": 98711,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 53,
-        "stVal": 141262,
-        "soQty": 54,
-        "soVal": 150173,
-        "stkQty": 26,
-        "stkVal": 39108,
-        "soRatio": 0.48
+        "soQty": 103,
+        "soVal": 642102,
+        "stkQty": 224,
+        "stkVal": 854252,
+        "soRatio": 2.17
       },
       "signal": "OPPORTUNITY"
     },
@@ -749,197 +733,113 @@ var IR_DATA = {
         "stkVal": 1363586,
         "soRatio": 11.72
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 99,
+        "soVal": 292947,
+        "stkQty": 518,
+        "stkVal": 1355877,
+        "soRatio": 5.23
+      },
+      "signal": "HEALTHY"
     },
     {
-      "name": "Aser Eltakeef",
+      "name": "United Vision Trading Company",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "jan": {
+        "stQty": 155,
+        "stVal": 244038,
+        "soQty": 61,
+        "soVal": 64061,
+        "stkQty": 173,
+        "stkVal": 334654,
+        "soRatio": 2.84
+      },
+      "feb": {
+        "stQty": 6,
+        "stVal": 28735,
+        "soQty": 56,
+        "soVal": 140118,
+        "stkQty": 311,
+        "stkVal": 583653,
+        "soRatio": 5.55
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 89,
+        "soVal": 204012,
+        "stkQty": 237,
+        "stkVal": 412732,
+        "soRatio": 2.66
+      },
+      "signal": "OPPORTUNITY"
+    },
+    {
+      "name": "BOX APPLIANCES",
       "region": "Central",
       "salesman": "Ahmed Haridi",
       "jan": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 13,
-        "soVal": 1555,
-        "stkQty": 203,
-        "stkVal": 393988,
-        "soRatio": 15.62
+        "soQty": 829,
+        "soVal": 4378230,
+        "stkQty": 720,
+        "stkVal": 3105713,
+        "soRatio": 0.87
       },
       "feb": {
+        "stQty": 663,
+        "stVal": 2053673,
+        "soQty": 106,
+        "soVal": 257721,
+        "stkQty": 940,
+        "stkVal": 2520918,
+        "soRatio": 8.87
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 42,
-        "soVal": 17903,
-        "stkQty": 166,
-        "stkVal": 267146,
-        "soRatio": 3.95
+        "soQty": 79,
+        "soVal": 198499,
+        "stkQty": 1042,
+        "stkVal": 2853503,
+        "soRatio": 13.19
       },
-      "signal": "HEALTHY"
+      "signal": "OVERSTOCK"
     },
     {
-      "name": "Mohammed Hassan Omar Al Amoudi Trade Est",
-      "region": "South",
-      "salesman": "Ayman Farouk",
+      "name": "Al-Zaqzouq Home Appliances Co., Ltd",
+      "region": "west",
+      "salesman": "Ahmed Roshdy Abdelraouf Ismail",
       "jan": {
-        "stQty": 142,
-        "stVal": 210585,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 40,
-        "stVal": 96230,
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 40,
-        "soVal": 96230,
-        "stkQty": 63,
-        "stkVal": 160603,
-        "soRatio": 1.58
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "AHMED SHAR HAFEEZ AL MARHABI",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 103,
-        "stVal": 172157,
-        "soQty": 34,
-        "soVal": 70130,
-        "stkQty": 69,
-        "stkVal": 102028,
-        "soRatio": 2.03
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "Majid Golden Trading Company",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 37,
-        "stVal": 101439,
-        "soQty": 30,
-        "soVal": 66136,
-        "stkQty": 7,
-        "stkVal": 35302,
-        "soRatio": 0.23
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "ABU YASER BUSINESS CENTER",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
+        "soVal": 33055,
+        "stkQty": 929,
+        "stkVal": 1125729,
+        "soRatio": 23.22
       },
       "feb": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 20,
-        "soVal": 32188,
-        "stkQty": 570,
-        "stkVal": 1023944,
-        "soRatio": 28.5
+        "soQty": 89,
+        "soVal": 88668,
+        "stkQty": 840,
+        "stkVal": 1037061,
+        "soRatio": 9.44
       },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "Maqam Alreem Trading Company",
-      "region": "west",
-      "salesman": "adel abelmasoud",
-      "jan": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 18,
-        "soVal": 48423,
-        "stkQty": 38,
-        "stkVal": 103922,
-        "soRatio": 2.11
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "OCEAN AIR CONDITIONING",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 7,
-        "soVal": 51280,
-        "stkQty": 253,
-        "stkVal": 627090,
-        "soRatio": 36.14
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 18,
-        "soVal": 68689,
-        "stkQty": 289,
-        "stkVal": 721568,
-        "soRatio": 16.06
-      },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "Abdul Ahad Mohammed Abed Fadel",
-      "region": "west",
-      "salesman": "Ahmed Sharaf",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 17,
-        "soVal": 5102,
-        "stkQty": 135,
-        "stkVal": 315669,
-        "soRatio": 7.94
+        "soQty": 76,
+        "soVal": 62926,
+        "stkQty": 764,
+        "stkVal": 974135,
+        "soRatio": 10.05
       },
       "signal": "OVERSTOCK"
     },
@@ -965,6 +865,114 @@ var IR_DATA = {
         "stkVal": 549624,
         "soRatio": 25.18
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 45,
+        "soVal": 146587,
+        "stkQty": 413,
+        "stkVal": 561466,
+        "soRatio": 9.18
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "Asemat Aljaled",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 75,
+        "soVal": 6476,
+        "stkQty": 222,
+        "stkVal": 85753,
+        "soRatio": 2.96
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 58,
+        "soVal": 86598,
+        "stkQty": 164,
+        "stkVal": 266440,
+        "soRatio": 2.83
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 42,
+        "soVal": 61470,
+        "stkQty": 80,
+        "stkVal": 134275,
+        "soRatio": 1.9
+      },
+      "signal": "OPPORTUNITY"
+    },
+    {
+      "name": "OCEAN AIR CONDITIONING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 51280,
+        "stkQty": 253,
+        "stkVal": 627090,
+        "soRatio": 36.14
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 18,
+        "soVal": 68689,
+        "stkQty": 289,
+        "stkVal": 721568,
+        "soRatio": 16.06
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 38,
+        "soVal": 61318,
+        "stkQty": 209,
+        "stkVal": 560398,
+        "soRatio": 5.5
+      },
+      "signal": "HEALTHY"
+    },
+    {
+      "name": "COLD WORLD",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": 248,
+        "stVal": 1290004,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 468,
+        "stkVal": 1624424,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 428,
+        "stkVal": 1531276,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 36,
+        "soVal": 95519,
+        "stkQty": 418,
+        "stkVal": 1514666,
+        "soRatio": 11.61
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -989,149 +997,146 @@ var IR_DATA = {
         "stkVal": 462104,
         "soRatio": 17.65
       },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "LAITH ALARAB TRAD EST.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "jan": {
-        "stQty": 7,
-        "stVal": 40523,
-        "soQty": 10,
-        "soVal": 57890,
-        "stkQty": 29,
-        "stkVal": 91821,
-        "soRatio": 2.9
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 13,
-        "soVal": 64521,
-        "stkQty": 26,
-        "stkVal": 85189,
-        "soRatio": 2.0
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "Milestones Trust Foundation",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "jan": {
-        "stQty": 10,
-        "stVal": 30568,
-        "soQty": 16,
-        "soVal": 45784,
-        "stkQty": 3,
-        "stkVal": 4589,
-        "soRatio": 0.19
-      },
-      "feb": {
-        "stQty": 8,
-        "stVal": 23247,
-        "soQty": 8,
-        "soVal": 14069,
-        "stkQty": 9,
-        "stkVal": 16871,
-        "soRatio": 1.12
-      },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "name": "Eid Ali Al Khatir",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 4,
-        "soVal": 6938,
-        "stkQty": 168,
-        "stkVal": 430912,
-        "soRatio": 42.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 7,
-        "soVal": 2449,
-        "stkQty": 161,
-        "stkVal": 428463,
-        "soRatio": 23.0
+        "soQty": 32,
+        "soVal": 53656,
+        "stkQty": 274,
+        "stkVal": 425325,
+        "soRatio": 8.56
       },
       "signal": "OVERSTOCK"
     },
     {
-      "name": "Assaf A.Al-Odail Est.",
-      "region": "East",
-      "salesman": "Hussam Rajab",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 113,
-        "stkVal": 102732,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 6,
-        "soVal": 6938,
-        "stkQty": 107,
-        "stkVal": 95794,
-        "soRatio": 17.83
-      },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "BAYOTECOM",
+      "name": "Aser Eltakeef",
       "region": "Central",
       "salesman": "Ahmed Haridi",
       "jan": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 2,
-        "soVal": 2039,
-        "stkQty": 248,
-        "stkVal": 130571,
-        "soRatio": 124.0
-      },
-      "feb": {
-        "stQty": 2,
-        "stVal": 6757,
-        "soQty": 6,
-        "soVal": 2039,
-        "stkQty": 241,
-        "stkVal": 110562,
-        "soRatio": 40.17
-      },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "Abdullah Saleh Al-Sultan and Sons",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "jan": {
-        "stQty": 49,
-        "stVal": 89135,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 49,
-        "stkVal": 89135,
-        "soRatio": null
+        "soQty": 13,
+        "soVal": 1555,
+        "stkQty": 203,
+        "stkVal": 393988,
+        "soRatio": 15.62
       },
       "feb": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 5,
-        "soVal": 28945,
-        "stkQty": 50,
-        "stkVal": 94120,
-        "soRatio": 10.0
+        "soQty": 42,
+        "soVal": 17903,
+        "stkQty": 166,
+        "stkVal": 267146,
+        "soRatio": 3.95
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 30,
+        "soVal": 13630,
+        "stkQty": 163,
+        "stkVal": 364494,
+        "soRatio": 5.43
+      },
+      "signal": "HEALTHY"
+    },
+    {
+      "name": "Air conditioning land",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "jan": {
+        "stQty": 400,
+        "stVal": 545200,
+        "soQty": 40,
+        "soVal": 69966,
+        "stkQty": 607,
+        "stkVal": 1166645,
+        "soRatio": 15.18
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 61,
+        "soVal": 147885,
+        "stkQty": 952,
+        "stkVal": 1572329,
+        "soRatio": 15.61
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 29,
+        "soVal": 56375,
+        "stkQty": 933,
+        "stkVal": 1537655,
+        "soRatio": 32.17
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "AL MOJEL.CO",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 16250,
+        "stkQty": 322,
+        "stkVal": 953610,
+        "soRatio": 161.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 301,
+        "stkVal": 857534,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 26,
+        "soVal": 160353,
+        "stkQty": 291,
+        "stkVal": 763435,
+        "soRatio": 11.19
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": 138,
+        "stVal": 510574,
+        "soQty": 4,
+        "soVal": 186945,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 5576,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 185,
+        "stkVal": 271932,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 21,
+        "soVal": 231864,
+        "stkQty": 132,
+        "stkVal": 500309,
+        "soRatio": 6.29
       },
       "signal": "OVERSTOCK"
     },
@@ -1157,6 +1162,147 @@ var IR_DATA = {
         "stkVal": 69463,
         "soRatio": 15.33
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 13630,
+        "stkQty": 36,
+        "stkVal": 55156,
+        "soRatio": 3.6
+      },
+      "signal": "HEALTHY"
+    },
+    {
+      "name": "AHMED SHAR HAFEEZ AL MARHABI",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 103,
+        "stVal": 172157,
+        "soQty": 34,
+        "soVal": 70130,
+        "stkQty": 69,
+        "stkVal": 102028,
+        "soRatio": 2.03
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 10758,
+        "stkQty": 101,
+        "stkVal": 164000,
+        "soRatio": 14.43
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": 60,
+        "stVal": 98711,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 53,
+        "stVal": 141262,
+        "soQty": 54,
+        "soVal": 150173,
+        "stkQty": 26,
+        "stkVal": 39108,
+        "soRatio": 0.48
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 18645,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "signal": "OPPORTUNITY"
+    },
+    {
+      "name": "BAYOTECOM",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 2039,
+        "stkQty": 248,
+        "stkVal": 130571,
+        "soRatio": 124.0
+      },
+      "feb": {
+        "stQty": 2,
+        "stVal": 6757,
+        "soQty": 6,
+        "soVal": 2039,
+        "stkQty": 241,
+        "stkVal": 110562,
+        "soRatio": 40.17
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 0,
+        "stkQty": 227,
+        "stkVal": 93195,
+        "soRatio": 37.83
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "Assaf A.Al-Odail Est.",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 113,
+        "stkVal": 102732,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 6938,
+        "stkQty": 107,
+        "stkVal": 95794,
+        "soRatio": 17.83
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 0,
+        "stkQty": 154,
+        "stkVal": 126569,
+        "soRatio": 30.8
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -1181,29 +1327,113 @@ var IR_DATA = {
         "stkVal": 126181,
         "soRatio": 9.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 29699,
+        "stkQty": 21,
+        "stkVal": 81778,
+        "soRatio": 4.2
+      },
+      "signal": "HEALTHY"
     },
     {
-      "name": "FUTURE OF ELECTRICAL DEVICES",
+      "name": "Eid Ali Al Khatir",
       "region": "East",
-      "salesman": "Talal Adam",
+      "salesman": "Hussam Rajab",
       "jan": {
-        "stQty": -1,
-        "stVal": -1555,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 12,
-        "stkVal": 11904,
-        "soRatio": null
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 6938,
+        "stkQty": 168,
+        "stkVal": 430912,
+        "soRatio": 42.0
       },
       "feb": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 1,
-        "soVal": 1555,
-        "stkQty": 12,
-        "stkVal": 22158,
-        "soRatio": 12.0
+        "soQty": 7,
+        "soVal": 2449,
+        "stkQty": 161,
+        "stkVal": 428463,
+        "soRatio": 23.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 7651,
+        "stkQty": 158,
+        "stkVal": 421002,
+        "soRatio": 52.67
+      },
+      "signal": "OVERSTOCK"
+    },
+    {
+      "name": "Milestones Trust Foundation",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": 10,
+        "stVal": 30568,
+        "soQty": 16,
+        "soVal": 45784,
+        "stkQty": 3,
+        "stkVal": 4589,
+        "soRatio": 0.19
+      },
+      "feb": {
+        "stQty": 8,
+        "stVal": 23247,
+        "soQty": 8,
+        "soVal": 14069,
+        "stkQty": 9,
+        "stkVal": 16871,
+        "soRatio": 1.12
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 9536,
+        "stkQty": 2,
+        "stkVal": 2803,
+        "soRatio": 0.67
+      },
+      "signal": "OPPORTUNITY"
+    },
+    {
+      "name": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 37,
+        "stVal": 101439,
+        "soQty": 30,
+        "soVal": 66136,
+        "stkQty": 7,
+        "stkVal": 35302,
+        "soRatio": 0.23
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 5532,
+        "stkQty": 67,
+        "stkVal": 195335,
+        "soRatio": 33.5
       },
       "signal": "OVERSTOCK"
     },
@@ -1221,6 +1451,48 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "ABU YASER BUSINESS CENTER",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 32188,
+        "stkQty": 570,
+        "stkVal": 1023944,
+        "soRatio": 28.5
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1253,6 +1525,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1269,6 +1550,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1301,6 +1591,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1325,28 +1624,13 @@ var IR_DATA = {
         "stkVal": 140394,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
-    },
-    {
-      "name": "AL MOJEL.CO",
-      "region": "Central",
-      "salesman": "Mohamed Atta",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 16250,
-        "stkQty": 322,
-        "stkVal": 953610,
-        "soRatio": 161.0
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 301,
-        "stkVal": 857534,
+        "stkQty": 27,
+        "stkVal": 134058,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -1367,6 +1651,15 @@ var IR_DATA = {
       "feb": {
         "stQty": -1,
         "stVal": -1363,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 36,
+        "stkVal": 120303,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 36,
@@ -1397,7 +1690,16 @@ var IR_DATA = {
         "stkVal": 430912,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "AL OTHMAN",
@@ -1413,6 +1715,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1445,6 +1756,15 @@ var IR_DATA = {
         "stkVal": 133280,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 36,
+        "stkVal": 88353,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -1461,6 +1781,48 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "AL SAHA Alalamiyah co",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 122,
+        "stVal": 403163,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 34,
+        "stVal": 126835,
+        "soQty": 136,
+        "soVal": 495143,
+        "stkQty": 150,
+        "stkVal": 439448,
+        "soRatio": 1.1
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1493,6 +1855,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1509,6 +1880,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1541,6 +1921,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1557,6 +1946,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1589,7 +1987,16 @@ var IR_DATA = {
         "stkVal": 8058,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "ANDALUSIAN WAVES",
@@ -1605,6 +2012,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1637,7 +2053,49 @@ var IR_DATA = {
         "stkVal": 55743,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "Abdul Ahad Mohammed Abed Fadel",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 5102,
+        "stkQty": 135,
+        "stkVal": 315669,
+        "soRatio": 7.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "Abdul Karim Al-Dahi Est.",
@@ -1661,7 +2119,49 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
+    },
+    {
+      "name": "Abdullah Saleh Al-Sultan and Sons",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "jan": {
+        "stQty": 49,
+        "stVal": 89135,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 49,
+        "stkVal": 89135,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 28945,
+        "stkQty": 50,
+        "stkVal": 94120,
+        "soRatio": 10.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 45,
+        "stkVal": 65175,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "name": "Ajwaa AL Yamama",
@@ -1677,6 +2177,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 28945,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1709,6 +2218,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1733,6 +2251,15 @@ var IR_DATA = {
         "stkVal": 18299,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 18299,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -1749,6 +2276,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1781,6 +2317,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1797,6 +2342,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1829,6 +2383,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1845,6 +2408,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1877,28 +2449,13 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
-    },
-    {
-      "name": "COLD WORLD",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "jan": {
-        "stQty": 248,
-        "stVal": 1290004,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 468,
-        "stkVal": 1624424,
-        "soRatio": null
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 428,
-        "stkVal": 1531276,
+        "stkQty": 20,
+        "stkVal": 116785,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -1917,6 +2474,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1949,6 +2515,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -1965,6 +2540,48 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "FUTURE OF ELECTRICAL DEVICES",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "jan": {
+        "stQty": -1,
+        "stVal": -1555,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 11904,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1555,
+        "stkQty": 12,
+        "stkVal": 22158,
+        "soRatio": 12.0
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -1997,6 +2614,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2021,7 +2647,16 @@ var IR_DATA = {
         "stkVal": 51837,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "GEBAL ASIR EST",
@@ -2037,6 +2672,48 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "Ghassan Trading Est.",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 11,
+        "stVal": 30832,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 75,
+        "stVal": 172263,
+        "soQty": 76,
+        "soVal": 178052,
+        "stkQty": 38,
+        "stkVal": 216996,
+        "soRatio": 0.5
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2069,6 +2746,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2093,7 +2779,16 @@ var IR_DATA = {
         "stkVal": 62171,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "Kaya Alawala Trading Co",
@@ -2117,6 +2812,48 @@ var IR_DATA = {
         "stkVal": 52262,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "LAITH ALARAB TRAD EST.",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "jan": {
+        "stQty": 7,
+        "stVal": 40523,
+        "soQty": 10,
+        "soVal": 57890,
+        "stkQty": 29,
+        "stkVal": 91821,
+        "soRatio": 2.9
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 13,
+        "soVal": 64521,
+        "stkQty": 26,
+        "stkVal": 85189,
+        "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 26,
+        "stkVal": 85189,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -2133,6 +2870,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2165,6 +2911,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2189,7 +2944,16 @@ var IR_DATA = {
         "stkVal": 184769,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "Mansha",
@@ -2205,6 +2969,81 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "Maqam Alreem Trading Company",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 18,
+        "soVal": 48423,
+        "stkQty": 38,
+        "stkVal": 103922,
+        "soRatio": 2.11
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "Mohammed Hassan Omar Al Amoudi Trade Est",
+      "region": "South",
+      "salesman": "Ayman Farouk",
+      "jan": {
+        "stQty": 142,
+        "stVal": 210585,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 40,
+        "stVal": 96230,
+        "soQty": 40,
+        "soVal": 96230,
+        "stkQty": 63,
+        "stkVal": 160603,
+        "soRatio": 1.58
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2237,6 +3076,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2253,6 +3101,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2285,6 +3142,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2301,6 +3167,15 @@ var IR_DATA = {
         "soRatio": 1.4
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2333,7 +3208,16 @@ var IR_DATA = {
         "stkVal": 102348,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "name": "SNOW WHITE",
@@ -2349,6 +3233,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2381,6 +3274,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2397,6 +3299,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2429,6 +3340,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2445,6 +3365,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2477,6 +3406,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2501,6 +3439,15 @@ var IR_DATA = {
         "stkVal": 93227,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 93230,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -2517,6 +3464,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2549,6 +3505,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2565,6 +3530,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2597,6 +3571,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2613,6 +3596,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2645,31 +3637,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
-    },
-    {
-      "name": "الأجهزة والتجهيزات",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "jan": {
-        "stQty": 138,
-        "stVal": 510574,
-        "soQty": 4,
-        "soVal": 186945,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": 0.0
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
-        "stVal": 5576,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 185,
-        "stkVal": 271932,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "signal": "INACTIVE"
     },
     {
       "name": "الشؤون الخاصة لخادم الحرمين الشريفين",
@@ -2693,6 +3670,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -2709,6 +3695,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2741,6 +3736,48 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "name": "شركه نجوم العمران للمقاولات",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 14,
+        "stVal": 41210,
+        "soQty": 75,
+        "soVal": 138965,
+        "stkQty": 475,
+        "stkVal": 832440,
+        "soRatio": 6.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     }
   ],
@@ -2764,6 +3801,15 @@ var IR_DATA = {
         "stkQty": 1391,
         "stkVal": 9889604,
         "soRatio": 9.09
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 164,
+        "soVal": 1457790,
+        "stkQty": 1285,
+        "stkVal": 9352492,
+        "soRatio": 7.84
       }
     },
     {
@@ -2785,6 +3831,15 @@ var IR_DATA = {
         "stkQty": 5429,
         "stkVal": 13066157,
         "soRatio": 5.16
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 765,
+        "soVal": 1838311,
+        "stkQty": 5349,
+        "stkVal": 12944761,
+        "soRatio": 6.99
       }
     },
     {
@@ -2806,6 +3861,15 @@ var IR_DATA = {
         "stkQty": 9184,
         "stkVal": 11063922,
         "soRatio": 6.02
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2583,
+        "soVal": 4291352,
+        "stkQty": 7265,
+        "stkVal": 8110849,
+        "soRatio": 2.81
       }
     },
     {
@@ -2827,6 +3891,15 @@ var IR_DATA = {
         "stkQty": 2213,
         "stkVal": 12737343,
         "soRatio": 4.34
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 403,
+        "soVal": 2306313,
+        "stkQty": 1820,
+        "stkVal": 10466194,
+        "soRatio": 4.52
       }
     },
     {
@@ -2848,6 +3921,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 24490,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 23857,
+        "stkQty": 20,
+        "stkVal": 30504,
+        "soRatio": 1.33
       }
     }
   ],
@@ -2872,6 +3954,15 @@ var IR_DATA = {
         "stkQty": 1140,
         "stkVal": 8116199,
         "soRatio": 8.51
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 139,
+        "soVal": 1005861,
+        "stkQty": 1193,
+        "stkVal": 8549770,
+        "soRatio": 8.58
       }
     },
     {
@@ -2894,6 +3985,15 @@ var IR_DATA = {
         "stkQty": 229,
         "stkVal": 1517739,
         "soRatio": 19.08
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 112848,
+        "stkQty": 82,
+        "stkVal": 550561,
+        "soRatio": 5.12
       }
     },
     {
@@ -2916,6 +4016,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 196013,
         "soRatio": 4.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 9801,
+        "stkQty": 5,
+        "stkVal": 46361,
+        "soRatio": 5.0
       }
     },
     {
@@ -2938,6 +4047,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 59652,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 329280,
+        "stkQty": 5,
+        "stkVal": 205800,
+        "soRatio": 0.62
       }
     },
     {
@@ -2953,6 +4071,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -2982,6 +4109,15 @@ var IR_DATA = {
         "stkQty": 114,
         "stkVal": 304166,
         "soRatio": 11.4
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2570,
+        "stkQty": 119,
+        "stkVal": 317249,
+        "soRatio": 119.0
       }
     },
     {
@@ -3004,6 +4140,15 @@ var IR_DATA = {
         "stkQty": 81,
         "stkVal": 161556,
         "soRatio": 1.45
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 27518,
+        "stkQty": 83,
+        "stkVal": 165145,
+        "soRatio": 5.93
       }
     },
     {
@@ -3026,6 +4171,15 @@ var IR_DATA = {
         "stkQty": 2755,
         "stkVal": 6644300,
         "soRatio": 5.68
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 293,
+        "soVal": 711063,
+        "stkQty": 2675,
+        "stkVal": 6453220,
+        "soRatio": 9.13
       }
     },
     {
@@ -3048,6 +4202,15 @@ var IR_DATA = {
         "stkQty": 2309,
         "stkVal": 5159865,
         "soRatio": 5.21
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 423,
+        "soVal": 938760,
+        "stkQty": 2297,
+        "stkVal": 5176413,
+        "soRatio": 5.43
       }
     },
     {
@@ -3070,6 +4233,15 @@ var IR_DATA = {
         "stkQty": 165,
         "stkVal": 796270,
         "soRatio": 2.95
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 34,
+        "soVal": 158400,
+        "stkQty": 172,
+        "stkVal": 832733,
+        "soRatio": 5.06
       }
     },
     {
@@ -3092,6 +4264,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 0,
         "soRatio": 2.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -3114,6 +4295,15 @@ var IR_DATA = {
         "stkQty": 2214,
         "stkVal": 0,
         "soRatio": 6.45
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 256,
+        "soVal": 0,
+        "stkQty": 2249,
+        "stkVal": 0,
+        "soRatio": 8.79
       }
     },
     {
@@ -3136,6 +4326,15 @@ var IR_DATA = {
         "stkQty": 1915,
         "stkVal": 3654286,
         "soRatio": 2.93
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1871,
+        "soVal": 3591195,
+        "stkQty": 1247,
+        "stkVal": 2414045,
+        "soRatio": 0.67
       }
     },
     {
@@ -3158,6 +4357,15 @@ var IR_DATA = {
         "stkQty": 599,
         "stkVal": 1064045,
         "soRatio": 8.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 88,
+        "soVal": 156367,
+        "stkQty": 868,
+        "stkVal": 1599347,
+        "soRatio": 9.86
       }
     },
     {
@@ -3180,6 +4388,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 46138,
+        "stkQty": 20,
+        "stkVal": 34374,
+        "soRatio": 1.18
       }
     },
     {
@@ -3202,6 +4419,15 @@ var IR_DATA = {
         "stkQty": 4456,
         "stkVal": 6345592,
         "soRatio": 9.65
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 351,
+        "soVal": 497652,
+        "stkQty": 2881,
+        "stkVal": 4063083,
+        "soRatio": 8.21
       }
     },
     {
@@ -3224,6 +4450,15 @@ var IR_DATA = {
         "stkQty": 2120,
         "stkVal": 12188158,
         "soRatio": 4.21
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 400,
+        "soVal": 2288360,
+        "stkQty": 1806,
+        "stkVal": 10382319,
+        "soRatio": 4.51
       }
     },
     {
@@ -3246,6 +4481,15 @@ var IR_DATA = {
         "stkQty": 93,
         "stkVal": 549185,
         "soRatio": 13.29
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 17953,
+        "stkQty": 14,
+        "stkVal": 83875,
+        "soRatio": 4.67
       }
     },
     {
@@ -3268,6 +4512,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 24490,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 23857,
+        "stkQty": 20,
+        "stkVal": 30504,
+        "soRatio": 1.33
       }
     },
     {
@@ -3290,54 +4543,49 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     }
   ],
   "topSkus": [
     {
-      "sku": "APNQ55GT3MA.ANWGIB",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "jan": {
-        "stQty": 237,
-        "stVal": 1360893,
-        "soQty": 510,
-        "soVal": 2932965,
-        "stkQty": 2159,
-        "stkVal": 12356401,
-        "soRatio": 4.23
-      },
-      "feb": {
-        "stQty": 672,
-        "stVal": 3842583,
-        "soQty": 462,
-        "soVal": 2646393,
-        "stkQty": 1967,
-        "stkVal": 11281213,
-        "soRatio": 4.26
-      }
-    },
-    {
-      "sku": "LO182C0.NK0",
+      "sku": "LB182C0.NK0",
       "category": "ON/OFF",
-      "className": "On/Off_LO",
+      "className": "On/Off_LB",
       "jan": {
-        "stQty": 1077,
-        "stVal": 1467951,
-        "soQty": 135,
-        "soVal": 184005,
-        "stkQty": 1435,
-        "stkVal": 1955905,
-        "soRatio": 10.63
+        "stQty": 280,
+        "stVal": 503781,
+        "soQty": 66,
+        "soVal": 118748,
+        "stkQty": 1280,
+        "stkVal": 2302998,
+        "soRatio": 19.39
       },
       "feb": {
-        "stQty": 156,
-        "stVal": 212628,
-        "soQty": 309,
-        "soVal": 421167,
-        "stkQty": 3052,
-        "stkVal": 4159876,
-        "soRatio": 9.88
+        "stQty": 40,
+        "stVal": 71969,
+        "soQty": 277,
+        "soVal": 498383,
+        "stkQty": 1303,
+        "stkVal": 2344380,
+        "soRatio": 4.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1247,
+        "soVal": 2243624,
+        "stkQty": 699,
+        "stkVal": 1257653,
+        "soRatio": 0.56
       }
     },
     {
@@ -3361,29 +4609,79 @@ var IR_DATA = {
         "stkQty": 426,
         "stkVal": 923161,
         "soRatio": 1.4
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 538,
+        "soVal": 1165869,
+        "stkQty": 200,
+        "stkVal": 433409,
+        "soRatio": 0.37
       }
     },
     {
-      "sku": "LB182C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LB",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "category": "PAC",
+      "className": "PAC - Islamic",
       "jan": {
-        "stQty": 280,
-        "stVal": 503781,
-        "soQty": 66,
-        "soVal": 118748,
-        "stkQty": 1280,
-        "stkVal": 2302998,
-        "soRatio": 19.39
+        "stQty": 237,
+        "stVal": 1360893,
+        "soQty": 510,
+        "soVal": 2932965,
+        "stkQty": 2159,
+        "stkVal": 12356401,
+        "soRatio": 4.23
       },
       "feb": {
-        "stQty": 40,
-        "stVal": 71969,
-        "soQty": 277,
-        "soVal": 498383,
-        "stkQty": 1303,
-        "stkVal": 2344380,
-        "soRatio": 4.7
+        "stQty": 672,
+        "stVal": 3842583,
+        "soQty": 462,
+        "soVal": 2646393,
+        "stkQty": 1967,
+        "stkVal": 11281213,
+        "soRatio": 4.26
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 390,
+        "soVal": 2228910,
+        "stkQty": 1621,
+        "stkVal": 9284819,
+        "soRatio": 4.16
+      }
+    },
+    {
+      "sku": "LO182C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LO",
+      "jan": {
+        "stQty": 1077,
+        "stVal": 1467951,
+        "soQty": 135,
+        "soVal": 184005,
+        "stkQty": 1435,
+        "stkVal": 1955905,
+        "soRatio": 10.63
+      },
+      "feb": {
+        "stQty": 156,
+        "stVal": 212628,
+        "soQty": 309,
+        "soVal": 421167,
+        "stkQty": 3052,
+        "stkVal": 4159876,
+        "soRatio": 9.88
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 244,
+        "soVal": 332572,
+        "stkQty": 2191,
+        "stkVal": 2986333,
+        "soRatio": 8.98
       }
     },
     {
@@ -3407,52 +4705,15 @@ var IR_DATA = {
         "stkQty": 1137,
         "stkVal": 2318887,
         "soRatio": 5.08
-      }
-    },
-    {
-      "sku": "LA242C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "jan": {
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 121,
-        "soVal": 0,
-        "stkQty": 1124,
-        "stkVal": 0,
-        "soRatio": 9.29
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 184,
-        "soVal": 0,
-        "stkQty": 725,
-        "stkVal": 0,
-        "soRatio": 3.94
-      }
-    },
-    {
-      "sku": "ND182C0.NK0",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "jan": {
-        "stQty": 125,
-        "stVal": 276310,
-        "soQty": 138,
-        "soVal": 305046,
-        "stkQty": 1357,
-        "stkVal": 2999619,
-        "soRatio": 9.83
-      },
-      "feb": {
-        "stQty": 207,
-        "stVal": 457569,
-        "soQty": 156,
-        "soVal": 344835,
-        "stkQty": 1234,
-        "stkVal": 2727730,
-        "soRatio": 7.91
+        "soQty": 220,
+        "soVal": 448685,
+        "stkQty": 1004,
+        "stkVal": 2047636,
+        "soRatio": 4.56
       }
     },
     {
@@ -3476,29 +4737,79 @@ var IR_DATA = {
         "stkQty": 847,
         "stkVal": 2074450,
         "soRatio": 5.57
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 141,
+        "soVal": 345334,
+        "stkQty": 851,
+        "stkVal": 2084247,
+        "soRatio": 6.04
       }
     },
     {
-      "sku": "ND182H0.NK0",
+      "sku": "LA242C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 121,
+        "soVal": 0,
+        "stkQty": 1124,
+        "stkVal": 0,
+        "soRatio": 9.29
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 184,
+        "soVal": 0,
+        "stkQty": 725,
+        "stkVal": 0,
+        "soRatio": 3.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 129,
+        "soVal": 0,
+        "stkQty": 862,
+        "stkVal": 0,
+        "soRatio": 6.68
+      }
+    },
+    {
+      "sku": "ND182C0.NK0",
       "category": "Inverter",
       "className": "New Fresh",
       "jan": {
-        "stQty": 123,
-        "stVal": 287291,
-        "soQty": 59,
-        "soVal": 137806,
-        "stkQty": 221,
-        "stkVal": 516189,
-        "soRatio": 3.75
+        "stQty": 125,
+        "stVal": 276310,
+        "soQty": 138,
+        "soVal": 305046,
+        "stkQty": 1357,
+        "stkVal": 2999619,
+        "soRatio": 9.83
       },
       "feb": {
-        "stQty": 137,
-        "stVal": 319990,
-        "soQty": 144,
-        "soVal": 336340,
-        "stkQty": 319,
-        "stkVal": 745087,
-        "soRatio": 2.22
+        "stQty": 207,
+        "stVal": 457569,
+        "soQty": 156,
+        "soVal": 344835,
+        "stkQty": 1234,
+        "stkVal": 2727730,
+        "soRatio": 7.91
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 129,
+        "soVal": 285152,
+        "stkQty": 1306,
+        "stkVal": 2886885,
+        "soRatio": 10.12
       }
     },
     {
@@ -3522,29 +4833,15 @@ var IR_DATA = {
         "stkQty": 929,
         "stkVal": 2416329,
         "soRatio": 6.54
-      }
-    },
-    {
-      "sku": "LO242C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LO",
-      "jan": {
-        "stQty": 39,
-        "stVal": 60645,
-        "soQty": 130,
-        "soVal": 202150,
-        "stkQty": 532,
-        "stkVal": 827260,
-        "soRatio": 4.09
       },
-      "feb": {
-        "stQty": -30,
-        "stVal": -46650,
-        "soQty": 122,
-        "soVal": 189710,
-        "stkQty": 885,
-        "stkVal": 1376175,
-        "soRatio": 7.25
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 108,
+        "soVal": 280908,
+        "stkQty": 986,
+        "stkVal": 2564586,
+        "soRatio": 9.13
       }
     },
     {
@@ -3568,6 +4865,15 @@ var IR_DATA = {
         "stkQty": 900,
         "stkVal": 0,
         "soRatio": 13.04
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 88,
+        "soVal": 0,
+        "stkQty": 864,
+        "stkVal": 0,
+        "soRatio": 9.82
       }
     },
     {
@@ -3591,167 +4897,47 @@ var IR_DATA = {
         "stkQty": 423,
         "stkVal": 3436960,
         "soRatio": 7.17
-      }
-    },
-    {
-      "sku": "NF122C0.NJ1",
-      "category": "Inverter",
-      "className": "Fresh",
-      "jan": {
-        "stQty": 30,
-        "stVal": 58062,
-        "soQty": 29,
-        "soVal": 56126,
-        "stkQty": 60,
-        "stkVal": 116123,
-        "soRatio": 2.07
       },
-      "feb": {
-        "stQty": 50,
-        "stVal": 96770,
-        "soQty": 52,
-        "soVal": 100640,
-        "stkQty": 47,
-        "stkVal": 90963,
-        "soRatio": 0.9
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 69,
+        "soVal": 560639,
+        "stkQty": 455,
+        "stkVal": 3696966,
+        "soRatio": 6.59
       }
     },
     {
-      "sku": "NT382C2.NR2",
-      "category": "Inverter",
-      "className": "Titan",
-      "jan": {
-        "stQty": 6,
-        "stVal": 27535,
-        "soQty": 15,
-        "soVal": 68838,
-        "stkQty": 97,
-        "stkVal": 445154,
-        "soRatio": 6.47
-      },
-      "feb": {
-        "stQty": 77,
-        "stVal": 353370,
-        "soQty": 52,
-        "soVal": 238639,
-        "stkQty": 66,
-        "stkVal": 302888,
-        "soRatio": 1.27
-      }
-    },
-    {
-      "sku": "LB182H0.NK0",
+      "sku": "LO242C0.NK0",
       "category": "ON/OFF",
-      "className": "On/Off_LB",
+      "className": "On/Off_LO",
       "jan": {
+        "stQty": 39,
+        "stVal": 60645,
+        "soQty": 130,
+        "soVal": 202150,
+        "stkQty": 532,
+        "stkVal": 827260,
+        "soRatio": 4.09
+      },
+      "feb": {
+        "stQty": -30,
+        "stVal": -46650,
+        "soQty": 122,
+        "soVal": 189710,
+        "stkQty": 885,
+        "stkVal": 1376175,
+        "soRatio": 7.25
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 7,
-        "soVal": 13471,
-        "stkQty": 152,
-        "stkVal": 292514,
-        "soRatio": 21.71
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 45,
-        "soVal": 86600,
-        "stkQty": 106,
-        "stkVal": 203990,
-        "soRatio": 2.36
-      }
-    },
-    {
-      "sku": "ND242H0.NK0",
-      "category": "Inverter",
-      "className": "New Fresh",
-      "jan": {
-        "stQty": 74,
-        "stVal": 204694,
-        "soQty": 79,
-        "soVal": 218524,
-        "stkQty": 281,
-        "stkVal": 777283,
-        "soRatio": 3.56
-      },
-      "feb": {
-        "stQty": 85,
-        "stVal": 235121,
-        "soQty": 43,
-        "soVal": 118944,
-        "stkQty": 273,
-        "stkVal": 755154,
-        "soRatio": 6.35
-      }
-    },
-    {
-      "sku": "NS182H2.NK2",
-      "category": "Inverter",
-      "className": "Smart",
-      "jan": {
-        "stQty": 14,
-        "stVal": 30224,
-        "soQty": 36,
-        "soVal": 77718,
-        "stkQty": 166,
-        "stkVal": 358365,
-        "soRatio": 4.61
-      },
-      "feb": {
-        "stQty": 149,
-        "stVal": 321665,
-        "soQty": 42,
-        "soVal": 90671,
-        "stkQty": 182,
-        "stkVal": 392906,
-        "soRatio": 4.33
-      }
-    },
-    {
-      "sku": "APNW55GT3MA.ANWGIB",
-      "category": "PAC",
-      "className": "PAC - Islamic",
-      "jan": {
-        "stQty": 128,
-        "stVal": 758470,
-        "soQty": 267,
-        "soVal": 1597305,
-        "stkQty": 348,
-        "stkVal": 2070570,
-        "soRatio": 1.3
-      },
-      "feb": {
-        "stQty": 188,
-        "stVal": 1119520,
-        "soQty": 41,
-        "soVal": 242515,
-        "stkQty": 153,
-        "stkVal": 906945,
-        "soRatio": 3.73
-      }
-    },
-    {
-      "sku": "LA242H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "jan": {
-        "stQty": 2,
-        "stVal": 0,
-        "soQty": 29,
-        "soVal": 0,
-        "stkQty": 169,
-        "stkVal": 0,
-        "soRatio": 5.83
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 37,
-        "soVal": 0,
-        "stkQty": 179,
-        "stkVal": 0,
-        "soRatio": 4.84
+        "soQty": 68,
+        "soVal": 105740,
+        "stkQty": 421,
+        "stkVal": 654655,
+        "soRatio": 6.19
       }
     },
     {
@@ -3775,52 +4961,15 @@ var IR_DATA = {
         "stkQty": 312,
         "stkVal": 551833,
         "soRatio": 9.18
-      }
-    },
-    {
-      "sku": "LA182H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "jan": {
-        "stQty": 5,
-        "stVal": 0,
-        "soQty": 55,
-        "soVal": 0,
-        "stkQty": 283,
-        "stkVal": 0,
-        "soRatio": 5.15
       },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 32,
-        "soVal": 0,
-        "stkQty": 257,
-        "stkVal": 0,
-        "soRatio": 8.03
-      }
-    },
-    {
-      "sku": "LC182C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "jan": {
-        "stQty": 11,
-        "stVal": 16383,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 397,
-        "stVal": 591271,
-        "soQty": 30,
-        "soVal": 44680,
-        "stkQty": 196,
-        "stkVal": 291912,
-        "soRatio": 6.53
+        "soQty": 49,
+        "soVal": 86666,
+        "stkQty": 313,
+        "stkVal": 553602,
+        "soRatio": 6.39
       }
     },
     {
@@ -3844,29 +4993,79 @@ var IR_DATA = {
         "stkQty": 80,
         "stkVal": 182755,
         "soRatio": 2.96
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 45,
+        "soVal": 102800,
+        "stkQty": 148,
+        "stkVal": 338096,
+        "soRatio": 3.29
       }
     },
     {
-      "sku": "NS242H3.NK2",
+      "sku": "LB182H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 13471,
+        "stkQty": 152,
+        "stkVal": 292514,
+        "soRatio": 21.71
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 45,
+        "soVal": 86600,
+        "stkQty": 106,
+        "stkVal": 203990,
+        "soRatio": 2.36
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 41,
+        "soVal": 78902,
+        "stkQty": 200,
+        "stkVal": 384887,
+        "soRatio": 4.88
+      }
+    },
+    {
+      "sku": "NS182H2.NK2",
       "category": "Inverter",
       "className": "Smart",
       "jan": {
-        "stQty": 10,
-        "stVal": 26127,
-        "soQty": 93,
-        "soVal": 242985,
-        "stkQty": 145,
-        "stkVal": 378847,
-        "soRatio": 1.56
+        "stQty": 14,
+        "stVal": 30224,
+        "soQty": 36,
+        "soVal": 77718,
+        "stkQty": 166,
+        "stkVal": 358365,
+        "soRatio": 4.61
       },
       "feb": {
-        "stQty": 177,
-        "stVal": 462455,
-        "soQty": 25,
-        "soVal": 65318,
-        "stkQty": 143,
-        "stkVal": 373622,
-        "soRatio": 5.72
+        "stQty": 149,
+        "stVal": 321665,
+        "soQty": 42,
+        "soVal": 90671,
+        "stkQty": 182,
+        "stkVal": 392906,
+        "soRatio": 4.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 38,
+        "soVal": 82035,
+        "stkQty": 243,
+        "stkVal": 524595,
+        "soRatio": 6.39
       }
     },
     {
@@ -3890,443 +5089,175 @@ var IR_DATA = {
         "stkQty": 386,
         "stkVal": 577456,
         "soRatio": 20.32
-      }
-    },
-    {
-      "sku": "LA302C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "jan": {
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 8,
-        "soVal": 0,
-        "stkQty": 217,
-        "stkVal": 0,
-        "soRatio": 27.12
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 17,
-        "soVal": 0,
-        "stkQty": 105,
-        "stkVal": 0,
-        "soRatio": 6.18
+        "soQty": 35,
+        "soVal": 52360,
+        "stkQty": 190,
+        "stkVal": 284240,
+        "soRatio": 5.43
       }
     },
     {
-      "sku": "ABNQ40GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 62,
-        "stVal": 376045,
-        "soQty": 23,
-        "soVal": 139501,
-        "stkQty": 122,
-        "stkVal": 739960,
-        "soRatio": 5.3
-      },
-      "feb": {
-        "stQty": 28,
-        "stVal": 169827,
-        "soQty": 12,
-        "soVal": 72783,
-        "stkQty": 62,
-        "stkVal": 376045,
-        "soRatio": 5.17
-      }
-    },
-    {
-      "sku": "LO242H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LO",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 3490,
-        "stkQty": 86,
-        "stkVal": 150070,
-        "soRatio": 43.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 12,
-        "soVal": 20940,
-        "stkQty": 133,
-        "stkVal": 232085,
-        "soRatio": 11.08
-      }
-    },
-    {
-      "sku": "ABNW55GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 8125,
-        "stkQty": 60,
-        "stkVal": 487512,
-        "soRatio": 60.0
-      },
-      "feb": {
-        "stQty": 23,
-        "stVal": 186880,
-        "soQty": 11,
-        "soVal": 89377,
-        "stkQty": 76,
-        "stkVal": 617515,
-        "soRatio": 6.91
-      }
-    },
-    {
-      "sku": "ABNW40GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 3,
-        "stVal": 19475,
-        "soQty": 10,
-        "soVal": 64917,
-        "stkQty": 64,
-        "stkVal": 415470,
-        "soRatio": 6.4
-      },
-      "feb": {
-        "stQty": 24,
-        "stVal": 155801,
-        "soQty": 10,
-        "soVal": 64917,
-        "stkQty": 48,
-        "stkVal": 311602,
-        "soRatio": 4.8
-      }
-    },
-    {
-      "sku": "ABNQ28GM1TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 1,
-        "stVal": 4200,
-        "soQty": 8,
-        "soVal": 33596,
-        "stkQty": 101,
-        "stkVal": 424154,
-        "soRatio": 12.62
-      },
-      "feb": {
-        "stQty": 15,
-        "stVal": 62993,
-        "soQty": 8,
-        "soVal": 33596,
-        "stkQty": 95,
-        "stkVal": 398957,
-        "soRatio": 11.88
-      }
-    },
-    {
-      "sku": "ABNQ55GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 32,
-        "stVal": 243395,
-        "soQty": 85,
-        "soVal": 646517,
-        "stkQty": 123,
-        "stkVal": 935548,
-        "soRatio": 1.45
-      },
-      "feb": {
-        "stQty": 20,
-        "stVal": 152122,
-        "soQty": 8,
-        "soVal": 60849,
-        "stkQty": 105,
-        "stkVal": 798638,
-        "soRatio": 13.12
-      }
-    },
-    {
-      "sku": "ABNW60LM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 9337,
-        "stkQty": 37,
-        "stkVal": 345485,
-        "soRatio": 37.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 8,
-        "soVal": 74700,
-        "stkQty": 38,
-        "stkVal": 354823,
-        "soRatio": 4.75
-      }
-    },
-    {
-      "sku": "ABNW28GM1TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 1,
-        "stVal": 4567,
-        "soQty": 7,
-        "soVal": 31971,
-        "stkQty": 48,
-        "stkVal": 219230,
-        "soRatio": 6.86
-      },
-      "feb": {
-        "stQty": 9,
-        "stVal": 41106,
-        "soQty": 6,
-        "soVal": 27404,
-        "stkQty": 44,
-        "stkVal": 200961,
-        "soRatio": 7.33
-      }
-    },
-    {
-      "sku": "AM242C0.NK2",
+      "sku": "ND242H0.NK0",
       "category": "Inverter",
-      "className": "Art Cool",
+      "className": "New Fresh",
+      "jan": {
+        "stQty": 74,
+        "stVal": 204694,
+        "soQty": 79,
+        "soVal": 218524,
+        "stkQty": 281,
+        "stkVal": 777283,
+        "soRatio": 3.56
+      },
+      "feb": {
+        "stQty": 85,
+        "stVal": 235121,
+        "soQty": 43,
+        "soVal": 118944,
+        "stkQty": 273,
+        "stkVal": 755154,
+        "soRatio": 6.35
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 33,
+        "soVal": 91282,
+        "stkQty": 249,
+        "stkVal": 688766,
+        "soRatio": 7.55
+      }
+    },
+    {
+      "sku": "LC182C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
       "jan": {
         "stQty": 11,
-        "stVal": 30832,
-        "soQty": 2,
-        "soVal": 5606,
-        "stkQty": 45,
-        "stkVal": 126131,
-        "soRatio": 22.5
-      },
-      "feb": {
-        "stQty": 5,
-        "stVal": 14015,
-        "soQty": 6,
-        "soVal": 16817,
-        "stkQty": 48,
-        "stkVal": 134540,
-        "soRatio": 8.0
-      }
-    },
-    {
-      "sku": "ATNW28GPLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 5898,
-        "stkQty": 10,
-        "stkVal": 58982,
-        "soRatio": 10.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 6,
-        "soVal": 35389,
-        "stkQty": 8,
-        "stkVal": 47186,
-        "soRatio": 1.33
-      }
-    },
-    {
-      "sku": "ATNW40GYLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST - Round",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
+        "stVal": 16383,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 3,
-        "stkVal": 26760,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       },
       "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 5,
-        "soVal": 44600,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": 0.0
-      }
-    },
-    {
-      "sku": "ABNQ34GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 5,
-        "stVal": 26635,
-        "soQty": 3,
-        "soVal": 15981,
-        "stkQty": 74,
-        "stkVal": 394197,
-        "soRatio": 24.67
+        "stQty": 397,
+        "stVal": 591271,
+        "soQty": 30,
+        "soVal": 44680,
+        "stkQty": 196,
+        "stkVal": 291912,
+        "soRatio": 6.53
       },
-      "feb": {
-        "stQty": 6,
-        "stVal": 31962,
-        "soQty": 4,
-        "soVal": 21308,
-        "stkQty": 69,
-        "stkVal": 367562,
-        "soRatio": 17.25
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 29,
+        "soVal": 43191,
+        "stkQty": 345,
+        "stkVal": 513825,
+        "soRatio": 11.9
       }
     },
     {
-      "sku": "ABNQ60LM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 61,
-        "soVal": 534682,
-        "stkQty": 62,
-        "stkVal": 543447,
-        "soRatio": 1.02
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 4,
-        "soVal": 35061,
-        "stkQty": 19,
-        "stkVal": 166540,
-        "soRatio": 4.75
-      }
-    },
-    {
-      "sku": "AM182C0.NK2",
-      "category": "Inverter",
-      "className": "Art Cool",
-      "jan": {
-        "stQty": 1,
-        "stVal": 2570,
-        "soQty": 4,
-        "soVal": 10280,
-        "stkQty": 58,
-        "stkVal": 149065,
-        "soRatio": 14.5
-      },
-      "feb": {
-        "stQty": 7,
-        "stVal": 17991,
-        "soQty": 4,
-        "soVal": 10280,
-        "stkQty": 66,
-        "stkVal": 169626,
-        "soRatio": 16.5
-      }
-    },
-    {
-      "sku": "APNW55GT3EA.ANWGIBR",
-      "category": "PAC",
-      "className": "PAC - Standard",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 6173,
-        "stkQty": 4,
-        "stkVal": 24692,
-        "soRatio": 4.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 4,
-        "soVal": 24692,
-        "stkQty": 5,
-        "stkVal": 30865,
-        "soRatio": 1.25
-      }
-    },
-    {
-      "sku": "LA302H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LA",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 0,
-        "stkQty": 30,
-        "stkVal": 0,
-        "soRatio": 30.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 4,
-        "soVal": 0,
-        "stkQty": 48,
-        "stkVal": 0,
-        "soRatio": 12.0
-      }
-    },
-    {
-      "sku": "NF122H0.NJ1",
-      "category": "Inverter",
-      "className": "Fresh",
-      "jan": {
-        "stQty": 3,
-        "stVal": 6229,
-        "soQty": 28,
-        "soVal": 58135,
-        "stkQty": 44,
-        "stkVal": 91355,
-        "soRatio": 1.57
-      },
-      "feb": {
-        "stQty": 24,
-        "stVal": 49830,
-        "soQty": 4,
-        "soVal": 8305,
-        "stkQty": 34,
-        "stkVal": 70593,
-        "soRatio": 8.5
-      }
-    },
-    {
-      "sku": "NT382H2.NR2",
+      "sku": "NT382C2.NR2",
       "category": "Inverter",
       "className": "Titan",
       "jan": {
-        "stQty": 26,
-        "stVal": 129575,
-        "soQty": 16,
-        "soVal": 79738,
-        "stkQty": 81,
-        "stkVal": 403676,
-        "soRatio": 5.06
+        "stQty": 6,
+        "stVal": 27535,
+        "soQty": 15,
+        "soVal": 68838,
+        "stkQty": 97,
+        "stkVal": 445154,
+        "soRatio": 6.47
       },
       "feb": {
+        "stQty": 77,
+        "stVal": 353370,
+        "soQty": 52,
+        "soVal": 238639,
+        "stkQty": 66,
+        "stkVal": 302888,
+        "soRatio": 1.27
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 28,
+        "soVal": 128498,
+        "stkQty": 62,
+        "stkVal": 284531,
+        "soRatio": 2.21
+      }
+    },
+    {
+      "sku": "NS242H3.NK2",
+      "category": "Inverter",
+      "className": "Smart",
+      "jan": {
         "stQty": 10,
-        "stVal": 49837,
-        "soQty": 4,
-        "soVal": 19935,
-        "stkQty": 99,
-        "stkVal": 493382,
-        "soRatio": 24.75
+        "stVal": 26127,
+        "soQty": 93,
+        "soVal": 242985,
+        "stkQty": 145,
+        "stkVal": 378847,
+        "soRatio": 1.56
+      },
+      "feb": {
+        "stQty": 177,
+        "stVal": 462455,
+        "soQty": 25,
+        "soVal": 65318,
+        "stkQty": 143,
+        "stkVal": 373622,
+        "soRatio": 5.72
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 24,
+        "soVal": 62706,
+        "stkQty": 199,
+        "stkVal": 519935,
+        "soRatio": 8.29
+      }
+    },
+    {
+      "sku": "ND182H0.NK0",
+      "category": "Inverter",
+      "className": "New Fresh",
+      "jan": {
+        "stQty": 123,
+        "stVal": 287291,
+        "soQty": 59,
+        "soVal": 137806,
+        "stkQty": 221,
+        "stkVal": 516189,
+        "soRatio": 3.75
+      },
+      "feb": {
+        "stQty": 137,
+        "stVal": 319990,
+        "soQty": 144,
+        "soVal": 336340,
+        "stkQty": 319,
+        "stkVal": 745087,
+        "soRatio": 2.22
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 23,
+        "soVal": 53721,
+        "stkQty": 134,
+        "stkVal": 312983,
+        "soRatio": 5.83
       }
     },
     {
@@ -4350,282 +5281,15 @@ var IR_DATA = {
         "stkQty": 94,
         "stkVal": 833412,
         "soRatio": 31.33
-      }
-    },
-    {
-      "sku": "APNQ55GT3EA.ANWGIBR",
-      "category": "PAC",
-      "className": "PAC - Standard",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 91,
-        "stkVal": 535990,
-        "soRatio": null
       },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 3,
-        "soVal": 17670,
-        "stkQty": 88,
-        "stkVal": 518320,
-        "soRatio": 29.33
-      }
-    },
-    {
-      "sku": "ATNQ28GPLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 5245,
-        "stkQty": 45,
-        "stkVal": 236023,
-        "soRatio": 45.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 10490,
-        "stkQty": 35,
-        "stkVal": 183574,
-        "soRatio": 17.5
-      }
-    },
-    {
-      "sku": "ATNQ40GNLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 4,
-        "stkVal": 30776,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 15388,
-        "stkQty": 41,
-        "stkVal": 315453,
-        "soRatio": 20.5
-      }
-    },
-    {
-      "sku": "LT302C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "jan": {
-        "stQty": 1,
-        "stVal": 3179,
-        "soQty": 1,
-        "soVal": 3179,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": 0.0
-      },
-      "feb": {
-        "stQty": 117,
-        "stVal": 371907,
-        "soQty": 2,
-        "soVal": 6357,
-        "stkQty": 31,
-        "stkVal": 98540,
-        "soRatio": 15.5
-      }
-    },
-    {
-      "sku": "NW242H0.NK0",
-      "category": "Inverter",
-      "className": "WIN",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 0,
-        "stkQty": 1,
-        "stkVal": 0,
-        "soRatio": 0.5
-      }
-    },
-    {
-      "sku": "ABNW34GM3TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 5,
-        "stVal": 28684,
-        "soQty": 5,
-        "soVal": 28684,
-        "stkQty": 3,
-        "stkVal": 17210,
-        "soRatio": 0.6
-      },
-      "feb": {
-        "stQty": 4,
-        "stVal": 22947,
-        "soQty": 1,
-        "soVal": 5737,
-        "stkQty": 3,
-        "stkVal": 17210,
-        "soRatio": 3.0
-      }
-    },
-    {
-      "sku": "AK-Q130LC01.ADGGIB",
-      "category": "CAC",
-      "className": "PKG",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 1,
-        "stVal": 23174,
-        "soQty": 1,
-        "soVal": 23174,
-        "stkQty": 1,
-        "stkVal": 23174,
-        "soRatio": 1.0
-      }
-    },
-    {
-      "sku": "AK-Q270LC01.ADGGIB",
-      "category": "CAC",
-      "className": "PKG",
-      "jan": {
-        "stQty": 1,
-        "stVal": 36478,
-        "soQty": 1,
-        "soVal": 36478,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": 0.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 36478,
-        "stkQty": 1,
-        "stkVal": 36478,
-        "soRatio": 1.0
-      }
-    },
-    {
-      "sku": "ATNQ21GPLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 4930,
-        "stkQty": 38,
-        "stkVal": 187354,
-        "soRatio": 38.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 4930,
-        "stkQty": 32,
-        "stkVal": 157772,
-        "soRatio": 32.0
-      }
-    },
-    {
-      "sku": "ATNQ55GMLTA.ANWGIB",
-      "category": "CAC",
-      "className": "CST",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 2,
-        "soVal": 17821,
-        "stkQty": 2,
-        "stkVal": 17821,
-        "soRatio": 1.0
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 1,
-        "soVal": 8911,
-        "stkQty": 12,
-        "stkVal": 106929,
-        "soRatio": 12.0
-      }
-    },
-    {
-      "sku": "LC242H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 143,
-        "stVal": 271576,
-        "soQty": 1,
-        "soVal": 1899,
-        "stkQty": 25,
-        "stkVal": 47478,
-        "soRatio": 25.0
-      }
-    },
-    {
-      "sku": "ABNQ21GM1TA.ANWGIB",
-      "category": "CAC",
-      "className": "CCD",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 5,
-        "soVal": 18344,
-        "stkQty": 58,
-        "stkVal": 212795,
-        "soRatio": 11.6
-      },
-      "feb": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 61,
-        "stkVal": 223801,
-        "soRatio": null
+        "soQty": 18,
+        "soVal": 159589,
+        "stkQty": 101,
+        "stkVal": 895474,
+        "soRatio": 5.61
       }
     },
     {
@@ -4649,6 +5313,1167 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 12173,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 68979,
+        "stkQty": 3,
+        "stkVal": 12173,
+        "soRatio": 0.18
+      }
+    },
+    {
+      "sku": "LA242H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "jan": {
+        "stQty": 2,
+        "stVal": 0,
+        "soQty": 29,
+        "soVal": 0,
+        "stkQty": 169,
+        "stkVal": 0,
+        "soRatio": 5.83
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 37,
+        "soVal": 0,
+        "stkQty": 179,
+        "stkVal": 0,
+        "soRatio": 4.84
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 0,
+        "stkQty": 129,
+        "stkVal": 0,
+        "soRatio": 8.06
+      }
+    },
+    {
+      "sku": "C182EH.SN2",
+      "category": "Window",
+      "className": "SEEC",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 9543,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 7952,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 23857,
+        "stkQty": 5,
+        "stkVal": 7952,
+        "soRatio": 0.33
+      }
+    },
+    {
+      "sku": "ABNQ40GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 62,
+        "stVal": 376045,
+        "soQty": 23,
+        "soVal": 139501,
+        "stkQty": 122,
+        "stkVal": 739960,
+        "soRatio": 5.3
+      },
+      "feb": {
+        "stQty": 28,
+        "stVal": 169827,
+        "soQty": 12,
+        "soVal": 72783,
+        "stkQty": 62,
+        "stkVal": 376045,
+        "soRatio": 5.17
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 84913,
+        "stkQty": 71,
+        "stkVal": 430632,
+        "soRatio": 5.07
+      }
+    },
+    {
+      "sku": "ATNQ40GNLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 30776,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 15388,
+        "stkQty": 41,
+        "stkVal": 315453,
+        "soRatio": 20.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 92328,
+        "stkQty": 10,
+        "stkVal": 76940,
+        "soRatio": 0.83
+      }
+    },
+    {
+      "sku": "LA302C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 0,
+        "stkQty": 217,
+        "stkVal": 0,
+        "soRatio": 27.12
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 0,
+        "stkQty": 105,
+        "stkVal": 0,
+        "soRatio": 6.18
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 0,
+        "stkQty": 196,
+        "stkVal": 0,
+        "soRatio": 16.33
+      }
+    },
+    {
+      "sku": "LH302C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LH",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 37544,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      }
+    },
+    {
+      "sku": "NF122C0.NJ1",
+      "category": "Inverter",
+      "className": "Fresh",
+      "jan": {
+        "stQty": 30,
+        "stVal": 58062,
+        "soQty": 29,
+        "soVal": 56126,
+        "stkQty": 60,
+        "stkVal": 116123,
+        "soRatio": 2.07
+      },
+      "feb": {
+        "stQty": 50,
+        "stVal": 96770,
+        "soQty": 52,
+        "soVal": 100640,
+        "stkQty": 47,
+        "stkVal": 90963,
+        "soRatio": 0.9
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 21289,
+        "stkQty": 51,
+        "stkVal": 98705,
+        "soRatio": 4.64
+      }
+    },
+    {
+      "sku": "APNW55GT3MA.ANWGIB",
+      "category": "PAC",
+      "className": "PAC - Islamic",
+      "jan": {
+        "stQty": 128,
+        "stVal": 758470,
+        "soQty": 267,
+        "soVal": 1597305,
+        "stkQty": 348,
+        "stkVal": 2070570,
+        "soRatio": 1.3
+      },
+      "feb": {
+        "stQty": 188,
+        "stVal": 1119520,
+        "soQty": 41,
+        "soVal": 242515,
+        "stkQty": 153,
+        "stkVal": 906945,
+        "soRatio": 3.73
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 59450,
+        "stkQty": 185,
+        "stkVal": 1097500,
+        "soRatio": 18.5
+      }
+    },
+    {
+      "sku": "LA182H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "jan": {
+        "stQty": 5,
+        "stVal": 0,
+        "soQty": 55,
+        "soVal": 0,
+        "stkQty": 283,
+        "stkVal": 0,
+        "soRatio": 5.15
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 32,
+        "soVal": 0,
+        "stkQty": 257,
+        "stkVal": 0,
+        "soRatio": 8.03
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 0,
+        "stkQty": 181,
+        "stkVal": 0,
+        "soRatio": 18.1
+      }
+    },
+    {
+      "sku": "AK-Q320LC01.ADGGIB",
+      "category": "CAC",
+      "className": "PKG",
+      "jan": {
+        "stQty": 1,
+        "stVal": 41160,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": -1,
+        "stVal": -41160,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 329280,
+        "stkQty": 5,
+        "stkVal": 205800,
+        "soRatio": 0.62
+      }
+    },
+    {
+      "sku": "NT382H2.NR2",
+      "category": "Inverter",
+      "className": "Titan",
+      "jan": {
+        "stQty": 26,
+        "stVal": 129575,
+        "soQty": 16,
+        "soVal": 79738,
+        "stkQty": 81,
+        "stkVal": 403676,
+        "soRatio": 5.06
+      },
+      "feb": {
+        "stQty": 10,
+        "stVal": 49837,
+        "soQty": 4,
+        "soVal": 19935,
+        "stkQty": 99,
+        "stkVal": 493382,
+        "soRatio": 24.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 29902,
+        "stkQty": 110,
+        "stkVal": 548202,
+        "soRatio": 18.33
+      }
+    },
+    {
+      "sku": "ABNQ34GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 5,
+        "stVal": 26635,
+        "soQty": 3,
+        "soVal": 15981,
+        "stkQty": 74,
+        "stkVal": 394197,
+        "soRatio": 24.67
+      },
+      "feb": {
+        "stQty": 6,
+        "stVal": 31962,
+        "soQty": 4,
+        "soVal": 21308,
+        "stkQty": 69,
+        "stkVal": 367562,
+        "soRatio": 17.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 26635,
+        "stkQty": 66,
+        "stkVal": 351581,
+        "soRatio": 13.2
+      }
+    },
+    {
+      "sku": "LH242C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LH",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 475,
+        "stVal": 816380,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 8593,
+        "stkQty": 20,
+        "stkVal": 34374,
+        "soRatio": 4.0
+      }
+    },
+    {
+      "sku": "ABNQ55GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 32,
+        "stVal": 243395,
+        "soQty": 85,
+        "soVal": 646517,
+        "stkQty": 123,
+        "stkVal": 935548,
+        "soRatio": 1.45
+      },
+      "feb": {
+        "stQty": 20,
+        "stVal": 152122,
+        "soQty": 8,
+        "soVal": 60849,
+        "stkQty": 105,
+        "stkVal": 798638,
+        "soRatio": 13.12
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 30424,
+        "stkQty": 135,
+        "stkVal": 1026821,
+        "soRatio": 33.75
+      }
+    },
+    {
+      "sku": "ABNW40GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 3,
+        "stVal": 19475,
+        "soQty": 10,
+        "soVal": 64917,
+        "stkQty": 64,
+        "stkVal": 415470,
+        "soRatio": 6.4
+      },
+      "feb": {
+        "stQty": 24,
+        "stVal": 155801,
+        "soQty": 10,
+        "soVal": 64917,
+        "stkQty": 48,
+        "stkVal": 311602,
+        "soRatio": 4.8
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 25967,
+        "stkQty": 60,
+        "stkVal": 389503,
+        "soRatio": 15.0
+      }
+    },
+    {
+      "sku": "LO242H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LO",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 3490,
+        "stkQty": 86,
+        "stkVal": 150070,
+        "soRatio": 43.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 20940,
+        "stkQty": 133,
+        "stkVal": 232085,
+        "soRatio": 11.08
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 6980,
+        "stkQty": 79,
+        "stkVal": 137855,
+        "soRatio": 19.75
+      }
+    },
+    {
+      "sku": "LT302C0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "jan": {
+        "stQty": 1,
+        "stVal": 3179,
+        "soQty": 1,
+        "soVal": 3179,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "feb": {
+        "stQty": 117,
+        "stVal": 371907,
+        "soQty": 2,
+        "soVal": 6357,
+        "stkQty": 31,
+        "stkVal": 98540,
+        "soRatio": 15.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 12715,
+        "stkQty": 96,
+        "stkVal": 305155,
+        "soRatio": 24.0
+      }
+    },
+    {
+      "sku": "ABNQ21GM1TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 18344,
+        "stkQty": 58,
+        "stkVal": 212795,
+        "soRatio": 11.6
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 61,
+        "stkVal": 223801,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 11007,
+        "stkQty": 63,
+        "stkVal": 231139,
+        "soRatio": 21.0
+      }
+    },
+    {
+      "sku": "ABNW55GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8125,
+        "stkQty": 60,
+        "stkVal": 487512,
+        "soRatio": 60.0
+      },
+      "feb": {
+        "stQty": 23,
+        "stVal": 186880,
+        "soQty": 11,
+        "soVal": 89377,
+        "stkQty": 76,
+        "stkVal": 617515,
+        "soRatio": 6.91
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 24376,
+        "stkQty": 68,
+        "stkVal": 552514,
+        "soRatio": 22.67
+      }
+    },
+    {
+      "sku": "NF122H0.NJ1",
+      "category": "Inverter",
+      "className": "Fresh",
+      "jan": {
+        "stQty": 3,
+        "stVal": 6229,
+        "soQty": 28,
+        "soVal": 58135,
+        "stkQty": 44,
+        "stkVal": 91355,
+        "soRatio": 1.57
+      },
+      "feb": {
+        "stQty": 24,
+        "stVal": 49830,
+        "soQty": 4,
+        "soVal": 8305,
+        "stkQty": 34,
+        "stkVal": 70593,
+        "soRatio": 8.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 6229,
+        "stkQty": 32,
+        "stkVal": 66440,
+        "soRatio": 10.67
+      }
+    },
+    {
+      "sku": "APNQ55GT3EA.ANWGIBR",
+      "category": "PAC",
+      "className": "PAC - Standard",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 91,
+        "stkVal": 535990,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 17670,
+        "stkQty": 88,
+        "stkVal": 518320,
+        "soRatio": 29.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 11780,
+        "stkQty": 9,
+        "stkVal": 53010,
+        "soRatio": 4.5
+      }
+    },
+    {
+      "sku": "ATNQ21GPLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4930,
+        "stkQty": 38,
+        "stkVal": 187354,
+        "soRatio": 38.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4930,
+        "stkQty": 32,
+        "stkVal": 157772,
+        "soRatio": 32.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 9861,
+        "stkQty": 9,
+        "stkVal": 44373,
+        "soRatio": 4.5
+      }
+    },
+    {
+      "sku": "LC182H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 157,
+        "stVal": 254306,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 25,
+        "stkVal": 40495,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 3240,
+        "stkQty": 48,
+        "stkVal": 77750,
+        "soRatio": 24.0
+      }
+    },
+    {
+      "sku": "LC242H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 143,
+        "stVal": 271576,
+        "soQty": 1,
+        "soVal": 1899,
+        "stkQty": 25,
+        "stkVal": 47478,
+        "soRatio": 25.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 3798,
+        "stkQty": 50,
+        "stkVal": 94957,
+        "soRatio": 25.0
+      }
+    },
+    {
+      "sku": "LT302H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 34,
+        "stVal": 114876,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 33787,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 6757,
+        "stkQty": 16,
+        "stkVal": 54059,
+        "soRatio": 8.0
+      }
+    },
+    {
+      "sku": "ABNQ60LM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 61,
+        "soVal": 534682,
+        "stkQty": 62,
+        "stkVal": 543447,
+        "soRatio": 1.02
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 35061,
+        "stkQty": 19,
+        "stkVal": 166540,
+        "soRatio": 4.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8765,
+        "stkQty": 17,
+        "stkVal": 149010,
+        "soRatio": 17.0
+      }
+    },
+    {
+      "sku": "ABNW28GM1TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 1,
+        "stVal": 4567,
+        "soQty": 7,
+        "soVal": 31971,
+        "stkQty": 48,
+        "stkVal": 219230,
+        "soRatio": 6.86
+      },
+      "feb": {
+        "stQty": 9,
+        "stVal": 41106,
+        "soQty": 6,
+        "soVal": 27404,
+        "stkQty": 44,
+        "stkVal": 200961,
+        "soRatio": 7.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4567,
+        "stkQty": 51,
+        "stkVal": 232932,
+        "soRatio": 51.0
+      }
+    },
+    {
+      "sku": "AM182C0.NK2",
+      "category": "Inverter",
+      "className": "Art Cool",
+      "jan": {
+        "stQty": 1,
+        "stVal": 2570,
+        "soQty": 4,
+        "soVal": 10280,
+        "stkQty": 58,
+        "stkVal": 149065,
+        "soRatio": 14.5
+      },
+      "feb": {
+        "stQty": 7,
+        "stVal": 17991,
+        "soQty": 4,
+        "soVal": 10280,
+        "stkQty": 66,
+        "stkVal": 169626,
+        "soRatio": 16.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2570,
+        "stkQty": 70,
+        "stkVal": 179906,
+        "soRatio": 70.0
+      }
+    },
+    {
+      "sku": "APNW55GT3EA.ANWGIBR",
+      "category": "PAC",
+      "className": "PAC - Standard",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6173,
+        "stkQty": 4,
+        "stkVal": 24692,
+        "soRatio": 4.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 24692,
+        "stkQty": 5,
+        "stkVal": 30865,
+        "soRatio": 1.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6173,
+        "stkQty": 5,
+        "stkVal": 30865,
+        "soRatio": 5.0
+      }
+    },
+    {
+      "sku": "ATNQ28GPLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5245,
+        "stkQty": 45,
+        "stkVal": 236023,
+        "soRatio": 45.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 10490,
+        "stkQty": 35,
+        "stkVal": 183574,
+        "soRatio": 17.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5245,
+        "stkQty": 16,
+        "stkVal": 83919,
+        "soRatio": 16.0
+      }
+    },
+    {
+      "sku": "ATNW21GPLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 30,
+        "stkVal": 162432,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 30,
+        "stkVal": 162432,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5414,
+        "stkQty": 6,
+        "stkVal": 32486,
+        "soRatio": 6.0
+      }
+    },
+    {
+      "sku": "ATNW55GMLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST - Round",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 9801,
+        "stkQty": 3,
+        "stkVal": 29402,
+        "soRatio": 3.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 196013,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 9801,
+        "stkQty": 2,
+        "stkVal": 19601,
+        "soRatio": 2.0
+      }
+    },
+    {
+      "sku": "LA302H0.NK0",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 30,
+        "stkVal": 0,
+        "soRatio": 30.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 0,
+        "stkQty": 48,
+        "stkVal": 0,
+        "soRatio": 12.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 17,
+        "stkVal": 0,
+        "soRatio": 17.0
+      }
+    },
+    {
+      "sku": "ABNQ28GM1TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 1,
+        "stVal": 4200,
+        "soQty": 8,
+        "soVal": 33596,
+        "stkQty": 101,
+        "stkVal": 424154,
+        "soRatio": 12.62
+      },
+      "feb": {
+        "stQty": 15,
+        "stVal": 62993,
+        "soQty": 8,
+        "soVal": 33596,
+        "stkQty": 95,
+        "stkVal": 398957,
+        "soRatio": 11.88
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 72,
+        "stkVal": 302367,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "ABNW34GM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 5,
+        "stVal": 28684,
+        "soQty": 5,
+        "soVal": 28684,
+        "stkQty": 3,
+        "stkVal": 17210,
+        "soRatio": 0.6
+      },
+      "feb": {
+        "stQty": 4,
+        "stVal": 22947,
+        "soQty": 1,
+        "soVal": 5737,
+        "stkQty": 3,
+        "stkVal": 17210,
+        "soRatio": 3.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 17210,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "ABNW60LM3TA.ANWGIB",
+      "category": "CAC",
+      "className": "CCD",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 9337,
+        "stkQty": 37,
+        "stkVal": 345485,
+        "soRatio": 37.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 74700,
+        "stkQty": 38,
+        "stkVal": 354823,
+        "soRatio": 4.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 28,
+        "stkVal": 261448,
+        "soRatio": null
       }
     },
     {
@@ -4665,6 +6490,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4695,6 +6529,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -4711,6 +6554,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4741,6 +6593,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -4757,6 +6618,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4787,6 +6657,47 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "AK-Q130LC01.ADGGIB",
+      "category": "CAC",
+      "className": "PKG",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 1,
+        "stVal": 23174,
+        "soQty": 1,
+        "soVal": 23174,
+        "stkQty": 1,
+        "stkVal": 23174,
+        "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -4803,6 +6714,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4833,24 +6753,42 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "AK-Q320LC01.ADGGIB",
-      "category": "CAC",
-      "className": "PKG",
-      "jan": {
-        "stQty": 1,
-        "stVal": 41160,
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      }
+    },
+    {
+      "sku": "AK-Q270LC01.ADGGIB",
+      "category": "CAC",
+      "className": "PKG",
+      "jan": {
+        "stQty": 1,
+        "stVal": 36478,
+        "soQty": 1,
+        "soVal": 36478,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       },
       "feb": {
-        "stQty": -1,
-        "stVal": -41160,
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 36478,
+        "stkQty": 1,
+        "stkVal": 36478,
+        "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -4872,6 +6810,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4902,6 +6849,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -4918,6 +6874,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4948,6 +6913,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -4964,6 +6938,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -4994,6 +6977,47 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "AM242C0.NK2",
+      "category": "Inverter",
+      "className": "Art Cool",
+      "jan": {
+        "stQty": 11,
+        "stVal": 30832,
+        "soQty": 2,
+        "soVal": 5606,
+        "stkQty": 45,
+        "stkVal": 126131,
+        "soRatio": 22.5
+      },
+      "feb": {
+        "stQty": 5,
+        "stVal": 14015,
+        "soQty": 6,
+        "soVal": 16817,
+        "stkQty": 48,
+        "stkVal": 134540,
+        "soRatio": 8.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 49,
+        "stkVal": 137343,
+        "soRatio": null
       }
     },
     {
@@ -5017,28 +7041,78 @@ var IR_DATA = {
         "stkQty": 28,
         "stkVal": 184726,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 52779,
+        "soRatio": null
       }
     },
     {
-      "sku": "ATNW21GPLTA.ANWGIB",
+      "sku": "ATNQ55GMLTA.ANWGIB",
       "category": "CAC",
       "className": "CST",
       "jan": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 30,
-        "stkVal": 162432,
-        "soRatio": null
+        "soQty": 2,
+        "soVal": 17821,
+        "stkQty": 2,
+        "stkVal": 17821,
+        "soRatio": 1.0
       },
       "feb": {
         "stQty": 0,
         "stVal": 0,
+        "soQty": 1,
+        "soVal": 8911,
+        "stkQty": 12,
+        "stkVal": 106929,
+        "soRatio": 12.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 30,
-        "stkVal": 162432,
+        "stkQty": 13,
+        "stkVal": 115839,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "ATNW28GPLTA.ANWGIB",
+      "category": "CAC",
+      "className": "CST",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5898,
+        "stkQty": 10,
+        "stkVal": 58982,
+        "soRatio": 10.0
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 35389,
+        "stkQty": 8,
+        "stkVal": 47186,
+        "soRatio": 1.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 47186,
         "soRatio": null
       }
     },
@@ -5056,6 +7130,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 22050,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5086,28 +7169,46 @@ var IR_DATA = {
         "stkQty": 36,
         "stkVal": 299951,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 74988,
+        "soRatio": null
       }
     },
     {
-      "sku": "ATNW55GMLTA.ANWGIB",
+      "sku": "ATNW40GYLTA.ANWGIB",
       "category": "CAC",
       "className": "CST - Round",
       "jan": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 1,
-        "soVal": 9801,
+        "soQty": 0,
+        "soVal": 0,
         "stkQty": 3,
-        "stkVal": 29402,
-        "soRatio": 3.0
+        "stkVal": 26760,
+        "soRatio": null
       },
       "feb": {
         "stQty": 0,
         "stVal": 0,
+        "soQty": 5,
+        "soVal": 44600,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 20,
-        "stkVal": 196013,
+        "stkQty": 3,
+        "stkVal": 26760,
         "soRatio": null
       }
     },
@@ -5132,6 +7233,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 37667,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5155,28 +7265,14 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 16538,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "C182EH.SN2",
-      "category": "Window",
-      "className": "SEEC",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 6,
-        "stkVal": 9543,
-        "soRatio": null
       },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
         "soVal": 0,
-        "stkQty": 5,
-        "stkVal": 7952,
+        "stkQty": 15,
+        "stkVal": 22552,
         "soRatio": null
       }
     },
@@ -5201,28 +7297,14 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 0,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "LC182H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "jan": {
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 157,
-        "stVal": 254306,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 25,
-        "stkVal": 40495,
         "soRatio": null
       }
     },
@@ -5240,6 +7322,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5270,24 +7361,10 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "LH242C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LH",
-      "jan": {
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 475,
-        "stVal": 816380,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -5316,22 +7393,8 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "LH302C0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LH",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
       },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5362,28 +7425,14 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
-      }
-    },
-    {
-      "sku": "LT302H0.NK0",
-      "category": "ON/OFF",
-      "className": "On/Off_LC",
-      "jan": {
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
-        "stQty": 34,
-        "stVal": 114876,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 10,
-        "stkVal": 33787,
         "soRatio": null
       }
     },
@@ -5408,6 +7457,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5424,6 +7482,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5454,6 +7521,47 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "sku": "NW242H0.NK0",
+      "category": "Inverter",
+      "className": "WIN",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": 0.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5470,6 +7578,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5500,6 +7617,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5523,6 +7649,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5539,6 +7674,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5574,6 +7718,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 47695,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 13,
+        "stkVal": 47695,
+        "soRatio": null
       }
     },
     {
@@ -5600,6 +7753,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 20998,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 20998,
+        "soRatio": null
       }
     },
     {
@@ -5619,6 +7781,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5652,6 +7823,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 6065,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5671,6 +7851,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5704,6 +7893,15 @@ var IR_DATA = {
         "stkQty": 60,
         "stkVal": 487512,
         "soRatio": 5.45
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 130003,
+        "stkQty": 43,
+        "stkVal": 349384,
+        "soRatio": 2.69
       }
     },
     {
@@ -5723,6 +7921,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5756,6 +7963,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5737,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5737,
+        "soRatio": null
       }
     },
     {
@@ -5777,6 +7993,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 3,
         "stVal": 19475,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -5808,6 +8033,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 16250,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8125,
+        "stkQty": 2,
+        "stkVal": 16250,
+        "soRatio": 2.0
       }
     },
     {
@@ -5834,6 +8068,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 26598,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -5853,6 +8096,15 @@ var IR_DATA = {
         "soRatio": 5.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 34513,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -5886,6 +8138,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5912,6 +8173,50 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 8332,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 8332,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "PKG",
+      "sku": "AK-Q320LC01.ADGGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 123480,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -5938,6 +8243,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -5964,6 +8278,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1935,
+        "stkQty": 4,
+        "stkVal": 7742,
+        "soRatio": 4.0
       }
     },
     {
@@ -5983,6 +8306,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 20763,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6016,6 +8348,15 @@ var IR_DATA = {
         "stkQty": 25,
         "stkVal": 55262,
         "soRatio": 1.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 8842,
+        "stkQty": 20,
+        "stkVal": 44210,
+        "soRatio": 5.0
       }
     },
     {
@@ -6041,6 +8382,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 8,
         "stkVal": 18686,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 14,
+        "stkVal": 32700,
         "soRatio": null
       }
     },
@@ -6068,6 +8418,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 20808,
         "soRatio": 4.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 7803,
+        "soRatio": null
       }
     },
     {
@@ -6094,6 +8453,85 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 16597,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 13831,
+        "stkQty": 1,
+        "stkVal": 2766,
+        "soRatio": 0.2
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS182H2.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 9,
+        "soVal": 19429,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      }
+    },
+    {
+      "dealer": "ABDULAZIZ AL-SHATHERY",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS242C3.UK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 12246,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -6120,6 +8558,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 13768,
         "soRatio": 0.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 18357,
+        "stkQty": 4,
+        "stkVal": 18357,
+        "soRatio": 1.0
       }
     },
     {
@@ -6146,6 +8593,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4984,
+        "stkQty": 9,
+        "stkVal": 44853,
+        "soRatio": 9.0
       }
     },
     {
@@ -6172,6 +8628,15 @@ var IR_DATA = {
         "stkQty": 41,
         "stkVal": 0,
         "soRatio": 2.41
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 40,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6198,6 +8663,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 0,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -6224,6 +8698,15 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 19082,
         "soRatio": 7.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 14,
+        "stkVal": 19082,
+        "soRatio": null
       }
     },
     {
@@ -6250,6 +8733,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 4488,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 4488,
+        "soRatio": null
       }
     },
     {
@@ -6269,6 +8761,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1555,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6302,6 +8803,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 125708,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 48,
+        "soVal": 274272,
+        "stkQty": 25,
+        "stkVal": 142850,
+        "soRatio": 0.52
       }
     },
     {
@@ -6328,6 +8838,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 17745,
         "soRatio": 0.38
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 11830,
+        "soRatio": null
       }
     },
     {
@@ -6354,6 +8873,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 12346,
         "soRatio": 0.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 12346,
+        "soRatio": null
       }
     },
     {
@@ -6379,6 +8907,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 69,
         "stkVal": 161163,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -6406,6 +8943,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 27661,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6432,6 +8978,15 @@ var IR_DATA = {
         "stkQty": 115,
         "stkVal": 156745,
         "soRatio": 38.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6458,6 +9013,15 @@ var IR_DATA = {
         "stkQty": 165,
         "stkVal": 246840,
         "soRatio": 41.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6484,6 +9048,15 @@ var IR_DATA = {
         "stkQty": 137,
         "stkVal": 213035,
         "soRatio": 45.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6510,6 +9083,15 @@ var IR_DATA = {
         "stkQty": 52,
         "stkVal": 90740,
         "soRatio": 5.2
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6535,6 +9117,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 20,
         "stkVal": 115780,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -6562,6 +9153,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 11980,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6588,6 +9188,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 26526,
+        "soRatio": null
       }
     },
     {
@@ -6614,6 +9223,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 31212,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "sku": "LA242C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6635,6 +9288,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 15,
         "stVal": 22340,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 22340,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 15,
@@ -6666,6 +9328,15 @@ var IR_DATA = {
         "stkQty": 15,
         "stkVal": 26530,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 5306,
+        "stkQty": 12,
+        "stkVal": 21224,
+        "soRatio": 4.0
       }
     },
     {
@@ -6692,6 +9363,15 @@ var IR_DATA = {
         "stkQty": 39,
         "stkVal": 53157,
         "soRatio": 3.55
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 5452,
+        "stkQty": 46,
+        "stkVal": 62698,
+        "soRatio": 11.5
       }
     },
     {
@@ -6711,6 +9391,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6744,6 +9433,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6763,6 +9461,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6796,6 +9503,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6822,6 +9538,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6841,6 +9566,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6874,6 +9608,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6893,6 +9636,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6926,6 +9678,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6945,6 +9706,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -6978,6 +9748,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -6997,6 +9776,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7030,6 +9818,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4079,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2039,
+        "soRatio": null
       }
     },
     {
@@ -7049,6 +9846,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2449,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7082,6 +9888,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7108,6 +9923,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7127,6 +9951,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7160,6 +9993,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7186,6 +10028,15 @@ var IR_DATA = {
         "stkQty": 43,
         "stkVal": 58609,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7205,6 +10056,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7238,6 +10098,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 75257,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 63679,
+        "soRatio": null
       }
     },
     {
@@ -7263,6 +10132,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 65890,
         "soRatio": null
       }
     },
@@ -7290,6 +10168,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 8399,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 8399,
+        "soRatio": null
       }
     },
     {
@@ -7309,6 +10196,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5327,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7342,6 +10238,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 54587,
+        "soRatio": null
       }
     },
     {
@@ -7361,6 +10266,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 45636,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7394,6 +10308,50 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 40626,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 48751,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "AL MOJEL.CO",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNQ60LM3TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 52592,
+        "soRatio": null
       }
     },
     {
@@ -7419,6 +10377,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 7,
         "stkVal": 31971,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 27404,
         "soRatio": null
       }
     },
@@ -7446,6 +10413,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 19475,
+        "stkQty": 6,
+        "stkVal": 38950,
+        "soRatio": 2.0
       }
     },
     {
@@ -7472,6 +10448,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 26598,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -7498,6 +10483,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 93374,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7517,6 +10511,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7550,6 +10553,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7575,6 +10587,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 30776,
         "soRatio": null
       }
     },
@@ -7602,6 +10623,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 17821,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 17821,
+        "soRatio": null
       }
     },
     {
@@ -7621,6 +10651,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 17695,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7654,6 +10693,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 99984,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 24996,
+        "soRatio": null
       }
     },
     {
@@ -7679,6 +10727,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 13064,
         "soRatio": null
       }
     },
@@ -7706,6 +10763,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 4984,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -7725,6 +10791,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 138,
+        "stkVal": 188094,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7758,6 +10833,15 @@ var IR_DATA = {
         "stkQty": 84,
         "stkVal": 130620,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 84,
+        "stkVal": 130620,
+        "soRatio": null
       }
     },
     {
@@ -7784,6 +10868,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 125708,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 114280,
+        "stkQty": 2,
+        "stkVal": 11428,
+        "soRatio": 0.1
       }
     },
     {
@@ -7803,6 +10896,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 41405,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7836,6 +10938,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5890,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5890,
+        "soRatio": null
       }
     },
     {
@@ -7855,6 +10966,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 8842,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7888,6 +11008,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 18355,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 18355,
+        "soRatio": null
       }
     },
     {
@@ -7907,6 +11036,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 7348,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -7940,6 +11078,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 2726,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 2726,
+        "soRatio": null
       }
     },
     {
@@ -7966,6 +11113,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 7775,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 7775,
+        "soRatio": null
       }
     },
     {
@@ -7985,6 +11141,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 13,
+        "stkVal": 75257,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8018,6 +11183,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 44210,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8043,6 +11217,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 19,
         "stkVal": 49419,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -8070,6 +11253,15 @@ var IR_DATA = {
         "stkQty": 7,
         "stkVal": 14276,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8095,6 +11287,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 13,
         "stkVal": 31839,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -8122,6 +11323,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 4589,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8146,6 +11356,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 41,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -8174,6 +11393,15 @@ var IR_DATA = {
         "stkQty": 7,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8198,6 +11426,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 9,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -8226,6 +11463,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1363,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8251,6 +11497,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 1555,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -8278,6 +11533,15 @@ var IR_DATA = {
         "stkQty": 49,
         "stkVal": 283661,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8297,6 +11561,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 11612,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8330,6 +11603,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 8305,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 8305,
+        "soRatio": null
       }
     },
     {
@@ -8349,6 +11631,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 7007,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8382,6 +11673,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 5202,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 5202,
+        "soRatio": null
       }
     },
     {
@@ -8401,6 +11701,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 8298,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8434,6 +11743,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2159,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2159,
+        "soRatio": null
       }
     },
     {
@@ -8453,6 +11771,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 7348,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8486,6 +11813,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 24918,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8505,6 +11841,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8538,6 +11883,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1489,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8557,6 +11911,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 4089,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8590,6 +11953,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1496,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1496,
+        "soRatio": null
       }
     },
     {
@@ -8616,6 +11988,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 3490,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 3490,
+        "soRatio": null
       }
     },
     {
@@ -8635,6 +12016,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 17367,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -8668,6 +12058,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 11980,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 11980,
+        "soRatio": null
       }
     },
     {
@@ -8693,6 +12092,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 3,
         "stkVal": 18519,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -8720,6 +12128,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8746,6 +12163,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8772,6 +12198,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8798,6 +12233,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8824,6 +12268,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8850,6 +12303,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8876,6 +12338,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8900,6 +12371,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 4,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -8928,6 +12408,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8954,6 +12443,15 @@ var IR_DATA = {
         "stkQty": 16,
         "stkVal": 28299,
         "soRatio": 8.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -8980,6 +12478,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 9536,
         "soRatio": 1.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9006,6 +12513,15 @@ var IR_DATA = {
         "stkQty": 57,
         "stkVal": 77691,
         "soRatio": 1.14
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9031,6 +12547,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 11,
         "stkVal": 17105,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -9058,6 +12583,15 @@ var IR_DATA = {
         "stkQty": 53,
         "stkVal": 306817,
         "soRatio": 1.06
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9077,6 +12611,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -9110,6 +12653,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9133,6 +12685,50 @@ var IR_DATA = {
         "stVal": 0,
         "soQty": 1,
         "soVal": 8911,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "Fresh",
+      "sku": "NF122C0.NJ1",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1935,
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
@@ -9162,6 +12758,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 7803,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -9188,6 +12793,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4318,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -9214,6 +12828,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4898,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9235,6 +12858,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 1,
         "stVal": 4589,
+        "soQty": 1,
+        "soVal": 4589,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 1,
         "soVal": 4589,
         "stkQty": 0,
@@ -9266,6 +12898,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9290,6 +12931,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -9318,6 +12968,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9344,6 +13003,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9363,6 +13031,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -9396,6 +13073,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 34210,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9422,6 +13108,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2210,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9443,6 +13138,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 1,
         "stVal": 2601,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -9474,6 +13178,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4079,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9500,6 +13213,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1769,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9521,6 +13243,15 @@ var IR_DATA = {
       "feb": {
         "stQty": -23,
         "stVal": -31349,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -9552,6 +13283,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9578,6 +13318,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2601,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9602,6 +13351,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 19,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -9630,6 +13388,15 @@ var IR_DATA = {
         "stkQty": 23,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9655,6 +13422,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 22,
         "stkVal": 29986,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -9682,6 +13458,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 23156,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9701,6 +13486,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -9734,6 +13528,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 76061,
+        "soRatio": null
       }
     },
     {
@@ -9759,6 +13562,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 29,
+        "stkVal": 235631,
         "soRatio": null
       }
     },
@@ -9786,6 +13598,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2570,
+        "soRatio": null
       }
     },
     {
@@ -9812,6 +13633,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -9838,6 +13668,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 7742,
+        "soRatio": null
       }
     },
     {
@@ -9864,6 +13703,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 8842,
+        "stkQty": 99,
+        "stkVal": 218837,
+        "soRatio": 24.75
       }
     },
     {
@@ -9890,6 +13738,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 23,
+        "soVal": 59823,
+        "stkQty": 11,
+        "stkVal": 28611,
+        "soRatio": 0.48
       }
     },
     {
@@ -9916,6 +13773,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 16316,
+        "stkQty": 2,
+        "stkVal": 4079,
+        "soRatio": 0.25
       }
     },
     {
@@ -9942,6 +13808,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 12246,
+        "stkQty": 63,
+        "stkVal": 154298,
+        "soRatio": 12.6
       }
     },
     {
@@ -9968,6 +13843,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 18357,
+        "stkQty": 2,
+        "stkVal": 9178,
+        "soRatio": 0.5
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "Inverter",
+      "className": "Titan",
+      "sku": "NT382H2.NR2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 9967,
+        "soRatio": null
       }
     },
     {
@@ -9994,6 +13913,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 0,
+        "stkQty": 234,
+        "stkVal": 0,
+        "soRatio": 14.62
       }
     },
     {
@@ -10020,6 +13948,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 37,
+        "soVal": 0,
+        "stkQty": 328,
+        "stkVal": 0,
+        "soRatio": 8.86
       }
     },
     {
@@ -10042,6 +13979,50 @@ var IR_DATA = {
         "stQty": 0,
         "stVal": 0,
         "soQty": 14,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 0,
+        "stkQty": 110,
+        "stkVal": 0,
+        "soRatio": 9.17
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "sku": "LA302H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
@@ -10072,6 +14053,85 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "sku": "LT302H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 6757,
+        "stkQty": 1,
+        "stkVal": 3379,
+        "soRatio": 0.5
+      }
+    },
+    {
+      "dealer": "Abduaalah Ali-Dhamin&Sons",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "On/Off_LH",
+      "sku": "LH302C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 3129,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -10098,6 +14158,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 2726,
+        "soRatio": null
       }
     },
     {
@@ -10121,6 +14190,15 @@ var IR_DATA = {
         "stVal": 0,
         "soQty": 2,
         "soVal": 3110,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 4665,
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
@@ -10150,6 +14228,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 22856,
+        "stkQty": 25,
+        "stkVal": 142850,
+        "soRatio": 6.25
       }
     },
     {
@@ -10176,6 +14263,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10202,6 +14298,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 11780,
+        "soRatio": null
       }
     },
     {
@@ -10227,6 +14332,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 2,
         "stkVal": 12983,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -10254,6 +14368,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 81252,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10279,6 +14402,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 2,
         "stkVal": 17732,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -10306,6 +14438,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2210,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10332,6 +14473,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 46714,
         "soRatio": 20.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10358,6 +14508,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 13831,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10382,6 +14541,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -10410,6 +14578,15 @@ var IR_DATA = {
         "stkQty": 45,
         "stkVal": 0,
         "soRatio": 5.62
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10436,6 +14613,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 0,
         "soRatio": 2.86
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10461,6 +14647,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 14,
         "stkVal": 81046,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -10488,6 +14683,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 59900,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10509,6 +14713,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 1,
         "stVal": 1935,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -10540,6 +14753,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10559,6 +14781,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 25,
+        "stkVal": 34075,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -10592,6 +14823,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 31100,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 31100,
+        "soRatio": null
       }
     },
     {
@@ -10618,6 +14858,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 28945,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10637,6 +14886,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -10670,6 +14928,15 @@ var IR_DATA = {
         "stkQty": 124,
         "stkVal": 274099,
         "soRatio": 41.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 17684,
+        "stkQty": 119,
+        "stkVal": 263047,
+        "soRatio": 14.88
       }
     },
     {
@@ -10696,6 +14963,15 @@ var IR_DATA = {
         "stkQty": 26,
         "stkVal": 60728,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2336,
+        "stkQty": 25,
+        "stkVal": 58392,
+        "soRatio": 25.0
       }
     },
     {
@@ -10722,6 +14998,15 @@ var IR_DATA = {
         "stkQty": 84,
         "stkVal": 218484,
         "soRatio": 28.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 15606,
+        "stkQty": 82,
+        "stkVal": 213282,
+        "soRatio": 13.67
       }
     },
     {
@@ -10741,6 +15026,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 21,
+        "stkVal": 58089,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -10774,6 +15068,15 @@ var IR_DATA = {
         "stkQty": 619,
         "stkVal": 843697,
         "soRatio": 38.69
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 8178,
+        "stkQty": 613,
+        "stkVal": 835519,
+        "soRatio": 102.17
       }
     },
     {
@@ -10800,6 +15103,15 @@ var IR_DATA = {
         "stkQty": 72,
         "stkVal": 107712,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1496,
+        "stkQty": 71,
+        "stkVal": 106216,
+        "soRatio": 71.0
       }
     },
     {
@@ -10826,6 +15138,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 7775,
         "soRatio": 0.19
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 9330,
+        "stkQty": 2,
+        "stkVal": 3110,
+        "soRatio": 0.33
       }
     },
     {
@@ -10852,6 +15173,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1745,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1745,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -10878,6 +15208,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10897,6 +15236,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -10930,6 +15278,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -10949,6 +15306,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 28945,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -10982,6 +15348,15 @@ var IR_DATA = {
         "stkQty": 109,
         "stkVal": 222303,
         "soRatio": 54.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4079,
+        "stkQty": 107,
+        "stkVal": 218224,
+        "soRatio": 53.5
       }
     },
     {
@@ -11008,6 +15383,15 @@ var IR_DATA = {
         "stkQty": 18,
         "stkVal": 44085,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2449,
+        "stkQty": 17,
+        "stkVal": 41636,
+        "soRatio": 17.0
       }
     },
     {
@@ -11034,6 +15418,15 @@ var IR_DATA = {
         "stkQty": 180,
         "stkVal": 0,
         "soRatio": 6.92
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 32,
+        "soVal": 0,
+        "stkQty": 148,
+        "stkVal": 0,
+        "soRatio": 4.62
       }
     },
     {
@@ -11060,6 +15453,15 @@ var IR_DATA = {
         "stkQty": 343,
         "stkVal": 467509,
         "soRatio": 6.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 39,
+        "soVal": 53157,
+        "stkQty": 304,
+        "stkVal": 414352,
+        "soRatio": 7.79
       }
     },
     {
@@ -11086,6 +15488,15 @@ var IR_DATA = {
         "stkQty": 114,
         "stkVal": 170544,
         "soRatio": 14.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1496,
+        "stkQty": 113,
+        "stkVal": 169048,
+        "soRatio": 113.0
       }
     },
     {
@@ -11112,6 +15523,15 @@ var IR_DATA = {
         "stkQty": 76,
         "stkVal": 132620,
         "soRatio": 76.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1745,
+        "stkQty": 75,
+        "stkVal": 130875,
+        "soRatio": 75.0
       }
     },
     {
@@ -11131,6 +15551,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 3871,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11164,6 +15593,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4421,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 4421,
+        "soRatio": null
       }
     },
     {
@@ -11183,6 +15621,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 5202,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11216,6 +15663,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2766,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2766,
+        "soRatio": null
       }
     },
     {
@@ -11235,6 +15691,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2039,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11268,6 +15733,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11294,6 +15768,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11313,6 +15796,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11346,6 +15838,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11371,6 +15872,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 21,
         "stkVal": 42829,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 32632,
         "soRatio": null
       }
     },
@@ -11398,6 +15908,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4318,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2159,
+        "soRatio": null
       }
     },
     {
@@ -11424,6 +15943,15 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 34288,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 22043,
+        "soRatio": null
       }
     },
     {
@@ -11443,6 +15971,15 @@ var IR_DATA = {
         "soRatio": 2.25
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11476,6 +16013,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11495,6 +16041,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11528,6 +16083,15 @@ var IR_DATA = {
         "stkQty": 65,
         "stkVal": 88595,
         "soRatio": 2.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 27260,
+        "stkQty": 34,
+        "stkVal": 46342,
+        "soRatio": 1.7
       }
     },
     {
@@ -11554,6 +16118,15 @@ var IR_DATA = {
         "stkQty": 62,
         "stkVal": 96410,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 22,
+        "soVal": 34210,
+        "stkQty": 20,
+        "stkVal": 31100,
+        "soRatio": 0.91
       }
     },
     {
@@ -11580,6 +16153,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 26526,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 26526,
+        "soRatio": null
       }
     },
     {
@@ -11599,6 +16181,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 35035,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11632,6 +16223,15 @@ var IR_DATA = {
         "stkQty": 19,
         "stkVal": 49419,
         "soRatio": 19.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 19,
+        "stkVal": 49419,
+        "soRatio": null
       }
     },
     {
@@ -11651,6 +16251,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 41492,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11684,6 +16293,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11710,6 +16328,15 @@ var IR_DATA = {
         "stkQty": 41,
         "stkVal": 0,
         "soRatio": 2.41
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 0,
+        "stkQty": 34,
+        "stkVal": 0,
+        "soRatio": 4.86
       }
     },
     {
@@ -11736,6 +16363,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 0,
         "soRatio": 0.57
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": 6.0
       }
     },
     {
@@ -11762,6 +16398,15 @@ var IR_DATA = {
         "stkQty": 33,
         "stkVal": 0,
         "soRatio": 5.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 0,
+        "stkQty": 23,
+        "stkVal": 0,
+        "soRatio": 2.3
       }
     },
     {
@@ -11788,6 +16433,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 0,
         "soRatio": 0.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": 1.5
       }
     },
     {
@@ -11814,6 +16468,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 13630,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -11839,6 +16502,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 7,
         "stkVal": 10472,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -11866,6 +16538,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -11885,6 +16566,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 18,
+        "stkVal": 104202,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -11918,6 +16608,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 18,
+        "stkVal": 107820,
+        "soRatio": null
       }
     },
     {
@@ -11944,6 +16643,50 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 28553,
         "soRatio": 14.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Assaf A.Al-Odail Est.",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS182H2.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 32382,
+        "soRatio": null
       }
     },
     {
@@ -11970,6 +16713,50 @@ var IR_DATA = {
         "stkQty": 18,
         "stkVal": 44085,
         "soRatio": 9.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 13,
+        "stkVal": 31839,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Assaf A.Al-Odail Est.",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS242H3.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 39191,
+        "soRatio": null
       }
     },
     {
@@ -11996,6 +16783,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 0,
         "soRatio": 50.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 0,
+        "soRatio": 3.67
       }
     },
     {
@@ -12022,6 +16818,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 0,
         "soRatio": 9.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 90,
+        "stkVal": 0,
+        "soRatio": 45.0
       }
     },
     {
@@ -12048,6 +16853,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 0,
         "soRatio": 12.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -12067,6 +16881,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 23156,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12100,6 +16923,15 @@ var IR_DATA = {
         "stkQty": 26,
         "stkVal": 53026,
         "soRatio": 26.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 26,
+        "stkVal": 53026,
+        "soRatio": null
       }
     },
     {
@@ -12126,6 +16958,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 24492,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 24492,
+        "soRatio": null
       }
     },
     {
@@ -12145,6 +16986,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 15676,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12178,6 +17028,15 @@ var IR_DATA = {
         "stkQty": 95,
         "stkVal": 0,
         "soRatio": 95.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 0,
+        "stkQty": 89,
+        "stkVal": 0,
+        "soRatio": 17.8
       }
     },
     {
@@ -12197,6 +17056,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12230,6 +17098,15 @@ var IR_DATA = {
         "stkQty": 75,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 70,
+        "stkVal": 0,
+        "soRatio": 70.0
       }
     },
     {
@@ -12256,6 +17133,15 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 0,
         "soRatio": 5.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -12282,6 +17168,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 0,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -12303,6 +17198,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 2,
         "stVal": 6757,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -12334,6 +17238,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 17367,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -12353,6 +17266,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12386,6 +17308,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 33596,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 33596,
+        "soRatio": null
       }
     },
     {
@@ -12412,6 +17343,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5327,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5327,
+        "soRatio": null
       }
     },
     {
@@ -12431,6 +17371,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 24261,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12464,6 +17413,15 @@ var IR_DATA = {
         "stkQty": 18,
         "stkVal": 136909,
         "soRatio": 18.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 18,
+        "stkVal": 136909,
+        "soRatio": null
       }
     },
     {
@@ -12490,6 +17448,15 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 113753,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 16250,
+        "stkQty": 14,
+        "stkVal": 113753,
+        "soRatio": 7.0
       }
     },
     {
@@ -12516,6 +17483,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNW21GM1TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 13,
+        "soVal": 52748,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -12539,6 +17550,85 @@ var IR_DATA = {
         "stVal": 0,
         "soQty": 1,
         "soVal": 4567,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4567,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNW40GM3TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6492,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNW60GM3TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 17732,
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
@@ -12568,6 +17658,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNQ28GPLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5245,
+        "soRatio": null
       }
     },
     {
@@ -12594,6 +17728,120 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 6597,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 6597,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNQ40GNLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 7694,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNQ55GMLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 8911,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNW21GPLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 5414,
+        "soRatio": null
       }
     },
     {
@@ -12613,6 +17861,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12646,6 +17903,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -12672,6 +17938,15 @@ var IR_DATA = {
         "stkQty": 19,
         "stkVal": 39449,
         "soRatio": 19.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4153,
+        "stkQty": 17,
+        "stkVal": 35296,
+        "soRatio": 8.5
       }
     },
     {
@@ -12698,6 +17973,15 @@ var IR_DATA = {
         "stkQty": 71,
         "stkVal": 156944,
         "soRatio": 71.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4421,
+        "stkQty": 69,
+        "stkVal": 152523,
+        "soRatio": 34.5
       }
     },
     {
@@ -12724,6 +18008,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4671,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4671,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -12750,6 +18043,15 @@ var IR_DATA = {
         "stkQty": 60,
         "stkVal": 156060,
         "soRatio": 15.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 7803,
+        "stkQty": 57,
+        "stkVal": 148257,
+        "soRatio": 19.0
       }
     },
     {
@@ -12769,6 +18071,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -12802,6 +18113,50 @@ var IR_DATA = {
         "stkQty": 28,
         "stkVal": 57105,
         "soRatio": 0.35
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 30,
+        "soVal": 61184,
+        "stkQty": 5,
+        "stkVal": 10197,
+        "soRatio": 0.17
+      }
+    },
+    {
+      "dealer": "BIN MOMEN TRADING CO.",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS182H2.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 32382,
+        "soRatio": null
       }
     },
     {
@@ -12828,6 +18183,15 @@ var IR_DATA = {
         "stkQty": 62,
         "stkVal": 151849,
         "soRatio": 6.89
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 24492,
+        "stkQty": 52,
+        "stkVal": 127357,
+        "soRatio": 5.2
       }
     },
     {
@@ -12854,6 +18218,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 9178,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 18357,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -12878,6 +18251,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -12906,6 +18288,15 @@ var IR_DATA = {
         "stkQty": 84,
         "stkVal": 0,
         "soRatio": 8.4
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 83,
+        "stkVal": 0,
+        "soRatio": 83.0
       }
     },
     {
@@ -12932,6 +18323,15 @@ var IR_DATA = {
         "stkQty": 34,
         "stkVal": 0,
         "soRatio": 1.89
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 0,
+        "soRatio": 1.43
       }
     },
     {
@@ -12953,6 +18353,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 10,
         "stVal": 14893,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 14893,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 10,
@@ -12984,6 +18393,15 @@ var IR_DATA = {
         "stkQty": 105,
         "stkVal": 185713,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 8843,
+        "stkQty": 105,
+        "stkVal": 185713,
+        "soRatio": 21.0
       }
     },
     {
@@ -13010,6 +18428,15 @@ var IR_DATA = {
         "stkQty": 85,
         "stkVal": 115855,
         "soRatio": 3.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 21808,
+        "stkQty": 68,
+        "stkVal": 92684,
+        "soRatio": 4.25
       }
     },
     {
@@ -13029,6 +18456,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 2992,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -13062,6 +18498,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 13995,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1555,
+        "stkQty": 1,
+        "stkVal": 1555,
+        "soRatio": 1.0
       }
     },
     {
@@ -13081,6 +18526,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1745,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -13114,6 +18568,15 @@ var IR_DATA = {
         "stkQty": 43,
         "stkVal": 245702,
         "soRatio": 7.17
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 38,
+        "stkVal": 217132,
+        "soRatio": null
       }
     },
     {
@@ -13140,6 +18603,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 11830,
+        "stkQty": 4,
+        "stkVal": 23660,
+        "soRatio": 2.0
       }
     },
     {
@@ -13166,6 +18638,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 11007,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 11007,
+        "stkQty": 8,
+        "stkVal": 29351,
+        "soRatio": 2.67
       }
     },
     {
@@ -13192,6 +18673,15 @@ var IR_DATA = {
         "stkQty": 21,
         "stkVal": 88190,
         "soRatio": 3.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 8399,
+        "soRatio": null
       }
     },
     {
@@ -13218,6 +18708,15 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 66718,
         "soRatio": 11.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 21,
+        "stkVal": 127370,
+        "soRatio": null
       }
     },
     {
@@ -13244,6 +18743,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 38030,
         "soRatio": 2.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 15212,
+        "soRatio": null
       }
     },
     {
@@ -13270,6 +18778,15 @@ var IR_DATA = {
         "stkQty": 56,
         "stkVal": 455011,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 40626,
+        "stkQty": 49,
+        "stkVal": 398135,
+        "soRatio": 9.8
       }
     },
     {
@@ -13296,6 +18813,15 @@ var IR_DATA = {
         "stkQty": 7,
         "stkVal": 61357,
         "soRatio": 3.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -13322,6 +18848,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 13702,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 27404,
+        "soRatio": null
       }
     },
     {
@@ -13343,6 +18878,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 2,
         "stVal": 11474,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -13374,6 +18918,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 6492,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 25967,
+        "soRatio": null
       }
     },
     {
@@ -13400,6 +18953,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 24376,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 40626,
+        "soRatio": null
       }
     },
     {
@@ -13426,6 +18988,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 62063,
+        "soRatio": null
       }
     },
     {
@@ -13445,6 +19016,15 @@ var IR_DATA = {
         "soRatio": 9.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -13478,6 +19058,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 52450,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNW21GPLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 27072,
+        "soRatio": null
       }
     },
     {
@@ -13497,6 +19121,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -13530,6 +19163,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 26760,
+        "soRatio": null
       }
     },
     {
@@ -13556,6 +19198,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 9801,
+        "stkQty": 2,
+        "stkVal": 19601,
+        "soRatio": 2.0
       }
     },
     {
@@ -13582,6 +19233,15 @@ var IR_DATA = {
         "stkQty": 38,
         "stkVal": 83998,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 6631,
+        "stkQty": 34,
+        "stkVal": 75156,
+        "soRatio": 11.33
       }
     },
     {
@@ -13608,6 +19268,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 21021,
         "soRatio": 0.9
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4671,
+        "stkQty": 37,
+        "stkVal": 86421,
+        "soRatio": 18.5
       }
     },
     {
@@ -13629,6 +19298,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 20,
         "stVal": 52020,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 30,
+        "stkVal": 78030,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 30,
@@ -13660,6 +19338,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 33194,
         "soRatio": 1.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 41492,
+        "soRatio": null
       }
     },
     {
@@ -13686,6 +19373,15 @@ var IR_DATA = {
         "stkQty": 24,
         "stkVal": 48947,
         "soRatio": 2.18
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 10197,
+        "stkQty": 42,
+        "stkVal": 85658,
+        "soRatio": 8.4
       }
     },
     {
@@ -13712,6 +19408,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 28065,
         "soRatio": 2.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 25906,
+        "soRatio": null
       }
     },
     {
@@ -13738,6 +19443,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 19593,
         "soRatio": 8.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 55,
+        "stkVal": 134705,
+        "soRatio": null
       }
     },
     {
@@ -13763,6 +19477,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 22,
+        "stkVal": 57480,
         "soRatio": null
       }
     },
@@ -13790,6 +19513,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 45892,
+        "soRatio": null
       }
     },
     {
@@ -13815,6 +19547,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 24918,
         "soRatio": null
       }
     },
@@ -13842,6 +19583,15 @@ var IR_DATA = {
         "stkQty": 48,
         "stkVal": 0,
         "soRatio": 16.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 48,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -13868,6 +19618,15 @@ var IR_DATA = {
         "stkQty": 15,
         "stkVal": 0,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -13894,6 +19653,15 @@ var IR_DATA = {
         "stkQty": 35,
         "stkVal": 0,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 30,
+        "stkVal": 0,
+        "soRatio": 15.0
       }
     },
     {
@@ -13920,6 +19688,15 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 0,
         "soRatio": 14.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 0,
+        "soRatio": 4.0
       }
     },
     {
@@ -13939,6 +19716,15 @@ var IR_DATA = {
         "soRatio": 2.33
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -13972,6 +19758,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 29787,
+        "soRatio": null
       }
     },
     {
@@ -13998,6 +19793,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 16198,
+        "soRatio": null
       }
     },
     {
@@ -14019,6 +19823,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 100,
         "stVal": 176870,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -14050,6 +19863,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 18991,
+        "soRatio": null
       }
     },
     {
@@ -14075,6 +19897,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 31787,
         "soRatio": null
       }
     },
@@ -14102,6 +19933,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 16893,
+        "soRatio": null
       }
     },
     {
@@ -14128,6 +19968,50 @@ var IR_DATA = {
         "stkQty": 332,
         "stkVal": 452516,
         "soRatio": 20.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 19082,
+        "stkQty": 321,
+        "stkVal": 437523,
+        "soRatio": 22.93
+      }
+    },
+    {
+      "dealer": "BOX APPLIANCES",
+      "region": "Central",
+      "salesman": "Ahmed Haridi",
+      "category": "ON/OFF",
+      "className": "On/Off_LO",
+      "sku": "LO182H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 33,
+        "soVal": 49368,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -14154,6 +20038,15 @@ var IR_DATA = {
         "stkQty": 101,
         "stkVal": 157055,
         "soRatio": 5.05
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 44,
+        "stkVal": 68420,
+        "soRatio": null
       }
     },
     {
@@ -14180,6 +20073,15 @@ var IR_DATA = {
         "stkQty": 144,
         "stkVal": 833616,
         "soRatio": 48.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 23156,
+        "stkQty": 124,
+        "stkVal": 717836,
+        "soRatio": 31.0
       }
     },
     {
@@ -14205,6 +20107,85 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 23960,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      }
+    },
+    {
+      "dealer": "Basel Fahd Almazyad Trade Est",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "PAC",
+      "className": "PAC - Islamic",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 86835,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Basel Fahd Almazyad Trade Est",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "PAC",
+      "className": "PAC - Islamic",
+      "sku": "APNW55GT3MA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 29950,
         "soRatio": null
       }
     },
@@ -14232,6 +20213,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 60652,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 42457,
+        "stkQty": 3,
+        "stkVal": 18196,
+        "soRatio": 0.43
       }
     },
     {
@@ -14257,6 +20247,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 13,
         "stkVal": 98879,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 23,
+        "stkVal": 174940,
         "soRatio": null
       }
     },
@@ -14284,6 +20283,15 @@ var IR_DATA = {
         "stkQty": 65,
         "stkVal": 528138,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8125,
+        "stkQty": 65,
+        "stkVal": 528138,
+        "soRatio": 65.0
       }
     },
     {
@@ -14310,6 +20318,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 110524,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 4421,
+        "stkQty": 48,
+        "stkVal": 106103,
+        "soRatio": 24.0
       }
     },
     {
@@ -14336,6 +20353,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 130050,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2601,
+        "stkQty": 49,
+        "stkVal": 127449,
+        "soRatio": 49.0
       }
     },
     {
@@ -14361,6 +20387,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 30,
         "stkVal": 68533,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -14388,6 +20423,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 6815,
+        "stkQty": 30,
+        "stkVal": 40890,
+        "soRatio": 6.0
       }
     },
     {
@@ -14414,6 +20458,15 @@ var IR_DATA = {
         "stkQty": 160,
         "stkVal": 248800,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 31100,
+        "stkQty": 150,
+        "stkVal": 233250,
+        "soRatio": 7.5
       }
     },
     {
@@ -14433,6 +20486,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 50,
+        "stkVal": 285700,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14466,6 +20528,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 44210,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 44210,
+        "soRatio": null
       }
     },
     {
@@ -14492,6 +20563,15 @@ var IR_DATA = {
         "stkQty": 19,
         "stkVal": 49419,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 5202,
+        "stkQty": 17,
+        "stkVal": 44217,
+        "soRatio": 8.5
       }
     },
     {
@@ -14511,6 +20591,15 @@ var IR_DATA = {
         "soRatio": 7.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 14276,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14544,6 +20633,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 29390,
         "soRatio": 12.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2449,
+        "stkQty": 11,
+        "stkVal": 26941,
+        "soRatio": 11.0
       }
     },
     {
@@ -14563,6 +20661,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 4589,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14596,6 +20703,15 @@ var IR_DATA = {
         "stkQty": 37,
         "stkVal": 0,
         "soRatio": 9.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 37,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14622,6 +20738,50 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 0,
         "soRatio": 2.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Eid Ali Al Khatir",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "On/Off_LA",
+      "sku": "LA302C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14648,6 +20808,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14667,6 +20836,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1363,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14700,6 +20878,50 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1555,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Eid Ali Al Khatir",
+      "region": "East",
+      "salesman": "Hussam Rajab",
+      "category": "ON/OFF",
+      "className": "On/Off_LO",
+      "sku": "LO242H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1745,
+        "soRatio": null
       }
     },
     {
@@ -14719,6 +20941,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 49,
+        "stkVal": 283661,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14752,6 +20983,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2766,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14778,6 +21018,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14797,6 +21046,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -14830,6 +21088,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 7075,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14855,6 +21122,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 3179,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -14882,6 +21158,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1363,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14908,6 +21193,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 7775,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14933,6 +21227,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 2,
         "stkVal": 4421,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -14960,6 +21263,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 5202,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -14984,6 +21296,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 142,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -15012,6 +21333,15 @@ var IR_DATA = {
         "stkQty": 108,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15037,6 +21367,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 7480,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15064,6 +21403,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 34734,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15083,6 +21431,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -15116,6 +21473,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15135,6 +21501,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -15168,6 +21543,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15194,6 +21578,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15213,6 +21606,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -15246,6 +21648,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15272,6 +21683,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15291,6 +21711,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -15324,6 +21753,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15349,6 +21787,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 2803,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15376,6 +21823,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15402,6 +21858,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15428,6 +21893,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15454,6 +21928,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15480,6 +21963,50 @@ var IR_DATA = {
         "stkQty": 37,
         "stkVal": 214193,
         "soRatio": 37.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNQ40GM3TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 12130,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -15505,6 +22032,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 16250,
         "soRatio": null
       }
     },
@@ -15532,6 +22068,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5245,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15557,6 +22102,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 13195,
         "soRatio": null
       }
     },
@@ -15584,6 +22138,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 23174,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15610,6 +22173,50 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 36478,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS182C2.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 6118,
+        "soRatio": null
       }
     },
     {
@@ -15635,6 +22242,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 12246,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15662,6 +22278,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 2726,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 6815,
+        "soRatio": null
       }
     },
     {
@@ -15687,6 +22312,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 4665,
         "soRatio": null
       }
     },
@@ -15714,6 +22348,50 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 46312,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5789,
+        "stkQty": 6,
+        "stkVal": 34734,
+        "soRatio": 6.0
+      }
+    },
+    {
+      "dealer": "KHALED AL-MUBAIED TRADING",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "className": "PAC - Standard",
+      "sku": "APNQ55GT3EA.ANWGIBR",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 11780,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -15738,6 +22416,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 11,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -15766,6 +22453,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15792,6 +22488,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 2726,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15817,6 +22522,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 1555,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15844,6 +22558,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 57890,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15869,6 +22592,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 10197,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15896,6 +22628,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 4589,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15921,6 +22662,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 19,
         "stkVal": 25897,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -15948,6 +22698,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 11578,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -15974,6 +22733,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 6631,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 6631,
+        "soRatio": null
       }
     },
     {
@@ -15993,6 +22761,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 5202,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16026,6 +22803,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 10904,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 10904,
+        "soRatio": null
       }
     },
     {
@@ -16045,6 +22831,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1555,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16078,6 +22873,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 57890,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 57890,
+        "soRatio": null
       }
     },
     {
@@ -16097,6 +22901,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 3007,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16130,6 +22943,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 6631,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16155,6 +22977,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 13005,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -16182,6 +23013,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 8298,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16207,6 +23047,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 10197,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -16234,6 +23083,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 12953,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16260,6 +23118,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 13064,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16284,6 +23151,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 25,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -16312,6 +23188,15 @@ var IR_DATA = {
         "stkQty": 24,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16336,6 +23221,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 16,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -16364,6 +23258,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16388,6 +23291,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 13,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -16416,6 +23328,15 @@ var IR_DATA = {
         "stkQty": 16,
         "stkVal": 21808,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16441,6 +23362,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 16,
         "stkVal": 23936,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -16468,6 +23398,15 @@ var IR_DATA = {
         "stkQty": 14,
         "stkVal": 21770,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16493,6 +23432,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 4,
         "stkVal": 23156,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -16520,6 +23468,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 29950,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16541,6 +23498,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 5,
         "stVal": 20998,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -16572,6 +23538,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16593,6 +23568,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 10,
         "stVal": 60652,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -16624,6 +23608,15 @@ var IR_DATA = {
         "stkQty": 15,
         "stkVal": 114091,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 114091,
+        "soRatio": null
       }
     },
     {
@@ -16645,6 +23638,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 45,
         "stVal": 365634,
+        "soQty": 5,
+        "soVal": 40626,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 5,
         "soVal": 40626,
         "stkQty": 0,
@@ -16676,6 +23678,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16697,6 +23708,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 2,
         "stVal": 11474,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -16728,6 +23748,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16749,6 +23778,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 10,
         "stVal": 81252,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 81252,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 10,
@@ -16780,6 +23818,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -16799,6 +23846,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 9861,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16832,6 +23888,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 32987,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 32987,
+        "soRatio": null
       }
     },
     {
@@ -16851,6 +23916,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 38470,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16884,6 +23958,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 89107,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 89107,
+        "soRatio": null
       }
     },
     {
@@ -16903,6 +23986,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 17695,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -16936,6 +24028,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 22050,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 22050,
+        "soRatio": null
       }
     },
     {
@@ -16962,6 +24063,85 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 41660,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 41660,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "Fresh",
+      "sku": "NF122C0.NJ1",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 5806,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
+      "region": "Central",
+      "salesman": "Mohamed Atta",
+      "category": "Inverter",
+      "className": "Fresh",
+      "sku": "NF122H0.NJ1",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2076,
+        "stkQty": 1,
+        "stkVal": 2076,
+        "soRatio": 1.0
       }
     },
     {
@@ -16988,6 +24168,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2210,
         "soRatio": 0.11
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 24315,
+        "stkQty": 40,
+        "stkVal": 88419,
+        "soRatio": 3.64
       }
     },
     {
@@ -17014,6 +24203,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 51385,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 18686,
+        "stkQty": 19,
+        "stkVal": 44378,
+        "soRatio": 2.38
       }
     },
     {
@@ -17040,6 +24238,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 5202,
+        "stkQty": 28,
+        "stkVal": 72828,
+        "soRatio": 14.0
       }
     },
     {
@@ -17066,6 +24273,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 35960,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 13,
+        "soVal": 35960,
+        "stkQty": 6,
+        "stkVal": 16597,
+        "soRatio": 0.46
       }
     },
     {
@@ -17092,6 +24308,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 101974,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 16316,
+        "stkQty": 42,
+        "stkVal": 85658,
+        "soRatio": 5.25
       }
     },
     {
@@ -17118,6 +24343,15 @@ var IR_DATA = {
         "stkQty": 40,
         "stkVal": 86353,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 6476,
+        "stkQty": 37,
+        "stkVal": 79877,
+        "soRatio": 12.33
       }
     },
     {
@@ -17144,6 +24378,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 122459,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 29390,
+        "stkQty": 38,
+        "stkVal": 93069,
+        "soRatio": 3.17
       }
     },
     {
@@ -17170,6 +24413,15 @@ var IR_DATA = {
         "stkQty": 15,
         "stkVal": 39191,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2613,
+        "stkQty": 29,
+        "stkVal": 75769,
+        "soRatio": 29.0
       }
     },
     {
@@ -17189,6 +24441,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 9178,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -17222,6 +24483,15 @@ var IR_DATA = {
         "stkQty": 69,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 66,
+        "stkVal": 0,
+        "soRatio": 33.0
       }
     },
     {
@@ -17241,6 +24511,15 @@ var IR_DATA = {
         "soRatio": 0.29
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -17274,6 +24553,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 0,
         "soRatio": 9.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 0,
+        "soRatio": 9.0
       }
     },
     {
@@ -17300,6 +24588,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17319,6 +24616,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -17352,6 +24658,15 @@ var IR_DATA = {
         "stkQty": 25,
         "stkVal": 37234,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 10425,
+        "stkQty": 19,
+        "stkVal": 28298,
+        "soRatio": 2.71
       }
     },
     {
@@ -17373,6 +24688,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 75,
         "stVal": 121484,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 25,
+        "stkVal": 40495,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 25,
@@ -17404,6 +24728,15 @@ var IR_DATA = {
         "stkQty": 23,
         "stkVal": 40680,
         "soRatio": 11.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 17687,
+        "stkQty": 13,
+        "stkVal": 22993,
+        "soRatio": 1.3
       }
     },
     {
@@ -17425,6 +24758,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 50,
         "stVal": 94957,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 25,
+        "stkVal": 47478,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 25,
@@ -17456,6 +24798,15 @@ var IR_DATA = {
         "stkQty": 25,
         "stkVal": 79467,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 3179,
+        "stkQty": 24,
+        "stkVal": 76289,
+        "soRatio": 24.0
       }
     },
     {
@@ -17482,6 +24833,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 33787,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 33787,
+        "soRatio": null
       }
     },
     {
@@ -17501,6 +24861,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -17534,6 +24903,15 @@ var IR_DATA = {
         "stkQty": 33,
         "stkVal": 188562,
         "soRatio": 2.36
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 79996,
+        "stkQty": 15,
+        "stkVal": 85710,
+        "soRatio": 1.07
       }
     },
     {
@@ -17555,6 +24933,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 30,
         "stVal": 177450,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -17586,6 +24973,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 11052,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "Inverter",
+      "className": "New Fresh",
+      "sku": "ND242H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 5532,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -17612,6 +25043,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS182H2.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 32382,
+        "soRatio": null
       }
     },
     {
@@ -17638,6 +25113,120 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "Inverter",
+      "className": "Smart",
+      "sku": "NS242H3.NK2",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 26127,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "sku": "LC182C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 14893,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Majid Golden Trading Company",
+      "region": "west",
+      "salesman": "Ahmed Sharaf",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "sku": "LC242C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 17687,
+        "soRatio": null
       }
     },
     {
@@ -17659,6 +25248,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 2,
         "stVal": 6357,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 6357,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 2,
@@ -17690,6 +25288,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 28945,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 86835,
+        "soRatio": null
       }
     },
     {
@@ -17715,6 +25322,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 7,
         "stkVal": 15473,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -17742,6 +25358,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4671,
         "soRatio": 0.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17767,6 +25392,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 7,
         "stkVal": 18207,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -17794,6 +25428,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 10197,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17820,6 +25463,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 6476,
         "soRatio": 0.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17845,6 +25497,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 3,
         "stkVal": 7348,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -17872,6 +25533,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 6815,
         "soRatio": 1.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17898,6 +25568,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 34734,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17917,6 +25596,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2803,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -17950,6 +25638,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2076,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -17969,6 +25666,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18002,6 +25708,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18028,6 +25743,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4318,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18054,6 +25778,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 2449,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18080,6 +25813,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 5225,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18106,6 +25848,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18125,6 +25876,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18158,6 +25918,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 0,
         "soRatio": 0.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18177,6 +25946,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18210,6 +25988,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 9536,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -18236,6 +26023,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4421,
         "soRatio": 0.1
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18262,6 +26058,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 7803,
         "soRatio": 0.15
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18286,6 +26091,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 19,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -18314,6 +26128,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18333,6 +26156,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18366,6 +26198,15 @@ var IR_DATA = {
         "stkQty": 12,
         "stkVal": 16356,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18391,6 +26232,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 3,
         "stkVal": 4665,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -18418,6 +26268,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 127358,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18444,6 +26303,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 20395,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 18355,
+        "soRatio": null
       }
     },
     {
@@ -18463,6 +26331,15 @@ var IR_DATA = {
         "soRatio": 0.75
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18496,6 +26373,15 @@ var IR_DATA = {
         "stkQty": 36,
         "stkVal": 49068,
         "soRatio": 12.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 13630,
+        "stkQty": 27,
+        "stkVal": 36801,
+        "soRatio": 2.7
       }
     },
     {
@@ -18515,6 +26401,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 20998,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18548,6 +26443,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18574,6 +26478,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 30326,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 30326,
+        "soRatio": null
       }
     },
     {
@@ -18593,6 +26506,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 38030,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18626,6 +26548,15 @@ var IR_DATA = {
         "stkQty": 33,
         "stkVal": 268132,
         "soRatio": 6.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 28,
+        "stkVal": 227506,
+        "soRatio": null
       }
     },
     {
@@ -18652,6 +26583,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 13768,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 9178,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -18678,6 +26618,15 @@ var IR_DATA = {
         "stkQty": 103,
         "stkVal": 140389,
         "soRatio": 20.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 27260,
+        "stkQty": 76,
+        "stkVal": 103588,
+        "soRatio": 3.8
       }
     },
     {
@@ -18704,6 +26653,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18730,6 +26688,15 @@ var IR_DATA = {
         "stkQty": 135,
         "stkVal": 209925,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 24880,
+        "stkQty": 90,
+        "stkVal": 139950,
+        "soRatio": 5.62
       }
     },
     {
@@ -18749,6 +26716,15 @@ var IR_DATA = {
         "soRatio": 1.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18782,6 +26758,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18807,6 +26792,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 2039,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -18834,6 +26828,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4898,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18858,6 +26861,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 53,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -18886,6 +26898,15 @@ var IR_DATA = {
         "stkQty": 18,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18912,6 +26933,15 @@ var IR_DATA = {
         "stkQty": 70,
         "stkVal": 95410,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -18931,6 +26961,15 @@ var IR_DATA = {
         "soRatio": 21.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 42,
+        "stkVal": 154093,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -18964,6 +27003,15 @@ var IR_DATA = {
         "stkQty": 49,
         "stkVal": 205778,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 49,
+        "stkVal": 205778,
+        "soRatio": null
       }
     },
     {
@@ -18990,6 +27038,15 @@ var IR_DATA = {
         "stkQty": 66,
         "stkVal": 351581,
         "soRatio": 16.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 26635,
+        "stkQty": 64,
+        "stkVal": 340927,
+        "soRatio": 12.8
       }
     },
     {
@@ -19016,6 +27073,15 @@ var IR_DATA = {
         "stkQty": 25,
         "stkVal": 151631,
         "soRatio": 3.12
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6065,
+        "stkQty": 24,
+        "stkVal": 145566,
+        "soRatio": 24.0
       }
     },
     {
@@ -19042,6 +27108,15 @@ var IR_DATA = {
         "stkQty": 43,
         "stkVal": 327061,
         "soRatio": 8.6
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 22818,
+        "stkQty": 51,
+        "stkVal": 387910,
+        "soRatio": 17.0
       }
     },
     {
@@ -19068,6 +27143,15 @@ var IR_DATA = {
         "stkQty": 95,
         "stkVal": 771894,
         "soRatio": 5.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 37,
+        "soVal": 300632,
+        "stkQty": 127,
+        "stkVal": 1031900,
+        "soRatio": 3.43
       }
     },
     {
@@ -19094,6 +27178,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 70122,
         "soRatio": 4.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8765,
+        "stkQty": 7,
+        "stkVal": 61357,
+        "soRatio": 7.0
       }
     },
     {
@@ -19113,6 +27206,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 12173,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -19146,6 +27248,15 @@ var IR_DATA = {
         "stkQty": 33,
         "stkVal": 150721,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 34,
+        "stkVal": 155288,
+        "soRatio": null
       }
     },
     {
@@ -19172,6 +27283,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 11474,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 11474,
+        "soRatio": null
       }
     },
     {
@@ -19198,6 +27318,15 @@ var IR_DATA = {
         "stkQty": 45,
         "stkVal": 292127,
         "soRatio": 6.43
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 45,
+        "stkVal": 292127,
+        "soRatio": null
       }
     },
     {
@@ -19224,6 +27353,15 @@ var IR_DATA = {
         "stkQty": 44,
         "stkVal": 357509,
         "soRatio": 8.8
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 44,
+        "stkVal": 357509,
+        "soRatio": null
       }
     },
     {
@@ -19250,6 +27388,15 @@ var IR_DATA = {
         "stkQty": 89,
         "stkVal": 789081,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 62063,
+        "stkQty": 82,
+        "stkVal": 727019,
+        "soRatio": 11.71
       }
     },
     {
@@ -19276,6 +27423,15 @@ var IR_DATA = {
         "stkQty": 28,
         "stkVal": 261448,
         "soRatio": 4.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 28,
+        "stkVal": 261448,
+        "soRatio": null
       }
     },
     {
@@ -19302,6 +27458,15 @@ var IR_DATA = {
         "stkQty": 23,
         "stkVal": 113399,
         "soRatio": 23.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4930,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -19328,6 +27493,15 @@ var IR_DATA = {
         "stkQty": 29,
         "stkVal": 152104,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5245,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -19353,6 +27527,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 22,
         "stkVal": 145142,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -19380,6 +27563,15 @@ var IR_DATA = {
         "stkQty": 36,
         "stkVal": 276983,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 92328,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -19399,6 +27591,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -19432,6 +27633,15 @@ var IR_DATA = {
         "stkQty": 30,
         "stkVal": 162432,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -19458,6 +27668,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -19483,6 +27702,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 18,
         "stkVal": 149975,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -19510,6 +27738,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 37667,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -19535,6 +27772,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 20,
         "stkVal": 196013,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -19562,6 +27808,15 @@ var IR_DATA = {
         "stkQty": 42,
         "stkVal": 107944,
         "soRatio": 42.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2570,
+        "stkQty": 45,
+        "stkVal": 115654,
+        "soRatio": 45.0
       }
     },
     {
@@ -19588,6 +27843,15 @@ var IR_DATA = {
         "stkQty": 31,
         "stkVal": 86890,
         "soRatio": 15.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 33,
+        "stkVal": 92496,
+        "soRatio": null
       }
     },
     {
@@ -19614,6 +27878,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 17419,
         "soRatio": 1.29
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1935,
+        "stkQty": 10,
+        "stkVal": 19354,
+        "soRatio": 10.0
       }
     },
     {
@@ -19633,6 +27906,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -19666,6 +27948,15 @@ var IR_DATA = {
         "stkQty": 686,
         "stkVal": 1516388,
         "soRatio": 11.63
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 52,
+        "soVal": 114945,
+        "stkQty": 680,
+        "stkVal": 1503125,
+        "soRatio": 13.08
       }
     },
     {
@@ -19692,6 +27983,15 @@ var IR_DATA = {
         "stkQty": 121,
         "stkVal": 282619,
         "soRatio": 0.99
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 18686,
+        "stkQty": 1,
+        "stkVal": 2336,
+        "soRatio": 0.12
       }
     },
     {
@@ -19718,6 +28018,15 @@ var IR_DATA = {
         "stkQty": 495,
         "stkVal": 1287495,
         "soRatio": 11.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 29,
+        "soVal": 75429,
+        "stkQty": 570,
+        "stkVal": 1482570,
+        "soRatio": 19.66
       }
     },
     {
@@ -19744,6 +28053,15 @@ var IR_DATA = {
         "stkQty": 165,
         "stkVal": 456412,
         "soRatio": 5.89
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 12,
+        "soVal": 33194,
+        "stkQty": 170,
+        "stkVal": 470242,
+        "soRatio": 14.17
       }
     },
     {
@@ -19770,6 +28088,15 @@ var IR_DATA = {
         "stkQty": 655,
         "stkVal": 1335858,
         "soRatio": 16.79
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 82,
+        "soVal": 167237,
+        "stkQty": 613,
+        "stkVal": 1250200,
+        "soRatio": 7.48
       }
     },
     {
@@ -19796,6 +28123,15 @@ var IR_DATA = {
         "stkQty": 85,
         "stkVal": 183500,
         "soRatio": 3.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 23,
+        "soVal": 49653,
+        "stkQty": 93,
+        "stkVal": 200771,
+        "soRatio": 4.04
       }
     },
     {
@@ -19822,6 +28158,15 @@ var IR_DATA = {
         "stkQty": 517,
         "stkVal": 1266223,
         "soRatio": 9.94
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 68,
+        "soVal": 166544,
+        "stkQty": 482,
+        "stkVal": 1180502,
+        "soRatio": 7.09
       }
     },
     {
@@ -19848,6 +28193,15 @@ var IR_DATA = {
         "stkQty": 100,
         "stkVal": 261274,
         "soRatio": 6.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 23,
+        "soVal": 60093,
+        "stkQty": 93,
+        "stkVal": 242985,
+        "soRatio": 4.04
       }
     },
     {
@@ -19874,6 +28228,15 @@ var IR_DATA = {
         "stkQty": 51,
         "stkVal": 234050,
         "soRatio": 2.43
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 50481,
+        "stkQty": 43,
+        "stkVal": 197336,
+        "soRatio": 3.91
       }
     },
     {
@@ -19900,6 +28263,15 @@ var IR_DATA = {
         "stkQty": 78,
         "stkVal": 388725,
         "soRatio": 19.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 24918,
+        "stkQty": 79,
+        "stkVal": 393709,
+        "soRatio": 15.8
       }
     },
     {
@@ -19926,6 +28298,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -19952,6 +28333,15 @@ var IR_DATA = {
         "stkQty": 1303,
         "stkVal": 2344380,
         "soRatio": 4.7
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1247,
+        "soVal": 2243624,
+        "stkQty": 699,
+        "stkVal": 1257653,
+        "soRatio": 0.56
       }
     },
     {
@@ -19978,6 +28368,15 @@ var IR_DATA = {
         "stkQty": 106,
         "stkVal": 203990,
         "soRatio": 2.36
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 41,
+        "soVal": 78902,
+        "stkQty": 200,
+        "stkVal": 384887,
+        "soRatio": 4.88
       }
     },
     {
@@ -20004,6 +28403,15 @@ var IR_DATA = {
         "stkQty": 426,
         "stkVal": 923161,
         "soRatio": 1.4
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 538,
+        "soVal": 1165869,
+        "stkQty": 200,
+        "stkVal": 433409,
+        "soRatio": 0.37
       }
     },
     {
@@ -20030,6 +28438,15 @@ var IR_DATA = {
         "stkQty": 50,
         "stkVal": 114222,
         "soRatio": 1.85
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 45,
+        "soVal": 102800,
+        "stkQty": 148,
+        "stkVal": 338096,
+        "soRatio": 3.29
       }
     },
     {
@@ -20056,6 +28473,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 8593,
+        "stkQty": 20,
+        "stkVal": 34374,
+        "soRatio": 4.0
+      }
+    },
+    {
+      "dealer": "SAUDI BIN HAMOOD COMPANY",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "ON/OFF",
+      "className": "On/Off_LH",
+      "sku": "LH302C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 34416,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -20082,6 +28543,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 17719,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1363,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -20107,6 +28577,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 1496,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -20134,6 +28613,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 3110,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20160,6 +28648,15 @@ var IR_DATA = {
         "stkQty": 1105,
         "stkVal": 6313970,
         "soRatio": 3.42
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 268,
+        "soVal": 1531352,
+        "stkQty": 1040,
+        "stkVal": 5942560,
+        "soRatio": 3.88
       }
     },
     {
@@ -20186,6 +28683,15 @@ var IR_DATA = {
         "stkQty": 53,
         "stkVal": 313495,
         "soRatio": 1.83
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 17745,
+        "stkQty": 71,
+        "stkVal": 419965,
+        "soRatio": 23.67
       }
     },
     {
@@ -20211,6 +28717,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 87,
         "stkVal": 512430,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -20238,6 +28753,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 13531,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 13,
+        "stkVal": 19545,
+        "soRatio": null
       }
     },
     {
@@ -20264,6 +28788,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 7952,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 23857,
+        "stkQty": 5,
+        "stkVal": 7952,
+        "soRatio": 0.33
       }
     },
     {
@@ -20290,6 +28823,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20309,6 +28851,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 4200,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -20342,6 +28893,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 12130,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 18196,
+        "stkQty": 5,
+        "stkVal": 30326,
+        "soRatio": 1.67
       }
     },
     {
@@ -20367,6 +28927,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 38030,
         "soRatio": null
       }
     },
@@ -20394,6 +28963,15 @@ var IR_DATA = {
         "stkQty": 94,
         "stkVal": 763769,
         "soRatio": 11.75
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 24376,
+        "stkQty": 92,
+        "stkVal": 747518,
+        "soRatio": 30.67
       }
     },
     {
@@ -20413,6 +28991,15 @@ var IR_DATA = {
         "soRatio": 4.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 35061,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -20446,6 +29033,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 4567,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 22836,
+        "soRatio": null
       }
     },
     {
@@ -20465,6 +29061,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -20498,6 +29103,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 32459,
+        "soRatio": null
       }
     },
     {
@@ -20524,6 +29138,15 @@ var IR_DATA = {
         "stkQty": 7,
         "stkVal": 56876,
         "soRatio": 3.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8125,
+        "stkQty": 7,
+        "stkVal": 56876,
+        "soRatio": 7.0
       }
     },
     {
@@ -20550,6 +29173,50 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 26598,
         "soRatio": 1.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 26598,
+        "stkQty": 11,
+        "stkVal": 97527,
+        "soRatio": 3.67
+      }
+    },
+    {
+      "dealer": "STAR Appliances",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNQ21GPLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 4930,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -20576,6 +29243,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 26225,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 26225,
+        "soRatio": null
       }
     },
     {
@@ -20595,6 +29271,15 @@ var IR_DATA = {
         "soRatio": 2.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 11796,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -20628,6 +29313,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20654,6 +29348,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20680,6 +29383,15 @@ var IR_DATA = {
         "stkQty": 27,
         "stkVal": 52256,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 13548,
+        "stkQty": 20,
+        "stkVal": 38708,
+        "soRatio": 2.86
       }
     },
     {
@@ -20706,6 +29418,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20732,6 +29453,15 @@ var IR_DATA = {
         "stkQty": 78,
         "stkVal": 172417,
         "soRatio": 26.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 24315,
+        "stkQty": 67,
+        "stkVal": 148102,
+        "soRatio": 6.09
       }
     },
     {
@@ -20758,6 +29488,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 14014,
         "soRatio": 1.2
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2336,
+        "stkQty": 5,
+        "stkVal": 11678,
+        "soRatio": 5.0
       }
     },
     {
@@ -20784,6 +29523,15 @@ var IR_DATA = {
         "stkQty": 53,
         "stkVal": 137853,
         "soRatio": 8.83
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 36414,
+        "stkQty": 39,
+        "stkVal": 101439,
+        "soRatio": 2.79
       }
     },
     {
@@ -20810,6 +29558,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 22129,
         "soRatio": 1.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2766,
+        "stkQty": 7,
+        "stkVal": 19363,
+        "soRatio": 7.0
       }
     },
     {
@@ -20836,6 +29593,15 @@ var IR_DATA = {
         "stkQty": 57,
         "stkVal": 116250,
         "soRatio": 57.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 49,
+        "soVal": 99934,
+        "stkQty": 8,
+        "stkVal": 16316,
+        "soRatio": 0.16
       }
     },
     {
@@ -20862,6 +29628,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 21588,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 35,
+        "stkVal": 75559,
+        "soRatio": null
       }
     },
     {
@@ -20888,6 +29663,15 @@ var IR_DATA = {
         "stkQty": 9,
         "stkVal": 22043,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2449,
+        "stkQty": 8,
+        "stkVal": 19593,
+        "soRatio": 8.0
       }
     },
     {
@@ -20914,6 +29698,15 @@ var IR_DATA = {
         "stkQty": 8,
         "stkVal": 20902,
         "soRatio": 1.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 18289,
+        "soRatio": null
       }
     },
     {
@@ -20940,6 +29733,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -20959,6 +29761,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 74755,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -20992,6 +29803,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 47,
+        "soVal": 0,
+        "stkQty": 134,
+        "stkVal": 0,
+        "soRatio": 2.85
       }
     },
     {
@@ -21018,6 +29838,15 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 0,
         "soRatio": 1.57
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 0,
+        "soRatio": 4.5
       }
     },
     {
@@ -21044,6 +29873,15 @@ var IR_DATA = {
         "stkQty": 79,
         "stkVal": 0,
         "soRatio": 1.76
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 79,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21070,6 +29908,15 @@ var IR_DATA = {
         "stkQty": 66,
         "stkVal": 0,
         "soRatio": 3.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 63,
+        "stkVal": 0,
+        "soRatio": 31.5
       }
     },
     {
@@ -21089,6 +29936,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 39,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -21122,6 +29978,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 0,
         "soRatio": 3.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21143,6 +30008,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 60,
         "stVal": 89361,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -21174,6 +30048,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21199,6 +30082,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 0,
         "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1769,
         "soRatio": null
       }
     },
@@ -21226,6 +30118,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 1899,
+        "soRatio": null
       }
     },
     {
@@ -21247,6 +30148,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 20,
         "stVal": 63574,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -21278,6 +30188,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21297,6 +30216,15 @@ var IR_DATA = {
         "soRatio": 1.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -21330,6 +30258,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21355,6 +30292,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 1,
         "stkVal": 1555,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -21382,6 +30328,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 1745,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 3490,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -21408,6 +30363,15 @@ var IR_DATA = {
         "stkQty": 34,
         "stkVal": 194276,
         "soRatio": 4.25
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 22856,
+        "stkQty": 30,
+        "stkVal": 171420,
+        "soRatio": 7.5
       }
     },
     {
@@ -21433,6 +30397,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 4,
         "stkVal": 23660,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -21460,6 +30433,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6173,
+        "stkQty": 3,
+        "stkVal": 18519,
+        "soRatio": 3.0
       }
     },
     {
@@ -21485,6 +30467,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 13,
         "stkVal": 75257,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 57890,
         "soRatio": null
       }
     },
@@ -21512,6 +30503,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 17970,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21538,6 +30538,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 35340,
+        "soRatio": null
       }
     },
     {
@@ -21559,6 +30568,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 7,
         "stVal": 17991,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 20561,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 8,
@@ -21590,6 +30608,15 @@ var IR_DATA = {
         "stkQty": 5,
         "stkVal": 14015,
         "soRatio": 5.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 14015,
+        "soRatio": null
       }
     },
     {
@@ -21611,6 +30638,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 5,
         "stVal": 9677,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -21642,6 +30678,15 @@ var IR_DATA = {
         "stkQty": 41,
         "stkVal": 90630,
         "soRatio": 3.73
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 22,
+        "soVal": 48631,
+        "stkQty": 39,
+        "stkVal": 86209,
+        "soRatio": 1.77
       }
     },
     {
@@ -21668,6 +30713,15 @@ var IR_DATA = {
         "stkQty": 25,
         "stkVal": 65025,
         "soRatio": 1.47
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 39015,
+        "stkQty": 30,
+        "stkVal": 78030,
+        "soRatio": 2.0
       }
     },
     {
@@ -21694,6 +30748,15 @@ var IR_DATA = {
         "stkQty": 64,
         "stkVal": 130527,
         "soRatio": 2.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 34671,
+        "stkQty": 97,
+        "stkVal": 197829,
+        "soRatio": 5.71
       }
     },
     {
@@ -21720,6 +30783,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 43177,
         "soRatio": 10.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2159,
+        "stkQty": 19,
+        "stkVal": 41018,
+        "soRatio": 19.0
       }
     },
     {
@@ -21746,6 +30818,15 @@ var IR_DATA = {
         "stkQty": 65,
         "stkVal": 159196,
         "soRatio": 4.64
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 26941,
+        "stkQty": 84,
+        "stkVal": 205731,
+        "soRatio": 7.64
       }
     },
     {
@@ -21772,6 +30853,15 @@ var IR_DATA = {
         "stkQty": 7,
         "stkVal": 18289,
         "soRatio": 7.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 12,
+        "stkVal": 31353,
+        "soRatio": null
       }
     },
     {
@@ -21798,6 +30888,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -21817,6 +30916,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -21850,6 +30958,15 @@ var IR_DATA = {
         "stkQty": 6,
         "stkVal": 0,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -21876,6 +30993,15 @@ var IR_DATA = {
         "stkQty": 61,
         "stkVal": 0,
         "soRatio": 2.03
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 18,
+        "soVal": 0,
+        "stkQty": 43,
+        "stkVal": 0,
+        "soRatio": 2.39
       }
     },
     {
@@ -21902,6 +31028,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 0,
         "soRatio": 2.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -21928,6 +31063,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 4468,
+        "stkQty": 82,
+        "stkVal": 122127,
+        "soRatio": 27.33
       }
     },
     {
@@ -21954,6 +31098,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 3240,
+        "stkQty": 13,
+        "stkVal": 21057,
+        "soRatio": 6.5
       }
     },
     {
@@ -21980,6 +31133,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 5306,
+        "stkQty": 92,
+        "stkVal": 162720,
+        "soRatio": 30.67
       }
     },
     {
@@ -22006,6 +31168,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1899,
+        "stkQty": 14,
+        "stkVal": 26588,
+        "soRatio": 14.0
       }
     },
     {
@@ -22032,6 +31203,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 50,
+        "stkVal": 158935,
+        "soRatio": null
       }
     },
     {
@@ -22053,6 +31233,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 2,
         "stVal": 6757,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -22084,6 +31273,15 @@ var IR_DATA = {
         "stkQty": 248,
         "stkVal": 338024,
         "soRatio": 4.35
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 84,
+        "soVal": 114492,
+        "stkQty": 224,
+        "stkVal": 305312,
+        "soRatio": 2.67
       }
     },
     {
@@ -22103,6 +31301,15 @@ var IR_DATA = {
         "soRatio": 0.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22136,6 +31343,15 @@ var IR_DATA = {
         "stkQty": 90,
         "stkVal": 514260,
         "soRatio": 10.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 39998,
+        "stkQty": 83,
+        "stkVal": 474262,
+        "soRatio": 11.86
       }
     },
     {
@@ -22162,6 +31378,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Techno Best",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNW21GM1TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 16230,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22181,6 +31441,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 8125,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 1,
@@ -22214,6 +31483,50 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 8866,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "Techno Best",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
+      "category": "CAC",
+      "className": "CST",
+      "sku": "ATNW21GPLTA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5414,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22233,6 +31546,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22266,6 +31588,15 @@ var IR_DATA = {
         "stkQty": 22,
         "stkVal": 48631,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 22,
+        "stkVal": 48631,
+        "soRatio": null
       }
     },
     {
@@ -22292,6 +31623,15 @@ var IR_DATA = {
         "stkQty": 16,
         "stkVal": 37371,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2336,
+        "stkQty": 15,
+        "stkVal": 35035,
+        "soRatio": 15.0
       }
     },
     {
@@ -22311,6 +31651,15 @@ var IR_DATA = {
         "soRatio": 2.67
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 18207,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22344,6 +31693,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 27661,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 27661,
+        "soRatio": null
       }
     },
     {
@@ -22363,6 +31721,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22396,6 +31763,15 @@ var IR_DATA = {
         "stkQty": 83,
         "stkVal": 0,
         "soRatio": 83.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 0,
+        "stkQty": 77,
+        "stkVal": 0,
+        "soRatio": 11.0
       }
     },
     {
@@ -22422,6 +31798,15 @@ var IR_DATA = {
         "stkQty": 144,
         "stkVal": 0,
         "soRatio": 36.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 144,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -22448,6 +31833,15 @@ var IR_DATA = {
         "stkQty": 13,
         "stkVal": 0,
         "soRatio": 13.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 0,
+        "soRatio": 0.86
       }
     },
     {
@@ -22474,6 +31868,15 @@ var IR_DATA = {
         "stkQty": 42,
         "stkVal": 0,
         "soRatio": 10.5
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 0,
+        "stkQty": 39,
+        "stkVal": 0,
+        "soRatio": 9.75
       }
     },
     {
@@ -22493,6 +31896,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22526,6 +31938,15 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -22552,6 +31973,15 @@ var IR_DATA = {
         "stkQty": 11,
         "stkVal": 62854,
         "soRatio": 3.67
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 19,
+        "soVal": 108566,
+        "stkQty": 14,
+        "stkVal": 79996,
+        "soRatio": 0.74
       }
     },
     {
@@ -22578,6 +32008,50 @@ var IR_DATA = {
         "stkQty": 60,
         "stkVal": 354900,
         "soRatio": 30.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5915,
+        "stkQty": 58,
+        "stkVal": 343070,
+        "soRatio": 58.0
+      }
+    },
+    {
+      "dealer": "United Vision Trading Company",
+      "region": "west",
+      "salesman": "adel abelmasoud",
+      "category": "CAC",
+      "className": "CCD",
+      "sku": "ABNQ40GM3TA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 6065,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22604,6 +32078,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 7606,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22623,6 +32106,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22656,6 +32148,15 @@ var IR_DATA = {
         "stkQty": 16,
         "stkVal": 41121,
         "soRatio": 16.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 41121,
+        "soRatio": null
       }
     },
     {
@@ -22682,6 +32183,15 @@ var IR_DATA = {
         "stkQty": 10,
         "stkVal": 28029,
         "soRatio": 10.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 28029,
+        "soRatio": null
       }
     },
     {
@@ -22708,6 +32218,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 5806,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1935,
+        "stkQty": 2,
+        "stkVal": 3871,
+        "soRatio": 2.0
       }
     },
     {
@@ -22734,6 +32253,15 @@ var IR_DATA = {
         "stkQty": 21,
         "stkVal": 46420,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 22105,
+        "stkQty": 11,
+        "stkVal": 24315,
+        "soRatio": 1.1
       }
     },
     {
@@ -22760,6 +32288,15 @@ var IR_DATA = {
         "stkQty": 36,
         "stkVal": 93636,
         "soRatio": 4.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 26010,
+        "stkQty": 26,
+        "stkVal": 67626,
+        "soRatio": 2.6
       }
     },
     {
@@ -22786,6 +32323,15 @@ var IR_DATA = {
         "stkQty": 35,
         "stkVal": 71382,
         "soRatio": 5.83
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 19,
+        "soVal": 38750,
+        "stkQty": 16,
+        "stkVal": 32632,
+        "soRatio": 0.84
       }
     },
     {
@@ -22812,6 +32358,15 @@ var IR_DATA = {
         "stkQty": 29,
         "stkVal": 71026,
         "soRatio": 2.07
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 27,
+        "soVal": 66128,
+        "stkQty": 2,
+        "stkVal": 4898,
+        "soRatio": 0.07
       }
     },
     {
@@ -22838,6 +32393,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 9178,
         "soRatio": 0.22
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 9178,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22857,6 +32421,15 @@ var IR_DATA = {
         "soRatio": 4.0
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22890,6 +32463,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -22916,6 +32498,15 @@ var IR_DATA = {
         "stkQty": 155,
         "stkVal": 211265,
         "soRatio": 11.92
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 20445,
+        "stkQty": 150,
+        "stkVal": 204450,
+        "soRatio": 10.0
       }
     },
     {
@@ -22942,6 +32533,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5789,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 5789,
+        "stkQty": 1,
+        "stkVal": 5789,
+        "soRatio": 1.0
       }
     },
     {
@@ -22961,6 +32561,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -22994,6 +32603,15 @@ var IR_DATA = {
         "stkQty": 100,
         "stkVal": 148935,
         "soRatio": 20.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 16383,
+        "stkQty": 139,
+        "stkVal": 207019,
+        "soRatio": 12.64
       }
     },
     {
@@ -23020,6 +32638,50 @@ var IR_DATA = {
         "stkQty": 100,
         "stkVal": 176870,
         "soRatio": 8.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 35374,
+        "stkQty": 30,
+        "stkVal": 53061,
+        "soRatio": 1.5
+      }
+    },
+    {
+      "dealer": "اجهزة البيت الحديث",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "sku": "LC242H0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 1899,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       }
     },
     {
@@ -23045,6 +32707,50 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 100,
         "stkVal": 136300,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 100,
+        "stkVal": 136300,
+        "soRatio": null
+      }
+    },
+    {
+      "dealer": "اجهزة البيت الحديث",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "PAC",
+      "className": "PAC - Islamic",
+      "sku": "APNQ55GT3MA.ANWGIB",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 28945,
         "soRatio": null
       }
     },
@@ -23072,6 +32778,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 205800,
+        "stkQty": 5,
+        "stkVal": 205800,
+        "soRatio": 1.0
       }
     },
     {
@@ -23093,6 +32808,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 1,
         "stVal": 46736,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -23124,6 +32848,15 @@ var IR_DATA = {
         "stkQty": 20,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23148,6 +32881,15 @@ var IR_DATA = {
         "soQty": 0,
         "soVal": 0,
         "stkQty": 15,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
         "stkVal": 0,
         "soRatio": null
       }
@@ -23176,6 +32918,15 @@ var IR_DATA = {
         "stkQty": 15,
         "stkVal": 0,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23202,6 +32953,15 @@ var IR_DATA = {
         "stkQty": 45,
         "stkVal": 67021,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 11915,
+        "stkQty": 50,
+        "stkVal": 74467,
+        "soRatio": 6.25
       }
     },
     {
@@ -23227,6 +32987,50 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 48,
         "stkVal": 84897,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 14150,
+        "stkQty": 50,
+        "stkVal": 88435,
+        "soRatio": 6.25
+      }
+    },
+    {
+      "dealer": "الأجهزة والتجهيزات",
+      "region": "East",
+      "salesman": "Talal Adam",
+      "category": "ON/OFF",
+      "className": "On/Off_LC",
+      "sku": "LT302C0.NK0",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 31787,
         "soRatio": null
       }
     },
@@ -23254,6 +33058,15 @@ var IR_DATA = {
         "stkQty": 28,
         "stkVal": 38164,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23273,6 +33086,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 57890,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -23306,6 +33128,15 @@ var IR_DATA = {
         "stkQty": 4,
         "stkVal": 23960,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 41930,
+        "soRatio": null
       }
     },
     {
@@ -23327,6 +33158,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 20,
         "stVal": 52255,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 0,
         "soVal": 0,
         "stkQty": 0,
@@ -23358,6 +33198,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 11007,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23383,6 +33232,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 4,
         "stkVal": 16798,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -23410,6 +33268,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 5327,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23435,6 +33302,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 4,
         "stkVal": 24261,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
         "soRatio": null
       }
     },
@@ -23462,6 +33338,15 @@ var IR_DATA = {
         "stkQty": 1,
         "stkVal": 8125,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23488,6 +33373,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23514,6 +33408,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4898,
         "soRatio": 0.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23540,6 +33443,15 @@ var IR_DATA = {
         "stkQty": 0,
         "stkVal": 0,
         "soRatio": 0.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23566,6 +33478,15 @@ var IR_DATA = {
         "stkQty": 330,
         "stkVal": 449790,
         "soRatio": 11.38
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23592,6 +33513,15 @@ var IR_DATA = {
         "stkQty": 104,
         "stkVal": 161720,
         "soRatio": 3.47
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     },
     {
@@ -23618,6 +33548,15 @@ var IR_DATA = {
         "stkQty": 26,
         "stkVal": 150514,
         "soRatio": 13.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
       }
     }
   ],
@@ -23645,7 +33584,16 @@ var IR_DATA = {
         "stkVal": 627102,
         "soRatio": 7.5
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 23,
+        "soVal": 288207,
+        "stkQty": 72,
+        "stkVal": 482909,
+        "soRatio": 3.13
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "ABDULAZIZ AL-SHATHERY",
@@ -23669,6 +33617,15 @@ var IR_DATA = {
         "stkQty": 60,
         "stkVal": 145883,
         "soRatio": 2.22
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 29,
+        "soVal": 79624,
+        "stkQty": 65,
+        "stkVal": 179192,
+        "soRatio": 2.24
       },
       "signal": "OPPORTUNITY"
     },
@@ -23695,7 +33652,16 @@ var IR_DATA = {
         "stkVal": 25125,
         "soRatio": 2.82
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 0,
+        "stkQty": 58,
+        "stkVal": 25125,
+        "soRatio": 19.33
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "ABDULAZIZ AL-SHATHERY",
@@ -23719,6 +33685,15 @@ var IR_DATA = {
         "stkQty": 27,
         "stkVal": 155799,
         "soRatio": 1.17
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 48,
+        "soVal": 274272,
+        "stkQty": 29,
+        "stkVal": 167026,
+        "soRatio": 0.6
       },
       "signal": "OPPORTUNITY"
     },
@@ -23745,6 +33720,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -23762,6 +33746,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -23795,6 +33788,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -23812,6 +33814,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -23845,6 +33856,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -23870,6 +33890,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -23887,6 +33916,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -23920,7 +33958,16 @@ var IR_DATA = {
         "stkVal": 188824,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ABU YASER BUSINESS CENTER",
@@ -23945,7 +33992,16 @@ var IR_DATA = {
         "stkVal": 707360,
         "soRatio": 23.45
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ABU YASER BUSINESS CENTER",
@@ -23970,7 +34026,16 @@ var IR_DATA = {
         "stkVal": 127760,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ABU YASER BUSINESS CENTER",
@@ -23995,6 +34060,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24012,6 +34086,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24045,6 +34128,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24062,6 +34154,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24095,6 +34196,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24112,6 +34222,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24145,6 +34264,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24162,6 +34290,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24195,6 +34332,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24220,6 +34366,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24237,6 +34392,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24262,6 +34426,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24295,7 +34468,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 24,
+        "stkVal": 57738,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "AHMED SHAR HAFEEZ AL MARHABI",
@@ -24319,6 +34501,15 @@ var IR_DATA = {
         "stkQty": 69,
         "stkVal": 102028,
         "soRatio": 6.27
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 10758,
+        "stkQty": 77,
+        "stkVal": 106263,
+        "soRatio": 11.0
       },
       "signal": "OVERSTOCK"
     },
@@ -24345,6 +34536,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24362,6 +34562,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24395,6 +34604,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24412,6 +34630,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24445,6 +34672,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24462,6 +34698,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24495,6 +34740,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24512,6 +34766,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24545,6 +34808,15 @@ var IR_DATA = {
         "stkVal": 6528,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 4489,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -24568,6 +34840,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 52,
         "stkVal": 58609,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 0,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -24595,6 +34876,15 @@ var IR_DATA = {
         "stkVal": 75257,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 22,
+        "stkVal": 129569,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -24612,6 +34902,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24645,6 +34944,15 @@ var IR_DATA = {
         "stkVal": 360834,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 46073,
+        "stkQty": 54,
+        "stkVal": 372935,
+        "soRatio": 9.0
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -24670,6 +34978,15 @@ var IR_DATA = {
         "stkVal": 4984,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 13064,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -24687,6 +35004,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 222,
+        "stkVal": 318714,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24720,7 +35046,16 @@ var IR_DATA = {
         "stkVal": 173003,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 114280,
+        "stkQty": 10,
+        "stkVal": 58723,
+        "soRatio": 0.5
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "AL MOJEL.CO",
@@ -24737,6 +35072,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24770,6 +35114,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24787,6 +35140,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 34545,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24820,6 +35182,15 @@ var IR_DATA = {
         "stkVal": 10501,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 7,
+        "stkVal": 10501,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -24837,6 +35208,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 13,
+        "stkVal": 75257,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24870,6 +35250,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -24887,6 +35276,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -24920,7 +35318,16 @@ var IR_DATA = {
         "stkVal": 144333,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL MUTTMAKEN TREDING EST",
@@ -24945,7 +35352,16 @@ var IR_DATA = {
         "stkVal": 2918,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL MUTTMAKEN TREDING EST",
@@ -24970,7 +35386,16 @@ var IR_DATA = {
         "stkVal": 283661,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL MUTTMAKEN TREDING EST",
@@ -24987,6 +35412,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25012,6 +35446,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25045,6 +35488,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25062,6 +35514,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25095,6 +35556,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25120,6 +35590,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25137,6 +35616,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25170,6 +35658,15 @@ var IR_DATA = {
         "stkVal": 74849,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 25,
+        "stkVal": 49931,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -25193,6 +35690,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 7,
         "stkVal": 10564,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 6,
+        "stkVal": 9075,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -25220,6 +35726,15 @@ var IR_DATA = {
         "stkVal": 47866,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 29347,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -25237,6 +35752,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25270,6 +35794,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25287,6 +35820,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25320,6 +35862,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25345,6 +35896,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25362,6 +35922,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25395,7 +35964,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL SAHA Alalamiyah co",
@@ -25420,7 +35998,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL SAHA Alalamiyah co",
@@ -25445,7 +36032,16 @@ var IR_DATA = {
         "stkVal": 132631,
         "soRatio": 1.8
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL SAHA Alalamiyah co",
@@ -25470,7 +36066,16 @@ var IR_DATA = {
         "stkVal": 306817,
         "soRatio": 1.06
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL SAHA Alalamiyah co",
@@ -25487,6 +36092,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25520,6 +36134,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25537,6 +36160,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25570,6 +36202,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25595,6 +36236,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25612,6 +36262,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25645,7 +36304,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "AL- ASMA TRADING COMPANY",
@@ -25669,6 +36337,15 @@ var IR_DATA = {
         "stkQty": 2,
         "stkVal": 4898,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 18645,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       },
       "signal": "OPPORTUNITY"
     },
@@ -25695,23 +36372,7 @@ var IR_DATA = {
         "stkVal": 34210,
         "soRatio": 0.56
       },
-      "signal": "OPPORTUNITY"
-    },
-    {
-      "dealer": "AL- ASMA TRADING COMPANY",
-      "region": "East",
-      "salesman": "Talal Adam",
-      "category": "PAC",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25726,6 +36387,40 @@ var IR_DATA = {
       "dealer": "AL- ASMA TRADING COMPANY",
       "region": "East",
       "salesman": "Talal Adam",
+      "category": "PAC",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "AL- ASMA TRADING COMPANY",
+      "region": "East",
+      "salesman": "Talal Adam",
       "category": "Window",
       "jan": {
         "stQty": 0,
@@ -25737,6 +36432,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25770,6 +36474,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25787,6 +36500,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25820,6 +36542,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25845,6 +36576,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25862,6 +36602,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25895,6 +36644,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25912,6 +36670,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -25945,6 +36712,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25970,6 +36746,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -25987,6 +36772,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26020,6 +36814,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26037,6 +36840,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26070,6 +36882,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26095,6 +36916,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26112,6 +36942,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26137,6 +36976,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26170,7 +37018,16 @@ var IR_DATA = {
         "stkVal": 6289,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ALhawwaa AL Bard Est.",
@@ -26195,7 +37052,16 @@ var IR_DATA = {
         "stkVal": 1769,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ALhawwaa AL Bard Est.",
@@ -26212,6 +37078,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26245,6 +37120,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26262,6 +37146,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26295,6 +37188,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26312,6 +37214,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26345,6 +37256,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26370,6 +37290,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26387,6 +37316,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26420,7 +37358,16 @@ var IR_DATA = {
         "stkVal": 2601,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ARTAL ARABIA COMPANY LIMITED",
@@ -26445,7 +37392,16 @@ var IR_DATA = {
         "stkVal": 29986,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ARTAL ARABIA COMPANY LIMITED",
@@ -26470,7 +37426,16 @@ var IR_DATA = {
         "stkVal": 23156,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "ARTAL ARABIA COMPANY LIMITED",
@@ -26487,6 +37452,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26520,7 +37494,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 39,
+        "stkVal": 311692,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Abduaalah Ali-Dhamin&Sons",
@@ -26545,7 +37528,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 44,
+        "soVal": 115583,
+        "stkQty": 184,
+        "stkVal": 435283,
+        "soRatio": 4.18
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "Abduaalah Ali-Dhamin&Sons",
@@ -26570,7 +37562,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 72,
+        "soVal": 14551,
+        "stkQty": 675,
+        "stkVal": 6105,
+        "soRatio": 9.38
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Abduaalah Ali-Dhamin&Sons",
@@ -26595,7 +37596,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 4,
+        "soVal": 22856,
+        "stkQty": 27,
+        "stkVal": 154630,
+        "soRatio": 6.75
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Abduaalah Ali-Dhamin&Sons",
@@ -26612,6 +37622,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26645,7 +37664,16 @@ var IR_DATA = {
         "stkVal": 111968,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Abdul Ahad Mohammed Abed Fadel",
@@ -26670,7 +37698,16 @@ var IR_DATA = {
         "stkVal": 62755,
         "soRatio": 13.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Abdul Ahad Mohammed Abed Fadel",
@@ -26695,7 +37732,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 4.73
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Abdul Ahad Mohammed Abed Fadel",
@@ -26720,7 +37766,16 @@ var IR_DATA = {
         "stkVal": 140946,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Abdul Ahad Mohammed Abed Fadel",
@@ -26737,6 +37792,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26762,6 +37826,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26795,6 +37868,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26812,6 +37894,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26845,6 +37936,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26862,6 +37962,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26895,6 +38004,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -26912,6 +38030,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -26945,6 +38072,15 @@ var IR_DATA = {
         "stkVal": 65175,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 45,
+        "stkVal": 65175,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -26970,7 +38106,16 @@ var IR_DATA = {
         "stkVal": 28945,
         "soRatio": 1.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Abdullah Saleh Al-Sultan and Sons",
@@ -26987,6 +38132,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27012,6 +38166,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27045,6 +38208,15 @@ var IR_DATA = {
         "stkVal": 611400,
         "soRatio": 42.5
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 35626,
+        "stkQty": 247,
+        "stkVal": 592810,
+        "soRatio": 16.47
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -27069,6 +38241,15 @@ var IR_DATA = {
         "stkQty": 697,
         "stkVal": 960929,
         "soRatio": 16.21
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 20749,
+        "stkQty": 686,
+        "stkVal": 944845,
+        "soRatio": 49.0
       },
       "signal": "OVERSTOCK"
     },
@@ -27095,7 +38276,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Air conditioning land",
@@ -27112,6 +38302,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27145,6 +38344,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27170,6 +38378,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27187,6 +38404,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 11,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27220,6 +38446,15 @@ var IR_DATA = {
         "stkVal": 28945,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 28945,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -27245,6 +38480,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27262,6 +38506,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27295,6 +38548,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27312,6 +38574,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27345,6 +38616,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27370,6 +38650,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27387,6 +38676,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27420,6 +38718,15 @@ var IR_DATA = {
         "stkVal": 266388,
         "soRatio": 63.5
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 6528,
+        "stkQty": 124,
+        "stkVal": 259860,
+        "soRatio": 41.33
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -27445,6 +38752,15 @@ var IR_DATA = {
         "stkVal": 770673,
         "soRatio": 8.2
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 73,
+        "soVal": 56398,
+        "stkQty": 640,
+        "stkVal": 714275,
+        "soRatio": 8.77
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -27462,6 +38778,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27495,6 +38820,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27520,6 +38854,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27537,6 +38880,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 18299,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27570,7 +38922,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Alharkan",
@@ -27595,6 +38956,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27620,6 +38990,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27637,6 +39016,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27670,6 +39058,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27687,6 +39084,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27720,6 +39126,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27737,6 +39152,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27770,6 +39194,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27787,6 +39220,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27820,6 +39262,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27845,6 +39296,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27862,6 +39322,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27895,6 +39364,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27912,6 +39390,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -27945,6 +39432,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27970,6 +39466,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -27987,6 +39492,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28020,6 +39534,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28037,6 +39560,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28070,6 +39602,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28095,6 +39636,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28112,6 +39662,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28137,6 +39696,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28170,6 +39738,15 @@ var IR_DATA = {
         "stkVal": 81435,
         "soRatio": 18.5
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 26,
+        "stkVal": 56833,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28195,6 +39772,15 @@ var IR_DATA = {
         "stkVal": 185005,
         "soRatio": 2.27
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 42,
+        "soVal": 61470,
+        "stkQty": 54,
+        "stkVal": 77442,
+        "soRatio": 1.29
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -28212,6 +39798,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28245,6 +39840,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28262,6 +39866,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28295,6 +39908,15 @@ var IR_DATA = {
         "stkVal": 152472,
         "soRatio": 7.62
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 61,
+        "stkVal": 152472,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28320,6 +39942,15 @@ var IR_DATA = {
         "stkVal": 10472,
         "soRatio": 2.56
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 30,
+        "soVal": 13630,
+        "stkQty": 66,
+        "stkVal": 0,
+        "soRatio": 2.2
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -28343,6 +39974,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 18,
         "stkVal": 104202,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 36,
+        "stkVal": 212022,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -28370,6 +40010,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28387,6 +40036,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28420,6 +40078,15 @@ var IR_DATA = {
         "stkVal": 72638,
         "soRatio": 10.67
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 43,
+        "stkVal": 103413,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28445,6 +40112,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 23.67
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 0,
+        "stkQty": 107,
+        "stkVal": 0,
+        "soRatio": 21.4
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28462,6 +40138,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 4,
+        "stkVal": 23156,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28495,6 +40180,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28512,6 +40206,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28545,6 +40248,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28562,6 +40274,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28595,6 +40316,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28620,6 +40350,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -28637,6 +40376,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28670,6 +40418,15 @@ var IR_DATA = {
         "stkVal": 93195,
         "soRatio": 42.0
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 42,
+        "stkVal": 93195,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28694,6 +40451,15 @@ var IR_DATA = {
         "stkQty": 196,
         "stkVal": 0,
         "soRatio": 39.2
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 0,
+        "stkQty": 185,
+        "stkVal": 0,
+        "soRatio": 30.83
       },
       "signal": "OVERSTOCK"
     },
@@ -28720,7 +40486,16 @@ var IR_DATA = {
         "stkVal": 17367,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "BAYOTECOM",
@@ -28737,6 +40512,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28770,7 +40554,16 @@ var IR_DATA = {
         "stkVal": 320444,
         "soRatio": 11.5
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 19,
+        "soVal": 97790,
+        "stkQty": 50,
+        "stkVal": 347708,
+        "soRatio": 2.63
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "BIN MOMEN TRADING CO.",
@@ -28795,7 +40588,16 @@ var IR_DATA = {
         "stkVal": 575257,
         "soRatio": 1.98
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 53,
+        "soVal": 125081,
+        "stkQty": 215,
+        "stkVal": 506013,
+        "soRatio": 4.06
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "BIN MOMEN TRADING CO.",
@@ -28820,7 +40622,16 @@ var IR_DATA = {
         "stkVal": 335194,
         "soRatio": 5.5
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 37,
+        "soVal": 32206,
+        "stkQty": 290,
+        "stkVal": 299583,
+        "soRatio": 7.84
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "BIN MOMEN TRADING CO.",
@@ -28845,6 +40656,15 @@ var IR_DATA = {
         "stkVal": 245702,
         "soRatio": 7.17
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 11830,
+        "stkQty": 42,
+        "stkVal": 240792,
+        "soRatio": 21.0
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28862,6 +40682,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -28895,6 +40724,15 @@ var IR_DATA = {
         "stkVal": 764883,
         "soRatio": 6.11
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 9,
+        "soVal": 61433,
+        "stkQty": 124,
+        "stkVal": 860409,
+        "soRatio": 13.78
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28920,7 +40758,16 @@ var IR_DATA = {
         "stkVal": 312849,
         "soRatio": 3.83
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 21500,
+        "stkQty": 262,
+        "stkVal": 655658,
+        "soRatio": 26.2
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "BOX APPLIANCES",
@@ -28944,6 +40791,15 @@ var IR_DATA = {
         "stkQty": 552,
         "stkVal": 609571,
         "soRatio": 11.04
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 52,
+        "soVal": 68450,
+        "stkQty": 532,
+        "stkVal": 619600,
+        "soRatio": 10.23
       },
       "signal": "OVERSTOCK"
     },
@@ -28970,6 +40826,15 @@ var IR_DATA = {
         "stkVal": 833616,
         "soRatio": 48.0
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 47116,
+        "stkQty": 124,
+        "stkVal": 717836,
+        "soRatio": 15.5
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -28987,6 +40852,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29020,6 +40894,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29037,6 +40920,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29070,6 +40962,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29095,7 +40996,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 20,
+        "stkVal": 116785,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Basel Fahd Almazyad Trade Est",
@@ -29112,6 +41022,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29145,6 +41064,15 @@ var IR_DATA = {
         "stkVal": 687669,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 8,
+        "soVal": 50582,
+        "stkQty": 91,
+        "stkVal": 721274,
+        "soRatio": 11.38
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -29169,6 +41097,15 @@ var IR_DATA = {
         "stkQty": 100,
         "stkVal": 240574,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 7022,
+        "stkQty": 97,
+        "stkVal": 233552,
+        "soRatio": 32.33
       },
       "signal": "OVERSTOCK"
     },
@@ -29195,6 +41132,15 @@ var IR_DATA = {
         "stkVal": 317333,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 25,
+        "soVal": 37915,
+        "stkQty": 180,
+        "stkVal": 274140,
+        "soRatio": 7.2
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -29220,6 +41166,15 @@ var IR_DATA = {
         "stkVal": 285700,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 50,
+        "stkVal": 285700,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -29245,6 +41200,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29262,6 +41226,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29295,6 +41268,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29312,6 +41294,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29345,6 +41336,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29362,6 +41362,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29395,6 +41404,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29412,6 +41430,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29445,6 +41472,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29470,6 +41506,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29487,6 +41532,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29512,6 +41566,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29545,6 +41608,15 @@ var IR_DATA = {
         "stkVal": 141884,
         "soRatio": 59.0
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 7651,
+        "stkQty": 56,
+        "stkVal": 134233,
+        "soRatio": 18.67
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -29570,6 +41642,15 @@ var IR_DATA = {
         "stkVal": 2918,
         "soRatio": 8.83
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 53,
+        "stkVal": 3108,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -29587,6 +41668,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 49,
+        "stkVal": 283661,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29620,6 +41710,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29645,6 +41744,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29662,6 +41770,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29695,6 +41812,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29712,6 +41838,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29745,6 +41880,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29762,6 +41906,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29795,7 +41948,16 @@ var IR_DATA = {
         "stkVal": 2766,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "FUTURE OF ELECTRICAL DEVICES",
@@ -29820,7 +41982,16 @@ var IR_DATA = {
         "stkVal": 19391,
         "soRatio": 11.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "FUTURE OF ELECTRICAL DEVICES",
@@ -29837,6 +42008,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29862,6 +42042,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29895,6 +42084,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29912,6 +42110,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -29945,6 +42152,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29970,6 +42186,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -29987,6 +42212,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30012,6 +42246,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30045,7 +42288,16 @@ var IR_DATA = {
         "stkVal": 9623,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
@@ -30070,7 +42322,16 @@ var IR_DATA = {
         "stkVal": 7480,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
@@ -30095,7 +42356,16 @@ var IR_DATA = {
         "stkVal": 34734,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Fakhamah  Air Conditioning For Home Appliances Est",
@@ -30112,6 +42382,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30137,6 +42416,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30170,6 +42458,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30187,6 +42484,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30220,6 +42526,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30245,6 +42560,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30262,6 +42586,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30295,7 +42628,16 @@ var IR_DATA = {
         "stkVal": 2803,
         "soRatio": 0.01
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Ghassan Trading Est.",
@@ -30312,6 +42654,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30345,7 +42696,16 @@ var IR_DATA = {
         "stkVal": 214193,
         "soRatio": 37.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Ghassan Trading Est.",
@@ -30362,6 +42722,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30395,6 +42764,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30412,6 +42790,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30445,6 +42832,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30470,6 +42866,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30487,6 +42892,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30520,6 +42934,15 @@ var IR_DATA = {
         "stkVal": 64897,
         "soRatio": 1.5
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 12130,
+        "stkQty": 4,
+        "stkVal": 29445,
+        "soRatio": 2.0
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -30543,6 +42966,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 5,
         "stkVal": 12246,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 3,
+        "stkVal": 6118,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -30570,6 +43002,15 @@ var IR_DATA = {
         "stkVal": 2726,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 8,
+        "stkVal": 11480,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -30595,7 +43036,16 @@ var IR_DATA = {
         "stkVal": 46312,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 17569,
+        "stkQty": 6,
+        "stkVal": 34734,
+        "soRatio": 2.0
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "KHALED AL-MUBAIED TRADING",
@@ -30612,6 +43062,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30645,6 +43104,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -30662,6 +43130,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30695,7 +43172,16 @@ var IR_DATA = {
         "stkVal": 4281,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
@@ -30720,7 +43206,16 @@ var IR_DATA = {
         "stkVal": 57890,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "KHODEER A.ALRAHMAN ALSHEHR",
@@ -30737,6 +43232,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30762,6 +43266,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30795,7 +43308,16 @@ var IR_DATA = {
         "stkVal": 14787,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Kaya Alawala Trading Co",
@@ -30820,7 +43342,16 @@ var IR_DATA = {
         "stkVal": 25897,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Kaya Alawala Trading Co",
@@ -30845,7 +43376,16 @@ var IR_DATA = {
         "stkVal": 11578,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Kaya Alawala Trading Co",
@@ -30862,6 +43402,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30887,6 +43436,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30920,7 +43478,16 @@ var IR_DATA = {
         "stkVal": 11833,
         "soRatio": 1.67
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 11833,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "LAITH ALARAB TRAD EST.",
@@ -30937,6 +43504,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 12459,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -30970,7 +43546,16 @@ var IR_DATA = {
         "stkVal": 57890,
         "soRatio": 1.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 10,
+        "stkVal": 57890,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "LAITH ALARAB TRAD EST.",
@@ -30987,6 +43572,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 2,
+        "stkVal": 3007,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31020,6 +43614,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31037,6 +43640,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31070,6 +43682,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31095,6 +43716,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31112,6 +43742,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31145,6 +43784,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31162,6 +43810,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31195,6 +43852,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31220,6 +43886,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31237,6 +43912,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31262,6 +43946,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31295,7 +43988,16 @@ var IR_DATA = {
         "stkVal": 64149,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "MAHDI HADI  AL-Yami Trade EST",
@@ -31320,7 +44022,16 @@ var IR_DATA = {
         "stkVal": 67514,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "MAHDI HADI  AL-Yami Trade EST",
@@ -31345,7 +44056,16 @@ var IR_DATA = {
         "stkVal": 53106,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "MAHDI HADI  AL-Yami Trade EST",
@@ -31362,6 +44082,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31395,6 +44124,15 @@ var IR_DATA = {
         "stkVal": 447172,
         "soRatio": 9.67
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 40626,
+        "stkQty": 58,
+        "stkVal": 447172,
+        "soRatio": 11.6
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -31420,7 +44158,16 @@ var IR_DATA = {
         "stkVal": 448711,
         "soRatio": 9.65
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 59,
+        "soVal": 141034,
+        "stkQty": 245,
+        "stkVal": 573656,
+        "soRatio": 4.15
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "MOHAMMED MOUBARAK ALMASOUDI",
@@ -31444,6 +44191,15 @@ var IR_DATA = {
         "stkQty": 220,
         "stkVal": 279141,
         "soRatio": 73.33
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 21,
+        "soVal": 31291,
+        "stkQty": 200,
+        "stkVal": 249339,
+        "soRatio": 9.52
       },
       "signal": "OVERSTOCK"
     },
@@ -31470,6 +44226,15 @@ var IR_DATA = {
         "stkVal": 188562,
         "soRatio": 2.36
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 14,
+        "soVal": 79996,
+        "stkQty": 15,
+        "stkVal": 85710,
+        "soRatio": 1.07
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -31495,6 +44260,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31512,6 +44286,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31545,7 +44328,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 5532,
+        "stkQty": 30,
+        "stkVal": 69562,
+        "soRatio": 15.0
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Majid Golden Trading Company",
@@ -31568,6 +44360,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 2,
         "stkVal": 6357,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 22,
+        "stkVal": 38938,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -31595,6 +44396,15 @@ var IR_DATA = {
         "stkVal": 28945,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 15,
+        "stkVal": 86835,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -31620,6 +44430,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31637,6 +44456,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31670,6 +44498,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31687,6 +44524,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31720,6 +44566,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31745,6 +44600,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -31762,6 +44626,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31795,7 +44668,16 @@ var IR_DATA = {
         "stkVal": 62373,
         "soRatio": 2.25
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Maqam Alreem Trading Company",
@@ -31820,7 +44702,16 @@ var IR_DATA = {
         "stkVal": 6815,
         "soRatio": 1.67
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Maqam Alreem Trading Company",
@@ -31845,7 +44736,16 @@ var IR_DATA = {
         "stkVal": 34734,
         "soRatio": 2.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Maqam Alreem Trading Company",
@@ -31862,6 +44762,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31887,6 +44796,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31920,7 +44838,16 @@ var IR_DATA = {
         "stkVal": 16871,
         "soRatio": 1.0
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 1,
+        "stkVal": 2803,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "Milestones Trust Foundation",
@@ -31945,7 +44872,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 3,
+        "soVal": 9536,
+        "stkQty": 1,
+        "stkVal": 0,
+        "soRatio": 0.33
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "Milestones Trust Foundation",
@@ -31962,6 +44898,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -31995,6 +44940,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32012,6 +44966,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32045,7 +45008,16 @@ var IR_DATA = {
         "stkVal": 12224,
         "soRatio": 0.12
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
@@ -32070,7 +45042,16 @@ var IR_DATA = {
         "stkVal": 21021,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
@@ -32095,7 +45076,16 @@ var IR_DATA = {
         "stkVal": 127358,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "Mohammed Hassan Omar Al Amoudi Trade Est",
@@ -32112,6 +45102,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32137,6 +45136,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32170,6 +45178,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32187,6 +45204,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32220,6 +45246,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32245,6 +45280,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32262,6 +45306,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32295,6 +45348,15 @@ var IR_DATA = {
         "stkVal": 20395,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 9,
+        "stkVal": 18355,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -32320,7 +45382,16 @@ var IR_DATA = {
         "stkVal": 49068,
         "soRatio": 12.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 10,
+        "soVal": 13630,
+        "stkQty": 27,
+        "stkVal": 36801,
+        "soRatio": 2.7
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "NAJD APPLIANCES",
@@ -32337,6 +45408,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32362,6 +45442,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32395,6 +45484,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32412,6 +45510,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32445,6 +45552,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32470,6 +45586,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32487,6 +45612,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32520,6 +45654,15 @@ var IR_DATA = {
         "stkVal": 357486,
         "soRatio": 9.6
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 43,
+        "stkVal": 316860,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -32544,6 +45687,15 @@ var IR_DATA = {
         "stkQty": 3,
         "stkVal": 13768,
         "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 9178,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
       },
       "signal": "OPPORTUNITY"
     },
@@ -32570,7 +45722,16 @@ var IR_DATA = {
         "stkVal": 350314,
         "soRatio": 23.8
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 36,
+        "soVal": 52140,
+        "stkQty": 166,
+        "stkVal": 243538,
+        "soRatio": 4.61
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "OCEAN AIR CONDITIONING",
@@ -32587,6 +45748,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32620,6 +45790,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32637,6 +45816,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32670,6 +45858,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32687,6 +45884,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32720,6 +45926,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32745,6 +45960,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32762,6 +45986,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32795,6 +46028,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32812,6 +46054,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32845,6 +46096,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32862,6 +46122,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32895,6 +46164,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -32920,7 +46198,16 @@ var IR_DATA = {
         "stkVal": 6938,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "SAMA AL KHER",
@@ -32945,7 +46232,16 @@ var IR_DATA = {
         "stkVal": 95410,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "SAMA AL KHER",
@@ -32962,6 +46258,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -32987,6 +46292,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33020,6 +46334,15 @@ var IR_DATA = {
         "stkVal": 5140408,
         "soRatio": 12.36
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 68,
+        "soVal": 529482,
+        "stkQty": 602,
+        "stkVal": 4144568,
+        "soRatio": 8.85
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -33044,6 +46367,15 @@ var IR_DATA = {
         "stkQty": 3035,
         "stkVal": 7424797,
         "soRatio": 7.24
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 315,
+        "soVal": 765685,
+        "stkQty": 2912,
+        "stkVal": 7151279,
+        "soRatio": 9.24
       },
       "signal": "OVERSTOCK"
     },
@@ -33070,6 +46402,15 @@ var IR_DATA = {
         "stkVal": 3608078,
         "soRatio": 2.9
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1888,
+        "soVal": 3635567,
+        "stkQty": 1267,
+        "stkVal": 2448419,
+        "soRatio": 0.67
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -33094,6 +46435,15 @@ var IR_DATA = {
         "stkQty": 1245,
         "stkVal": 7139895,
         "soRatio": 3.54
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 271,
+        "soVal": 1549097,
+        "stkQty": 1111,
+        "stkVal": 6362525,
+        "soRatio": 4.1
       },
       "signal": "HEALTHY"
     },
@@ -33120,7 +46470,16 @@ var IR_DATA = {
         "stkVal": 21483,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 15,
+        "soVal": 23857,
+        "stkQty": 18,
+        "stkVal": 27497,
+        "soRatio": 1.2
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "SNOW WHITE",
@@ -33137,6 +46496,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33170,6 +46538,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33187,6 +46564,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33220,6 +46606,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33237,6 +46632,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33270,7 +46674,16 @@ var IR_DATA = {
         "stkVal": 941223,
         "soRatio": 4.96
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 11,
+        "soVal": 82225,
+        "stkQty": 142,
+        "stkVal": 1102855,
+        "soRatio": 12.91
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "STAR Appliances",
@@ -33295,7 +46708,16 @@ var IR_DATA = {
         "stkVal": 654207,
         "soRatio": 8.74
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 84,
+        "soVal": 181762,
+        "stkQty": 211,
+        "stkVal": 523802,
+        "soRatio": 2.51
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "STAR Appliances",
@@ -33320,7 +46742,16 @@ var IR_DATA = {
         "stkVal": 3300,
         "soRatio": 2.74
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 53,
+        "soVal": 3490,
+        "stkQty": 332,
+        "stkVal": 3668,
+        "soRatio": 6.26
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "STAR Appliances",
@@ -33345,7 +46776,16 @@ var IR_DATA = {
         "stkVal": 217936,
         "soRatio": 4.75
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 29029,
+        "stkQty": 33,
+        "stkVal": 189939,
+        "soRatio": 6.6
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "STAR Appliances",
@@ -33370,6 +46810,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33387,6 +46836,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33420,23 +46878,7 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
-    },
-    {
-      "dealer": "Sahl Najd Trading",
-      "region": "Central",
-      "salesman": "Ahmed Abd Elhaleem",
-      "category": "ON/OFF",
-      "jan": {
-        "stQty": 0,
-        "stVal": 0,
-        "soQty": 0,
-        "soVal": 0,
-        "stkQty": 0,
-        "stkVal": 0,
-        "soRatio": null
-      },
-      "feb": {
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33451,6 +46893,40 @@ var IR_DATA = {
       "dealer": "Sahl Najd Trading",
       "region": "Central",
       "salesman": "Ahmed Abd Elhaleem",
+      "category": "ON/OFF",
+      "jan": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
+    },
+    {
+      "dealer": "Sahl Najd Trading",
+      "region": "Central",
+      "salesman": "Ahmed Abd Elhaleem",
       "category": "PAC",
       "jan": {
         "stQty": 0,
@@ -33462,6 +46938,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33495,6 +46980,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33512,6 +47006,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33545,6 +47048,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33562,6 +47074,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33595,6 +47116,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33612,6 +47142,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33645,6 +47184,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33662,6 +47210,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33695,6 +47252,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33720,6 +47286,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33737,6 +47312,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33770,6 +47354,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33787,6 +47380,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33820,6 +47422,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33845,6 +47456,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33862,6 +47482,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33895,6 +47524,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33912,6 +47550,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -33945,6 +47592,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33970,6 +47626,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -33987,6 +47652,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34020,6 +47694,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34045,6 +47728,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34062,6 +47754,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34095,6 +47796,15 @@ var IR_DATA = {
         "stkVal": 93227,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 16,
+        "stkVal": 93230,
+        "soRatio": null
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -34120,6 +47830,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34137,6 +47856,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34170,6 +47898,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34187,6 +47924,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34220,6 +47966,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34245,6 +48000,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34262,6 +48026,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34295,6 +48068,15 @@ var IR_DATA = {
         "stkVal": 541418,
         "soRatio": 3.36
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 66,
+        "soVal": 151416,
+        "stkQty": 294,
+        "stkVal": 674744,
+        "soRatio": 4.45
+      },
       "signal": "HEALTHY"
     },
     {
@@ -34319,6 +48101,15 @@ var IR_DATA = {
         "stkQty": 317,
         "stkVal": 338024,
         "soRatio": 3.48
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 123,
+        "soVal": 129405,
+        "stkQty": 518,
+        "stkVal": 796738,
+        "soRatio": 4.21
       },
       "signal": "HEALTHY"
     },
@@ -34345,6 +48136,15 @@ var IR_DATA = {
         "stkVal": 514260,
         "soRatio": 10.0
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 7,
+        "soVal": 39998,
+        "stkQty": 83,
+        "stkVal": 474262,
+        "soRatio": 11.86
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -34362,6 +48162,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34395,6 +48204,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 0.0
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 6,
+        "soVal": 29770,
+        "stkQty": 1,
+        "stkVal": 8866,
+        "soRatio": 0.17
+      },
       "signal": "OPPORTUNITY"
     },
     {
@@ -34419,6 +48237,15 @@ var IR_DATA = {
         "stkQty": 55,
         "stkVal": 131870,
         "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 1,
+        "soVal": 2336,
+        "stkQty": 54,
+        "stkVal": 129534,
+        "soRatio": 54.0
       },
       "signal": "OVERSTOCK"
     },
@@ -34445,6 +48272,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": 30.2
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 18,
+        "soVal": 0,
+        "stkQty": 286,
+        "stkVal": 0,
+        "soRatio": 15.89
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -34470,7 +48306,16 @@ var IR_DATA = {
         "stkVal": 417754,
         "soRatio": 14.2
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 20,
+        "soVal": 114481,
+        "stkQty": 72,
+        "stkVal": 423066,
+        "soRatio": 3.6
+      },
+      "signal": "HEALTHY"
     },
     {
       "dealer": "Techno Best",
@@ -34487,6 +48332,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34520,7 +48374,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 2,
+        "soVal": 13671,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": 0.0
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "United Vision Trading Company",
@@ -34545,7 +48408,16 @@ var IR_DATA = {
         "stkVal": 366599,
         "soRatio": 3.8
       },
-      "signal": "HEALTHY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 69,
+        "soVal": 164106,
+        "stkQty": 83,
+        "stkVal": 202493,
+        "soRatio": 1.2
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "United Vision Trading Company",
@@ -34570,6 +48442,15 @@ var IR_DATA = {
         "stkVal": 211265,
         "soRatio": 10.53
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 17,
+        "soVal": 20445,
+        "stkQty": 153,
+        "stkVal": 204450,
+        "soRatio": 9.0
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -34589,6 +48470,15 @@ var IR_DATA = {
       "feb": {
         "stQty": 1,
         "stVal": 5789,
+        "soQty": 1,
+        "soVal": 5789,
+        "stkQty": 1,
+        "stkVal": 5789,
+        "soRatio": 1.0
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
         "soQty": 1,
         "soVal": 5789,
         "stkQty": 1,
@@ -34620,6 +48510,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34637,6 +48536,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34670,6 +48578,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34687,6 +48604,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34720,6 +48646,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34737,6 +48672,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34770,6 +48714,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34787,6 +48740,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34820,6 +48782,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34845,6 +48816,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34862,6 +48842,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34895,6 +48884,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34912,6 +48910,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -34945,6 +48952,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34970,6 +48986,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -34987,6 +49012,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35020,6 +49054,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35037,6 +49080,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35070,6 +49122,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35087,6 +49148,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35120,6 +49190,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35145,6 +49224,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35162,6 +49250,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35195,6 +49292,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35212,6 +49318,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35245,6 +49360,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35270,6 +49394,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35287,6 +49420,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35320,6 +49462,15 @@ var IR_DATA = {
         "stkVal": 462104,
         "soRatio": 17.65
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 32,
+        "soVal": 53656,
+        "stkQty": 269,
+        "stkVal": 396380,
+        "soRatio": 8.41
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -35345,7 +49496,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 5,
+        "stkVal": 28945,
+        "soRatio": null
+      },
+      "signal": "OVERSTOCK"
     },
     {
       "dealer": "اجهزة البيت الحديث",
@@ -35362,6 +49522,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35395,7 +49564,16 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
-      "signal": "INACTIVE"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 5,
+        "soVal": 205800,
+        "stkQty": 5,
+        "stkVal": 205800,
+        "soRatio": 1.0
+      },
+      "signal": "OPPORTUNITY"
     },
     {
       "dealer": "الأجهزة والتجهيزات",
@@ -35412,6 +49590,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35445,6 +49632,15 @@ var IR_DATA = {
         "stkVal": 190082,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 16,
+        "soVal": 26064,
+        "stkQty": 110,
+        "stkVal": 194689,
+        "soRatio": 6.88
+      },
       "signal": "OVERSTOCK"
     },
     {
@@ -35468,6 +49664,15 @@ var IR_DATA = {
         "soVal": 0,
         "stkQty": 14,
         "stkVal": 81850,
+        "soRatio": null
+      },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 17,
+        "stkVal": 99820,
         "soRatio": null
       },
       "signal": "OVERSTOCK"
@@ -35495,6 +49700,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35512,6 +49726,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35545,6 +49768,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35562,6 +49794,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35595,6 +49836,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35612,6 +49862,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35645,6 +49904,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35662,6 +49930,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35695,6 +49972,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35720,6 +50006,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35737,6 +50032,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35770,6 +50074,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35787,6 +50100,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35820,6 +50142,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35845,6 +50176,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -35862,6 +50202,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -35895,7 +50244,16 @@ var IR_DATA = {
         "stkVal": 65518,
         "soRatio": null
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "شركه نجوم العمران للمقاولات",
@@ -35920,7 +50278,16 @@ var IR_DATA = {
         "stkVal": 4898,
         "soRatio": 0.14
       },
-      "signal": "OPPORTUNITY"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "شركه نجوم العمران للمقاولات",
@@ -35945,7 +50312,16 @@ var IR_DATA = {
         "stkVal": 611510,
         "soRatio": 7.36
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "شركه نجوم العمران للمقاولات",
@@ -35970,7 +50346,16 @@ var IR_DATA = {
         "stkVal": 150514,
         "soRatio": 13.0
       },
-      "signal": "OVERSTOCK"
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "signal": "INACTIVE"
     },
     {
       "dealer": "شركه نجوم العمران للمقاولات",
@@ -35995,6 +50380,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36020,6 +50414,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36037,6 +50440,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36070,6 +50482,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36095,6 +50516,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36112,6 +50542,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36145,6 +50584,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36162,6 +50610,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36195,6 +50652,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36220,6 +50686,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36237,6 +50712,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36270,6 +50754,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36287,6 +50780,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36320,6 +50822,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36337,6 +50848,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36370,6 +50890,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36387,6 +50916,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36420,6 +50958,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36437,6 +50984,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
@@ -36470,6 +51026,15 @@ var IR_DATA = {
         "stkVal": 0,
         "soRatio": null
       },
+      "mar": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
       "signal": "INACTIVE"
     },
     {
@@ -36487,6 +51052,15 @@ var IR_DATA = {
         "soRatio": null
       },
       "feb": {
+        "stQty": 0,
+        "stVal": 0,
+        "soQty": 0,
+        "soVal": 0,
+        "stkQty": 0,
+        "stkVal": 0,
+        "soRatio": null
+      },
+      "mar": {
         "stQty": 0,
         "stVal": 0,
         "soQty": 0,
