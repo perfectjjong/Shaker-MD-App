@@ -59593,38 +59593,46 @@ function renderTab0() {
         }}]
     });
 
-    // Chart 0c: Regional vs Category
+    // Chart 0c: Regional vs Category - 선택된 모든 달 표시 (Jan/Feb/Mar 포함)
     const lbl0c = document.getElementById('lbl0c');
     destroyChart('c0c');
+    const _0c_allM = mAllSel();
+    const _0c_colors = ['#2E75B6','#4A90D9','#1F4E79','#3A5F8A','#2D4A70'];
     if (FILTERS.region.length !== 1) {
-        const rMap = {};
-        fDealers.forEach(d => {
-            if (!rMap[d.region]) rMap[d.region] = {prev:0, cur:0};
-            if (pk) rMap[d.region].prev += (d[pk]||{}).soQty||0;
-            rMap[d.region].cur += (d[ck]||{}).soQty||0;
-        });
-        const rNames = Object.keys(rMap).sort();
+        const fRegions = filteredByRegion();
+        const rNames = fRegions.map(r => r.name).sort();
         if (lbl0c) lbl0c.textContent = 'Regional Sellout (QTY)';
-        const ds0c = both
-            ? [{ label:P+' SO', data:rNames.map(r=>rMap[r].prev), backgroundColor:'#2E75B6', borderRadius:4 },
-               { label:C+' SO', data:rNames.map(r=>rMap[r].cur), backgroundColor:'#1F4E79', borderRadius:4 }]
-            : [{ label:C+' SO', data:rNames.map(r=>rMap[r].cur), backgroundColor:'#1F4E79', borderRadius:4 }];
+        const ds0c = both && _0c_allM.length > 0
+            ? _0c_allM.map((mk, i) => {
+                const lbl = mk.charAt(0).toUpperCase() + mk.slice(1);
+                return { label:lbl+' SO', data:rNames.map(rn => {
+                    const reg = fRegions.find(x => x.name === rn);
+                    return reg ? (reg[mk]||{}).soQty||0 : 0;
+                }), backgroundColor:_0c_colors[i]||'#1F4E79', borderRadius:4 };
+              })
+            : [{ label:C+' SO', data:rNames.map(rn => {
+                const reg = fRegions.find(x => x.name === rn);
+                return reg ? (reg[ck]||{}).soQty||0 : 0;
+            }), backgroundColor:'#1F4E79', borderRadius:4 }];
         window.charts.c0c = new Chart(document.getElementById('chart0c'), {
             type:'bar', data:{ labels:rNames, datasets:ds0c }, options: barOpts
         });
     } else {
-        const cMap = {};
-        fDC.forEach(d => {
-            if (!cMap[d.category]) cMap[d.category] = {prev:0, cur:0};
-            if (pk) cMap[d.category].prev += (d[pk]||{}).soQty||0;
-            cMap[d.category].cur += (d[ck]||{}).soQty||0;
-        });
-        const cNames = Object.keys(cMap).sort();
+        const fCats = filteredByCategory();
+        const cNames = fCats.map(c => c.name).sort();
         if (lbl0c) lbl0c.textContent = `Category Sellout — ${FILTERS.region[0]}`;
-        const ds0c = both
-            ? [{ label:P+' SO', data:cNames.map(c=>cMap[c].prev), backgroundColor:'#2E75B6', borderRadius:4 },
-               { label:C+' SO', data:cNames.map(c=>cMap[c].cur), backgroundColor:'#1F4E79', borderRadius:4 }]
-            : [{ label:C+' SO', data:cNames.map(c=>cMap[c].cur), backgroundColor:'#1F4E79', borderRadius:4 }];
+        const ds0c = both && _0c_allM.length > 0
+            ? _0c_allM.map((mk, i) => {
+                const lbl = mk.charAt(0).toUpperCase() + mk.slice(1);
+                return { label:lbl+' SO', data:cNames.map(cn => {
+                    const cat = fCats.find(x => x.name === cn);
+                    return cat ? (cat[mk]||{}).soQty||0 : 0;
+                }), backgroundColor:_0c_colors[i]||'#1F4E79', borderRadius:4 };
+              })
+            : [{ label:C+' SO', data:cNames.map(cn => {
+                const cat = fCats.find(x => x.name === cn);
+                return cat ? (cat[ck]||{}).soQty||0 : 0;
+            }), backgroundColor:'#1F4E79', borderRadius:4 }];
         window.charts.c0c = new Chart(document.getElementById('chart0c'), {
             type:'bar', data:{ labels:cNames, datasets:ds0c }, options: barOpts
         });
