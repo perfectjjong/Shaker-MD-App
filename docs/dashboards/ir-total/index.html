@@ -59234,31 +59234,30 @@ function resetAllFilters() {
    ========================================================= */
 /* ---- Month context helpers ---- */
 const MONTH_ORDER = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-function mCur() {
+const AVAIL_MONTHS = ['jan','feb','mar']; // months available in this dashboard
+// "All selected" = getSelected() returns [] → treat as all AVAIL_MONTHS
+function mAllSel() {
   const sel = FILTERS.month.map(m => m.toLowerCase());
-  if (sel.length === 0) return 'mar';
-  if (sel.length === 1) return sel[0];
-  // 여러 달 선택 시 가장 최신 달 반환
-  return MONTH_ORDER.filter(m => sel.includes(m)).pop() || sel[sel.length - 1];
+  if (sel.length === 0) return AVAIL_MONTHS.slice(); // All selected
+  return MONTH_ORDER.filter(m => sel.includes(m));
+}
+function mCur() {
+  const all = mAllSel();
+  if (all.length === 0) return 'mar';
+  return all[all.length - 1]; // latest month
 }
 function mPrev() {
-  const sel = FILTERS.month.map(m => m.toLowerCase());
-  if (sel.length <= 1) {
+  const all = mAllSel();
+  if (all.length <= 1) {
     const c = mCur();
     const ci = MONTH_ORDER.indexOf(c);
     return ci > 0 ? MONTH_ORDER[ci - 1] : null;
   }
-  // 여러 달 선택 시 가장 이른 달 반환 (Jan+Feb+Mar → Jan)
-  const sorted = MONTH_ORDER.filter(m => sel.includes(m));
-  return sorted.length >= 2 ? sorted[0] : null;
+  return all[0]; // earliest month
 }
 function mCL() { return mCur().charAt(0).toUpperCase() + mCur().slice(1); }
 function mPL() { const p = mPrev(); return p ? p.charAt(0).toUpperCase() + p.slice(1) : ''; }
-function mAllSel() {
-  const sel = FILTERS.month.map(m => m.toLowerCase());
-  return MONTH_ORDER.filter(m => sel.includes(m));
-}
-function showBoth() { return FILTERS.month.length !== 1; }
+function showBoth() { return mAllSel().length !== 1; }
 
 const AGG_KEYS = ['stQty','stVal','soQty','soVal','stkQty','stkVal'];
 function zeroPeriod() { return {stQty:0,stVal:0,soQty:0,soVal:0,stkQty:0,stkVal:0}; }
