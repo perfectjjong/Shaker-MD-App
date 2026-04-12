@@ -60511,16 +60511,21 @@ function buildTab7() {
     }
     const latest = weeks[weeks.length - 1];
     const prev = weeks.length > 1 ? weeks[weeks.length - 2] : null;
+    // 현재 선택된 월 기준 라벨 동적 생성
+    const ck7 = mCur();
+    const C7 = mCL();
+    const MONTH_END_DATES = {'jan':'31 Jan','feb':'28 Feb','mar':'31 Mar','apr':'30 Apr','may':'31 May','jun':'30 Jun','jul':'31 Jul','aug':'31 Aug','sep':'30 Sep','oct':'31 Oct','nov':'30 Nov','dec':'31 Dec'};
+    const curDate7 = MONTH_END_DATES[ck7] || C7;
 
     document.getElementById('tab7').innerHTML = `
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (28 Feb)</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Monthly stock as of 28 Feb</div></div>
+      <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (${curDate7})</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Monthly stock as of ${curDate7}</div></div>
       <div class="kpi-card"><div class="kpi-label">UPDATED ON-HAND (${latest.label})</div><div class="kpi-value" id="k7-updatedOnhand">-</div><div class="kpi-change" id="k7-updatedOnhandSub"></div></div>
       <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">ADJUSTED STOCK (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#2E75B6">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">LATEST OUD QTY (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">MOS (ON-HAND / 28 Feb)</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">Based on Feb Sellout</div></div>
+      <div class="kpi-card"><div class="kpi-label">MOS (ON-HAND / ${curDate7})</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">Based on ${C7} Sellout</div></div>
       <div class="kpi-card"><div class="kpi-label">MOS (UPDATED ON-HAND)</div><div class="kpi-value" id="k7-mosUpdated">-</div><div class="kpi-change">On-Hand + delivered OUD</div></div>
       <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">MOS (ON-HAND + OUD)</div><div class="kpi-value" id="k7-mosAdj" style="color:#2E75B6">-</div><div class="kpi-change">Including pending deliveries</div></div>
       <div class="kpi-card"><div class="kpi-label">DELIVERED QTY</div><div class="kpi-value" id="k7-delivered" style="color:var(--opportunity)">-</div><div class="kpi-change" id="k7-deliveredSub"></div></div>
@@ -60779,7 +60784,7 @@ function renderTab7() {
     set('k7-mosOnhand', fmtRatio(mosOnHand));
     set('k7-mosAdj', fmtRatio(mosAdj));
     set('k7-updatedOnhand', fmtNum(updatedOnHand));
-    set('k7-updatedOnhandSub', `Feb Stock + ${fmtNum(totalDelivered)} delivered`);
+    set('k7-updatedOnhandSub', `${mCL()} Stock + ${fmtNum(totalDelivered)} delivered`);
     set('k7-mosUpdated', fmtRatio(mosUpdated));
 
     // Datalabel options for stacked bars (show value inside segment if > 0)
