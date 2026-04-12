@@ -58999,7 +58999,7 @@ function agg(arr, period) {
         return a;
     }, {stQty:0, stVal:0, soQty:0, soVal:0, stkQty:0, stkVal:0});
 }
-const barOpts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
+const barOpts = { responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}, datalabels:{display:true, anchor:'end', align:'top', color:'#333', font:{size:10, weight:'bold'}, formatter:v=>v>0?fmtNum(v):''}}, scales:{y:{beginAtZero:true, ticks:{callback:v=>fmtNum(v)}}} };
 
 /* =========================================================
    MULTI-SELECT DROPDOWN COMPONENT
@@ -59253,7 +59253,7 @@ function mPrev() {
     const ci = MONTH_ORDER.indexOf(c);
     return ci > 0 ? MONTH_ORDER[ci - 1] : null;
   }
-  return all[0]; // earliest month
+  return all[all.length - 2]; // second-to-last month (one before current)
 }
 function mCL() { return mCur().charAt(0).toUpperCase() + mCur().slice(1); }
 function mPL() { const p = mPrev(); return p ? p.charAt(0).toUpperCase() + p.slice(1) : ''; }
@@ -59309,7 +59309,7 @@ function filteredByDealer() {
         if (!map[d.dealer]) map[d.dealer] = { name:d.dealer, region:d.region, salesman:d.salesman, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[d.dealer].jan, d.jan);
         addPeriod(map[d.dealer].feb, d.feb);
-        if (d.mar) addPeriod(map[d.dealer].mar, d.mar);
+        addPeriod(map[d.dealer].mar, d.mar || zeroPeriod());
     });
     return Object.values(map).map(d => { d.signal = calcSignal(d[ck]); return d; });
 }
@@ -59322,7 +59322,7 @@ function filteredByRegion() {
         if (!map[d.region]) map[d.region] = { name:d.region, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[d.region].jan, d.jan);
         addPeriod(map[d.region].feb, d.feb);
-        if (d.mar) addPeriod(map[d.region].mar, d.mar);
+        addPeriod(map[d.region].mar, d.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59338,7 +59338,7 @@ function filteredBySalesman() {
         }
         addPeriod(map[d.salesman].jan, d.jan);
         addPeriod(map[d.salesman].feb, d.feb);
-        if (d.mar) addPeriod(map[d.salesman].mar, d.mar);
+        addPeriod(map[d.salesman].mar, d.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59352,7 +59352,7 @@ function filteredByManager() {
         if (!map[s.manager]) map[s.manager] = { name:s.manager, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[s.manager].jan, s.jan);
         addPeriod(map[s.manager].feb, s.feb);
-        if (s.mar) addPeriod(map[s.manager].mar, s.mar);
+        addPeriod(map[s.manager].mar, s.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59365,7 +59365,7 @@ function filteredByCategory() {
         if (!map[d.category]) map[d.category] = { name:d.category, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[d.category].jan, d.jan);
         addPeriod(map[d.category].feb, d.feb);
-        if (d.mar) addPeriod(map[d.category].mar, d.mar);
+        addPeriod(map[d.category].mar, d.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59408,7 +59408,7 @@ function filteredByClass() {
         if (!map[key]) map[key] = { name:d.className, category:d.category, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[key].jan, d.jan);
         addPeriod(map[key].feb, d.feb);
-        if (d.mar) addPeriod(map[key].mar, d.mar);
+        addPeriod(map[key].mar, d.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59421,7 +59421,7 @@ function filteredTopSkus() {
         if (!map[d.sku]) map[d.sku] = { sku:d.sku, category:d.category, className:d.className, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
         addPeriod(map[d.sku].jan, d.jan);
         addPeriod(map[d.sku].feb, d.feb);
-        if (d.mar) addPeriod(map[d.sku].mar, d.mar);
+        addPeriod(map[d.sku].mar, d.mar || zeroPeriod());
     });
     return Object.values(map);
 }
@@ -59717,12 +59717,20 @@ function renderTab1() {
 
     // Chart 1a
     destroyChart('c1a');
+    const _1a_both = showBoth(), _1a_allM = mAllSel();
+    const _1a_colors = ['#1F4E79','#2E75B6','#4A90D9'];
+    const _1a_ds = _1a_both
+        ? _1a_allM.map((mk, i) => {
+            const lbl = mk.charAt(0).toUpperCase() + mk.slice(1);
+            return { label:lbl+' Sellout', data:fCats.map(c=>(c[mk]||{}).soQty||0), backgroundColor:_1a_colors[i]||'#1F4E79', borderRadius:4 };
+          })
+        : [
+            { label:C+' Sell-Thru', data:fCats.map(c=>(c[ck]||{}).stQty||0), backgroundColor:'#1F4E79', borderRadius:4 },
+            { label:C+' Sellout', data:fCats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }
+          ];
     window.charts.c1a = new Chart(document.getElementById('chart1a'), {
         type: 'bar',
-        data: { labels: fCats.map(c=>c.name), datasets: [
-            { label:C+' Sell-Thru', data: fCats.map(c=>(c[ck]||{}).stQty||0), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:C+' Sellout', data: fCats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }
-        ]},
+        data: { labels: fCats.map(c=>c.name), datasets: _1a_ds },
         options: barOpts
     });
 
@@ -60198,7 +60206,7 @@ function renderTab5() {
             if (!skuMap[s.sku]) skuMap[s.sku] = { sku:s.sku, className:s.className, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod() };
             addPeriod(skuMap[s.sku].jan, s.jan);
             addPeriod(skuMap[s.sku].feb, s.feb);
-            if (s.mar) addPeriod(skuMap[s.sku].mar, s.mar);
+            addPeriod(skuMap[s.sku].mar, s.mar || zeroPeriod());
         });
         const skuArr = Object.values(skuMap).sort((a,b) => ((b[ck]||{}).soQty||0) - ((a[ck]||{}).soQty||0));
 
