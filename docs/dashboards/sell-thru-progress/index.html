@@ -1102,6 +1102,20 @@ function renderTopTable(){
       am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:itgt.mar_tq||0,mar_tv:itgt.mar_tv||0};
     });
   }
+  // Add accounts with RSM FCST but no txn/ir_target data (e.g. 2025-only sell-thru accounts)
+  if(_rsmStore&&_rsmStore.value){
+    var _mlRsm=RAW.master||[];
+    Object.keys(_rsmStore.value).forEach(function(sid){
+      var nid=isNaN(+sid)?sid:+sid;
+      if(am[nid]) return; // already in table
+      var rsmVal=_rsmStore.value[sid]||0;
+      if(!rsmVal) return; // no RSM FCST value
+      var nm=String(nid),tm='IR_Others',st='Active';
+      for(var mi=0;mi<_mlRsm.length;mi++){if(+_mlRsm[mi].id===nid){nm=_mlRsm[mi].name||nm;tm=_mlRsm[mi].team||tm;st=_mlRsm[mi].status||st;break;}}
+      if(!SEL.team.has(tm)||!SEL.div.has(getDiv(tm))) return; // filtered out
+      am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
+    });
+  }
   _tblData=Object.values(am);
   // Update AR Only count
   var arOnlyCntEl=document.getElementById('arOnlyCount');
