@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "wos_targets": {
+      "OR": 8,
+      "IR": 24
+    },
+    "date": "2026-04-14",
+    "generated_at": "2026-W16",
+    "stock_source": "sell-thru-progress/data.json remain.current",
+    "limitation": "Stock is category-level aggregate. Model-level breakdown planned for B-full."
+  },
+  "by_channel": {
+    "extra": {
+      "channel_type": "OR",
+      "current_stock": 4131,
+      "q2_weekly_rate": 779.9,
+      "wos_target_weeks": 8,
+      "target_stock": 6239,
+      "recommended_supply": 2108,
+      "status": "understock",
+      "stock_note": "aggregate (model-level breakdown not available)"
+    },
+    "bh": {
+      "channel_type": "IR",
+      "current_stock": 413,
+      "q2_weekly_rate": 912.2,
+      "wos_target_weeks": 24,
+      "target_stock": 21893,
+      "recommended_supply": 21480,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "sws": {
+      "channel_type": "OR",
+      "current_stock": 769,
+      "q2_weekly_rate": 145.2,
+      "wos_target_weeks": 8,
+      "target_stock": 1162,
+      "recommended_supply": 393,
+      "status": "understock",
+      "stock_note": "estimated from scale_factor"
+    },
+    "blackbox": {
+      "channel_type": "OR",
+      "current_stock": 656,
+      "q2_weekly_rate": 123.7,
+      "wos_target_weeks": 8,
+      "target_stock": 990,
+      "recommended_supply": 334,
+      "status": "understock",
+      "stock_note": "estimated from scale_factor"
+    },
+    "almanea": {
+      "channel_type": "OR",
+      "current_stock": 1535,
+      "q2_weekly_rate": 290.0,
+      "wos_target_weeks": 8,
+      "target_stock": 2320,
+      "recommended_supply": 785,
+      "status": "understock",
+      "stock_note": "estimated from scale_factor"
+    },
+    "bm": {
+      "channel_type": "IR",
+      "current_stock": 304,
+      "q2_weekly_rate": 67.1,
+      "wos_target_weeks": 24,
+      "target_stock": 1610,
+      "recommended_supply": 1306,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "tamkeen": {
+      "channel_type": "IR",
+      "current_stock": 415,
+      "q2_weekly_rate": 91.5,
+      "wos_target_weeks": 24,
+      "target_stock": 2196,
+      "recommended_supply": 1781,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "zagzoog": {
+      "channel_type": "IR",
+      "current_stock": 157,
+      "q2_weekly_rate": 34.6,
+      "wos_target_weeks": 24,
+      "target_stock": 830,
+      "recommended_supply": 673,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "alghanem": {
+      "channel_type": "IR",
+      "current_stock": 120,
+      "q2_weekly_rate": 26.4,
+      "wos_target_weeks": 24,
+      "target_stock": 634,
+      "recommended_supply": 514,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "alshathri": {
+      "channel_type": "IR",
+      "current_stock": 335,
+      "q2_weekly_rate": 73.7,
+      "wos_target_weeks": 24,
+      "target_stock": 1769,
+      "recommended_supply": 1434,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "dhamin": {
+      "channel_type": "IR",
+      "current_stock": 304,
+      "q2_weekly_rate": 67.1,
+      "wos_target_weeks": 24,
+      "target_stock": 1610,
+      "recommended_supply": 1306,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    },
+    "star": {
+      "channel_type": "IR",
+      "current_stock": 288,
+      "q2_weekly_rate": 63.4,
+      "wos_target_weeks": 24,
+      "target_stock": 1522,
+      "recommended_supply": 1234,
+      "status": "critical",
+      "stock_note": "estimated from scale_factor"
+    }
+  }
+}

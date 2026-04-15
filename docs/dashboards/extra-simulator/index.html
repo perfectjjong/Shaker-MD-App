@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LG AC 시뮬레이터</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; }
+  .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+  .status-overstock  { color: #e53e3e; }
+  .status-ok         { color: #38a169; }
+  .status-understock { color: #d69e2e; }
+  .status-critical   { color: #c53030; font-weight: bold; }
+  .warn-badge { background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 2px 8px; font-size: 12px; }
+</style>
+</head>
+<body class="p-4">
+
+<!-- HEADER -->
+<div class="flex flex-wrap items-center gap-4 mb-4 bg-white rounded-xl p-4 shadow-sm">
+  <h1 class="text-xl font-bold text-gray-800">LG AC 시뮬레이터</h1>
+  <div class="flex items-center gap-2">
+    <label class="text-sm text-gray-600">채널</label>
+    <select id="sel-channel" class="border rounded px-2 py-1 text-sm"></select>
+  </div>
+  <div class="flex items-center gap-2">
+    <label class="text-sm text-gray-600">제품</label>
+    <select id="sel-product" class="border rounded px-2 py-1 text-sm"></select>
+  </div>
+  <span id="data-date" class="text-xs text-gray-400 ml-auto"></span>
+</div>
+
+<!-- 3-PANEL GRID -->
+<div class="grid gap-4">
+
+  <!-- Row 1: Panel 1 + Panel 2 -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+
+    <!-- PANEL 1: Forecast Chart -->
+    <div class="panel">
+      <h2 class="text-sm font-semibold text-gray-700 mb-3">📈 수요 예측 (Q2~Q4 2026)</h2>
+      <div id="p1-kpi" class="flex gap-4 mb-3 text-sm"></div>
+      <div style="height: 220px"><canvas id="chart-forecast"></canvas></div>
+    </div>
+
+    <!-- PANEL 2: Price Simulator -->
+    <div class="panel">
+      <h2 class="text-sm font-semibold text-gray-700 mb-3">💰 가격 포지셔닝 시뮬레이터</h2>
+      <div class="mb-4">
+        <label class="text-xs text-gray-600">시뮬레이션 가격 (SAR)</label>
+        <div class="flex items-center gap-3 mt-1">
+          <input type="range" id="price-slider" min="500" max="5000" step="50"
+                 class="flex-1" oninput="onPriceChange(this.value)"/>
+          <span id="price-display" class="text-lg font-bold w-24 text-right">-</span>
+        </div>
+        <div id="sim-delta" class="text-sm text-gray-600 mt-1"></div>
+      </div>
+      <div style="height: 160px"><canvas id="chart-gap"></canvas></div>
+      <div id="rec-range" class="mt-3 text-xs text-gray-600"></div>
+    </div>
+  </div>
+
+  <!-- Row 2: Panel 3 -->
+  <div class="panel">
+    <h2 class="text-sm font-semibold text-gray-700 mb-3">📦 공급 계획 (WOS 기반)</h2>
+    <div id="p3-note" class="warn-badge mb-3 inline-block"></div>
+    <div id="supply-table" class="overflow-x-auto"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── SimulationEngine ─────────────────────────────────────────────────────
+class SimulationEngine {
+  constructor(forecastData, simParams, supplyData) {
+    this.forecast   = forecastData;
+    this.simParams  = simParams;
+    this.supplyData = supplyData;
+    this.currentChannel = null;
+    this.currentProduct = null;
+    this.basePrice      = null;
+    this.simPrice       = null;
+  }
+
+  getChannels() {
+    return Object.keys(this.forecast.by_channel || {});
+  }
+
+  getProducts(channel) {
+    const ch = this.forecast.by_channel?.[channel] || {};
+    return Object.keys(ch).filter(k => {
+      const prod = ch[k];
+      return prod.data_quality === 'ok' && prod.forecast && Object.keys(prod.forecast).length > 0;
+    });
+  }
+
+  select(channel, product) {
+    this.currentChannel = channel;
+    this.currentProduct = product;
+    const simProd = this.simParams.models?.[product];
+    this.basePrice = simProd?.base_price_SAR || 2000;
+    this.simPrice  = this.basePrice;
+  }
+
+  getProductData() {
+    return this.forecast.by_channel?.[this.currentChannel]?.[this.currentProduct];
+  }
+
+  getSimParams() {
+    return this.simParams.models?.[this.currentProduct];
+  }
+
+  getElasticity(channel) {
+    const params = this.getSimParams();
+    if (!params) return -1.5;
+    const factor = params.channel_factors?.[channel] ?? 1.0;
+    return params.elasticity * factor;
+  }
+
+  simulateSales(newPrice, quarter = 'Q2_2026') {
+    const prod   = this.getProductData();
+    const params = this.getSimParams();
+    if (!prod || !params) return null;
+
+    const forecastQ = prod.forecast?.[quarter];
+    if (!forecastQ) return null;
+
+    const elasticity = this.getElasticity(this.currentChannel);
+    const ratio      = newPrice / this.basePrice;
+    const multiplier = Math.pow(ratio, elasticity);
+
+    return {
+      low:         Math.round(forecastQ.low  * multiplier),
+      mid:         Math.round(forecastQ.mid  * multiplier),
+      high:        Math.round(forecastQ.high * multiplier),
+      weekly_rate: Math.round(forecastQ.weekly_rate * multiplier * 10) / 10,
+      multiplier:  Math.round((multiplier - 1) * 1000) / 10,
+    };
+  }
+
+  getCompetitorGaps(simPrice) {
+    const params = this.getSimParams();
+    if (!params?.competitor_prices) return [];
+    return Object.entries(params.competitor_prices).map(([brand, info]) => ({
+      brand,
+      price:   info.current,
+      gap_pct: Math.round((simPrice / info.current - 1) * 100 * 10) / 10,
+    })).sort((a, b) => a.price - b.price);
+  }
+
+  getSupplyStatus(channel, simWeeklyRate) {
+    const ch = this.supplyData.by_channel?.[channel];
+    if (!ch) return null;
+    const { current_stock, wos_target_weeks } = ch;
+    const target      = Math.round(wos_target_weeks * simWeeklyRate);
+    const recommended = target - current_stock;
+    const ratio       = current_stock / (target || 1);
+    const status      = ratio > 1.5 ? 'overstock'
+                      : ratio > 0.9 ? 'ok'
+                      : ratio > 0.5 ? 'understock'
+                      : 'critical';
+    return { current_stock, target, recommended, status, wos_target_weeks, weekly_rate: simWeeklyRate };
+  }
+}
+
+// ─── App state ─────────────────────────────────────────────────────────────
+let engine = null;
+let chartForecast = null;
+let chartGap = null;
+let currentSimPrice = 0;
+
+// ─── Data load ─────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const [forecast, simParams, supply] = await Promise.all([
+      fetch('forecast_data.json').then(r => r.json()),
+      fetch('simulation_params.json').then(r => r.json()),
+      fetch('supply_data.json').then(r => r.json()),
+    ]);
+    engine = new SimulationEngine(forecast, simParams, supply);
+    document.getElementById('data-date').textContent =
+      `데이터 기준: ${forecast.meta?.generated_at || '-'}`;
+    initSelectors();
+  } catch(e) {
+    document.body.innerHTML = `<div class="p-8 text-red-600">
+      데이터 로드 실패: ${e.message}<br>
+      JSON 파일을 먼저 생성하세요 (generate_forecast_data.py 등).
+    </div>`;
+  }
+}
+
+function initSelectors() {
+  const chSel   = document.getElementById('sel-channel');
+  const prodSel = document.getElementById('sel-product');
+  const channels = engine.getChannels();
+  chSel.innerHTML = channels.map(c => `<option value="${c}">${c}</option>`).join('');
+  chSel.addEventListener('change', () => updateProductList(chSel.value));
+  prodSel.addEventListener('change', () => onProductSelect(chSel.value, prodSel.value));
+  if (channels.length) updateProductList(channels[0]);
+}
+
+function updateProductList(channel) {
+  const prodSel = document.getElementById('sel-product');
+  const products = engine.getProducts(channel);
+  prodSel.innerHTML = products.map(p => {
+    const label = engine.forecast.by_channel?.[channel]?.[p]?.display_name || p;
+    return `<option value="${p}">${label}</option>`;
+  }).join('');
+  if (products.length) onProductSelect(channel, products[0]);
+}
+
+function onProductSelect(channel, product) {
+  engine.select(channel, product);
+  currentSimPrice = engine.basePrice;
+  const slider = document.getElementById('price-slider');
+  slider.value = currentSimPrice;
+  slider.min   = Math.round(engine.basePrice * 0.5);
+  slider.max   = Math.round(engine.basePrice * 1.5);
+  renderAll(currentSimPrice);
+}
+
+function onPriceChange(val) {
+  currentSimPrice = parseInt(val);
+  document.getElementById('price-display').textContent = `SAR ${currentSimPrice.toLocaleString()}`;
+  renderAll(currentSimPrice);
+}
+
+// ─── Render ────────────────────────────────────────────────────────────────
+function renderAll(simPrice) {
+  renderPanel1(simPrice);
+  renderPanel2(simPrice);
+  renderPanel3(simPrice);
+}
+
+function renderPanel1(simPrice) {
+  const prod = engine.getProductData();
+  if (!prod) return;
+
+  const quarters   = ['Q2_2026', 'Q3_2026', 'Q4_2026'];
+  const labels     = ['Q2', 'Q3', 'Q4'];
+  const baseMid    = quarters.map(q => prod.forecast?.[q]?.mid || 0);
+  const simResults = quarters.map(q => engine.simulateSales(simPrice, q));
+  const simMid     = simResults.map(r => r?.mid || 0);
+
+  // KPI strip
+  const q2 = simResults[0];
+  document.getElementById('p1-kpi').innerHTML = q2 ? `
+    <div class="bg-blue-50 rounded px-3 py-1">
+      <div class="text-xs text-gray-500">Q2 예측 (Mid)</div>
+      <div class="font-bold text-blue-700">${q2.mid.toLocaleString()}대</div>
+    </div>
+    <div class="bg-gray-50 rounded px-3 py-1">
+      <div class="text-xs text-gray-500">주간</div>
+      <div class="font-bold">${q2.weekly_rate}/주</div>
+    </div>
+    <div class="bg-${q2.multiplier > 0 ? 'green' : 'red'}-50 rounded px-3 py-1">
+      <div class="text-xs text-gray-500">가격 효과</div>
+      <div class="font-bold text-${q2.multiplier > 0 ? 'green' : 'red'}-700">${q2.multiplier > 0 ? '+' : ''}${q2.multiplier}%</div>
+    </div>
+  ` : '';
+
+  if (chartForecast) chartForecast.destroy();
+  const ctx = document.getElementById('chart-forecast').getContext('2d');
+  chartForecast = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: '기준 예측',
+          data: baseMid,
+          backgroundColor: 'rgba(59,130,246,0.3)',
+          borderColor: 'rgba(59,130,246,0.8)',
+          borderWidth: 2,
+        },
+        {
+          label: `시뮬레이션 (SAR ${simPrice.toLocaleString()})`,
+          data: simMid,
+          backgroundColor: 'rgba(16,185,129,0.5)',
+          borderColor: 'rgba(16,185,129,0.9)',
+          borderWidth: 2,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } },
+      scales: { y: { beginAtZero: true, title: { display: true, text: '수량 (대)' } } },
+    },
+  });
+}
+
+function renderPanel2(simPrice) {
+  const params = engine.getSimParams();
+  if (!params) return;
+
+  document.getElementById('price-display').textContent = `SAR ${simPrice.toLocaleString()}`;
+
+  const q2sim  = engine.simulateSales(simPrice, 'Q2_2026');
+  const q2base = engine.getProductData()?.forecast?.Q2_2026;
+  if (q2sim && q2base) {
+    const delta = q2sim.multiplier;
+    document.getElementById('sim-delta').innerHTML = `
+      기준가 SAR ${engine.basePrice.toLocaleString()} 대비
+      <strong>${delta > 0 ? '+' : ''}${delta}%</strong>
+      → Q2 예측 <strong>${q2sim.mid.toLocaleString()}</strong>대
+      (기준 ${q2base.mid.toLocaleString()}대)
+    `;
+  }
+
+  // Competitor gap chart
+  const gaps   = engine.getCompetitorGaps(simPrice);
+  const brands = ['LG (시뮬)', ...gaps.map(g => g.brand)];
+  const prices = [simPrice, ...gaps.map(g => g.price)];
+  const colors = ['rgba(239,68,68,0.7)', ...gaps.map(() => 'rgba(107,114,128,0.5)')];
+
+  if (chartGap) chartGap.destroy();
+  const ctx = document.getElementById('chart-gap').getContext('2d');
+  chartGap = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: brands,
+      datasets: [{ data: prices, backgroundColor: colors, borderRadius: 4 }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` SAR ${ctx.raw.toLocaleString()}` } },
+      },
+      scales: { x: { title: { display: true, text: 'SAR' } } },
+    },
+  });
+
+  // Recommended range
+  const range = params.recommended_price_range;
+  if (range) {
+    const inRange = simPrice >= range.lower_SAR && simPrice <= range.upper_SAR;
+    document.getElementById('rec-range').innerHTML = `
+      권장 범위: <strong>SAR ${range.lower_SAR.toLocaleString()} ~ ${range.upper_SAR.toLocaleString()}</strong>
+      ${inRange ? '✅ 범위 내' : '⚠ 범위 외'}
+      <span class="text-gray-400 text-xs ml-1">(${range.rationale})</span>
+    `;
+  }
+}
+
+function renderPanel3(simPrice) {
+  const channels = engine.getChannels();
+
+  // For each channel, get simulated weekly rate using current product
+  const q2simByChannel = {};
+  const savedChannel = engine.currentChannel;
+  for (const ch of channels) {
+    engine.currentChannel = ch;
+    const q2 = engine.simulateSales(simPrice, 'Q2_2026');
+    q2simByChannel[ch] = q2?.weekly_rate || 0;
+  }
+  engine.currentChannel = savedChannel;
+
+  const statusLabel = { overstock: '과재고', ok: '정상', understock: '부족', critical: '위험' };
+  const statusClass = {
+    overstock: 'status-overstock', ok: 'status-ok',
+    understock: 'status-understock', critical: 'status-critical',
+  };
+
+  const rows = channels.map(ch => {
+    const sup = engine.getSupplyStatus(ch, q2simByChannel[ch]);
+    if (!sup) return '';
+    const { current_stock, target, recommended, status, wos_target_weeks, weekly_rate } = sup;
+    const arrow = recommended > 0 ? '▲' : '▼';
+    const cls   = statusClass[status] || '';
+    return `
+      <tr class="border-b hover:bg-gray-50">
+        <td class="py-2 px-3 text-sm font-medium">${ch}</td>
+        <td class="py-2 px-3 text-sm text-right">${current_stock.toLocaleString()}</td>
+        <td class="py-2 px-3 text-sm text-right">${weekly_rate.toFixed(1)}</td>
+        <td class="py-2 px-3 text-sm text-right">${wos_target_weeks}주</td>
+        <td class="py-2 px-3 text-sm text-right">${target.toLocaleString()}</td>
+        <td class="py-2 px-3 text-sm text-right font-medium">
+          ${arrow}${Math.abs(recommended).toLocaleString()}
+        </td>
+        <td class="py-2 px-3 text-sm ${cls}">${statusLabel[status] || status}</td>
+      </tr>
+    `;
+  }).join('');
+
+  document.getElementById('p3-note').textContent =
+    '재고는 카테고리 합산 기준 (모델별 분리 불가)';
+
+  document.getElementById('supply-table').innerHTML = `
+    <table class="w-full text-left min-w-[600px]">
+      <thead class="bg-gray-50 text-xs text-gray-600">
+        <tr>
+          <th class="py-2 px-3">채널</th>
+          <th class="py-2 px-3 text-right">현재 재고</th>
+          <th class="py-2 px-3 text-right">주간 예측</th>
+          <th class="py-2 px-3 text-right">WOS 목표</th>
+          <th class="py-2 px-3 text-right">적정 재고</th>
+          <th class="py-2 px-3 text-right">추천 공급</th>
+          <th class="py-2 px-3">상태</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+loadData();
+</script>
+</body>
+</html>
