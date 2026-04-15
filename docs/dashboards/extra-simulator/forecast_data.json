@@ -479,19 +479,19 @@
           "Q2_2026": {
             "low": 0,
             "mid": 1666,
-            "high": 4168,
+            "high": 4154,
             "weekly_rate": 128.2
           },
           "Q3_2026": {
             "low": 0,
             "mid": 502,
-            "high": 2964,
+            "high": 3008,
             "weekly_rate": 38.6
           },
           "Q4_2026": {
             "low": 0,
             "mid": 127,
-            "high": 2590,
+            "high": 2622,
             "weekly_rate": 9.8
           }
         },
@@ -955,21 +955,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 728,
+            "low": 739,
             "mid": 1305,
-            "high": 1869,
+            "high": 1879,
             "weekly_rate": 100.4
           },
           "Q3_2026": {
-            "low": 840,
+            "low": 845,
             "mid": 1411,
-            "high": 1984,
+            "high": 1977,
             "weekly_rate": 108.5
           },
           "Q4_2026": {
-            "low": 339,
+            "low": 334,
             "mid": 908,
-            "high": 1484,
+            "high": 1468,
             "weekly_rate": 69.8
           }
         },
@@ -1433,21 +1433,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 1091,
+            "low": 1094,
             "mid": 2637,
-            "high": 4154,
+            "high": 4193,
             "weekly_rate": 202.8
           },
           "Q3_2026": {
-            "low": 537,
+            "low": 529,
             "mid": 1954,
-            "high": 3529,
+            "high": 3486,
             "weekly_rate": 150.3
           },
           "Q4_2026": {
-            "low": 19,
+            "low": 27,
             "mid": 1035,
-            "high": 2625,
+            "high": 2590,
             "weekly_rate": 79.6
           }
         },
@@ -1911,21 +1911,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 38,
+            "low": 34,
             "mid": 485,
-            "high": 1019,
+            "high": 1021,
             "weekly_rate": 37.3
           },
           "Q3_2026": {
-            "low": 81,
+            "low": 79,
             "mid": 602,
-            "high": 1130,
+            "high": 1142,
             "weekly_rate": 46.3
           },
           "Q4_2026": {
             "low": 0,
             "mid": 221,
-            "high": 749,
+            "high": 759,
             "weekly_rate": 17.0
           }
         },
@@ -2385,21 +2385,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 171,
+            "low": 176,
             "mid": 416,
-            "high": 662,
+            "high": 661,
             "weekly_rate": 32.0
           },
           "Q3_2026": {
             "low": 168,
             "mid": 412,
-            "high": 655,
+            "high": 659,
             "weekly_rate": 31.7
           },
           "Q4_2026": {
-            "low": 18,
+            "low": 22,
             "mid": 207,
-            "high": 446,
+            "high": 451,
             "weekly_rate": 15.9
           }
         },
@@ -2855,21 +2855,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 136,
+            "low": 134,
             "mid": 286,
-            "high": 441,
+            "high": 442,
             "weekly_rate": 22.0
           },
           "Q3_2026": {
-            "low": 85,
+            "low": 87,
             "mid": 226,
-            "high": 382,
+            "high": 380,
             "weekly_rate": 17.4
           },
           "Q4_2026": {
-            "low": 30,
+            "low": 31,
             "mid": 145,
-            "high": 300,
+            "high": 301,
             "weekly_rate": 11.2
           }
         },
@@ -3297,13 +3297,13 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 20,
+            "low": 19,
             "mid": 83,
-            "high": 156,
+            "high": 155,
             "weekly_rate": 6.4
           },
           "Q3_2026": {
-            "low": 12,
+            "low": 13,
             "mid": 63,
             "high": 134,
             "weekly_rate": 4.8
@@ -3311,7 +3311,7 @@
           "Q4_2026": {
             "low": 3,
             "mid": 54,
-            "high": 125,
+            "high": 127,
             "weekly_rate": 4.2
           }
         },
@@ -3717,15 +3717,15 @@
             "weekly_rate": 6.8
           },
           "Q3_2026": {
-            "low": 9,
+            "low": 8,
             "mid": 82,
-            "high": 172,
+            "high": 169,
             "weekly_rate": 6.3
           },
           "Q4_2026": {
-            "low": 6,
+            "low": 7,
             "mid": 63,
-            "high": 151,
+            "high": 152,
             "weekly_rate": 4.8
           }
         },
@@ -4115,17 +4115,17 @@
           "Q2_2026": {
             "low": 95,
             "mid": 172,
-            "high": 249,
+            "high": 248,
             "weekly_rate": 13.2
           },
           "Q3_2026": {
-            "low": 21,
+            "low": 20,
             "mid": 93,
-            "high": 171,
+            "high": 170,
             "weekly_rate": 7.2
           },
           "Q4_2026": {
-            "low": 1,
+            "low": 2,
             "mid": 66,
             "high": 144,
             "weekly_rate": 5.1
@@ -4325,11 +4325,11 @@
           "Q2_2026": {
             "low": 0,
             "mid": 76,
-            "high": 1014,
+            "high": 1023,
             "weekly_rate": 6.3
           },
           "Q3_2026": {
-            "low": 391,
+            "low": 400,
             "mid": 746,
             "high": 1231,
             "weekly_rate": 57.4
@@ -4337,7 +4337,7 @@
           "Q4_2026": {
             "low": 0,
             "mid": 1,
-            "high": 480,
+            "high": 485,
             "weekly_rate": 0.1
           }
         },
@@ -4545,7 +4545,7 @@
             "weekly_rate": 1.2
           },
           "Q4_2026": {
-            "low": 1,
+            "low": 0,
             "mid": 17,
             "high": 36,
             "weekly_rate": 1.3
@@ -4723,9 +4723,9 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 733,
+            "low": 737,
             "mid": 884,
-            "high": 1040,
+            "high": 1031,
             "weekly_rate": 68.0
           },
           "Q3_2026": {
@@ -4737,7 +4737,7 @@
           "Q4_2026": {
             "low": 1177,
             "mid": 1600,
-            "high": 2017,
+            "high": 2014,
             "weekly_rate": 123.1
           }
         },
@@ -4905,21 +4905,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 478,
+            "low": 476,
             "mid": 569,
             "high": 645,
             "weekly_rate": 43.8
           },
           "Q3_2026": {
-            "low": 1173,
+            "low": 1175,
             "mid": 1211,
-            "high": 1247,
+            "high": 1248,
             "weekly_rate": 93.2
           },
           "Q4_2026": {
-            "low": 452,
+            "low": 459,
             "mid": 631,
-            "high": 816,
+            "high": 820,
             "weekly_rate": 48.5
           }
         },
@@ -5081,13 +5081,13 @@
           "Q2_2026": {
             "low": 0,
             "mid": 29,
-            "high": 216,
+            "high": 213,
             "weekly_rate": 2.4
           },
           "Q3_2026": {
             "low": 106,
             "mid": 323,
-            "high": 555,
+            "high": 557,
             "weekly_rate": 24.8
           },
           "Q4_2026": {
@@ -5247,17 +5247,17 @@
           "Q2_2026": {
             "low": 368,
             "mid": 389,
-            "high": 409,
+            "high": 411,
             "weekly_rate": 29.9
           },
           "Q3_2026": {
-            "low": 406,
+            "low": 407,
             "mid": 414,
-            "high": 420,
+            "high": 421,
             "weekly_rate": 31.8
           },
           "Q4_2026": {
-            "low": 463,
+            "low": 462,
             "mid": 547,
             "high": 631,
             "weekly_rate": 42.1
@@ -5419,13 +5419,13 @@
           "Q3_2026": {
             "low": 332,
             "mid": 337,
-            "high": 339,
+            "high": 340,
             "weekly_rate": 25.9
           },
           "Q4_2026": {
             "low": 208,
             "mid": 238,
-            "high": 268,
+            "high": 269,
             "weekly_rate": 18.3
           }
         },
@@ -5569,21 +5569,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 341,
+            "low": 334,
             "mid": 799,
-            "high": 1434,
+            "high": 1421,
             "weekly_rate": 72.6
           },
           "Q3_2026": {
             "low": 2858,
             "mid": 2858,
-            "high": 2912,
+            "high": 2909,
             "weekly_rate": 219.8
           },
           "Q4_2026": {
-            "low": 1863,
+            "low": 1852,
             "mid": 2252,
-            "high": 2547,
+            "high": 2561,
             "weekly_rate": 173.2
           }
         },
@@ -5987,9 +5987,9 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 25,
+            "low": 24,
             "mid": 45,
-            "high": 66,
+            "high": 65,
             "weekly_rate": 3.5
           },
           "Q3_2026": {
@@ -6154,7 +6154,7 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 51,
+            "low": 50,
             "mid": 81,
             "high": 112,
             "weekly_rate": 6.2
@@ -6162,13 +6162,13 @@
           "Q3_2026": {
             "low": 33,
             "mid": 63,
-            "high": 93,
+            "high": 95,
             "weekly_rate": 4.8
           },
           "Q4_2026": {
             "low": 24,
             "mid": 55,
-            "high": 87,
+            "high": 86,
             "weekly_rate": 4.2
           }
         },
@@ -6321,21 +6321,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 1519,
+            "low": 1522,
             "mid": 1627,
-            "high": 1732,
+            "high": 1740,
             "weekly_rate": 125.3
           },
           "Q3_2026": {
             "low": 1277,
             "mid": 1387,
-            "high": 1492,
+            "high": 1495,
             "weekly_rate": 106.8
           },
           "Q4_2026": {
-            "low": 523,
+            "low": 518,
             "mid": 628,
-            "high": 738,
+            "high": 734,
             "weekly_rate": 48.3
           }
         },
@@ -6480,21 +6480,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 151,
+            "low": 149,
             "mid": 341,
-            "high": 555,
+            "high": 558,
             "weekly_rate": 26.3
           },
           "Q3_2026": {
-            "low": 1,
+            "low": 3,
             "mid": 175,
-            "high": 387,
+            "high": 398,
             "weekly_rate": 13.5
           },
           "Q4_2026": {
-            "low": 8,
+            "low": 14,
             "mid": 128,
-            "high": 333,
+            "high": 339,
             "weekly_rate": 9.9
           }
         },
@@ -6750,21 +6750,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 612,
+            "low": 613,
             "mid": 675,
-            "high": 735,
+            "high": 736,
             "weekly_rate": 52.0
           },
           "Q3_2026": {
-            "low": 547,
+            "low": 550,
             "mid": 608,
-            "high": 669,
+            "high": 668,
             "weekly_rate": 46.8
           },
           "Q4_2026": {
             "low": 175,
             "mid": 236,
-            "high": 298,
+            "high": 296,
             "weekly_rate": 18.2
           }
         },
@@ -7266,13 +7266,13 @@
           "Q3_2026": {
             "low": 370,
             "mid": 383,
-            "high": 397,
+            "high": 395,
             "weekly_rate": 29.5
           },
           "Q4_2026": {
-            "low": 272,
+            "low": 271,
             "mid": 301,
-            "high": 334,
+            "high": 329,
             "weekly_rate": 23.2
           }
         },
@@ -7387,10 +7387,10 @@
             "weekly_rate": 1.7
           },
           "Q3_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 4,
+            "high": 4,
+            "weekly_rate": 0.3
           },
           "Q4_2026": {
             "low": 53,
@@ -7504,21 +7504,21 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 989,
+            "low": 992,
             "mid": 1103,
-            "high": 1196,
+            "high": 1192,
             "weekly_rate": 84.9
           },
           "Q3_2026": {
-            "low": 209,
+            "low": 210,
             "mid": 284,
-            "high": 375,
+            "high": 378,
             "weekly_rate": 21.9
           },
           "Q4_2026": {
-            "low": 154,
+            "low": 152,
             "mid": 250,
-            "high": 363,
+            "high": 366,
             "weekly_rate": 19.2
           }
         },
@@ -7861,7 +7861,7 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 66,
+            "low": 67,
             "mid": 67,
             "high": 68,
             "weekly_rate": 5.2
@@ -7873,7 +7873,7 @@
             "weekly_rate": 1.5
           },
           "Q4_2026": {
-            "low": 2,
+            "low": 3,
             "mid": 9,
             "high": 15,
             "weekly_rate": 0.7
@@ -8440,13 +8440,13 @@
           "Q3_2026": {
             "low": 375,
             "mid": 377,
-            "high": 379,
+            "high": 378,
             "weekly_rate": 29.0
           },
           "Q4_2026": {
             "low": 382,
             "mid": 385,
-            "high": 389,
+            "high": 388,
             "weekly_rate": 29.6
           }
         },
@@ -8543,22 +8543,22 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 1,
+            "high": 1,
+            "weekly_rate": 0.1
           },
           "Q3_2026": {
-            "low": 7,
+            "low": 8,
             "mid": 18,
-            "high": 27,
+            "high": 28,
             "weekly_rate": 4.2
           },
           "Q4_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 1,
+            "high": 1,
+            "weekly_rate": 0.1
           }
         },
         "forecast_method": "prophet_direct",
@@ -8779,7 +8779,7 @@
           "Q4_2026": {
             "low": 75,
             "mid": 78,
-            "high": 81,
+            "high": 80,
             "weekly_rate": 6.0
           }
         },
@@ -8979,22 +8979,22 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 4877,
+            "low": 4878,
             "mid": 4881,
             "high": 4885,
             "weekly_rate": 375.8
           },
           "Q3_2026": {
-            "low": 11,
-            "mid": 11,
-            "high": 12,
-            "weekly_rate": 2.5
+            "low": 245,
+            "mid": 245,
+            "high": 267,
+            "weekly_rate": 18.8
           },
           "Q4_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 245,
+            "high": 245,
+            "weekly_rate": 18.8
           }
         },
         "forecast_method": "prophet_direct",
@@ -9086,22 +9086,22 @@
         ],
         "forecast": {
           "Q2_2026": {
-            "low": 1156,
+            "low": 1157,
             "mid": 1163,
-            "high": 1170,
+            "high": 1171,
             "weekly_rate": 89.5
           },
           "Q3_2026": {
             "low": 439,
             "mid": 442,
-            "high": 445,
+            "high": 446,
             "weekly_rate": 102.1
           },
           "Q4_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 59,
+            "high": 59,
+            "weekly_rate": 4.5
           }
         },
         "forecast_method": "prophet_direct",
@@ -9502,10 +9502,10 @@
             "weekly_rate": 7.0
           },
           "Q4_2026": {
-            "low": 0,
-            "mid": 0,
-            "high": 0,
-            "weekly_rate": 0.0
+            "low": 1,
+            "mid": 8,
+            "high": 8,
+            "weekly_rate": 0.6
           }
         },
         "forecast_method": "prophet_direct",
@@ -9674,7 +9674,7 @@
             "weekly_rate": 10.2
           },
           "Q3_2026": {
-            "low": 178,
+            "low": 179,
             "mid": 179,
             "high": 179,
             "weekly_rate": 13.8
