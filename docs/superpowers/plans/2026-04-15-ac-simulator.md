@@ -6,7 +6,7 @@
 
 **Architecture:** 3개 Python 스크립트(generate_forecast/simulation/supply)가 3개 JSON 생성 → Shaker-MD-App에 복사 → 단일 HTML 파일이 브라우저에서 모든 계산 실행 (서버리스).
 
-**Tech Stack:** Python 3 (statsmodels, pandas, openpyxl), re/json, Chart.js 4, Cloudflare Pages
+**Tech Stack:** Python 3 (**prophet**, pandas, re/json), Chart.js 4, Cloudflare Pages
 
 ---
 
