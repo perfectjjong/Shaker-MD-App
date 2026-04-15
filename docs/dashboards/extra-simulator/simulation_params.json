@@ -1,0 +1,930 @@
+{
+  "meta": {
+    "type": "parametric",
+    "version": "B-lite",
+    "generated_at": "2026-W16",
+    "elasticity_note": "B-lite default -1.5. Will be replaced by log-log regression in B-full."
+  },
+  "models": {
+    "MINI_15Ton_CI": {
+      "display_name": "MINI SPLIT 1.5 Ton Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_15Ton_HCI": {
+      "display_name": "MINI SPLIT 1.5 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_2Ton_CI": {
+      "display_name": "MINI SPLIT 2 Ton Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_2Ton_HCI": {
+      "display_name": "MINI SPLIT 2 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_3Ton_CI": {
+      "display_name": "MINI SPLIT 3 Ton Cold - Inverter",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4879,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4084,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (ZAMIL 4299 SAR) -5% vs current LG",
+        "vs_lowest_pct": -27.1
+      }
+    },
+    "MINI_1Ton_CI": {
+      "display_name": "MINI SPLIT 1 Ton Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "MIDEA": {
+          "current": 1879,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 1200,
+          "date": "2026-03-05",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 1140,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (ZAMIL 1200 SAR) -5% vs current LG",
+        "vs_lowest_pct": -45.7
+      }
+    },
+    "MINI_1Ton_HCI": {
+      "display_name": "MINI SPLIT 1 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "MIDEA": {
+          "current": 1879,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 1200,
+          "date": "2026-03-05",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 1140,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (ZAMIL 1200 SAR) -5% vs current LG",
+        "vs_lowest_pct": -45.7
+      }
+    },
+    "FST_35Ton_CI": {
+      "display_name": "FREE STANDING 3.5 Ton Cold - Inverter",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4809,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4569,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (MIDEA 4809 SAR) -5% vs current LG",
+        "vs_lowest_pct": -18.4
+      }
+    },
+    "MINI_3Ton_HCI": {
+      "display_name": "MINI SPLIT 3 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4879,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4084,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (ZAMIL 4299 SAR) -5% vs current LG",
+        "vs_lowest_pct": -27.1
+      }
+    },
+    "SEEC_15Ton_CR": {
+      "display_name": "SEEC WINDOW 1.5 Ton Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "FST_35Ton_HCI": {
+      "display_name": "FREE STANDING 3.5 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4809,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4569,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (MIDEA 4809 SAR) -5% vs current LG",
+        "vs_lowest_pct": -18.4
+      }
+    },
+    "MINI_15Ton_CR": {
+      "display_name": "MINI SPLIT 1.5 Ton Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_2Ton_HCR": {
+      "display_name": "MINI SPLIT 2 Ton Hot And Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_2Ton_CR": {
+      "display_name": "MINI SPLIT 2 Ton Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_15Ton_HCR": {
+      "display_name": "MINI SPLIT 1.5 Ton Hot And Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_3Ton_CR": {
+      "display_name": "MINI SPLIT 3 Ton Cold - Rotary",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4879,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4084,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (ZAMIL 4299 SAR) -5% vs current LG",
+        "vs_lowest_pct": -27.1
+      }
+    },
+    "SEEC_15Ton_HCR": {
+      "display_name": "SEEC WINDOW 1.5 Ton Hot And Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "SEEC_2Ton_CR": {
+      "display_name": "SEEC WINDOW 2 Ton Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    },
+    "MINI_3Ton_HCR": {
+      "display_name": "MINI SPLIT 3 Ton Hot And Cold - Rotary",
+      "base_price_SAR": 5599,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 4849,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 4299,
+          "date": "2026-03-31",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 4879,
+          "date": "2026-04-15",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 4084,
+        "upper_SAR": 5599,
+        "rationale": "Lowest competitor (ZAMIL 4299 SAR) -5% vs current LG",
+        "vs_lowest_pct": -27.1
+      }
+    },
+    "WIN_15Ton_CR": {
+      "display_name": "WINDOW 1.5 Ton Cold - Rotary",
+      "base_price_SAR": 2099,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 2199,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3489,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 4099,
+          "date": "2026-04-15",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2299,
+          "date": "2026-03-16",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2089,
+        "upper_SAR": 2099,
+        "rationale": "Lowest competitor (GREE 2199 SAR) -5% vs current LG",
+        "vs_lowest_pct": -0.5
+      }
+    }
+  }
+}
