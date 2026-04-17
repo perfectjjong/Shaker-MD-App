@@ -718,13 +718,15 @@ function _proPrev(raw){
 function _proHas(raw){ var c=_proCur(raw); return !!(c&&c.accts); }
 
 // ======== PGI / REMAIN / OPEN sub-cards inside 2026 KPI ========
-// B안: PGI/Remain/Open은 날짜 필터와 무관하게 스냅샷 전체 계정 합산 (파일명 날짜 기준 스냅샷)
 function renderPgiSubCards(isVal,lb){
   if(!_proHas(RAW.pgi)&&!_proHas(RAW.remain)&&!_proHas(RAW.open)) return '';
+  var filteredIds=getFilteredIds();
   function calcTotal(snap){
     if(!snap||!snap.accts) return {v:0,q:0,cnt:0};
     var tv=0,tq=0,cnt=0;
     Object.keys(snap.accts).forEach(function(id){
+      var nid=isNaN(+id)?id:+id;
+      if(!filteredIds.has(nid)) return;
       tv+=(snap.accts[id].v||0); tq+=(snap.accts[id].q||0); cnt++;
     });
     return {v:tv,q:tq,cnt:cnt};
