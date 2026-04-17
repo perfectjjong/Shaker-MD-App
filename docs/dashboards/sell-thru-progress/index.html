@@ -417,9 +417,15 @@ function passFilter(r){
 }
 function getFiltered(){ return RAW.txn.filter(passFilter); }
 function getFilteredIds(){ return new Set(getFiltered().map(function(r){return r[C.ID];})); }
-// For PGI/Remain/Open: filters all dimensions EXCEPT date period (snapshots are period-independent)
+// For PGI/Remain/Open: filters all dimensions EXCEPT date period and account
+// 'account' dim is excluded because SEL.account auto-resets with date range changes,
+// which would incorrectly reduce PGI accounts when only the date range is changed.
+// Category filtering is handled separately in calcTotal.
 function passFilterNoPeriod(r){
-  for(const d of DIMS) if(!SEL[d.key].has(colVal(r,d))) return false;
+  for(const d of DIMS){
+    if(d.key==='account') continue; // account auto-updates with date range; period-independent PGI must skip it
+    if(!SEL[d.key].has(colVal(r,d))) return false;
+  }
   return true;
 }
 function getFilteredIdsNoPeriod(){ return new Set(RAW.txn.filter(passFilterNoPeriod).map(function(r){return r[C.ID];})); }
