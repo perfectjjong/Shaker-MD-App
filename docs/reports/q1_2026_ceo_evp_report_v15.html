@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Q1 2026 CEO/EVP Business Review v15</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f2f5;color:#333;font-size:13px}
+.page-header{background:linear-gradient(135deg,#1a237e,#1565c0);color:#fff;padding:28px 32px}
+.page-header h1{font-size:22px;font-weight:700}
+.page-header p{font-size:13px;opacity:.85;margin-top:6px}
+.container{max-width:1400px;margin:0 auto;padding:20px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.kpi-label{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+.kpi-value{font-size:24px;font-weight:700;color:#1565c0;margin:6px 0}
+.kpi-yoy{font-size:12px;font-weight:600}
+.kpi-yoy.up{color:#27ae60}.kpi-yoy.down{color:#e74c3c}
+.kpi-sub{font-size:11px;color:#999;margin-top:2px}
+.section{background:#fff;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.08);margin-bottom:24px;overflow:hidden}
+.section-header{background:#1565c0;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.section-header h2{font-size:15px;font-weight:700}
+.section-header span{font-size:12px;opacity:.8}
+.section-body{padding:20px}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f5f7fa;color:#555;font-weight:600;padding:8px 10px;text-align:center;border-bottom:2px solid #e0e6ef;white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid #f0f0f0}
+tr:hover td{background:#fafbff}
+.sep-row td{background:#e8f0fe;font-weight:700;color:#1a237e;padding:6px 10px;font-size:12px}
+.total-row td{background:#f0f4ff;font-weight:700;color:#1a237e;border-top:2px solid #1565c0}
+.cat-bar{height:8px;border-radius:4px;background:#1565c0;display:inline-block;min-width:2px}
+.note{font-size:11px;color:#999;margin-top:8px;font-style:italic}
+.nav{background:#fff;border-bottom:1px solid #e0e6ef;padding:12px 32px;position:sticky;top:0;z-index:100;display:flex;gap:20px;flex-wrap:wrap;align-items:center}
+.nav a{color:#1565c0;text-decoration:none;font-size:12px;font-weight:600;padding:4px 0;border-bottom:2px solid transparent}
+.nav a:hover{border-bottom-color:#1565c0}
+.badge-or{background:#1565c0;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px}
+.badge-ir{background:#1e3a5f;color:#fff;padding:1px 6px;border-radius:3px;font-size:10px}
+.filter-bar{background:#fff;border-radius:10px;padding:14px 20px;margin-bottom:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.filter-label{font-size:11px;font-weight:700;color:#718096;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.filter-btn{padding:5px 13px;border:1.5px solid #cbd5e0;border-radius:20px;cursor:pointer;font-size:12px;color:#4a5568;background:#fff;transition:all .15s}
+.filter-btn:hover{border-color:#1565c0;color:#1565c0}
+.filter-btn.active{background:#1565c0;color:#fff;border-color:#1565c0;font-weight:600}
+.filter-info{font-size:11px;color:#999;margin-left:auto}
+@media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="page-header">
+  <h1>Q1 2026 CEO/EVP Business Review | 1분기 경영 보고</h1>
+  <p>Shaker Group ∙ Saudi Arabia ∙ Jan–Mar 2026 ∙ v15 Generated 2026-04-20 ∙ SME 포함 ∙ Q2 4월: RSM 협의 수치 반영 ∙ ASP: Grade별 비교 (MS Value + Price Tracking) ∙ Stock: OR/IR 채널별</p>
+</div>
+<nav class="nav">
+  <a href="#s0">Executive Summary</a>
+  <a href="#s1">Sell Thru (SAP)</a>
+  <a href="#s2">Sell Out (Dealer)</a>
+  <a href="#s_asp">ASP 비교</a>
+  <a href="#s_stock">Stock 현황</a>
+  <a href="#s3">Q2 Outlook</a>
+</nav>
+
+<div class="container">
+
+<!-- CATEGORY FILTER BAR -->
+<div id="s0"></div>
+<div class="filter-bar" style="margin-top:20px">
+  <span class="filter-label">Category Filter</span>
+  <button class="filter-btn active" data-cat="all" onclick="handleFilter(this,'all')">All</button>
+  <button class="filter-btn" data-cat="Split Inverter" onclick="handleFilter(this,'Split Inverter')">Split Inverter</button>
+  <button class="filter-btn" data-cat="Split on/off" onclick="handleFilter(this,'Split on/off')">Split on/off</button>
+  <button class="filter-btn" data-cat="Window" onclick="handleFilter(this,'Window')">Window</button>
+  <button class="filter-btn" data-cat="Free Standing" onclick="handleFilter(this,'Free Standing')">Free Standing</button>
+  <button class="filter-btn" data-cat="Cassette" onclick="handleFilter(this,'Cassette')">Cassette</button>
+  <button class="filter-btn" data-cat="Concealed" onclick="handleFilter(this,'Concealed')">Concealed</button>
+  <button class="filter-btn" data-cat="Others" onclick="handleFilter(this,'Others')">Others</button>
+  <span class="filter-info" id="filterInfo">전체 카테고리 표시 중</span>
+</div>
+
+<!-- SECTION 0: KPI Cards -->
+<div style="margin:0 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 0 — Executive Summary / 경영 요약</div>
+<div class="kpi-grid" id="kpiGrid"><!-- rendered by JS --></div>
+
+<!-- SECTION 1: Sell Thru -->
+<div id="s1"></div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 1 — Sell Thru (SAP 출고) / 출고 실적</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>1-1. 채널별 × 월별 Sell Thru (Value, VAT 제외)</h2>
+    <span>단위: SAR | YoY: 2025 Q1 대비</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>채널 / Channel</th>
+          <th colspan="2">Jan</th><th colspan="2">Feb</th><th colspan="2">Mar</th>
+          <th colspan="2">Q1 합계</th>
+        </tr>
+        <tr style="background:#f0f4ff;">
+          <th></th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+        </tr>
+      </thead>
+      <tbody id="stBody"><!-- rendered by JS --></tbody>
+    </table>
+    <p class="note">* 금액 기준: Value (VAT 15% 제외). 반품(ZCD/ZDRO/ZRE) 포함 Net 기준. | * 음수 발생 시 해당 월 반품 초과.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>1-2. 카테고리별 Q1 Sell Thru (전 채널 합산)</h2>
+    <span>단위: SAR</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>카테고리</th>
+          <th>2026 Q1 Value</th>
+          <th>2025 Q1 Value</th>
+          <th>YoY</th>
+          <th>비중 (2026)</th>
+        </tr>
+      </thead>
+      <tbody id="catBody"><!-- rendered by JS --></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION 2: Sell Out -->
+<div id="s2"></div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 2 — Sell Out (딜러 판매) / 판매 실적</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>2-1. 채널별 × 월별 Sell Out (Quantity)</h2>
+    <span>단위: Units | YoY: 2025 Q1 대비 | 데이터 소스: 개별 채널 Raw (OR/IR 공통)</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>채널 / Channel</th>
+          <th colspan="2">Jan</th><th colspan="2">Feb</th><th colspan="2">Mar</th>
+          <th colspan="2">Q1 합계</th>
+        </tr>
+        <tr style="background:#f0f4ff;">
+          <th></th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+          <th style="font-size:11px">2026</th><th style="font-size:11px">YoY</th>
+        </tr>
+      </thead>
+      <tbody id="soBody"><!-- rendered by JS --></tbody>
+    </table>
+    <p class="note">* OR 5채널 Sell Out: 개별 채널 Raw 대시보드 기준. OR_Others/IR_Others Sell Out: 실제 리포팅 없음 → SAP 출하(Sell Thru) 수량을 Proxy로 표시.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>2-2. 카테고리별 Q1 Sell Out (전 채널 합산)</h2>
+    <span>단위: Units</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>카테고리</th>
+          <th>2026 Q1 Units</th>
+          <th>2025 Q1 Units</th>
+          <th>YoY</th>
+          <th>비중 (2026)</th>
+        </tr>
+      </thead>
+      <tbody id="soCatBody"><!-- rendered by JS --></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- SECTION ASP: Price Positioning -->
+<div id="s_asp"></div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 3 — ASP 비교 분석 / Average Selling Price Comparison</div>
+
+<div class="section" style="border-left:4px solid #7b1fa2;"><div class="section-header" style="background:#6a1b9a;"><h2>3-1. eXtra 채널 — Split Inverter 18K CO ASP 비교 (LG vs 경쟁사)</h2><span>1.5T CO Inv | 25Q1+26Jan: MS Value 실매출 ASP | 26Feb/Mar: Price Tracking 게시가 inc-VAT (그레이드별)</span></div><div class="section-body"><div style="font-size:11px;color:#666;margin-bottom:14px;background:#f3e5f5;border-radius:6px;padding:10px 14px;"><strong>비교 기준:</strong> LG/Gree/Midea/Samsung — 18K CO Inverter &nbsp;|&nbsp; Class Pro — 18K HC Inverter (CO 없음*)<br><strong>~ 표시 컬럼 (2025 + 2026-Jan):</strong> eXtra MS Value 실매출 ASP — 브랜드 전체 평균 (그레이드 분리 불가)<br><strong>굵은 컬럼 (2026 Feb/Mar):</strong> eXtra Price Tracking 대시보드 — 그레이드별 평균 Sales_Price (inc-VAT). LG 2026년 NW 모델 제외</div><table><thead><tr><th rowspan="2" style="text-align:left;min-width:80px">브랜드</th><th rowspan="2" style="min-width:52px">Grade</th><th colspan="3" style="background:#fff8e1;border-bottom:1px solid #ffe082">2025 Q1 — MS Value ASP (inc-VAT, SAR)</th><th colspan="3" style="background:#e3f2fd;border-bottom:1px solid #90caf9">2026 Q1 — Hybrid ASP (inc-VAT, SAR)</th><th rowspan="2" style="background:#f3e5f5;min-width:90px">Q1 YoY<br><small>브랜드 avg</small></th></tr><tr><th style="background:#fffde7;font-size:11px">Jan<br><small style="color:#aaa">MS Value</small></th><th style="background:#fffde7;font-size:11px">Feb<br><small style="color:#aaa">MS Value</small></th><th style="background:#fffde7;font-size:11px">Mar<br><small style="color:#aaa">MS Value</small></th><th style="background:#e8f4fd;font-size:11px">Jan<br><small style="color:#aaa">MS Value</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Feb<br><small style="color:#1565c0">Price Track</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Mar<br><small style="color:#1565c0">Price Track</small></th></tr></thead><tbody><tr><td rowspan="3" style="color:#1565c0;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">LG</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,884</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,734</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,743</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,612</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,769</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,584</td><td rowspan="3" style="text-align:center;background:#f3e5f5;font-weight:700;color:#27ae60;vertical-align:middle">+3.7%<br><small style="font-weight:400;color:#666">2,787→2,890</small></td></tr>
+<tr><td style="background:#fff3e0;color:#bf360c;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Mid</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,884</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,734</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,743</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,612</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,999</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,861</td></tr>
+<tr><td style="background:#fce4ec;color:#880e4f;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">High</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,884</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,734</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,743</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,612</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">3,674</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">3,290</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="1" style="color:#c0392b;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Gree</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,761</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,857</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~3,000</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,137</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,584</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,549</td><td style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-15.7%<br><small style="font-weight:400;color:#666">2,873→2,423</small></td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="1" style="color:#8e44ad;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Midea</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="color:#ccc;text-align:right;background:#fffde7">N/A</td><td style="color:#ccc;text-align:right;background:#fffde7">N/A</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,482</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,523</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,789</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,593</td><td style="text-align:center;background:#f3e5f5;font-weight:700;color:#27ae60;vertical-align:middle">+6.2%<br><small style="font-weight:400;color:#666">2,482→2,635</small></td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="1" style="color:#2c3e50;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Samsung</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,559</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,556</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,500</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,242</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,409</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,567</td><td style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-5.2%<br><small style="font-weight:400;color:#666">2,538→2,406</small></td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="2" style="color:#e67e22;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Class Pro*</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,241</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,113</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,210</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,969</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,999</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,999</td><td rowspan="2" style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-7.6%<br><small style="font-weight:400;color:#666">2,188→2,022</small></td></tr>
+<tr><td style="background:#fce4ec;color:#880e4f;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">High</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,241</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,113</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,210</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,969</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,099</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,099</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr class="sep-row"><td colspan="9">2026 Q1 평균 기준 LG vs 경쟁사 가격 차이 (브랜드 avg inc-VAT)</td></tr>
+<tr><td style="color:#c0392b;font-weight:600;padding-left:16px">Gree</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +467 SAR (+19%)<br><small style="font-weight:400;color:#999">LG 2,890 vs Gree 2,423</small></td><td></td></tr>
+<tr><td style="color:#8e44ad;font-weight:600;padding-left:16px">Midea</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +255 SAR (+10%)<br><small style="font-weight:400;color:#999">LG 2,890 vs Midea 2,635</small></td><td></td></tr>
+<tr><td style="color:#2c3e50;font-weight:600;padding-left:16px">Samsung</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +484 SAR (+20%)<br><small style="font-weight:400;color:#999">LG 2,890 vs Samsung 2,406</small></td><td></td></tr>
+<tr><td style="color:#e67e22;font-weight:600;padding-left:16px">Class Pro</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +868 SAR (+43%)<br><small style="font-weight:400;color:#999">LG 2,890 vs Class Pro 2,022</small></td><td></td></tr></tbody></table><div style="margin-top:14px;background:#fff8e1;border:1px solid #ffe082;border-radius:6px;padding:12px 16px;font-size:11px;color:#555;line-height:2.0;"><strong style="color:#e65100;">Key Insights — Split Inverter 18K CO (Q1 브랜드 avg):</strong><br>① <strong>LG ASP 추이:</strong> 2025 Q1 ~2,787 SAR → 2026 Q1 ~2,890 SAR (YoY <span style="color:#27ae60;font-weight:700">+3.7%</span>)<br>② <strong>2026 Q1 LG vs Gree:</strong> <span style="color:#27ae60;font-weight:700">+19%</span> &nbsp;|&nbsp; <strong>vs Midea:</strong> <span style="color:#27ae60;font-weight:700">+10%</span> &nbsp;|&nbsp; <strong>vs Samsung:</strong> <span style="color:#27ae60;font-weight:700">+20%</span><br>③ <strong>그레이드별 상세:</strong> 위 테이블 2026 Feb/Mar 컬럼 참조 (Price Tracking 실데이터)</div><p class="note">* Class Pro CO Inverter 미취급 → HC Inverter 18K 적용. ~ = MS Value 브랜드 평균 (그레이드 분리 불가).<br>출처: 2025 Q1 + 2026-Jan: eXtra MS Value Dashboard. 2026 Feb/Mar: eXtra Price Tracking 대시보드 (JSON).</p></div></div>
+
+<div class="section" style="border-left:4px solid #7b1fa2;"><div class="section-header" style="background:#6a1b9a;"><h2>3-2. eXtra 채널 — Split Rotary 18K CO ASP 비교 (LG vs 경쟁사)</h2><span>1.5T CO Rotary | 25Q1+26Jan: MS Value 실매출 ASP | 26Feb/Mar: Price Tracking 게시가 inc-VAT (그레이드별)</span></div><div class="section-body"><div style="font-size:11px;color:#666;margin-bottom:14px;background:#f3e5f5;border-radius:6px;padding:10px 14px;"><strong>비교 기준:</strong> LG/Gree/Midea/Class Pro — 18K CO Rotary. Samsung 미취급.<br><strong>~ 표시 컬럼 (2025 + 2026-Jan):</strong> eXtra MS Value 실매출 ASP — 브랜드 전체 평균<br><strong>굵은 컬럼 (2026 Feb/Mar):</strong> eXtra Price Tracking 그레이드별 평균 게시가 (inc-VAT, Sales_Price)</div><table><thead><tr><th rowspan="2" style="text-align:left;min-width:80px">브랜드</th><th rowspan="2" style="min-width:52px">Grade</th><th colspan="3" style="background:#fff8e1;border-bottom:1px solid #ffe082">2025 Q1 — MS Value ASP (inc-VAT, SAR)</th><th colspan="3" style="background:#e3f2fd;border-bottom:1px solid #90caf9">2026 Q1 — Hybrid ASP (inc-VAT, SAR)</th><th rowspan="2" style="background:#f3e5f5;min-width:90px">Q1 YoY<br><small>브랜드 avg</small></th></tr><tr><th style="background:#fffde7;font-size:11px">Jan<br><small style="color:#aaa">MS Value</small></th><th style="background:#fffde7;font-size:11px">Feb<br><small style="color:#aaa">MS Value</small></th><th style="background:#fffde7;font-size:11px">Mar<br><small style="color:#aaa">MS Value</small></th><th style="background:#e8f4fd;font-size:11px">Jan<br><small style="color:#aaa">MS Value</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Feb<br><small style="color:#1565c0">Price Track</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Mar<br><small style="color:#1565c0">Price Track</small></th></tr></thead><tbody><tr><td rowspan="1" style="color:#1565c0;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">LG</td><td style="background:#fff3e0;color:#bf360c;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Mid</td><td style="color:#ccc;text-align:right;background:#fffde7">N/A</td><td style="color:#ccc;text-align:right;background:#fffde7">N/A</td><td style="color:#ccc;text-align:right;background:#fffde7">N/A</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,045</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,259</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,094</td><td style="text-align:center;color:#bbb;background:#f3e5f5;vertical-align:middle">N/A</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="2" style="color:#c0392b;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Gree</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,425</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,234</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,284</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,386</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,262</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,199</td><td rowspan="2" style="text-align:center;background:#f3e5f5;font-weight:700;color:#27ae60;vertical-align:middle">+1.9%<br><small style="font-weight:400;color:#666">2,314→2,359</small></td></tr>
+<tr><td style="background:#fce4ec;color:#880e4f;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">High</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,425</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,234</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,284</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~2,386</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,474</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,449</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="3" style="color:#8e44ad;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Midea</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,179</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,109</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,121</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,724</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,099</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,201</td><td rowspan="3" style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-3.7%<br><small style="font-weight:400;color:#666">2,136→2,058</small></td></tr>
+<tr><td style="background:#fff3e0;color:#bf360c;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Mid</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,179</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,109</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,121</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,724</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,149</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,272</td></tr>
+<tr><td style="background:#fce4ec;color:#880e4f;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">High</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,179</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,109</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~2,121</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,724</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,229</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,396</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr><td rowspan="3" style="color:#e67e22;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">Class Pro</td><td style="background:#e8f5e9;color:#2e7d32;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,888</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,791</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,872</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,784</td><td style="color:#bbb;text-align:right;background:#e3f2fd">—</td><td style="color:#bbb;text-align:right;background:#e3f2fd">—</td><td rowspan="3" style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-1.2%<br><small style="font-weight:400;color:#666">1,850→1,827</small></td></tr>
+<tr><td style="background:#fff3e0;color:#bf360c;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Mid</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,888</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,791</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,872</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,784</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,799</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,799</td></tr>
+<tr><td style="background:#fce4ec;color:#880e4f;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">High</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,888</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,791</td><td style="text-align:right;color:#bbb;font-size:11px;background:#fffde7">~1,872</td><td style="text-align:right;color:#aaa;font-size:11px;background:#e8f4fd">~1,784</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,899</td><td style="text-align:right;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">1,899</td></tr>
+<tr style="height:5px"><td colspan="9" style="padding:0;background:#f5f5f5"></td></tr>
+<tr class="sep-row"><td colspan="9">2026 Q1 평균 기준 LG vs 경쟁사 가격 차이 (브랜드 avg inc-VAT)</td></tr>
+<tr><td style="color:#c0392b;font-weight:600;padding-left:16px">Gree</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#e74c3c;font-weight:700">LG -226 SAR (-10%)<br><small style="font-weight:400;color:#999">LG 2,133 vs Gree 2,359</small></td><td></td></tr>
+<tr><td style="color:#8e44ad;font-weight:600;padding-left:16px">Midea</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +75 SAR (+4%)<br><small style="font-weight:400;color:#999">LG 2,133 vs Midea 2,058</small></td><td></td></tr>
+<tr><td style="color:#e67e22;font-weight:600;padding-left:16px">Class Pro</td><td style="color:#aaa;font-size:10px;text-align:center">Q1 avg</td><td colspan="4" style="color:#ccc;text-align:center;font-size:10px">—</td><td colspan="2" style="text-align:center;color:#27ae60;font-weight:700">LG +306 SAR (+17%)<br><small style="font-weight:400;color:#999">LG 2,133 vs Class Pro 1,827</small></td><td></td></tr></tbody></table><div style="margin-top:14px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;padding:12px 16px;font-size:11px;color:#555;line-height:2.0;"><strong style="color:#1b5e20;">Key Insights — Split Rotary 18K CO (Q1 브랜드 avg):</strong><br>① <strong>2025 Q1 경쟁사:</strong> Gree ~2,314 SAR, Midea ~2,136 SAR — LG 미진입<br>② <strong>2026 LG 진입:</strong> ~2,133 SAR — Gree 대비 <span style="color:#e74c3c;font-weight:700">-10%</span>, Midea 대비 <span style="color:#27ae60;font-weight:700">+4%</span>, Class Pro 대비 <span style="color:#27ae60;font-weight:700">+17%</span><br>③ <strong>그레이드별 상세:</strong> 위 테이블 2026 Feb/Mar 컬럼 참조</div><p class="note">LG 2025 Q1 Rotary N/A (당시 eXtra 미취급). Samsung eXtra Rotary 미취급.<br>출처: 2025 Q1 + 2026-Jan: eXtra MS Value Dashboard. 2026 Feb/Mar: eXtra Price Tracking 대시보드 (JSON).</p></div></div>
+
+<!-- SECTION STOCK: OR/IR Channel Stock -->
+<div id="s_stock"></div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 4 — 채널별 Stock 현황 / Channel Stock Analysis</div>
+
+<div class="section" style="border-left:4px solid #1565c0;"><div class="section-header" style="background:#0d47a1;"><h2>4-1. OR 채널별 카테고리 Stock 현황 (재고 수량)</h2><span>5개 OR 채널 × 카테고리 | 2025 Q1 vs 2026 Q1 월말 재고 스냅샷</span></div><div class="section-body"><div style="font-size:11px;color:#666;margin-bottom:12px;background:#e3f2fd;border-radius:6px;padding:8px 12px;"><strong>데이터 소스:</strong> OR Weekly Dashboard — end-of-month 재고 수량 스냅샷 (W5=Jan末, W9=Feb末, W14=Mar末)<br><strong>카테고리:</strong> Split AC / Window AC / Floor Standing AC</div><table><thead><tr>
+<th style="text-align:left">채널</th><th>카테고리</th>
+<th style="background:#fffde7">25-Jan</th><th style="background:#e8f4fd">26-Jan</th>
+<th style="background:#fffde7">25-Feb</th><th style="background:#bbdefb">26-Feb</th>
+<th style="background:#fffde7">25-Mar</th><th style="background:#bbdefb">26-Mar</th>
+<th style="background:#f3e5f5">Q1 YoY</th>
+</tr></thead><tbody><tr><td rowspan="3" style="color:#1565c0;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">eXtra</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:right;background:#fffde7">2,483</td><td style="text-align:right;background:#e8f4fd">2,866</td><td style="text-align:right;background:#fffde7">2,896</td><td style="text-align:right;background:#bbdefb">5,750</td><td style="text-align:right;background:#fffde7">5,396</td><td style="text-align:right;background:#bbdefb">9,266</td><td style="text-align:center;font-weight:700;color:#27ae60">+66.0%<br><small style="font-weight:400;color:#666">10,775→17,882</small></td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:right;background:#fffde7">309</td><td style="text-align:right;background:#e8f4fd">0</td><td style="text-align:right;background:#fffde7">1,436</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:right;background:#fffde7">1,605</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:center;font-weight:700;color:#e74c3c">-100.0%<br><small style="font-weight:400;color:#666">3,350→0</small></td></tr>
+<tr><td style="color:#2e7d32;font-weight:600;font-size:11px">Floor Standing AC</td><td style="text-align:right;background:#fffde7">61</td><td style="text-align:right;background:#e8f4fd">61</td><td style="text-align:right;background:#fffde7">52</td><td style="text-align:right;background:#bbdefb">78</td><td style="text-align:right;background:#fffde7">25</td><td style="text-align:right;background:#bbdefb">189</td><td style="text-align:center;font-weight:700;color:#27ae60">+137.7%<br><small style="font-weight:400;color:#666">138→328</small></td></tr>
+<tr style="height:4px"><td colspan="9" style="padding:0;background:#eee"></td></tr>
+<tr><td rowspan="3" style="color:#c0392b;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">Al Manea</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:right;background:#fffde7">1,897</td><td style="text-align:right;background:#e8f4fd">1,400</td><td style="text-align:right;background:#fffde7">1,918</td><td style="text-align:right;background:#bbdefb">1,027</td><td style="text-align:right;background:#fffde7">3,460</td><td style="text-align:right;background:#bbdefb">2,070</td><td style="text-align:center;font-weight:700;color:#e74c3c">-38.2%<br><small style="font-weight:400;color:#666">7,275→4,497</small></td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:right;background:#fffde7">679</td><td style="text-align:right;background:#e8f4fd">19</td><td style="text-align:right;background:#fffde7">2,185</td><td style="text-align:right;background:#bbdefb">19</td><td style="text-align:right;background:#fffde7">3,559</td><td style="text-align:right;background:#bbdefb">9</td><td style="text-align:center;font-weight:700;color:#e74c3c">-99.3%<br><small style="font-weight:400;color:#666">6,423→47</small></td></tr>
+<tr><td style="color:#2e7d32;font-weight:600;font-size:11px">Floor Standing AC</td><td style="text-align:right;background:#fffde7">32</td><td style="text-align:right;background:#e8f4fd">31</td><td style="text-align:right;background:#fffde7">195</td><td style="text-align:right;background:#bbdefb">44</td><td style="text-align:right;background:#fffde7">190</td><td style="text-align:right;background:#bbdefb">122</td><td style="text-align:center;font-weight:700;color:#e74c3c">-52.8%<br><small style="font-weight:400;color:#666">417→197</small></td></tr>
+<tr style="height:4px"><td colspan="9" style="padding:0;background:#eee"></td></tr>
+<tr><td rowspan="3" style="color:#8e44ad;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">SWS</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:right;background:#fffde7">632</td><td style="text-align:right;background:#e8f4fd">508</td><td style="text-align:right;background:#fffde7">408</td><td style="text-align:right;background:#bbdefb">345</td><td style="text-align:right;background:#fffde7">704</td><td style="text-align:right;background:#bbdefb">354</td><td style="text-align:center;font-weight:700;color:#e74c3c">-30.8%<br><small style="font-weight:400;color:#666">1,744→1,207</small></td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#e8f4fd">0</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#bbdefb">0</td><td style="color:#bbb;text-align:center">N/A</td></tr>
+<tr><td style="color:#2e7d32;font-weight:600;font-size:11px">Floor Standing AC</td><td style="text-align:right;background:#fffde7">18</td><td style="text-align:right;background:#e8f4fd">15</td><td style="text-align:right;background:#fffde7">15</td><td style="text-align:right;background:#bbdefb">2</td><td style="text-align:right;background:#fffde7">29</td><td style="text-align:right;background:#bbdefb">11</td><td style="text-align:center;font-weight:700;color:#e74c3c">-54.8%<br><small style="font-weight:400;color:#666">62→28</small></td></tr>
+<tr style="height:4px"><td colspan="9" style="padding:0;background:#eee"></td></tr>
+<tr><td rowspan="3" style="color:#2c3e50;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">Black Box</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:right;background:#fffde7">430</td><td style="text-align:right;background:#e8f4fd">675</td><td style="text-align:right;background:#fffde7">692</td><td style="text-align:right;background:#bbdefb">606</td><td style="text-align:right;background:#fffde7">870</td><td style="text-align:right;background:#bbdefb">517</td><td style="text-align:center;font-weight:700;color:#e74c3c">-9.7%<br><small style="font-weight:400;color:#666">1,992→1,798</small></td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:right;background:#fffde7">69</td><td style="text-align:right;background:#e8f4fd">0</td><td style="text-align:right;background:#fffde7">152</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:right;background:#fffde7">43</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:center;font-weight:700;color:#e74c3c">-100.0%<br><small style="font-weight:400;color:#666">264→0</small></td></tr>
+<tr><td style="color:#2e7d32;font-weight:600;font-size:11px">Floor Standing AC</td><td style="text-align:right;background:#fffde7">11</td><td style="text-align:right;background:#e8f4fd">24</td><td style="text-align:right;background:#fffde7">21</td><td style="text-align:right;background:#bbdefb">24</td><td style="text-align:right;background:#fffde7">6</td><td style="text-align:right;background:#bbdefb">17</td><td style="text-align:center;font-weight:700;color:#27ae60">+71.1%<br><small style="font-weight:400;color:#666">38→65</small></td></tr>
+<tr style="height:4px"><td colspan="9" style="padding:0;background:#eee"></td></tr>
+<tr><td rowspan="3" style="color:#e67e22;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">Al Khunizan</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:right;background:#fffde7">153</td><td style="text-align:right;background:#e8f4fd">599</td><td style="text-align:right;background:#fffde7">157</td><td style="text-align:right;background:#bbdefb">568</td><td style="text-align:right;background:#fffde7">392</td><td style="text-align:right;background:#bbdefb">575</td><td style="text-align:center;font-weight:700;color:#27ae60">+148.1%<br><small style="font-weight:400;color:#666">702→1,742</small></td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#e8f4fd">0</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#bbdefb">0</td><td style="text-align:right;background:#fffde7">0</td><td style="text-align:right;background:#bbdefb">0</td><td style="color:#bbb;text-align:center">N/A</td></tr>
+<tr><td style="color:#2e7d32;font-weight:600;font-size:11px">Floor Standing AC</td><td style="text-align:right;background:#fffde7">108</td><td style="text-align:right;background:#e8f4fd">252</td><td style="text-align:right;background:#fffde7">118</td><td style="text-align:right;background:#bbdefb">224</td><td style="text-align:right;background:#fffde7">73</td><td style="text-align:right;background:#bbdefb">224</td><td style="text-align:center;font-weight:700;color:#27ae60">+134.1%<br><small style="font-weight:400;color:#666">299→700</small></td></tr>
+<tr style="height:4px"><td colspan="9" style="padding:0;background:#eee"></td></tr></tbody></table><p class="note">재고 수량 = 월말 기준 딜러 보유 재고. 출처: OR Weekly Dashboard (or-weekly/index.html).</p></div></div>
+
+<div class="section" style="border-left:4px solid #1e3a5f;"><div class="section-header" style="background:#1e3a5f;"><h2>4-2. IR 채널 카테고리별 Stock 현황 (재고 수량)</h2><span>IR 전체 8개 채널 합산 | 2026 Q1 (2025 비교 데이터 미제공)</span></div><div class="section-body"><div style="font-size:11px;color:#666;margin-bottom:12px;background:#e8eaf6;border-radius:6px;padding:8px 12px;"><strong>데이터 소스:</strong> IR Total Dashboard (data_ir.js) — IR 8개 채널 합산 재고 수량<br><strong>카테고리:</strong> CAC(Cassette/Concealed) / Inverter(Split Inv) / ON/OFF(Split Rotary) / PAC(Portable) / Window<br><strong>주의:</strong> 2025 Q1 IR 재고 데이터 미확보 → 2026 Q1만 표시</div><table><thead><tr>
+<th style="text-align:left">카테고리</th>
+<th style="background:#bbdefb">26-Jan</th>
+<th style="background:#bbdefb">26-Feb</th>
+<th style="background:#bbdefb">26-Mar</th>
+<th style="background:#f3e5f5">Q1 합계</th>
+</tr></thead><tbody><tr><td style="color:#c62828;font-weight:600">CAC</td><td style="text-align:right;background:#bbdefb">1,547</td><td style="text-align:right;background:#bbdefb">1,391</td><td style="text-align:right;background:#bbdefb">1,285</td><td style="text-align:right;background:#e3f2fd;font-weight:700">4,223</td></tr>
+<tr><td style="color:#1565c0;font-weight:600">Inverter</td><td style="text-align:right;background:#bbdefb">5,707</td><td style="text-align:right;background:#bbdefb">5,429</td><td style="text-align:right;background:#bbdefb">5,349</td><td style="text-align:right;background:#e3f2fd;font-weight:700">16,485</td></tr>
+<tr><td style="color:#e65100;font-weight:600">ON/OFF</td><td style="text-align:right;background:#bbdefb">7,119</td><td style="text-align:right;background:#bbdefb">9,184</td><td style="text-align:right;background:#bbdefb">7,265</td><td style="text-align:right;background:#e3f2fd;font-weight:700">23,568</td></tr>
+<tr><td style="color:#4a148c;font-weight:600">PAC</td><td style="text-align:right;background:#bbdefb">2,602</td><td style="text-align:right;background:#bbdefb">2,213</td><td style="text-align:right;background:#bbdefb">1,820</td><td style="text-align:right;background:#e3f2fd;font-weight:700">6,635</td></tr>
+<tr><td style="color:#6a1b9a;font-weight:600">Window</td><td style="text-align:right;background:#bbdefb">29</td><td style="text-align:right;background:#bbdefb">20</td><td style="text-align:right;background:#bbdefb">20</td><td style="text-align:right;background:#e3f2fd;font-weight:700">69</td></tr>
+<tr class="total-row"><td>전체 합계</td><td style="text-align:right">17,004</td><td style="text-align:right">18,237</td><td style="text-align:right">15,739</td><td style="text-align:right">50,980</td></tr></tbody></table><p class="note">IR Stock = 월말 딜러 보유 재고. 출처: IR Total Dashboard (All IR STK & SO as of 31 Mar 2026).</p></div></div>
+
+<div class="section" style="border-left:4px solid #7b1fa2;">
+  <div class="section-header" style="background:#6a1b9a;">
+    <h2>3-3. LG 내부 ASP 추이 (SAP Sell-Thru 딜러가 기준)</h2>
+    <span>출처: SAP 출하 데이터 | Q1 2025 vs Q1 2026 | 단위: SAR/set (딜러 구매가, 소비자가 아님)</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>카테고리</th>
+          <th style="text-align:right">Q1 2025 ASP (SAR)</th>
+          <th style="text-align:right">Q1 2026 ASP (SAR)</th>
+          <th style="text-align:right">YoY 변화</th>
+          <th>해석</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Split Inverter</strong></td>
+          <td style="text-align:right">1,461</td>
+          <td style="text-align:right">1,503</td>
+          <td style="text-align:right;color:#27ae60">+2.9%</td>
+          <td>eXtra 비중 확대 → 상향 Mix</td>
+        </tr>
+        <tr>
+          <td><strong>Split on/off</strong></td>
+          <td style="text-align:right">978</td>
+          <td style="text-align:right">1,161</td>
+          <td style="text-align:right;color:#27ae60">+18.7%</td>
+          <td>단가 높은 모델 비중 증가</td>
+        </tr>
+        <tr>
+          <td><strong>Free Standing</strong></td>
+          <td style="text-align:right">3,258</td>
+          <td style="text-align:right">3,012</td>
+          <td style="text-align:right;color:#e74c3c">-7.5%</td>
+          <td>저단가 모델 비중 상승 가능성</td>
+        </tr>
+        <tr>
+          <td><strong>Cassette</strong></td>
+          <td style="text-align:right">3,883</td>
+          <td style="text-align:right">3,449</td>
+          <td style="text-align:right;color:#e74c3c">-11.2%</td>
+          <td>믹스 변화 (대형→소형 전환)</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>주력 AC 전체 평균</strong></td>
+          <td style="text-align:right"><strong>1,542</strong></td>
+          <td style="text-align:right"><strong>~1,500*</strong></td>
+          <td style="text-align:right;color:#888">-2.7%</td>
+          <td>전반적으로 유사 수준 유지</td>
+        </tr>
+      </tbody>
+    </table>
+    <div style="margin-top:12px;background:#e8f5e9;border:1px solid #a5d6a7;border-radius:6px;padding:12px 16px;font-size:11px;color:#555;line-height:1.8;">
+      <strong style="color:#1b5e20;">📌 참고 사항:</strong><br>
+      • <strong>딜러가(Sell-Thru ASP)</strong>: LG → 딜러 공급가 기준 (소비자 판매가의 약 45~55% 수준)<br>
+      • Q1 2026 수치는 3월 데이터 기준 추정치 (1~2월 Raw 파일 미적용). Q1 실제치와 소폭 차이 가능.<br>
+      • <strong>소비자 판매가(Retail ASP)</strong>: eXtra 기준 Split Inverter 1.5T → LG 3,012 SAR (딜러가 약 2배)<br>
+      • Split Inverter 딜러가 +2.9% 상승 = 상위 모델(ARTCOOL, DualCool) 비중 확대 효과로 해석
+    </div>
+    <p class="note">* Q1 2026 ASP: 3월 sell-thru 데이터 기반 추정치. 연간 실적 확정 후 재산출 예정.</p>
+  </div>
+</div>
+
+<!-- SECTION 4: Q2 Outlook (구 Section 3) -->
+<div id="s3"></div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 4 — Q2 2026 Outlook & Strategy / 2분기 전망 및 전략</div>
+
+<!-- 3-0: Q2 Forecast Rationale Comment Box -->
+<div class="section" style="border-left:4px solid #f39c12;">
+  <div class="section-header" style="background:#f57c00;">
+    <h2>4-0. Q2 전망 근거 / Forecast Rationale & Comment</h2>
+    <span>작성 기준: 2026-04-20 | 방법론: WOS (Week-of-Stock 기반 1차 전망)</span>
+  </div>
+  <div class="section-body">
+
+    <!-- 방법론 -->
+    <div style="background:#fff8e1;border:1px solid #ffe082;border-radius:8px;padding:14px 18px;margin-bottom:16px;">
+      <div style="font-size:12px;font-weight:700;color:#e65100;margin-bottom:8px;">📐 전망 방법론 (Methodology) — v13</div>
+      <div style="font-size:12px;color:#555;line-height:1.8;">
+        <strong>🆕 4월 (April)</strong> = <span style="color:#1565c0;font-weight:700;">RSM 협의 수치 직접 반영</span><br>
+        <span style="color:#888;">→ OR: SAR 28.70M (10,230 sets) — Jan-Feb-Mar-Apr Plan 파일 기준</span><br>
+        <span style="color:#888;">→ IR: SAR 15.17M (6,905 sets) — rsm_fcst_data.json 기준</span><br>
+        <strong>5~6월 (May–Jun)</strong> = Q2 2025 실적 × (1 + Q1 2026 YoY Growth Rate)<br>
+        <span style="color:#888;">→ WOS 재고 기반 출하(Sell Thru) 실적 활용. 5~6월 RSM FCST 미확정 → Q1 YoY 추정 유지.</span>
+      </div>
+    </div>
+
+    <!-- OR/IR 전망 근거 2열 -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+
+      <!-- OR Comment -->
+      <div style="background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:14px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#1565c0;margin-bottom:10px;">
+          📦 OR (Offline Retail) — Q2 전망 근거
+        </div>
+        <table style="font-size:11px;width:100%;border-collapse:collapse;">
+          <tr style="background:#bbdefb;"><th style="padding:4px 8px;text-align:left">항목</th><th style="padding:4px 8px;text-align:right">수치</th></tr>
+          <tr><td style="padding:4px 8px;">Q1 2025 실적</td><td style="text-align:right;padding:4px 8px;">SAR 72.4M</td></tr>
+          <tr><td style="padding:4px 8px;">Q1 2026 실적</td><td style="text-align:right;padding:4px 8px;">SAR 64.0M</td></tr>
+          <tr style="background:#e3f2fd;font-weight:600;"><td style="padding:4px 8px;">Q1 YoY (전망 기준)</td><td style="text-align:right;padding:4px 8px;color:#e74c3c;">-11.5%</td></tr>
+          <tr><td style="padding:4px 8px;">Q2 2025 실적</td><td style="text-align:right;padding:4px 8px;">SAR 34.6M</td></tr>
+          <tr style="background:#1565c0;color:#fff;font-weight:700;"><td style="padding:4px 8px;">Q2 2026 전망</td><td style="text-align:right;padding:4px 8px;">SAR 43.3M</td></tr>
+        </table>
+        <div style="margin-top:10px;font-size:11px;color:#555;line-height:1.7;">
+          <strong style="color:#e74c3c;">⚠️ OR -11.5% 주요 원인:</strong><br>
+          ① <strong>Al Manea 급감</strong>: Q1 2025 SAR 28.3M → 2026 SAR 9.7M (<span style="color:#e74c3c;">-65.9%</span>)
+          — 3월 반품·출하 중단이 전체 OR 실적을 끌어내림.<br>
+          ② <strong>eXtra 성장</strong>: Q1 2025 SAR 33.0M → 2026 SAR 47.0M (<span style="color:#27ae60;">+42.4%</span>)
+          — eXtra 단독 YoY 적용으로 OR 소계 방어.<br>
+          ③ <strong>4월 RSM 협의 수치 반영</strong>: OR Apr 2026 SAR 28.70M (RSM Plan) — 2025 Apr (SAR SAR 18.1M) 대비 상향 목표.<br>
+          ④ <strong>5~6월</strong>: Q1 YoY -11.5% 적용 (RSM FCST 미확정 기간).
+        </div>
+      </div>
+
+      <!-- IR Comment -->
+      <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:14px 18px;">
+        <div style="font-size:12px;font-weight:700;color:#1b5e20;margin-bottom:10px;">
+          🏪 IR (Indirect Retail) — Q2 전망 근거
+        </div>
+        <table style="font-size:11px;width:100%;border-collapse:collapse;">
+          <tr style="background:#c8e6c9;"><th style="padding:4px 8px;text-align:left">항목</th><th style="padding:4px 8px;text-align:right">수치</th></tr>
+          <tr><td style="padding:4px 8px;">Q1 2025 실적</td><td style="text-align:right;padding:4px 8px;">SAR 39.0M</td></tr>
+          <tr><td style="padding:4px 8px;">Q1 2026 실적</td><td style="text-align:right;padding:4px 8px;">SAR 55.4M</td></tr>
+          <tr style="background:#e8f5e9;font-weight:600;"><td style="padding:4px 8px;">Q1 YoY (전망 기준)</td><td style="text-align:right;padding:4px 8px;color:#27ae60;">+41.9%</td></tr>
+          <tr><td style="padding:4px 8px;">Q2 2025 실적</td><td style="text-align:right;padding:4px 8px;">SAR 61.8M</td></tr>
+          <tr style="background:#1b5e20;color:#fff;font-weight:700;"><td style="padding:4px 8px;">Q2 2026 전망</td><td style="text-align:right;padding:4px 8px;">SAR 78.2M</td></tr>
+        </table>
+        <div style="margin-top:10px;font-size:11px;color:#555;line-height:1.7;">
+          <strong style="color:#27ae60;">✅ IR +41.9% 주요 근거:</strong><br>
+          ① <strong>Al Shathri 신규 데이터</strong>: W14~W16 신규 반영으로 IR 기반 확대.<br>
+          ② <strong>SME 채널 포함</strong>: SME(소규모 딜러) 실적이 IR_Others에 편입, 대시보드 기준 일치.<br>
+          ③ <strong>BM 급성장</strong>: Q1 2026 ++5586.7% (신규 딜러 확장 효과).<br>
+          ④ <strong>4월 RSM 협의 수치 반영</strong>: IR Apr 2026 SAR 15.17M (RSM Plan) — YoY 추정치보다 보수적. 5~6월은 YoY +41.9% 적용 유지.
+        </div>
+      </div>
+    </div>
+
+    <!-- 종합 Comment & 리스크 -->
+    <div style="background:#fce4ec;border:1px solid #f48fb1;border-radius:8px;padding:14px 18px;">
+      <div style="font-size:12px;font-weight:700;color:#880e4f;margin-bottom:8px;">⚡ 종합 Comment & 주요 전제 / Key Assumptions & Risks</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:11px;color:#555;line-height:1.8;">
+        <div>
+          <strong>✅ Base Case 전제:</strong><br>
+          • <strong>4월 (Apr)</strong>: OR SAR 28.7M + IR SAR 15.2M = RSM 협의 수치 직접 반영<br>
+          • <strong>5~6월 (May–Jun)</strong>: Q1 YoY (OR -11.5% / IR +41.9%) × 2025 실적 적용<br>
+          • 5~6월 RSM FCST 수령 시 즉시 재반영 예정
+        </div>
+        <div>
+          <strong>⚠️ 조정이 필요한 시나리오:</strong><br>
+          • <span style="color:#e74c3c;">Downside</span>: Al Manea 출하 중단 연속 → OR Q2 추가 -5~10M<br>
+          • <span style="color:#27ae60;">Upside</span>: Al Manea 재개 + Ramadan Peak → OR Q2 +5~8M<br>
+          • <span style="color:#27ae60;">Upside</span>: IR 신규 딜러 확장 가속 → IR Q2 +5M 이상<br>
+          • 5~6월 RSM FCST 미확정 → 수령 즉시 재반영
+        </div>
+      </div>
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f48fb1;font-size:11px;color:#880e4f;font-weight:600;">
+        📌 Q2 2026 Total 전망: OR SAR 43.3M + IR SAR 78.2M = <strong>SAR 121.6M</strong>
+        &nbsp;|&nbsp; vs 2025 Q2 SAR 96.5M (+26.0% YoY)
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>4-1. Q2 Sell Thru 전망</h2>
+    <span>4월: RSM 협의 수치 | 5~6월: 2025 Q2 실적 × Q1 YoY</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>구분 / Channel Group</th>
+          <th style="text-align:right">2025 Q2 실적</th>
+          <th style="text-align:right">2026 Q1 YoY</th>
+          <th style="text-align:right">2026 Q2 전망 (Base)</th>
+          <th>근거 / Basis</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="sep-row"><td colspan="5"><span class="badge-or">OR</span> Offline Retail</td></tr>
+        <tr>
+          <td style="padding-left:20px">eXtra</td>
+          <td style="text-align:right">SAR 20.9M</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">+42.4%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 29.7M</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Al Manea</td>
+          <td style="text-align:right">SAR 2.1M</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">-65.9%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 714K</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">SWS</td>
+          <td style="text-align:right">SAR 6.0M</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">+39.8%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 8.4M</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Black Box</td>
+          <td style="text-align:right">SAR 1.1M</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">-37.5%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 669K</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Al Khunizan</td>
+          <td style="text-align:right">SAR 4.0M</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">-109.7%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR -393K</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">OR_Others</td>
+          <td style="text-align:right">SAR 536K</td>
+          <td style="text-align:right;font-size:11px;color:#e74c3c">-71.2%</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 154K</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr>
+        <tr style="background:#e8f0fe;font-weight:600;color:#1565c0">
+          <td>OR 소계</td>
+          <td style="text-align:right">SAR 34.6M</td>
+          <td style="text-align:right;font-size:11px">-11.5%</td>
+          <td style="text-align:right;font-weight:700">SAR 43.3M</td>
+          <td style="font-size:11px;color:#888">Q1 YoY -11.5% 적용</td>
+        </tr>
+        <tr class="sep-row"><td colspan="5"><span class="badge-ir">IR</span> Indirect Retail</td></tr>
+        <tr>
+          <td style="padding-left:20px">BH</td>
+          <td style="text-align:right">SAR 24.2M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">-17.4%</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 20.0M</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">BM</td>
+          <td style="text-align:right">SAR 4.4M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 6.3M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Tamkeen</td>
+          <td style="text-align:right">SAR 2.9M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+114.3%</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 6.1M</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Zagzoog</td>
+          <td style="text-align:right">SAR 2.8M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 4.0M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Dhamin</td>
+          <td style="text-align:right">SAR 1.1M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 1.6M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Star Appliance</td>
+          <td style="text-align:right">SAR 2.5M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 3.5M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Al Ghanem</td>
+          <td style="text-align:right">SAR 1.5M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 2.2M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">Al Shathri</td>
+          <td style="text-align:right">SAR 3.0M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+41.9% (IR Avg)</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 4.2M</td>
+          <td style="font-size:11px;color:#888">IR 그룹 YoY 적용</td>
+        </tr><tr>
+          <td style="padding-left:20px">IR_Others</td>
+          <td style="text-align:right">SAR 19.4M</td>
+          <td style="text-align:right;font-size:11px;color:#27ae60">+110.9%</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 40.8M</td>
+          <td style="font-size:11px;color:#888">채널 Q1 YoY 적용</td>
+        </tr>
+        <tr style="background:#e8f0fe;font-weight:600;color:#1e3a5f">
+          <td>IR 소계</td>
+          <td style="text-align:right">SAR 61.8M</td>
+          <td style="text-align:right;font-size:11px">+41.9%</td>
+          <td style="text-align:right;font-weight:700">SAR 78.2M</td>
+          <td style="font-size:11px;color:#888">Q1 YoY +41.9% 적용</td>
+        </tr>
+        <tr class="total-row">
+          <td><strong>Total</strong></td>
+          <td style="text-align:right"><strong>SAR 96.5M</strong></td>
+          <td style="text-align:right;font-size:11px">+7.2%</td>
+          <td style="text-align:right"><strong>SAR 121.6M</strong></td>
+          <td style="font-size:11px;color:#f57c00">4월 RSM 반영. 5~6월 RSM 수령 시 조정</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">* 4월: RSM 협의 수치 반영 (OR SAR 28.70M, IR SAR 15.17M). 5~6월: Q1 YoY × 2025 실적 추정. Q2 합계에 RSM 수치 포함.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header">
+    <h2>4-2. Q2 월별 전망 / Monthly Breakdown Forecast</h2>
+    <span>4월: RSM 협의 수치 직접 반영 | 5~6월: 2025 실적 × Q1 YoY (-11.5%OR / +41.9%IR)</span>
+  </div>
+  <div class="section-body">
+    <table>
+      <thead>
+        <tr>
+          <th>구분</th>
+          <th colspan="2" style="text-align:center">Apr (RSM 협의)</th>
+          <th colspan="2" style="text-align:center">May (W18~W22)</th>
+          <th colspan="2" style="text-align:center">Jun (W23~W26)</th>
+          <th colspan="2" style="text-align:center">Q2 합계</th>
+        </tr>
+        <tr style="background:#f0f4ff">
+          <th></th>
+          <th style="font-size:11px;text-align:right">2025실적</th><th style="font-size:11px;text-align:right">2026전망</th>
+          <th style="font-size:11px;text-align:right">2025실적</th><th style="font-size:11px;text-align:right">2026전망</th>
+          <th style="font-size:11px;text-align:right">2025실적</th><th style="font-size:11px;text-align:right">2026전망</th>
+          <th style="font-size:11px;text-align:right">2025실적</th><th style="font-size:11px;text-align:right">2026전망</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="badge-or">OR</span> 5채널+Others</td>
+          <td style="text-align:right">SAR 18.1M</td>
+          <td style="text-align:right;font-weight:700;color:#e65100;background:#fff3e0">SAR 28.7M <span style="font-size:9px;color:#f57c00">RSM</span></td>
+          <td style="text-align:right">SAR 6.5M</td>
+          <td style="text-align:right;font-weight:600;color:#1565c0">SAR 5.8M</td>
+          <td style="text-align:right">SAR 10.0M</td>
+          <td style="text-align:right;font-weight:600;color:#1565c0">SAR 8.9M</td>
+          <td style="text-align:right">SAR 34.6M</td>
+          <td style="text-align:right;font-weight:700;color:#1565c0">SAR 43.3M</td>
+        </tr>
+        <tr>
+          <td><span class="badge-ir">IR</span> 8채널+Others</td>
+          <td style="text-align:right">SAR 17.4M</td>
+          <td style="text-align:right;font-weight:700;color:#e65100;background:#fff3e0">SAR 15.2M <span style="font-size:9px;color:#f57c00">RSM</span></td>
+          <td style="text-align:right">SAR 21.5M</td>
+          <td style="text-align:right;font-weight:600;color:#1e3a5f">SAR 30.5M</td>
+          <td style="text-align:right">SAR 23.0M</td>
+          <td style="text-align:right;font-weight:600;color:#1e3a5f">SAR 32.6M</td>
+          <td style="text-align:right">SAR 61.8M</td>
+          <td style="text-align:right;font-weight:700;color:#1e3a5f">SAR 78.2M</td>
+        </tr>
+        <tr class="total-row">
+          <td>Total</td>
+          <td style="text-align:right">SAR 35.5M</td>
+          <td style="text-align:right;font-weight:700;background:#fff3e0">SAR 43.9M</td>
+          <td style="text-align:right">SAR 28.0M</td>
+          <td style="text-align:right;font-weight:700">SAR 36.2M</td>
+          <td style="text-align:right">SAR 33.0M</td>
+          <td style="text-align:right;font-weight:700">SAR 41.5M</td>
+          <td style="text-align:right">SAR 96.5M</td>
+          <td style="text-align:right;font-weight:700">SAR 121.6M</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">* 4월(Apr) 전망: RSM 협의 수치 직접 반영 (OR SAR 28.70M / IR SAR 15.17M). 5~6월: Q1 YoY 추정. 🟠 RSM 표시 셀 = RSM 협의 확정치.</p>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-header"><h2>4-3. Q2 전략 하이라이트 / Strategy Highlights</h2></div>
+  <div class="section-body" style="padding:20px 24px;">
+    <table>
+      <thead><tr><th>#</th><th>채널</th><th>Q1 현황</th><th>Q2 Action</th><th>우선순위</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><span class="badge-or">OR</span> eXtra</td><td>Q1 최대 OR 채널 | YoY +42.4%</td><td>eXtra Exclusive 모델 확대 / Ramadan 프로모션 집중</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>2</td><td><span class="badge-or">OR</span> Al Manea</td><td>Q1 YoY -65.9% | 3월 반품 발생</td><td>2분기 출고 재개 조건 확인 / 재고 소진 지원</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>3</td><td><span class="badge-ir">IR</span> BH</td><td>Q1 최대 IR 채널 | YoY -17.4%</td><td>주력 IR 채널 유지 / 18K Inverter 재고 관리</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
+        <tr><td>4</td><td><span class="badge-ir">IR</span> IR_Others</td><td>SME/Air Care 포함 | Q1 YoY +110.9%</td><td>SME/Air Care 등 소형 딜러 관리 강화</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
+        <tr><td>5</td><td>가격 전략</td><td>2026 Q1 가격 추적 시스템 운영 중</td><td>Ramadan 이후 경쟁사 Gap 점검 / NS 18K 포지셔닝 유지</td><td style="color:#27ae60;font-weight:700">Ongoing</td></tr>
+        <tr><td>6</td><td>OR 전체</td><td>Q1 YoY -11.5% (감소 → 재고 효율화 필요)</td><td>Ramadan Peak 대응 재고 확보 / 채널별 Push 프로그램</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>7</td><td>IR 전체</td><td>Q1 YoY +41.9% (성장 → 모멘텀 유지)</td><td>IR 신규 딜러 개발 / 18K Inverter 점유율 확대</td><td style="color:#27ae60;font-weight:700">Ongoing</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div style="background:#f8f9fa;border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:11px;color:#888;">
+  <strong>Data Sources (v15):</strong>
+  Sell Thru: SAP Sell Thru Raw 2026 (data.json) |
+  Sell Out OR: 개별 채널 Raw 대시보드 (extra-sellout / or-al-manea / or-sws / or-black-box / or-al-khunizan) |
+  Sell Out IR: Individual IR Channel Dashboards |
+  ASP 비교 (3-1/3-2): eXtra MS Value Dashboard — 실매출 ASP (Val/Qty, VAT미포함) |
+  ASP 내부 추이: SAP Raw Data 2025 / 2026 Q1 |
+  <strong>v15 Update:</strong> ASP 그레이드별 분리 (Entry/Mid/High) — 대시보드 JSON 직접 사용. Stock 섹션 추가 (OR 5채널 / IR 총계). Generated: 2026-04-20
+</div>
+
+</div><!-- /container -->
+
+<script>
+// ===== RAW DATA =====
+const OR_CHS = ["eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan", "OR_Others"];
+const IR_CHS = ["BH", "BM", "Tamkeen", "Zagzoog", "Dhamin", "Star Appliance", "Al Ghanem", "Al Shathri", "IR_Others"];
+const ALL_CHS = OR_CHS.concat(IR_CHS);
+const CATS = ["Split Inverter", "Split on/off", "Window", "Free Standing", "Cassette", "Concealed", "Others"];
+const MOS = ['01','02','03'];
+const MO_LABELS = {'01':'Jan','02':'Feb','03':'Mar'};
+
+const ST = {"eXtra": {"2025": {"01": {"Split Inverter": [9395332.65, 3088.0], "Window": [1447854.1, 1048.0], "Free Standing": [142959.45, 20.0], "Others": [1.0, 1.0]}, "02": {"Split Inverter": [5698076.3, 2020.0], "Window": [6493662.96, 4600.0], "Free Standing": [-142959.45, -22.0], "Others": [1.0, 1.0]}, "03": {"Split Inverter": [10006151.37, 3512.0], "Window": [-40275.18, -27.0]}}, "2026": {"01": {"Split Inverter": [8797399.18, 2521.0], "Split on/off": [3552915.85, 1852.0], "Free Standing": [-263980.5, -44.0], "Cassette": [114844.95, 11.0], "Concealed": [29974.07, 10.0]}, "02": {"Split Inverter": [2663816.5, 892.0], "Split on/off": [2631635.09, 1278.0], "Free Standing": [285668.88, 40.0], "Cassette": [24572.52, 3.0], "Concealed": [131090.35, 19.0]}, "03": {"Split Inverter": [21578439.91, 7258.0], "Split on/off": [5470641.38, 2486.0], "Free Standing": [1924403.46, 295.0], "Concealed": [49095.36, 9.0], "Others": [0.01, 1.0]}}}, "Al Manea": {"2025": {"01": {"Split Inverter": [2657165.66, 936.0], "Split on/off": [-6009.14, -4.0], "Window": [1582616.12, 1118.0]}, "02": {"Split Inverter": [1840377.92, 585.0], "Split on/off": [2425748.06, 1150.0], "Window": [7496242.45, 5511.0], "Free Standing": [1312807.64, 196.0]}, "03": {"Split Inverter": [8347438.93, 2830.0], "Split on/off": [1991495.82, 1044.0], "Window": [-5647.31, -4.0], "Free Standing": [656439.19, 98.0]}}, "2026": {"01": {"Split Inverter": [390523.08, 102.0], "Window": [-3175.2, -2.0]}, "02": {"Split Inverter": [6378330.3, 2124.0], "Split on/off": [2107983.66, 964.0], "Free Standing": [857105.6, 146.0], "Concealed": [8125.44, 0.0]}, "03": {"Split Inverter": [-56630.36, -22.0], "Split on/off": [-10835.24, -6.0], "Free Standing": [-16560.86, -4.0]}}}, "SWS": {"2025": {"01": {"Split Inverter": [119974.84, 34.0], "Split on/off": [252334.45, 128.0], "Free Standing": [262831.52, 40.0]}, "02": {"Split Inverter": [425013.34, 123.0], "Split on/off": [220378.78, 114.0], "Free Standing": [59134.39, 8.0], "Concealed": [6305.25, 0.0]}, "03": {"Split Inverter": [373533.72, 132.0], "Split on/off": [919362.24, 472.0], "Free Standing": [163098.57, 24.0]}}, "2026": {"01": {"Split Inverter": [200856.52, 50.0], "Split on/off": [29609.98, 14.0]}, "02": {"Split Inverter": [2315500.54, 726.0], "Split on/off": [1075620.05, 536.0]}, "03": {"Split Inverter": [69176.7, 26.0], "Split on/off": [14604.38, 8.0], "Free Standing": [114280.63, 20.0], "Concealed": [97505.28, 18.0]}}}, "Black Box": {"2025": {"01": {"Split Inverter": [2606440.3, 902.0], "Window": [67656.6, 50.0], "Free Standing": [121536.6, 18.0]}, "02": {"Split Inverter": [1030065.43, 342.0], "Split on/off": [166148.72, 72.0], "Window": [206883.0, 150.0]}, "03": {"Split Inverter": [396043.64, 158.0], "Split on/off": [696440.34, 350.0]}}, "2026": {"01": {"Split Inverter": [127160.06, 34.0], "Split on/off": [91925.56, 38.0]}, "02": {"Split Inverter": [2306002.18, 760.0], "Split on/off": [1071866.7, 496.0], "Concealed": [8866.56, 0.0]}, "03": {"Split Inverter": [-563627.22, -194.0], "Split on/off": [257889.1, 133.0], "Concealed": [8633.28, 0.0]}}}, "Al Khunizan": {"2025": {"01": {"Free Standing": [607683.06, 98.0], "Cassette": [26585.6, 4.0], "Concealed": [27054.5, 2.0]}, "02": {"Split Inverter": [139872.47, 47.0], "Split on/off": [80577.66, 40.0], "Free Standing": [14080.92, 2.0], "Concealed": [115115.0, 13.0]}, "03": {"Split Inverter": [122014.22, 42.0], "Split on/off": [497787.96, 240.0], "Free Standing": [78772.71, 12.0], "Cassette": [19298.5, 2.0], "Concealed": [63827.5, 5.0]}}, "2026": {"01": {"Concealed": [8122.14, 6.0]}, "02": {"Split Inverter": [10874.38, 4.0]}, "03": {"Split Inverter": [487905.66, 160.0], "Split on/off": [99281.84, 40.0], "Concealed": [-780824.05, -172.0]}}}, "OR_Others": {"2025": {"01": {"Split Inverter": [26747.36, 8.0], "Split on/off": [-181982.3, -72.0], "Free Standing": [243073.23, 38.0], "Cassette": [22565.6, 4.0], "Concealed": [122760.0, 12.0]}, "02": {"Split Inverter": [125482.46, 34.0], "Split on/off": [151044.36, 68.0], "Free Standing": [124714.01, 14.0], "Cassette": [31798.0, 4.0], "Concealed": [52002.5, 4.0]}, "03": {"Split Inverter": [3528.78, 0.0], "Split on/off": [234084.49, 114.0], "Free Standing": [72947.44, 10.0], "Cassette": [66124.5, 8.0], "Concealed": [81567.0, 8.0]}}, "2026": {"01": {"Split Inverter": [13777.84, 4.0], "Split on/off": [3598.46, 2.0], "Cassette": [15673.34, 2.0], "Concealed": [921.6, 1.0]}, "02": {"Split Inverter": [37147.8, 10.0], "Split on/off": [128409.38, 62.0], "Free Standing": [12186.0, 0.0]}, "03": {"Split Inverter": [44982.82, 20.0], "Split on/off": [82321.57, 40.0]}}}, "BH": {"2025": {"01": {"Split Inverter": [18513.98, 6.0], "Split on/off": [-17526.66, -8.0], "Window": [1605698.12, 1187.0], "Concealed": [11786.0, 0.0], "Others": [81889.5, 2.0]}, "02": {"Split Inverter": [-3380.24, -2.0], "Split on/off": [-3004.6, -2.0], "Window": [6220668.95, 4548.0], "Concealed": [97828.5, 22.0]}, "03": {"Split Inverter": [8475599.96, 2708.0], "Split on/off": [2817905.42, 1426.0], "Window": [136373.94, 95.0], "Free Standing": [5279486.62, 786.0], "Cassette": [-431.25, -2.0], "Concealed": [15784.5, -3.0]}}, "2026": {"01": {"Split Inverter": [300953.02, 100.0], "Split on/off": [503783.18, 280.0], "Window": [165004.6, 100.0], "Free Standing": [611400.14, 98.0], "Cassette": [10239.3, 0.0], "Concealed": [3569085.25, 683.0]}, "02": {"Split Inverter": [273617.96, 90.0], "Split on/off": [838263.87, 502.0], "Window": [23701.59, 16.0], "Free Standing": [2857007.65, 490.0], "Cassette": [31122.84, 6.0], "Concealed": [17842.07, 4.0]}, "03": {"Split Inverter": [2667.92, 0.0], "Split on/off": [1275252.19, 732.0], "Window": [7844.04, 5.0], "Free Standing": [8068275.82, 1376.0], "Cassette": [966633.48, 124.0], "Concealed": [919364.7, 233.0], "Others": [0.01, 1.0]}}}, "BM": {"2025": {"01": {}, "02": {"Split on/off": [-2566.34, -2.0], "Window": [67656.6, 50.0]}, "03": {}}, "2026": {"01": {"Split Inverter": [658044.72, 260.0], "Split on/off": [176899.2, 100.0], "Cassette": [36720.0, 4.0], "Concealed": [1530.0, 2.0]}, "02": {"Split Inverter": [282870.82, 114.0], "Split on/off": [32579.94, 20.0], "Free Standing": [37332.0, 6.0], "Concealed": [12857.31, 1.0]}, "03": {"Split Inverter": [405095.86, 140.0], "Split on/off": [136300.36, 102.0], "Free Standing": [927675.49, 158.0], "Cassette": [221964.0, 30.0], "Concealed": [771606.66, 169.0]}}}, "Tamkeen": {"2025": {"01": {"Split Inverter": [302583.68, 98.0]}, "02": {"Split on/off": [323179.16, 146.0], "Free Standing": [1073613.87, 158.0]}, "03": {"Split Inverter": [-3025.84, -2.0], "Concealed": [148159.0, 16.0], "Others": [96575.6, 2.0]}}, "2026": {"01": {"Split on/off": [272600.72, 196.0]}, "02": {"Split Inverter": [1153570.51, 354.0], "Split on/off": [845351.18, 402.0]}, "03": {"Split Inverter": [808563.72, 292.0], "Split on/off": [230218.78, 134.0], "Others": [850314.15, 21.0]}}}, "Zagzoog": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {}, "02": {}, "03": {}}}, "Dhamin": {"2025": {"01": {"Window": [94719.24, 70.0]}, "02": {"Split Inverter": [185742.38, 70.0]}, "03": {"Split Inverter": [408044.34, 120.0], "Cassette": [9535.5, 0.0]}}, "2026": {"01": {"Cassette": [8625.96, 0.0], "Concealed": [12919.56, 0.0]}, "02": {"Split on/off": [1899.0, 0.0], "Free Standing": [11830.0, 2.0]}, "03": {"Split Inverter": [14015.0, 4.0], "Split on/off": [6757.98, 2.0]}}}, "Star Appliance": {"2025": {"01": {}, "02": {"Split Inverter": [-6807.24, -6.0], "Split on/off": [201346.82, 98.0], "Free Standing": [659213.8, 98.0], "Cassette": [-18388.5, -3.0], "Concealed": [-15870.25, -3.0]}, "03": {"Split on/off": [1999.14, 3.0]}}, "2026": {"01": {"Split Inverter": [233064.65, 74.0], "Free Standing": [36969.79, 4.0], "Concealed": [43368.36, 9.0]}, "02": {"Split Inverter": [461816.07, 176.0], "Split on/off": [472949.94, 246.0], "Free Standing": [581450.91, 96.0], "Cassette": [47608.2, 4.0], "Concealed": [435663.94, 83.0]}, "03": {"Split Inverter": [80636.18, 34.0], "Free Standing": [865145.44, 150.0], "Cassette": [85015.98, 10.0], "Concealed": [276093.06, 54.0], "Others": [0.01, 1.0]}}}, "Al Ghanem": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {}, "02": {}, "03": {"Free Standing": [114280.96, 20.0], "Cassette": [5233.2, 0.0], "Concealed": [24656.2, 7.0]}}}, "Al Shathri": {"2025": {"01": {"Split Inverter": [73329.12, 24.0], "Split on/off": [96207.46, 50.0], "Window": [67656.6, 50.0]}, "02": {}, "03": {"Split Inverter": [105806.24, 20.0], "Split on/off": [86681.96, 40.0], "Free Standing": [437011.11, 64.0], "Concealed": [77522.5, 8.0]}}, "2026": {"01": {"Split Inverter": [257403.44, 92.0], "Free Standing": [720059.73, 120.0], "Cassette": [40614.85, 4.0], "Concealed": [147873.36, 24.0]}, "02": {"Split Inverter": [399800.4, 134.0], "Free Standing": [233432.51, 38.0], "Concealed": [111958.19, 18.0]}, "03": {"Split Inverter": [9675.04, 4.0], "Free Standing": [387660.96, 64.0], "Concealed": [101998.56, 15.0], "Others": [123480.0, 3.0]}}}, "IR_Others": {"2025": {"01": {"Split Inverter": [215961.83, 64.0], "Split on/off": [605497.39, 389.0], "Window": [376503.88, 278.0], "Free Standing": [225428.59, 31.0], "Cassette": [284288.42, 32.0], "Concealed": [1089474.68, 118.0], "Others": [771510.95, 142.0]}, "02": {"Split Inverter": [639463.99, 191.0], "Split on/off": [262260.38, 136.0], "Window": [350022.6, 250.0], "Free Standing": [165098.89, 24.0], "Cassette": [177216.0, 13.0], "Concealed": [1032214.35, 108.0], "Others": [168491.74, 34.0]}, "03": {"Split Inverter": [767320.95, 204.0], "Split on/off": [82333.44, 38.0], "Free Standing": [894934.72, 129.0], "Cassette": [349963.95, 41.0], "Concealed": [678063.87, 76.0], "Others": [677823.7, 20.0]}}, "2026": {"01": {"Split Inverter": [656388.19, 246.0], "Split on/off": [1790231.99, 1246.0], "Free Standing": [1241373.09, 198.0], "Cassette": [310995.36, 38.0], "Concealed": [3062266.89, 579.0], "Others": [559348.9, 33.0]}, "02": {"Split Inverter": [2693348.28, 1076.0], "Split on/off": [1565729.46, 888.0], "Free Standing": [1322292.12, 215.0], "Cassette": [453946.22, 54.0], "Concealed": [2236341.95, 469.0], "Others": [228211.01, 28.0]}, "03": {"Split Inverter": [701874.7, 244.0], "Split on/off": [693542.14, 360.0], "Free Standing": [1223263.42, 204.0], "Cassette": [249365.88, 30.0], "Concealed": [1243593.97, 281.0], "Others": [469441.12, 83.0]}}}};       // ST[ch][yr][mo][cat] = [v, q]
+const SO_IR = {"BH": {"2025": {"01": {"Split Inverter": 242, "Split on/off": 1769, "Window": 682, "Free Standing": 120}, "02": {"Split Inverter": 161, "Split on/off": 617, "Window": 2012, "Free Standing": 218}, "03": {"Split Inverter": 315, "Split on/off": 794, "Window": 4870, "Free Standing": 468}}, "2026": {"01": {"Split Inverter": 275, "Split on/off": 226, "Free Standing": 230, "Cassette": 45, "Concealed": 39}, "02": {"Split Inverter": 398, "Split on/off": 589, "Window": 4, "Free Standing": 350, "Cassette": 7, "Concealed": 49}, "03": {"Split Inverter": 336, "Split on/off": 1909, "Window": 15, "Free Standing": 283, "Cassette": 6, "Concealed": 71, "Others": 1}}}, "BM": {"2025": {"01": {"Split Inverter": 2, "Split on/off": 40, "Window": 41, "Free Standing": 37}, "02": {"Split Inverter": 5, "Split on/off": 14, "Window": 26, "Free Standing": 38}, "03": {"Split Inverter": 23, "Split on/off": 21, "Window": 12, "Free Standing": 50}}, "2026": {"01": {"Split Inverter": 126, "Split on/off": 143, "Free Standing": 7, "Cassette": 5}, "02": {"Split Inverter": 122, "Split on/off": 48, "Free Standing": 6}, "03": {"Split Inverter": 54, "Split on/off": 45, "Free Standing": 2, "Concealed": 19}}}, "Tamkeen": {"2025": {"01": {"Split Inverter": 69, "Split on/off": 285, "Free Standing": 90}, "02": {"Split Inverter": 52, "Split on/off": 261, "Window": 1, "Free Standing": 45}, "03": {"Split Inverter": 66, "Split on/off": 352, "Free Standing": 232}}, "2026": {"01": {"Split Inverter": 85, "Split on/off": 83, "Free Standing": 1, "Others": 125}, "02": {"Split Inverter": 70, "Split on/off": 97, "Free Standing": 17, "Others": 80}, "03": {"Split Inverter": 69, "Split on/off": 146, "Free Standing": 9}}}, "Zagzoog": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {"Split Inverter": 2, "Split on/off": 90}, "02": {"Split Inverter": 2, "Split on/off": 69}, "03": {"Split Inverter": 3, "Split on/off": 73}}}, "Dhamin": {"2025": {"01": {"Split Inverter": 21, "Split on/off": 6, "Window": 3, "Free Standing": 3}, "02": {"Split Inverter": 37, "Split on/off": 22, "Window": 17, "Free Standing": 1}, "03": {"Split Inverter": 80, "Split on/off": 135}}, "2026": {"01": {"Split Inverter": 12, "Split on/off": 75, "Free Standing": 2, "Concealed": 2}, "02": {"Split Inverter": 32, "Split on/off": 92, "Free Standing": 10}, "03": {"Split Inverter": 66, "Split on/off": 97, "Free Standing": 6, "Concealed": 1}}}, "Star Appliance": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {"Split Inverter": 102, "Split on/off": 35, "Free Standing": 46, "Concealed": 22}, "02": {"Split Inverter": 31, "Split on/off": 74, "Free Standing": 14, "Concealed": 18}, "03": {"Split Inverter": 85, "Split on/off": 60, "Free Standing": 7, "Concealed": 10}}}, "Al Ghanem": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {"Others": 47}, "02": {"Others": 18}, "03": {"Split Inverter": 2, "Split on/off": 9, "Free Standing": 1, "Others": 59}}}, "Al Shathri": {"2025": {"01": {}, "02": {}, "03": {}}, "2026": {"01": {"Split Inverter": 37, "Free Standing": 40, "Cassette": 2, "Concealed": 16, "Others": 4}, "02": {"Split Inverter": 29, "Split on/off": 26, "Free Standing": 51, "Concealed": 18}, "03": {"Split Inverter": 32, "Split on/off": 4, "Free Standing": 51, "Concealed": 19}}}, "IR_Others": {"2025": {"01": {"Split Inverter": 64, "Split on/off": 389, "Window": 278, "Free Standing": 31, "Cassette": 32, "Concealed": 118, "Others": 142}, "02": {"Split Inverter": 191, "Split on/off": 136, "Window": 250, "Free Standing": 24, "Cassette": 13, "Concealed": 108, "Others": 34}, "03": {"Split Inverter": 204, "Split on/off": 38, "Free Standing": 129, "Cassette": 41, "Concealed": 76, "Others": 20}}, "2026": {"01": {"Split Inverter": 246, "Split on/off": 1246, "Free Standing": 198, "Cassette": 38, "Concealed": 579, "Others": 33}, "02": {"Split Inverter": 1076, "Split on/off": 888, "Free Standing": 215, "Cassette": 54, "Concealed": 469, "Others": 28}, "03": {"Split Inverter": 244, "Split on/off": 360, "Free Standing": 204, "Cassette": 30, "Concealed": 281, "Others": 83}}}}; // SO_IR[ch][yr][mo][cat] = qty
+const SO_OR = {"eXtra": {"2025": {"01": {"Split Inverter": 1177, "Window": 63, "Free Standing": 8, "Others": 1}, "02": {"Split Inverter": 2344, "Window": 720, "Free Standing": 10}, "03": {"Split Inverter": 2215, "Window": 3306, "Free Standing": 23, "Others": 2}}, "2026": {"01": {"Split Inverter": 986, "Split on/off": 605, "Free Standing": 6, "Others": 14}, "02": {"Split Inverter": 2039, "Split on/off": 1032, "Window": 37, "Free Standing": 47, "Others": 21}, "03": {"Split Inverter": 1350, "Split on/off": 924, "Window": 8, "Free Standing": 20, "Others": 5}}}, "Al Manea": {"2025": {"01": {"Split Inverter": 527, "Split on/off": 267, "Window": 369, "Free Standing": 13}, "02": {"Split Inverter": 881, "Split on/off": 340, "Window": 1185, "Free Standing": 40}, "03": {"Split Inverter": 1527, "Split on/off": 980, "Window": 2156, "Free Standing": 49}}, "2026": {"01": {"Split Inverter": 402, "Split on/off": 130, "Window": -1, "Free Standing": 36, "Concealed": 4}, "02": {"Split Inverter": 961, "Split on/off": 640, "Free Standing": 32, "Concealed": 2}, "03": {"Split Inverter": 641, "Split on/off": 166, "Free Standing": 24, "Concealed": 2}}}, "SWS": {"2025": {"01": {"Split Inverter": 281, "Split on/off": 294, "Free Standing": 8, "Others": 3}, "02": {"Split Inverter": 214, "Split on/off": 119, "Free Standing": 3}, "03": {"Split Inverter": 334, "Split on/off": 172, "Free Standing": 8}}, "2026": {"01": {"Split Inverter": 85, "Split on/off": 59, "Free Standing": 4}, "02": {"Split Inverter": 440, "Split on/off": 220, "Free Standing": 13}, "03": {"Split Inverter": 234, "Split on/off": 158, "Free Standing": 10, "Concealed": 12}}}, "Black Box": {"2025": {"01": {"Split Inverter": 171, "Split on/off": 170, "Window": 33, "Free Standing": 15}, "02": {"Split Inverter": 305, "Split on/off": 96, "Window": 71, "Free Standing": -1}, "03": {"Split Inverter": 378, "Split on/off": 117, "Window": 122, "Free Standing": 3}}, "2026": {"01": {"Split Inverter": 52, "Split on/off": 58, "Free Standing": -2}, "02": {"Split Inverter": 252, "Split on/off": 300, "Concealed": 1}, "03": {"Split Inverter": 127, "Split on/off": 207, "Free Standing": 7}}}, "Al Khunizan": {"2025": {"01": {"Split Inverter": 19, "Split on/off": 8, "Free Standing": 39}, "02": {"Split Inverter": 21, "Split on/off": 19, "Free Standing": 118}, "03": {"Split Inverter": 74, "Split on/off": 19, "Free Standing": 34}}, "2026": {"01": {"Split Inverter": 57, "Split on/off": 1, "Free Standing": 22, "Concealed": 3}, "02": {"Split Inverter": 28, "Split on/off": 17, "Free Standing": 23, "Cassette": 4, "Concealed": 3}, "03": {"Split Inverter": 178, "Split on/off": 26, "Free Standing": 23, "Cassette": 2, "Concealed": 2}}}, "OR_Others": {"2025": {"01": {"Split Inverter": 8, "Split on/off": -72, "Free Standing": 38, "Cassette": 4, "Concealed": 12}, "02": {"Split Inverter": 34, "Split on/off": 68, "Free Standing": 14, "Cassette": 4, "Concealed": 4}, "03": {"Split on/off": 114, "Free Standing": 10, "Cassette": 8, "Concealed": 8}}, "2026": {"01": {"Split Inverter": 4, "Split on/off": 2, "Cassette": 2, "Concealed": 1}, "02": {"Split Inverter": 10, "Split on/off": 62}, "03": {"Split Inverter": 20, "Split on/off": 40}}}}; // SO_OR[ch][yr][mo][cat] = qty
+
+// ===== STATE =====
+let activeCats = null;
+
+// ===== HELPERS =====
+function getCats() { return activeCats || CATS; }
+
+function stV(ch, yr, mo, cats) {
+  return cats.reduce((s,cat) => s + (ST[ch]?.[yr]?.[mo]?.[cat]?.[0] || 0), 0);
+}
+function soIR(ch, yr, mo, cats) {
+  return cats.reduce((s,cat) => s + (SO_IR[ch]?.[yr]?.[mo]?.[cat] || 0), 0);
+}
+function soOR(ch, yr, mo, cats) {
+  return cats.reduce((s,cat) => s + (SO_OR[ch]?.[yr]?.[mo]?.[cat] || 0), 0);
+}
+function soVal(ch, yr, mo, cats, isOR) {
+  return isOR ? soOR(ch, yr, mo, cats) : soIR(ch, yr, mo, cats);
+}
+
+function sarM(v) {
+  if (Math.abs(v) >= 1e6) return 'SAR ' + (v/1e6).toFixed(1) + 'M';
+  return 'SAR ' + Math.round(v/1e3) + 'K';
+}
+function pct(v25, v26) {
+  if (!v25) return 'N/A';
+  const p = (v26-v25)/Math.abs(v25)*100;
+  return (p>=0?'+':'')+p.toFixed(1)+'%';
+}
+function pctClr(v25, v26) {
+  if (!v25) return '';
+  return v26>=v25 ? 'color:#27ae60' : 'color:#e74c3c';
+}
+function fmtQ(q) { return Math.round(q).toLocaleString(); }
+
+// ===== RENDER KPIs =====
+function renderKPI(cats) {
+  const st26_or = OR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + stV(ch,2026,mo,cats), 0), 0);
+  const st25_or = OR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + stV(ch,2025,mo,cats), 0), 0);
+  const st26_ir = IR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + stV(ch,2026,mo,cats), 0), 0);
+  const st25_ir = IR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + stV(ch,2025,mo,cats), 0), 0);
+  const st26 = st26_or + st26_ir;
+  const st25 = st25_or + st25_ir;
+  const so26_or = OR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + soOR(ch,2026,mo,cats), 0), 0);
+  const so25_or = OR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + soOR(ch,2025,mo,cats), 0), 0);
+  const so26_ir = IR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + soIR(ch,2026,mo,cats), 0), 0);
+  const so25_ir = IR_CHS.reduce((s,ch) => s + MOS.reduce((ss,mo) => ss + soIR(ch,2025,mo,cats), 0), 0);
+  const so26 = so26_or + so26_ir;
+  const so25 = so25_or + so25_ir;
+
+  document.getElementById('kpiGrid').innerHTML = `
+    <div class="kpi-card">
+      <div class="kpi-label">Sell Thru Q1 2026 (SAP)</div>
+      <div class="kpi-value">${sarM(st26)}</div>
+      <div class="kpi-yoy ${st26>=st25?'up':'down'}">${pct(st25,st26)} YoY</div>
+      <div class="kpi-sub">vs 2025 Q1: ${sarM(st25)}</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Sell Out Q1 2026 (Dealer)</div>
+      <div class="kpi-value">${fmtQ(so26)} units</div>
+      <div class="kpi-yoy ${so26>=so25?'up':'down'}">${pct(so25,so26)} YoY</div>
+      <div class="kpi-sub">vs 2025 Q1: ${fmtQ(so25)} units</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">OR Total Sell Thru Q1</div>
+      <div class="kpi-value">${sarM(st26_or)}</div>
+      <div class="kpi-yoy ${st26_or>=st25_or?'up':'down'}">${pct(st25_or,st26_or)} YoY</div>
+      <div class="kpi-sub">eXtra / Al Manea / SWS / Black Box / Al Khunizan</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">IR Total Sell Thru Q1</div>
+      <div class="kpi-value">${sarM(st26_ir)}</div>
+      <div class="kpi-yoy ${st26_ir>=st25_ir?'up':'down'}">${pct(st25_ir,st26_ir)} YoY</div>
+      <div class="kpi-sub">BH / BM / Tamkeen / Zagzoog + 4개 채널</div>
+    </div>
+  `;
+}
+
+// ===== RENDER ST TABLE =====
+function renderST(cats) {
+  let html = '';
+
+  function stRow(ch, isOR) {
+    const isOthers = ch.endsWith('_Others');
+    const clr = isOR ? '#1565c0' : '#1e3a5f';
+    let row = `<tr><td style="color:${clr};font-weight:600;${isOthers?'font-style:italic;':''}"> ${ch}</td>`;
+    let q1_26=0, q1_25=0;
+    MOS.forEach(mo => {
+      const v26 = stV(ch,2026,mo,cats);
+      const v25 = stV(ch,2025,mo,cats);
+      const y = pct(v25,v26);
+      const c = pctClr(v25,v26);
+      row += `<td style="text-align:right">${sarM(v26)}</td><td style="text-align:right;font-size:11px;${c}">${y}</td>`;
+      q1_26+=v26; q1_25+=v25;
+    });
+    const yq1=pct(q1_25,q1_26); const cq1=pctClr(q1_25,q1_26);
+    row += `<td style="text-align:right;font-weight:700">${sarM(q1_26)}</td><td style="text-align:right;font-size:11px;${cq1}">${yq1}</td></tr>`;
+    return {row, q1_26, q1_25};
+  }
+
+  function subtotalRow(chs, label) {
+    let tot26=[], tot25=[];
+    MOS.forEach(mo => {
+      tot26.push(chs.reduce((s,ch)=>s+stV(ch,2026,mo,cats),0));
+      tot25.push(chs.reduce((s,ch)=>s+stV(ch,2025,mo,cats),0));
+    });
+    const q1_26=tot26.reduce((a,b)=>a+b,0);
+    const q1_25=tot25.reduce((a,b)=>a+b,0);
+    let row = `<tr class="total-row"><td>${label}</td>`;
+    MOS.forEach((_,i) => {
+      const y=pct(tot25[i],tot26[i]); const c=pctClr(tot25[i],tot26[i]);
+      row += `<td style="text-align:right">${sarM(tot26[i])}</td><td style="text-align:right;font-size:11px;${c}">${y}</td>`;
+    });
+    const yq1=pct(q1_25,q1_26); const cq1=pctClr(q1_25,q1_26);
+    row += `<td style="text-align:right">${sarM(q1_26)}</td><td style="text-align:right;font-size:11px;${cq1}">${yq1}</td></tr>`;
+    return {row, q1_26, q1_25};
+  }
+
+  html += `<tr class="sep-row"><td colspan="9"><span class="badge-or">OR</span> Offline Retail — 5채널 + OR_Others</td></tr>`;
+  OR_CHS.forEach(ch => { html += stRow(ch, true).row; });
+  html += subtotalRow(OR_CHS,'OR 합계').row;
+
+  html += `<tr class="sep-row"><td colspan="9"><span class="badge-ir">IR</span> Indirect Retail — 8채널 + IR_Others</td></tr>`;
+  IR_CHS.forEach(ch => { html += stRow(ch, false).row; });
+  html += subtotalRow(IR_CHS,'IR 합계').row;
+
+  let gt26=[],gt25=[];
+  MOS.forEach(mo => {
+    gt26.push(ALL_CHS.reduce((s,ch)=>s+stV(ch,2026,mo,cats),0));
+    gt25.push(ALL_CHS.reduce((s,ch)=>s+stV(ch,2025,mo,cats),0));
+  });
+  const gq1_26=gt26.reduce((a,b)=>a+b,0), gq1_25=gt25.reduce((a,b)=>a+b,0);
+  html += `<tr style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>`;
+  MOS.forEach((_,i) => {
+    html += `<td style="text-align:right">${sarM(gt26[i])}</td><td style="text-align:right;font-size:11px">${pct(gt25[i],gt26[i])}</td>`;
+  });
+  html += `<td style="text-align:right">${sarM(gq1_26)}</td><td style="text-align:right;font-size:11px">${pct(gq1_25,gq1_26)}</td></tr>`;
+
+  document.getElementById('stBody').innerHTML = html;
+}
+
+// ===== RENDER CATEGORY TABLE =====
+function renderCat(cats) {
+  let html = '';
+  let totalV26=0, totalV25=0;
+  const showCats = activeCats ? activeCats : CATS;
+  showCats.forEach(cat => {
+    const v26 = ALL_CHS.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+stV(ch,2026,mo,[cat]),0),0);
+    const v25 = ALL_CHS.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+stV(ch,2025,mo,[cat]),0),0);
+    totalV26+=v26; totalV25+=v25;
+  });
+  showCats.forEach(cat => {
+    const v26 = ALL_CHS.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+stV(ch,2026,mo,[cat]),0),0);
+    const v25 = ALL_CHS.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+stV(ch,2025,mo,[cat]),0),0);
+    const y=pct(v25,v26); const c=pctClr(v25,v26);
+    const share = totalV26 ? v26/totalV26*100 : 0;
+    const barW = Math.round(share*2);
+    const isActive = activeCats && activeCats.includes(cat);
+    html += `<tr style="${isActive?'background:#e8f4fd;':''}"><td><strong>${cat}</strong></td>
+      <td style="text-align:right">${sarM(v26)}</td>
+      <td style="text-align:right;color:#888">${sarM(v25)}</td>
+      <td style="text-align:right;${c}">${y}</td>
+      <td><span class="cat-bar" style="width:${barW}px"></span> ${share.toFixed(1)}%</td></tr>`;
+  });
+  const y=pct(totalV25,totalV26); const c=pctClr(totalV25,totalV26);
+  html += `<tr class="total-row"><td>합계</td>
+    <td style="text-align:right">${sarM(totalV26)}</td>
+    <td style="text-align:right;color:#888">${sarM(totalV25)}</td>
+    <td style="text-align:right">${y}</td><td>100%</td></tr>`;
+  document.getElementById('catBody').innerHTML = html;
+}
+
+// ===== RENDER SELL OUT TABLE =====
+function renderSO(cats) {
+  let html = '';
+
+  function soRow(ch, isOR) {
+    const isOthers = ch.endsWith('_Others');
+    const clr = isOR ? '#1565c0' : '#1e3a5f';
+    let row = `<tr><td style="color:${clr};font-weight:600;${isOthers?'font-style:italic;':''}"> ${ch}</td>`;
+    let q1_26=0, q1_25=0;
+    MOS.forEach(mo => {
+      const q26 = soVal(ch,2026,mo,cats,isOR);
+      const q25 = soVal(ch,2025,mo,cats,isOR);
+      const y=pct(q25,q26); const c=pctClr(q25,q26);
+      row += `<td style="text-align:right">${fmtQ(q26)}</td><td style="text-align:right;font-size:11px;${c}">${y}</td>`;
+      q1_26+=q26; q1_25+=q25;
+    });
+    const yq1=pct(q1_25,q1_26); const cq1=pctClr(q1_25,q1_26);
+    row += `<td style="text-align:right;font-weight:700">${fmtQ(q1_26)}</td><td style="text-align:right;font-size:11px;${cq1}">${yq1}</td></tr>`;
+    return {row, q1_26, q1_25};
+  }
+
+  function soSubtotal(chs, label, isOR) {
+    let tot26=[],tot25=[];
+    MOS.forEach(mo => {
+      tot26.push(chs.reduce((s,ch)=>s+soVal(ch,2026,mo,cats,isOR),0));
+      tot25.push(chs.reduce((s,ch)=>s+soVal(ch,2025,mo,cats,isOR),0));
+    });
+    const q1_26=tot26.reduce((a,b)=>a+b,0), q1_25=tot25.reduce((a,b)=>a+b,0);
+    let row = `<tr class="total-row"><td>${label}</td>`;
+    MOS.forEach((_,i) => {
+      const y=pct(tot25[i],tot26[i]); const c=pctClr(tot25[i],tot26[i]);
+      row += `<td style="text-align:right">${fmtQ(tot26[i])}</td><td style="text-align:right;font-size:11px;${c}">${y}</td>`;
+    });
+    const yq1=pct(q1_25,q1_26); const cq1=pctClr(q1_25,q1_26);
+    row += `<td style="text-align:right">${fmtQ(q1_26)}</td><td style="text-align:right;font-size:11px;${cq1}">${yq1}</td></tr>`;
+    return {row, q1_26, q1_25};
+  }
+
+  html += `<tr class="sep-row"><td colspan="9"><span class="badge-or">OR</span> Offline Retail — 5채널 + OR_Others (SAP Proxy)</td></tr>`;
+  OR_CHS.forEach(ch => { html += soRow(ch, true).row; });
+  html += soSubtotal(OR_CHS,'OR 합계',true).row;
+
+  html += `<tr class="sep-row"><td colspan="9"><span class="badge-ir">IR</span> Indirect Retail — 8채널 + IR_Others (SAP Proxy)</td></tr>`;
+  IR_CHS.forEach(ch => { html += soRow(ch, false).row; });
+  html += soSubtotal(IR_CHS,'IR 합계',false).row;
+
+  let gt26=[],gt25=[];
+  MOS.forEach(mo => {
+    const orT26 = OR_CHS.reduce((s,ch)=>s+soOR(ch,2026,mo,cats),0);
+    const irT26 = IR_CHS.reduce((s,ch)=>s+soIR(ch,2026,mo,cats),0);
+    const orT25 = OR_CHS.reduce((s,ch)=>s+soOR(ch,2025,mo,cats),0);
+    const irT25 = IR_CHS.reduce((s,ch)=>s+soIR(ch,2025,mo,cats),0);
+    gt26.push(orT26+irT26); gt25.push(orT25+irT25);
+  });
+  const gq1_26=gt26.reduce((a,b)=>a+b,0), gq1_25=gt25.reduce((a,b)=>a+b,0);
+  html += `<tr style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>`;
+  MOS.forEach((_,i) => {
+    html += `<td style="text-align:right">${fmtQ(gt26[i])}</td><td style="text-align:right;font-size:11px">${pct(gt25[i],gt26[i])}</td>`;
+  });
+  html += `<td style="text-align:right">${fmtQ(gq1_26)}</td><td style="text-align:right;font-size:11px">${pct(gq1_25,gq1_26)}</td></tr>`;
+
+  document.getElementById('soBody').innerHTML = html;
+}
+
+// ===== RENDER SO CATEGORY TABLE =====
+function renderSOCat(cats) {
+  let html = '';
+  let total26=0, total25=0;
+  const showCats = activeCats ? activeCats : CATS;
+  const orChs = OR_CHS;
+  const irChs = IR_CHS;
+
+  showCats.forEach(cat => {
+    const q26_or = orChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soOR(ch,2026,mo,[cat]),0),0);
+    const q26_ir = irChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soIR(ch,2026,mo,[cat]),0),0);
+    const q25_or = orChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soOR(ch,2025,mo,[cat]),0),0);
+    const q25_ir = irChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soIR(ch,2025,mo,[cat]),0),0);
+    total26 += q26_or+q26_ir; total25 += q25_or+q25_ir;
+  });
+  showCats.forEach(cat => {
+    const q26_or = orChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soOR(ch,2026,mo,[cat]),0),0);
+    const q26_ir = irChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soIR(ch,2026,mo,[cat]),0),0);
+    const q25_or = orChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soOR(ch,2025,mo,[cat]),0),0);
+    const q25_ir = irChs.reduce((s,ch)=>s+MOS.reduce((ss,mo)=>ss+soIR(ch,2025,mo,[cat]),0),0);
+    const q26 = q26_or+q26_ir, q25 = q25_or+q25_ir;
+    const y=pct(q25,q26); const c=pctClr(q25,q26);
+    const share = total26 ? q26/total26*100 : 0;
+    const barW = Math.round(share*2);
+    const isActive = activeCats && activeCats.includes(cat);
+    html += `<tr style="${isActive?'background:#e8f4fd;':''}"><td><strong>${cat}</strong></td>
+      <td style="text-align:right">${fmtQ(q26)}</td>
+      <td style="text-align:right;color:#888">${fmtQ(q25)}</td>
+      <td style="text-align:right;${c}">${y}</td>
+      <td><span class="cat-bar" style="width:${barW}px"></span> ${share.toFixed(1)}%</td></tr>`;
+  });
+  const y=pct(total25,total26); const c=pctClr(total25,total26);
+  html += `<tr class="total-row"><td>합계</td>
+    <td style="text-align:right">${fmtQ(total26)}</td>
+    <td style="text-align:right;color:#888">${fmtQ(total25)}</td>
+    <td style="text-align:right">${y}</td><td>100%</td></tr>`;
+  document.getElementById('soCatBody').innerHTML = html;
+}
+
+// ===== FILTER HANDLER =====
+function handleFilter(btn, cat) {
+  if (cat === 'all') {
+    activeCats = null;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-cat="all"]').classList.add('active');
+    document.getElementById('filterInfo').textContent = '전체 카테고리 표시 중';
+  } else {
+    if (!activeCats) activeCats = [];
+    const idx = activeCats.indexOf(cat);
+    if (idx >= 0) { activeCats.splice(idx, 1); }
+    else { activeCats.push(cat); }
+    if (activeCats.length === 0) {
+      activeCats = null;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.filter-btn[data-cat="all"]').classList.add('active');
+      document.getElementById('filterInfo').textContent = '전체 카테고리 표시 중';
+    } else {
+      document.querySelector('.filter-btn[data-cat="all"]').classList.remove('active');
+      document.querySelectorAll('.filter-btn:not([data-cat="all"])').forEach(b => {
+        b.classList.toggle('active', activeCats.includes(b.dataset.cat));
+      });
+      document.getElementById('filterInfo').textContent = activeCats.length === 1
+        ? `"${activeCats[0]}" 카테고리만 표시 중`
+        : `${activeCats.length}개 카테고리 선택됨: ${activeCats.join(', ')}`;
+    }
+  }
+  renderAll();
+}
+
+// ===== RENDER ALL =====
+function renderAll() {
+  const cats = getCats();
+  renderKPI(cats);
+  renderST(cats);
+  renderCat(cats);
+  renderSO(cats);
+  renderSOCat(cats);
+}
+
+renderAll();
+</script>
+</body>
+</html>
