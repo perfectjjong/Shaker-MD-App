@@ -423,14 +423,6 @@ function passFilterNoPeriod(r){
   return true;
 }
 function getFilteredIdsNoPeriod(){ return new Set(RAW.txn.filter(passFilterNoPeriod).map(function(r){return r[C.ID];})); }
-// For PGI/Remain/Open injection: skip BOTH date period AND year so snapshots are
-// shown for all accounts regardless of which year filter is selected.
-// e.g. account with 2024/2025 sell-thru only still gets its Open data shown when year=2026.
-function passFilterNoPeriodNoYear(r){
-  for(const d of DIMS){ if(d.key==='year') continue; if(!SEL[d.key].has(colVal(r,d))) return false; }
-  return true;
-}
-function getFilteredIdsNoPeriodNoYear(){ return new Set(RAW.txn.filter(passFilterNoPeriodNoYear).map(function(r){return r[C.ID];})); }
 // For growth rate baselines: filters all dimensions EXCEPT year (so 2024/2025 show even when Year filter = 2026 only)
 function passFilterExceptYear(r){
   for(const d of DIMS){ if(d.key==='year') continue; if(!SEL[d.key].has(colVal(r,d))) return false; }
@@ -734,28 +726,32 @@ function _proHas(raw){ var c=_proCur(raw); return !!(c&&c.accts); }
 // ======== PGI / REMAIN / OPEN sub-cards inside 2026 KPI ========
 function renderPgiSubCards(isVal,lb){
   if(!_proHas(RAW.pgi)&&!_proHas(RAW.remain)&&!_proHas(RAW.open)) return '';
-  // Sum directly from _tblData so KPI always matches the table total.
-  // Previous approach used getFilteredIdsNoPeriod() which excluded RSM-FCST-only accounts
-  // (no sell-thru transactions) and accounts filtered out by the Year filter but still
-  // in the table via passFilterExceptYear — causing KPI Open != table Open total.
-  function calcFromTable(vKey,qKey,dvKey,dqKey){
-    var tv=0,tq=0,tdv=0,tdq=0,cnt=0;
-    _tblData.forEach(function(a){
-      var v=a[vKey]||0,q=a[qKey]||0;
-      tv+=v;tq+=q;
-      tdv+=a[dvKey]||0;tdq+=a[dqKey]||0;
-      if(v||q) cnt++;
+  var filteredIds=getFilteredIdsNoPeriod(); // PGI/Remain/Open: period-independent snapshot, exclude date filter
+  function calcTotal(snap){
+    if(!snap||!snap.accts) return {v:0,q:0,cnt:0};
+    var tv=0,tq=0,cnt=0;
+    var catFiltered=isCatFiltered();
+    Object.keys(snap.accts).forEach(function(id){
+      var nid=isNaN(+id)?id:+id;
+      if(!filteredIds.has(nid)) return;
+      var acct=snap.accts[id];
+      var cv,cq;
+      if(catFiltered&&acct.c){
+        cv=0;cq=0;
+        Object.keys(acct.c).forEach(function(cat){if(SEL.cat.has(cat)){cv+=acct.c[cat].v||0;cq+=acct.c[cat].q||0;}});
+      }else{cv=acct.v||0;cq=acct.q||0;}
+      if(catFiltered&&cv===0&&cq===0) return;
+      tv+=cv;tq+=cq;cnt++;
     });
-    return {v:tv,q:tq,dv:tdv,dq:tdq,cnt:cnt};
+    return {v:tv,q:tq,cnt:cnt};
   }
-  function renderMini(raw,vKey,qKey,dvKey,dqKey,cls,label){
-    if(!_proHas(raw)) return '';
-    var tot=calcFromTable(vKey,qKey,dvKey,dqKey);
-    var cv=isVal?tot.v:tot.q;
+  function renderMini(raw, cls, label){
+    var cur=calcTotal(_proCur(raw)), prev=calcTotal(_proPrev(raw));
+    var cv=isVal?cur.v:cur.q, pv=isVal?prev.v:prev.q;
     var dt=_proCur(raw)?_proCur(raw).date:'';
     var h='<div class="pgi-mini '+cls+'"><div class="pm-label">'+label+(dt?' ('+dt+')':'')+'</div><div class="pm-val">'+fmt(cv)+'</div>';
     if(_proPrev(raw)){
-      var delta=isVal?tot.dv:tot.dq, arrow=delta>=0?'\u2191':'\u2193', dColor=delta>=0?'#ef4444':'#10b981';
+      var delta=cv-pv, arrow=delta>=0?'\u2191':'\u2193', dColor=delta>=0?'#ef4444':'#10b981';
       h+='<div class="pm-sub" style="color:'+dColor+'">'+fmt(delta)+' '+arrow+' vs '+_proPrev(raw).date+'</div>';
     } else {
       h+='<div class="pm-sub">'+fmtF(cv)+' '+lb+'</div>';
@@ -764,9 +760,9 @@ function renderPgiSubCards(isVal,lb){
     return h;
   }
   var h='<div class="pgi-row">';
-  h+=renderMini(RAW.pgi,'pgi_v','pgi_q','pgi_dv','pgi_dq','t-pgi','PGI');
-  h+=renderMini(RAW.remain,'rem_v','rem_q','rem_dv','rem_dq','t-remain','Remain');
-  h+=renderMini(RAW.open,'opn_v','opn_q','opn_dv','opn_dq','t-open','Open');
+  h+=renderMini(RAW.pgi,'t-pgi','PGI');
+  h+=renderMini(RAW.remain,'t-remain','Remain');
+  h+=renderMini(RAW.open,'t-open','Open');
   h+='</div>';
   return h;
 }
@@ -1098,20 +1094,7 @@ function renderTopTable(){
   // → accounts with PGI/Remain/Open data but no sell-thru in selected period are missing from table
   // This injection ensures table sum == KPI card sum
   {
-    // [BUG FIX] SEL.team is date-range-dependent: available('team') applies dayFrom/dayTo,
-    // so when user selects 4/1~4/20, teams with Q1-only sell-thru are dropped from SEL.team.
-    // getFilteredIdsNoPeriodNoYear() relies on SEL.team → Q1-only accounts excluded from injection.
-    // Fix: build _noPeriodIds using div filter directly (not date-sensitive SEL.team).
-    var _noPeriodIds=new Set();
-    RAW.txn.forEach(function(r){
-      if(!SEL.div.has(getDiv(r[C.TM]))) return;
-      for(var _di=0;_di<DIMS.length;_di++){
-        var _d=DIMS[_di];
-        if(_d.key==='year'||_d.key==='team'||_d.key==='div') continue;
-        if(!SEL[_d.key].has(colVal(r,_d))) return;
-      }
-      _noPeriodIds.add(r[C.ID]);
-    });
+    var _noPeriodIds=getFilteredIdsNoPeriod();
     var _ml3=RAW.master||[];
     [RAW.pgi,RAW.remain,RAW.open].forEach(function(raw){
       var cur=_proCur(raw);
@@ -1119,13 +1102,13 @@ function renderTopTable(){
       Object.keys(cur.accts).forEach(function(id){
         var nid=isNaN(+id)?id:+id;
         if(am[nid]) return; // already in table
-        if(!_noPeriodIds.has(nid)) return; // doesn't pass div/cat filter
+        if(!_noPeriodIds.has(nid)) return; // doesn't pass team/div/cat filter
         var tm=ACCT_TEAM[nid]||null, nm=String(nid), st='Active';
         for(var mi=0;mi<_ml3.length;mi++){
           if(Math.abs(+_ml3[mi].id-nid)<0.5){if(!tm)tm=_ml3[mi].team;nm=_ml3[mi].name||nm;st=_ml3[mi].status||st;break;}
         }
         if(!tm) tm='IR';
-        if(!SEL.div.has(getDiv(tm))) return; // div-only check (SEL.team is date-range-dependent)
+        if(!SEL.team.has(tm)||!SEL.div.has(getDiv(tm))) return; // team/div filtered out
         am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
                  opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
