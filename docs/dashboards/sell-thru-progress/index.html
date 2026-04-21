@@ -423,6 +423,14 @@ function passFilterNoPeriod(r){
   return true;
 }
 function getFilteredIdsNoPeriod(){ return new Set(RAW.txn.filter(passFilterNoPeriod).map(function(r){return r[C.ID];})); }
+// For PGI/Remain/Open injection: skip BOTH date period AND year so snapshots are
+// shown for all accounts regardless of which year filter is selected.
+// e.g. account with 2024/2025 sell-thru only still gets its Open data shown when year=2026.
+function passFilterNoPeriodNoYear(r){
+  for(const d of DIMS){ if(d.key==='year') continue; if(!SEL[d.key].has(colVal(r,d))) return false; }
+  return true;
+}
+function getFilteredIdsNoPeriodNoYear(){ return new Set(RAW.txn.filter(passFilterNoPeriodNoYear).map(function(r){return r[C.ID];})); }
 // For growth rate baselines: filters all dimensions EXCEPT year (so 2024/2025 show even when Year filter = 2026 only)
 function passFilterExceptYear(r){
   for(const d of DIMS){ if(d.key==='year') continue; if(!SEL[d.key].has(colVal(r,d))) return false; }
@@ -1090,7 +1098,7 @@ function renderTopTable(){
   // → accounts with PGI/Remain/Open data but no sell-thru in selected period are missing from table
   // This injection ensures table sum == KPI card sum
   {
-    var _noPeriodIds=getFilteredIdsNoPeriod();
+    var _noPeriodIds=getFilteredIdsNoPeriodNoYear();
     var _ml3=RAW.master||[];
     [RAW.pgi,RAW.remain,RAW.open].forEach(function(raw){
       var cur=_proCur(raw);
