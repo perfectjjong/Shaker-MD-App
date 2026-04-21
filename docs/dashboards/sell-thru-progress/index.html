@@ -726,32 +726,28 @@ function _proHas(raw){ var c=_proCur(raw); return !!(c&&c.accts); }
 // ======== PGI / REMAIN / OPEN sub-cards inside 2026 KPI ========
 function renderPgiSubCards(isVal,lb){
   if(!_proHas(RAW.pgi)&&!_proHas(RAW.remain)&&!_proHas(RAW.open)) return '';
-  var filteredIds=getFilteredIdsNoPeriod(); // PGI/Remain/Open: period-independent snapshot, exclude date filter
-  function calcTotal(snap){
-    if(!snap||!snap.accts) return {v:0,q:0,cnt:0};
-    var tv=0,tq=0,cnt=0;
-    var catFiltered=isCatFiltered();
-    Object.keys(snap.accts).forEach(function(id){
-      var nid=isNaN(+id)?id:+id;
-      if(!filteredIds.has(nid)) return;
-      var acct=snap.accts[id];
-      var cv,cq;
-      if(catFiltered&&acct.c){
-        cv=0;cq=0;
-        Object.keys(acct.c).forEach(function(cat){if(SEL.cat.has(cat)){cv+=acct.c[cat].v||0;cq+=acct.c[cat].q||0;}});
-      }else{cv=acct.v||0;cq=acct.q||0;}
-      if(catFiltered&&cv===0&&cq===0) return;
-      tv+=cv;tq+=cq;cnt++;
+  // Sum directly from _tblData so KPI always matches the table total.
+  // Previous approach used getFilteredIdsNoPeriod() which excluded RSM-FCST-only accounts
+  // (no sell-thru transactions) and accounts filtered out by the Year filter but still
+  // in the table via passFilterExceptYear — causing KPI Open != table Open total.
+  function calcFromTable(vKey,qKey,dvKey,dqKey){
+    var tv=0,tq=0,tdv=0,tdq=0,cnt=0;
+    _tblData.forEach(function(a){
+      var v=a[vKey]||0,q=a[qKey]||0;
+      tv+=v;tq+=q;
+      tdv+=a[dvKey]||0;tdq+=a[dqKey]||0;
+      if(v||q) cnt++;
     });
-    return {v:tv,q:tq,cnt:cnt};
+    return {v:tv,q:tq,dv:tdv,dq:tdq,cnt:cnt};
   }
-  function renderMini(raw, cls, label){
-    var cur=calcTotal(_proCur(raw)), prev=calcTotal(_proPrev(raw));
-    var cv=isVal?cur.v:cur.q, pv=isVal?prev.v:prev.q;
+  function renderMini(raw,vKey,qKey,dvKey,dqKey,cls,label){
+    if(!_proHas(raw)) return '';
+    var tot=calcFromTable(vKey,qKey,dvKey,dqKey);
+    var cv=isVal?tot.v:tot.q;
     var dt=_proCur(raw)?_proCur(raw).date:'';
     var h='<div class="pgi-mini '+cls+'"><div class="pm-label">'+label+(dt?' ('+dt+')':'')+'</div><div class="pm-val">'+fmt(cv)+'</div>';
     if(_proPrev(raw)){
-      var delta=cv-pv, arrow=delta>=0?'\u2191':'\u2193', dColor=delta>=0?'#ef4444':'#10b981';
+      var delta=isVal?tot.dv:tot.dq, arrow=delta>=0?'\u2191':'\u2193', dColor=delta>=0?'#ef4444':'#10b981';
       h+='<div class="pm-sub" style="color:'+dColor+'">'+fmt(delta)+' '+arrow+' vs '+_proPrev(raw).date+'</div>';
     } else {
       h+='<div class="pm-sub">'+fmtF(cv)+' '+lb+'</div>';
@@ -760,9 +756,9 @@ function renderPgiSubCards(isVal,lb){
     return h;
   }
   var h='<div class="pgi-row">';
-  h+=renderMini(RAW.pgi,'t-pgi','PGI');
-  h+=renderMini(RAW.remain,'t-remain','Remain');
-  h+=renderMini(RAW.open,'t-open','Open');
+  h+=renderMini(RAW.pgi,'pgi_v','pgi_q','pgi_dv','pgi_dq','t-pgi','PGI');
+  h+=renderMini(RAW.remain,'rem_v','rem_q','rem_dv','rem_dq','t-remain','Remain');
+  h+=renderMini(RAW.open,'opn_v','opn_q','opn_dv','opn_dq','t-open','Open');
   h+='</div>';
   return h;
 }
