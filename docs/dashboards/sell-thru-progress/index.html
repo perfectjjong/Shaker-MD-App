@@ -1098,7 +1098,20 @@ function renderTopTable(){
   // → accounts with PGI/Remain/Open data but no sell-thru in selected period are missing from table
   // This injection ensures table sum == KPI card sum
   {
-    var _noPeriodIds=getFilteredIdsNoPeriodNoYear();
+    // [BUG FIX] SEL.team is date-range-dependent: available('team') applies dayFrom/dayTo,
+    // so when user selects 4/1~4/20, teams with Q1-only sell-thru are dropped from SEL.team.
+    // getFilteredIdsNoPeriodNoYear() relies on SEL.team → Q1-only accounts excluded from injection.
+    // Fix: build _noPeriodIds using div filter directly (not date-sensitive SEL.team).
+    var _noPeriodIds=new Set();
+    RAW.txn.forEach(function(r){
+      if(!SEL.div.has(getDiv(r[C.TM]))) return;
+      for(var _di=0;_di<DIMS.length;_di++){
+        var _d=DIMS[_di];
+        if(_d.key==='year'||_d.key==='team'||_d.key==='div') continue;
+        if(!SEL[_d.key].has(colVal(r,_d))) return;
+      }
+      _noPeriodIds.add(r[C.ID]);
+    });
     var _ml3=RAW.master||[];
     [RAW.pgi,RAW.remain,RAW.open].forEach(function(raw){
       var cur=_proCur(raw);
@@ -1106,13 +1119,13 @@ function renderTopTable(){
       Object.keys(cur.accts).forEach(function(id){
         var nid=isNaN(+id)?id:+id;
         if(am[nid]) return; // already in table
-        if(!_noPeriodIds.has(nid)) return; // doesn't pass team/div/cat filter
+        if(!_noPeriodIds.has(nid)) return; // doesn't pass div/cat filter
         var tm=ACCT_TEAM[nid]||null, nm=String(nid), st='Active';
         for(var mi=0;mi<_ml3.length;mi++){
           if(Math.abs(+_ml3[mi].id-nid)<0.5){if(!tm)tm=_ml3[mi].team;nm=_ml3[mi].name||nm;st=_ml3[mi].status||st;break;}
         }
         if(!tm) tm='IR';
-        if(!SEL.team.has(tm)||!SEL.div.has(getDiv(tm))) return; // team/div filtered out
+        if(!SEL.div.has(getDiv(tm))) return; // div-only check (SEL.team is date-range-dependent)
         am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
                  opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
