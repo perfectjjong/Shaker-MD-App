@@ -1,9 +1,10 @@
 name: Price Tracking - Nightly Scraping
 
 on:
-  schedule:
-    # UTC 00:00 = KSA 03:00 (Saudi Arabia Time)
-    - cron: '0 0 * * *'
+  # Schedule disabled - uncomment to re-enable
+  # schedule:
+  #   # UTC 00:00 = KSA 03:00 (Saudi Arabia Time)
+  #   - cron: '0 0 * * *'
   workflow_dispatch:
     inputs:
       channels:
