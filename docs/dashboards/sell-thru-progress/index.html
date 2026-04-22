@@ -637,7 +637,7 @@ function switchMode(m){
 // ======== HELPERS ========
 function fmt(n){if(n==null)return'-';if(Math.abs(n)>=1e6)return(n/1e6).toFixed(1)+'M';if(Math.abs(n)>=1e3)return(n/1e3).toFixed(1)+'K';return Math.round(n).toLocaleString();}
 function fmtF(n){return n?Math.round(n).toLocaleString('en-US'):'0';}
-function gv(r){return mode==='value'?r[C.VL]:r[C.QT];}
+function gv(r){return mode==='value'?r[C.VL]:(r[C.CT]==='Accessories'?0:r[C.QT]);}
 const CY={'2024':'#f59e0b','2025':'#3b82f6','2026':'#10b981'};
 const CS={'Active':'#3b82f6','New_2025':'#10b981','Re-active_2025':'#8b5cf6','Need to re-active':'#ef4444','New':'#06b6d4','Re-active from 2024':'#f97316'};
 
@@ -1034,9 +1034,10 @@ function renderTopTable(){
   data.forEach(function(r){
     var id=r[C.ID],yr=r[C.Y];
     if(!am[id])am[id]={id:id,nm:r[C.NM],tm:r[C.TM],st:r[C.ST],v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
-    if(yr===2024){am[id].v24+=r[C.VL];am[id].q24+=r[C.QT];}
-    else if(yr===2025){am[id].v25+=r[C.VL];am[id].q25+=r[C.QT];}
-    else if(yr===2026){am[id].v26+=r[C.VL];am[id].q26+=r[C.QT];}
+    var _aq=r[C.CT]==='Accessories'?0:r[C.QT];
+    if(yr===2024){am[id].v24+=r[C.VL];am[id].q24+=_aq;}
+    else if(yr===2025){am[id].v25+=r[C.VL];am[id].q25+=_aq;}
+    else if(yr===2026){am[id].v26+=r[C.VL];am[id].q26+=_aq;}
   });
   // Add RSM FCST accounts missing from current period (period-independent fix)
   // RSM FCST = monthly/annual target → must show even if account has no sell-thru in selected period
