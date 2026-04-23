@@ -419,10 +419,22 @@ function getFiltered(){ return RAW.txn.filter(passFilter); }
 function getFilteredIds(){ return new Set(getFiltered().map(function(r){return r[C.ID];})); }
 // For PGI/Remain/Open: filters all dimensions EXCEPT date period (snapshots are period-independent)
 function passFilterNoPeriod(r){
-  for(const d of DIMS) if(!SEL[d.key].has(colVal(r,d))) return false;
+  for(const d of DIMS){
+    if(d.key==='team'||d.key==='account'||d.key==='year') continue;
+    if(!SEL[d.key].has(colVal(r,d))) return false;
+  }
   return true;
 }
-function getFilteredIdsNoPeriod(){ return new Set(RAW.txn.filter(passFilterNoPeriod).map(function(r){return r[C.ID];})); }
+function getFilteredIdsNoPeriod(){
+  var ids=new Set(), teamMap={};
+  RAW.txn.filter(passFilterNoPeriod).forEach(function(r){
+    var id=r[C.ID], tm=r[C.TM];
+    ids.add(id);
+    if(tm && SEL.div.has(getDiv(tm)) && !teamMap[id]) teamMap[id]=tm;
+  });
+  ids._noPeriodTeam=teamMap;
+  return ids;
+}
 // For growth rate baselines: filters all dimensions EXCEPT year (so 2024/2025 show even when Year filter = 2026 only)
 function passFilterExceptYear(r){
   for(const d of DIMS){ if(d.key==='year') continue; if(!SEL[d.key].has(colVal(r,d))) return false; }
@@ -1102,13 +1114,13 @@ function renderTopTable(){
       Object.keys(cur.accts).forEach(function(id){
         var nid=isNaN(+id)?id:+id;
         if(am[nid]) return; // already in table
-        if(!_noPeriodIds.has(nid)) return; // doesn't pass team/div/cat filter
-        var tm=ACCT_TEAM[nid]||null, nm=String(nid), st='Active';
+        if(!_noPeriodIds.has(nid)) return;
+        var tm=_noPeriodIds._noPeriodTeam[nid]||ACCT_TEAM[nid]||null, nm=String(nid), st='Active';
         for(var mi=0;mi<_ml3.length;mi++){
           if(Math.abs(+_ml3[mi].id-nid)<0.5){if(!tm)tm=_ml3[mi].team;nm=_ml3[mi].name||nm;st=_ml3[mi].status||st;break;}
         }
         if(!tm) tm='IR';
-        if(!SEL.team.has(tm)||!SEL.div.has(getDiv(tm))) return; // team/div filtered out
+        if(!SEL.div.has(getDiv(tm))) return;
         am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
                  opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
