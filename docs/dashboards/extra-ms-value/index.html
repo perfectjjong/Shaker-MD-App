@@ -530,7 +530,7 @@ function renderTotal(f){
   const filtered=fc({...f,b:[]});
   const bAgg=aggBy(filtered,r=>r[Bi]);
   const bArr=Object.entries(bAgg).map(([k,v])=>({n:rev.b[k],q:v[1]})).sort((a,b)=>b.q-a.q).slice(0,15);
-  charts.c1=new Chart($('c1'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#95a5a6'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+  charts.c1=new Chart($('c1'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#95a5a6'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,grace:'15%',ticks:{callback:v=>fmt(v)}}}}});
 
   dc('c2');
   const filtered2=fc({...f,br:[]});
