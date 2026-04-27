@@ -285,15 +285,6 @@ tr:hover td{background:#f8fafc}
 
 <!-- ═══ TAB 2: CATEGORY ═══ -->
 <div class="tab-pane" id="pane2">
-  <div class="sfbar">
-    <div class="fg">
-      <div class="flabel">Group By</div>
-      <div class="radio-grp">
-        <button class="radio-btn active" onclick="sf2Level('family',this)">Family</button>
-        <button class="radio-btn" onclick="sf2Level('subfam',this)">Sub Family</button>
-      </div>
-    </div>
-  </div>
   <div class="card" style="margin-bottom:10px">
     <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Brand MS by Category (100% Stacked)</div>
     <div class="ch-wrap tall"><canvas id="chartCatStack"></canvas></div>
@@ -511,7 +502,6 @@ let fYears = new Set(DIM.y.map(String));
 let gMetric = 'val';
 
 // sub-filter state
-let sf2level='family';
 let acPromo='';
 let yoyFamMode='ac', yoyCumMode='cum';
 
@@ -738,7 +728,6 @@ function setMetric(m,btn){
 }
 
 // ── sub-filter callbacks ──────────────────────────────────
-function sf2Level(v,btn){ sf2level=v; document.querySelectorAll('#pane2 .sfbar .radio-grp:first-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderCategory(); }
 function yoyFam(v,btn){ yoyFamMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:first-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
 function yoyCum(v,btn){ yoyCumMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:last-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
 
@@ -918,7 +907,7 @@ function renderCategory(){
   const agg={};
   const totKey={};
   rows.forEach(r=>{
-    const key=sf2level==='family'?DIM.f[r[CI.f]]:(DIM.sf[r[CI.sf]]||DIM.f[r[CI.f]]);
+    const key=DIM.f[r[CI.f]];
     const b=DIM.b[r[CI.b]]; const v=r[metric];
     if(!agg[key]) agg[key]={};
     agg[key][b]=(agg[key][b]||0)+v;
