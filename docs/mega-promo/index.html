@@ -942,7 +942,7 @@ function renderCategory(){
   const tbody=document.querySelector('#tblCatDetail tbody');
   tbody.innerHTML=keys.map(k=>{
     const top=Object.entries(agg[k]).sort((a,b)=>b[1]-a[1])[0]||['—',0];
-    const krows=rows.filter(r=>(sf2level==='family'?DIM.f[r[CI.f]]:DIM.sf[r[CI.sf]]||DIM.f[r[CI.f]])===k);
+    const krows=rows.filter(r=>DIM.f[r[CI.f]]===k);
     const totV=krows.reduce((s,r)=>s+r[CI.val],0);
     const totQ=krows.reduce((s,r)=>s+r[CI.qty],0);
     const brands=new Set(krows.map(r=>r[CI.b]));
