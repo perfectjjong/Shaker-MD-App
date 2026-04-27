@@ -984,7 +984,7 @@ function renderRegion(){
 
   upsertChart('chartRegionQty','bar',{
     labels:regs,
-    datasets:[{label:gMetric==='val'?'Sale Qty':'Sale Value',data:regs.map(r=>gMetric==='val'?regAgg[r].qty:regAgg[r].val),backgroundColor:regs.map((_,i)=>col(i)+'cc'),borderRadius:4}],
+    datasets:[{label:'Sale Qty',data:regs.map(r=>regAgg[r].qty),backgroundColor:regs.map((_,i)=>col(i)+'cc'),borderRadius:4}],
   },{plugins:{legend:{display:false},datalabels:{..._barLblOpts,formatter:v=>fmtFull(v)}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
 
   const rbData={};
