@@ -173,6 +173,15 @@ tr:hover td{background:#f8fafc}
     <div class="year-grp" id="yearGrp"></div>
   </div>
 
+  <!-- Global Metric Toggle -->
+  <div class="fg">
+    <div class="flabel">지표</div>
+    <div class="radio-grp" id="metricGrp">
+      <button class="radio-btn active" onclick="setMetric('val',this)">Value</button>
+      <button class="radio-btn" onclick="setMetric('qty',this)">Qty</button>
+    </div>
+  </div>
+
   <div class="f-sep"></div>
 
   <!-- Date -->
@@ -240,6 +249,74 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
+  <!-- Sub Family -->
+  <div class="fg">
+    <div class="flabel">Sub Family</div>
+    <div class="ms-wrap" id="ms-subfam">
+      <div class="ms-btn" onclick="toggleMs('ms-subfam')">
+        <span id="ms-subfam-lbl">All</span><span class="ms-arrow">▾</span>
+      </div>
+      <div class="ms-menu" id="ms-subfam-menu">
+        <div class="ms-actions">
+          <button onclick="msAll('ms-subfam')">All</button>
+          <button class="cl" onclick="msNone('ms-subfam')">Clear</button>
+        </div>
+        <div class="ms-list" id="ms-subfam-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compressor -->
+  <div class="fg">
+    <div class="flabel">Compressor</div>
+    <div class="ms-wrap" id="ms-comp">
+      <div class="ms-btn" onclick="toggleMs('ms-comp')">
+        <span id="ms-comp-lbl">All</span><span class="ms-arrow">▾</span>
+      </div>
+      <div class="ms-menu" id="ms-comp-menu">
+        <div class="ms-actions">
+          <button onclick="msAll('ms-comp')">All</button>
+          <button class="cl" onclick="msNone('ms-comp')">Clear</button>
+        </div>
+        <div class="ms-list" id="ms-comp-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AC Type -->
+  <div class="fg">
+    <div class="flabel">AC Type</div>
+    <div class="ms-wrap" id="ms-type">
+      <div class="ms-btn" onclick="toggleMs('ms-type')">
+        <span id="ms-type-lbl">All</span><span class="ms-arrow">▾</span>
+      </div>
+      <div class="ms-menu" id="ms-type-menu">
+        <div class="ms-actions">
+          <button onclick="msAll('ms-type')">All</button>
+          <button class="cl" onclick="msNone('ms-type')">Clear</button>
+        </div>
+        <div class="ms-list" id="ms-type-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AC Size -->
+  <div class="fg">
+    <div class="flabel">AC Size</div>
+    <div class="ms-wrap" id="ms-size">
+      <div class="ms-btn" onclick="toggleMs('ms-size')">
+        <span id="ms-size-lbl">All</span><span class="ms-arrow">▾</span>
+      </div>
+      <div class="ms-menu" id="ms-size-menu">
+        <div class="ms-actions">
+          <button onclick="msAll('ms-size')">All</button>
+          <button class="cl" onclick="msNone('ms-size')">Clear</button>
+        </div>
+        <div class="ms-list" id="ms-size-list"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="f-sep"></div>
   <button class="btn-reset" onclick="resetFilters()">Reset</button>
   <div class="fbar-info" id="fbarInfo">—</div>
@@ -302,13 +379,6 @@ tr:hover td{background:#f8fafc}
         <option value="">All Families</option>
       </select>
     </div>
-    <div class="fg">
-      <div class="flabel">MS 기준</div>
-      <div class="radio-grp">
-        <button class="radio-btn active" onclick="sf1Mode('amt',this)">Amount</button>
-        <button class="radio-btn" onclick="sf1Mode('qty',this)">Quantity</button>
-      </div>
-    </div>
   </div>
   <div class="grid2">
     <div class="card">
@@ -338,13 +408,6 @@ tr:hover td{background:#f8fafc}
       <div class="radio-grp">
         <button class="radio-btn active" onclick="sf2Level('family',this)">Family</button>
         <button class="radio-btn" onclick="sf2Level('subfam',this)">Sub Family</button>
-      </div>
-    </div>
-    <div class="fg">
-      <div class="flabel">기준</div>
-      <div class="radio-grp">
-        <button class="radio-btn active" onclick="sf2Metric('val',this)">금액</button>
-        <button class="radio-btn" onclick="sf2Metric('qty',this)">수량</button>
       </div>
     </div>
   </div>
@@ -472,13 +535,6 @@ tr:hover td{background:#f8fafc}
       </div>
     </div>
     <div class="fg">
-      <div class="flabel">지표</div>
-      <div class="radio-grp">
-        <button class="radio-btn active" onclick="yoyMetric('val',this)">Sale Value</button>
-        <button class="radio-btn" onclick="yoyMetric('qty',this)">Sale Qty</button>
-      </div>
-    </div>
-    <div class="fg">
       <div class="flabel">누적 방식</div>
       <div class="radio-grp">
         <button class="radio-btn active" onclick="yoyCum('cum',this)">누적</button>
@@ -512,12 +568,12 @@ tr:hover td{background:#f8fafc}
   </div>
 
   <div class="card" style="margin-bottom:10px">
-    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Size별 YoY 비교 (AC)</div>
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Size별 MS% 비교 (AC · 각 연도 AC 내 비중)</div>
     <div class="ch-wrap tall"><canvas id="chartYoYSize"></canvas></div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Compressor Type YoY 비교 (AC)</div>
+    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Compressor Type MS% 비교 (AC · 각 연도 AC 내 비중)</div>
     <div class="ch-wrap"><canvas id="chartYoYComp"></canvas></div>
   </div>
 </div>
@@ -547,15 +603,22 @@ let fYears   = new Set(DIM.y.map(String));
 let fRegions = new Set(DIM.r);
 let fFams    = new Set(DIM.f);
 let fBrands  = new Set(DIM.b);
+let fSubFams = new Set(DIM.sf);
+let fComps   = new Set(DIM.ac);
+let fTypes   = new Set(DIM.at);
+let fSizes   = new Set(DIM.as);
 let dateMode = 'all';
 let selDate  = null;
 
+// global metric toggle
+let gMetric = 'val';
+
 // sub-filter state
-let sf1fam='', sf1mode='amt';
-let sf2level='family', sf2metric='val';
+let sf1fam='';
+let sf2level='family';
 let sf3fam='';
 let acSubFam='', acType='', acSize='', acComp='', acPromo='';
-let yoyFamMode='ac', yoyMetricMode='val', yoyCumMode='cum';
+let yoyFamMode='ac', yoyCumMode='cum';
 
 // chart instances
 const charts = {};
@@ -589,7 +652,11 @@ function getFiltered(){
   const yi_set = fYears.size < DIM.y.length ? activeYearIndices() : null;
   const ri_set = fRegions.size < DIM.r.length ? new Set([...fRegions].map(r=>DIM.r.indexOf(r))) : null;
   const fi_set = fFams.size < DIM.f.length   ? new Set([...fFams].map(f=>DIM.f.indexOf(f))) : null;
-  const bi_set = fBrands.size < DIM.b.length ? new Set([...fBrands].map(b=>DIM.b.indexOf(b))) : null;
+  const bi_set  = fBrands.size  < DIM.b.length  ? new Set([...fBrands].map(b=>DIM.b.indexOf(b)))   : null;
+  const sfi_set = fSubFams.size < DIM.sf.length ? new Set([...fSubFams].map(s=>DIM.sf.indexOf(s))) : null;
+  const aci_set = fComps.size   < DIM.ac.length ? new Set([...fComps].map(c=>DIM.ac.indexOf(c)))   : null;
+  const ati_set = fTypes.size   < DIM.at.length ? new Set([...fTypes].map(t=>DIM.at.indexOf(t)))   : null;
+  const asi_set = fSizes.size   < DIM.as.length ? new Set([...fSizes].map(s=>DIM.as.indexOf(s)))   : null;
 
   let di_set = null;
   if(dateMode === 'pick' && selDate){
@@ -601,7 +668,11 @@ function getFiltered(){
     if(di_set && !di_set.has(r[CI.d])) return false;
     if(ri_set && !ri_set.has(r[CI.r])) return false;
     if(fi_set && !fi_set.has(r[CI.f])) return false;
-    if(bi_set && !bi_set.has(r[CI.b])) return false;
+    if(bi_set  && !bi_set.has(r[CI.b]))   return false;
+    if(sfi_set && !sfi_set.has(r[CI.sf])) return false;
+    if(aci_set && !aci_set.has(r[CI.ac])) return false;
+    if(ati_set && !ati_set.has(r[CI.at])) return false;
+    if(asi_set && !asi_set.has(r[CI.as])) return false;
     return true;
   });
 }
@@ -656,9 +727,13 @@ function init(){
   });
 
   rebuildDatePicker();
-  buildMs('ms-region', DIM.r, fRegions);
-  buildMs('ms-family', DIM.f, fFams);
-  buildMs('ms-brand',  DIM.b, fBrands);
+  buildMs('ms-region',  DIM.r,  fRegions);
+  buildMs('ms-family',  DIM.f,  fFams);
+  buildMs('ms-brand',   DIM.b,  fBrands);
+  buildMs('ms-subfam',  DIM.sf, fSubFams);
+  buildMs('ms-comp',    DIM.ac, fComps);
+  buildMs('ms-type',    DIM.at, fTypes);
+  buildMs('ms-size',    DIM.as, fSizes);
 
   // sub-filter selects
   ['sf1Family','sf3Family'].forEach(id=>{
@@ -728,14 +803,16 @@ function toggleMs(id){
   document.querySelectorAll('.ms-menu.open').forEach(m=>{ if(m.id!==id+'-menu') m.classList.remove('open'); });
   document.getElementById(id+'-menu').classList.toggle('open');
 }
+function msMap(){ return {
+  'ms-region':[DIM.r,fRegions],'ms-family':[DIM.f,fFams],'ms-brand':[DIM.b,fBrands],
+  'ms-subfam':[DIM.sf,fSubFams],'ms-comp':[DIM.ac,fComps],'ms-type':[DIM.at,fTypes],'ms-size':[DIM.as,fSizes],
+};}
 function msAll(id){
-  const map={'ms-region':[DIM.r,fRegions],'ms-family':[DIM.f,fFams],'ms-brand':[DIM.b,fBrands]};
-  const [items,st]=map[id]; items.forEach(i=>st.add(i));
+  const map=msMap(); const [items,st]=map[id]; items.forEach(i=>st.add(i));
   buildMs(id,items,st); applyFilters();
 }
 function msNone(id){
-  const map={'ms-region':[DIM.r,fRegions],'ms-family':[DIM.f,fFams],'ms-brand':[DIM.b,fBrands]};
-  const [items,st]=map[id]; st.clear();
+  const map=msMap(); const [items,st]=map[id]; st.clear();
   buildMs(id,items,st); applyFilters();
 }
 document.addEventListener('click',e=>{
@@ -754,19 +831,28 @@ function setDateMode(mode,btn){
 }
 
 function resetFilters(){
-  dateMode='all'; selDate=null;
+  dateMode='all'; selDate=null; gMetric='val';
   document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.date-btn[data-mode="all"]').classList.add('active');
   document.getElementById('datePick').style.display='none';
+  document.querySelectorAll('#metricGrp .radio-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   DIM.y.forEach(y=>fYears.add(String(y)));
   DIM.r.forEach(r=>fRegions.add(r));
   DIM.f.forEach(f=>fFams.add(f));
   DIM.b.forEach(b=>fBrands.add(b));
+  DIM.sf.forEach(s=>fSubFams.add(s));
+  DIM.ac.forEach(c=>fComps.add(c));
+  DIM.at.forEach(t=>fTypes.add(t));
+  DIM.as.forEach(s=>fSizes.add(s));
   refreshYearBtns();
   rebuildDatePicker();
-  buildMs('ms-region',DIM.r,fRegions);
-  buildMs('ms-family',DIM.f,fFams);
-  buildMs('ms-brand',DIM.b,fBrands);
+  buildMs('ms-region',  DIM.r,  fRegions);
+  buildMs('ms-family',  DIM.f,  fFams);
+  buildMs('ms-brand',   DIM.b,  fBrands);
+  buildMs('ms-subfam',  DIM.sf, fSubFams);
+  buildMs('ms-comp',    DIM.ac, fComps);
+  buildMs('ms-type',    DIM.at, fTypes);
+  buildMs('ms-size',    DIM.as, fSizes);
   applyFilters();
 }
 
@@ -798,13 +884,18 @@ function switchTab(i){
   document.querySelectorAll('.tab-pane').forEach((p,j)=>p.classList.toggle('active',i===j));
 }
 
+// ── global metric toggle ──────────────────────────────────
+function setMetric(m,btn){
+  gMetric=m;
+  document.querySelectorAll('#metricGrp .radio-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
 // ── sub-filter callbacks ──────────────────────────────────
-function sf1Mode(m,btn){ sf1mode=m; document.querySelectorAll('#pane1 .radio-grp .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderBrandMS(); }
 function sf2Level(v,btn){ sf2level=v; document.querySelectorAll('#pane2 .sfbar .radio-grp:first-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderCategory(); }
-function sf2Metric(v,btn){ sf2metric=v; document.querySelectorAll('#pane2 .sfbar .radio-grp:last-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderCategory(); }
-function yoyFam(v,btn){ yoyFamMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:nth-child(1) .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
-function yoyMetric(v,btn){ yoyMetricMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:nth-child(2) .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
-function yoyCum(v,btn){ yoyCumMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:nth-child(3) .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
+function yoyFam(v,btn){ yoyFamMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:first-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
+function yoyCum(v,btn){ yoyCumMode=v; document.querySelectorAll('#pane5 .sfbar .radio-grp:last-child .radio-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderYoY(); }
 
 // ═══════════════════════════════════════════════════════════
 //  CHART HELPERS
@@ -834,25 +925,27 @@ function renderOverview(rows){
   document.getElementById('kpiDays').textContent=daysLoaded;
   document.getElementById('kpiPromo').textContent=META.promoter_stores.length;
 
-  // Family donut
+  // Family donut (responds to gMetric)
+  const gMCI = gMetric==='val'?CI.val:CI.qty;
   const famAgg={};
-  dispRows.forEach(r=>{ const f=DIM.f[r[CI.f]]; famAgg[f]=(famAgg[f]||0)+r[CI.val]; });
+  dispRows.forEach(r=>{ const f=DIM.f[r[CI.f]]; famAgg[f]=(famAgg[f]||0)+r[gMCI]; });
   const famSorted=Object.entries(famAgg).sort((a,b)=>b[1]-a[1]);
   upsertChart('chartFamilyDonut','doughnut',{
     labels:famSorted.map(([f])=>f),
     datasets:[{data:famSorted.map(([,v])=>v),backgroundColor:famSorted.map((_,i)=>col(i)),borderWidth:1}],
-  },{plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12,padding:6}}}});
+  },{plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12,padding:6}},tooltip:{callbacks:{label:ctx=>{const t=famSorted.reduce((s,[,v])=>s+v,0); return `${ctx.label}: ${fmt(ctx.parsed)} (${(ctx.parsed/t*100).toFixed(1)}%)`;}}}}});
 
-  // Daily trend (2026 only)
+  // Daily trend (2026 only, responds to gMetric)
   const dateAgg={};
-  dispRows.forEach(r=>{ const d=DIM.d[r[CI.d]]; dateAgg[d]=(dateAgg[d]||0)+r[CI.val]; });
+  dispRows.forEach(r=>{ const d=DIM.d[r[CI.d]]; dateAgg[d]=(dateAgg[d]||0)+r[gMCI]; });
   const dates=DIM.d.filter(d=>d.startsWith('2026') && dateAgg[d]);
   let cum=0;
+  const metricLabel = gMetric==='val'?'SAR':'Units';
   upsertChart('chartDailyTrend','line',{
     labels:dates.map(fmtDate),
     datasets:[
-      {label:'일별',data:dates.map(d=>dateAgg[d]||0),backgroundColor:'rgba(37,99,235,.1)',borderColor:'#2563eb',borderWidth:2,pointRadius:3,tension:.3,fill:true},
-      {label:'누적',data:dates.map(d=>{cum+=(dateAgg[d]||0);return cum;}),backgroundColor:'transparent',borderColor:'#10b981',borderWidth:2,borderDash:[4,2],pointRadius:3,tension:.3,yAxisID:'y2'},
+      {label:`일별 (${metricLabel})`,data:dates.map(d=>dateAgg[d]||0),backgroundColor:'rgba(37,99,235,.1)',borderColor:'#2563eb',borderWidth:2,pointRadius:3,tension:.3,fill:true},
+      {label:`누적 (${metricLabel})`,data:dates.map(d=>{cum+=(dateAgg[d]||0);return cum;}),backgroundColor:'transparent',borderColor:'#10b981',borderWidth:2,borderDash:[4,2],pointRadius:3,tension:.3,yAxisID:'y2'},
     ],
   },{plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:12}}},scales:{
     x:{grid:{color:'#f1f5f9'}},
@@ -860,10 +953,10 @@ function renderOverview(rows){
     y2:{position:'right',ticks:{callback:v=>fmt(v)},grid:{display:false}},
   }});
 
-  // Top brands table
+  // Top brands table (sort by active metric)
   const brandAgg={};
   dispRows.forEach(r=>{ const b=DIM.b[r[CI.b]]; if(!brandAgg[b]) brandAgg[b]={val:0,qty:0}; brandAgg[b].val+=r[CI.val]; brandAgg[b].qty+=r[CI.qty]; });
-  const sorted=Object.entries(brandAgg).sort((a,b)=>b[1].val-a[1].val);
+  const sorted=Object.entries(brandAgg).sort((a,b)=>b[1][gMetric]-a[1][gMetric]);
   const tbody=document.querySelector('#tblTopBrands tbody');
   tbody.innerHTML=sorted.map(([b,v],i)=>{
     const amsNum=pctNum(v.val,totalVal); const qmsNum=pctNum(v.qty,totalQty);
@@ -903,19 +996,19 @@ function renderBrandMS(){
     labels,datasets:[{label:'Qty MS %',data:qtyMs,backgroundColor:labels.map((_,i)=>col(i)+'cc'),borderRadius:4}],
   },hbarOpts(maxQty));
 
-  // Daily top5 trend (active year only, or 2026 if both)
+  // Daily top5 trend (active year only, or 2026 if both) — uses gMetric
+  const trendMCI = gMetric==='val'?CI.val:CI.qty;
   const top5=sorted.slice(0,5).map(([b])=>b);
   let rowsAll=getFiltered();
   if(sf1fam) rowsAll=rowsAll.filter(r=>DIM.f[r[CI.f]]===sf1fam);
-  // Use only 2026 dates for trend line
   const trend26Rows = rowsAll.filter(r=>DIM.y[r[CI.y]]==='2026');
   const useTrendRows = trend26Rows.length ? trend26Rows : rowsAll;
   const trendDates=DIM.d.filter(d=>useTrendRows.some(r=>DIM.d[r[CI.d]]===d));
   const trendData={}, dateTotal={};
   top5.forEach(b=>trendData[b]={});
   useTrendRows.forEach(r=>{
-    const d=DIM.d[r[CI.d]]; dateTotal[d]=(dateTotal[d]||0)+r[CI.val];
-    top5.forEach(b=>{ if(DIM.b[r[CI.b]]===b) trendData[b][d]=(trendData[b][d]||0)+r[CI.val]; });
+    const d=DIM.d[r[CI.d]]; dateTotal[d]=(dateTotal[d]||0)+r[trendMCI];
+    top5.forEach(b=>{ if(DIM.b[r[CI.b]]===b) trendData[b][d]=(trendData[b][d]||0)+r[trendMCI]; });
   });
   upsertChart('chartBrandTrend','line',{
     labels:trendDates.map(fmtDate),
@@ -955,7 +1048,7 @@ function renderBrandMS(){
 // ═══════════════════════════════════════════════════════════
 function renderCategory(){
   const rows=getFiltered();
-  const metric=sf2metric==='val'?CI.val:CI.qty;
+  const metric=gMetric==='val'?CI.val:CI.qty;
 
   const agg={};
   const totKey={};
@@ -1003,32 +1096,33 @@ function renderRegion(){
   let rows=getFiltered();
   if(sf3fam) rows=rows.filter(r=>DIM.f[r[CI.f]]===sf3fam);
 
+  const rMCI = gMetric==='val'?CI.val:CI.qty;
   const regAgg={};
   rows.forEach(r=>{ const reg=DIM.r[r[CI.r]]; if(!regAgg[reg]) regAgg[reg]={val:0,qty:0}; regAgg[reg].val+=r[CI.val]; regAgg[reg].qty+=r[CI.qty]; });
-  const regs=Object.keys(regAgg).sort((a,b)=>regAgg[b].val-regAgg[a].val);
+  const regs=Object.keys(regAgg).sort((a,b)=>regAgg[b][gMetric]-regAgg[a][gMetric]);
 
+  const rLabel = gMetric==='val'?'Sale Value (SAR)':'Sale Qty (Units)';
   upsertChart('chartRegionVal','bar',{
     labels:regs,
-    datasets:[{label:'Sale Value',data:regs.map(r=>regAgg[r].val),backgroundColor:regs.map((_,i)=>col(i)),borderRadius:4}],
+    datasets:[{label:rLabel,data:regs.map(r=>regAgg[r].val),backgroundColor:regs.map((_,i)=>col(i)),borderRadius:4}],
   },{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
 
   upsertChart('chartRegionQty','bar',{
     labels:regs,
-    datasets:[{label:'Sale Qty',data:regs.map(r=>regAgg[r].qty),backgroundColor:regs.map((_,i)=>col(i)+'cc'),borderRadius:4}],
+    datasets:[{label:gMetric==='val'?'Sale Qty':'Sale Value',data:regs.map(r=>gMetric==='val'?regAgg[r].qty:regAgg[r].val),backgroundColor:regs.map((_,i)=>col(i)+'cc'),borderRadius:4}],
   },{plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
 
-  const totalVal=rows.reduce((s,r)=>s+r[CI.val],0);
   const rbData={};
-  rows.forEach(r=>{ const reg=DIM.r[r[CI.r]],b=DIM.b[r[CI.b]]; if(!rbData[reg]) rbData[reg]={}; rbData[reg][b]=(rbData[reg][b]||0)+r[CI.val]; });
+  rows.forEach(r=>{ const reg=DIM.r[r[CI.r]],b=DIM.b[r[CI.b]]; if(!rbData[reg]) rbData[reg]={}; rbData[reg][b]=(rbData[reg][b]||0)+r[rMCI]; });
   const regTotal={};
-  rows.forEach(r=>{ const reg=DIM.r[r[CI.r]]; regTotal[reg]=(regTotal[reg]||0)+r[CI.val]; });
+  rows.forEach(r=>{ const reg=DIM.r[r[CI.r]]; regTotal[reg]=(regTotal[reg]||0)+r[rMCI]; });
   const topBrands=DIM.b.filter(b=>rows.some(r=>DIM.b[r[CI.b]]===b)).sort((a,b)=>{
-    return rows.filter(r=>DIM.b[r[CI.b]]===b).reduce((s,r)=>s+r[CI.val],0)
-          -rows.filter(r=>DIM.b[r[CI.b]]===a).reduce((s,r)=>s+r[CI.val],0);
+    return rows.filter(r=>DIM.b[r[CI.b]]===b).reduce((s,r)=>s+r[rMCI],0)
+          -rows.filter(r=>DIM.b[r[CI.b]]===a).reduce((s,r)=>s+r[rMCI],0);
   }).slice(0,8).reverse();
   const rthead=document.querySelector('#tblRegionBrand thead');
   const rtbody=document.querySelector('#tblRegionBrand tbody');
-  rthead.innerHTML='<tr><th>Region</th><th>Sale Value</th>'+topBrands.map(b=>`<th>${b}</th>`).join('')+'</tr>';
+  rthead.innerHTML='<tr><th>Region</th><th>총계</th>'+topBrands.map(b=>`<th>${b}</th>`).join('')+'</tr>';
   rtbody.innerHTML=regs.map(reg=>
     `<tr><td><b>${reg}</b></td><td>${fmt(regTotal[reg])}</td>`+topBrands.map(b=>{
       const ms=pctNum(rbData[reg]?.[b]||0,regTotal[reg]);
@@ -1124,8 +1218,8 @@ function renderAC(){
 //  TAB 5: YoY 비교
 // ═══════════════════════════════════════════════════════════
 function renderYoY(){
-  const metric = yoyMetricMode === 'val' ? CI.val : CI.qty;
-  const metricLabel = yoyMetricMode === 'val' ? 'SAR' : 'Qty';
+  const metric = gMetric === 'val' ? CI.val : CI.qty;
+  const metricLabel = gMetric === 'val' ? 'SAR' : 'Qty';
 
   // Filter rows per year, AC only if mode = ac
   function getYearRows(yearStr){
@@ -1133,11 +1227,19 @@ function renderYoY(){
     if(yi < 0) return [];
     let rows = REC.filter(r => r[CI.y] === yi);
     if(yoyFamMode === 'ac') rows = rows.filter(r => DIM.f[r[CI.f]] === 'AIR CONDITIONER');
-    // Apply region + brand filters from global state
-    const ri_set = fRegions.size < DIM.r.length ? new Set([...fRegions].map(r=>DIM.r.indexOf(r))) : null;
-    const bi_set = fBrands.size < DIM.b.length  ? new Set([...fBrands].map(b=>DIM.b.indexOf(b))) : null;
-    if(ri_set) rows = rows.filter(r => ri_set.has(r[CI.r]));
-    if(bi_set) rows = rows.filter(r => bi_set.has(r[CI.b]));
+    // Apply all global filters
+    const ri_set  = fRegions.size  < DIM.r.length  ? new Set([...fRegions].map(r=>DIM.r.indexOf(r)))   : null;
+    const bi_set  = fBrands.size   < DIM.b.length  ? new Set([...fBrands].map(b=>DIM.b.indexOf(b)))    : null;
+    const sfi_set = fSubFams.size  < DIM.sf.length ? new Set([...fSubFams].map(s=>DIM.sf.indexOf(s))) : null;
+    const aci_set = fComps.size    < DIM.ac.length ? new Set([...fComps].map(c=>DIM.ac.indexOf(c)))   : null;
+    const ati_set = fTypes.size    < DIM.at.length ? new Set([...fTypes].map(t=>DIM.at.indexOf(t)))   : null;
+    const asi_set = fSizes.size    < DIM.as.length ? new Set([...fSizes].map(s=>DIM.as.indexOf(s)))   : null;
+    if(ri_set)  rows = rows.filter(r => ri_set.has(r[CI.r]));
+    if(bi_set)  rows = rows.filter(r => bi_set.has(r[CI.b]));
+    if(sfi_set) rows = rows.filter(r => sfi_set.has(r[CI.sf]));
+    if(aci_set) rows = rows.filter(r => aci_set.has(r[CI.ac]));
+    if(ati_set) rows = rows.filter(r => ati_set.has(r[CI.at]));
+    if(asi_set) rows = rows.filter(r => asi_set.has(r[CI.as]));
     return rows;
   }
 
@@ -1236,8 +1338,8 @@ function renderYoY(){
 
   const tbody5b=document.querySelector('#tblYoYBrand tbody');
   tbody5b.innerHTML=bSorted.map(br=>{
-    const v25=b25.agg[br]?.[yoyMetricMode]||0, v26=b26.agg[br]?.[yoyMetricMode]||0;
-    const t25=b25.tot[yoyMetricMode], t26=b26.tot[yoyMetricMode];
+    const v25=b25.agg[br]?.[gMetric]||0, v26=b26.agg[br]?.[gMetric]||0;
+    const t25=b25.tot[gMetric], t26=b26.tot[gMetric];
     return `<tr>
       <td><b>${br}</b></td>
       <td>${v25?fmt(v25):'-'}</td>
@@ -1248,45 +1350,49 @@ function renderYoY(){
     </tr>`;
   }).join('');
 
-  // Size YoY grouped bar (AC)
-  function acBySize(yearStr){
+  // Size YoY grouped bar (AC) — MS% (each size's share of that year's AC total)
+  function acBySizeMs(yearStr){
     const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER');
-    const agg={};
-    rows.forEach(r=>{ const s=DIM.as[r[CI.as]]||'N/A'; agg[s]=(agg[s]||0)+r[metric]; });
-    return agg;
+    const agg={}, tot={v:0};
+    rows.forEach(r=>{ const s=DIM.as[r[CI.as]]||'N/A'; agg[s]=(agg[s]||0)+r[metric]; tot.v+=r[metric]; });
+    const ms={};
+    Object.keys(agg).forEach(s=>{ ms[s]=tot.v?+(agg[s]/tot.v*100).toFixed(1):0; });
+    return ms;
   }
-  const sz25=acBySize('2025'), sz26=acBySize('2026');
+  const sz25=acBySizeMs('2025'), sz26=acBySizeMs('2026');
   const allSizes=DIM.as.filter(s=>sz25[s]||sz26[s]);
   upsertChart('chartYoYSize','bar',{
     labels:allSizes,
     datasets:[
-      {label:'2025',data:allSizes.map(s=>sz25[s]||0),backgroundColor:'#f97316cc',borderRadius:4},
-      {label:'2026',data:allSizes.map(s=>sz26[s]||0),backgroundColor:'#2563ebcc',borderRadius:4},
+      {label:'2025 MS%',data:allSizes.map(s=>sz25[s]||0),backgroundColor:'#f97316cc',borderRadius:4},
+      {label:'2026 MS%',data:allSizes.map(s=>sz26[s]||0),backgroundColor:'#2563ebcc',borderRadius:4},
     ],
-  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}}},scales:{
+  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}}},scales:{
     x:{grid:{display:false}},
-    y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}},
+    y:{ticks:{callback:v=>v+'%'},grid:{color:'#f1f5f9'},max:100},
   }});
 
-  // Compressor YoY grouped bar
-  function acByComp(yearStr){
+  // Compressor YoY grouped bar — MS%
+  function acByCompMs(yearStr){
     const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER');
-    const agg={};
-    rows.forEach(r=>{ const c=DIM.ac[r[CI.ac]]||'Unknown'; agg[c]=(agg[c]||0)+r[metric]; });
-    return agg;
+    const agg={}, tot={v:0};
+    rows.forEach(r=>{ const c=DIM.ac[r[CI.ac]]||'Unknown'; agg[c]=(agg[c]||0)+r[metric]; tot.v+=r[metric]; });
+    const ms={};
+    Object.keys(agg).forEach(c=>{ ms[c]=tot.v?+(agg[c]/tot.v*100).toFixed(1):0; });
+    return ms;
   }
-  const cp25=acByComp('2025'), cp26=acByComp('2026');
+  const cp25=acByCompMs('2025'), cp26=acByCompMs('2026');
   const allComps=new Set([...Object.keys(cp25),...Object.keys(cp26)]);
   const compArr=[...allComps];
   upsertChart('chartYoYComp','bar',{
     labels:compArr,
     datasets:[
-      {label:'2025',data:compArr.map(c=>cp25[c]||0),backgroundColor:'#f97316cc',borderRadius:4},
-      {label:'2026',data:compArr.map(c=>cp26[c]||0),backgroundColor:'#2563ebcc',borderRadius:4},
+      {label:'2025 MS%',data:compArr.map(c=>cp25[c]||0),backgroundColor:'#f97316cc',borderRadius:4},
+      {label:'2026 MS%',data:compArr.map(c=>cp26[c]||0),backgroundColor:'#2563ebcc',borderRadius:4},
     ],
-  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}}},scales:{
+  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}}},scales:{
     x:{grid:{display:false}},
-    y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}},
+    y:{ticks:{callback:v=>v+'%'},grid:{color:'#f1f5f9'},max:100},
   }});
 }
 
