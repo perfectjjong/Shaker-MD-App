@@ -49,6 +49,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .ms-menu.open{display:flex;flex-direction:column}
 .ms-actions{display:flex;gap:6px;padding:6px 10px;border-bottom:1px solid #f0f0f0;font-size:10px;flex-shrink:0}
 .ms-actions button{color:var(--primary);font-weight:700;cursor:pointer;background:none;border:none}
+.ms-actions button.ms-none{color:var(--red)}
 .ms-actions button.cl{color:var(--red)}
 .ms-list{overflow-y:auto;padding:4px 0}
 .ms-list label{display:flex;align-items:center;gap:6px;padding:4px 10px;cursor:pointer;font-size:11px}
@@ -199,122 +200,21 @@ tr:hover td{background:#f8fafc}
   <div class="f-sep"></div>
 
   <!-- Region -->
-  <div class="fg">
-    <div class="flabel">Region</div>
-    <div class="ms-wrap" id="ms-region">
-      <div class="ms-btn" onclick="toggleMs('ms-region')">
-        <span id="ms-region-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-region-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-region')">All</button>
-          <button class="cl" onclick="msNone('ms-region')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-region-list"></div>
-      </div>
-    </div>
-  </div>
-
+  <div class="fg"><div class="flabel">Region</div><div id="ms-region"></div></div>
   <!-- Family -->
-  <div class="fg">
-    <div class="flabel">Family</div>
-    <div class="ms-wrap" id="ms-family">
-      <div class="ms-btn" onclick="toggleMs('ms-family')">
-        <span id="ms-family-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-family-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-family')">All</button>
-          <button class="cl" onclick="msNone('ms-family')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-family-list"></div>
-      </div>
-    </div>
-  </div>
+  <div class="fg"><div class="flabel">Family</div><div id="ms-family"></div></div>
+  <!-- Sub Family (종속: Family → Sub Family) -->
+  <div class="fg"><div class="flabel">Sub Family</div><div id="ms-subfam"></div></div>
+  <!-- Brand (종속: Sub Family → Brand) -->
+  <div class="fg"><div class="flabel">Brand</div><div id="ms-brand"></div></div>
 
-  <!-- Brand -->
-  <div class="fg">
-    <div class="flabel">Brand</div>
-    <div class="ms-wrap" id="ms-brand">
-      <div class="ms-btn" onclick="toggleMs('ms-brand')">
-        <span id="ms-brand-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-brand-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-brand')">All</button>
-          <button class="cl" onclick="msNone('ms-brand')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-brand-list"></div>
-      </div>
-    </div>
-  </div>
+  <div class="f-sep"></div>
 
-  <!-- Sub Family -->
-  <div class="fg">
-    <div class="flabel">Sub Family</div>
-    <div class="ms-wrap" id="ms-subfam">
-      <div class="ms-btn" onclick="toggleMs('ms-subfam')">
-        <span id="ms-subfam-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-subfam-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-subfam')">All</button>
-          <button class="cl" onclick="msNone('ms-subfam')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-subfam-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Compressor -->
-  <div class="fg">
-    <div class="flabel">Compressor</div>
-    <div class="ms-wrap" id="ms-comp">
-      <div class="ms-btn" onclick="toggleMs('ms-comp')">
-        <span id="ms-comp-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-comp-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-comp')">All</button>
-          <button class="cl" onclick="msNone('ms-comp')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-comp-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- AC Type -->
-  <div class="fg">
-    <div class="flabel">AC Type</div>
-    <div class="ms-wrap" id="ms-type">
-      <div class="ms-btn" onclick="toggleMs('ms-type')">
-        <span id="ms-type-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-type-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-type')">All</button>
-          <button class="cl" onclick="msNone('ms-type')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-type-list"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- AC Size -->
-  <div class="fg">
-    <div class="flabel">AC Size</div>
-    <div class="ms-wrap" id="ms-size">
-      <div class="ms-btn" onclick="toggleMs('ms-size')">
-        <span id="ms-size-lbl">All</span><span class="ms-arrow">▾</span>
-      </div>
-      <div class="ms-menu" id="ms-size-menu">
-        <div class="ms-actions">
-          <button onclick="msAll('ms-size')">All</button>
-          <button class="cl" onclick="msNone('ms-size')">Clear</button>
-        </div>
-        <div class="ms-list" id="ms-size-list"></div>
-      </div>
-    </div>
+  <!-- AC-only filters (종속: Family에 AC 포함 시 활성) -->
+  <div id="ac-filter-group" style="display:flex;align-items:center;gap:10px">
+    <div class="fg"><div class="flabel">Compressor</div><div id="ms-comp"></div></div>
+    <div class="fg"><div class="flabel">AC Type</div><div id="ms-type"></div></div>
+    <div class="fg"><div class="flabel">AC Size</div><div id="ms-size"></div></div>
   </div>
 
   <div class="f-sep"></div>
@@ -598,15 +498,69 @@ const REC = D.c;
 // col indices: [year_i, day_idx, date_i, region_i, family_i, brand_i, sf_i, at_i, as_i, ac_i, is_promo, qty, val]
 const CI = {y:0,di:1,d:2,r:3,f:4,b:5,sf:6,at:7,as:8,ac:9,ip:10,qty:11,val:12};
 
+// ═══════════════════════════════════════════════════════════
+//  MS CLASS — multi-select widget (기존 대시보드 패턴)
+// ═══════════════════════════════════════════════════════════
+function MS(el, opts, label, cb){
+  this.el=el; this.opts=opts.map(String); this.label=label; this.cb=cb;
+  this.sel=new Set(this.opts); this._build();
+}
+MS.prototype._build=function(){
+  const self=this;
+  const w=document.createElement('div'); w.className='ms-wrap';
+  const btn=document.createElement('button'); btn.type='button'; btn.className='ms-btn';
+  this.btnEl=btn; w.appendChild(btn);
+  const menu=document.createElement('div'); menu.className='ms-menu';
+  const acts=document.createElement('div'); acts.className='ms-actions';
+  const aAll=document.createElement('button'); aAll.textContent='All';
+  aAll.onclick=()=>self.selectAll();
+  const aNone=document.createElement('button'); aNone.textContent='None'; aNone.className='ms-none';
+  aNone.onclick=()=>self.selectNone();
+  acts.appendChild(aAll); acts.appendChild(aNone); menu.appendChild(acts);
+  const list=document.createElement('div'); list.className='ms-list';
+  this.opts.forEach(o=>{
+    const lbl=document.createElement('label');
+    const cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true; cb.value=o;
+    cb.addEventListener('change',()=>{ if(cb.checked) self.sel.add(o); else self.sel.delete(o); self._upd(); self.cb(); });
+    lbl.appendChild(cb);
+    const sp=document.createElement('span'); sp.textContent=o;
+    lbl.appendChild(sp); list.appendChild(lbl);
+  });
+  menu.appendChild(list); w.appendChild(menu); this.menuEl=menu;
+  btn.addEventListener('click', e=>{ e.stopPropagation(); document.querySelectorAll('.ms-menu.open').forEach(m=>{ if(m!==menu) m.classList.remove('open'); }); menu.classList.toggle('open'); });
+  this.el.appendChild(w); this.listEl=list; this._upd();
+};
+MS.prototype._upd=function(){
+  const cnt=this._visCount!=null?this._visCount:this.opts.length;
+  let sel=0;
+  this.listEl.querySelectorAll('label').forEach(lbl=>{ if(lbl.style.display!=='none'&&lbl.querySelector('input').checked) sel++; });
+  this.btnEl.innerHTML=this.label+' <b style="color:var(--primary);font-weight:700">'+sel+'/'+cnt+'</b> <span style="color:#9ca3af;font-size:9px">&#9662;</span>';
+};
+MS.prototype.syncVisible=function(availSet){
+  let cnt=0;
+  this.listEl.querySelectorAll('label').forEach(lbl=>{
+    const cb=lbl.querySelector('input');
+    if(availSet.has(cb.value)){ lbl.style.display='flex'; cnt++; }
+    else{ lbl.style.display='none'; cb.checked=false; this.sel.delete(cb.value); }
+  });
+  this._visCount=cnt; this._upd();
+};
+MS.prototype.showAll=function(){
+  this.sel=new Set(this.opts);
+  this.listEl.querySelectorAll('label').forEach(lbl=>{ lbl.style.display='flex'; lbl.querySelector('input').checked=true; });
+  this._visCount=this.opts.length; this._upd();
+};
+MS.prototype.selectAll=function(){ this.sel=new Set(this.opts); this.listEl.querySelectorAll('input').forEach(c=>c.checked=true); this._upd(); this.cb(); };
+MS.prototype.selectNone=function(){ this.sel.clear(); this.listEl.querySelectorAll('input').forEach(c=>c.checked=false); this._upd(); this.cb(); };
+MS.prototype.reset=function(){ this.showAll(); this.selectAll(); };
+MS.prototype.getSelected=function(){ return this.sel; };
+document.addEventListener('click', ()=>document.querySelectorAll('.ms-menu.open').forEach(m=>m.classList.remove('open')));
+
+// ── MS instances (created in init) ────────────────────────
+let msRegion, msFamily, msSubFam, msBrand, msComp, msType, msSize;
+
 // ── filter state ──────────────────────────────────────────
 let fYears   = new Set(DIM.y.map(String));
-let fRegions = new Set(DIM.r);
-let fFams    = new Set(DIM.f);
-let fBrands  = new Set(DIM.b);
-let fSubFams = new Set(DIM.sf);
-let fComps   = new Set(DIM.ac);
-let fTypes   = new Set(DIM.at);
-let fSizes   = new Set(DIM.as);
 let dateMode = 'all';
 let selDate  = null;
 
@@ -619,6 +573,35 @@ let sf2level='family';
 let sf3fam='';
 let acSubFam='', acType='', acSize='', acComp='', acPromo='';
 let yoyFamMode='ac', yoyCumMode='cum';
+
+// ── Cascade functions ──────────────────────────────────────
+function cascadeFromFamily(){
+  const selF = msFamily.getSelected();
+  // SubFamily → 선택된 Family에 속하는 SF만 표시
+  const availSF = new Set(REC.filter(r=>selF.has(DIM.f[r[CI.f]])).map(r=>DIM.sf[r[CI.sf]]));
+  msSubFam.syncVisible(availSF);
+  cascadeFromSubFam(false);
+}
+function cascadeFromSubFam(doApply=true){
+  const selF  = msFamily.getSelected();
+  const selSF = msSubFam.getSelected();
+  // Brand → 선택된 Family × SubFamily에 속하는 브랜드만 표시
+  const availB = new Set(REC.filter(r=>selF.has(DIM.f[r[CI.f]])&&selSF.has(DIM.sf[r[CI.sf]])).map(r=>DIM.b[r[CI.b]]));
+  msBrand.syncVisible(availB);
+  // AC 전용 필터: Family에 AC 포함 시만 활성화
+  const hasAC = selF.has('AIR CONDITIONER') || selF.size===DIM.f.length;
+  const acGrp = document.getElementById('ac-filter-group');
+  acGrp.style.opacity = hasAC ? '1' : '0.35';
+  acGrp.style.pointerEvents = hasAC ? '' : 'none';
+  if(hasAC){
+    const acRows = REC.filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER'&&selSF.has(DIM.sf[r[CI.sf]]));
+    msComp.syncVisible(new Set(acRows.map(r=>DIM.ac[r[CI.ac]])));
+    msType.syncVisible(new Set(acRows.map(r=>DIM.at[r[CI.at]])));
+    msSize.syncVisible(new Set(acRows.map(r=>DIM.as[r[CI.as]])));
+  }
+  if(doApply) applyFilters();
+}
+function cascadeFromBrand(){ applyFilters(); }
 
 // chart instances
 const charts = {};
@@ -647,16 +630,25 @@ function activeYearIndices(){
   return new Set(DIM.y.map((y,i)=>fYears.has(String(y))?i:-1).filter(i=>i>=0));
 }
 
-// ── filter rows ───────────────────────────────────────────
+// ── filter rows (MS 인스턴스 기반) ───────────────────────────
 function getFiltered(){
   const yi_set = fYears.size < DIM.y.length ? activeYearIndices() : null;
-  const ri_set = fRegions.size < DIM.r.length ? new Set([...fRegions].map(r=>DIM.r.indexOf(r))) : null;
-  const fi_set = fFams.size < DIM.f.length   ? new Set([...fFams].map(f=>DIM.f.indexOf(f))) : null;
-  const bi_set  = fBrands.size  < DIM.b.length  ? new Set([...fBrands].map(b=>DIM.b.indexOf(b)))   : null;
-  const sfi_set = fSubFams.size < DIM.sf.length ? new Set([...fSubFams].map(s=>DIM.sf.indexOf(s))) : null;
-  const aci_set = fComps.size   < DIM.ac.length ? new Set([...fComps].map(c=>DIM.ac.indexOf(c)))   : null;
-  const ati_set = fTypes.size   < DIM.at.length ? new Set([...fTypes].map(t=>DIM.at.indexOf(t)))   : null;
-  const asi_set = fSizes.size   < DIM.as.length ? new Set([...fSizes].map(s=>DIM.as.indexOf(s)))   : null;
+
+  const selR  = msRegion.getSelected();
+  const selF  = msFamily.getSelected();
+  const selSF = msSubFam.getSelected();
+  const selB  = msBrand.getSelected();
+  const selC  = msComp.getSelected();
+  const selT  = msType.getSelected();
+  const selSz = msSize.getSelected();
+
+  const ri_set  = selR.size  < DIM.r.length  ? new Set([...selR].map(v=>DIM.r.indexOf(v)))  : null;
+  const fi_set  = selF.size  < DIM.f.length  ? new Set([...selF].map(v=>DIM.f.indexOf(v)))  : null;
+  const sfi_set = selSF.size < DIM.sf.length ? new Set([...selSF].map(v=>DIM.sf.indexOf(v))): null;
+  const bi_set  = selB.size  < DIM.b.length  ? new Set([...selB].map(v=>DIM.b.indexOf(v)))  : null;
+  const aci_set = selC.size  < DIM.ac.length ? new Set([...selC].map(v=>DIM.ac.indexOf(v))) : null;
+  const ati_set = selT.size  < DIM.at.length ? new Set([...selT].map(v=>DIM.at.indexOf(v))) : null;
+  const asi_set = selSz.size < DIM.as.length ? new Set([...selSz].map(v=>DIM.as.indexOf(v))): null;
 
   let di_set = null;
   if(dateMode === 'pick' && selDate){
@@ -664,12 +656,12 @@ function getFiltered(){
   }
 
   return REC.filter(r=>{
-    if(yi_set && !yi_set.has(r[CI.y])) return false;
-    if(di_set && !di_set.has(r[CI.d])) return false;
-    if(ri_set && !ri_set.has(r[CI.r])) return false;
-    if(fi_set && !fi_set.has(r[CI.f])) return false;
-    if(bi_set  && !bi_set.has(r[CI.b]))   return false;
+    if(yi_set  && !yi_set.has(r[CI.y]))   return false;
+    if(di_set  && !di_set.has(r[CI.d]))   return false;
+    if(ri_set  && !ri_set.has(r[CI.r]))   return false;
+    if(fi_set  && !fi_set.has(r[CI.f]))   return false;
     if(sfi_set && !sfi_set.has(r[CI.sf])) return false;
+    if(bi_set  && !bi_set.has(r[CI.b]))   return false;
     if(aci_set && !aci_set.has(r[CI.ac])) return false;
     if(ati_set && !ati_set.has(r[CI.at])) return false;
     if(asi_set && !asi_set.has(r[CI.as])) return false;
@@ -727,15 +719,17 @@ function init(){
   });
 
   rebuildDatePicker();
-  buildMs('ms-region',  DIM.r,  fRegions);
-  buildMs('ms-family',  DIM.f,  fFams);
-  buildMs('ms-brand',   DIM.b,  fBrands);
-  buildMs('ms-subfam',  DIM.sf, fSubFams);
-  buildMs('ms-comp',    DIM.ac, fComps);
-  buildMs('ms-type',    DIM.at, fTypes);
-  buildMs('ms-size',    DIM.as, fSizes);
 
-  // sub-filter selects
+  // MS 인스턴스 생성 — cascade: Family → SubFam → Brand | Family → AC filters
+  msRegion = new MS(document.getElementById('ms-region'), DIM.r,  'Region',  applyFilters);
+  msFamily = new MS(document.getElementById('ms-family'), DIM.f,  'Family',  ()=>{ cascadeFromFamily(); applyFilters(); });
+  msSubFam = new MS(document.getElementById('ms-subfam'), DIM.sf, 'SubFam',  ()=>{ cascadeFromSubFam(); });
+  msBrand  = new MS(document.getElementById('ms-brand'),  DIM.b,  'Brand',   cascadeFromBrand);
+  msComp   = new MS(document.getElementById('ms-comp'),   DIM.ac, 'Comp',    applyFilters);
+  msType   = new MS(document.getElementById('ms-type'),   DIM.at, 'Type',    applyFilters);
+  msSize   = new MS(document.getElementById('ms-size'),   DIM.as, 'Size',    applyFilters);
+
+  // Tab sub-filter selects
   ['sf1Family','sf3Family'].forEach(id=>{
     const el = document.getElementById(id);
     DIM.f.forEach(f=>{ const o=document.createElement('option'); o.value=f; o.textContent=f; el.appendChild(o); });
@@ -776,48 +770,7 @@ function rebuildDatePicker(){
   if(activeDates.length) selDate = dp.value = activeDates[0];
 }
 
-// ═══════════════════════════════════════════════════════════
-//  MULTI-SELECT WIDGET
-// ═══════════════════════════════════════════════════════════
-function buildMs(id, items, stateSet){
-  const list = document.getElementById(id+'-list');
-  list.innerHTML='';
-  items.forEach(item=>{
-    const lbl=document.createElement('label');
-    const cb=document.createElement('input'); cb.type='checkbox'; cb.value=item;
-    cb.checked=stateSet.has(item);
-    cb.onchange=()=>{ if(cb.checked) stateSet.add(item); else stateSet.delete(item); updateMsLabel(id,items,stateSet); applyFilters(); };
-    lbl.appendChild(cb); lbl.appendChild(document.createTextNode(' '+item));
-    list.appendChild(lbl);
-  });
-  updateMsLabel(id,items,stateSet);
-}
-function updateMsLabel(id,items,stateSet){
-  const lbl=document.getElementById(id+'-lbl');
-  if(stateSet.size===0) lbl.textContent='None';
-  else if(stateSet.size===items.length) lbl.textContent='All';
-  else if(stateSet.size===1) lbl.textContent=[...stateSet][0];
-  else lbl.textContent=stateSet.size+' selected';
-}
-function toggleMs(id){
-  document.querySelectorAll('.ms-menu.open').forEach(m=>{ if(m.id!==id+'-menu') m.classList.remove('open'); });
-  document.getElementById(id+'-menu').classList.toggle('open');
-}
-function msMap(){ return {
-  'ms-region':[DIM.r,fRegions],'ms-family':[DIM.f,fFams],'ms-brand':[DIM.b,fBrands],
-  'ms-subfam':[DIM.sf,fSubFams],'ms-comp':[DIM.ac,fComps],'ms-type':[DIM.at,fTypes],'ms-size':[DIM.as,fSizes],
-};}
-function msAll(id){
-  const map=msMap(); const [items,st]=map[id]; items.forEach(i=>st.add(i));
-  buildMs(id,items,st); applyFilters();
-}
-function msNone(id){
-  const map=msMap(); const [items,st]=map[id]; st.clear();
-  buildMs(id,items,st); applyFilters();
-}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.ms-wrap')) document.querySelectorAll('.ms-menu.open').forEach(m=>m.classList.remove('open'));
-});
+// (MS 위젯은 MS 클래스로 대체됨 — 위 MS class 참조)
 
 // ── date filter ──────────────────────────────────────────
 function setDateMode(mode,btn){
@@ -837,22 +790,12 @@ function resetFilters(){
   document.getElementById('datePick').style.display='none';
   document.querySelectorAll('#metricGrp .radio-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   DIM.y.forEach(y=>fYears.add(String(y)));
-  DIM.r.forEach(r=>fRegions.add(r));
-  DIM.f.forEach(f=>fFams.add(f));
-  DIM.b.forEach(b=>fBrands.add(b));
-  DIM.sf.forEach(s=>fSubFams.add(s));
-  DIM.ac.forEach(c=>fComps.add(c));
-  DIM.at.forEach(t=>fTypes.add(t));
-  DIM.as.forEach(s=>fSizes.add(s));
   refreshYearBtns();
   rebuildDatePicker();
-  buildMs('ms-region',  DIM.r,  fRegions);
-  buildMs('ms-family',  DIM.f,  fFams);
-  buildMs('ms-brand',   DIM.b,  fBrands);
-  buildMs('ms-subfam',  DIM.sf, fSubFams);
-  buildMs('ms-comp',    DIM.ac, fComps);
-  buildMs('ms-type',    DIM.at, fTypes);
-  buildMs('ms-size',    DIM.as, fSizes);
+  msRegion.reset(); msFamily.reset(); msSubFam.reset(); msBrand.reset();
+  msComp.reset(); msType.reset(); msSize.reset();
+  document.getElementById('ac-filter-group').style.opacity='1';
+  document.getElementById('ac-filter-group').style.pointerEvents='';
   applyFilters();
 }
 
@@ -1227,13 +1170,15 @@ function renderYoY(){
     if(yi < 0) return [];
     let rows = REC.filter(r => r[CI.y] === yi);
     if(yoyFamMode === 'ac') rows = rows.filter(r => DIM.f[r[CI.f]] === 'AIR CONDITIONER');
-    // Apply all global filters
-    const ri_set  = fRegions.size  < DIM.r.length  ? new Set([...fRegions].map(r=>DIM.r.indexOf(r)))   : null;
-    const bi_set  = fBrands.size   < DIM.b.length  ? new Set([...fBrands].map(b=>DIM.b.indexOf(b)))    : null;
-    const sfi_set = fSubFams.size  < DIM.sf.length ? new Set([...fSubFams].map(s=>DIM.sf.indexOf(s))) : null;
-    const aci_set = fComps.size    < DIM.ac.length ? new Set([...fComps].map(c=>DIM.ac.indexOf(c)))   : null;
-    const ati_set = fTypes.size    < DIM.at.length ? new Set([...fTypes].map(t=>DIM.at.indexOf(t)))   : null;
-    const asi_set = fSizes.size    < DIM.as.length ? new Set([...fSizes].map(s=>DIM.as.indexOf(s)))   : null;
+    // Apply all global filters (MS 인스턴스에서 읽기)
+    const selR2=msRegion.getSelected(), selF2=msFamily.getSelected(), selSF2=msSubFam.getSelected();
+    const selB2=msBrand.getSelected(), selC2=msComp.getSelected(), selT2=msType.getSelected(), selSz2=msSize.getSelected();
+    const ri_set  = selR2.size  < DIM.r.length  ? new Set([...selR2].map(v=>DIM.r.indexOf(v)))  : null;
+    const bi_set  = selB2.size  < DIM.b.length  ? new Set([...selB2].map(v=>DIM.b.indexOf(v)))  : null;
+    const sfi_set = selSF2.size < DIM.sf.length ? new Set([...selSF2].map(v=>DIM.sf.indexOf(v))): null;
+    const aci_set = selC2.size  < DIM.ac.length ? new Set([...selC2].map(v=>DIM.ac.indexOf(v))) : null;
+    const ati_set = selT2.size  < DIM.at.length ? new Set([...selT2].map(v=>DIM.at.indexOf(v))) : null;
+    const asi_set = selSz2.size < DIM.as.length ? new Set([...selSz2].map(v=>DIM.as.indexOf(v))): null;
     if(ri_set)  rows = rows.filter(r => ri_set.has(r[CI.r]));
     if(bi_set)  rows = rows.filter(r => bi_set.has(r[CI.b]));
     if(sfi_set) rows = rows.filter(r => sfi_set.has(r[CI.sf]));
