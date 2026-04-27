@@ -34,10 +34,6 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 
 /* date toggle */
 .date-wrap{display:flex;gap:0;border:1px solid #d1d5db;border-radius:6px;overflow:hidden}
-.date-btn{padding:3px 10px;font-size:11px;cursor:pointer;background:#fff;border:none;border-right:1px solid #d1d5db;color:var(--muted);font-weight:600;transition:all .15s}
-.date-btn:last-child{border-right:none}
-.date-btn.active{background:var(--primary);color:#fff}
-.date-pick{padding:3px 7px;font-size:11px;border:1px solid #d1d5db;border-radius:6px;height:26px;cursor:pointer;display:none}
 
 /* multi-select */
 .ms-wrap{position:relative}
@@ -185,16 +181,10 @@ tr:hover td{background:#f8fafc}
 
   <div class="f-sep"></div>
 
-  <!-- Date -->
+  <!-- Date (MS 멀티셀렉트 — 전체 선택 = 누적 전체) -->
   <div class="fg">
     <div class="flabel">Date</div>
-    <div style="display:flex;gap:6px;align-items:center">
-      <div class="date-wrap">
-        <button class="date-btn active" data-mode="all" onclick="setDateMode('all',this)">누적 전체</button>
-        <button class="date-btn" data-mode="pick" onclick="setDateMode('pick',this)">날짜 선택</button>
-      </div>
-      <select class="date-pick" id="datePick" onchange="applyFilters()"></select>
-    </div>
+    <div id="ms-date"></div>
   </div>
 
   <div class="f-sep"></div>
@@ -511,12 +501,10 @@ MS.prototype.getSelected=function(){ return this.sel; };
 document.addEventListener('click', ()=>document.querySelectorAll('.ms-menu.open').forEach(m=>m.classList.remove('open')));
 
 // ── MS instances (created in init) ────────────────────────
-let msRegion, msFamily, msSubFam, msBrand, msComp, msType, msSize;
+let msDate, msRegion, msFamily, msSubFam, msBrand, msComp, msType, msSize;
 
 // ── filter state ──────────────────────────────────────────
-let fYears   = new Set(DIM.y.map(String));
-let dateMode = 'all';
-let selDate  = null;
+let fYears = new Set(DIM.y.map(String));
 
 // global metric toggle
 let gMetric = 'val';
@@ -602,10 +590,10 @@ function getFiltered(){
   const ati_set = selT.size  < DIM.at.length ? new Set([...selT].map(v=>DIM.at.indexOf(v))) : null;
   const asi_set = selSz.size < DIM.as.length ? new Set([...selSz].map(v=>DIM.as.indexOf(v))): null;
 
-  let di_set = null;
-  if(dateMode === 'pick' && selDate){
-    di_set = new Set([DIM.d.indexOf(selDate)]);
-  }
+  const selD  = msDate.getSelected();
+  const di_set = selD.size < (msDate._dateMap ? Object.keys(msDate._dateMap).length : DIM.d.length)
+    ? new Set([...selD].map(lbl=>DIM.d.indexOf(msDate._dateMap[lbl])).filter(i=>i>=0))
+    : null;
 
   return REC.filter(r=>{
     if(yi_set  && !yi_set.has(r[CI.y]))   return false;
@@ -656,16 +644,21 @@ function init(){
   const yg = document.getElementById('yearGrp');
   const allBtn = document.createElement('button');
   allBtn.className='year-btn active'; allBtn.textContent='All';
-  allBtn.onclick=()=>{ DIM.y.forEach(y=>fYears.add(String(y))); refreshYearBtns(); rebuildDatePicker(); applyFilters(); };
+  allBtn.onclick=()=>{ DIM.y.forEach(y=>fYears.add(String(y))); refreshYearBtns(); syncDateMS(); applyFilters(); };
   yg.appendChild(allBtn);
   DIM.y.forEach(y=>{
     const b=document.createElement('button');
     b.className='year-btn'; b.dataset.yr=y; b.textContent=y;
-    b.onclick=()=>{ fYears.clear(); fYears.add(String(y)); refreshYearBtns(); rebuildDatePicker(); applyFilters(); };
+    b.onclick=()=>{ fYears.clear(); fYears.add(String(y)); refreshYearBtns(); syncDateMS(); applyFilters(); };
     yg.appendChild(b);
   });
 
-  rebuildDatePicker();
+  // Date MS — Year 필터에 맞춰 표시 날짜 결정
+  const initDates = DIM.d.filter(d=>fYears.has(d.slice(0,4)));
+  const dateLbls  = initDates.map(d=>{ const p=d.split('-'); return `[${p[0]}] ${parseInt(p[1])}/${parseInt(p[2])}`; });
+  msDate = new MS(document.getElementById('ms-date'), dateLbls, 'Date', applyFilters);
+  // date label → actual date 매핑
+  msDate._dateMap = Object.fromEntries(dateLbls.map((l,i)=>[l, initDates[i]]));
 
   // MS 인스턴스 생성 — cascade: Family → SubFam → Brand | Family → AC filters
   msRegion = new MS(document.getElementById('ms-region'), DIM.r,  'Region',  applyFilters);
@@ -690,46 +683,19 @@ function refreshYearBtns(){
   }
 }
 
-function rebuildDatePicker(){
-  const dp = document.getElementById('datePick');
-  dp.innerHTML='';
-  // show dates for currently active years only
-  const activeDates = DIM.d.filter(d=>{
-    const yr = d.slice(0,4);
-    return fYears.has(yr);
-  });
-  activeDates.forEach(d=>{
-    const o = document.createElement('option');
-    o.value = d;
-    const yr = d.slice(0,4);
-    o.textContent = `[${yr}] ${fmtDate(d)}`;
-    dp.appendChild(o);
-  });
-  if(activeDates.length) selDate = dp.value = activeDates[0];
-}
-
-// (MS 위젯은 MS 클래스로 대체됨 — 위 MS class 참조)
-
-// ── date filter ──────────────────────────────────────────
-function setDateMode(mode,btn){
-  dateMode=mode; selDate=null;
-  document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const dp=document.getElementById('datePick');
-  if(mode==='pick'){ dp.style.display='block'; selDate=dp.value||DIM.d[0]; }
-  else dp.style.display='none';
-  applyFilters();
+function syncDateMS(){
+  if(!msDate) return;
+  const activeDates = DIM.d.filter(d=>fYears.has(d.slice(0,4)));
+  const lblSet = new Set(activeDates.map(d=>{ const p=d.split('-'); return `[${p[0]}] ${parseInt(p[1])}/${parseInt(p[2])}`; }));
+  msDate.syncVisible(lblSet);
 }
 
 function resetFilters(){
-  dateMode='all'; selDate=null; gMetric='val';
-  document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.date-btn[data-mode="all"]').classList.add('active');
-  document.getElementById('datePick').style.display='none';
+  gMetric='val';
   document.querySelectorAll('#metricGrp .radio-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   DIM.y.forEach(y=>fYears.add(String(y)));
   refreshYearBtns();
-  rebuildDatePicker();
+  msDate.reset();
   msRegion.reset(); msFamily.reset(); msSubFam.reset(); msBrand.reset();
   msComp.reset(); msType.reset(); msSize.reset();
   document.getElementById('ac-filter-group').style.opacity='1';
@@ -741,9 +707,6 @@ function resetFilters(){
 //  APPLY FILTERS → RE-RENDER
 // ═══════════════════════════════════════════════════════════
 function applyFilters(){
-  if(dateMode==='pick'){
-    selDate=document.getElementById('datePick').value||DIM.d[0];
-  }
   const rows=getFiltered();
   const totalVal=rows.reduce((s,r)=>s+r[CI.val],0);
   const totalQty=rows.reduce((s,r)=>s+r[CI.qty],0);
