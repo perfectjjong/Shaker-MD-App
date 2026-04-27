@@ -292,7 +292,7 @@ tr:hover td{background:#f8fafc}
   <div class="card">
     <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Sub Family Detail</div>
     <div class="tbl-wrap"><table id="tblCatDetail">
-      <thead><tr><th>Sub Family</th><th>Family</th><th>Sale Value (SAR)</th><th>%</th><th>Sale Qty</th><th>Brands</th><th>Top Brand</th><th>Top Brand MS</th></tr></thead>
+      <thead id="tblCatDetailHead"><tr><th>Sub Family</th><th>Family</th><th>Sale Value (SAR)</th><th>%</th><th>Sale Qty</th><th>Brands</th><th>Top Brand</th><th id="thTopBrandMS">Top Brand MS (Value)</th></tr></thead>
       <tbody></tbody>
     </table></div>
   </div>
@@ -951,6 +951,8 @@ function renderCategory(){
   });
   const sfKeys=Object.keys(sfTot).sort((a,b)=>sfTot[b][gMetric]-sfTot[a][gMetric]);
   const totalAllSF=sfKeys.reduce((s,k)=>s+sfTot[k][gMetric],0);
+
+  document.getElementById('thTopBrandMS').textContent = `Top Brand MS (${gMetric==='val'?'Value':'Qty'})`;
 
   const tbody=document.querySelector('#tblCatDetail tbody');
   tbody.innerHTML=sfKeys.map(sf=>{
