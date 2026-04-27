@@ -743,6 +743,7 @@ function upsertChart(id, type, data, opts={}){
 // 수평 막대 (MS%) 공통 옵션 — 라벨 포함
 function hbarOpts(max){ return {
   indexAxis:'y',
+  layout:{padding:{right:42}},
   plugins:{
     legend:{display:false},
     datalabels:{
@@ -977,15 +978,16 @@ function renderRegion(){
 
   const rLabel = gMetric==='val'?'Sale Value (SAR)':'Sale Qty (Units)';
   const _barLblOpts = { anchor:'end', align:'top', formatter:v=>fmt(v), color:'#374151', font:{size:9,weight:'600'} };
+  const _barPad = {layout:{padding:{top:22}}};
   upsertChart('chartRegionVal','bar',{
     labels:regs,
     datasets:[{label:rLabel,data:regs.map(r=>regAgg[r].val),backgroundColor:regs.map((_,i)=>col(i)),borderRadius:4}],
-  },{plugins:{legend:{display:false},datalabels:_barLblOpts},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
+  },{..._barPad,plugins:{legend:{display:false},datalabels:_barLblOpts},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
 
   upsertChart('chartRegionQty','bar',{
     labels:regs,
     datasets:[{label:'Sale Qty',data:regs.map(r=>regAgg[r].qty),backgroundColor:regs.map((_,i)=>col(i)+'cc'),borderRadius:4}],
-  },{plugins:{legend:{display:false},datalabels:{..._barLblOpts,formatter:v=>fmtFull(v)}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
+  },{..._barPad,plugins:{legend:{display:false},datalabels:{..._barLblOpts,formatter:v=>fmtFull(v)}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
 
   const rbData={};
   rows.forEach(r=>{ const reg=DIM.r[r[CI.r]],b=DIM.b[r[CI.b]]; if(!rbData[reg]) rbData[reg]={}; rbData[reg][b]=(rbData[reg][b]||0)+r[rMCI]; });
@@ -1030,7 +1032,7 @@ function renderAC(){
       label:b,data:sizes.map(s=>sTotal[s]?pctNum(sbData[s]?.[b]||0,sTotal[s]):0),
       backgroundColor:col(i),borderRadius:3,
     })),
-  },{plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},
+  },{layout:{padding:{top:22}},plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}},
     datalabels:{
       anchor:'end', align:'top',
       formatter:v=>v>0?v.toFixed(1)+'%':'',
@@ -1270,13 +1272,14 @@ function renderYoY(){
     color:'#374151', font:{size:10,weight:'600'},
     display:ctx=>ctx.dataset.data[ctx.dataIndex]>0,
   };
+  const _yoyPad = {layout:{padding:{top:22}}};
   upsertChart('chartYoYSize','bar',{
     labels:allSizes,
     datasets:[
       {label:'2025 MS%',data:allSizes.map(s=>sz25[s]||0),backgroundColor:'#f97316cc',borderRadius:4},
       {label:'2026 MS%',data:allSizes.map(s=>sz26[s]||0),backgroundColor:'#2563ebcc',borderRadius:4},
     ],
-  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}},datalabels:_yoyBarLbl},scales:{
+  },{..._yoyPad,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}},datalabels:_yoyBarLbl},scales:{
     x:{grid:{display:false}},
     y:{ticks:{callback:v=>v+'%'},grid:{color:'#f1f5f9'},max:100},
   }});
@@ -1299,7 +1302,7 @@ function renderYoY(){
       {label:'2025 MS%',data:compArr.map(c=>cp25[c]||0),backgroundColor:'#f97316cc',borderRadius:4},
       {label:'2026 MS%',data:compArr.map(c=>cp26[c]||0),backgroundColor:'#2563ebcc',borderRadius:4},
     ],
-  },{plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}},datalabels:_yoyBarLbl},scales:{
+  },{..._yoyPad,plugins:{legend:{position:'top',labels:{font:{size:11},boxWidth:14}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`}},datalabels:_yoyBarLbl},scales:{
     x:{grid:{display:false}},
     y:{ticks:{callback:v=>v+'%'},grid:{color:'#f1f5f9'},max:100},
   }});
