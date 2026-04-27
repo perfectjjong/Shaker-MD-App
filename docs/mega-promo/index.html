@@ -173,7 +173,7 @@ tr:hover td{background:#f8fafc}
 
   <!-- Global Metric Toggle -->
   <div class="fg">
-    <div class="flabel">지표</div>
+    <div class="flabel">Metric</div>
     <div class="radio-grp" id="metricGrp">
       <button class="radio-btn active" onclick="setMetric('val',this)">Value</button>
       <button class="radio-btn" onclick="setMetric('qty',this)">Qty</button>
@@ -221,7 +221,7 @@ tr:hover td{background:#f8fafc}
     <div class="tab" onclick="switchTab(2)">Category</div>
     <div class="tab" onclick="switchTab(3)">Region</div>
     <div class="tab" onclick="switchTab(4)">AC Detail</div>
-    <div class="tab" onclick="switchTab(5)">📊 YoY 비교</div>
+    <div class="tab" onclick="switchTab(5)">📊 YoY</div>
   </div>
 </div>
 
@@ -231,7 +231,7 @@ tr:hover td{background:#f8fafc}
 <!-- ═══ TAB 0: OVERVIEW ═══ -->
 <div class="tab-pane active" id="pane0">
   <div class="promo-progress">
-    <div class="pp-label">2026 프로모션 진행</div>
+    <div class="pp-label">2026 Promotion Progress</div>
     <div class="pp-bar-bg"><div class="pp-bar" id="ppBar" style="width:0%"></div></div>
     <div class="pp-info" id="ppInfo">—</div>
   </div>
@@ -244,16 +244,16 @@ tr:hover td{background:#f8fafc}
   </div>
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Family 매출 구성</div>
+      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Family Sales Mix</div>
       <div class="ch-wrap"><canvas id="chartFamilyDonut"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--green)"></span>일별 누적 매출 트렌드</div>
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Daily & Cumulative Sales Trend</div>
       <div class="ch-wrap"><canvas id="chartDailyTrend"></canvas></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Brand 순위 (전체)</div>
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Brand Ranking (All)</div>
     <div class="tbl-wrap"><table id="tblTopBrands">
       <thead><tr><th>#</th><th>Brand</th><th>Sale Value (SAR)</th><th>Amount MS</th><th>Sale Qty</th><th>Qty MS</th></tr></thead>
       <tbody></tbody>
@@ -265,20 +265,20 @@ tr:hover td{background:#f8fafc}
 <div class="tab-pane" id="pane1">
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Amount MS 순위</div>
+      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Amount MS Ranking</div>
       <div class="ch-wrap tall"><canvas id="chartAmtMS"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Quantity MS 순위</div>
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Quantity MS Ranking</div>
       <div class="ch-wrap tall"><canvas id="chartQtyMS"></canvas></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>일별 Top 5 브랜드 MS 트렌드</div>
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Daily Top 5 Brand MS Trend</div>
     <div class="ch-wrap"><canvas id="chartBrandTrend"></canvas></div>
   </div>
   <div class="card" style="margin-top:10px">
-    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Brand × Family MS 교차표</div>
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Brand × Family MS Cross Table</div>
     <div class="tbl-wrap"><table id="tblBrandFamily"><thead></thead><tbody></tbody></table></div>
   </div>
 </div>
@@ -287,7 +287,7 @@ tr:hover td{background:#f8fafc}
 <div class="tab-pane" id="pane2">
   <div class="sfbar">
     <div class="fg">
-      <div class="flabel">집계 단위</div>
+      <div class="flabel">Group By</div>
       <div class="radio-grp">
         <button class="radio-btn active" onclick="sf2Level('family',this)">Family</button>
         <button class="radio-btn" onclick="sf2Level('subfam',this)">Sub Family</button>
@@ -295,11 +295,11 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
   <div class="card" style="margin-bottom:10px">
-    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>카테고리별 브랜드 MS 분포 (100% Stacked)</div>
+    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Brand MS by Category (100% Stacked)</div>
     <div class="ch-wrap tall"><canvas id="chartCatStack"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>카테고리 상세 테이블</div>
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Category Detail Table</div>
     <div class="tbl-wrap"><table id="tblCatDetail">
       <thead><tr><th>Category</th><th>Sale Value (SAR)</th><th>%</th><th>Sale Qty</th><th>Brands</th><th>Top Brand</th><th>Top Brand MS</th></tr></thead>
       <tbody></tbody>
@@ -311,16 +311,16 @@ tr:hover td{background:#f8fafc}
 <div class="tab-pane" id="pane3">
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Region별 Sale Value</div>
+      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Sale Value by Region</div>
       <div class="ch-wrap"><canvas id="chartRegionVal"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Region별 Sale Qty</div>
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Sale Qty by Region</div>
       <div class="ch-wrap"><canvas id="chartRegionQty"></canvas></div>
     </div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Region × Brand MS 교차표</div>
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Region × Brand MS Cross Table</div>
     <div class="tbl-wrap"><table id="tblRegionBrand"><thead></thead><tbody></tbody></table></div>
   </div>
 </div>
@@ -334,31 +334,31 @@ tr:hover td{background:#f8fafc}
       <select class="sel" id="acPromo" onchange="renderAC()">
         <option value="">All</option>
         <option value="1">Promoter ★</option>
-        <option value="0">일반</option>
+        <option value="0">Standard</option>
       </select>
     </div>
   </div>
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Size별 브랜드 Amount MS</div>
+      <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Brand Amount MS by Size</div>
       <div class="ch-wrap tall"><canvas id="chartACSize"></canvas></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Compressor 비중</div>
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Compressor Share</div>
       <div class="ch-wrap"><canvas id="chartACComp"></canvas></div>
-      <div class="sec-title" style="margin-top:12px"><span class="dot" style="background:var(--amber)"></span>Promoter vs 일반 비교</div>
+      <div class="sec-title" style="margin-top:12px"><span class="dot" style="background:var(--amber)"></span>Promoter vs Standard</div>
       <div class="tbl-wrap"><table id="tblACPromo">
-        <thead><tr><th>구분</th><th>Sale Value</th><th>%</th><th>Sale Qty</th></tr></thead>
+        <thead><tr><th>Type</th><th>Sale Value</th><th>%</th><th>Sale Qty</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
   </div>
   <div class="card" style="margin-bottom:10px">
-    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>일별 Inverter / Rotary 판매 트렌드</div>
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>Daily Inverter / Rotary Trend</div>
     <div class="ch-wrap"><canvas id="chartACTrend"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:#14b8a6"></span>브랜드 × Size MS 상세</div>
+    <div class="card-title"><span class="dot" style="background:#14b8a6"></span>Brand × Size MS Detail</div>
     <div class="tbl-wrap"><table id="tblACBrand">
       <thead><tr><th>Brand</th><th>Sub Family</th><th>Type</th><th>Size</th><th>Comp</th><th>Sale Value</th><th>Amount MS</th><th>Sale Qty</th><th>Qty MS</th></tr></thead>
       <tbody></tbody>
@@ -366,45 +366,45 @@ tr:hover td{background:#f8fafc}
   </div>
 </div>
 
-<!-- ═══ TAB 5: YoY 비교 ═══ -->
+<!-- ═══ TAB 5: YoY ═══ -->
 <div class="tab-pane" id="pane5">
   <div class="info-box">
-    📌 <b>YoY 비교 기준:</b> D0 = 프로모션 첫날 (2025: 4/24, 2026: 4/26) · 2025는 AC 카테고리만 포함 (eXtra weekly data 기반)
+    📌 <b>YoY Basis:</b> D0 = Promo Day 1 (2025: 4/24, 2026: 4/26) · 2025 includes AC category only (based on eXtra weekly data)
   </div>
   <div class="sfbar">
     <div class="fg">
-      <div class="flabel">카테고리</div>
+      <div class="flabel">Category</div>
       <div class="radio-grp">
         <button class="radio-btn active" onclick="yoyFam('ac',this)">AC Only</button>
-        <button class="radio-btn" onclick="yoyFam('all',this)">전체 (2026만)</button>
+        <button class="radio-btn" onclick="yoyFam('all',this)">All (2026 only)</button>
       </div>
     </div>
     <div class="fg">
-      <div class="flabel">누적 방식</div>
+      <div class="flabel">Mode</div>
       <div class="radio-grp">
-        <button class="radio-btn active" onclick="yoyCum('cum',this)">누적</button>
-        <button class="radio-btn" onclick="yoyCum('daily',this)">일별</button>
+        <button class="radio-btn active" onclick="yoyCum('cum',this)">Cumulative</button>
+        <button class="radio-btn" onclick="yoyCum('daily',this)">Daily</button>
       </div>
     </div>
   </div>
 
   <div class="card" style="margin-bottom:10px">
     <div class="card-title">
-      <span class="dot dot-25"></span><span style="color:var(--y25)">2025</span>&nbsp;vs&nbsp;<span class="dot dot-26"></span><span style="color:var(--y26)">2026</span>&nbsp;D-Day 트렌드
+      <span class="dot dot-25"></span><span style="color:var(--y25)">2025</span>&nbsp;vs&nbsp;<span class="dot dot-26"></span><span style="color:var(--y26)">2026</span>&nbsp;D-Day Trend
     </div>
     <div class="ch-wrap xlt"><canvas id="chartYoYTrend"></canvas></div>
   </div>
 
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--purple)"></span><span id="yoyTableTitle">D-Day 누적 비교표</span></div>
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span><span id="yoyTableTitle">D-Day Cumulative Table</span></div>
       <div class="tbl-wrap"><table id="tblYoYDay">
-        <thead id="tblYoYDayHead"><tr><th>D-Day</th><th>2025 날짜</th><th id="th25">2025 누적</th><th>2026 날짜</th><th id="th26">2026 누적</th><th>YoY</th></tr></thead>
+        <thead id="tblYoYDayHead"><tr><th>D-Day</th><th>2025 Date</th><th id="th25">2025 Cum.</th><th>2026 Date</th><th id="th26">2026 Cum.</th><th>YoY</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>브랜드 YoY 비교 <span id="yoyBrandPeriod" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Brand YoY Comparison <span id="yoyBrandPeriod" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
       <div class="tbl-wrap"><table id="tblYoYBrand">
         <thead><tr><th>Brand</th><th id="thBrand25">2025</th><th>MS</th><th>2026</th><th>MS</th><th>YoY</th></tr></thead>
         <tbody></tbody>
@@ -413,12 +413,12 @@ tr:hover td{background:#f8fafc}
   </div>
 
   <div class="card" style="margin-bottom:10px">
-    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Size별 MS% 비교 (AC · 각 연도 AC 내 비중)</div>
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Size MS% YoY (AC · share within each year)</div>
     <div class="ch-wrap tall"><canvas id="chartYoYSize"></canvas></div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Compressor Type MS% 비교 (AC · 각 연도 AC 내 비중)</div>
+    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Compressor MS% YoY (AC · share within each year)</div>
     <div class="ch-wrap"><canvas id="chartYoYComp"></canvas></div>
   </div>
 </div>
@@ -431,8 +431,8 @@ tr:hover td{background:#f8fafc}
 // ═══════════════════════════════════════════════════════════
 if(typeof PROMO_DATA === 'undefined'){
   document.body.innerHTML = '<div style="padding:40px;font-family:sans-serif;color:#b91c1c;background:#fff">'
-    +'<h2>⚠ 데이터 파일 로드 실패</h2>'
-    +'<p>mega_promo_data.js 파일을 찾을 수 없습니다.<br>dashboard.html과 같은 폴더에 있는지 확인하거나 parse_mega_promo.py를 실행하세요.</p></div>';
+    +'<h2>⚠ Data File Load Failed</h2>'
+    +'<p>mega_promo_data.js not found.<br>Make sure it is in the same folder as dashboard.html, or run parse_mega_promo.py.</p></div>';
   throw new Error('PROMO_DATA not defined');
 }
 const D   = PROMO_DATA;
@@ -638,7 +638,7 @@ function init(){
     const p_ = (elapsed/total*100).toFixed(0);
     document.getElementById('ppBar').style.width = p_+'%';
     document.getElementById('ppInfo').textContent =
-      `D+${Math.floor(elapsed)} / ${total}일 (${p_}%)`;
+      `D+${Math.floor(elapsed)} / ${total} days (${p_}%)`;
   }
 
   // Year buttons
@@ -812,8 +812,8 @@ function renderOverview(rows){
   upsertChart('chartDailyTrend','line',{
     labels:dates.map(fmtDate),
     datasets:[
-      {label:`일별 (${metricLabel})`,data:dates.map(d=>dateAgg[d]||0),backgroundColor:'rgba(37,99,235,.1)',borderColor:'#2563eb',borderWidth:2,pointRadius:3,tension:.3,fill:true},
-      {label:`누적 (${metricLabel})`,data:dates.map(d=>{cum+=(dateAgg[d]||0);return cum;}),backgroundColor:'transparent',borderColor:'#10b981',borderWidth:2,borderDash:[4,2],pointRadius:3,tension:.3,yAxisID:'y2'},
+      {label:`Daily (${metricLabel})`,data:dates.map(d=>dateAgg[d]||0),backgroundColor:'rgba(37,99,235,.1)',borderColor:'#2563eb',borderWidth:2,pointRadius:3,tension:.3,fill:true},
+      {label:`Cumulative (${metricLabel})`,data:dates.map(d=>{cum+=(dateAgg[d]||0);return cum;}),backgroundColor:'transparent',borderColor:'#10b981',borderWidth:2,borderDash:[4,2],pointRadius:3,tension:.3,yAxisID:'y2'},
     ],
   },{plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:12}},datalabels:{display:false}},scales:{
     x:{grid:{color:'#f1f5f9'}},
@@ -994,7 +994,7 @@ function renderRegion(){
   }).slice(0,8).reverse();
   const rthead=document.querySelector('#tblRegionBrand thead');
   const rtbody=document.querySelector('#tblRegionBrand tbody');
-  rthead.innerHTML='<tr><th>Region</th><th>총계</th>'+topBrands.map(b=>`<th>${b}</th>`).join('')+'</tr>';
+  rthead.innerHTML='<tr><th>Region</th><th>Total</th>'+topBrands.map(b=>`<th>${b}</th>`).join('')+'</tr>';
   rtbody.innerHTML=regs.map(reg=>
     `<tr><td><b>${reg}</b></td><td>${fmt(regTotal[reg])}</td>`+topBrands.map(b=>{
       const ms=pctNum(rbData[reg]?.[b]||0,regTotal[reg]);
@@ -1059,7 +1059,7 @@ function renderAC(){
   const promoAgg={promo:{val:0,qty:0},std:{val:0,qty:0}};
   rows.forEach(r=>{ const k=r[CI.ip]?'promo':'std'; promoAgg[k].val+=r[CI.val]; promoAgg[k].qty+=r[CI.qty]; });
   const ptbody=document.querySelector('#tblACPromo tbody');
-  ptbody.innerHTML=[['promo','★ Promoter'],['std','일반']].map(([k,lbl])=>
+  ptbody.innerHTML=[['promo','★ Promoter'],['std','Standard']].map(([k,lbl])=>
     `<tr><td>${lbl}</td><td>${fmtFull(Math.round(promoAgg[k].val))}</td><td>${pct(promoAgg[k].val,totalVal)}</td><td>${fmtFull(Math.round(promoAgg[k].qty))}</td></tr>`
   ).join('');
 
@@ -1198,8 +1198,8 @@ function renderYoY(){
   });
 
   // 타이틀 · 헤더 동적 업데이트
-  const modeLabel = isCum ? '누적' : '일별';
-  document.getElementById('yoyTableTitle').textContent = `D-Day ${modeLabel} 비교표`;
+  const modeLabel = isCum ? 'Cumulative' : 'Daily';
+  document.getElementById('yoyTableTitle').textContent = `D-Day ${modeLabel} Table`;
   document.getElementById('th25').textContent = `2025 ${modeLabel}`;
   document.getElementById('th26').textContent = `2026 ${modeLabel}`;
 
