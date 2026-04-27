@@ -403,9 +403,9 @@ tr:hover td{background:#f8fafc}
       </table></div>
     </div>
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>브랜드 YoY 비교</div>
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>브랜드 YoY 비교 <span id="yoyBrandPeriod" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
       <div class="tbl-wrap"><table id="tblYoYBrand">
-        <thead><tr><th>Brand</th><th>2025</th><th>MS</th><th>2026</th><th>MS</th><th>YoY</th></tr></thead>
+        <thead><tr><th>Brand</th><th id="thBrand25">2025</th><th>MS</th><th>2026</th><th>MS</th><th>YoY</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
@@ -1168,16 +1168,24 @@ function renderYoY(){
     </tr>`;
   }).join('');
 
+  // Apple-to-Apple: 2026 보유 day_idx 에 맞춰 2025도 동일 구간만 집계
+  const matchedDiSet = new Set(Object.keys(aggByYear['2026']).map(Number));
+  const diArr = [...matchedDiSet].sort((a,b)=>a-b);
+  const matchLabel = diArr.length===1 ? `D${diArr[0]}` : `D${diArr[0]}~D${diArr[diArr.length-1]}`;
+
   // Brand YoY table
-  function brandTotByYear(yearStr){
-    const rows=getYearRows(yearStr);
+  function brandTotByYear(yearStr, diFilter){
+    const rows=getYearRows(yearStr).filter(r=>!diFilter||diFilter.has(r[CI.di]));
     const agg={}, tot={val:0,qty:0};
     rows.forEach(r=>{ const b=DIM.b[r[CI.b]]; if(!agg[b]) agg[b]={val:0,qty:0}; agg[b].val+=r[CI.val]; agg[b].qty+=r[CI.qty]; tot.val+=r[CI.val]; tot.qty+=r[CI.qty]; });
     return {agg, tot};
   }
-  const b25=brandTotByYear('2025'), b26=brandTotByYear('2026');
+  const b25=brandTotByYear('2025', matchedDiSet), b26=brandTotByYear('2026');
   const allBrands=new Set([...Object.keys(b25.agg),...Object.keys(b26.agg)]);
   const bSorted=[...allBrands].sort((a,b)=>(b26.agg[b]?.val||0)-(b26.agg[a]?.val||0));
+
+  document.getElementById('yoyBrandPeriod').textContent = `(Apple-to-Apple: ${matchLabel})`;
+  document.getElementById('thBrand25').textContent = `2025 (${matchLabel})`;
 
   const tbody5b=document.querySelector('#tblYoYBrand tbody');
   tbody5b.innerHTML=bSorted.map(br=>{
@@ -1193,16 +1201,16 @@ function renderYoY(){
     </tr>`;
   }).join('');
 
-  // Size YoY grouped bar (AC) — MS% (each size's share of that year's AC total)
-  function acBySizeMs(yearStr){
-    const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER');
+  // Size YoY grouped bar (AC) — MS% (each size's share of that year's AC total) — Apple-to-Apple
+  function acBySizeMs(yearStr, diFilter){
+    const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER'&&(!diFilter||diFilter.has(r[CI.di])));
     const agg={}, tot={v:0};
     rows.forEach(r=>{ const s=DIM.as[r[CI.as]]||'N/A'; agg[s]=(agg[s]||0)+r[metric]; tot.v+=r[metric]; });
     const ms={};
     Object.keys(agg).forEach(s=>{ ms[s]=tot.v?+(agg[s]/tot.v*100).toFixed(1):0; });
     return ms;
   }
-  const sz25=acBySizeMs('2025'), sz26=acBySizeMs('2026');
+  const sz25=acBySizeMs('2025', matchedDiSet), sz26=acBySizeMs('2026');
   const allSizes=DIM.as.filter(s=>sz25[s]||sz26[s]);
   upsertChart('chartYoYSize','bar',{
     labels:allSizes,
@@ -1215,16 +1223,16 @@ function renderYoY(){
     y:{ticks:{callback:v=>v+'%'},grid:{color:'#f1f5f9'},max:100},
   }});
 
-  // Compressor YoY grouped bar — MS%
-  function acByCompMs(yearStr){
-    const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER');
+  // Compressor YoY grouped bar — MS% — Apple-to-Apple
+  function acByCompMs(yearStr, diFilter){
+    const rows=getYearRows(yearStr).filter(r=>DIM.f[r[CI.f]]==='AIR CONDITIONER'&&(!diFilter||diFilter.has(r[CI.di])));
     const agg={}, tot={v:0};
     rows.forEach(r=>{ const c=DIM.ac[r[CI.ac]]||'Unknown'; agg[c]=(agg[c]||0)+r[metric]; tot.v+=r[metric]; });
     const ms={};
     Object.keys(agg).forEach(c=>{ ms[c]=tot.v?+(agg[c]/tot.v*100).toFixed(1):0; });
     return ms;
   }
-  const cp25=acByCompMs('2025'), cp26=acByCompMs('2026');
+  const cp25=acByCompMs('2025', matchedDiSet), cp26=acByCompMs('2026');
   const allComps=new Set([...Object.keys(cp25),...Object.keys(cp26)]);
   const compArr=[...allComps];
   upsertChart('chartYoYComp','bar',{
