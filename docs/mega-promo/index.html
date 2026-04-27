@@ -939,24 +939,26 @@ function renderCategory(){
     scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false}}},
   });
 
-  // Sub Family Detail table
+  // Sub Family Detail table — respects gMetric toggle
+  const sfMCI = gMetric==='val' ? CI.val : CI.qty;
   const sfAgg={}, sfFam={}, sfTot={};
   rows.forEach(r=>{
     const sf=DIM.sf[r[CI.sf]]||DIM.f[r[CI.f]];
     const b=DIM.b[r[CI.b]];
     if(!sfAgg[sf]) { sfAgg[sf]={}; sfFam[sf]=DIM.f[r[CI.f]]; sfTot[sf]={val:0,qty:0}; }
-    sfAgg[sf][b]=(sfAgg[sf][b]||0)+r[CI.val];
+    sfAgg[sf][b]=(sfAgg[sf][b]||0)+r[sfMCI];
     sfTot[sf].val+=r[CI.val]; sfTot[sf].qty+=r[CI.qty];
   });
-  const sfKeys=Object.keys(sfTot).sort((a,b)=>sfTot[b].val-sfTot[a].val);
-  const totalAllV=sfKeys.reduce((s,k)=>s+sfTot[k].val,0);
+  const sfKeys=Object.keys(sfTot).sort((a,b)=>sfTot[b][gMetric]-sfTot[a][gMetric]);
+  const totalAllSF=sfKeys.reduce((s,k)=>s+sfTot[k][gMetric],0);
 
   const tbody=document.querySelector('#tblCatDetail tbody');
   tbody.innerHTML=sfKeys.map(sf=>{
     const top=Object.entries(sfAgg[sf]).sort((a,b)=>b[1]-a[1])[0]||['—',0];
     const totV=sfTot[sf].val, totQ=sfTot[sf].qty;
+    const active=sfTot[sf][gMetric];
     const brands=Object.keys(sfAgg[sf]).length;
-    return `<tr><td><b>${sf}</b></td><td style="color:var(--muted);font-size:11px">${sfFam[sf]}</td><td>${fmtFull(Math.round(totV))}</td><td>${pct(totV,totalAllV)}</td><td>${fmtFull(Math.round(totQ))}</td><td>${brands}</td><td>${top[0]}</td><td>${totV?pctNum(top[1],totV).toFixed(1)+'%':'-'}</td></tr>`;
+    return `<tr><td><b>${sf}</b></td><td style="color:var(--muted);font-size:11px">${sfFam[sf]}</td><td>${fmtFull(Math.round(totV))}</td><td>${pct(active,totalAllSF)}</td><td>${fmtFull(Math.round(totQ))}</td><td>${brands}</td><td>${top[0]}</td><td>${active?pctNum(top[1],active).toFixed(1)+'%':'-'}</td></tr>`;
   }).join('');
 }
 
