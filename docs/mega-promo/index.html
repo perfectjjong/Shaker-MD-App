@@ -485,7 +485,7 @@ MS.prototype.syncVisible=function(availSet){
   let cnt=0;
   this.listEl.querySelectorAll('label').forEach(lbl=>{
     const cb=lbl.querySelector('input');
-    if(availSet.has(cb.value)){ lbl.style.display='flex'; cnt++; }
+    if(availSet.has(cb.value)){ lbl.style.display='flex'; cnt++; cb.checked=true; this.sel.add(cb.value); }
     else{ lbl.style.display='none'; cb.checked=false; this.sel.delete(cb.value); }
   });
   this._visCount=cnt; this._upd();
