@@ -396,9 +396,9 @@ tr:hover td{background:#f8fafc}
 
   <div class="grid2">
     <div class="card">
-      <div class="card-title"><span class="dot" style="background:var(--purple)"></span>D-Day 누적 비교표</div>
+      <div class="card-title"><span class="dot" style="background:var(--purple)"></span><span id="yoyTableTitle">D-Day 누적 비교표</span></div>
       <div class="tbl-wrap"><table id="tblYoYDay">
-        <thead><tr><th>D-Day</th><th>2025 날짜</th><th>2025 실적</th><th>2026 날짜</th><th>2026 실적</th><th>YoY</th></tr></thead>
+        <thead id="tblYoYDayHead"><tr><th>D-Day</th><th>2025 날짜</th><th id="th25">2025 누적</th><th>2026 날짜</th><th id="th26">2026 누적</th><th>YoY</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
@@ -1148,6 +1148,12 @@ function renderYoY(){
     }
   });
 
+  // 타이틀 · 헤더 동적 업데이트
+  const modeLabel = isCum ? '누적' : '일별';
+  document.getElementById('yoyTableTitle').textContent = `D-Day ${modeLabel} 비교표`;
+  document.getElementById('th25').textContent = `2025 ${modeLabel}`;
+  document.getElementById('th26').textContent = `2026 ${modeLabel}`;
+
   const tbody5d=document.querySelector('#tblYoYDay tbody');
   tbody5d.innerHTML=tblRows.map(({di,v25,v26,c25,c26})=>{
     const disp25 = isCum ? c25 : v25;
@@ -1155,9 +1161,9 @@ function renderYoY(){
     return `<tr>
       <td><b>D${di}</b></td>
       <td>${dayToDate(start25,di)}</td>
-      <td>${disp25!==null?fmt(disp25):'-'}</td>
+      <td>${disp25!=null?fmt(disp25):'-'}</td>
       <td>${dayToDate(start26,di)}</td>
-      <td>${disp26!==null?fmt(disp26):'-'}</td>
+      <td>${disp26!=null?fmt(disp26):'-'}</td>
       <td>${yoyStr(disp25,disp26)}</td>
     </tr>`;
   }).join('');
