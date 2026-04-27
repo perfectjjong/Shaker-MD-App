@@ -290,9 +290,9 @@ tr:hover td{background:#f8fafc}
     <div class="ch-wrap tall"><canvas id="chartCatStack"></canvas></div>
   </div>
   <div class="card">
-    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Category Detail Table</div>
+    <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Sub Family Detail</div>
     <div class="tbl-wrap"><table id="tblCatDetail">
-      <thead><tr><th>Category</th><th>Sale Value (SAR)</th><th>%</th><th>Sale Qty</th><th>Brands</th><th>Top Brand</th><th>Top Brand MS</th></tr></thead>
+      <thead><tr><th>Sub Family</th><th>Family</th><th>Sale Value (SAR)</th><th>%</th><th>Sale Qty</th><th>Brands</th><th>Top Brand</th><th>Top Brand MS</th></tr></thead>
       <tbody></tbody>
     </table></div>
   </div>
@@ -939,14 +939,24 @@ function renderCategory(){
     scales:{x:{stacked:true,max:100,ticks:{callback:v=>v+'%'}},y:{stacked:true,grid:{display:false}}},
   });
 
+  // Sub Family Detail table
+  const sfAgg={}, sfFam={}, sfTot={};
+  rows.forEach(r=>{
+    const sf=DIM.sf[r[CI.sf]]||DIM.f[r[CI.f]];
+    const b=DIM.b[r[CI.b]];
+    if(!sfAgg[sf]) { sfAgg[sf]={}; sfFam[sf]=DIM.f[r[CI.f]]; sfTot[sf]={val:0,qty:0}; }
+    sfAgg[sf][b]=(sfAgg[sf][b]||0)+r[CI.val];
+    sfTot[sf].val+=r[CI.val]; sfTot[sf].qty+=r[CI.qty];
+  });
+  const sfKeys=Object.keys(sfTot).sort((a,b)=>sfTot[b].val-sfTot[a].val);
+  const totalAllV=sfKeys.reduce((s,k)=>s+sfTot[k].val,0);
+
   const tbody=document.querySelector('#tblCatDetail tbody');
-  tbody.innerHTML=keys.map(k=>{
-    const top=Object.entries(agg[k]).sort((a,b)=>b[1]-a[1])[0]||['—',0];
-    const krows=rows.filter(r=>DIM.f[r[CI.f]]===k);
-    const totV=krows.reduce((s,r)=>s+r[CI.val],0);
-    const totQ=krows.reduce((s,r)=>s+r[CI.qty],0);
-    const brands=new Set(krows.map(r=>r[CI.b]));
-    return `<tr><td><b>${k}</b></td><td>${fmtFull(Math.round(totV))}</td><td>${pct(totV,totalAll)}</td><td>${fmtFull(Math.round(totQ))}</td><td>${brands.size}</td><td>${top[0]}</td><td>${totV?pctNum(top[1],totV).toFixed(1)+'%':'-'}</td></tr>`;
+  tbody.innerHTML=sfKeys.map(sf=>{
+    const top=Object.entries(sfAgg[sf]).sort((a,b)=>b[1]-a[1])[0]||['—',0];
+    const totV=sfTot[sf].val, totQ=sfTot[sf].qty;
+    const brands=Object.keys(sfAgg[sf]).length;
+    return `<tr><td><b>${sf}</b></td><td style="color:var(--muted);font-size:11px">${sfFam[sf]}</td><td>${fmtFull(Math.round(totV))}</td><td>${pct(totV,totalAllV)}</td><td>${fmtFull(Math.round(totQ))}</td><td>${brands}</td><td>${top[0]}</td><td>${totV?pctNum(top[1],totV).toFixed(1)+'%':'-'}</td></tr>`;
   }).join('');
 }
 
