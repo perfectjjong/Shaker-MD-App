@@ -272,14 +272,6 @@ tr:hover td{background:#f8fafc}
 
 <!-- ═══ TAB 1: BRAND MS ═══ -->
 <div class="tab-pane" id="pane1">
-  <div class="sfbar">
-    <div class="fg">
-      <div class="flabel">Family</div>
-      <select class="sel" id="sf1Family" onchange="renderBrandMS()">
-        <option value="">All Families</option>
-      </select>
-    </div>
-  </div>
   <div class="grid2">
     <div class="card">
       <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Amount MS 순위</div>
@@ -326,14 +318,6 @@ tr:hover td{background:#f8fafc}
 
 <!-- ═══ TAB 3: REGION ═══ -->
 <div class="tab-pane" id="pane3">
-  <div class="sfbar">
-    <div class="fg">
-      <div class="flabel">Family</div>
-      <select class="sel" id="sf3Family" onchange="renderRegion()">
-        <option value="">All Families</option>
-      </select>
-    </div>
-  </div>
   <div class="grid2">
     <div class="card">
       <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Region별 Sale Value</div>
@@ -354,36 +338,6 @@ tr:hover td{background:#f8fafc}
 <div class="tab-pane" id="pane4">
   <div class="alert" id="acUnclassAlert"></div>
   <div class="sfbar">
-    <div class="fg">
-      <div class="flabel">Sub Family</div>
-      <select class="sel" id="acSubFam" onchange="renderAC()">
-        <option value="">All</option>
-      </select>
-    </div>
-    <div class="fg">
-      <div class="flabel">Type</div>
-      <select class="sel" id="acType" onchange="renderAC()">
-        <option value="">All</option>
-        <option>Cold - Inverter</option>
-        <option>Cold - Rotary</option>
-        <option>Hot And Cold - Inverter</option>
-        <option>Hot And Cold - Rotary</option>
-      </select>
-    </div>
-    <div class="fg">
-      <div class="flabel">Size</div>
-      <select class="sel" id="acSize" onchange="renderAC()">
-        <option value="">All</option>
-      </select>
-    </div>
-    <div class="fg">
-      <div class="flabel">Compressor</div>
-      <select class="sel" id="acComp" onchange="renderAC()">
-        <option value="">All</option>
-        <option>Inverter</option>
-        <option>Rotary</option>
-      </select>
-    </div>
     <div class="fg">
       <div class="flabel">Promoter</div>
       <select class="sel" id="acPromo" onchange="renderAC()">
@@ -568,10 +522,8 @@ let selDate  = null;
 let gMetric = 'val';
 
 // sub-filter state
-let sf1fam='';
 let sf2level='family';
-let sf3fam='';
-let acSubFam='', acType='', acSize='', acComp='', acPromo='';
+let acPromo='';
 let yoyFamMode='ac', yoyCumMode='cum';
 
 // ── Cascade functions ──────────────────────────────────────
@@ -671,12 +623,7 @@ function getFiltered(){
 
 function acFiltered(rows){
   return rows.filter(r=>{
-    const fam = DIM.f[r[CI.f]];
-    if(fam !== 'AIR CONDITIONER') return false;
-    if(acSubFam && DIM.sf[r[CI.sf]] !== acSubFam) return false;
-    if(acType   && DIM.at[r[CI.at]] !== acType)   return false;
-    if(acSize   && DIM.as[r[CI.as]] !== acSize)    return false;
-    if(acComp   && DIM.ac[r[CI.ac]] !== acComp)    return false;
+    if(DIM.f[r[CI.f]] !== 'AIR CONDITIONER') return false;
     if(acPromo!=='' && r[CI.ip] !== parseInt(acPromo)) return false;
     return true;
   });
@@ -729,15 +676,6 @@ function init(){
   msType   = new MS(document.getElementById('ms-type'),   DIM.at, 'Type',    applyFilters);
   msSize   = new MS(document.getElementById('ms-size'),   DIM.as, 'Size',    applyFilters);
 
-  // Tab sub-filter selects
-  ['sf1Family','sf3Family'].forEach(id=>{
-    const el = document.getElementById(id);
-    DIM.f.forEach(f=>{ const o=document.createElement('option'); o.value=f; o.textContent=f; el.appendChild(o); });
-  });
-  const acSF = document.getElementById('acSubFam');
-  DIM.sf.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; acSF.appendChild(o); });
-  const acSz = document.getElementById('acSize');
-  DIM.as.forEach(s=>{ const o=document.createElement('option'); o.value=s; o.textContent=s; acSz.appendChild(o); });
 
   applyFilters();
 }
@@ -915,9 +853,7 @@ function renderOverview(rows){
 //  TAB 1: BRAND MS
 // ═══════════════════════════════════════════════════════════
 function renderBrandMS(){
-  sf1fam=document.getElementById('sf1Family').value;
-  let rows=getFiltered();
-  if(sf1fam) rows=rows.filter(r=>DIM.f[r[CI.f]]===sf1fam);
+  const rows=getFiltered();
 
   const brandAgg={};
   rows.forEach(r=>{ const b=DIM.b[r[CI.b]]; if(!brandAgg[b]) brandAgg[b]={val:0,qty:0}; brandAgg[b].val+=r[CI.val]; brandAgg[b].qty+=r[CI.qty]; });
@@ -942,8 +878,7 @@ function renderBrandMS(){
   // Daily top5 trend (active year only, or 2026 if both) — uses gMetric
   const trendMCI = gMetric==='val'?CI.val:CI.qty;
   const top5=sorted.slice(0,5).map(([b])=>b);
-  let rowsAll=getFiltered();
-  if(sf1fam) rowsAll=rowsAll.filter(r=>DIM.f[r[CI.f]]===sf1fam);
+  const rowsAll=getFiltered();
   const trend26Rows = rowsAll.filter(r=>DIM.y[r[CI.y]]==='2026');
   const useTrendRows = trend26Rows.length ? trend26Rows : rowsAll;
   const trendDates=DIM.d.filter(d=>useTrendRows.some(r=>DIM.d[r[CI.d]]===d));
@@ -1035,9 +970,7 @@ function renderCategory(){
 //  TAB 3: REGION
 // ═══════════════════════════════════════════════════════════
 function renderRegion(){
-  sf3fam=document.getElementById('sf3Family').value;
-  let rows=getFiltered();
-  if(sf3fam) rows=rows.filter(r=>DIM.f[r[CI.f]]===sf3fam);
+  const rows=getFiltered();
 
   const rMCI = gMetric==='val'?CI.val:CI.qty;
   const regAgg={};
@@ -1078,10 +1011,6 @@ function renderRegion(){
 //  TAB 4: AC DETAIL
 // ═══════════════════════════════════════════════════════════
 function renderAC(){
-  acSubFam=document.getElementById('acSubFam').value;
-  acType=document.getElementById('acType').value;
-  acSize=document.getElementById('acSize').value;
-  acComp=document.getElementById('acComp').value;
   acPromo=document.getElementById('acPromo').value;
 
   const allRows=getFiltered();
