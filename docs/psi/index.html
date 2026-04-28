@@ -133,6 +133,19 @@ const REGION_ORDER_FILTER = ['MTC','CENTRAL','WEST','EAST','SOUTH','NORTH','OTHE
 let _openFilter = null;
 const _filterState = {};
 
+function _populateList(listEl, key, getItems, onChange) {
+  listEl.innerHTML = '';
+  getItems().forEach(v => {
+    const lbl = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = v;
+    cb.checked = _filterState[key].has(v);
+    cb.onchange = () => { if(cb.checked) _filterState[key].add(v); else _filterState[key].delete(v); _updateCount(key, getItems); onChange(); };
+    lbl.append(cb, document.createTextNode(v));
+    listEl.appendChild(lbl);
+  });
+}
+
 function _buildFilter(bar, key, label, getItems, onChange) {
   const items = getItems();
   _filterState[key] = new Set(items);
@@ -158,8 +171,8 @@ function _buildFilter(bar, key, label, getItems, onChange) {
   const list = document.createElement('div');
   list.className = 'ms-list';
   list.id = 'ms-list-' + key;
+  _populateList(list, key, getItems, onChange);  // DOM 추가 전에 직접 참조로 채움
   menu.appendChild(list);
-  _renderList(key, getItems, onChange);
   btn.onclick = (e) => {
     e.stopPropagation();
     const isOpen = menu.classList.contains('show');
@@ -175,17 +188,7 @@ function _buildFilter(bar, key, label, getItems, onChange) {
 function _renderList(key, getItems, onChange) {
   const list = document.getElementById('ms-list-' + key);
   if (!list) return;
-  list.innerHTML = '';
-  const items = getItems();
-  items.forEach(v => {
-    const lbl = document.createElement('label');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.value = v;
-    cb.checked = _filterState[key].has(v);
-    cb.onchange = () => { if(cb.checked) _filterState[key].add(v); else _filterState[key].delete(v); _updateCount(key, getItems); onChange(); };
-    lbl.append(cb, document.createTextNode(v));
-    list.appendChild(lbl);
-  });
+  _populateList(list, key, getItems, onChange);
 }
 
 function _refreshMenu(key, getItems) {
