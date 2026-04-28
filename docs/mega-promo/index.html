@@ -226,6 +226,7 @@ tr:hover td{background:#f8fafc}
     <div class="tab" onclick="switchTab(3)">Region</div>
     <div class="tab" onclick="switchTab(4)">AC Detail</div>
     <div class="tab" onclick="switchTab(5)">YoY</div>
+    <div class="tab" onclick="switchTab(6)">📦 Stock</div>
   </div>
 </div>
 
@@ -467,6 +468,43 @@ tr:hover td{background:#f8fafc}
       <thead><tr><th>Brand</th><th>2025 ASP</th><th>2026 ASP</th><th>ASP Δ%</th><th>2025 Qty</th><th>2026 Qty</th><th>Vol Δ%</th><th>Revenue Effect</th></tr></thead>
       <tbody></tbody>
     </table></div>
+  </div>
+</div>
+
+<!-- ═══ TAB 6: STOCK ═══ -->
+<div class="tab-pane" id="pane6">
+  <div class="info-box">
+    📦 <b>Stock Basis:</b> W17 (as of 4/27) · Days of Cover = W17 Stock ÷ Daily Run-rate (D0+D1 avg) · Promo remaining: 18 days
+  </div>
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
+    <div class="kpi red"><div class="kpi-lbl">Stock-out Risk</div><div class="kpi-val" id="kpiStockRisk">—</div><div class="kpi-sub">brands (DOC &lt; 18d)</div></div>
+    <div class="kpi amber"><div class="kpi-lbl">Tight Stock</div><div class="kpi-val" id="kpiStockTight">—</div><div class="kpi-sub">brands (18~25d)</div></div>
+    <div class="kpi green"><div class="kpi-lbl">Healthy</div><div class="kpi-val" id="kpiStockOk">—</div><div class="kpi-sub">brands (25~50d)</div></div>
+    <div class="kpi purple"><div class="kpi-lbl">Overhang</div><div class="kpi-val" id="kpiStockOver">—</div><div class="kpi-sub">brands (DOC &gt; 50d)</div></div>
+  </div>
+  <div class="card" style="margin-bottom:10px">
+    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>AC Brand Stock vs Run-rate (Days of Cover)</div>
+    <div class="tbl-wrap"><table id="tblStock">
+      <thead><tr>
+        <th>Brand</th>
+        <th>W17 Stock (units)</th>
+        <th>Daily Run-rate</th>
+        <th>Days of Cover</th>
+        <th>Status</th>
+        <th>vs 2025 same period</th>
+      </tr></thead>
+      <tbody></tbody>
+    </table></div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Stock by Region (AC)</div>
+      <div class="ch-wrap tall"><canvas id="chartStockRegion"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Stock by Family</div>
+      <div class="ch-wrap"><canvas id="chartStockFamily"></canvas></div>
+    </div>
   </div>
 </div>
 
@@ -788,6 +826,7 @@ function applyFilters(){
   try{ renderRegion(); }catch(e){ console.error('Region:',e); }
   try{ renderAC(); }catch(e){ console.error('AC:',e); }
   try{ renderYoY(); }catch(e){ console.error('YoY:',e); }
+  try{ renderStock(); }catch(e){ console.error('Stock:',e); }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1733,6 +1772,104 @@ function renderYoY(){
       }).join('');
     }
   }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  TAB 6: STOCK
+// ═══════════════════════════════════════════════════════════
+function renderStock(){
+  if(!window.PROMO_DATA?.stock) return;
+  const stock = PROMO_DATA.stock;
+  const fbStock = {};  // family+brand → qty
+  const fbRegStock = {};  // family+brand+region → qty
+
+  stock.by_family_brand.forEach(r => {
+    const k = `${r.family}||${r.brand}`;
+    fbStock[k] = (fbStock[k]||0) + r.qty;
+  });
+  stock.by_family_brand_region.forEach(r => {
+    const k = `${r.family}||${r.brand}||${r.region}`;
+    fbRegStock[k] = (fbRegStock[k]||0) + r.qty;
+  });
+
+  // Compute 2026 daily run-rate by brand (AC only)
+  const yi26 = DIM.y.indexOf('2026');
+  const acFi = DIM.f.indexOf('AIR CONDITIONER');
+  const acRows26 = REC.filter(r => r[CI.y]===yi26 && r[CI.f]===acFi);
+  const days26 = new Set(acRows26.map(r=>r[CI.di]));
+  const nDays = Math.max(days26.size, 1);
+
+  const brandRunRate = {};
+  acRows26.forEach(r => {
+    const b = DIM.b[r[CI.b]];
+    brandRunRate[b] = (brandRunRate[b]||0) + r[CI.qty];
+  });
+  Object.keys(brandRunRate).forEach(b => { brandRunRate[b] /= nDays; });
+
+  // 2025 AC stock reference (if available — use same W17 logic but skip for now, just show '-')
+
+  // Build AC stock brand table
+  const acStockBrands = {};
+  stock.by_family_brand.filter(r=>r.family==='AIR CONDITIONER').forEach(r=>{
+    acStockBrands[r.brand] = (acStockBrands[r.brand]||0) + r.qty;
+  });
+
+  const allBrandsStock = new Set([...Object.keys(acStockBrands), ...Object.keys(brandRunRate)]);
+  const stockRows = [...allBrandsStock].map(b => {
+    const stockQty = acStockBrands[b]||0;
+    const runRate = brandRunRate[b]||0;
+    const doc = runRate > 0 ? stockQty/runRate : null;
+    return {b, stockQty, runRate, doc};
+  }).filter(r=>r.stockQty>0||r.runRate>0).sort((a,b)=>b.stockQty-a.stockQty);
+
+  // KPIs
+  const risk = stockRows.filter(r=>r.doc!==null&&r.doc<18).length;
+  const tight = stockRows.filter(r=>r.doc!==null&&r.doc>=18&&r.doc<25).length;
+  const ok = stockRows.filter(r=>r.doc!==null&&r.doc>=25&&r.doc<=50).length;
+  const over = stockRows.filter(r=>r.doc!==null&&r.doc>50).length;
+  document.getElementById('kpiStockRisk').textContent = risk;
+  document.getElementById('kpiStockTight').textContent = tight;
+  document.getElementById('kpiStockOk').textContent = ok;
+  document.getElementById('kpiStockOver').textContent = over;
+
+  const stockTbody = document.querySelector('#tblStock tbody');
+  stockTbody.innerHTML = stockRows.map(({b,stockQty,runRate,doc}) => {
+    const docStr = doc!==null ? doc.toFixed(1)+'d' : '—';
+    const status = doc===null ? '<span style="color:var(--muted)">No sales data</span>' :
+      doc<18  ? '<span style="color:var(--red);font-weight:700">🔴 Stock-out Risk</span>' :
+      doc<25  ? '<span style="color:var(--amber);font-weight:700">🟡 Tight</span>' :
+      doc<=50 ? '<span style="color:var(--green);font-weight:700">🟢 Healthy</span>' :
+                '<span style="color:var(--purple);font-weight:700">🟣 Overhang</span>';
+    const docColor = doc===null?'':doc<18?'color:var(--red);font-weight:700':doc<25?'color:var(--amber);font-weight:700':doc<=50?'color:var(--green)':'color:var(--purple)';
+    return `<tr>
+      <td><b>${b}</b></td>
+      <td>${fmtFull(stockQty)}</td>
+      <td>${runRate>0?fmtFull(Math.round(runRate)):'-'}</td>
+      <td style="${docColor}">${docStr}</td>
+      <td>${status}</td>
+      <td>—</td>
+    </tr>`;
+  }).join('');
+
+  // Regional stock chart (AC)
+  const regStock = {};
+  stock.by_family_brand_region.filter(r=>r.family==='AIR CONDITIONER').forEach(r=>{
+    regStock[r.region] = (regStock[r.region]||0) + r.qty;
+  });
+  const regs = Object.keys(regStock).sort((a,b)=>regStock[b]-regStock[a]);
+  upsertChart('chartStockRegion','bar',{
+    labels:regs,
+    datasets:[{label:'AC Stock (units)',data:regs.map(r=>regStock[r]),backgroundColor:regs.map((_,i)=>col(i)),borderRadius:4}],
+  },{layout:{padding:{top:22}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',formatter:v=>fmtFull(v),color:'#374151',font:{size:9,weight:'600'}}},scales:{x:{grid:{display:false}},y:{ticks:{callback:v=>fmt(v)},grid:{color:'#f1f5f9'}}}});
+
+  // Family stock donut
+  const famStock = {};
+  stock.by_family_brand.forEach(r=>{ famStock[r.family]=(famStock[r.family]||0)+r.qty; });
+  const fams = Object.keys(famStock).sort((a,b)=>famStock[b]-famStock[a]);
+  upsertChart('chartStockFamily','doughnut',{
+    labels:fams,
+    datasets:[{data:fams.map(f=>famStock[f]),backgroundColor:fams.map((_,i)=>col(i)),borderWidth:1}],
+  },{plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12,padding:6}},tooltip:{callbacks:{label:ctx=>{const t=fams.reduce((s,f)=>s+famStock[f],0);return `${ctx.label}: ${fmt(ctx.parsed)} (${(ctx.parsed/t*100).toFixed(1)}%)`}}},datalabels:{display:false}}});
 }
 
 // ── kickoff ───────────────────────────────────────────────
