@@ -481,24 +481,47 @@ function renderTab1() {
 }
 
 // ─── Tab 2: Account View ──────────────────────────────────
-function renderTab2() {
+let _tab2Sort = { col: 'SELLT', dir: -1 };
+
+function _tab2Rows() {
   const am = filteredAccountMonth();
   const st = filteredDecStock();
   const byAcc = groupBy(am, 'Account');
   const stByAcc = Object.fromEntries(st.map(d=>[d.Account, d.STOCK]));
-
-  const rows = selRegions.flatMap(r =>
+  return selRegions.flatMap(r =>
     (RAW.accounts[r]||[]).filter(a => selAccounts.includes(a)).map(a => {
       const rows = byAcc[a] || [];
-      return {
-        region: r, account: a,
-        SELLT: sum(rows,'SELLT'),
-        SELL_OUT: sum(rows,'SELL_OUT'),
-        STOCK: stByAcc[a] || 0,
-        rate: sum(rows,'SELLT') ? ((sum(rows,'SELL_OUT')/sum(rows,'SELLT'))*100).toFixed(1) : '—'
-      };
+      const st = sum(rows,'SELLT'), so = sum(rows,'SELL_OUT');
+      return { region: r, account: a, SELLT: st, SELL_OUT: so,
+        STOCK: stByAcc[a] || 0, rate: st ? parseFloat(((so/st)*100).toFixed(1)) : -1 };
     })
-  ).sort((a,b) => b.SELLT - a.SELLT);
+  );
+}
+
+function renderTab2() {
+  const { col, dir } = _tab2Sort;
+  const rows = _tab2Rows().sort((a, b) => {
+    const av = col === 'region' ? a.region : col === 'account' ? a.account : a[col];
+    const bv = col === 'region' ? b.region : col === 'account' ? b.account : b[col];
+    if (typeof av === 'string') return dir * av.localeCompare(bv);
+    return dir * (av - bv);
+  });
+
+  const cols = [
+    { key:'region',   label:'Region',    align:'left' },
+    { key:'account',  label:'Account',   align:'left' },
+    { key:'SELLT',    label:'SELLT',     align:'right' },
+    { key:'SELL_OUT', label:'SELL-OUT',  align:'right' },
+    { key:'STOCK',    label:'Dec Stock', align:'right' },
+    { key:'rate',     label:'SO/ST %',   align:'right' },
+  ];
+
+  const arrow = k => k === col ? (dir === 1 ? ' ▲' : ' ▼') : ' ⇅';
+  const ths = cols.map(c => `
+    <th style="text-align:${c.align};cursor:pointer;user-select:none;white-space:nowrap"
+        onclick="(function(){_tab2Sort={col:'${c.key}',dir:_tab2Sort.col==='${c.key}'?-_tab2Sort.dir:${['SELLT','SELL_OUT','STOCK','rate'].includes(c.key)?-1:1}};renderTab2()})()">
+      ${c.label}<span style="color:#64748b;font-size:10px">${arrow(c.key)}</span>
+    </th>`).join('');
 
   const trs = rows.map(r => `
     <tr>
@@ -507,9 +530,8 @@ function renderTab2() {
       <td>${r.SELLT.toLocaleString()}</td>
       <td>${r.SELL_OUT.toLocaleString()}</td>
       <td>${r.STOCK.toLocaleString()}</td>
-      <td style="color:${parseFloat(r.rate)>=90?'#10b981':parseFloat(r.rate)>=70?'#f59e0b':'#ef4444'}">${r.rate}%</td>
-    </tr>
-  `).join('');
+      <td style="color:${r.rate>=90?'#10b981':r.rate>=70?'#f59e0b':r.rate<0?'#94a3b8':'#ef4444'}">${r.rate<0?'—':r.rate+'%'}</td>
+    </tr>`).join('');
 
   const totST = sum(rows,'SELLT'), totSO = sum(rows,'SELL_OUT'), totStk = sum(rows,'STOCK');
   const totRate = totST ? ((totSO/totST)*100).toFixed(1) : '—';
@@ -517,7 +539,7 @@ function renderTab2() {
   document.getElementById('tab2').innerHTML = `
     <div class="table-wrap">
       <table>
-        <thead><tr><th style="text-align:left">Region</th><th style="text-align:left">Account</th><th>SELLT</th><th>SELL-OUT</th><th>Dec Stock</th><th>SO/ST %</th></tr></thead>
+        <thead><tr>${ths}</tr></thead>
         <tbody>
           ${trs}
           <tr class="total-row"><td colspan="2">TOTAL</td><td>${totST.toLocaleString()}</td><td>${totSO.toLocaleString()}</td><td>${totStk.toLocaleString()}</td><td>${totRate}%</td></tr>
