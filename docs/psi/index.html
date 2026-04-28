@@ -349,36 +349,41 @@ function renderTab0() {
     const byM = groupBy(rows, 'Month');
     const stkByM = Object.fromEntries((byRegionStock[r]||[]).map(d=>[d.Month,d.STOCK]));
     let st_tds = '', so_tds = '', stk_tds = '';
-    let rs = 0, ros = 0, rstk = 0;
+    let rs = 0, ros = 0;
+    const lastMonth = months[months.length - 1];
     months.forEach(m => {
       const v = byM[m] || [];
       const s = sum(v,'SELLT'), so = sum(v,'SELL_OUT'), stk = stkByM[m] || 0;
-      rs += s; ros += so; rstk += stk;
+      rs += s; ros += so;
       st_tds += `<td>${s.toLocaleString()}</td>`;
       so_tds += `<td>${so.toLocaleString()}</td>`;
       stk_tds += `<td>${stk.toLocaleString()}</td>`;
     });
+    const rStkTotal = stkByM['Dec'] ?? stkByM[lastMonth] ?? 0;
     st_rows += `<tr><td>${r}</td>${st_tds}<td>${rs.toLocaleString()}</td></tr>`;
     so_rows += `<tr><td>${r}</td>${so_tds}<td>${ros.toLocaleString()}</td></tr>`;
-    stk_rows += `<tr><td>${r}</td>${stk_tds}<td>${rstk.toLocaleString()}</td></tr>`;
+    stk_rows += `<tr><td>${r}</td>${stk_tds}<td>${rStkTotal.toLocaleString()}</td></tr>`;
   });
 
   // total row
-  let st_tot_tds = '', so_tot_tds = '', stk_tot_tds = '', gt_st = 0, gt_so = 0, gt_stk = 0;
+  let st_tot_tds = '', so_tot_tds = '', stk_tot_tds = '', gt_st = 0, gt_so = 0;
+  const lastMonth = months[months.length - 1];
   months.forEach(m => {
     const v = rm.filter(d=>d.Month===m);
     const sv = RAW.region_month_stock.filter(d=>selRegions.includes(d.Region)&&d.Month===m);
     const s = sum(v,'SELLT'), so = sum(v,'SELL_OUT'), stk = sv.reduce((a,d)=>a+d.STOCK,0);
-    gt_st+=s; gt_so+=so; gt_stk+=stk;
+    gt_st+=s; gt_so+=so;
     st_tot_tds+=`<td>${s.toLocaleString()}</td>`;
     so_tot_tds+=`<td>${so.toLocaleString()}</td>`;
     stk_tot_tds+=`<td>${stk.toLocaleString()}</td>`;
   });
+  const decOrLast = months.includes('Dec') ? 'Dec' : lastMonth;
+  const gt_stk = RAW.region_month_stock.filter(d=>selRegions.includes(d.Region)&&d.Month===decOrLast).reduce((a,d)=>a+d.STOCK,0);
   st_rows += `<tr class="total-row"><td>TOTAL</td>${st_tot_tds}<td>${gt_st.toLocaleString()}</td></tr>`;
   so_rows += `<tr class="total-row"><td>TOTAL</td>${so_tot_tds}<td>${gt_so.toLocaleString()}</td></tr>`;
   stk_rows += `<tr class="total-row"><td>TOTAL</td>${stk_tot_tds}<td>${gt_stk.toLocaleString()}</td></tr>`;
 
-  const thds = months.map(m=>`<th>${m}</th>`).join('') + '<th>Total</th>';
+  const thds = months.map(m=>`<th>${m}</th>`).join('') + '<th>Dec Stock</th>';
 
   document.getElementById('tab0').innerHTML = `
     <h3 style="margin-bottom:12px;font-size:14px;color:var(--text-dim)">Sell-Through (SELLT) by Region × Month</h3>
