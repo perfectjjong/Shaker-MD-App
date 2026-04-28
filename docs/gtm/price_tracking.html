@@ -18,6 +18,7 @@
   }
   .tab-btn:hover { background: #dce0f0; color: #1a1a2e; }
   .tab-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+  .tab-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; padding: 0 6px 10px; align-self: flex-end; }
   .tab-content { display: none; }
   .tab-content.active-tab { display: block; }
   .ch-note { font-size: 12px; color: #888; margin-bottom: 12px; }
@@ -43,11 +44,17 @@
   <div class="legend-item"><div class="dot" style="background:#e0f0e0"></div> LG Mid보다 고가</div>
 </div>
 <div class="tabs">
+<span class="tab-label">OR</span>
 <button class="tab-btn active" onclick="switchTab(0)">eXtra</button>
 <button class="tab-btn" onclick="switchTab(1)">SWS</button>
 <button class="tab-btn" onclick="switchTab(2)">Al Manea</button>
 <button class="tab-btn" onclick="switchTab(3)">Black Box</button>
 <button class="tab-btn" onclick="switchTab(4)">AlKhunaizan</button>
+<span class="tab-label">IR</span>
+<button class="tab-btn" onclick="switchTab(5)">BH</button>
+<button class="tab-btn" onclick="switchTab(6)">Tamkeen</button>
+<button class="tab-btn" onclick="switchTab(7)">Bin Momen</button>
+<button class="tab-btn" onclick="switchTab(8)">Techno Best</button>
 </div>
 <div class="tab-content" id="tab-0" style="display:none">
 <div class="ch-note">채널: eXtra | 기준: ex-VAT SAR | 경쟁사 색상: LG Mid 기준</div>
@@ -207,6 +214,115 @@
 <tr><td class="seg">(LG 없음)</td><td class="ton">1.5T</td><td class="empty">—</td><td style="background:#f8f9fa">1,738–2,260</td><td style="background:#f8f9fa">1,651–2,869</td><td class="empty">—</td><td style="background:#f8f9fa">1,608–1,695</td></tr>
 <tr><td class="seg">(LG 없음)</td><td class="ton">2T</td><td class="empty">—</td><td style="background:#f8f9fa">2,521–2,695</td><td style="background:#f8f9fa">2,086–2,260</td><td class="empty">—</td><td style="background:#f8f9fa">2,173</td></tr>
 <tr><td class="seg">(LG 없음)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">3,608–3,869</td><td style="background:#f8f9fa">3,043–3,217</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div>
+</div><div class="tab-content" id="tab-5" style="display:none">
+<div class="ch-note">채널: BH | 기준: ex-VAT SAR | 경쟁사 색상: LG Mid 기준</div>
+<h3 class="sec-title">▶ Inverter Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th>용량</th><th class="seg">LG 세그먼트</th><th class="lg">LG 가격 (SAR)</th>
+<th>SAMSUNG</th>
+<th>TCL</th>
+</tr>
+<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">1,286–1,417</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,173–2,417</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="lg-val">2,338–2,851</td><td style="background:#ffe0e0">1,877–2,738</td><td class="empty">—</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div>
+<h3 class="sec-title">▶ Rotary Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th class="seg">LG 세그먼트</th><th>용량</th><th class="lg">LG 가격 (SAR)</th>
+<th>HAIER</th>
+<th>MIDEA</th>
+<th>TCL</th>
+<th>HISENSE</th>
+</tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.5T</td><td class="empty">—</td><td style="background:#f8f9fa">1,150–1,250</td><td style="background:#f8f9fa">1,320–1,530</td><td class="empty">—</td><td style="background:#f8f9fa">1,303–1,347</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2T</td><td class="empty">—</td><td style="background:#f8f9fa">1,399–1,760</td><td style="background:#f8f9fa">1,595–1,863</td><td style="background:#f8f9fa">1,553</td><td style="background:#f8f9fa">1,530–1,608</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">1,700–2,416</td><td style="background:#f8f9fa">2,010–3,356</td><td style="background:#f8f9fa">1,825–2,017</td><td class="empty">—</td></tr>
+</table></div>
+</div><div class="tab-content" id="tab-6" style="display:none">
+<div class="ch-note">채널: Tamkeen | 기준: ex-VAT SAR | 경쟁사 색상: LG Mid 기준</div>
+<h3 class="sec-title">▶ Inverter Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th>용량</th><th class="seg">LG 세그먼트</th><th class="lg">LG 가격 (SAR)</th>
+</tr>
+</table></div>
+<h3 class="sec-title">▶ Rotary Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th class="seg">LG 세그먼트</th><th>용량</th><th class="lg">LG 가격 (SAR)</th>
+<th>SAMSUNG</th>
+<th>GREE</th>
+</tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.0T</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">1,564</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.5T</td><td class="empty">—</td><td style="background:#f8f9fa">2,173</td><td style="background:#f8f9fa">1,995</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2T</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">2,347</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2.5T</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">3,251</td></tr>
+</table></div>
+</div><div class="tab-content" id="tab-7" style="display:none">
+<div class="ch-note">채널: Bin Momen | 기준: ex-VAT SAR | 경쟁사 색상: LG Mid 기준</div>
+<h3 class="sec-title">▶ Inverter Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th>용량</th><th class="seg">LG 세그먼트</th><th class="lg">LG 가격 (SAR)</th>
+<th>MIDEA</th>
+</tr>
+<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="lg-val">2,261</td><td style="background:#ffe0e0">1,752</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="lg-val">2,690</td><td style="background:#ffe0e0">2,326</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div>
+<h3 class="sec-title">▶ Rotary Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th class="seg">LG 세그먼트</th><th>용량</th><th class="lg">LG 가격 (SAR)</th>
+<th>MIDEA</th>
+<th>AUX</th>
+<th>TCL</th>
+<th>HISENSE</th>
+</tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,323</td><td class="empty">—</td><td style="background:#f8f9fa">1,334</td><td style="background:#f8f9fa">1,780–1,831</td></tr>
+<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,696–1,775</td><td style="background:#fff8e0">1,534–1,922</td><td style="background:#ffe0e0">1,413</td><td style="background:#ffe0e0">1,178–1,447</td><td style="background:#e0f0e0">2,137–2,204</td></tr>
+<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">1,922–2,035</td><td style="background:#e0f0e0">2,057–3,052</td><td style="background:#fff8e0">1,897</td><td style="background:#fff8e0">1,809–2,204</td><td style="background:#e0f0e0">2,883–3,137</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">2,600–4,493</td><td class="empty">—</td><td style="background:#f8f9fa">2,600–3,391</td><td style="background:#f8f9fa">4,205–4,239</td></tr>
+</table></div>
+</div><div class="tab-content" id="tab-8" style="display:none">
+<div class="ch-note">채널: Techno Best | 기준: ex-VAT SAR | 경쟁사 색상: LG Mid 기준</div>
+<h3 class="sec-title">▶ Inverter Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th>용량</th><th class="seg">LG 세그먼트</th><th class="lg">LG 가격 (SAR)</th>
+<th>GREE</th>
+<th>TCL</th>
+</tr>
+<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">2,173–2,347</td><td style="background:#f8f9fa">1,825–2,521</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">2,695–2,912</td><td style="background:#f8f9fa">2,217–2,869</td></tr>
+<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div>
+<h3 class="sec-title">▶ Rotary Split</h3>
+<div class="tbl-wrap"><table>
+<tr>
+<th class="seg">LG 세그먼트</th><th>용량</th><th class="lg">LG 가격 (SAR)</th>
+<th>GREE</th>
+<th>MIDEA</th>
+<th>TCL</th>
+</tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,695–1,825</td><td style="background:#f8f9fa">1,217–1,956</td><td class="empty">—</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">1.5T</td><td class="empty">—</td><td style="background:#f8f9fa">2,130–2,260</td><td style="background:#f8f9fa">1,738–1,912</td><td style="background:#f8f9fa">1,651</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2T</td><td class="empty">—</td><td style="background:#f8f9fa">2,521–2,695</td><td style="background:#f8f9fa">2,217–2,347</td><td style="background:#f8f9fa">2,260</td></tr>
+<tr><td class="seg">(LG 없음)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">3,477</td><td style="background:#f8f9fa">3,217–3,303</td><td class="empty">—</td></tr>
 </table></div>
 </div>
 <script>
