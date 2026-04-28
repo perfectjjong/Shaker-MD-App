@@ -77,26 +77,4 @@ jobs:
             git push
           fi
 
-      - name: Send Telegram notification (success)
-        if: success()
-        run: |
-          python -c "
-          import requests
-          msg = '✅ Price Tracking 완료!\n📅 $(date +%Y-%m-%d)\n\n10개 채널 스크래핑 + 대시보드 업데이트 완료.\nCloudflare 배포는 자동으로 트리거됩니다.'
-          requests.post(
-            f'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage',
-            json={'chat_id': '${{ secrets.TELEGRAM_CHAT_ID }}', 'text': msg}
-          )
-          "
-
-      - name: Send Telegram notification (failure)
-        if: failure()
-        run: |
-          python -c "
-          import requests
-          msg = '❌ Price Tracking 실패!\n📅 $(date +%Y-%m-%d)\n\nGitHub Actions 로그를 확인하세요:\nhttps://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
-          requests.post(
-            f'https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage',
-            json={'chat_id': '${{ secrets.TELEGRAM_CHAT_ID }}', 'text': msg}
-          )
-          " || true
+      # Telegram notifications disabled per user request (2026-04-28)
