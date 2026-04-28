@@ -20,14 +20,32 @@
     .header{padding:24px 20px 16px;border-bottom:1px solid var(--border)}
     .header h1{font-size:22px;font-weight:700;margin-bottom:4px}
     .header p{font-size:14px;color:var(--text-dim)}
-    /* filters */
-    .filters{display:flex;gap:12px;padding:16px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:flex-end}
-    .filter-group{display:flex;flex-direction:column;gap:6px;min-width:140px}
-    .filter-group label{font-size:12px;color:var(--text-dim);font-weight:500}
-    select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:8px 10px;border-radius:8px;font-size:13px;cursor:pointer}
-    select[multiple]{height:90px}
-    .btn{padding:8px 18px;border-radius:8px;border:none;background:var(--accent);color:#fff;font-size:13px;font-weight:600;cursor:pointer;align-self:flex-end}
-    .btn:hover{opacity:.85}
+    /* ===== FILTER BAR ===== */
+    .filter-bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+    .ms-wrap{position:relative;display:inline-block}
+    .ms-btn{display:flex;align-items:center;gap:5px;padding:4px 10px;background:#0f172a;color:#cbd5e1;border:1px solid #475569;border-radius:6px;font-size:11px;cursor:pointer;white-space:nowrap;user-select:none;transition:border-color .15s}
+    .ms-btn:hover{border-color:#60a5fa}
+    .ms-btn.open{border-color:#3b82f6;background:#1e293b}
+    .ms-btn .ms-label{font-weight:600;color:#e2e8f0}
+    .ms-btn .ms-count{background:#334155;color:#94a3b8;font-size:9px;padding:1px 5px;border-radius:3px;margin-left:2px}
+    .ms-btn .ms-arrow{font-size:8px;color:#64748b;margin-left:2px;transition:transform .15s}
+    .ms-btn.open .ms-arrow{transform:rotate(180deg)}
+    .ms-menu{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:100;background:#1e293b;border:1px solid #475569;border-radius:8px;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,.4);overflow:hidden}
+    .ms-menu.show{display:block}
+    .ms-actions{display:flex;gap:6px;padding:8px 10px;border-bottom:1px solid #334155}
+    .ms-actions button{background:none;border:none;font-size:10px;cursor:pointer;padding:2px 6px;border-radius:3px;font-weight:600}
+    .ms-actions .ms-all{color:#3b82f6}.ms-actions .ms-all:hover{background:#1e3a5f}
+    .ms-actions .ms-none{color:#ef4444}.ms-actions .ms-none:hover{background:#3b1c1c}
+    .ms-list{max-height:230px;overflow-y:auto;padding:4px 0}
+    .ms-list::-webkit-scrollbar{width:5px}
+    .ms-list::-webkit-scrollbar-track{background:#1e293b}
+    .ms-list::-webkit-scrollbar-thumb{background:#475569;border-radius:3px}
+    .ms-list label{display:flex;align-items:center;gap:7px;padding:4px 12px;cursor:pointer;font-size:11px;color:#cbd5e1;transition:background .1s}
+    .ms-list label:hover{background:#334155}
+    .ms-list input[type="checkbox"]{width:13px;height:13px;accent-color:#3b82f6;cursor:pointer;flex-shrink:0}
+    .filter-divider{width:1px;height:22px;background:#334155;margin:0 4px}
+    .filter-reset{background:none;border:1px solid #475569;color:#94a3b8;font-size:10px;padding:4px 10px;border-radius:5px;cursor:pointer;font-weight:600}
+    .filter-reset:hover{border-color:#ef4444;color:#ef4444}
     /* kpi cards */
     .kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:16px 20px}
     .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
@@ -81,26 +99,7 @@
   <p>Sell-Through · Sell-Out · Stock — 지역별 / Account별 / 모델별 / 월별</p>
 </div>
 
-<div class="filters" id="filterBar">
-  <div class="filter-group">
-    <label>Region</label>
-    <select id="fRegion" multiple></select>
-  </div>
-  <div class="filter-group">
-    <label>Account</label>
-    <select id="fAccount" multiple></select>
-  </div>
-  <div class="filter-group">
-    <label>GROUP</label>
-    <select id="fGroup" multiple></select>
-  </div>
-  <div class="filter-group">
-    <label>Month</label>
-    <select id="fMonth" multiple></select>
-  </div>
-  <button class="btn" onclick="applyFilter()">Apply</button>
-  <button class="btn" style="background:var(--surface2);color:var(--text)" onclick="resetFilter()">Reset</button>
-</div>
+<div class="filter-bar" id="filterBar"></div>
 
 <div class="kpi-row" id="kpiRow"></div>
 
@@ -129,54 +128,162 @@ let selGroups  = [...RAW.groups];
 let selMonths  = [...RAW.months];
 const charts = {};
 
-// ─── init filters ────────────────────────────────────────
+// ─── ms-btn filter ───────────────────────────────────────
+const REGION_ORDER_FILTER = ['MTC','CENTRAL','WEST','EAST','SOUTH','NORTH','OTHERS'];
+let _openFilter = null;
+const _filterState = {};
+
+function _buildFilter(bar, key, label, getItems, onChange) {
+  const items = getItems();
+  _filterState[key] = new Set(items);
+  const wrap = document.createElement('div');
+  wrap.className = 'ms-wrap';
+  const btn = document.createElement('div');
+  btn.className = 'ms-btn';
+  btn.id = 'ms-btn-' + key;
+  btn.innerHTML = '<span class="ms-label">' + label + '</span><span class="ms-count" id="ms-cnt-' + key + '">' + items.length + '/' + items.length + '</span><span class="ms-arrow">▼</span>';
+  const menu = document.createElement('div');
+  menu.className = 'ms-menu';
+  menu.id = 'ms-menu-' + key;
+  const actions = document.createElement('div');
+  actions.className = 'ms-actions';
+  const allBtn = document.createElement('button');
+  allBtn.className = 'ms-all'; allBtn.textContent = 'All';
+  allBtn.onclick = () => { _filterState[key] = new Set(getItems()); _refreshMenu(key, getItems); onChange(); };
+  const noneBtn = document.createElement('button');
+  noneBtn.className = 'ms-none'; noneBtn.textContent = 'None';
+  noneBtn.onclick = () => { _filterState[key] = new Set(); _refreshMenu(key, getItems); onChange(); };
+  actions.append(allBtn, noneBtn);
+  menu.appendChild(actions);
+  const list = document.createElement('div');
+  list.className = 'ms-list';
+  list.id = 'ms-list-' + key;
+  menu.appendChild(list);
+  _renderList(key, getItems, onChange);
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    const isOpen = menu.classList.contains('show');
+    document.querySelectorAll('.ms-menu.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.ms-btn.open').forEach(b => b.classList.remove('open'));
+    if (!isOpen) { menu.classList.add('show'); btn.classList.add('open'); _openFilter = key; }
+    else { _openFilter = null; }
+  };
+  wrap.append(btn, menu);
+  bar.appendChild(wrap);
+}
+
+function _renderList(key, getItems, onChange) {
+  const list = document.getElementById('ms-list-' + key);
+  if (!list) return;
+  list.innerHTML = '';
+  const items = getItems();
+  items.forEach(v => {
+    const lbl = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.value = v;
+    cb.checked = _filterState[key].has(v);
+    cb.onchange = () => { if(cb.checked) _filterState[key].add(v); else _filterState[key].delete(v); _updateCount(key, getItems); onChange(); };
+    lbl.append(cb, document.createTextNode(v));
+    list.appendChild(lbl);
+  });
+}
+
+function _refreshMenu(key, getItems) {
+  const items = getItems();
+  const list = document.getElementById('ms-list-' + key);
+  if (!list) return;
+  list.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.checked = _filterState[key].has(cb.value);
+  });
+  _updateCount(key, items);
+}
+
+function _updateCount(key, getItems) {
+  const items = typeof getItems === 'function' ? getItems() : getItems;
+  const cnt = document.getElementById('ms-cnt-' + key);
+  if (cnt) cnt.textContent = _filterState[key].size + '/' + items.length;
+}
+
+function _accountsForRegions(regs) {
+  return REGION_ORDER_FILTER.filter(r => regs.includes(r)).flatMap(r => RAW.accounts[r] || [])
+    .concat(regs.filter(r => !REGION_ORDER_FILTER.includes(r)).flatMap(r => RAW.accounts[r] || []));
+}
+
 function initFilters() {
-  const fR = document.getElementById('fRegion');
-  RAW.regions.forEach(r => {
-    const o = new Option(r, r, true, true);
-    fR.appendChild(o);
-  });
-  fR.addEventListener('change', () => {
-    const regs = getSelected('fRegion');
-    const fA = document.getElementById('fAccount');
-    fA.innerHTML = '';
-    regs.forEach(r => (RAW.accounts[r] || []).forEach(a => {
-      const o = new Option(a, a, true, true);
-      fA.appendChild(o);
-    }));
-  });
-  // trigger account populate
-  fR.dispatchEvent(new Event('change'));
+  const bar = document.getElementById('filterBar');
+  const onChange = () => _applyAndRender();
 
-  const fG = document.getElementById('fGroup');
-  RAW.groups.forEach(g => { const o = new Option(g,g,true,true); fG.appendChild(o); });
+  const sortedRegions = REGION_ORDER_FILTER.filter(r => RAW.regions.includes(r))
+    .concat(RAW.regions.filter(r => !REGION_ORDER_FILTER.includes(r)));
 
-  const fM = document.getElementById('fMonth');
-  RAW.months.forEach(m => { const o = new Option(m,m,true,true); fM.appendChild(o); });
+  // Region
+  _buildFilter(bar, 'region', 'Region', () => sortedRegions, () => {
+    const regs = [..._filterState['region']];
+    const newAccs = _accountsForRegions(sortedRegions);
+    const prevAccState = _filterState['account'];
+    _filterState['account'] = new Set(newAccs.filter(a => prevAccState.has(a)));
+    if (_filterState['account'].size === 0) _filterState['account'] = new Set(newAccs);
+    _renderList('account', () => _accountsForRegions([...(_filterState['region']||new Set(sortedRegions))]), onChange);
+    _updateCount('account', _accountsForRegions(regs));
+    _applyAndRender();
+  });
+
+  // Account (cascaded)
+  const divA = document.createElement('div'); divA.className = 'filter-divider'; bar.appendChild(divA);
+  _buildFilter(bar, 'account', 'Account', () => _accountsForRegions(sortedRegions), onChange);
+
+  // GROUP
+  const divG = document.createElement('div'); divG.className = 'filter-divider'; bar.appendChild(divG);
+  _buildFilter(bar, 'group', 'Group', () => RAW.groups, onChange);
+
+  // Month
+  const divM = document.createElement('div'); divM.className = 'filter-divider'; bar.appendChild(divM);
+  _buildFilter(bar, 'month', 'Month', () => RAW.months, onChange);
+
+  // Reset
+  const divR = document.createElement('div'); divR.className = 'filter-divider'; bar.appendChild(divR);
+  const rst = document.createElement('button');
+  rst.className = 'filter-reset'; rst.textContent = 'Reset';
+  rst.onclick = () => {
+    const regs = sortedRegions;
+    _filterState['region'] = new Set(regs);
+    _filterState['account'] = new Set(_accountsForRegions(regs));
+    _filterState['group'] = new Set(RAW.groups);
+    _filterState['month'] = new Set(RAW.months);
+    ['region','account','group','month'].forEach(k => {
+      const list = document.getElementById('ms-list-' + k);
+      if (list) list.querySelectorAll('input').forEach(cb => { cb.checked = true; });
+      const getItems = k==='region'?()=>regs:k==='account'?()=>_accountsForRegions(regs):k==='group'?()=>RAW.groups:()=>RAW.months;
+      _updateCount(k, getItems());
+    });
+    _applyAndRender();
+  };
+  bar.appendChild(rst);
+
+  // close on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.ms-menu.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.ms-btn.open').forEach(b => b.classList.remove('open'));
+    _openFilter = null;
+  });
 }
 
-function getSelected(id) {
-  return Array.from(document.getElementById(id).selectedOptions).map(o => o.value);
-}
-
-function applyFilter() {
-  selRegions  = getSelected('fRegion');
-  selAccounts = getSelected('fAccount');
-  selGroups   = getSelected('fGroup');
-  selMonths   = getSelected('fMonth');
+function _applyAndRender() {
+  selRegions  = [...(_filterState['region']  || new Set(RAW.regions))];
+  selAccounts = [...(_filterState['account'] || new Set(RAW.regions.flatMap(r=>RAW.accounts[r]||[])))];
+  selGroups   = [...(_filterState['group']   || new Set(RAW.groups))];
+  selMonths   = [...(_filterState['month']   || new Set(RAW.months))];
   if (!selRegions.length)  selRegions  = [...RAW.regions];
-  if (!selAccounts.length) selAccounts = RAW.regions.flatMap(r => RAW.accounts[r] || []);
+  if (!selAccounts.length) selAccounts = RAW.regions.flatMap(r=>RAW.accounts[r]||[]);
   if (!selGroups.length)   selGroups   = [...RAW.groups];
   if (!selMonths.length)   selMonths   = [...RAW.months];
   render();
 }
 
+function applyFilter() { _applyAndRender(); }
 function resetFilter() {
-  ['fRegion','fAccount','fGroup','fMonth'].forEach(id => {
-    const el = document.getElementById(id);
-    Array.from(el.options).forEach(o => o.selected = true);
-  });
-  applyFilter();
+  const btn = document.querySelector('.filter-reset');
+  if (btn) btn.click();
 }
 
 // ─── data helpers ────────────────────────────────────────
