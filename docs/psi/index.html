@@ -158,6 +158,7 @@ function _buildFilter(bar, key, label, getItems, onChange) {
   const menu = document.createElement('div');
   menu.className = 'ms-menu';
   menu.id = 'ms-menu-' + key;
+  menu.onclick = e => e.stopPropagation();
   const actions = document.createElement('div');
   actions.className = 'ms-actions';
   const allBtn = document.createElement('button');
