@@ -1223,8 +1223,17 @@ function renderYoY(){
     </tr>`;
   }).join('');
 
-  // Apple-to-Apple: 2026 보유 day_idx 에 맞춰 2025도 동일 구간만 집계
-  const matchedDiSet = new Set(Object.keys(aggByYear['2026']).map(Number));
+  // Apple-to-Apple: 선택된 날짜 기준 (없으면 2026 보유 day_idx 전체)
+  const _selD2 = msDate.getSelected();
+  const _dm = msDate._dateMap || {};
+  const _allDates26 = Object.values(_dm).filter(d=>d.startsWith('2026'));
+  const _selDates26 = [..._selD2].map(lbl=>_dm[lbl]).filter(d=>d&&d.startsWith('2026'));
+  let selDiSet26 = null;
+  if(_selDates26.length > 0 && _selDates26.length < _allDates26.length && start26){
+    const s26ms = start26.getTime();
+    selDiSet26 = new Set(_selDates26.map(d=>Math.round((new Date(d).getTime()-s26ms)/86400000)));
+  }
+  const matchedDiSet = selDiSet26 || new Set(Object.keys(aggByYear['2026']).map(Number));
   const diArr = [...matchedDiSet].sort((a,b)=>a-b);
   const matchLabel = diArr.length===1 ? `D${diArr[0]}` : `D${diArr[0]}~D${diArr[diArr.length-1]}`;
 
@@ -1235,7 +1244,7 @@ function renderYoY(){
     rows.forEach(r=>{ const b=DIM.b[r[CI.b]]; if(!agg[b]) agg[b]={val:0,qty:0}; agg[b].val+=r[CI.val]; agg[b].qty+=r[CI.qty]; tot.val+=r[CI.val]; tot.qty+=r[CI.qty]; });
     return {agg, tot};
   }
-  const b25=brandTotByYear('2025', matchedDiSet), b26=brandTotByYear('2026');
+  const b25=brandTotByYear('2025', matchedDiSet), b26=brandTotByYear('2026', selDiSet26);
   const allBrands=new Set([...Object.keys(b25.agg),...Object.keys(b26.agg)]);
   const bSorted=[...allBrands].sort((a,b)=>(b26.agg[b]?.val||0)-(b26.agg[a]?.val||0));
 
@@ -1265,7 +1274,7 @@ function renderYoY(){
     Object.keys(agg).forEach(s=>{ ms[s]=tot.v?+(agg[s]/tot.v*100).toFixed(1):0; });
     return ms;
   }
-  const sz25=acBySizeMs('2025', matchedDiSet), sz26=acBySizeMs('2026');
+  const sz25=acBySizeMs('2025', matchedDiSet), sz26=acBySizeMs('2026', selDiSet26);
   const allSizes=DIM.as.filter(s=>sz25[s]||sz26[s]);
   const _yoyBarLbl = {
     anchor:'end', align:'top',
@@ -1294,7 +1303,7 @@ function renderYoY(){
     Object.keys(agg).forEach(c=>{ ms[c]=tot.v?+(agg[c]/tot.v*100).toFixed(1):0; });
     return ms;
   }
-  const cp25=acByCompMs('2025', matchedDiSet), cp26=acByCompMs('2026');
+  const cp25=acByCompMs('2025', matchedDiSet), cp26=acByCompMs('2026', selDiSet26);
   const allComps=new Set([...Object.keys(cp25),...Object.keys(cp26)]);
   const compArr=[...allComps];
   upsertChart('chartYoYComp','bar',{
