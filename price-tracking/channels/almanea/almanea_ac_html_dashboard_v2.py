@@ -78,6 +78,7 @@ for _, r in df.iterrows():
         'fp': safe(r.get('Final_Promo_Price')), 'fj': safe(r.get('AlAhli_Price')),
         'ho': str(r.get('Has_Offer','')) if pd.notna(r.get('Has_Offer')) else 'No',
         'od': str(r.get('Offer_Detail','')) if pd.notna(r.get('Offer_Detail')) else '',
+        'fi': 'Yes' if 'free install' in (str(r.get('Offer_Detail','')) if pd.notna(r.get('Offer_Detail')) else '').lower() else 'No',
         'fg': str(r.get('Free_Gift','')) if pd.notna(r.get('Free_Gift')) else '',
         'stk': safe(r.get('Stock')),
         'er': str(r.get('Energy_Rating','')) if pd.notna(r.get('Energy_Rating')) else '',
@@ -504,7 +505,7 @@ class MS {
     const w=document.createElement('div');w.className='ms-wrap';
     const btn=document.createElement('button');btn.type='button';btn.className='ms-btn';
     this.btnEl=btn;w.appendChild(btn);
-    const menu=document.createElement('div');menu.className='ms-menu';
+    const menu=document.createElement('div');menu.className='ms-menu';menu.onclick=function(e){e.stopPropagation()};
     const acts=document.createElement('div');acts.className='ms-actions';
     const aAll=document.createElement('button');aAll.textContent='All';aAll.onclick=()=>this.selectAll();
     const aNone=document.createElement('button');aNone.textContent='None';aNone.className='ms-none';aNone.onclick=()=>this.selectNone();
@@ -774,24 +775,29 @@ function renderKPIs(lat,prev){
 }
 
 // ═══ SEC 2: ALERTS ═══════════════════════════════════════════════════════════
-const AC=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Function'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_SALE=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Function'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev Promo',f:fmtSAR},{k:'curr',l:'Curr Promo',f:fmtSAR},{k:'final',l:'Final (w/CB)',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_JOOD=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Function'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
 function renderAlerts(){
   const {cur,prev}=getCompareDates();
   const latD=applyF(DATA.filter(r=>r.d===cur),GF);
   const prevD=prev?applyF(DATA.filter(r=>r.d===prev),GF):[];
-  const pk=ST.alertTab==='sale'?'fp':'fj';
+  const isSale=ST.alertTab==='sale';
+  const pk=isSale?'sl':'fj';
+  const AC=isSale?AC_SALE:AC_JOOD;
   const lm={};latD.forEach(r=>lm[r.s]=r);const pm={};prevD.forEach(r=>pm[r.s]=r);
   let rows=[];
   Object.keys(lm).filter(s=>s in pm).forEach(s=>{
     const rn=lm[s],ro=pm[s],pn=rn[pk],po=ro[pk];
     if(pn==null||po==null)return;const chg=pn-po;if(Math.abs(chg)<1)return;
-    rows.push({b:rn.b,s,n:rn.n,u:rn.u,c:rn.c,cp:rn.cp||'-',h:rn.h||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0});
+    const base={b:rn.b,s,n:rn.n,u:rn.u,c:rn.c,cp:rn.cp||'-',h:rn.h||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0};
+    if(isSale)base.final=rn.fp;
+    rows.push(base);
   });
   if(ST.alertDir==='up')rows=rows.filter(r=>r.chg>0);if(ST.alertDir==='down')rows=rows.filter(r=>r.chg<0);
   rows.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   const tbl=document.getElementById('tblAlert');
   tbl.querySelector('thead').innerHTML='<tr>'+AC.map((c,i)=>`<th onclick="sortTbl('tblAlert',${i})">${c.l}</th>`).join('')+'</tr>';
-  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';if(c.k==='n')v=fmtName(r.n,r.u);return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
+  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';if(c.k==='n')v=fmtName(r.n,r.u);return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):`<tr><td colspan="${AC.length}" class="text-center text-gray-400 py-6">No changes</td></tr>`;
 }
 
 // ═══ SEC 3: NEW/DISC ═════════════════════════════════════════════════════════
@@ -963,7 +969,7 @@ function renderPromo(lat){
 }
 
 // ═══ SEC 8: FULL SKU ════════════════════════════════════════════════════════
-const SC=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'m',l:'Model'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Function'},{k:'ton',l:'Ton'},{k:'sp',l:'Std Price',f:fmtSAR},{k:'sl',l:'Promo Price',f:fmtSAR},{k:'jp',l:'Al Ahli',f:fmtSAR},{k:'dr',l:'Disc %',f:fmtPct},{k:'fp',l:'Final Price',f:fmtSAR},{k:'prev',l:'Prev Price',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg %',f:fmtPctR},{k:'stk',l:'Stock'},{k:'ho',l:'Offer'},{k:'er',l:'Energy'}];
+const SC=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'m',l:'Model'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Function'},{k:'ton',l:'Ton'},{k:'sp',l:'Std Price',f:fmtSAR},{k:'sl',l:'Promo Price',f:fmtSAR},{k:'jp',l:'Al Ahli',f:fmtSAR},{k:'dr',l:'Disc %',f:fmtPct},{k:'fp',l:'Final Price',f:fmtSAR},{k:'prev',l:'Prev Price',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg %',f:fmtPctR},{k:'stk',l:'Stock'},{k:'ho',l:'Offer'},{k:'fi',l:'Free Install'},{k:'er',l:'Energy'}];
 let _skuData=[];
 
 function renderS8(){
@@ -994,6 +1000,7 @@ function renderS8(){
     if(c.k==='b')v=`<span style="color:${colorOf(r.b)};font-weight:600">${v}</span>`;
     if(c.k==='n')v=fmtName(r.n,r.u);
     if(c.k==='ho'&&v==='Yes')v=`<span class="inline-block px-1.5 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-semibold">Offer</span>`;
+    if(c.k==='fi')v=r.fi==='Yes'?`<span class="fi-yes inline-block px-1.5 py-0.5 rounded-full text-[10px] font-semibold">Free Install</span>`:`<span class="fi-no inline-block px-1.5 py-0.5 rounded-full text-[10px]">-</span>`;
     if(c.k==='stk'){const sv=r.stk;if(sv!=null&&sv>0)v=`<span class="text-green-600 font-semibold">${sv}</span>`;else if(sv===0||sv==null)v=`<span class="text-red-500 font-semibold">${sv===0?'0':'N/A'}</span>`;}
     return`<td class="${cls}">${v}</td>`;
   }).join('')+'</tr>').join(''):'<tr><td colspan="19" class="text-center text-gray-400 py-6">No data</td></tr>';

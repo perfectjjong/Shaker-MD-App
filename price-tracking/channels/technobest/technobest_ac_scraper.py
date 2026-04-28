@@ -345,15 +345,65 @@ def scrape_all() -> pd.DataFrame:
 #  Excel 저장 (누적 append)
 # ══════════════════════════════════════════════
 
+def _load_master(master: Path) -> pd.DataFrame | None:
+    """Master 엑셀 읽기. 손상(BadZipFile 등)이면 스냅샷으로 재건."""
+    import zipfile
+    try:
+        df = pd.read_excel(master)
+        return df
+    except (zipfile.BadZipFile, Exception) as e:
+        print(f"\n  ⚠ Master 파일 손상 ({e.__class__.__name__}): {e}")
+        # 손상된 파일을 백업으로 이동
+        backup = master.with_suffix(".corrupted.xlsx")
+        master.rename(backup)
+        print(f"  → 손상 파일을 '{backup.name}'으로 이동, 스냅샷에서 재건 시도...")
+        # 날짜별 스냅샷으로 재건
+        snaps = sorted(SCRIPT_DIR.glob("TechnoBest_AC_2*.xlsx"))
+        if snaps:
+            frames = []
+            for s in snaps:
+                try:
+                    df_s = pd.read_excel(s)
+                    frames.append(df_s)
+                except Exception:
+                    pass
+            if frames:
+                df_rebuilt = pd.concat(frames, ignore_index=True)
+                if "No" in df_rebuilt.columns:
+                    df_rebuilt = df_rebuilt.drop(columns=["No"])
+                print(f"  ✓ 스냅샷 {len(snaps)}개로 {len(df_rebuilt)}행 재건 완료")
+                return df_rebuilt
+        print("  → 재건 실패: 새 Master 파일 생성")
+        return None
+
+
 def save_to_excel(df_new: pd.DataFrame):
     """Master Excel에 누적 저장 + 스냅샷"""
     master = MASTER_FILE
 
     if master.exists():
-        df_old = pd.read_excel(master)
-        if "No" in df_old.columns:
-            df_old = df_old.drop(columns=["No"])
-        df_combined = pd.concat([df_old, df_new], ignore_index=True)
+        df_old = _load_master(master)
+        if df_old is not None:
+            # ── 중복 방지: 오늘 날짜 데이터가 이미 있으면 스킵 ────────────
+            today_date = datetime.now().strftime('%Y-%m-%d')
+            if 'scrape_date' in df_old.columns:
+                existing_dates = pd.to_datetime(df_old['scrape_date'], errors='coerce').dt.strftime('%Y-%m-%d')
+                if today_date in existing_dates.values:
+                    print(f"\n  [SKIP] Today's data ({today_date}) already exists in '{master.name}'. Skipping append.")
+                    ts = datetime.now().strftime("%Y%m%d_%H%M")
+                    snap_path = SCRIPT_DIR / f"TechnoBest_AC_{ts}.xlsx"
+                    df_snap = df_new.copy()
+                    if "No" not in df_snap.columns:
+                        df_snap.insert(0, "No", range(1, len(df_snap) + 1))
+                    df_snap.to_excel(snap_path, index=False)
+                    print(f"  📸 Snapshot saved (not appended): '{snap_path.name}'")
+                    return
+            # ─────────────────────────────────────────────────────────────
+            if "No" in df_old.columns:
+                df_old = df_old.drop(columns=["No"])
+            df_combined = pd.concat([df_old, df_new], ignore_index=True)
+        else:
+            df_combined = df_new.copy()
         df_combined.insert(0, "No", range(1, len(df_combined) + 1))
         df_combined.to_excel(master, index=False)
         print(f"\n  📎 Appended {len(df_new)} rows → '{master.name}'")

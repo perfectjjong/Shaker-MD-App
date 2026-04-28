@@ -130,6 +130,7 @@ for _, r in df.iterrows():
         'wf':  str(r.get('Wifi',''))        if pd.notna(r.get('Wifi')) else '',
         'col': str(r.get('Color',''))       if pd.notna(r.get('Color')) else '',
         'ss':  str(r.get('Stock Status','')) if pd.notna(r.get('Stock Status')) else '',
+        'fi':  str(r.get('Free Installation','No')) if pd.notna(r.get('Free Installation')) else 'No',
         'btu': str(r.get('Capacity',''))    if pd.notna(r.get('Capacity')) else '',
         'u':   str(r.get('URL',''))         if pd.notna(r.get('URL')) else '',
     })
@@ -543,7 +544,7 @@ class MS {
     const w=document.createElement('div');w.className='ms-wrap';
     const btn=document.createElement('button');btn.type='button';btn.className='ms-btn';
     this.btnEl=btn;w.appendChild(btn);
-    const menu=document.createElement('div');menu.className='ms-menu';
+    const menu=document.createElement('div');menu.className='ms-menu';menu.onclick=function(e){e.stopPropagation()};
     const acts=document.createElement('div');acts.className='ms-actions';
     const aAll=document.createElement('button');aAll.textContent='All';aAll.onclick=()=>this.selectAll();
     const aNone=document.createElement('button');aNone.textContent='None';aNone.className='ms-none';aNone.onclick=()=>this.selectNone();
@@ -765,18 +766,22 @@ function renderKPIs(lat,prev){
 }
 
 // ═══ SEC 2: ALERTS ═══════════════════════════════════════════════════════════
-const AC=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Type'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_FP=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Type'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev Promo',f:fmtSAR},{k:'curr',l:'Curr Promo',f:fmtSAR},{k:'eff',l:'Eff Price',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_SL=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Type'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
 function renderAlerts(){
   const {cur,prev}=getCompareDates();
   const latD=applyF(DATA.filter(r=>r.d===cur),GF);
   const prevD=prev?applyF(DATA.filter(r=>r.d===prev),GF):[];
-  const pk=ST.alertTab;
+  const isFP=ST.alertTab==='fp';
+  const AC=isFP?AC_FP:AC_SL;
   const lm={};latD.forEach(r=>lm[r.s]=r);const pm={};prevD.forEach(r=>pm[r.s]=r);
   let rows=[];
   Object.keys(lm).filter(s=>s in pm).forEach(s=>{
-    const rn=lm[s],ro=pm[s],pn=rn[pk],po=ro[pk];
+    const rn=lm[s],ro=pm[s],pn=rn.sl,po=ro.sl;
     if(pn==null||po==null)return;const chg=pn-po;if(Math.abs(chg)<1)return;
-    rows.push({b:rn.b,s,n:rn.n,u:rn.u,c:rn.c,cp:rn.cp||'-',h:rn.h||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0});
+    const base={b:rn.b,s,n:rn.n,u:rn.u,c:rn.c,cp:rn.cp||'-',h:rn.h||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0};
+    if(isFP)base.eff=rn.fp;
+    rows.push(base);
   });
   if(ST.alertDir==='up')rows=rows.filter(r=>r.chg>0);if(ST.alertDir==='down')rows=rows.filter(r=>r.chg<0);
   rows.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
@@ -787,7 +792,7 @@ function renderAlerts(){
     if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';
     if(c.k==='n')v=fmtLink(r.n,r.u);
     if(c.k==='b')v=`<span style="color:${colorOf(r.b)};font-weight:600">${v}</span>`;
-    return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
+    return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):`<tr><td colspan="${AC.length}" class="text-center text-gray-400 py-6">No changes</td></tr>`;
 }
 
 // ═══ SEC 3: NEW/DISC ═════════════════════════════════════════════════════════
@@ -990,7 +995,7 @@ const SC=[
   {k:'sp',l:'Std Price',f:fmtSAR},{k:'sl',l:'Promo Price',f:fmtSAR},{k:'op',l:'Only Pay',f:fmtSAR},
   {k:'dr',l:'Disc %',f:fmtPct},{k:'fp',l:'Eff Price',f:fmtSAR},
   {k:'prev',l:'Prev Price',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg %',f:fmtPctR},
-  {k:'ss',l:'Stock Status'},{k:'er',l:'Energy'},{k:'wf',l:'Wifi'},
+  {k:'ss',l:'Stock Status'},{k:'fi',l:'Free Install'},{k:'er',l:'Energy'},{k:'wf',l:'Wifi'},
 ];
 let _skuData=[];
 
@@ -1028,6 +1033,7 @@ function renderS8(){
       const sc=ssMap[r.ss]||'text-gray-400';
       v=`<span class="${sc} font-semibold text-[10px]">${r.ss||'-'}</span>`;
     }
+    if(c.k==='fi')v=r.fi==='Yes'?`<span class="fi-yes inline-block px-1.5 py-0.5 rounded-full text-[10px] font-semibold">Free Install</span>`:`<span class="fi-no inline-block px-1.5 py-0.5 rounded-full text-[10px]">-</span>`;
     if(c.k==='er'&&v&&v!=='-')v=`<span class="inline-block px-1.5 py-0.5 bg-green-100 text-green-700 rounded text-[10px] font-bold">${v}</span>`;
     if(c.k==='wf'){
       if(v==='Available')v=`<span class="inline-block w-2 h-2 bg-blue-500 rounded-full"></span> <span class="text-blue-600 text-[10px]">Wi-Fi</span>`;

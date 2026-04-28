@@ -340,7 +340,7 @@ MS.prototype._build=function(){
   var w=document.createElement('div');w.className='ms-wrap';
   var btn=document.createElement('button');btn.type='button';btn.className='ms-btn';
   this.btnEl=btn;w.appendChild(btn);
-  var menu=document.createElement('div');menu.className='ms-menu';
+  var menu=document.createElement('div');menu.className='ms-menu';menu.onclick=function(e){e.stopPropagation()};
   var acts=document.createElement('div');acts.className='ms-actions';
   var aAll=document.createElement('button');aAll.textContent='All';aAll.onclick=function(){self.selectAll()};
   var aNone=document.createElement('button');aNone.textContent='None';aNone.className='ms-none';aNone.onclick=function(){self.selectNone()};

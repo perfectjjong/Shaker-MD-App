@@ -501,6 +501,7 @@ class AlKhunaizanScraper:
                 'sku':          sku,
                 'stock':        stock,
                 'url':          p['url'],
+                'freeInstall':  'No',
             }
 
     # ──────────────────────────────────────────
@@ -517,6 +518,9 @@ class AlKhunaizanScraper:
                     if (key && val) result[key] = val;
                 }
             });
+            // Free Installation 감지 (설치 서비스 섹션 또는 아랍어 키워드)
+            const bodyText = document.body ? (document.body.innerText || '') : '';
+            result['_freeInstall'] = /installation service/i.test(bodyText) || /تركيب مجاني/.test(bodyText) ? 'Yes' : 'No';
             return result;
         }''')
         return spec
@@ -562,6 +566,10 @@ class AlKhunaizanScraper:
         if not product.get('nominalCap') and product.get('capacity'):
             product['nominalCap'] = self._btu_to_nominal(product['capacity'])
 
+        # Free Installation
+        if '_freeInstall' in spec:
+            product['freeInstall'] = spec['_freeInstall']
+
     # ──────────────────────────────────────────
     # 행 빌더
     # ──────────────────────────────────────────
@@ -587,7 +595,8 @@ class AlKhunaizanScraper:
         Q  SKU
         R  Stock Status
         S  URL
-        T  Scraped_At
+        T  Free Installation
+        U  Scraped_At
         """
         dr  = product.get('discountRate', 0)
         bp  = product.get('beforePrice',  0)
@@ -613,6 +622,7 @@ class AlKhunaizanScraper:
             product.get('sku', ''),
             product.get('stock', ''),
             product.get('url', ''),
+            product.get('freeInstall', 'No'),
             scraped_at,
         ]
 
@@ -654,7 +664,7 @@ class AlKhunaizanScraper:
             'Compressor Type', 'Wifi', 'Color', 'Nominal Capacity', 'Energy Grade',
             'Promotion Price (SAR)', 'Original Price (SAR)', 'Discount Rate (%)',
             'Save amount (SAR)', 'Only Pay Price (SAR)',
-            'SKU', 'Stock Status', 'URL', 'Scraped_At'
+            'SKU', 'Stock Status', 'URL', 'Free Installation', 'Scraped_At'
         ]
         header_row   = [cell.value for cell in ws[1]]
         current_cols = len([h for h in header_row if h is not None])
@@ -687,7 +697,7 @@ class AlKhunaizanScraper:
             row_data = self._build_row(product, scraped_at)
             for col_idx, value in enumerate(row_data, 1):
                 ws.cell(row=next_row, column=col_idx, value=value)
-            ws.cell(row=next_row, column=20).number_format = 'YYYY-MM-DD'
+            ws.cell(row=next_row, column=21).number_format = 'YYYY-MM-DD'
             next_row += 1
             added += 1
 

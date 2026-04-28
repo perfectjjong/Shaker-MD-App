@@ -547,7 +547,7 @@ class MS {
     const w=document.createElement('div');w.className='ms-wrap';
     const btn=document.createElement('button');btn.type='button';btn.className='ms-btn';
     this.btnEl=btn;w.appendChild(btn);
-    const menu=document.createElement('div');menu.className='ms-menu';
+    const menu=document.createElement('div');menu.className='ms-menu';menu.onclick=function(e){e.stopPropagation()};
     const acts=document.createElement('div');acts.className='ms-actions';
     const aAll=document.createElement('button');aAll.textContent='All';aAll.onclick=()=>this.selectAll();
     const aNone=document.createElement('button');aNone.textContent='None';aNone.className='ms-none';aNone.onclick=()=>this.selectNone();

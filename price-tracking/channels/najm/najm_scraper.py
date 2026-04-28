@@ -104,7 +104,7 @@ BRAND_MAP = {
     "هيسنس": "Hisense", "تكنو": "Tecno",
     "دايسون": "Dyson", "دبليو بوكس": "W-Box",
     "جنرال": "General", "ماكس": "Max",
-    "فيشر": "Fisher", "نيكاي": "Nikai",
+    "فيشر": "Fisher", "نيكاي": "Nikai", "نيكاى": "Nikai",
     "او جنرال": "O General", "اوجنرال": "O General",
     "اوكس": "Aux", "تي سي ال": "TCL",
     "ارو": "Arrow", "اورورا": "Aurora",
@@ -306,6 +306,22 @@ def parse_specs(name: str, description: str, name_en: str = "") -> dict:
 #  제품 파싱
 # ══════════════════════════════════════════════
 
+def _extract_free_install(p: dict, description: str) -> str:
+    """Salla API labels/tags 및 description에서 Free Installation 감지."""
+    texts = []
+    for field in ("labels", "tags"):
+        for item in (p.get(field) or []):
+            if isinstance(item, dict):
+                texts.append(item.get("title", item.get("name", "")))
+            else:
+                texts.append(str(item))
+    texts.append(description)
+    combined = " ".join(texts)
+    if "تركيب" in combined or re.search(r'free\s*install', combined, re.IGNORECASE):
+        return "Yes"
+    return "No"
+
+
 def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) -> dict:
     brand_ar    = (p.get("brand") or {}).get("name")
     salla_tag   = (p.get("category") or {}).get("name")   # Salla 내부 1차 카테고리 (프로모션 태그 포함)
@@ -313,8 +329,9 @@ def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) ->
     description = p.get("description") or ""
 
     # 번역 먼저 수행 → parse_specs에 전달 (BTU/Compressor/AC Type 영문 fallback용)
-    name_en = translate(name_ar) or ""
-    specs   = parse_specs(name_ar, description, name_en)
+    name_en      = translate(name_ar) or ""
+    specs        = parse_specs(name_ar, description, name_en)
+    free_install = _extract_free_install(p, description)
 
     regular  = p.get("regular_price") or 0
     price    = p.get("price") or 0
@@ -323,12 +340,16 @@ def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) ->
     # brand_ar 정제: "ال جي: مكيفات سبليت وشباك" → "ال جي" (콜론 뒤 카테고리 제거)
     brand_ar_clean = brand_ar.split(":")[0].strip() if brand_ar else None
 
-    # brand_en: BRAND_MAP → 아랍어 번역 → name_en 패턴/첫 단어 순으로 fallback
+    # brand_en: BRAND_MAP → 아랍어 번역 → name_ar 첫 단어 → name_en 패턴/첫 단어 순으로 fallback
     brand_en = (
         BRAND_MAP.get(brand_ar)            # 원본 그대로 먼저 시도
         or BRAND_MAP.get(brand_ar_clean)   # 콜론 제거 후 재시도
         or translate(brand_ar_clean)       # 번역 (깨끗한 브랜드명만)
     )
+    # brand_ar가 없을 때 name_ar 첫 단어로 BRAND_MAP 재시도
+    if not brand_en and not brand_ar and name_ar:
+        name_ar_first = name_ar.split()[0].strip()
+        brand_en = BRAND_MAP.get(name_ar_first)
     # 번역 결과에 ": ..." 카테고리 suffix가 붙은 경우 제거
     if brand_en and ":" in brand_en:
         brand_en = brand_en.split(":")[0].strip()
@@ -388,6 +409,9 @@ def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) ->
         # ── 링크
         "url"           : p.get("url"),
         "image_url"     : (p.get("image") or {}).get("url"),
+
+        # ── 무료 설치
+        "free_install"  : free_install,
 
         # ── 메타
         "run_date"      : run_date,

@@ -354,12 +354,27 @@ def save_to_master(products: list, master_path: Path):
 
     1. Create file + header if not exists
     2. Open existing file; create Product_DB sheet if missing
-    3. Build Model Code -> A-H mapping from existing rows
-    4. Apply mapping to new products
-    5. Append new rows below existing data
+    3. Check if today's data already exists (duplicate prevention)
+    4. Build Model Code -> A-H mapping from existing rows
+    5. Apply mapping to new products
+    6. Append new rows below existing data
     """
+    today_str = datetime.now().strftime('%Y-%m-%d')
+
     if master_path.exists():
         print(f"  [Open] {master_path.name}")
+        # ── 중복 방지: 오늘 날짜 데이터가 이미 있으면 스킵 ──────────────
+        try:
+            import pandas as _pd
+            _df = _pd.read_excel(master_path, sheet_name=SHEET_NAME,
+                                 usecols=['Scraped At'], engine='openpyxl')
+            _dates = _pd.to_datetime(_df['Scraped At'], errors='coerce').dt.strftime('%Y-%m-%d')
+            if today_str in _dates.values:
+                print(f"  [SKIP] Today's data ({today_str}) already exists in {SHEET_NAME}. Skipping append.")
+                return
+        except Exception as _e:
+            print(f"  [WARN] Duplicate check failed (ignored): {_e}")
+        # ─────────────────────────────────────────────────────────────────
         wb = load_workbook(master_path)
     else:
         print(f"  [Create] {master_path.name}")

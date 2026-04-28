@@ -61,12 +61,15 @@ OUTPUT_FILE = f"Tamkeen_Complete_{TIMESTAMP}.xlsx"
 
 # True  = 배송 예정일 수집 (개별 상품 페이지 방문, 속도 느림)
 # False = 빠른 모드 (카테고리 페이지만, 약 6페이지 로드)
-FETCH_DELIVERY = False
+FETCH_DELIVERY     = False
+# True  = Free Installation 수집 (개별 상품 페이지 방문)
+# FETCH_DELIVERY=True 이면 같은 방문에서 함께 수집
+FETCH_FREE_INSTALL = True
 
-PAGE_TIMEOUT    = 30000   # 페이지 로드 타임아웃 (ms, domcontentloaded 기준)
-WAIT_DL_TIMEOUT = 20000   # view_item_list 대기 최대 시간 (ms)
-WAIT_FALLBACK   = 5       # dataLayer 이벤트 없을 때 추가 대기 (초)
-MAX_RETRY       = 3       # 페이지별 최대 재시도 횟수
+PAGE_TIMEOUT    = 45000   # 페이지 로드 타임아웃 (ms, domcontentloaded 기준)
+WAIT_DL_TIMEOUT = 35000   # view_item_list 대기 최대 시간 (ms) - 20s→35s 증가 (느린 페이지 대응)
+WAIT_FALLBACK   = 8       # dataLayer 이벤트 없을 때 추가 대기 (초)
+MAX_RETRY       = 5       # 페이지별 최대 재시도 횟수 (3→5 증가)
 
 BASE_URL = "https://tamkeenstores.com.sa"
 
@@ -178,36 +181,73 @@ EXTRACT_LAST_EVENT_JS = """() => {
     }));
 }"""
 
-# 개별 상품 페이지에서 배송 예정일 추출 (FETCH_DELIVERY=True 시 사용)
-DELIVERY_JS = r"""() => {
+# 개별 상품 페이지에서 배송 예정일 + Free Installation 추출
+PAGE_INFO_JS = r"""() => {
     const bodyText = document.body.textContent || '';
+    const freeInstall     = /free\s+install/i.test(bodyText) || /تركيب\s*مجان/.test(bodyText);
     const expressDelivery = /24 to 48 hours/i.test(bodyText);
     const delivMatch = bodyText.match(
         /Expected[:\s]*([A-Z][a-z]+ (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]* \d{1,2},?\s*\d{4})/
     );
     return {
+        freeInstall:      freeInstall,
         expressDelivery:  expressDelivery,
         expectedDelivery: delivMatch ? delivMatch[1].trim() : '',
     };
 }"""
+# 하위호환 별칭 (기존 코드에서 DELIVERY_JS 참조 시 사용)
+DELIVERY_JS = PAGE_INFO_JS
 
 # ============================================================
 # 카테고리 페이지 데이터 수집
 # ============================================================
 
 def get_max_page(page):
-    """페이지네이션에서 최대 페이지 번호 확인"""
+    """
+    페이지네이션에서 최대 페이지 번호 확인 (강화된 버전).
+    button / a / span / li 등 다중 선택자 + 스크롤 유도.
+    """
     try:
-        buttons = page.evaluate("""() => {
+        # 스크롤 내려서 페이지네이션 렌더링 유도
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        time.sleep(1.5)  # 렌더링 대기
+
+        nums = page.evaluate("""() => {
             const nums = [];
-            document.querySelectorAll('button').forEach(b => {
-                const t = b.textContent.trim();
+            // 1. button 요소
+            document.querySelectorAll('button').forEach(el => {
+                const t = el.textContent.trim();
+                if (/^[0-9]+$/.test(t)) nums.push(parseInt(t));
+            });
+            // 2. a (링크 기반 페이지네이션)
+            document.querySelectorAll('a').forEach(el => {
+                const t = el.textContent.trim();
+                if (/^[0-9]+$/.test(t)) nums.push(parseInt(t));
+            });
+            // 3. span / li
+            document.querySelectorAll('span, li').forEach(el => {
+                const t = el.textContent.trim();
                 if (/^[0-9]+$/.test(t)) nums.push(parseInt(t));
             });
             return nums;
         }""")
-        return max(buttons) if buttons else 1
-    except:
+
+        if nums:
+            # 합리적 범위(2~99)의 숫자만 유효 페이지로 인정
+            valid = [n for n in nums if 2 <= n <= 99]
+            if valid:
+                return max(valid)
+
+        # 혹시 "Next" 버튼/링크만 있는 경우 → 최소 2페이지 추정
+        has_next = page.evaluate("""() => {
+            const texts = ['next','›','»','التالي'];
+            const els = [...document.querySelectorAll('a, button')];
+            return els.some(el => texts.some(t => el.textContent.toLowerCase().includes(t)));
+        }""")
+        return 2 if has_next else 1
+
+    except Exception as e:
+        logging.warning(f"get_max_page 실패: {e}")
         return 1
 
 class PageCrashedError(Exception):
@@ -454,12 +494,37 @@ def collect_all_category_data(page, context, browser, pw):
         page, context, browser, items = collect_page_with_retry(
             page, context, browser, pw, cat_url, 1
         )
+        page1_failed = (len(items) == 0)  # page 1 실패 여부 기록
         cat_items.extend(items)
 
         # 최대 페이지 확인 (첫 페이지 로드 후)
+        # 페이지네이션이 늦게 렌더링될 수 있으므로 get_max_page() 내부에서 스크롤+대기 처리
         max_page = get_max_page(page) if is_page_alive(page) else 1
-        if max_page > 1:
+        # 추가 검증: 페이지 1개짜리로 감지됐는데 items가 많으면 재확인
+        if max_page == 1 and len(items) >= 18:
+            time.sleep(2)
+            max_page = get_max_page(page) if is_page_alive(page) else 1
+            if max_page == 1:
+                _log(f"  ⚠️  페이지네이션 미감지 (items={len(items)}). page=?2 직접 시도.", "warning")
+                max_page = 99  # 직접 탐색 모드 (0개 수집 시 중단)
+        if max_page > 1 and max_page < 99:
             print(f"  → 총 {max_page}페이지 감지")
+        elif max_page == 99:
+            print(f"  → 페이지 수 불명. 빈 페이지 나올 때까지 순차 탐색")
+
+        # page 1 실패 시 재시도 (?page=1 명시적 URL로)
+        if page1_failed and max_page > 1:
+            _log(f"  🔁 page 1 수집 실패 → ?page=1 URL로 재시도", "warning")
+            time.sleep(2)
+            p1_url = f"{cat_url}?page=1"
+            page, context, browser, p1_items = collect_page_with_retry(
+                page, context, browser, pw, p1_url, 1
+            )
+            if p1_items:
+                existing = {it['sku'] for it in cat_items if it['sku']}
+                new_p1 = [it for it in p1_items if it['sku'] not in existing]
+                cat_items.extend(new_p1)
+                print(f"    ℹ️  page 1 재수집: {len(new_p1)}개 추가")
 
         # 2페이지 이상
         for pnum in range(2, max_page + 1):
@@ -467,6 +532,21 @@ def collect_all_category_data(page, context, browser, pw):
             page, context, browser, items = collect_page_with_retry(
                 page, context, browser, pw, page_url, pnum
             )
+
+            # 0개 수집 시 재시도 (view_item_list 이벤트 실패 가능성)
+            retry_zero = 0
+            while len(items) == 0 and retry_zero < 2:
+                retry_zero += 1
+                print(f"    ⚠️  0개 수집, 재시도 {retry_zero}/2...")
+                time.sleep(3)
+                page, context, browser, items = collect_page_with_retry(
+                    page, context, browser, pw, page_url, pnum
+                )
+
+            # max_page=99 탐색 모드: 0개 수집 시 마지막 페이지로 판단 → 루프 종료
+            if max_page == 99 and len(items) == 0:
+                print(f"    ℹ️  페이지 {pnum}: 0개 수집 → 마지막 페이지 도달")
+                break
 
             # 이미 수집된 SKU는 제외 (중복 방지)
             existing_skus = {it['sku'] for it in cat_items if it['sku']}
@@ -505,8 +585,8 @@ def collect_all_category_data(page, context, browser, pw):
 
 def fetch_delivery_info(page, url):
     """
-    개별 상품 페이지에서 배송 예정일만 수집.
-    FETCH_DELIVERY=True 시 사용.
+    개별 상품 페이지에서 배송 예정일 + Free Installation 수집.
+    FETCH_DELIVERY=True 또는 FETCH_FREE_INSTALL=True 시 사용.
     """
     try:
         page.goto(url, timeout=45000, wait_until="domcontentloaded")
@@ -528,9 +608,9 @@ def fetch_delivery_info(page, url):
                 page.wait_for_selector('span.first_span', timeout=8000)
             except:
                 time.sleep(2)
-        return page.evaluate(DELIVERY_JS)
+        return page.evaluate(PAGE_INFO_JS)
     except Exception:
-        return {'expressDelivery': False, 'expectedDelivery': ''}
+        return {'freeInstall': False, 'expressDelivery': False, 'expectedDelivery': ''}
 
 # ============================================================
 # 데이터 변환
@@ -572,9 +652,11 @@ def build_product(item, cat_name, index, delivery_info=None):
     if delivery_info:
         express           = delivery_info.get('expressDelivery', False)
         expected_delivery = delivery_info.get('expectedDelivery', '') or ''
+        free_install      = 'Yes' if delivery_info.get('freeInstall', False) else 'No'
     else:
         express           = (stock_qty is not None and stock_qty > 0)
         expected_delivery = ''
+        free_install      = 'Unknown'
 
     return {
         'No':                  index,
@@ -592,6 +674,7 @@ def build_product(item, cat_name, index, delivery_info=None):
         'Discount (%)':        f"{disc_pct}%",
         'In Stock':            'Yes' if in_stock else 'No',
         'Stock Qty':           stock_qty,
+        'Free Installation':   free_install,
         'Express Delivery':    'Yes' if express else 'No',
         'Expected Delivery':   expected_delivery,
         'Image URL':           image_url,
@@ -601,6 +684,30 @@ def build_product(item, cat_name, index, delivery_info=None):
 # ============================================================
 # 저장 함수
 # ============================================================
+
+def _get_recent_avg_count(lookback=7):
+    """최근 N일간 스크래핑 파일의 평균 제품 수를 계산."""
+    try:
+        import glob as _glob
+        pattern = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               "Tamkeen_Complete_*.xlsx")
+        files = sorted([f for f in _glob.glob(pattern) if '_partial' not in f])
+        today_prefix = datetime.now().strftime('%Y%m%d')
+        files = [f for f in files if today_prefix not in os.path.basename(f)]
+        files = files[-lookback:]
+        if not files:
+            return None
+        counts = []
+        for fp in files:
+            try:
+                tmp = pd.read_excel(fp, engine='openpyxl')
+                counts.append(len(tmp))
+            except Exception:
+                pass
+        return sum(counts) / len(counts) if counts else None
+    except Exception:
+        return None
+
 
 def save_to_excel(df, filename):
     """Excel 저장 (시트: All Products / 카테고리별 / Brand Summary)"""
@@ -673,10 +780,15 @@ def main():
             for cat, items in all_items_by_cat.items():
                 print(f"  • {cat}: {len(items)}개")
 
-            # ── PHASE 2: 배송 예정일 수집 (선택적) ──────────────
-            if FETCH_DELIVERY:
+            # ── PHASE 2: 개별 페이지 방문 (배송일 / Free Installation) ──
+            if FETCH_DELIVERY or FETCH_FREE_INSTALL:
                 print("\n" + "="*70)
-                print("🚚 PHASE 2: 배송 예정일 수집 (개별 상품 페이지 방문)")
+                targets = []
+                if FETCH_DELIVERY:
+                    targets.append("배송 예정일")
+                if FETCH_FREE_INSTALL:
+                    targets.append("Free Installation")
+                print(f"🚚 PHASE 2: {' + '.join(targets)} 수집 (개별 상품 페이지 방문)")
                 print("="*70)
 
                 for cat_name, items in all_items_by_cat.items():
@@ -709,21 +821,34 @@ def main():
         for item in items:
             link = item.get('link', '') or ''
             url  = (BASE_URL + link) if link and not link.startswith('http') else link
-            d_info = delivery_cache.get(url) if FETCH_DELIVERY else None
+            d_info = delivery_cache.get(url) if (FETCH_DELIVERY or FETCH_FREE_INSTALL) else None
             product = build_product(item, cat_name, global_index, d_info)
             all_products.append(product)
             global_index += 1
+
+    # ── 과소 수집 감지 (이전 데이터 비교) ──────────────────────
+    today_count = len(all_products)
+    prev_avg = _get_recent_avg_count()
+    if prev_avg and prev_avg > 0:
+        ratio = today_count / prev_avg
+        print(f"\n  [수집량 검증] 오늘 {today_count}개 / 최근 평균 {prev_avg:.0f}개 (비율 {ratio:.2f}x)")
+        if ratio < 0.5:
+            _log(f"과소 수집 감지: {today_count}개 (평균 {prev_avg:.0f}개의 {ratio:.0%})", "critical")
+            print(f"  ❌ 과소 수집 감지! ({ratio:.0%} < 50% 임계치)")
+            print(f"     정상 수집에 실패했습니다. 대시보드는 이전 데이터를 유지합니다.")
+            for cat_name, items in all_items_by_cat.items():
+                _log(f"  {cat_name}: {len(items)}개 수집", "error")
+            sys.exit(2)
 
     # ── 저장 ──────────────────────────────────────────────────
     if not all_products:
         msg = "수집된 제품이 없습니다."
         print(f"\n❌ {msg}")
-        # 카테고리별 수집 현황을 로그에 기록
         for cat_name, items in all_items_by_cat.items():
             _log(f"  {cat_name}: {len(items)}개 수집", "error")
         _log(f"all_items_by_cat keys: {list(all_items_by_cat.keys())}", "error")
         _log(msg, "critical")
-        return
+        sys.exit(2)
 
     print(f"\n{'='*70}")
     print("💾 저장 중...")

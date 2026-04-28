@@ -526,7 +526,7 @@ class MS {
     const w=document.createElement('div');w.className='ms-wrap';
     const btn=document.createElement('button');btn.type='button';btn.className='ms-btn';
     this.btnEl=btn;w.appendChild(btn);
-    const menu=document.createElement('div');menu.className='ms-menu';
+    const menu=document.createElement('div');menu.className='ms-menu';menu.onclick=function(e){e.stopPropagation()};
     const acts=document.createElement('div');acts.className='ms-actions';
     const aAll=document.createElement('button');aAll.textContent='All';aAll.onclick=()=>this.selectAll();
     const aNone=document.createElement('button');aNone.textContent='None';aNone.className='ms-none';aNone.onclick=()=>this.selectNone();
@@ -732,24 +732,29 @@ function renderKPIs(lat,prev){
 }
 
 // ═══ SEC 2: ALERTS ═══════════════════════════════════════════════════════════
-const AC=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Cold/HC'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_SALE=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Cold/HC'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev Sale',f:fmtSAR},{k:'curr',l:'Curr Sale',f:fmtSAR},{k:'final',l:'Final (w/CB)',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC_JOOD=[{k:'b',l:'Brand'},{k:'s',l:'SKU'},{k:'n',l:'Product Name'},{k:'c',l:'Category'},{k:'cp',l:'Compressor'},{k:'h',l:'Cold/HC'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
 function renderAlerts(){
   const {cur,prev}=getCompareDates();
   const latD=applyF(DATA.filter(r=>r.d===cur),GF);
   const prevD=prev?applyF(DATA.filter(r=>r.d===prev),GF):[];
-  const pk=ST.alertTab==='sale'?'fp':'fj';
+  const isSale=ST.alertTab==='sale';
+  const pk=isSale?'sl':'fj';
+  const AC=isSale?AC_SALE:AC_JOOD;
   const lm={};latD.forEach(r=>lm[r.s]=r);const pm={};prevD.forEach(r=>pm[r.s]=r);
   let rows=[];
   Object.keys(lm).filter(s=>s in pm).forEach(s=>{
     const rn=lm[s],ro=pm[s],pn=rn[pk],po=ro[pk];
     if(pn==null||po==null)return;const chg=pn-po;if(Math.abs(chg)<1)return;
-    rows.push({b:rn.b,s,n:rn.n,c:rn.c,cp:rn.cp,h:rn.h,ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0});
+    const base={b:rn.b,s,n:rn.n,c:rn.c,cp:rn.cp,h:rn.h,ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0};
+    if(isSale)base.final=rn.fp;
+    rows.push(base);
   });
   if(ST.alertDir==='up')rows=rows.filter(r=>r.chg>0);if(ST.alertDir==='down')rows=rows.filter(r=>r.chg<0);
   rows.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   const tbl=document.getElementById('tblAlert');
   tbl.querySelector('thead').innerHTML='<tr>'+AC.map((c,i)=>`<th onclick="sortTbl('tblAlert',${i})">${c.l}</th>`).join('')+'</tr>';
-  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='n')v=`<a href="https://www.extra.com/en-sa/p/${r.s}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
+  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='n')v=`<a href="https://www.extra.com/en-sa/p/${r.s}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):`<tr><td colspan="${AC.length}" class="text-center text-gray-400 py-6">No changes</td></tr>`;
 }
 
 // ═══ SEC 3: NEW/DISC ═════════════════════════════════════════════════════════

@@ -686,6 +686,11 @@ def fetch_all_ac_products():
             if not code or code in all_products:
                 continue
             name = p.get("name", "")
+            labels = p.get("labels", []) or []
+            free_install = "Yes" if any(
+                "تركيب" in str(lb) or "install" in str(lb).lower()
+                for lb in labels
+            ) else "No"
             all_products[code] = {
                 "code": code,
                 "brand": p.get("brand", {}).get("name", ""),
@@ -702,6 +707,7 @@ def fetch_all_ac_products():
                 "special_to": p.get("special_to"),
                 "updated_at": p.get("updated_at"),
                 "slug": p.get("slug", ""),
+                "free_install": free_install,
             }
     print(f"  [+] 총 {len(all_products)}개 AC 제품 수집 완료")
     return all_products
@@ -720,10 +726,10 @@ def get_existing_run_dates(output_path):
         return set()
     ws = wb[RETAIL_SHEET]
     dates = set()
-    # Run_Timestamp = R열 (18번째 컬럼)
-    for row in ws.iter_rows(min_row=2, max_col=18, values_only=True):
-        if row and len(row) >= 18 and row[17]:
-            ts = str(row[17]).strip()
+    # Run_Timestamp = S열 (19번째 컬럼, Free Installation 추가 후)
+    for row in ws.iter_rows(min_row=2, max_col=19, values_only=True):
+        if row and len(row) >= 19 and row[18]:
+            ts = str(row[18]).strip()
             # "2026-03-14 10:30:00" -> "2026-03-14"
             date_part = ts[:10]
             dates.add(date_part)
@@ -760,7 +766,7 @@ def update_weekly_price_db(api_products, output_path):
             "Week", "Retailer", "Brand", "Model_Code", "Product Name",
             "Type", "BTU", "CO/C&H", "Regular Price", "Current Price",
             "Discount_%", "Discount SAR", "Stock", "Promo From", "Promo To",
-            "Last Updated", "URL", "Run_Timestamp",
+            "Last Updated", "URL", "Free Installation", "Run_Timestamp",
         ]
         for col, h in enumerate(headers, 1):
             ws.cell(row=1, column=col, value=h)
@@ -799,7 +805,8 @@ def update_weekly_price_db(api_products, output_path):
             product["special_to"],         # O: Promo To
             product["updated_at"],         # P: Last Updated
             url,                           # Q: URL
-            run_ts,                        # R: Run_Timestamp
+            product.get("free_install", "No"),  # R: Free Installation
+            run_ts,                        # S: Run_Timestamp
         ]
 
         for col, value in enumerate(data, 1):

@@ -23,6 +23,8 @@ from urllib.parse import urljoin, unquote
 import os
 import sys
 import io
+import threading
+from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # Windows console UTF-8 fix (emoji + Arabic in print)
 if sys.platform == "win32":
@@ -691,27 +693,37 @@ def main():
         print("Nothing to scrape. Exiting.")
         sys.exit(0)
 
-    # ── Step 2: scrape each product detail page ────────────────────────────────
-    print("[Step 2]  Scraping product pages …\n")
+    # ── Step 2: scrape each product detail page (parallel) ────────────────────
+    print("[Step 2]  Scraping product pages … (parallel, 8 workers)\n")
     products = []
     skipped  = []
+    print_lock = threading.Lock()
 
-    for i, ref in enumerate(refs, 1):
+    def scrape_with_index(args):
+        i, ref = args
         slug = unquote(ref["url"]).split("/product/")[-1].strip("/")[:45]
-        print(f"  [{i:3d}/{total}] {slug}")
         data = scrape_product(ref)
-        if data:
-            products.append(data)
-            print(
-                f"         ✅  {data['Brand'] or 'N/A':15s} | "
-                f"{str(data['BTU'] or '?'):>6} BTU | "
-                f"{data['Tonnage'] or '?'} Ton | "
-                f"{data['Category']}"
-            )
-        else:
-            skipped.append(ref["url"])
-            print("         ⏭️   Skipped (excluded / failed)")
-        time.sleep(DELAY)
+        with print_lock:
+            if data:
+                print(
+                    f"  [{i:3d}/{total}] ✅  {data['Brand'] or 'N/A':15s} | "
+                    f"{str(data['BTU'] or '?'):>6} BTU | "
+                    f"{data['Tonnage'] or '?'} Ton | "
+                    f"{data['Category']}"
+                )
+            else:
+                print(f"  [{i:3d}/{total}] ⏭️   Skipped — {slug}")
+        return i, data
+
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        futures = {executor.submit(scrape_with_index, (i, ref)): i
+                   for i, ref in enumerate(refs, 1)}
+        for future in as_completed(futures):
+            i, data = future.result()
+            if data:
+                products.append(data)
+            else:
+                skipped.append(refs[i - 1]["url"])
 
     if not products:
         print("\n❌  No products collected.")
@@ -735,6 +747,14 @@ def main():
 
     if os.path.exists(output_path):
         df_old = pd.read_excel(output_path)
+        # ── 중복 방지: 오늘 날짜 데이터가 이미 있으면 스킵 ──────────────
+        today_date = datetime.now().strftime('%Y-%m-%d')
+        if 'Scrape_Date' in df_old.columns:
+            existing_dates = pd.to_datetime(df_old['Scrape_Date'], errors='coerce').dt.strftime('%Y-%m-%d')
+            if today_date in existing_dates.values:
+                print(f"\n  [SKIP] Today's data ({today_date}) already exists in '{OUTPUT_FILE}'. Skipping append and snapshot.")
+                return
+        # ─────────────────────────────────────────────────────────────────
         # Drop existing "No" column to avoid duplicate column error on insert
         if "No" in df_old.columns:
             df_old = df_old.drop(columns=["No"])
