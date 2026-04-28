@@ -1184,10 +1184,11 @@ function renderYoY(){
   const py26 = META.promo_years['2026']||{};
   const start25 = py25.start ? new Date(py25.start) : null;
   const start26 = py26.start ? new Date(py26.start) : null;
+  const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   function dayToDate(start, di){
     if(!start) return '-';
     const d = new Date(start); d.setDate(d.getDate()+di);
-    return `${d.getMonth()+1}/${d.getDate()}`;
+    return `${d.getMonth()+1}/${d.getDate()} <span style="color:#6b7280;font-size:0.85em">${DOW[d.getDay()]}</span>`;
   }
 
   const cum25={}, cum26={};
