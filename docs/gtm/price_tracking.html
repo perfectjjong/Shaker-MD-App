@@ -1,426 +1,201 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Split AC Price Tracking — W17 2026</title>
+<title>Split AC Price Tracking — W18 2026</title>
 <style>
-  * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; padding: 24px; background: #f4f6f9; margin: 0; }
-  h2 { color: #1a1a2e; margin-bottom: 4px; }
-  .subtitle { color: #666; font-size: 13px; margin-bottom: 16px; }
-  .legend { display: flex; gap: 20px; margin-bottom: 8px; font-size: 12px; flex-wrap: wrap; }
-  .legend-item { display: flex; align-items: center; gap: 6px; }
-  .dot { width: 14px; height: 14px; border-radius: 3px; }
-  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; border-bottom: 2px solid #d0d4e8; padding-bottom: 8px; }
-  .tab-btn {
-    padding: 8px 18px; border: 1px solid #d0d4e8; border-radius: 6px 6px 0 0;
-    background: #eef0f8; color: #555; cursor: pointer; font-size: 13px; font-weight: 500;
-    transition: all 0.2s; border-bottom: none; margin-bottom: -2px;
-  }
-  .tab-btn:hover { background: #dce0f0; color: #1a1a2e; }
-  .tab-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
-  .tab-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; padding: 0 6px 10px; align-self: flex-end; }
-  .tab-content { display: none; }
-  .tab-content.active-tab { display: block; }
-  .ch-note { font-size: 12px; color: #888; margin-bottom: 12px; }
-  .sec-title { color: #1a1a2e; margin: 20px 0 8px; font-size: 15px; }
-  .tbl-wrap { overflow-x: auto; margin-bottom: 28px; }
-  table { border-collapse: collapse; min-width: 600px; font-size: 13px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: white; }
-  th { background: #1a1a2e; color: white; padding: 10px 14px; text-align: center; white-space: nowrap; }
-  th.lg { background: #a50034; }
-  th.seg { background: #2d3561; text-align: left; }
-  td { padding: 8px 12px; border-bottom: 1px solid #e8eaf0; text-align: right; white-space: nowrap; background: white; }
-  td.seg { background: #f0f2f8; font-weight: 600; color: #1a1a2e; text-align: left; vertical-align: middle; }
-  td.ton { background: #f8f9fc; color: #555; text-align: center; font-size: 12px; vertical-align: middle; font-weight: 600; border-right: 2px solid #d0d4e8; }
-  td.lg-val { background: #fff0f3; font-weight: 700; color: #a50034; }
-  td.empty { color: #ccc; background: #f8f9fa !important; }
-  tr:hover td { filter: brightness(0.97); }
+* { box-sizing: border-box; }
+body { font-family: 'Segoe UI', sans-serif; padding: 24px; background: #f4f6f9; margin: 0; }
+h2 { color: #1a1a2e; margin-bottom: 4px; }
+.subtitle { color: #666; font-size: 13px; margin-bottom: 16px; }
+.legend { display: flex; gap: 20px; margin-bottom: 8px; font-size: 12px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.dot { width: 14px; height: 14px; border-radius: 3px; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; border-bottom: 2px solid #d0d4e8; padding-bottom: 8px; }
+.tab-btn {
+  padding: 8px 18px; border: 1px solid #d0d4e8; border-radius: 6px 6px 0 0;
+  background: #eef0f8; color: #555; cursor: pointer; font-size: 13px; font-weight: 500;
+  transition: all 0.2s; border-bottom: none; margin-bottom: -2px;
+}
+.tab-btn:hover { background: #dce0f0; color: #1a1a2e; }
+.tab-btn.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+.tab-label { font-size: 11px; font-weight: 700; color: #888; letter-spacing: 1px; padding: 0 6px 10px; align-self: flex-end; }
+.tab-content { display: none; }
+.ch-note { font-size: 12px; color: #888; margin-bottom: 12px; }
+.sec-title { color: #1a1a2e; margin: 20px 0 8px; font-size: 15px; }
+.tbl-wrap { overflow-x: auto; margin-bottom: 28px; }
+table { border-collapse: collapse; min-width: 700px; font-size: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); background: white; }
+th { background: #1a1a2e; color: white; padding: 8px 10px; text-align: center; white-space: nowrap; }
+th.lg { background: #a50034; }
+th.seg { background: #2d3561; text-align: left; }
+th.hdr-cap { background: #1a1a2e; }
+th.hdr-hc { background: #2d4a6e; }
+th.hdr-model { background: #2d3561; min-width: 90px; }
+td { padding: 6px 10px; border-bottom: 1px solid #e8eaf0; text-align: right; white-space: nowrap; background: white; vertical-align: middle; line-height: 1.6; }
+td.seg { background: #f0f2f8; font-weight: 600; color: #1a1a2e; text-align: left; }
+td.ton { background: #eef0f8; color: #333; text-align: center; font-size: 12px; font-weight: 700; border-right: 2px solid #d0d4e8; white-space: nowrap; }
+td.hc-cell { background: #f5f6fa; color: #555; text-align: center; font-size: 11px; font-weight: 600; border-right: 1px solid #d0d4e8; }
+td.model-cell { background: #f5f6fa; color: #555; text-align: left; font-size: 11px; }
+td.lg-val { background: #fff0f3; font-weight: 700; color: #a50034; }
+td.lg-combined { background: #fff0f3; text-align: left; line-height: 1.8; }
+td.no-lg { color: #bbb; background: #f8f9fa !important; text-align: center; font-style: italic; }
+td.empty { color: #ccc; background: #f8f9fa !important; text-align: center; }
+.seg-tag { display: inline-block; background: #2d3561; color: #c9d4ff; font-size: 10px; border-radius: 3px; padding: 0 5px; margin-right: 4px; font-weight: 600; }
+.model-tag { display: inline-block; color: #555; font-size: 11px; margin-right: 4px; }
+.price-tag { display: inline-block; color: #a50034; font-weight: 700; font-size: 12px; }
+tr:hover td { filter: brightness(0.97); }
 </style>
 </head><body>
-<h2>Split AC Price Tracking — W17 2026</h2>
-<div class="subtitle">Prices: VAT-incl. SAR | Source: Online channel scraping | Competitor color: vs. LG Mid</div>
+<h2>Split AC Price Tracking — W18 2026</h2>
+<div class="subtitle">Prices: VAT-incl. SAR | Source: Online channel scraping | Auto-generated: 2026-04-29 18:32</div>
 <div class="legend">
-  <div class="legend-item"><div class="dot" style="background:#ffe0e0"></div> Cheaper than LG Mid (&gt;10%)</div>
-  <div class="legend-item"><div class="dot" style="background:#fff8e0"></div> Similar to LG Mid (±10%)</div>
-  <div class="legend-item"><div class="dot" style="background:#e0f0e0"></div> Pricier than LG Mid (&gt;10%)</div>
+  <div class="legend-item"><div class="dot" style="background:#ffe0e0"></div> Cheaper than LG (&gt;10%)</div>
+  <div class="legend-item"><div class="dot" style="background:#fff8e0"></div> Similar to LG (±10%)</div>
+  <div class="legend-item"><div class="dot" style="background:#e0f0e0"></div> Pricier than LG (&gt;10%)</div>
+  <div class="legend-item"><div class="dot" style="background:#f8f9fa"></div> No LG in segment</div>
 </div>
 <div class="tabs">
 <span class="tab-label">OR</span>
 <button class="tab-btn active" onclick="switchTab(0)">eXtra</button>
 <button class="tab-btn" onclick="switchTab(1)">SWS</button>
 <button class="tab-btn" onclick="switchTab(2)">Al Manea</button>
-<button class="tab-btn" onclick="switchTab(3)">Black Box</button>
-<button class="tab-btn" onclick="switchTab(4)">AlKhunaizan</button>
+<button class="tab-btn" onclick="switchTab(3)">AlKhunaizan</button>
 <span class="tab-label">IR</span>
-<button class="tab-btn" onclick="switchTab(5)">BH</button>
-<button class="tab-btn" onclick="switchTab(6)">Star Appliance</button>
-<button class="tab-btn" onclick="switchTab(7)">Tamkeen</button>
-<button class="tab-btn" onclick="switchTab(8)">Bin Momen</button>
+<button class="tab-btn" onclick="switchTab(4)">BH</button>
+<button class="tab-btn" onclick="switchTab(5)">Bin Momen</button>
+<button class="tab-btn" onclick="switchTab(6)">Black Box</button>
+<button class="tab-btn" onclick="switchTab(7)">Star Appliance</button>
+<button class="tab-btn" onclick="switchTab(8)">Tamkeen</button>
 <button class="tab-btn" onclick="switchTab(9)">Techno Best</button>
 </div>
-<div class="tab-content" id="tab-0" style="display:none">
-<div class="ch-note">Channel: eXtra | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
+<div class="tab-content" id="tab-0" style="display:block"><div class="ch-note">Channel: eXtra | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><h3 class="sec-title">▶ Inverter Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>SAMSUNG</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>MIDEA</th>
-<th>AUX</th>
-<th>TCL</th>
-<th>HISENSE</th>
-<th>GENERAL</th>
-<th>ZAMIL</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="lg-val">2,299–2,599</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,499–2,749</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,699–2,959</td><td style="background:#fff8e0">1,999–3,299</td><td style="background:#ffe0e0">2,359–2,699</td><td style="background:#ffe0e0">2,349–2,649</td><td style="background:#e0f0e0">2,589–3,819</td><td style="background:#fff8e0">2,099–3,099</td><td style="background:#ffe0e0">2,099–3,099</td><td class="empty">—</td><td style="background:#e0f0e0">3,699</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,199–3,299</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,799–3,309</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,199–3,509</td><td style="background:#fff8e0">2,699–3,549</td><td style="background:#fff8e0">2,899–3,349</td><td style="background:#fff8e0">2,999–3,199</td><td style="background:#e0f0e0">3,069–4,529</td><td style="background:#fff8e0">2,629–3,449</td><td style="background:#fff8e0">2,699–3,499</td><td style="background:#ffe0e0">2,399–2,899</td><td style="background:#e0f0e0">4,299</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,409–3,669</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="lg-val">5,399–5,559</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>TCL</th><th>AUX</th><th>SAMSUNG</th><th>GREE</th><th>HAIER</th><th>MIDEA</th><th>GENERAL</th><th>CLASS PRO</th><th>ZAMIL</th><th>HISENSE</th><th>BOSCH</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Small · NF12</span><span class="model-tag">NF122C0</span><span class="price-tag">2,299</span></td><td style="background:#ffe0e0">1,699<br>1,799</td><td style="background:#fff8e0">1,929<br>2,449</td><td class="empty">—</td><td style="background:#fff8e0">2,079</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Small · NF12</span><span class="model-tag">NF122H0</span><span class="price-tag">2,599</span></td><td style="background:#ffe0e0">1,799<br>1,919</td><td style="background:#ffe0e0">2,029<br>2,549</td><td class="empty">—</td><td style="background:#ffe0e0">2,199</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">1,649</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS182C3</span><span class="price-tag">2,499</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND182C0</span><span class="price-tag">2,699</span><br><span class="seg-tag">High · AM/AF/NW</span><span class="model-tag">AM182C0</span><span class="price-tag">3,199</span><br><span class="seg-tag">High · AM/AF/NW</span><span class="model-tag">AF182C0</span><span class="price-tag">3,299</span></td><td style="background:#fff8e0">2,099<br>2,199<br>2,249<br>2,899<br>3,099</td><td style="background:#ffe0e0">2,099<br>2,599</td><td style="background:#ffe0e0">1,999<br>2,399<br>2,749</td><td style="background:#ffe0e0">2,359</td><td style="background:#fff8e0">2,549</td><td style="background:#fff8e0">2,589</td><td style="background:#e0f0e0">3,699<br>3,699</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS182H</span><span class="price-tag">2,749</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND182H0</span><span class="price-tag">2,959</span></td><td style="background:#ffe0e0">2,299<br>2,399</td><td style="background:#fff8e0">2,229<br>2,799<br>3,099</td><td style="background:#fff8e0">2,599<br>2,699<br>3,299</td><td style="background:#fff8e0">2,699</td><td style="background:#ffe0e0">2,349<br>2,649</td><td style="background:#e0f0e0">3,819</td><td class="empty">—</td><td style="background:#ffe0e0">1,999</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">2,699</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS242C3</span><span class="price-tag">2,799</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND242C0</span><span class="price-tag">3,199</span><br><span class="seg-tag">High · AM/AF/NW</span><span class="model-tag">AM242C0</span><span class="price-tag">3,409</span></td><td style="background:#fff8e0">2,699<br>2,829<br>3,299<br>3,499</td><td style="background:#fff8e0">2,629<br>2,999<br>3,349</td><td style="background:#fff8e0">2,699<br>2,799<br>3,099<br>3,099<br>3,549</td><td style="background:#fff8e0">2,899</td><td style="background:#fff8e0">2,999</td><td style="background:#fff8e0">3,069</td><td style="background:#e0f0e0">4,299</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">2,399<br>2,899</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS242H3</span><span class="price-tag">3,309</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND242H0</span><span class="price-tag">3,509</span><br><span class="seg-tag">High · AM/AF/NW</span><span class="model-tag">NW242H0</span><span class="price-tag">3,669</span></td><td style="background:#ffe0e0">2,899<br>3,019</td><td style="background:#ffe0e0">2,829<br>3,099<br>3,449</td><td class="empty">—</td><td style="background:#fff8e0">3,349</td><td style="background:#fff8e0">3,199</td><td style="background:#e0f0e0">3,489<br>4,529</td><td class="empty">—</td><td style="background:#ffe0e0">2,549<br>2,549</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">3,199</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">3,799</td><td style="background:#f8f9fa">3,599</td><td class="empty">—</td><td style="background:#f8f9fa">3,959</td><td style="background:#f8f9fa">3,799<br>4,099</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">3,799</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,089</td><td style="background:#f8f9fa">3,699</td><td class="empty">—</td><td style="background:#f8f9fa">4,499</td><td style="background:#f8f9fa">3,999<br>4,299</td><td style="background:#f8f9fa">4,659<br>4,879</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">4,299</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Big · NT</span><span class="model-tag">NT382C2</span><span class="price-tag">5,399</span></td><td style="background:#ffe0e0">4,489</td><td style="background:#ffe0e0">4,099</td><td class="empty">—</td><td style="background:#ffe0e0">4,849</td><td class="empty">—</td><td class="empty">—</td><td style="background:#e0f0e0">8,859<br>9,399</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Big · NT</span><span class="model-tag">NT382H2</span><span class="price-tag">5,559</span></td><td style="background:#ffe0e0">4,799</td><td style="background:#ffe0e0">4,399</td><td class="empty">—</td><td style="background:#fff8e0">5,149</td><td style="background:#fff8e0">5,199</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
 </table></div>
 <h3 class="sec-title">▶ Rotary Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>MIDEA</th>
-<th>TCL</th>
-<th>HISENSE</th>
-<th>PANASONIC</th>
-<th>GENERAL</th>
-<th>WESTINGHOUSE</th>
-<th>ZAMIL</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,949–2,049</td><td style="background:#f8f9fa">1,799–1,899</td><td style="background:#f8f9fa">1,729–1,969</td><td class="empty">—</td><td style="background:#f8f9fa">1,699–1,749</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,999–2,099</td><td style="background:#e0f0e0">2,199–2,649</td><td style="background:#e0f0e0">2,149–3,249</td><td style="background:#fff8e0">1,949–2,199</td><td style="background:#fff8e0">1,999</td><td style="background:#fff8e0">1,949–1,989</td><td style="background:#ffe0e0">1,749</td><td style="background:#e0f0e0">4,049</td><td style="background:#fff8e0">1,899</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,599</td><td style="background:#e0f0e0">2,699–3,099</td><td style="background:#fff8e0">2,699–2,799</td><td style="background:#fff8e0">2,449–2,769</td><td class="empty">—</td><td style="background:#fff8e0">2,399–2,599</td><td style="background:#ffe0e0">2,149</td><td class="empty">—</td><td style="background:#fff8e0">2,499</td><td style="background:#fff8e0">2,599</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">3,699–3,899</td><td style="background:#fff8e0">3,739–4,299</td><td style="background:#fff8e0">3,749–3,999</td><td style="background:#fff8e0">3,529–3,729</td><td class="empty">—</td><td style="background:#ffe0e0">3,069–3,099</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-1" style="display:none">
-<div class="ch-note">Channel: SWS | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>MIDEA</th><th>CLASS PRO</th><th>GREE</th><th>HISENSE</th><th>HAIER</th><th>CRAFFT</th><th>PANASONIC</th><th>WESTINGHOUSE</th><th>BOSCH</th><th>GENERAL</th><th>TCL</th><th>SAMSUNG</th><th>ZAMIL</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,729<br>1,799<br>1,869</td><td style="background:#f8f9fa">1,299<br>1,549</td><td style="background:#f8f9fa">1,949</td><td style="background:#f8f9fa">1,699</td><td style="background:#f8f9fa">1,799</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,829<br>1,969</td><td style="background:#f8f9fa">1,429<br>1,599</td><td style="background:#f8f9fa">2,049</td><td style="background:#f8f9fa">1,749</td><td style="background:#f8f9fa">1,899</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LA182C0.NK0</span><span class="price-tag">1,999</span></td><td style="background:#fff8e0">1,949<br>1,949<br>1,999<br>2,169</td><td style="background:#ffe0e0">1,599<br>1,849</td><td style="background:#e0f0e0">2,199<br>2,299</td><td style="background:#fff8e0">1,949</td><td style="background:#e0f0e0">2,149<br>3,249</td><td style="background:#fff8e0">1,899</td><td style="background:#ffe0e0">1,749</td><td style="background:#fff8e0">1,899</td><td style="background:#e0f0e0">2,199</td><td class="empty">—</td><td style="background:#fff8e0">1,999</td><td style="background:#e0f0e0">3,049</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LA182H0.NK0</span><span class="price-tag">2,099</span></td><td style="background:#fff8e0">2,129<br>2,129<br>2,199</td><td style="background:#ffe0e0">1,699<br>1,899</td><td style="background:#e0f0e0">2,649</td><td style="background:#fff8e0">1,989</td><td style="background:#fff8e0">2,299</td><td style="background:#fff8e0">1,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#e0f0e0">4,049</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">2,449<br>2,549</td><td style="background:#f8f9fa">1,999<br>2,449</td><td style="background:#f8f9fa">2,699</td><td style="background:#f8f9fa">2,399</td><td style="background:#f8f9fa">2,699</td><td style="background:#f8f9fa">2,499</td><td style="background:#f8f9fa">2,149</td><td style="background:#f8f9fa">2,499</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LA242H0.NK0</span><span class="price-tag">2,599</span></td><td style="background:#fff8e0">2,629<br>2,699<br>2,769</td><td style="background:#fff8e0">2,199<br>2,599</td><td style="background:#e0f0e0">3,099</td><td style="background:#fff8e0">2,599</td><td style="background:#fff8e0">2,799</td><td style="background:#fff8e0">2,649</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">2,599</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LA302C0.NK0</span><span class="price-tag">3,699</span></td><td style="background:#fff8e0">3,529</td><td style="background:#ffe0e0">2,949<br>2,949</td><td style="background:#fff8e0">3,739</td><td style="background:#ffe0e0">3,099</td><td style="background:#fff8e0">3,749</td><td style="background:#fff8e0">3,499</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LA302H0.NK0</span><span class="price-tag">3,899</span></td><td style="background:#fff8e0">3,729</td><td style="background:#ffe0e0">3,249</td><td style="background:#e0f0e0">4,299</td><td style="background:#ffe0e0">3,069</td><td style="background:#fff8e0">3,999</td><td style="background:#fff8e0">3,599</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">3,779</td><td style="background:#f8f9fa">3,549<br>3,899</td><td style="background:#f8f9fa">4,249</td><td style="background:#f8f9fa">3,599</td><td class="empty">—</td><td style="background:#f8f9fa">3,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,369</td><td style="background:#f8f9fa">3,849</td><td style="background:#f8f9fa">4,849</td><td style="background:#f8f9fa">3,699</td><td class="empty">—</td><td style="background:#f8f9fa">4,099</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div></div>
+<div class="tab-content" id="tab-1" style="display:none"><div class="ch-note">Channel: SWS | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><h3 class="sec-title">▶ Inverter Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>SUPER GENERAL</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="lg-val">2,294</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,501–2,744</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,699–2,951</td><td style="background:#ffe0e0">2,459</td><td class="empty">—</td><td style="background:#ffe0e0">1,849–2,029</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,194</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,798–3,302</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,194–3,500</td><td class="empty">—</td><td style="background:#ffe0e0">2,349</td><td style="background:#ffe0e0">2,499</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,401</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="lg-val">5,399–5,552</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>MANDO</th><th>GREE</th><th>TECHNO BEST</th><th>BASIC</th><th>NIKAI</th><th>SUPER GENERAL</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,294</span></td><td style="background:#ffe0e0">1,579</td><td style="background:#fff8e0">2,129</td><td style="background:#ffe0e0">1,399</td><td style="background:#ffe0e0">1,549</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,501</span><br><span class="price-tag">2,699</span><br><span class="price-tag">2,744</span><br><span class="price-tag">3,194</span></td><td style="background:#ffe0e0">1,849</td><td style="background:#fff8e0">2,459</td><td style="background:#ffe0e0">1,599</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,951</span></td><td style="background:#ffe0e0">2,029</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,798</span><br><span class="price-tag">3,194</span><br><span class="price-tag">3,401</span></td><td style="background:#ffe0e0">2,499</td><td class="empty">—</td><td style="background:#ffe0e0">2,149</td><td style="background:#ffe0e0">2,349</td><td class="empty">—</td><td style="background:#ffe0e0">2,349</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">3,302</span><br><span class="price-tag">3,500</span></td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">2,154</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">5,399</span></td><td style="background:#ffe0e0">3,529</td><td style="background:#ffe0e0">4,579</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">5,552</span></td><td style="background:#ffe0e0">3,629</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,429</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,579</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
 </table></div>
 <h3 class="sec-title">▶ Rotary Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>MIDEA</th>
-<th>GENERAL</th>
-<th>SUPER GENERAL</th>
-<th>DANSAT</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,829</td><td class="empty">—</td><td style="background:#f8f9fa">1,969</td><td style="background:#f8f9fa">1,849</td><td style="background:#f8f9fa">1,499</td><td style="background:#f8f9fa">1,299</td><td style="background:#f8f9fa">1,529–1,579</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,999–2,299</td><td style="background:#fff8e0">2,179–2,379</td><td class="empty">—</td><td style="background:#fff8e0">1,999–2,269</td><td style="background:#fff8e0">2,049</td><td style="background:#fff8e0">2,349</td><td style="background:#fff8e0">2,199</td><td style="background:#ffe0e0">1,679–2,029</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,549–2,699</td><td style="background:#fff8e0">2,879</td><td class="empty">—</td><td style="background:#fff8e0">2,619–2,769</td><td style="background:#fff8e0">2,599</td><td style="background:#ffe0e0">2,249–2,399</td><td class="empty">—</td><td style="background:#fff8e0">2,195–2,579</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">4,659–5,044</td><td style="background:#ffe0e0">3,879–4,179</td><td style="background:#ffe0e0">3,479</td><td style="background:#ffe0e0">3,829–4,279</td><td style="background:#ffe0e0">3,649</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">3,279–4,279</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-2" style="display:none">
-<div class="ch-note">Channel: Al Manea | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>MANDO</th><th>MIDEA</th><th>GREE</th><th>SUPER GENERAL</th><th>GENERAL ELECTRIC</th><th>DANSAT</th><th>BASIC</th><th>HAIER</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,529</td><td class="empty">—</td><td style="background:#f8f9fa">1,829</td><td style="background:#f8f9fa">1,499</td><td style="background:#f8f9fa">1,849</td><td style="background:#f8f9fa">1,299</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,579</td><td style="background:#f8f9fa">1,969</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">1,999</span><br><span class="price-tag">2,149</span></td><td style="background:#ffe0e0">1,679<br>1,849</td><td style="background:#fff8e0">1,999<br>2,199</td><td style="background:#fff8e0">2,179</td><td style="background:#e0f0e0">2,349</td><td style="background:#fff8e0">2,049</td><td style="background:#fff8e0">2,199</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,299</span></td><td style="background:#ffe0e0">1,879<br>2,029</td><td style="background:#fff8e0">2,269</td><td style="background:#fff8e0">2,379</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,549</span></td><td style="background:#fff8e0">2,195<br>2,429</td><td style="background:#fff8e0">2,619</td><td class="empty">—</td><td style="background:#ffe0e0">2,249</td><td style="background:#fff8e0">2,599</td><td class="empty">—</td><td style="background:#ffe0e0">2,249</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,699</span></td><td style="background:#fff8e0">2,329<br>2,579</td><td style="background:#fff8e0">2,769</td><td style="background:#fff8e0">2,879</td><td style="background:#ffe0e0">2,399</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">4,659</span></td><td style="background:#ffe0e0">3,279<br>3,279<br>4,179</td><td style="background:#ffe0e0">3,829</td><td style="background:#ffe0e0">3,879<br>4,179</td><td class="empty">—</td><td style="background:#ffe0e0">3,649</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">3,479</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">5,044</span></td><td style="background:#ffe0e0">4,279</td><td style="background:#ffe0e0">4,279</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">4,779</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div></div>
+<div class="tab-content" id="tab-2" style="display:none"><div class="ch-note">Channel: Al Manea | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><h3 class="sec-title">▶ Inverter Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>SAMSUNG</th>
-<th>GREE</th>
-<th>GENERAL</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="lg-val">2,294</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,251</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,429–2,656</td><td style="background:#e0f0e0">2,499–3,549</td><td style="background:#fff8e0">2,059–2,999</td><td style="background:#e0f0e0">2,999</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">2,875</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,518–2,972</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,875–3,150</td><td class="empty">—</td><td style="background:#fff8e0">2,599–3,049</td><td style="background:#e0f0e0">3,499</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="lg-val">5,552</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>GREE</th><th>HAAM</th><th>Mtc</th><th>SAMSUNG</th><th>BASIC</th><th>Xper</th><th>Terim</th><th>GENERAL</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Small · NF12</span><span class="model-tag">NF122C0.NJ0</span><span class="price-tag">2,294</span></td><td style="background:#ffe0e0">1,779<br>2,099</td><td style="background:#ffe0e0">1,849</td><td style="background:#ffe0e0">1,169</td><td class="empty">—</td><td style="background:#ffe0e0">1,609</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,899<br>2,249</td><td style="background:#f8f9fa">1,949</td><td style="background:#f8f9fa">1,233</td><td class="empty">—</td><td style="background:#f8f9fa">1,689</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS182C2</span><span class="price-tag">2,251</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND182C0.NK0</span><span class="price-tag">2,429</span><br><span class="seg-tag">High · AM/AF/NW</span><span class="model-tag">AM182C0.UK1</span><span class="price-tag">2,875</span><br><span class="model-tag">NV182C1.NK0</span><span class="price-tag">3,600</span></td><td style="background:#fff8e0">2,059<br>2,999</td><td style="background:#ffe0e0">2,149</td><td style="background:#ffe0e0">1,484</td><td style="background:#e0f0e0">2,499<br>2,799<br>2,949</td><td style="background:#ffe0e0">1,909</td><td style="background:#ffe0e0">1,649</td><td style="background:#fff8e0">2,499</td><td style="background:#e0f0e0">2,999</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · ND</span><span class="model-tag">ND182H0.NK0</span><span class="price-tag">2,656</span></td><td style="background:#fff8e0">2,399</td><td class="empty">—</td><td style="background:#ffe0e0">1,619</td><td style="background:#e0f0e0">2,799<br>3,099<br>3,299<br>3,549</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS242C3</span><span class="price-tag">2,518</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND242C0.NK0</span><span class="price-tag">2,875</span></td><td style="background:#fff8e0">2,599</td><td style="background:#fff8e0">2,384<br>2,849</td><td style="background:#ffe0e0">1,889</td><td class="empty">—</td><td style="background:#ffe0e0">2,379</td><td style="background:#ffe0e0">2,149</td><td style="background:#fff8e0">2,899</td><td style="background:#e0f0e0">3,499</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Entry · NS</span><span class="model-tag">NS242H3</span><span class="price-tag">2,972</span><br><span class="seg-tag">Mid · ND</span><span class="model-tag">ND242H0.NK0</span><span class="price-tag">3,150</span></td><td style="background:#fff8e0">3,049</td><td style="background:#ffe0e0">2,549</td><td style="background:#ffe0e0">2,024</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">3,659</td><td style="background:#f8f9fa">3,799</td><td style="background:#f8f9fa">2,789</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Big · NT</span><span class="model-tag">NT382H2.NR2-NT382H2.UR2</span><span class="price-tag">5,552</span></td><td style="background:#ffe0e0">3,999<br>4,199</td><td style="background:#ffe0e0">3,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,549</td><td style="background:#f8f9fa">4,899</td><td style="background:#f8f9fa">3,509</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,549<br>4,849<br>6,069</td><td style="background:#f8f9fa">4,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
 </table></div>
 <h3 class="sec-title">▶ Rotary Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>WESTINGHOUSE</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,599–2,119</td><td style="background:#f8f9fa">1,349</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,934–2,069</td><td style="background:#e0f0e0">1,999–2,599</td><td style="background:#ffe0e0">1,709</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,294–2,599</td><td class="empty">—</td><td style="background:#fff8e0">2,249</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">4,659–5,044</td><td style="background:#ffe0e0">3,439–3,798</td><td class="empty">—</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-3" style="display:none">
-<div class="ch-note">Channel: Black Box | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>KELVINATOR</th><th>GREE</th><th>Terim</th><th>HAAM</th><th>WESTINGHOUSE</th><th>Fratelli</th><th>Xper</th><th>Mtc</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,509</td><td style="background:#f8f9fa">1,599<br>1,649<br>2,119</td><td style="background:#f8f9fa">1,749</td><td style="background:#f8f9fa">1,699</td><td style="background:#f8f9fa">1,349</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,579</td><td style="background:#f8f9fa">1,719<br>1,799</td><td style="background:#f8f9fa">1,649<br>1,849</td><td style="background:#f8f9fa">1,799</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LK182C0</span><span class="price-tag">1,934</span><br><span class="seg-tag">Mid · LA</span><span class="model-tag">LO182C0</span><span class="price-tag">1,999</span></td><td style="background:#e0f0e0">1,324<br>3,269</td><td style="background:#e0f0e0">1,999<br>2,199<br>2,599</td><td style="background:#fff8e0">1,999</td><td style="background:#ffe0e0">1,754</td><td style="background:#ffe0e0">1,709</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LK182H0</span><span class="price-tag">2,069</span></td><td style="background:#ffe0e0">1,539</td><td class="empty">—</td><td style="background:#fff8e0">2,199</td><td style="background:#fff8e0">1,889</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LK242C0.NK0</span><span class="price-tag">2,294</span></td><td style="background:#e0f0e0">2,359<br>3,749<br>4,809</td><td class="empty">—</td><td style="background:#e0f0e0">2,549</td><td style="background:#fff8e0">2,294</td><td style="background:#fff8e0">2,249</td><td style="background:#fff8e0">2,449</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="seg-tag">Mid · LA</span><span class="model-tag">LK242H0.NK0</span><span class="price-tag">2,429</span><br><span class="seg-tag">Mid · LA</span><span class="model-tag">LO242H0</span><span class="price-tag">2,599</span></td><td style="background:#e0f0e0">2,029<br>3,849</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">2,249</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="model-tag">LT302C0.NK0</span><span class="price-tag">4,659</span></td><td style="background:#fff8e0">4,479</td><td style="background:#ffe0e0">3,439<br>3,798</td><td style="background:#ffe0e0">3,699<br>4,499</td><td style="background:#ffe0e0">3,799</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">2,999</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="model-tag">LT302H0.NKO</span><span class="price-tag">5,044</span></td><td style="background:#fff8e0">4,699</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">4,799</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div></div>
+<div class="tab-content" id="tab-3" style="display:none"><div class="ch-note">Channel: AlKhunaizan | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><h3 class="sec-title">▶ Inverter Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>SAMSUNG</th>
-<th>GREE</th>
-<th>GENERAL</th>
-<th>DANSAT</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="lg-val">2,294–2,591</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,499–2,744</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,699–2,951</td><td class="empty">—</td><td style="background:#fff8e0">2,299–2,999</td><td style="background:#e0f0e0">3,799–4,349</td><td class="empty">—</td><td style="background:#fff8e0">1,699–4,799</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,194</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,798–3,302</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,199–3,500</td><td style="background:#ffe0e0">2,499</td><td style="background:#fff8e0">2,999–3,049</td><td style="background:#fff8e0">3,499</td><td style="background:#ffe0e0">1,999</td><td style="background:#ffe0e0">2,499–2,699</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,401</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="lg-val">5,399–5,552</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>TCL</th><th>GREE</th><th>BASIC</th><th>SUPER GENERAL</th><th>HAIER</th><th>UNIX</th><th>SHARP</th><th>BANCOOL</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,294</span></td><td style="background:#ffe0e0">1,699<br>1,899<br>1,999</td><td style="background:#fff8e0">1,999<br>2,249</td><td style="background:#ffe0e0">1,599</td><td style="background:#ffe0e0">1,549</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,591</span></td><td style="background:#ffe0e0">1,649<br>1,799<br>2,099</td><td style="background:#ffe0e0">2,149</td><td style="background:#ffe0e0">1,699</td><td style="background:#ffe0e0">1,649</td><td class="empty">—</td><td style="background:#ffe0e0">1,499</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,501</span><br><span class="price-tag">2,699</span><br><span class="price-tag">3,194</span></td><td style="background:#ffe0e0">1,899<br>2,099<br>2,099<br>2,199<br>2,299<br>3,099</td><td style="background:#fff8e0">2,499</td><td class="empty">—</td><td style="background:#ffe0e0">1,699</td><td style="background:#ffe0e0">2,299</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,744</span><br><span class="price-tag">2,951</span></td><td style="background:#ffe0e0">2,299<br>2,349<br>2,499</td><td style="background:#fff8e0">2,699<br>3,179</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">2,798</span><br><span class="price-tag">3,194</span><br><span class="price-tag">3,401</span></td><td style="background:#ffe0e0">2,399<br>2,599<br>2,699<br>2,899<br>3,499</td><td style="background:#fff8e0">3,199</td><td style="background:#fff8e0">2,349<br>3,699</td><td style="background:#ffe0e0">2,299</td><td style="background:#fff8e0">2,899</td><td class="empty">—</td><td style="background:#ffe0e0">2,599</td><td style="background:#ffe0e0">2,299</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">3,302</span><br><span class="price-tag">3,500</span></td><td style="background:#ffe0e0">2,799<br>3,099</td><td style="background:#fff8e0">3,449</td><td style="background:#ffe0e0">2,499</td><td style="background:#ffe0e0">2,399</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">5,399</span></td><td style="background:#ffe0e0">3,999</td><td style="background:#ffe0e0">4,399</td><td style="background:#ffe0e0">4,399</td><td style="background:#ffe0e0">3,199</td><td style="background:#ffe0e0">3,899</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">5,552</span></td><td style="background:#ffe0e0">4,199</td><td style="background:#ffe0e0">4,699</td><td style="background:#ffe0e0">4,649</td><td style="background:#ffe0e0">3,349</td><td style="background:#ffe0e0">4,099</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,599</td><td style="background:#f8f9fa">5,049</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,899</td><td style="background:#f8f9fa">5,099<br>5,349</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">4T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td class="empty">—</td><td style="background:#f8f9fa">2,649</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
 </table></div>
 <h3 class="sec-title">▶ Rotary Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>MIDEA</th>
-<th>TCL</th>
-<th>GENERAL</th>
-<th>SUPER GENERAL</th>
-<th>DANSAT</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,699–1,899</td><td style="background:#f8f9fa">1,449–1,529</td><td style="background:#f8f9fa">1,729–1,969</td><td class="empty">—</td><td style="background:#f8f9fa">1,849–1,949</td><td class="empty">—</td><td style="background:#f8f9fa">1,249</td><td style="background:#f8f9fa">1,529–1,579</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,999–2,299</td><td style="background:#fff8e0">2,199–2,399</td><td style="background:#e0f0e0">2,399</td><td style="background:#fff8e0">1,999–2,199</td><td class="empty">—</td><td style="background:#fff8e0">2,099–2,349</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">1,699–1,999</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,549–2,699</td><td style="background:#e0f0e0">2,899–2,999</td><td class="empty">—</td><td style="background:#fff8e0">2,549–2,769</td><td style="background:#ffe0e0">2,349</td><td style="background:#fff8e0">2,749</td><td style="background:#ffe0e0">2,249–2,399</td><td style="background:#ffe0e0">1,979</td><td style="background:#fff8e0">2,195–2,549</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">4,659–5,044</td><td style="background:#ffe0e0">4,099–4,199</td><td class="empty">—</td><td style="background:#ffe0e0">3,529–3,729</td><td style="background:#ffe0e0">3,699–4,099</td><td style="background:#ffe0e0">3,649–3,799</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">2,999–4,099</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-4" style="display:none">
-<div class="ch-note">Channel: AlKhunaizan | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>GREE</th><th>HAIER</th><th>Smart Electric</th><th>BANCOOL</th><th>HISENSE</th><th>WESTINGHOUSE</th><th>CRAFFT</th><th>UNIX</th><th>BASIC</th><th>Haas</th><th>TCL</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">1,799<br>1,899</td><td style="background:#f8f9fa">1,649</td><td class="empty">—</td><td style="background:#f8f9fa">1,549</td><td class="empty">—</td><td style="background:#f8f9fa">1,899</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">2,049<br>2,099</td><td style="background:#f8f9fa">1,729</td><td style="background:#f8f9fa">1,999</td><td style="background:#f8f9fa">1,549</td><td style="background:#f8f9fa">1,649<br>1,699</td><td style="background:#f8f9fa">1,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">1,999</span><br><span class="price-tag">1,999</span></td><td style="background:#e0f0e0">1,999<br>2,099<br>2,299<br>2,399</td><td style="background:#e0f0e0">1,899<br>3,299</td><td style="background:#e0f0e0">2,199<br>2,899</td><td style="background:#ffe0e0">1,699</td><td style="background:#fff8e0">1,849</td><td style="background:#e0f0e0">2,299<br>2,349</td><td style="background:#ffe0e0">1,699</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,099</span><br><span class="price-tag">2,099</span></td><td style="background:#e0f0e0">2,599</td><td style="background:#fff8e0">1,999</td><td class="empty">—</td><td style="background:#ffe0e0">1,799</td><td style="background:#fff8e0">1,949</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">2,199</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">2,899</td><td style="background:#f8f9fa">2,399</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">2,999</td><td style="background:#f8f9fa">2,299</td><td style="background:#f8f9fa">2,249</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">2,599</span><br><span class="price-tag">2,599</span></td><td style="background:#e0f0e0">3,099</td><td style="background:#fff8e0">2,599</td><td style="background:#e0f0e0">2,999</td><td class="empty">—</td><td style="background:#fff8e0">2,499</td><td class="empty">—</td><td class="empty">—</td><td style="background:#e0f0e0">2,899</td><td style="background:#fff8e0">2,399</td><td style="background:#e0f0e0">2,949</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="lg-val lg-combined"><span class="price-tag">3,699</span></td><td style="background:#e0f0e0">4,149</td><td style="background:#fff8e0">3,499</td><td style="background:#fff8e0">3,799</td><td style="background:#ffe0e0">3,299</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">H&amp;C</td><td class="lg-val lg-combined"><span class="price-tag">3,899</span></td><td style="background:#e0f0e0">4,449</td><td style="background:#fff8e0">3,699</td><td style="background:#fff8e0">3,999</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">3,349</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,749</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,599</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">4,399</td></tr>
+</table></div></div>
+<div class="tab-content" id="tab-4" style="display:none"><div class="ch-note">Channel: BH | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p></div>
+<div class="tab-content" id="tab-5" style="display:none"><div class="ch-note">Channel: Bin Momen | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><h3 class="sec-title">▶ Inverter Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>TCL</th>
-<th>SUPER GENERAL</th>
-<th>SHARP</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="lg-val">2,294–2,591</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,501–2,744</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,699–2,951</td><td style="background:#fff8e0">2,499–3,179</td><td style="background:#ffe0e0">2,299</td><td style="background:#ffe0e0">1,899–3,099</td><td style="background:#ffe0e0">1,699</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,194</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,798–3,302</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,194–3,500</td><td style="background:#fff8e0">3,199–3,449</td><td style="background:#ffe0e0">2,899</td><td style="background:#ffe0e0">2,399–3,499</td><td style="background:#ffe0e0">2,299–2,399</td><td style="background:#ffe0e0">2,599</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,401</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="lg-val">5,399–5,552</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>GENERAL</th><th>Star Vision</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td class="empty">—</td><td style="background:#f8f9fa">1,365</td></tr>
+<tr><td class="ton">5T</td><td class="hc-cell">H&amp;C</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">8,332</td><td class="empty">—</td></tr>
 </table></div>
 <h3 class="sec-title">▶ Rotary Split</h3>
 <div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>HAIER</th>
-<th>TCL</th>
-<th>HISENSE</th>
-<th>WESTINGHOUSE</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,799–2,099</td><td style="background:#f8f9fa">1,649–1,729</td><td class="empty">—</td><td style="background:#f8f9fa">1,649–1,699</td><td style="background:#f8f9fa">1,899–1,999</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,999–2,099</td><td style="background:#e0f0e0">1,999–2,599</td><td style="background:#e0f0e0">1,899–3,299</td><td class="empty">—</td><td style="background:#fff8e0">1,849–1,949</td><td style="background:#e0f0e0">2,299–2,349</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,599</td><td style="background:#e0f0e0">2,899–3,099</td><td style="background:#fff8e0">2,399–2,599</td><td class="empty">—</td><td style="background:#fff8e0">2,499</td><td style="background:#e0f0e0">2,999</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">3,699–3,899</td><td style="background:#e0f0e0">4,149–4,449</td><td style="background:#fff8e0">3,499–3,699</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-5" style="display:none">
-<div class="ch-note">Channel: BH | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>SAMSUNG</th>
-<th>TCL</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,499–3,049</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,689–3,279</td><td style="background:#fff8e0">2,159–3,149</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,789–3,669</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,189–3,885</td><td style="background:#ffe0e0">2,929</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-<h3 class="sec-title">▶ Rotary Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>HAIER</th>
-<th>MIDEA</th>
-<th>TCL</th>
-<th>HISENSE</th>
-<th>WESTINGHOUSE</th>
-<th>ZAMIL</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,323–1,438</td><td style="background:#f8f9fa">1,518–1,760</td><td class="empty">—</td><td style="background:#f8f9fa">1,499–1,549</td><td style="background:#f8f9fa">1,509</td><td style="background:#f8f9fa">1,472–1,605</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">2,069–2,109</td><td style="background:#ffe0e0">1,609–2,024</td><td style="background:#fff8e0">1,834–2,143</td><td style="background:#ffe0e0">1,786</td><td style="background:#ffe0e0">1,759–1,849</td><td style="background:#ffe0e0">1,779</td><td style="background:#fff8e0">1,817–2,090</td></tr>
-<tr><td class="seg">(No LG)</td><td class="ton">2T</td><td class="empty">—</td><td style="background:#f8f9fa">1,955–2,778</td><td style="background:#f8f9fa">2,312–2,622</td><td style="background:#f8f9fa">2,099–2,319</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">2,162–2,413</td></tr>
-<tr><td class="seg">(No LG)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">2,967</td><td style="background:#f8f9fa">3,427–4,273</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">3,189</td><td style="background:#f8f9fa">3,464–3,887</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-6" style="display:none">
-<div class="ch-note">Channel: Star Appliance | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>MIDEA</th>
-<th>AUX</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">2,765</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">3,456–3,722</td><td style="background:#f8f9fa">2,687</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="lg-val">5,614</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-<h3 class="sec-title">▶ Rotary Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>MIDEA</th>
-<th>TCL</th>
-<th>WESTINGHOUSE</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">2,200</td><td style="background:#f8f9fa">1,649–1,751</td><td class="empty">—</td><td style="background:#f8f9fa">1,502</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,974–2,138</td><td style="background:#e0f0e0">2,339–2,891</td><td style="background:#fff8e0">1,952–2,105</td><td class="empty">—</td><td style="background:#ffe0e0">1,787</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,303–2,522</td><td style="background:#e0f0e0">3,668–3,882</td><td style="background:#fff8e0">2,446–2,611</td><td style="background:#fff8e0">2,380</td><td style="background:#fff8e0">2,194</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">4,222–4,606</td><td style="background:#fff8e0">4,574–4,767</td><td style="background:#fff8e0">3,838–4,299</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-7" style="display:none">
-<div class="ch-note">Channel: Tamkeen | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>GENERAL</th>
-<th>DANSAT</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="lg-val">2,449–2,612</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">2,089–3,509</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,199</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="lg-val">2,799–3,299</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="empty">—</td><td style="background:#f8f9fa">2,992–3,229</td><td class="empty">—</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="lg-val">3,399</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-<h3 class="sec-title">▶ Rotary Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>SAMSUNG</th>
-<th>GREE</th>
-<th>GENERAL</th>
-<th>WESTINGHOUSE</th>
-<th>ZAMIL</th>
-<th>DANSAT</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">1,799</td><td class="empty">—</td><td style="background:#f8f9fa">1,529</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,999</td><td style="background:#e0f0e0">2,499</td><td style="background:#e0f0e0">2,294</td><td style="background:#e0f0e0">1,869–3,575</td><td class="empty">—</td><td class="empty">—</td><td style="background:#ffe0e0">1,799</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,399</td><td class="empty">—</td><td style="background:#e0f0e0">2,699</td><td style="background:#e0f0e0">2,677–4,155</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">2,249</td></tr>
-<tr><td class="seg">(No LG)</td><td class="ton">2.5T</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">3,739</td><td style="background:#f8f9fa">3,779–4,499</td><td style="background:#f8f9fa">3,699</td><td style="background:#f8f9fa">3,799</td><td style="background:#f8f9fa">3,239–4,199</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-8" style="display:none">
-<div class="ch-note">Channel: Bin Momen | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>MIDEA</th>
-</tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,600</td><td style="background:#ffe0e0">2,015</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,094</td><td style="background:#ffe0e0">2,675</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-<h3 class="sec-title">▶ Rotary Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>MIDEA</th>
-<th>AUX</th>
-<th>TCL</th>
-<th>HISENSE</th>
-<th>GENERAL</th>
-<th>WESTINGHOUSE</th>
-<th>DANSAT</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,521</td><td class="empty">—</td><td style="background:#f8f9fa">1,534</td><td style="background:#f8f9fa">2,047–2,106</td><td style="background:#f8f9fa">1,969–3,373</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">1,950–2,041</td><td style="background:#fff8e0">1,764–2,210</td><td style="background:#ffe0e0">1,625</td><td style="background:#ffe0e0">1,355–1,664</td><td style="background:#e0f0e0">2,457–2,535</td><td style="background:#e0f0e0">2,306–2,948</td><td style="background:#e0f0e0">2,788</td><td style="background:#ffe0e0">1,355–1,404</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,210–2,340</td><td style="background:#e0f0e0">2,366–3,510</td><td style="background:#fff8e0">2,182</td><td style="background:#fff8e0">2,080–2,535</td><td style="background:#e0f0e0">3,315–3,607</td><td style="background:#e0f0e0">3,276–6,337</td><td class="empty">—</td><td style="background:#fff8e0">2,015–2,080</td></tr>
-<tr><td class="seg">(No LG)</td><td class="ton">2.5T</td><td class="empty">—</td><td style="background:#f8f9fa">2,990–5,167</td><td class="empty">—</td><td style="background:#f8f9fa">2,990–3,900</td><td style="background:#f8f9fa">4,836–4,875</td><td style="background:#f8f9fa">4,680–4,816</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-</div><div class="tab-content" id="tab-9" style="display:none">
-<div class="ch-note">Channel: Techno Best | Prices: VAT-incl. SAR | Competitor color: vs. LG Mid</div>
-<h3 class="sec-title">▶ Inverter Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th>Cap.</th><th class="seg">LG Segment</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>TCL</th>
-<th>SUPER GENERAL</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="ton" rowspan="1">1.0T</td><td class="seg">Small · NF12</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">1.5T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">2,749</td><td style="background:#fff8e0">2,499–2,699</td><td style="background:#ffe0e0">2,099–2,899</td><td style="background:#ffe0e0">1,799</td><td style="background:#ffe0e0">1,925–2,099</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="3">2.0T</td><td class="seg">Entry · NS</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="seg">Mid · ND</td><td class="lg-val">3,149</td><td style="background:#fff8e0">3,099–3,349</td><td style="background:#fff8e0">2,549–3,299</td><td style="background:#ffe0e0">2,199–2,399</td><td style="background:#ffe0e0">2,599–2,748</td></tr>
-<tr><td class="seg">High · AM/AF/NW</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">2.5T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-<tr><td class="ton" rowspan="1">3.0T</td><td class="seg">Big · NT</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
-</table></div>
-<h3 class="sec-title">▶ Rotary Split</h3>
-<div class="tbl-wrap"><table>
-<tr>
-<th class="seg">LG Segment</th><th>Cap.</th><th class="lg">LG Price (SAR)</th>
-<th>GREE</th>
-<th>MIDEA</th>
-<th>TCL</th>
-<th>WESTINGHOUSE</th>
-<th>ZAMIL</th>
-<th>SHARP</th>
-<th>DANSAT</th>
-<th>MANDO</th>
-</tr>
-<tr><td class="seg">(No LG)</td><td class="ton">1.0T</td><td class="empty">—</td><td style="background:#f8f9fa">1,949–2,099</td><td style="background:#f8f9fa">1,400–2,249</td><td style="background:#f8f9fa">1,749–1,849</td><td style="background:#f8f9fa">1,299–1,399</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#f8f9fa">1,519–1,599</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">1.5T</td><td class="lg-val">2,099–2,199</td><td style="background:#e0f0e0">2,449–2,599</td><td style="background:#fff8e0">1,999–2,199</td><td style="background:#ffe0e0">1,899</td><td style="background:#ffe0e0">1,499–1,899</td><td style="background:#fff8e0">1,999</td><td class="empty">—</td><td style="background:#ffe0e0">1,449–1,899</td><td style="background:#ffe0e0">1,669–1,969</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2T</td><td class="lg-val">2,549</td><td style="background:#e0f0e0">2,899–3,099</td><td style="background:#fff8e0">2,549–2,699</td><td style="background:#fff8e0">2,599</td><td style="background:#ffe0e0">1,999</td><td class="empty">—</td><td style="background:#fff8e0">2,099–3,699</td><td style="background:#ffe0e0">1,799–2,449</td><td style="background:#fff8e0">2,169–3,118</td></tr>
-<tr><td class="seg">Mid · LA</td><td class="ton">2.5T</td><td class="lg-val">4,099–4,299</td><td style="background:#fff8e0">3,999</td><td style="background:#ffe0e0">3,699–3,799</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td style="background:#fff8e0">3,219–4,269</td></tr>
-</table></div>
-</div>
+<tr><th class="hdr-cap">Cap.</th><th class="hdr-hc">Cold/HC</th><th class="lg" style="text-align:left;min-width:200px">LG &nbsp;<span style="font-weight:400;font-size:10px">(Seg · Model · Price SAR)</span></th><th>HISENSE</th><th>GENERAL</th><th>MIDEA</th><th>DANSAT</th><th>Ruud</th><th>Star Vision</th></tr>
+<tr><td class="ton">1T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td class="empty">—</td><td style="background:#f8f9fa">2,106</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">1.5T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td class="empty">—</td><td style="background:#f8f9fa">2,948</td><td class="empty">—</td><td style="background:#f8f9fa">1,355</td><td class="empty">—</td><td style="background:#f8f9fa">1,812</td></tr>
+<tr><td class="ton">2T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">3,315<br>3,607</td><td class="empty">—</td><td style="background:#f8f9fa">2,366<br>3,510</td><td class="empty">—</td><td style="background:#f8f9fa">2,158</td><td class="empty">—</td></tr>
+<tr><td class="ton">2.5T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">4,836<br>4,875</td><td class="empty">—</td><td style="background:#f8f9fa">2,990</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+<tr><td class="ton">3T</td><td class="hc-cell">Cold</td><td class="empty no-lg">(No LG)</td><td style="background:#f8f9fa">5,908</td><td style="background:#f8f9fa">5,655</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td></tr>
+</table></div></div>
+<div class="tab-content" id="tab-6" style="display:none"><div class="ch-note">Channel: Black Box | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p></div>
+<div class="tab-content" id="tab-7" style="display:none"><div class="ch-note">Channel: Star Appliance | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p></div>
+<div class="tab-content" id="tab-8" style="display:none"><div class="ch-note">Channel: Tamkeen | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p></div>
+<div class="tab-content" id="tab-9" style="display:none"><div class="ch-note">Channel: Techno Best | Prices: VAT-incl. SAR | Competitor color: vs. LG median</div><p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p></div>
 <script>
 function switchTab(idx) {
   document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===idx));
@@ -428,7 +203,6 @@ function switchTab(idx) {
     c.style.display = i===idx ? 'block' : 'none';
   });
 }
-// Show first tab on load
 document.querySelectorAll('.tab-content')[0].style.display = 'block';
 </script>
 </body></html>
