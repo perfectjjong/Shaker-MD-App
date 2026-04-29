@@ -7,18 +7,37 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
+:root{--primary:#2563eb;--border:#e2e8f0;--muted:#94a3b8}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293b;font-size:14px}
-.header{background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+.header{background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
 .header h1{font-size:17px;font-weight:700;letter-spacing:.4px}
 .badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;margin-left:8px}
+
+/* ── FILTER BAR (b2c-unified pattern) ── */
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:57px;z-index:98;flex-wrap:wrap}
+.filter-group{position:relative}
+.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.ms-wrap{position:relative;min-width:130px}
+.ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
+.ms-btn::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
+.ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
+.ms-dd{position:absolute;top:calc(100% + 2px);left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;min-width:190px;display:none;padding:4px 0}
+.ms-dd.open{display:block}
+.ms-dd-head{padding:5px 12px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#374151}
+.ms-dd label{display:flex;align-items:center;gap:7px;padding:5px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
+.ms-dd label:hover{background:#f8fafc}
+.ms-dd input[type=checkbox]{accent-color:var(--primary);cursor:pointer;flex-shrink:0}
+.grp-btn{padding:4px 12px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;font-weight:600;color:#475569}
+.grp-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
 .container{max-width:1280px;margin:0 auto;padding:20px}
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08);position:relative;overflow:hidden}
 .kpi .yr{font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .kpi .val{font-size:22px;font-weight:700;color:#1e293b}
 .kpi .yoy{font-size:11px;margin-top:4px}
-.kpi .bar{position:absolute;bottom:0;left:0;height:3px;background:#3b82f6}
+.kpi .kbar{position:absolute;bottom:0;left:0;height:3px}
 .up{color:#10b981}.dn{color:#ef4444}.nt{color:#64748b}
 .card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:16px}
 .card h3{font-size:13px;font-weight:700;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -28,15 +47,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293
 .tag-gray{background:#f8fafc;color:#64748b}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .divider{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px}
-/* Tabs */
 .tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 .tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;transition:all .15s}
 .tab.active{background:#2563eb;color:#fff;border-color:#2563eb}
-/* Legend */
 .legend-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-/* Table */
 table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:#f8fafc;color:#475569;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
 td{padding:6px 10px;border-bottom:1px solid #f1f5f9}
@@ -45,12 +61,6 @@ tr:hover td{background:#fafafa}
 .num{text-align:right;font-weight:600}
 .bar-cell{display:flex;align-items:center;gap:6px}
 .bar-mini{height:6px;border-radius:3px;min-width:2px}
-/* Note box */
-.note{background:#fffbeb;border-left:3px solid #f59e0b;padding:8px 12px;border-radius:0 6px 6px 0;font-size:11px;color:#78350f;margin-bottom:14px}
-/* Category filter */
-.cat-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.cat-btn{padding:4px 12px;border-radius:14px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;transition:all .15s}
-.cat-btn.active{color:#fff;border-color:transparent}
 .footer{text-align:center;padding:16px;color:#94a3b8;font-size:11px}
 canvas{max-width:100%}
 </style>
@@ -60,50 +70,26 @@ canvas{max-width:100%}
 <div class="header">
   <div>
     <h1>LG Saudi Arabia — AC Historical H1 Summary <span class="badge">2023–2026E</span></h1>
-    <div style="font-size:11px;opacity:.65;margin-top:3px">Category: On/Off · Inverter · Floor Standing · Window AC &nbsp;|&nbsp; 2026: W1–W17 Actual + W18–W27 Forecast</div>
+    <div style="font-size:11px;opacity:.65;margin-top:3px">On/Off · Inverter · Floor Standing · Window AC &nbsp;|&nbsp; 2026: W1–W17 Actual + W18–W27 Forecast</div>
   </div>
   <div style="font-size:11px;opacity:.7;text-align:right">Generated: Apr 29, 2026<br>Source: sellout.db + b2c-unified</div>
 </div>
 
+<!-- FILTER BAR (b2c-unified pattern) -->
+<div class="filters">
+  <div class="filter-group">
+    <div class="filter-label">Category</div>
+    <div class="ms-wrap" id="fCat"></div>
+  </div>
+  <div style="margin-left:auto;align-self:center;font-size:11px;color:var(--muted)" id="filterSummary"></div>
+</div>
+
 <div class="container">
 
-<!-- KPI -->
-<div class="kpi-row">
-  <div class="kpi">
-    <div class="yr">2023 H1</div>
-    <div class="val">51,847</div>
-    <div class="yoy nt">Base year</div>
-    <div class="bar" style="width:75%"></div>
-  </div>
-  <div class="kpi">
-    <div class="yr">2024 H1</div>
-    <div class="val">59,750</div>
-    <div class="yoy up">▲ +15.2% vs 2023</div>
-    <div class="bar" style="width:87%"></div>
-  </div>
-  <div class="kpi">
-    <div class="yr">2025 H1</div>
-    <div class="val">68,895</div>
-    <div class="yoy up">▲ +15.3% vs 2024</div>
-    <div class="bar" style="width:100%"></div>
-  </div>
-  <div class="kpi">
-    <div class="yr">2026E H1</div>
-    <div class="val">~60,500</div>
-    <div class="yoy dn">▼ -12.2% vs 2025</div>
-    <div class="bar" style="width:88%;background:#ef4444"></div>
-  </div>
-  <div class="kpi">
-    <div class="yr">On/Off Share 2026</div>
-    <div class="val">49.3%</div>
-    <div class="yoy nt">vs 2025: 32.7% / 2024: 24.7%</div>
-    <div class="bar" style="width:49%;background:#f59e0b"></div>
-  </div>
-</div>
+<div class="kpi-row" id="kpiRow"></div>
 
 <div class="divider">H1 Category Summary by Year</div>
 
-<!-- Annual Stacked Bar -->
 <div class="card">
   <h3>H1 Category Mix — Annual Comparison <span class="tag">2023–2026E</span>
     <span class="tag-amber">2023/24: Monthly data (end-of-month concentration adjusted)</span>
@@ -113,7 +99,6 @@ canvas{max-width:100%}
   <canvas id="cAnnual" height="70"></canvas>
 </div>
 
-<!-- YoY Category Growth Table -->
 <div class="card">
   <h3>Category YoY Growth <span class="tag">H1 기준</span></h3>
   <table id="tYoY"></table>
@@ -121,7 +106,6 @@ canvas{max-width:100%}
 
 <div class="divider">Monthly / Weekly Trend</div>
 
-<!-- Trend Chart -->
 <div class="card">
   <h3>Sell-out Trend by Period <span class="tag" id="trendTag"></span>
     <span class="tag-gray" id="trendNote"></span>
@@ -130,13 +114,12 @@ canvas{max-width:100%}
     <div class="tab active" data-yr="2023">2023</div>
     <div class="tab" data-yr="2024">2024</div>
     <div class="tab" data-yr="2025">2025</div>
-    <div class="tab active2" data-yr="2026">2026E</div>
+    <div class="tab active" data-yr="2026">2026E</div>
   </div>
   <div class="legend-row" id="trendLegend"></div>
   <canvas id="cTrend" height="100"></canvas>
 </div>
 
-<!-- Side-by-side Monthly Comparison -->
 <div class="card">
   <h3>Month-by-Month Comparison (All Years) <span class="tag">Jan–Jun H1</span></h3>
   <canvas id="cMonthly" height="90"></canvas>
@@ -144,9 +127,8 @@ canvas{max-width:100%}
 
 <div class="divider">Model Breakdown</div>
 
-<!-- Model Detail -->
 <div class="card">
-  <h3>Top Model Ranking <span class="tag" id="modelTag">2026 All Categories</span></h3>
+  <h3>Top Model Ranking <span class="tag" id="modelTag"></span></h3>
   <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
     <div style="font-size:11px;color:#64748b;font-weight:600">Year:</div>
     <div class="tabs" id="modelYrTabs" style="margin-bottom:0">
@@ -155,23 +137,12 @@ canvas{max-width:100%}
       <div class="tab" data-yr="2025">2025</div>
       <div class="tab active" data-yr="2026">2026</div>
     </div>
-    <div style="font-size:11px;color:#64748b;font-weight:600;margin-left:8px">Category:</div>
-    <div class="cat-filters" id="catFilter">
-      <div class="cat-btn active" data-cat="All" style="background:#2563eb;color:#fff;border-color:#2563eb">All</div>
-      <div class="cat-btn" data-cat="OnOff" style="">On/Off</div>
-      <div class="cat-btn" data-cat="Inverter" style="">Inverter</div>
-      <div class="cat-btn" data-cat="FloorStanding" style="">Floor Standing</div>
-    </div>
   </div>
   <div class="grid2">
-    <div>
-      <canvas id="cModels" height="260"></canvas>
-    </div>
+    <div><canvas id="cModels" height="260"></canvas></div>
     <div style="overflow-y:auto;max-height:420px">
       <table id="tModels">
-        <thead><tr>
-          <th>#</th><th>Model</th><th>Category</th><th class="num">Qty</th><th class="num">Share</th><th>Distribution</th>
-        </tr></thead>
+        <thead><tr><th>#</th><th>Model</th><th>Category</th><th class="num">Qty</th><th class="num">Share</th><th>Bar</th></tr></thead>
         <tbody id="tModelBody"></tbody>
       </table>
     </div>
@@ -188,7 +159,7 @@ Chart.register(ChartDataLabels);
 // ── EMBEDDED DATA ──
 const D = {"annual":{"2023":{"Inverter":27657,"OnOff":11765,"FloorStanding":2872,"WindowAC":9553,"Concealed":0,"Cassette":0},"2024":{"Inverter":38669,"OnOff":14764,"FloorStanding":4691,"WindowAC":1626,"Concealed":0,"Cassette":0},"2025":{"Inverter":24321,"OnOff":22531,"FloorStanding":5442,"WindowAC":16601,"Concealed":0,"Cassette":0},"2026":{"Inverter":23829,"OnOff":29840,"FloorStanding":5546,"WindowAC":67,"Concealed":1092,"Cassette":162}},"monthly":{"2023":{"Jan":{"Inverter":454,"OnOff":58,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2346,"OnOff":788,"FloorStanding":212,"WindowAC":932,"Concealed":0,"Cassette":0},"Mar":{"Inverter":8550,"OnOff":3436,"FloorStanding":939,"WindowAC":4096,"Concealed":0,"Cassette":0},"Apr":{"Inverter":1425,"OnOff":205,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0},"May":{"Inverter":8717,"OnOff":3963,"FloorStanding":1017,"WindowAC":3361,"Concealed":0,"Cassette":0},"Jun":{"Inverter":6165,"OnOff":3315,"FloorStanding":704,"WindowAC":681,"Concealed":0,"Cassette":0}},"2024":{"Jan":{"Inverter":0,"OnOff":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2769,"OnOff":931,"FloorStanding":286,"WindowAC":132,"Concealed":0,"Cassette":0},"Mar":{"Inverter":12132,"OnOff":5765,"FloorStanding":976,"WindowAC":667,"Concealed":0,"Cassette":0},"Apr":{"Inverter":0,"OnOff":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0},"May":{"Inverter":13814,"OnOff":5898,"FloorStanding":1687,"WindowAC":380,"Concealed":0,"Cassette":0},"Jun":{"Inverter":9954,"OnOff":2170,"FloorStanding":1742,"WindowAC":447,"Concealed":0,"Cassette":0}},"2025":{"Jan":{"Inverter":1700,"OnOff":2947,"FloorStanding":286,"WindowAC":607,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2443,"OnOff":2723,"FloorStanding":433,"WindowAC":3001,"Concealed":0,"Cassette":0},"Mar":{"Inverter":4919,"OnOff":7074,"FloorStanding":1129,"WindowAC":7111,"Concealed":0,"Cassette":0},"Apr":{"Inverter":3544,"OnOff":3964,"FloorStanding":801,"WindowAC":5635,"Concealed":0,"Cassette":0},"May":{"Inverter":7743,"OnOff":3728,"FloorStanding":1697,"WindowAC":207,"Concealed":0,"Cassette":0},"Jun":{"Inverter":3972,"OnOff":2095,"FloorStanding":1096,"WindowAC":40,"Concealed":0,"Cassette":0}},"2026":{"Jan":{"Inverter":1765,"OnOff":1586,"FloorStanding":369,"WindowAC":0,"Concealed":137,"Cassette":61},"Feb":{"Inverter":3176,"OnOff":4652,"FloorStanding":667,"WindowAC":32,"Concealed":388,"Cassette":47},"Mar":{"Inverter":4630,"OnOff":4156,"FloorStanding":725,"WindowAC":34,"Concealed":289,"Cassette":21},"Apr":{"Inverter":3133,"OnOff":4954,"FloorStanding":628,"WindowAC":1,"Concealed":278,"Cassette":33},"May":{"Inverter":5875,"OnOff":8645,"FloorStanding":1448,"WindowAC":0,"Concealed":0,"Cassette":0},"Jun":{"Inverter":5250,"OnOff":5847,"FloorStanding":1709,"WindowAC":0,"Concealed":0,"Cassette":0}}},"weekly25":{"W1":{"Inverter":617,"OnOff":733,"FloorStanding":75,"WindowAC":193},"W2":{"Inverter":459,"OnOff":1122,"FloorStanding":61,"WindowAC":66},"W3":{"Inverter":322,"OnOff":670,"FloorStanding":82,"WindowAC":97},"W4":{"Inverter":302,"OnOff":422,"FloorStanding":68,"WindowAC":251},"W5":{"Inverter":442,"OnOff":729,"FloorStanding":78,"WindowAC":805},"W6":{"Inverter":299,"OnOff":553,"FloorStanding":41,"WindowAC":593},"W7":{"Inverter":282,"OnOff":492,"FloorStanding":181,"WindowAC":723},"W8":{"Inverter":1420,"OnOff":949,"FloorStanding":133,"WindowAC":880},"W9":{"Inverter":1588,"OnOff":1046,"FloorStanding":166,"WindowAC":1366},"W10":{"Inverter":820,"OnOff":1323,"FloorStanding":285,"WindowAC":1383},"W11":{"Inverter":887,"OnOff":1621,"FloorStanding":262,"WindowAC":1164},"W12":{"Inverter":908,"OnOff":1591,"FloorStanding":150,"WindowAC":2010},"W13":{"Inverter":716,"OnOff":1493,"FloorStanding":266,"WindowAC":1188},"W14":{"Inverter":727,"OnOff":1194,"FloorStanding":45,"WindowAC":1418},"W15":{"Inverter":655,"OnOff":1461,"FloorStanding":386,"WindowAC":2453},"W16":{"Inverter":639,"OnOff":743,"FloorStanding":123,"WindowAC":1539},"W17":{"Inverter":1523,"OnOff":566,"FloorStanding":247,"WindowAC":225},"W18":{"Inverter":2928,"OnOff":702,"FloorStanding":267,"WindowAC":148},"W19":{"Inverter":1771,"OnOff":932,"FloorStanding":330,"WindowAC":12},"W20":{"Inverter":882,"OnOff":680,"FloorStanding":246,"WindowAC":15},"W21":{"Inverter":928,"OnOff":540,"FloorStanding":260,"WindowAC":19},"W22":{"Inverter":1234,"OnOff":874,"FloorStanding":594,"WindowAC":13},"W23":{"Inverter":597,"OnOff":406,"FloorStanding":256,"WindowAC":17},"W24":{"Inverter":986,"OnOff":306,"FloorStanding":212,"WindowAC":1},"W25":{"Inverter":1179,"OnOff":603,"FloorStanding":377,"WindowAC":9},"W26":{"Inverter":1210,"OnOff":780,"FloorStanding":251,"WindowAC":13}},"weekly26":{"W1":{"Inverter":497,"OnOff":459,"FloorStanding":85,"WindowAC":0,"Concealed":10,"Cassette":0},"W2":{"Inverter":531,"OnOff":466,"FloorStanding":121,"WindowAC":0,"Concealed":43,"Cassette":20},"W3":{"Inverter":296,"OnOff":329,"FloorStanding":75,"WindowAC":0,"Concealed":40,"Cassette":23},"W4":{"Inverter":441,"OnOff":332,"FloorStanding":88,"WindowAC":0,"Concealed":44,"Cassette":18},"W5":{"Inverter":494,"OnOff":1517,"FloorStanding":257,"WindowAC":0,"Concealed":225,"Cassette":8},"W6":{"Inverter":596,"OnOff":614,"FloorStanding":138,"WindowAC":6,"Concealed":53,"Cassette":4},"W7":{"Inverter":723,"OnOff":1016,"FloorStanding":121,"WindowAC":23,"Concealed":47,"Cassette":34},"W8":{"Inverter":1363,"OnOff":1505,"FloorStanding":151,"WindowAC":3,"Concealed":63,"Cassette":1},"W9":{"Inverter":2209,"OnOff":1724,"FloorStanding":370,"WindowAC":10,"Concealed":193,"Cassette":14},"W10":{"Inverter":871,"OnOff":980,"FloorStanding":94,"WindowAC":20,"Concealed":46,"Cassette":2},"W11":{"Inverter":601,"OnOff":543,"FloorStanding":98,"WindowAC":2,"Concealed":17,"Cassette":0},"W12":{"Inverter":464,"OnOff":469,"FloorStanding":98,"WindowAC":1,"Concealed":16,"Cassette":3},"W13":{"Inverter":485,"OnOff":440,"FloorStanding":65,"WindowAC":1,"Concealed":17,"Cassette":2},"W14":{"Inverter":974,"OnOff":2603,"FloorStanding":321,"WindowAC":1,"Concealed":143,"Cassette":18},"W15":{"Inverter":785,"OnOff":925,"FloorStanding":114,"WindowAC":0,"Concealed":42,"Cassette":8},"W16":{"Inverter":670,"OnOff":660,"FloorStanding":97,"WindowAC":0,"Concealed":36,"Cassette":5},"W17":{"Inverter":704,"OnOff":766,"FloorStanding":96,"WindowAC":0,"Concealed":57,"Cassette":2},"W18":{"Inverter":1630,"OnOff":3028,"FloorStanding":422,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W19":{"Inverter":982,"OnOff":1823,"FloorStanding":239,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W20":{"Inverter":1055,"OnOff":1290,"FloorStanding":203,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W21":{"Inverter":964,"OnOff":1044,"FloorStanding":177,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W22":{"Inverter":1244,"OnOff":1460,"FloorStanding":407,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W23":{"Inverter":1094,"OnOff":1185,"FloorStanding":442,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W24":{"Inverter":977,"OnOff":1059,"FloorStanding":285,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W25":{"Inverter":1062,"OnOff":1151,"FloorStanding":328,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W26":{"Inverter":978,"OnOff":1060,"FloorStanding":275,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W27":{"Inverter":1139,"OnOff":1392,"FloorStanding":379,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true}},"models":{"2023":{"NF182C":{"Inverter":10606},"NF242C":{"Inverter":6612},"LO182C":{"OnOff":6147},"C182EC":{"WindowAC":5417},"NV182C":{"Inverter":2848},"APNQ55GT3M":{"FloorStanding":2248},"NF182H":{"Inverter":2073},"C242EC":{"WindowAC":2004},"LO242C":{"OnOff":1570},"NF242H":{"Inverter":1494},"NG242C":{"OnOff":1243},"C182EH":{"WindowAC":1187},"NT382C":{"Inverter":1181},"NG182C":{"OnOff":969},"NV242C":{"Inverter":914},"LO242H":{"OnOff":727},"C242EH":{"WindowAC":588},"NK182H":{"OnOff":420},"NG242H":{"OnOff":418},"NS242C":{"Inverter":345}},"2024":{"NF182C":{"Inverter":10137},"NF242C":{"Inverter":7563},"LO182C":{"OnOff":6656},"NV182C":{"Inverter":5821},"NV242C":{"Inverter":3980},"APNQ55GT3M":{"FloorStanding":3414},"LO242C":{"OnOff":2447},"NW182C":{"Inverter":1973},"NG182C":{"OnOff":1885},"NF182H":{"Inverter":1780},"NG242C":{"OnOff":1476},"NT382C":{"Inverter":1378},"NF242H":{"Inverter":1297},"APNQ55GT3MA":{"FloorStanding":939},"NF122C":{"Inverter":829},"NV182H":{"Inverter":648},"NG182H":{"OnOff":579},"H182EC":{"WindowAC":559},"NS182H":{"Inverter":558},"H242EC":{"WindowAC":556}},"2025":{"C182EC":{"WindowAC":12186},"LO182C":{"OnOff":6173},"ND182C":{"Inverter":4835},"ND242C":{"Inverter":4156},"APNQ55GT3M":{"FloorStanding":4028},"C182EC.SN2":{"OnOff":3921},"LO242C":{"OnOff":3658},"NW182C":{"Inverter":3443},"C242EC":{"WindowAC":2554},"NW242C":{"Inverter":1868},"LB242C":{"OnOff":1824},"C182EH":{"WindowAC":1745},"C182EH.SN2":{"OnOff":1695},"NS182C":{"Inverter":1387},"ND242H":{"Inverter":1317},"ND182H":{"Inverter":1313},"LB182C":{"OnOff":1279},"NT382C":{"Inverter":1224},"NS242C":{"Inverter":1174},"LO182H":{"OnOff":929},"APNQ55GT3MA":{"FloorStanding":873},"LO242H":{"OnOff":818},"NW182H":{"Inverter":729},"NF122C":{"Inverter":611},"NS182H":{"Inverter":589},"LB182H":{"OnOff":446},"NW242H":{"Inverter":418},"AM242C":{"OnOff":408},"NT382H":{"Inverter":398},"NS242H":{"Inverter":341}},"2026":{"LO182C":{"OnOff":3145},"NS182C":{"Inverter":2572},"ND182C":{"Inverter":2067},"LA182C":{"OnOff":1971},"NS242C":{"Inverter":1803},"ND242C":{"Inverter":1781},"LB182C":{"OnOff":1755},"APUW55GT3M":{"FloorStanding":1308},"LA242H":{"OnOff":1045},"LB242C":{"OnOff":1025},"LA242C":{"OnOff":851},"ND182H":{"Inverter":823},"ND242H":{"Inverter":754},"NS182H":{"Inverter":662},"NT382C":{"Inverter":647},"LC242C":{"OnOff":644},"LO242C":{"OnOff":620},"LA182H":{"OnOff":585},"APNQ55GT3M":{"FloorStanding":536},"LO182H":{"OnOff":505},"LC182C":{"OnOff":496},"NS242H":{"Inverter":493},"NF122C":{"Inverter":443},"APNQ55GT3MA":{"FloorStanding":301},"NT382H":{"Inverter":276},"ABUQ60GM3TA":{"Concealed":261},"LO242H":{"OnOff":255},"AM242C":{"OnOff":252},"PREMTB200":{"Concealed":243},"LK242C":{"OnOff":243}}}};
 
-// ── COLOR PALETTE ──
+// ── COLOR PALETTE & CONSTANTS ──
 const C = {
   Inverter:    {bg:'#2563eb', border:'#1d4ed8'},
   OnOff:       {bg:'#f59e0b', border:'#d97706'},
@@ -197,12 +168,94 @@ const C = {
   Concealed:   {bg:'#06b6d4', border:'#0891b2'},
   Cassette:    {bg:'#64748b', border:'#475569'},
 };
-const CATS_SHOW  = ['OnOff','Inverter','FloorStanding','WindowAC','Concealed','Cassette'];
+const ALL_CATS = ['OnOff','Inverter','FloorStanding','WindowAC','Concealed','Cassette'];
 const CAT_LABELS = {OnOff:'On/Off (Rotary)',Inverter:'Inverter',FloorStanding:'Floor Standing AC',WindowAC:'Window AC',Concealed:'Concealed Set',Cassette:'Cassette AC'};
 const YEARS = ['2023','2024','2025','2026'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun'];
 
-// ── BUILD LEGEND ──
+// ── FILTER STATE (b2c-unified pattern: set = excluded items) ──
+const FILTER_STATE = {cat: new Set()};
+
+// ── MULTI-SELECT BUILDER (b2c-unified pattern) ──
+function buildMultiSelect(id) {
+  const wrap = document.getElementById(id);
+  if(!wrap) return;
+  const state = FILTER_STATE.cat;
+  const items = ALL_CATS.map(c => ({value:c, label:CAT_LABELS[c]}));
+
+  function getLabel() {
+    const active = items.length - state.size;
+    return state.size === 0 ? `All (${items.length})` : `${active} of ${items.length}`;
+  }
+
+  const btn = document.createElement('button');
+  btn.className = 'ms-btn';
+  btn.textContent = getLabel();
+
+  const dd = document.createElement('div');
+  dd.className = 'ms-dd';
+
+  // All row
+  const allLbl = document.createElement('label');
+  allLbl.className = 'ms-dd-head';
+  const allCb = document.createElement('input');
+  allCb.type = 'checkbox'; allCb.checked = true;
+  allLbl.appendChild(allCb);
+  allLbl.appendChild(document.createTextNode(' All categories'));
+  dd.appendChild(allLbl);
+
+  const itemCbs = [];
+  items.forEach(item => {
+    const lbl = document.createElement('label');
+    const cb = document.createElement('input');
+    cb.type = 'checkbox'; cb.checked = !state.has(item.value);
+    cb.addEventListener('change', () => {
+      if(!cb.checked) state.add(item.value); else state.delete(item.value);
+      allCb.checked = state.size === 0;
+      btn.className = 'ms-btn' + (state.size > 0 ? ' active-filter' : '');
+      btn.textContent = getLabel();
+      cascadeAndUpdate();
+    });
+    lbl.appendChild(cb);
+    const dot = document.createElement('span');
+    dot.style.cssText = `width:9px;height:9px;border-radius:2px;background:${C[item.value].bg};display:inline-block;flex-shrink:0`;
+    lbl.appendChild(dot);
+    lbl.appendChild(document.createTextNode(' ' + item.label));
+    dd.appendChild(lbl);
+    itemCbs.push({cb, value:item.value});
+  });
+
+  allCb.addEventListener('change', () => {
+    if(allCb.checked) {
+      state.clear();
+      itemCbs.forEach(x => x.cb.checked = true);
+    } else {
+      items.forEach(item => state.add(item.value));
+      itemCbs.forEach(x => x.cb.checked = false);
+    }
+    btn.className = 'ms-btn' + (state.size > 0 ? ' active-filter' : '');
+    btn.textContent = getLabel();
+    cascadeAndUpdate();
+  });
+
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    document.querySelectorAll('.ms-dd.open').forEach(d => { if(d!==dd) d.classList.remove('open'); });
+    dd.classList.toggle('open');
+  });
+
+  wrap.innerHTML = '';
+  wrap.appendChild(btn);
+  wrap.appendChild(dd);
+}
+
+document.addEventListener('click', () => document.querySelectorAll('.ms-dd.open').forEach(d => d.classList.remove('open')));
+
+// ── HELPERS ──
+function activeCats() { return ALL_CATS.filter(c => !FILTER_STATE.cat.has(c)); }
+
+function yrTotal(yr, cats) { return cats.reduce((a,c) => a + (D.annual[yr][c]||0), 0); }
+
 function buildLegend(el, cats) {
   el.innerHTML = '';
   cats.forEach(c => {
@@ -213,142 +266,138 @@ function buildLegend(el, cats) {
   });
 }
 
-// ── CHART 1: ANNUAL STACKED BAR ──
-buildLegend(document.getElementById('annualLegend'), CATS_SHOW);
-const annualCtx = document.getElementById('cAnnual').getContext('2d');
-new Chart(annualCtx, {
-  type: 'bar',
-  data: {
-    labels: YEARS.map(y => y === '2026' ? '2026E' : y),
-    datasets: CATS_SHOW.filter(c => YEARS.some(y => D.annual[y][c] > 0)).map(cat => ({
-      label: CAT_LABELS[cat],
-      data: YEARS.map(y => D.annual[y][cat] || 0),
-      backgroundColor: C[cat].bg,
-      borderColor: C[cat].border,
-      borderWidth: 1,
-      borderRadius: 3,
-    }))
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {display: false},
-      datalabels: {
-        display: ctx => ctx.dataset.data[ctx.dataIndex] >= 1000,
-        color: '#fff', font: {size:10,weight:'bold'},
-        formatter: v => v >= 1000 ? (v/1000).toFixed(1)+'K' : v
-      }
-    },
-    scales: {
-      x: {stacked:true, grid:{display:false}, ticks:{font:{size:11,weight:'600'}}},
-      y: {stacked:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}
-    }
-  }
-});
+function sortWeeks(ws) { return ws.sort((a,b) => parseInt(a.slice(1)) - parseInt(b.slice(1))); }
 
-// ── TABLE: YoY GROWTH ──
-const tYoY = document.getElementById('tYoY');
-const catTotals = {};
-CATS_SHOW.forEach(c => { catTotals[c] = {}; YEARS.forEach(y => catTotals[c][y] = D.annual[y][c]||0); });
-const yrTotals = {}; YEARS.forEach(y => yrTotals[y] = CATS_SHOW.reduce((a,c)=>a+(D.annual[y][c]||0),0));
+// ── CHART INSTANCES ──
+let annualChart=null, trendChart=null, monthlyChart=null, modelChart=null;
+let activeTrendYrs = new Set(['2023','2026']);
+let activeModelYr = '2026';
 
-let tHTML = '<thead><tr><th>Category</th>';
-YEARS.forEach(y => tHTML += `<th class="num">${y==='2026'?'2026E':y}</th>`);
-tHTML += '<th class="num">23→26 CAGR</th></tr></thead><tbody>';
+// ── RENDER: KPI CARDS ──
+function renderKPIs() {
+  const cats = activeCats();
+  const totals = YEARS.map(y => yrTotal(y, cats));
+  const maxT = Math.max(...totals);
+  const onoffShare = yr => {
+    const t = yrTotal(yr, cats) || 1;
+    return ((D.annual[yr]['OnOff']||0) / t * 100).toFixed(1);
+  };
 
-CATS_SHOW.forEach(cat => {
-  const vals = YEARS.map(y => catTotals[cat][y]);
-  if(vals.every(v=>v===0)) return;
-  tHTML += `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
-  YEARS.forEach((y,i) => {
-    const v = vals[i];
-    const prev = i>0 ? vals[i-1] : null;
-    const pct = prev && prev>0 ? ((v-prev)/prev*100).toFixed(1) : null;
-    const color = pct === null ? '' : parseFloat(pct)>=0 ? '#10b981' : '#ef4444';
-    const pctStr = pct === null ? '' : ` <span style="font-size:10px;color:${color}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
-    tHTML += `<td class="num">${v.toLocaleString()}${pctStr}</td>`;
+  let html = '';
+  YEARS.forEach((y, i) => {
+    const v = totals[i], prev = i > 0 ? totals[i-1] : null;
+    const pct = prev && prev > 0 ? (v - prev) / prev * 100 : null;
+    const cls = pct === null ? 'nt' : pct >= 0 ? 'up' : 'dn';
+    const pctStr = pct === null ? 'Base year'
+      : `${pct>=0?'▲ +':'▼ '}${Math.abs(pct).toFixed(1)}% vs ${YEARS[i-1]}`;
+    const barW = maxT > 0 ? Math.round(v / maxT * 100) : 0;
+    const barClr = pct !== null && pct < 0 ? '#ef4444' : '#3b82f6';
+    html += `<div class="kpi"><div class="yr">${y==='2026'?'2026E':y} H1</div><div class="val">${v.toLocaleString()}</div><div class="yoy ${cls}">${pctStr}</div><div class="kbar" style="width:${barW}%;background:${barClr}"></div></div>`;
   });
-  // CAGR 2023→2026
-  const v23 = catTotals[cat]['2023'], v26 = catTotals[cat]['2026'];
-  const cagr = v23>0 ? (((v26/v23)**(1/3)-1)*100).toFixed(1) : '—';
-  const cagrColor = v23>0 ? (parseFloat(cagr)>=0?'#10b981':'#ef4444') : '#64748b';
-  tHTML += `<td class="num" style="color:${cagrColor};font-weight:700">${v23>0?(parseFloat(cagr)>=0?'+':'')+cagr+'%':'—'}</td>`;
-  tHTML += '</tr>';
-});
-
-// Total row
-tHTML += `<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>`;
-YEARS.forEach((y,i) => {
-  const v = yrTotals[y];
-  const prev = i>0 ? yrTotals[YEARS[i-1]] : null;
-  const pct = prev ? ((v-prev)/prev*100).toFixed(1) : null;
-  const color = pct===null?'':parseFloat(pct)>=0?'#10b981':'#ef4444';
-  const ps = pct===null?'':` <span style="font-size:10px;color:${color}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
-  tHTML += `<td class="num"><b>${v.toLocaleString()}</b>${ps}</td>`;
-});
-const t23 = yrTotals['2023'], t26 = yrTotals['2026'];
-const tcagr = (((t26/t23)**(1/3)-1)*100).toFixed(1);
-tHTML += `<td class="num" style="color:${parseFloat(tcagr)>=0?'#10b981':'#ef4444'};font-weight:700">${parseFloat(tcagr)>=0?'+':''}${tcagr}%</td></tr>`;
-tHTML += '</tbody>';
-tYoY.innerHTML = tHTML;
-
-// ── CHART 2: TREND (Monthly/Weekly) ──
-buildLegend(document.getElementById('trendLegend'), CATS_SHOW);
-let trendChart = null;
-let activeYrs = new Set(['2023','2026']);
-
-function sortWeeks(ws) {
-  return ws.sort((a,b) => parseInt(a.replace('W',''))-parseInt(b.replace('W','')));
+  // 5th card: On/Off share
+  html += `<div class="kpi"><div class="yr">On/Off Share 2026E</div><div class="val">${onoffShare('2026')}%</div><div class="yoy nt">2025: ${onoffShare('2025')}% &nbsp;|&nbsp; 2024: ${onoffShare('2024')}%</div><div class="kbar" style="width:${onoffShare('2026')}%;background:#f59e0b"></div></div>`;
+  document.getElementById('kpiRow').innerHTML = html;
 }
 
-function buildTrendChart() {
-  const yrs = [...activeYrs].sort();
-  const isWeekly = yrs.some(y => y==='2025'||y==='2026');
+// ── RENDER: ANNUAL STACKED BAR ──
+function renderAnnual() {
+  const cats = activeCats();
+  buildLegend(document.getElementById('annualLegend'), cats);
+  const datasets = cats.filter(c => YEARS.some(y => D.annual[y][c] > 0)).map(cat => ({
+    label: CAT_LABELS[cat],
+    data: YEARS.map(y => D.annual[y][cat]||0),
+    backgroundColor: C[cat].bg, borderColor: C[cat].border, borderWidth:1, borderRadius:3,
+  }));
+  if(annualChart) annualChart.destroy();
+  annualChart = new Chart(document.getElementById('cAnnual').getContext('2d'), {
+    type:'bar',
+    data:{labels: YEARS.map(y=>y==='2026'?'2026E':y), datasets},
+    options:{
+      responsive:true,
+      plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:10,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K':v}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}
+    }
+  });
+}
+
+// ── RENDER: YoY TABLE ──
+function renderYoY() {
+  const cats = activeCats();
+  const yrTotals = {};
+  YEARS.forEach(y => yrTotals[y] = yrTotal(y, cats));
+
+  let html = '<thead><tr><th>Category</th>';
+  YEARS.forEach(y => html += `<th class="num">${y==='2026'?'2026E':y}</th>`);
+  html += '<th class="num">23→26 CAGR</th></tr></thead><tbody>';
+
+  cats.forEach(cat => {
+    const vals = YEARS.map(y => D.annual[y][cat]||0);
+    if(vals.every(v=>v===0)) return;
+    html += `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
+    vals.forEach((v,i) => {
+      const prev = i>0 ? vals[i-1] : null;
+      const pct = prev&&prev>0 ? ((v-prev)/prev*100).toFixed(1) : null;
+      const col = pct===null?'':(parseFloat(pct)>=0?'#10b981':'#ef4444');
+      const ps = pct===null ? '' : ` <span style="font-size:10px;color:${col}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
+      html += `<td class="num">${v.toLocaleString()}${ps}</td>`;
+    });
+    const v0=vals[0],v3=vals[3];
+    const cagr = v0>0 ? (((v3/v0)**(1/3)-1)*100).toFixed(1) : '—';
+    const cc = v0>0 ? (parseFloat(cagr)>=0?'#10b981':'#ef4444') : '#64748b';
+    html += `<td class="num" style="color:${cc};font-weight:700">${v0>0?(parseFloat(cagr)>=0?'+':'')+cagr+'%':'—'}</td></tr>`;
+  });
+
+  // Total row
+  html += '<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  YEARS.forEach((y,i) => {
+    const v=yrTotals[y], prev=i>0?yrTotals[YEARS[i-1]]:null;
+    const pct=prev?((v-prev)/prev*100).toFixed(1):null;
+    const col=pct===null?'':(parseFloat(pct)>=0?'#10b981':'#ef4444');
+    const ps=pct===null?'':` <span style="font-size:10px;color:${col}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
+    html+=`<td class="num"><b>${v.toLocaleString()}</b>${ps}</td>`;
+  });
+  const t0=yrTotals['2023'],t3=yrTotals['2026'];
+  const tc=(((t3/t0)**(1/3)-1)*100).toFixed(1);
+  html+=`<td class="num" style="color:${parseFloat(tc)>=0?'#10b981':'#ef4444'};font-weight:700">${parseFloat(tc)>=0?'+':''}${tc}%</td></tr></tbody>`;
+  document.getElementById('tYoY').innerHTML = html;
+}
+
+// ── RENDER: TREND CHART ──
+function renderTrend() {
+  const cats = activeCats();
+  buildLegend(document.getElementById('trendLegend'), cats);
+  const yrs = [...activeTrendYrs].sort();
   const tag = document.getElementById('trendTag');
   const note = document.getElementById('trendNote');
+  let labels, datasets=[];
 
-  let labels, datasets = [];
   if(yrs.length===1 && (yrs[0]==='2025'||yrs[0]==='2026')) {
-    const yr = yrs[0];
-    const wdata = yr==='2025' ? D.weekly25 : D.weekly26;
+    const yr=yrs[0], wdata=yr==='2025'?D.weekly25:D.weekly26;
     labels = sortWeeks(Object.keys(wdata));
-    tag.textContent = yr === '2026' ? '2026E Weekly (W1–W27)' : '2025 Weekly (W1–W26)';
-    note.textContent = yr==='2026' ? 'W18–W27: Forecast incl. Mega promo' : 'Weekly actual';
-
-    CATS_SHOW.forEach(cat => {
-      const vals = labels.map(w => wdata[w]?.[cat]||0);
+    tag.textContent = yr==='2026'?'2026E Weekly (W1–W27)':'2025 Weekly (W1–W26)';
+    note.textContent = yr==='2026'?'W18–W27: Forecast incl. Mega promo':'Weekly actual';
+    cats.forEach(cat => {
+      const vals=labels.map(w=>wdata[w]?.[cat]||0);
       if(vals.every(v=>v===0)) return;
       datasets.push({
-        label: CAT_LABELS[cat],
-        data: vals,
-        backgroundColor: labels.map(w => {
-          if(yr==='2026' && wdata[w]?._fcst) return C[cat].bg+'99';
-          return C[cat].bg;
-        }),
-        borderColor: C[cat].border,
-        borderWidth: yr==='2026' ? labels.map(w => wdata[w]?._fcst?1.5:0) : 0,
-        borderDash: [4,2],
-        borderRadius: 2,
-        stack: 'main',
+        label:CAT_LABELS[cat], data:vals, borderRadius:2, stack:'main',
+        backgroundColor:labels.map(w=>(yr==='2026'&&wdata[w]?._fcst)?C[cat].bg+'99':C[cat].bg),
+        borderColor:C[cat].border,
+        borderWidth:yr==='2026'?labels.map(w=>wdata[w]?._fcst?1.5:0):0,
       });
     });
   } else {
-    // Monthly view (possibly multi-year overlay)
-    labels = MONTHS;
-    tag.textContent = yrs.join(' + ') + ' Monthly';
+    labels=MONTHS;
+    tag.textContent = yrs.join(' + ')+' Monthly';
     note.textContent = '2023/24: end-of-month concentration in data';
-
     yrs.forEach(yr => {
-      const alpha = yr==='2026'?'':'99';
-      CATS_SHOW.forEach(cat => {
-        const vals = MONTHS.map(m => D.monthly[yr][m]?.[cat]||0);
+      cats.forEach(cat => {
+        const vals=MONTHS.map(m=>D.monthly[yr][m]?.[cat]||0);
         if(vals.every(v=>v===0)) return;
         datasets.push({
-          label: `${yr} ${CAT_LABELS[cat]}`,
-          data: vals,
-          backgroundColor: C[cat].bg + (yrs.length>1 && yr!='2026' ? '88':''),
-          borderRadius: 2,
-          stack: yr,
+          label:`${yr} ${CAT_LABELS[cat]}`, data:vals,
+          backgroundColor:C[cat].bg+(yrs.length>1&&yr!='2026'?'88':''),
+          borderRadius:2, stack:yr,
         });
       });
     });
@@ -356,167 +405,118 @@ function buildTrendChart() {
 
   if(trendChart) trendChart.destroy();
   trendChart = new Chart(document.getElementById('cTrend').getContext('2d'), {
-    type: 'bar',
-    data: {labels, datasets},
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {display: yrs.length>1, position:'top', labels:{boxWidth:10,font:{size:10}}},
-        datalabels: {display:false}
-      },
-      scales: {
-        x: {stacked:true, grid:{display:false}, ticks:{font:{size:9}}},
-        y: {stacked:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback:v=>v>=1000?(v/1000).toFixed(1)+'K':v}}
-      }
+    type:'bar', data:{labels,datasets},
+    options:{
+      responsive:true,
+      plugins:{legend:{display:yrs.length>1,position:'top',labels:{boxWidth:10,font:{size:10}}},datalabels:{display:false}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:9}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(1)+'K':v}}}
     }
   });
 }
 
-document.getElementById('trendTabs').querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    const yr = tab.dataset.yr;
-    if(activeYrs.has(yr)) { if(activeYrs.size>1) activeYrs.delete(yr); }
-    else activeYrs.add(yr);
-    document.getElementById('trendTabs').querySelectorAll('.tab').forEach(t => {
-      t.classList.toggle('active', activeYrs.has(t.dataset.yr));
-    });
-    buildTrendChart();
-  });
-});
-buildTrendChart();
-
-// ── CHART 3: MONTHLY COMPARISON (all years side by side) ──
-const monthlyCtx = document.getElementById('cMonthly').getContext('2d');
-const YEAR_COLORS = {'2023':'#94a3b8','2024':'#60a5fa','2025':'#f59e0b','2026':'#2563eb'};
-new Chart(monthlyCtx, {
-  type: 'bar',
-  data: {
-    labels: MONTHS,
-    datasets: YEARS.map(yr => ({
-      label: yr==='2026'?'2026E':yr,
-      data: MONTHS.map(m => CATS_SHOW.reduce((a,c)=>a+(D.monthly[yr][m]?.[c]||0),0)),
-      backgroundColor: YEAR_COLORS[yr] + (yr==='2026'?'':'cc'),
-      borderRadius: 3,
-    }))
-  },
-  options: {
-    responsive: true,
-    plugins: {
-      legend: {position:'top', labels:{boxWidth:10,font:{size:11}}},
-      datalabels: {
-        display: ctx => ctx.dataset.data[ctx.dataIndex] >= 8000,
-        color:'#fff', font:{size:9,weight:'bold'},
-        formatter: v => v>=1000?(v/1000).toFixed(1)+'K':v
-      }
-    },
-    scales: {
-      x: {grid:{display:false}, ticks:{font:{size:11}}},
-      y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}
+// ── RENDER: MONTHLY COMPARISON ──
+const YEAR_COLORS={'2023':'#94a3b8','2024':'#60a5fa','2025':'#f59e0b','2026':'#2563eb'};
+function renderMonthly() {
+  const cats = activeCats();
+  const datasets = YEARS.map(yr => ({
+    label:yr==='2026'?'2026E':yr,
+    data:MONTHS.map(m => cats.reduce((a,c)=>a+(D.monthly[yr][m]?.[c]||0),0)),
+    backgroundColor:YEAR_COLORS[yr]+(yr==='2026'?'':'cc'),
+    borderRadius:3,
+  }));
+  if(monthlyChart) monthlyChart.destroy();
+  monthlyChart = new Chart(document.getElementById('cMonthly').getContext('2d'), {
+    type:'bar', data:{labels:MONTHS,datasets},
+    options:{
+      responsive:true,
+      plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=8000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K':v}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}
     }
-  }
-});
-
-// ── CHART 4: MODEL BREAKDOWN ──
-let modelChart = null;
-let activeModelYr = '2026';
-let activeCat = 'All';
-
-const CAT_COLORS_MAP = {'OnOff':C.OnOff.bg,'Inverter':C.Inverter.bg,'FloorStanding':C.FloorStanding.bg,'WindowAC':C.WindowAC.bg,'Concealed':C.Concealed.bg,'Cassette':C.Cassette.bg};
-
-function buildModelChart() {
-  const mdata = D.models[activeModelYr];
-  let rows = Object.entries(mdata).map(([model, cats]) => {
-    const catKey = Object.keys(cats).find(c => (cats[c]||0) > 0) || 'Inverter';
-    const qty = Object.values(cats).reduce((a,v)=>a+v,0);
-    return {model, cat: catKey, qty, cats};
   });
-  if(activeCat !== 'All') rows = rows.filter(r => r.cat === activeCat);
-  rows.sort((a,b) => b.qty - a.qty);
-  const top = rows.slice(0, 20);
-  const total = rows.reduce((a,r)=>a+r.qty, 0);
+}
 
-  document.getElementById('modelTag').textContent = `${activeModelYr==='2026'?'2026 W1–W17 Actual':'H1 '+activeModelYr} · ${activeCat==='All'?'All Categories':CAT_LABELS[activeCat]||activeCat} · Top ${top.length}`;
+// ── RENDER: MODEL BREAKDOWN ──
+function renderModels() {
+  const cats = activeCats();
+  const mdata = D.models[activeModelYr];
+  let rows = Object.entries(mdata).map(([model,catObj]) => {
+    const catKey = Object.keys(catObj).find(c=>(catObj[c]||0)>0)||'Inverter';
+    const qty = Object.values(catObj).reduce((a,v)=>a+v,0);
+    return {model, cat:catKey, qty};
+  }).filter(r => cats.includes(r.cat));
+  rows.sort((a,b)=>b.qty-a.qty);
+  const top=rows.slice(0,20), total=rows.reduce((a,r)=>a+r.qty,0);
 
-  // Bar chart
+  document.getElementById('modelTag').textContent =
+    `${activeModelYr==='2026'?'2026 W1–W17 Actual':'H1 '+activeModelYr} · ${cats.length<ALL_CATS.length?cats.map(c=>CAT_LABELS[c]).join(', '):'All Categories'} · Top ${top.length}`;
+
   if(modelChart) modelChart.destroy();
   modelChart = new Chart(document.getElementById('cModels').getContext('2d'), {
-    type: 'bar',
-    data: {
-      labels: top.map(r=>r.model),
-      datasets: [{
-        label: 'Qty',
-        data: top.map(r=>r.qty),
-        backgroundColor: top.map(r=>CAT_COLORS_MAP[r.cat]||'#64748b'),
-        borderRadius: 3,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      plugins: {
-        legend: {display:false},
-        datalabels: {
-          anchor:'end', align:'end', font:{size:9,weight:'bold'}, color:'#374151',
-          formatter: v => v.toLocaleString()
-        }
-      },
-      scales: {
-        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:9}}},
-        y: {grid:{display:false}, ticks:{font:{size:9}}}
-      }
-    }
+    type:'bar',
+    data:{labels:top.map(r=>r.model),datasets:[{label:'Qty',data:top.map(r=>r.qty),backgroundColor:top.map(r=>C[r.cat]?.bg||'#64748b'),borderRadius:3}]},
+    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'end',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v.toLocaleString()}},scales:{x:{grid:{color:'#f1f5f9'},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}
   });
 
-  // Table
   const tbody = document.getElementById('tModelBody');
-  tbody.innerHTML = '';
-  top.forEach((r, i) => {
-    const share = ((r.qty/total)*100).toFixed(1);
-    const barW = Math.round((r.qty/top[0].qty)*100);
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="color:#94a3b8;font-size:11px">${i+1}</td>
-      <td><b>${r.model}</b></td>
-      <td><span style="background:${CAT_COLORS_MAP[r.cat]}22;color:${CAT_COLORS_MAP[r.cat]};border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">${CAT_LABELS[r.cat]||r.cat}</span></td>
-      <td class="num">${r.qty.toLocaleString()}</td>
-      <td class="num">${share}%</td>
-      <td><div class="bar-cell"><div class="bar-mini" style="width:${barW}%;background:${CAT_COLORS_MAP[r.cat]}"></div></div></td>
-    `;
+  tbody.innerHTML='';
+  top.forEach((r,i)=>{
+    const share=((r.qty/total)*100).toFixed(1);
+    const barW=Math.round((r.qty/top[0].qty)*100);
+    const clr=C[r.cat]?.bg||'#64748b';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#94a3b8;font-size:11px">${i+1}</td><td><b>${r.model}</b></td><td><span style="background:${clr}22;color:${clr};border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">${CAT_LABELS[r.cat]||r.cat}</span></td><td class="num">${r.qty.toLocaleString()}</td><td class="num">${share}%</td><td><div class="bar-cell"><div class="bar-mini" style="width:${barW}%;background:${clr}"></div></div></td>`;
     tbody.appendChild(tr);
   });
-
-  // Total row
-  const tr = document.createElement('tr');
+  const tr=document.createElement('tr');
   tr.style.background='#f8fafc';
-  tr.innerHTML = `<td></td><td colspan="2"><b>합계 (전체 ${rows.length}개 모델)</b></td><td class="num"><b>${total.toLocaleString()}</b></td><td class="num"><b>100%</b></td><td></td>`;
+  tr.innerHTML=`<td></td><td colspan="2"><b>합계 (전체 ${rows.length}개 모델)</b></td><td class="num"><b>${total.toLocaleString()}</b></td><td class="num"><b>100%</b></td><td></td>`;
   tbody.appendChild(tr);
 }
 
-// Year tabs
-document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    activeModelYr = tab.dataset.yr;
-    document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.yr===activeModelYr));
-    buildModelChart();
+// ── UPDATE FILTER SUMMARY ──
+function updateFilterSummary() {
+  const ex = [...FILTER_STATE.cat];
+  const el = document.getElementById('filterSummary');
+  if(ex.length===0) { el.textContent='All categories shown'; el.style.color='var(--muted)'; }
+  else { el.textContent=`Excluding: ${ex.map(c=>CAT_LABELS[c]).join(', ')}`; el.style.color='#ef4444'; }
+}
+
+// ── CASCADE AND UPDATE (main entry point, b2c-unified pattern) ──
+function cascadeAndUpdate() {
+  updateFilterSummary();
+  renderKPIs();
+  renderAnnual();
+  renderYoY();
+  renderTrend();
+  renderMonthly();
+  renderModels();
+}
+
+// ── INIT FILTER BAR ──
+buildMultiSelect('fCat');
+
+// ── TREND TABS ──
+document.getElementById('trendTabs').querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    const yr=tab.dataset.yr;
+    if(activeTrendYrs.has(yr)){if(activeTrendYrs.size>1)activeTrendYrs.delete(yr);}
+    else activeTrendYrs.add(yr);
+    document.getElementById('trendTabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',activeTrendYrs.has(t.dataset.yr)));
+    renderTrend();
   });
 });
 
-// Cat filter
-const CAT_BTN_COLORS = {All:'#2563eb',OnOff:C.OnOff.bg,Inverter:C.Inverter.bg,FloorStanding:C.FloorStanding.bg};
-document.getElementById('catFilter').querySelectorAll('.cat-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    activeCat = btn.dataset.cat;
-    document.getElementById('catFilter').querySelectorAll('.cat-btn').forEach(b => {
-      const isActive = b.dataset.cat === activeCat;
-      b.style.background = isActive ? (CAT_BTN_COLORS[b.dataset.cat]||'#64748b') : '#fff';
-      b.style.color = isActive ? '#fff' : '#64748b';
-      b.style.borderColor = isActive ? (CAT_BTN_COLORS[b.dataset.cat]||'#64748b') : '#e2e8f0';
-    });
-    buildModelChart();
+// ── MODEL YEAR TABS ──
+document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    activeModelYr=tab.dataset.yr;
+    document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.yr===activeModelYr));
+    renderModels();
   });
 });
 
-buildModelChart();
+// ── INITIAL RENDER ──
+cascadeAndUpdate();
 </script>
 </body>
 </html>
