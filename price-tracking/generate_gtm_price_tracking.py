@@ -134,7 +134,10 @@ def load_extra() -> pd.DataFrame:
     df['compressor'] = df['Compressor_Type'].apply(norm_compressor)
     df['cold_hc'] = df['Cold_or_HC'].apply(norm_cold_hc)
     df['price'] = pd.to_numeric(df['Sale_Price'], errors='coerce')
-    return df[['brand', 'model', 'ton', 'compressor', 'cold_hc', 'price']].dropna(subset=['price', 'ton'])
+    df['url'] = df['SKU'].apply(
+        lambda s: f'https://www.extra.com/en-sa/p/{str(s).strip()}' if pd.notna(s) and str(s).strip() else ''
+    )
+    return df[['brand', 'model', 'ton', 'compressor', 'cold_hc', 'price', 'url']].dropna(subset=['price', 'ton'])
 
 
 def load_sws() -> pd.DataFrame:
@@ -358,10 +361,18 @@ def lg_ref_price(lg_rows: pd.DataFrame, comp: str) -> float | None:
 # 테이블 생성
 # ──────────────────────────────────────────────────────────────────────
 
+def _price_link(price_str: str, url: str) -> str:
+    """URL이 있으면 가격을 클릭 가능한 링크로 감쌈."""
+    if url:
+        return f'<a href="{url}" target="_blank" class="price-link">{price_str}</a>'
+    return price_str
+
+
 def build_channel_html(ch_name: str, df: pd.DataFrame) -> str:
     if df is None or df.empty:
         return '<p style="color:#888;padding:16px">데이터 없음 — 스크레이핑 후 재생성하세요.</p>'
 
+    has_url = 'url' in df.columns
     html_parts = []
 
     for comp in COMP_ORDER:
@@ -413,9 +424,11 @@ def build_channel_html(ch_name: str, df: pd.DataFrame) -> str:
                         seg = get_lg_segment(r['model'], comp)
                         model_short = (r['model'] or '').split()[0] if r['model'] else ''
                         p = fmt_price(r['price'])
+                        url = r.get('url', '') if has_url else ''
                         seg_tag = f'<span class="seg-tag">{seg}</span>' if seg else ''
                         model_tag = f'<span class="model-tag">{model_short}</span>' if model_short else ''
-                        lg_lines.append(f'{seg_tag}{model_tag}<span class="price-tag">{p}</span>')
+                        price_html = _price_link(p, url)
+                        lg_lines.append(f'{seg_tag}{model_tag}<span class="price-tag">{price_html}</span>')
                     lg_cell = '<br>'.join(lg_lines)
                     lg_td = f'<td class="lg-val lg-combined">{lg_cell}</td>'
                 else:
@@ -436,13 +449,19 @@ def build_channel_html(ch_name: str, df: pd.DataFrame) -> str:
                     if brand_rows.empty:
                         row_html += '<td class="empty">—</td>'
                         continue
-                    prices = brand_rows['price'].dropna().sort_values().tolist()
+                    brand_rows_sorted = brand_rows.sort_values('price')
+                    prices = brand_rows_sorted['price'].dropna().tolist()
                     if not prices:
                         row_html += '<td class="empty">—</td>'
                         continue
                     avg_p = float(np.mean(prices))
                     color = price_color(avg_p, lg_ref, has_lg)
-                    price_lines = '<br>'.join(fmt_price(p) for p in prices)
+                    price_lines_list = []
+                    for _, br in brand_rows_sorted.iterrows():
+                        p_str = fmt_price(br['price'])
+                        url = br.get('url', '') if has_url else ''
+                        price_lines_list.append(_price_link(p_str, url))
+                    price_lines = '<br>'.join(price_lines_list)
                     row_html += f'<td style="background:{color}">{price_lines}</td>'
 
                 html_parts.append(f'<tr>{row_html}</tr>')
@@ -497,6 +516,8 @@ td.empty { color: #ccc; background: #f8f9fa !important; text-align: center; }
 .model-tag { display: inline-block; color: #555; font-size: 11px; margin-right: 4px; }
 .price-tag { display: inline-block; color: #a50034; font-weight: 700; font-size: 12px; }
 tr:hover td { filter: brightness(0.97); }
+a.price-link { color: inherit; text-decoration: none; border-bottom: 1px dotted currentColor; }
+a.price-link:hover { text-decoration: underline; opacity: 0.8; }
 """
 
 JS = """
