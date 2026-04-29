@@ -2108,7 +2108,7 @@ function renderSummary(){
         const ms = grandTot.total ? ` <span style="font-size:10px;color:var(--muted)">(MS ${(q/grandTot.total*100).toFixed(0)}%)</span>` : '';
         return `<td style="${clr?'color:'+clr:''}">${fmtFull(q)}${ms}</td>`;
       }).join('')}
-      <td>${grandTot.others ? fmtFull(grandTot.others) : '—'}</td>
+      <td>${grandTot.others ? `${fmtFull(grandTot.others)}<span style="font-size:10px;color:var(--muted)"> (MS ${(grandTot.others/grandTot.total*100).toFixed(0)}%)</span>` : '—'}</td>
       <td style="color:var(--primary)">${fmtFull(grandTot.total)}</td>
       <td colspan="${pCount}" style="color:var(--muted);font-size:11px;font-weight:400">—</td>
     </tr>`;
