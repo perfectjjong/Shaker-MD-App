@@ -273,10 +273,21 @@ function getQ(yr, q) {
 }
 function getMonth(yr, m) {
   const grp = D.monthly[yr]?.[m]?.[chKey()];
-  if(!grp) return null;
   const cats = activeCats();
   const out = {};
-  cats.forEach(c => out[c] = grp[c]||0);
+  cats.forEach(c => out[c] = grp?.[c]||0);
+  // 2026 May/Jun: monthly snapshot only has partial actuals; add FCST weekly data
+  if(yr === '2026') {
+    const MONTH_WEEKS = {May:['W18','W19','W20','W21','W22'], Jun:['W23','W24','W25','W26','W27']};
+    (MONTH_WEEKS[m]||[]).forEach(w => {
+      const wd = D.weekly['2026']?.[w];
+      if(wd?._fcst) {
+        const wg = wd[chKey()];
+        if(wg) cats.forEach(c => out[c] = (out[c]||0) + (wg[c]||0));
+      }
+    });
+  }
+  if(!grp && !cats.some(c => out[c]>0)) return null;
   out._total = cats.reduce((a,c)=>a+out[c],0);
   return out;
 }
