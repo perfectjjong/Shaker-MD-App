@@ -2063,12 +2063,12 @@ function renderSummary(){
           if(!q) return '<td style="color:var(--muted)">—</td>';
           const isLg=b==='LG', isGr=b==='GREE';
           const clr=isLg?'var(--primary)':isGr?'var(--amber)':'';
-          return `<td style="${clr?'font-weight:700;color:'+clr:''}">${q}</td>`;
+          return `<td style="${clr?'font-weight:700;color:'+clr:''}">${fmtFull(q)}</td>`;
         });
         const others = tot - qBrands.reduce((s,b)=>s+(d[b]||0),0);
         grandTot.others += others;
         grandTot.total  += tot;
-        const otherCell = others>0?`<td>${others}</td>`:'<td style="color:var(--muted)">—</td>';
+        const otherCell = others>0?`<td>${fmtFull(others)}</td>`:'<td style="color:var(--muted)">—</td>';
 
         // 가격 셀 (min~max + SKU수)
         const pCells = pBrands.map(b=>{
@@ -2091,7 +2091,7 @@ function renderSummary(){
           <td><b>${sz}</b></td>
           <td style="color:var(--muted)">${typeLabel(at)}</td>
           ${qCells.join('')}${otherCell}
-          <td style="font-weight:700">${tot}</td>
+          <td style="font-weight:700">${fmtFull(tot)}</td>
           ${pCells.join('')}
         </tr>`;
       }
@@ -2105,11 +2105,11 @@ function renderSummary(){
         const q=grandTot[b]||0;
         const isLg=b==='LG', isGr=b==='GREE';
         const clr=isLg?'var(--primary)':isGr?'var(--amber)':'';
-        const ms = grandTot.total ? ` <span style="font-size:10px;color:var(--muted)">(${(q/grandTot.total*100).toFixed(0)}%)</span>` : '';
-        return `<td style="${clr?'color:'+clr:''}">${q}${ms}</td>`;
+        const ms = grandTot.total ? ` <span style="font-size:10px;color:var(--muted)">(MS ${(q/grandTot.total*100).toFixed(0)}%)</span>` : '';
+        return `<td style="${clr?'color:'+clr:''}">${fmtFull(q)}${ms}</td>`;
       }).join('')}
-      <td>${grandTot.others||'—'}</td>
-      <td style="color:var(--primary)">${grandTot.total}</td>
+      <td>${grandTot.others ? fmtFull(grandTot.others) : '—'}</td>
+      <td style="color:var(--primary)">${fmtFull(grandTot.total)}</td>
       <td colspan="${pCount}" style="color:var(--muted);font-size:11px;font-weight:400">—</td>
     </tr>`;
 
