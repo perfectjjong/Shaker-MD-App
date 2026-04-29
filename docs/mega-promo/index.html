@@ -513,9 +513,19 @@ tr:hover td{background:#f8fafc}
 <!-- ═══ TAB 7: SUMMARY ═══ -->
 <div class="tab-pane" id="pane7">
 
+  <!-- 연도 토글 -->
+  <div style="margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:12px;font-weight:700;color:var(--muted)">연도 선택:</span>
+    <button id="btnSum2026" onclick="renderSummary('2026')"
+      style="padding:3px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:700;border:none;background:var(--primary);color:#fff">2026</button>
+    <button id="btnSum2025" onclick="renderSummary('2025')"
+      style="padding:3px 14px;border-radius:5px;cursor:pointer;font-size:12px;font-weight:700;border:1px solid #cbd5e1;background:#f1f5f9;color:var(--text)">2025</button>
+    <span id="summaryPriceNote" style="font-size:11px;color:var(--muted)"></span>
+  </div>
+
   <!-- 경쟁구도 테이블 -->
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Mini Split 경쟁구도 — ON/OFF (Rotary)</div>
+    <div class="card-title" id="titleSummaryRotary"><span class="dot" style="background:var(--primary)"></span>Mini Split 경쟁구도 — ON/OFF (Rotary)</div>
     <div class="tbl-wrap">
     <table id="tblSummaryRotary" style="font-size:12px">
       <thead><tr>
@@ -531,7 +541,7 @@ tr:hover td{background:#f8fafc}
   </div>
 
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Mini Split 경쟁구도 — Inverter</div>
+    <div class="card-title" id="titleSummaryInverter"><span class="dot" style="background:var(--green)"></span>Mini Split 경쟁구도 — Inverter</div>
     <div class="tbl-wrap">
     <table id="tblSummaryInverter" style="font-size:12px">
       <thead><tr>
@@ -547,7 +557,7 @@ tr:hover td{background:#f8fafc}
   </div>
 
   <!-- Insight -->
-  <div class="card" style="margin-bottom:12px">
+  <div class="card" id="summaryInsightCard" style="margin-bottom:12px">
     <div class="card-title"><span class="dot" style="background:var(--purple)"></span>LG Strategic Insight — eXtra Mega Promo 2026</div>
     <div style="padding:4px 0">
 
@@ -1992,10 +2002,39 @@ function renderStock(){
 }
 
 // ── Summary Tab ──────────────────────────────────────────
-function renderSummary(){
+function renderSummary(year){
   if(!window.PROMO_DATA) return;
+  year = year || '2026';
   const SF_MINI = DIM.sf.indexOf('MINI SPLIT AIR CONDITIONER');
   if(SF_MINI < 0) return;
+
+  // 연도 토글 버튼 상태 업데이트
+  ['2025','2026'].forEach(y => {
+    const btn = document.getElementById('btnSum'+y);
+    if(!btn) return;
+    if(y === year) {
+      btn.style.background = 'var(--primary)'; btn.style.color = '#fff'; btn.style.border = 'none';
+    } else {
+      btn.style.background = '#f1f5f9'; btn.style.color = 'var(--text)'; btn.style.border = '1px solid #cbd5e1';
+    }
+  });
+
+  // 카드 타이틀 + 가격 출처 안내
+  const rotTitle = document.getElementById('titleSummaryRotary');
+  const invTitle = document.getElementById('titleSummaryInverter');
+  const dotR = '<span class="dot" style="background:var(--primary)"></span>';
+  const dotI = '<span class="dot" style="background:var(--green)"></span>';
+  if(rotTitle) rotTitle.innerHTML = `${dotR}Mini Split 경쟁구도 — ON/OFF (Rotary) · ${year}`;
+  if(invTitle) invTitle.innerHTML = `${dotI}Mini Split 경쟁구도 — Inverter · ${year}`;
+
+  const priceNote = document.getElementById('summaryPriceNote');
+  if(priceNote) priceNote.textContent = year==='2025'
+    ? '※ 2025 가격 = Sell-out 단가 × 1.15 (VAT 환산 평균가 / SKU 수 미제공)'
+    : '※ 2026 가격 = Price Tracking 실측 (VAT 포함)';
+
+  // Insight 카드: 2026 전용
+  const insightCard = document.getElementById('summaryInsightCard');
+  if(insightCard) insightCard.style.display = year==='2026' ? '' : 'none';
 
   // 용량 그룹
   const sizeGroup = s => (s==='2.5 Ton'||s==='3 Ton') ? '대용량 (2.5~3T)' : s;
@@ -2003,11 +2042,11 @@ function renderSummary(){
   const typeOrderR = ['Cold - Rotary','Hot And Cold - Rotary'];
   const typeOrderI = ['Cold - Inverter','Hot And Cold - Inverter'];
 
-  // 판매 집계 (2026)
+  // 판매 집계 (선택 연도)
   const segBrand = {};
   REC.forEach(r => {
     if(r[CI.sf] !== SF_MINI) return;
-    if(DIM.y[r[CI.y]] !== '2026') return;
+    if(DIM.y[r[CI.y]] !== year) return;
     const sz  = sizeGroup(r[CI.as]>=0 ? DIM.as[r[CI.as]] : 'N/A');
     const at  = r[CI.at]>=0 ? DIM.at[r[CI.at]] : 'N/A';
     const br  = DIM.b[r[CI.b]];
@@ -2016,9 +2055,35 @@ function renderSummary(){
     segBrand[key][br] = (segBrand[key][br]||0) + r[CI.qty];
   });
 
-  // 가격 데이터 — {min, max, sku} per brand (Price Tracking 프로모 기간 실측)
+  // 2025 가격: Sell-out val/qty × 1.15 (VAT 환산 가중평균)
+  let PRICES_CURRENT;
+  if(year === '2025') {
+    const acc = {};
+    REC.forEach(r => {
+      if(r[CI.sf] !== SF_MINI || DIM.y[r[CI.y]] !== '2025') return;
+      const qty = r[CI.qty]; if(!qty) return;
+      const sz = sizeGroup(DIM.as[r[CI.as]] || 'N/A');
+      const at = DIM.at[r[CI.at]] || 'N/A';
+      const br = DIM.b[r[CI.b]];
+      const seg = sz+'||'+at;
+      if(!acc[seg]) acc[seg] = {};
+      if(!acc[seg][br]) acc[seg][br] = {v:0, q:0};
+      acc[seg][br].v += r[CI.val];
+      acc[seg][br].q += r[CI.qty];
+    });
+    PRICES_CURRENT = {};
+    Object.entries(acc).forEach(([seg, brands]) => {
+      PRICES_CURRENT[seg] = {};
+      Object.entries(brands).forEach(([br, {v, q}]) => {
+        const avg = Math.round(v / q * 1.15);
+        PRICES_CURRENT[seg][br] = {n: avg, x: avg, s: null}; // SKU 수 미제공
+      });
+    });
+  }
+
+  // 가격 데이터 — 2026: Price Tracking 실측 / 2025: Sell-out 동적 계산
   // null = 해당 세그먼트 SKU 없음
-  const PRICES = {
+  const PRICES_2026 = {
     '1 Ton||Cold - Rotary':                   {'LG':null, 'GREE':{n:1799,x:1949,s:4}, 'CLASS PRO':{n:1149,x:1599,s:6}, 'MIDEA':{n:1349,x:1999,s:7}},
     '1 Ton||Hot And Cold - Rotary':           {'LG':null, 'GREE':{n:2049,x:2049,s:2}, 'CLASS PRO':{n:1429,x:1649,s:4}, 'MIDEA':{n:1829,x:1989,s:6}},
     '1 Ton||Cold - Inverter':                 {'LG':{n:2299,x:2499,s:2}, 'GREE':{n:1817,x:2079,s:3}, 'CLASS PRO':null, 'MIDEA':null},
@@ -2037,6 +2102,8 @@ function renderSummary(){
     '대용량 (2.5~3T)||Hot And Cold - Inverter':{'LG':{n:5559,x:6200,s:2}, 'GREE':{n:4499,x:5149,s:4}, 'CLASS PRO':null, 'MIDEA':{n:4659,x:4879,s:4}},
   };
 
+  if(!PRICES_CURRENT) PRICES_CURRENT = PRICES_2026;
+
   const qBrands = ['LG','GREE','CLASS PRO','MIDEA'];
   const pBrands = ['LG','GREE','CLASS PRO','MIDEA'];
   const typeLabel = t => t.replace('Cold - Rotary','Cold / ON·OFF')
@@ -2054,7 +2121,7 @@ function renderSummary(){
         const d   = segBrand[key]||{};
         const tot = Object.values(d).reduce((s,v)=>s+v,0);
         if(!tot) continue;
-        const pr  = PRICES[key]||{};
+        const pr  = PRICES_CURRENT[key]||{};
 
         // 수량 셀
         const qCells = qBrands.map(b=>{
@@ -2075,7 +2142,7 @@ function renderSummary(){
           const v=pr[b];
           if(!v) return '<td style="color:var(--muted);font-size:11px">없음</td>';
           const rng = v.n===v.x ? v.n.toLocaleString() : `${v.n.toLocaleString()}~${v.x.toLocaleString()}`;
-          const sku = `<span style="color:var(--muted);font-size:10px"> (${v.s}SKU)</span>`;
+          const sku = v.s !== null ? `<span style="color:var(--muted);font-size:10px"> (${v.s}SKU)</span>` : '';
           const isLg=b==='LG', isGr=b==='GREE';
           let style='font-size:11px;';
           if(isLg && pr['GREE'] && v.n < pr['GREE'].n) style+='color:var(--green);font-weight:700';
