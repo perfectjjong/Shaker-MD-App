@@ -2078,7 +2078,11 @@ function renderSummary(year){
     Object.entries(acc).forEach(([seg, brands]) => {
       PRICES_CURRENT[seg] = {};
       Object.entries(brands).forEach(([br, prices]) => {
-        PRICES_CURRENT[seg][br] = {n: Math.min(...prices), x: Math.max(...prices), s: null};
+        const sorted = [...prices].sort((a,b)=>a-b);
+        // 이상치 제거: 하위 5% / 상위 5% 트리밍 (최소 3건 이상일 때)
+        const cut = sorted.length >= 20 ? Math.floor(sorted.length * 0.05) : 0;
+        const trimmed = sorted.slice(cut, sorted.length - cut || undefined);
+        PRICES_CURRENT[seg][br] = {n: trimmed[0], x: trimmed[trimmed.length-1], s: null};
       });
     });
   }
