@@ -527,7 +527,13 @@ tr:hover td{background:#f8fafc}
   <div class="card" style="margin-bottom:12px">
     <div class="card-title" id="titleSummaryRotary"><span class="dot" style="background:var(--primary)"></span>Mini Split 경쟁구도 — ON/OFF (Rotary)</div>
     <div class="tbl-wrap">
-    <table id="tblSummaryRotary" style="font-size:12px">
+    <table id="tblSummaryRotary" style="font-size:12px;table-layout:fixed">
+      <colgroup>
+        <col style="width:9%"><col style="width:7%">
+        <col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%">
+        <col style="width:6%"><col style="width:7%">
+        <col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:11%">
+      </colgroup>
       <thead><tr>
         <th>용량</th><th>타입</th>
         <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
@@ -543,7 +549,13 @@ tr:hover td{background:#f8fafc}
   <div class="card" style="margin-bottom:12px">
     <div class="card-title" id="titleSummaryInverter"><span class="dot" style="background:var(--green)"></span>Mini Split 경쟁구도 — Inverter</div>
     <div class="tbl-wrap">
-    <table id="tblSummaryInverter" style="font-size:12px">
+    <table id="tblSummaryInverter" style="font-size:12px;table-layout:fixed">
+      <colgroup>
+        <col style="width:9%"><col style="width:7%">
+        <col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%">
+        <col style="width:6%"><col style="width:7%">
+        <col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:11%">
+      </colgroup>
       <thead><tr>
         <th>용량</th><th>타입</th>
         <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
@@ -2155,7 +2167,7 @@ function renderSummary(year){
           const rng = v.n===v.x ? v.n.toLocaleString() : `${v.n.toLocaleString()}~${v.x.toLocaleString()}`;
           const sku = v.s !== null ? `<span style="color:var(--muted);font-size:10px"> (${v.s}SKU)</span>` : '';
           const isLg=b==='LG', isGr=b==='GREE';
-          let style='font-size:11px;';
+          let style='font-size:11px;overflow:hidden;';
           if(isLg && pr['GREE'] && v.n < pr['GREE'].n) style+='color:var(--green);font-weight:700';
           else if(isLg && pr['GREE'] && v.n > pr['GREE'].n) style+='color:var(--red)';
           else if(isGr) style+='color:var(--amber)';
