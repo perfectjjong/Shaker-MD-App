@@ -259,7 +259,7 @@ const Q2_SCENARIOS = {
   likely: {label:'Most Likely', total:36000, color:'#ca8a04',
            cats:{OnOff:1.08, Inverter:1.05, FloorStanding:1.08, WindowAC:1.0, Concealed:1.08, Cassette:1.08}},
   best:   {label:'Best',        total:39000, color:'#15803d',
-           cats:{OnOff:1.35, Inverter:1.05, FloorStanding:1.10, WindowAC:1.0, Concealed:1.10, Cassette:1.10}},
+           cats:{OnOff:1.35, Inverter:1.10, FloorStanding:1.10, WindowAC:1.0, Concealed:1.10, Cassette:1.10}},
 };
 // 전역 FCST 시나리오 factor — H1/Q2/Monthly 모든 탭에서 사용
 function sf(c){ return Q2_SCENARIOS[q2Scenario].cats[c] || 1.0; }
@@ -744,18 +744,30 @@ function renderQ2() {
   ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
   scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
 
+  const scnLabel = `2026E<br><span style="font-size:9px;color:${scn.color};font-weight:700">${scn.label}</span>`;
   let tHtml='<thead><tr><th>Category</th>';
-  YEARS.forEach(y=>tHtml+=`<th class="num">${y==='2026'?'2026E':y} Q2</th>`);
+  YEARS.forEach(y=>tHtml+=`<th class="num">${y==='2026'?scnLabel:y+' Q2'}</th>`);
   tHtml+='</tr></thead><tbody>';
   cats.forEach(cat=>{
-    const vals=YEARS.map(y=>q2Cats(y)[cat]||0);
+    const vals=YEARS.map(y=>Math.round(q2Cats(y)[cat]||0));
     if(vals.every(v=>v===0)) return;
     tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
-    vals.forEach((v,i)=>tHtml+=`<td class="num">${v.toLocaleString()} ${i>0?fmtPct(v,vals[i-1]):''}</td>`);
+    vals.forEach((v,i)=>{
+      const isScn = (i===3);
+      tHtml+=`<td class="num" ${isScn?`style="color:${scn.color};font-weight:600"`:''}>
+        ${v.toLocaleString()} ${i>0?fmtPct(v,vals[i-1]):''}
+      </td>`;
+    });
     tHtml+='</tr>';
   });
+  const roundTots = q2tots.map(v=>Math.round(v));
   tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
-  YEARS.forEach((y,i)=>tHtml+=`<td class="num"><b>${q2tots[i].toLocaleString()}</b> ${i>0?fmtPct(q2tots[i],q2tots[i-1]):''}</td>`);
+  YEARS.forEach((y,i)=>{
+    const isScn = (i===3);
+    tHtml+=`<td class="num" ${isScn?`style="color:${scn.color}"`:''}>
+      <b>${roundTots[i].toLocaleString()}</b> ${i>0?fmtPct(roundTots[i],roundTots[i-1]):''}
+    </td>`;
+  });
   tHtml+='</tr></tbody>';
   document.getElementById('tQ2').innerHTML = tHtml;
 }
