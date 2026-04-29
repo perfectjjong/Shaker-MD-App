@@ -2046,6 +2046,8 @@ function renderSummary(){
 
   function buildRows(types){
     let html = '';
+    const grandTot = {LG:0, GREE:0, 'CLASS PRO':0, MIDEA:0, others:0, total:0};
+
     for(const sz of sizeOrder){
       for(const at of types){
         const key = sz+'||'+at;
@@ -2057,12 +2059,15 @@ function renderSummary(){
         // 수량 셀
         const qCells = qBrands.map(b=>{
           const q=d[b]||0;
+          grandTot[b] = (grandTot[b]||0) + q;
           if(!q) return '<td style="color:var(--muted)">—</td>';
           const isLg=b==='LG', isGr=b==='GREE';
           const clr=isLg?'var(--primary)':isGr?'var(--amber)':'';
           return `<td style="${clr?'font-weight:700;color:'+clr:''}">${q}</td>`;
         });
         const others = tot - qBrands.reduce((s,b)=>s+(d[b]||0),0);
+        grandTot.others += others;
+        grandTot.total  += tot;
         const otherCell = others>0?`<td>${others}</td>`:'<td style="color:var(--muted)">—</td>';
 
         // 가격 셀 (min~max + SKU수)
@@ -2079,7 +2084,6 @@ function renderSummary(){
           return `<td style="${style}">${rng}${sku}</td>`;
         });
 
-        // LG 부재 행 강조
         const lgAbsent = !d['LG'] && tot > 20;
         const rowStyle = lgAbsent ? 'background:#fff7ed' : '';
 
@@ -2092,6 +2096,23 @@ function renderSummary(){
         </tr>`;
       }
     }
+
+    // 합계 행
+    const pCount = pBrands.length;
+    html += `<tr style="background:#f1f5f9;font-weight:700;border-top:2px solid #cbd5e1">
+      <td colspan="2">합계</td>
+      ${qBrands.map(b=>{
+        const q=grandTot[b]||0;
+        const isLg=b==='LG', isGr=b==='GREE';
+        const clr=isLg?'var(--primary)':isGr?'var(--amber)':'';
+        const ms = grandTot.total ? ` <span style="font-size:10px;color:var(--muted)">(${(q/grandTot.total*100).toFixed(0)}%)</span>` : '';
+        return `<td style="${clr?'color:'+clr:''}">${q}${ms}</td>`;
+      }).join('')}
+      <td>${grandTot.others||'—'}</td>
+      <td style="color:var(--primary)">${grandTot.total}</td>
+      <td colspan="${pCount}" style="color:var(--muted);font-size:11px;font-weight:400">—</td>
+    </tr>`;
+
     return html;
   }
 
