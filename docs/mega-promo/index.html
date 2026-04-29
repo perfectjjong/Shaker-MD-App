@@ -477,11 +477,12 @@ tr:hover td{background:#f8fafc}
     📦 <b>Stock Basis:</b> W17 (as of 4/27) · Days of Cover = W17 Stock ÷ Daily Run-rate (D0+D1 avg) · Promo remaining: 18 days
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-    <div class="kpi red"><div class="kpi-lbl">Stock-out Risk</div><div class="kpi-val" id="kpiStockRisk">—</div><div class="kpi-sub">brands (DOC &lt; 18d)</div></div>
-    <div class="kpi amber"><div class="kpi-lbl">Tight Stock</div><div class="kpi-val" id="kpiStockTight">—</div><div class="kpi-sub">brands (18~25d)</div></div>
-    <div class="kpi green"><div class="kpi-lbl">Healthy</div><div class="kpi-val" id="kpiStockOk">—</div><div class="kpi-sub">brands (25~50d)</div></div>
-    <div class="kpi purple"><div class="kpi-lbl">Overhang</div><div class="kpi-val" id="kpiStockOver">—</div><div class="kpi-sub">brands (DOC &gt; 50d)</div></div>
+    <div class="kpi red"><div class="kpi-lbl">Stock-out Risk</div><div class="kpi-val" id="kpiStockRisk">—</div><div class="kpi-sub" id="subStockRisk">brands</div></div>
+    <div class="kpi amber"><div class="kpi-lbl">Tight Stock</div><div class="kpi-val" id="kpiStockTight">—</div><div class="kpi-sub" id="subStockTight">brands</div></div>
+    <div class="kpi green"><div class="kpi-lbl">Healthy</div><div class="kpi-val" id="kpiStockOk">—</div><div class="kpi-sub" id="subStockOk">brands</div></div>
+    <div class="kpi purple"><div class="kpi-lbl">Overhang</div><div class="kpi-val" id="kpiStockOver">—</div><div class="kpi-sub" id="subStockOver">brands</div></div>
   </div>
+  <div id="stockThrLabel" style="font-size:11px;color:var(--muted);margin-bottom:6px;padding:0 2px"></div>
   <div class="card" style="margin-bottom:10px">
     <div class="card-title"><span class="dot" style="background:var(--primary)"></span>AC Brand Stock vs Run-rate (Days of Cover)</div>
     <div class="tbl-wrap"><table id="tblStock">
@@ -1860,25 +1861,42 @@ function renderStock(){
     return {b, stockQty, runRate, doc};
   }).filter(r=>r.stockQty>0||r.runRate>0).sort((a,b)=>b.stockQty-a.stockQty);
 
+  // 잔여 프로모 일수 기반 동적 임계값
+  const promoEnd2026 = new Date(PROMO_DATA.meta.promo_years['2026'].end);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const remainDays = Math.max(1, Math.round((promoEnd2026 - today) / 86400000));
+  // Risk: 프로모 못 버팀 / Tight: 버퍼 50% 미만 / Healthy: 적정 / Overhang: 프로모 3배 초과
+  const THR_RISK  = remainDays;           // < remainDays
+  const THR_TIGHT = Math.round(remainDays * 1.5);  // < remainDays×1.5
+  const THR_OVER  = Math.round(remainDays * 3.0);  // > remainDays×3
+
   // KPIs
-  const risk = stockRows.filter(r=>r.doc!==null&&r.doc<18).length;
-  const tight = stockRows.filter(r=>r.doc!==null&&r.doc>=18&&r.doc<25).length;
-  const ok = stockRows.filter(r=>r.doc!==null&&r.doc>=25&&r.doc<=50).length;
-  const over = stockRows.filter(r=>r.doc!==null&&r.doc>50).length;
+  const risk = stockRows.filter(r=>r.doc!==null&&r.doc<THR_RISK).length;
+  const tight = stockRows.filter(r=>r.doc!==null&&r.doc>=THR_RISK&&r.doc<THR_TIGHT).length;
+  const ok = stockRows.filter(r=>r.doc!==null&&r.doc>=THR_TIGHT&&r.doc<=THR_OVER).length;
+  const over = stockRows.filter(r=>r.doc!==null&&r.doc>THR_OVER).length;
   document.getElementById('kpiStockRisk').textContent = risk;
   document.getElementById('kpiStockTight').textContent = tight;
   document.getElementById('kpiStockOk').textContent = ok;
   document.getElementById('kpiStockOver').textContent = over;
 
+  // 임계값 라벨 및 KPI sub-label 동적 업데이트
+  const thrLabelEl = document.getElementById('stockThrLabel');
+  if(thrLabelEl) thrLabelEl.textContent = `📅 잔여 프로모 ${remainDays}일 기준 동적 임계값 — 🔴 <${THR_RISK}d  🟡 ${THR_RISK}~${THR_TIGHT}d  🟢 ${THR_TIGHT}~${THR_OVER}d  🟣 >${THR_OVER}d`;
+  const subR=document.getElementById('subStockRisk'); if(subR) subR.textContent=`brands (DOC < ${THR_RISK}d)`;
+  const subT=document.getElementById('subStockTight'); if(subT) subT.textContent=`brands (${THR_RISK}~${THR_TIGHT}d)`;
+  const subO=document.getElementById('subStockOk'); if(subO) subO.textContent=`brands (${THR_TIGHT}~${THR_OVER}d)`;
+  const subV=document.getElementById('subStockOver'); if(subV) subV.textContent=`brands (DOC > ${THR_OVER}d)`;
+
   const stockTbody = document.querySelector('#tblStock tbody');
   stockTbody.innerHTML = stockRows.map(({b,stockQty,runRate,doc}) => {
     const docStr = doc!==null ? doc.toFixed(1)+'d' : '—';
     const status = doc===null ? '<span style="color:var(--muted)">No sales data</span>' :
-      doc<18  ? '<span style="color:var(--red);font-weight:700">🔴 Stock-out Risk</span>' :
-      doc<25  ? '<span style="color:var(--amber);font-weight:700">🟡 Tight</span>' :
-      doc<=50 ? '<span style="color:var(--green);font-weight:700">🟢 Healthy</span>' :
-                '<span style="color:var(--purple);font-weight:700">🟣 Overhang</span>';
-    const docColor = doc===null?'':doc<18?'color:var(--red);font-weight:700':doc<25?'color:var(--amber);font-weight:700':doc<=50?'color:var(--green)':'color:var(--purple)';
+      doc<THR_RISK  ? '<span style="color:var(--red);font-weight:700">🔴 Stock-out Risk</span>' :
+      doc<THR_TIGHT ? '<span style="color:var(--amber);font-weight:700">🟡 Tight</span>' :
+      doc<=THR_OVER ? '<span style="color:var(--green);font-weight:700">🟢 Healthy</span>' :
+                      '<span style="color:var(--purple);font-weight:700">🟣 Overhang</span>';
+    const docColor = doc===null?'':doc<THR_RISK?'color:var(--red);font-weight:700':doc<THR_TIGHT?'color:var(--amber);font-weight:700':doc<=THR_OVER?'color:var(--green)':'color:var(--purple)';
     return `<tr>
       <td><b>${b}</b></td>
       <td>${fmtFull(stockQty)}</td>
