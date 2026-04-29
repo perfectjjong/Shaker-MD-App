@@ -2019,22 +2019,22 @@ function renderSummary(){
   // 가격 데이터 — {min, max, sku} per brand (Price Tracking 프로모 기간 실측)
   // null = 해당 세그먼트 SKU 없음
   const PRICES = {
-    '1 Ton||Cold - Rotary':             {LG:null, GREE:{n:1949,x:1949,s:4}, 'CLASS PRO':{n:1299,x:1549,s:8}, MIDEA:{n:1729,x:1869,s:12}},
-    '1 Ton||Hot And Cold - Rotary':     {LG:null, GREE:{n:2049,x:2049,s:4}, 'CLASS PRO':{n:1429,x:1599,s:8}, MIDEA:{n:1829,x:1969,s:8}},
-    '1 Ton||Cold - Inverter':           {LG:{n:2299,x:2299,s:4}, GREE:{n:2079,x:2079,s:4}, 'CLASS PRO':null, MIDEA:null},
-    '1 Ton||Hot And Cold - Inverter':   {LG:{n:2599,x:2599,s:4}, GREE:{n:2199,x:2199,s:4}, 'CLASS PRO':null, MIDEA:null},
-    '1.5 Ton||Cold - Rotary':           {LG:{n:1999,x:2040,s:4}, GREE:{n:2199,x:2299,s:8}, 'CLASS PRO':{n:1599,x:1849,s:8}, MIDEA:{n:1949,x:2169,s:16}},
-    '1.5 Ton||Hot And Cold - Rotary':   {LG:{n:2099,x:2390,s:4}, GREE:{n:2649,x:2649,s:4}, 'CLASS PRO':{n:1699,x:1899,s:8}, MIDEA:{n:2129,x:2269,s:14}},
-    '1.5 Ton||Cold - Inverter':         {LG:{n:2499,x:3299,s:17}, GREE:{n:2359,x:2359,s:4}, 'CLASS PRO':null, MIDEA:{n:2589,x:2589,s:4}},
-    '1.5 Ton||Hot And Cold - Inverter': {LG:{n:2749,x:2959,s:8}, GREE:{n:2699,x:2699,s:4}, 'CLASS PRO':{n:1999,x:1999,s:4}, MIDEA:{n:3819,x:3819,s:4}},
-    '2 Ton||Cold - Rotary':             {LG:null, GREE:{n:2699,x:2699,s:4}, 'CLASS PRO':{n:1999,x:2449,s:8}, MIDEA:{n:2449,x:2619,s:11}},
-    '2 Ton||Hot And Cold - Rotary':     {LG:{n:2599,x:2650,s:4}, GREE:{n:2849,x:3099,s:5}, 'CLASS PRO':{n:2199,x:2599,s:8}, MIDEA:{n:2629,x:2769,s:12}},
-    '2 Ton||Cold - Inverter':           {LG:{n:2799,x:3409,s:12}, GREE:null, 'CLASS PRO':null, MIDEA:{n:3069,x:3069,s:4}},
-    '2 Ton||Hot And Cold - Inverter':   {LG:{n:3309,x:3669,s:11}, GREE:{n:3349,x:3349,s:4}, 'CLASS PRO':{n:2549,x:2549,s:8}, MIDEA:{n:3489,x:4529,s:8}},
-    '대용량 (2.5~3T)||Cold - Rotary':   {LG:{n:3699,x:3699,s:4}, GREE:{n:3739,x:4249,s:8}, 'CLASS PRO':{n:2949,x:3899,s:16}, MIDEA:{n:3529,x:3779,s:8}},
-    '대용량 (2.5~3T)||Hot And Cold - Rotary': {LG:{n:3899,x:3899,s:4}, GREE:{n:4299,x:4849,s:8}, 'CLASS PRO':{n:3249,x:3849,s:8}, MIDEA:{n:3729,x:4369,s:8}},
-    '대용량 (2.5~3T)||Cold - Inverter':  {LG:{n:5399,x:5400,s:4}, GREE:{n:3959,x:4849,s:8}, 'CLASS PRO':null, MIDEA:null},
-    '대용량 (2.5~3T)||Hot And Cold - Inverter': {LG:{n:5559,x:6740,s:4}, GREE:{n:4499,x:5149,s:8}, 'CLASS PRO':null, MIDEA:{n:4659,x:4879,s:8}},
+    '1 Ton||Cold - Rotary':                   {'LG':null, 'GREE':{n:1799,x:1949,s:4}, 'CLASS PRO':{n:1149,x:1599,s:6}, 'MIDEA':{n:1349,x:1999,s:7}},
+    '1 Ton||Hot And Cold - Rotary':           {'LG':null, 'GREE':{n:2049,x:2049,s:2}, 'CLASS PRO':{n:1429,x:1649,s:4}, 'MIDEA':{n:1829,x:1989,s:6}},
+    '1 Ton||Cold - Inverter':                 {'LG':{n:2299,x:2499,s:2}, 'GREE':{n:1817,x:2079,s:3}, 'CLASS PRO':null, 'MIDEA':null},
+    '1 Ton||Hot And Cold - Inverter':         {'LG':{n:2599,x:2799,s:2}, 'GREE':{n:2199,x:2199,s:2}, 'CLASS PRO':null, 'MIDEA':null},
+    '1.5 Ton||Cold - Rotary':                 {'LG':{n:1999,x:2099,s:2}, 'GREE':{n:1389,x:2449,s:6}, 'CLASS PRO':{n:1049,x:1899,s:10}, 'MIDEA':{n:1949,x:2389,s:10}},
+    '1.5 Ton||Hot And Cold - Rotary':         {'LG':{n:2099,x:2290,s:2}, 'GREE':{n:1429,x:2649,s:5}, 'CLASS PRO':{n:1279,x:1999,s:6}, 'MIDEA':{n:2129,x:2599,s:8}},
+    '1.5 Ton||Cold - Inverter':               {'LG':{n:2499,x:3559,s:12}, 'GREE':{n:2099,x:2549,s:4}, 'CLASS PRO':null, 'MIDEA':{n:1579,x:2589,s:6}},
+    '1.5 Ton||Hot And Cold - Inverter':       {'LG':{n:2499,x:3149,s:6}, 'GREE':{n:2699,x:2699,s:2}, 'CLASS PRO':{n:1999,x:2099,s:3}, 'MIDEA':{n:1799,x:3819,s:4}},
+    '2 Ton||Cold - Rotary':                   {'LG':null, 'GREE':{n:1919,x:2899,s:4}, 'CLASS PRO':{n:1389,x:2549,s:8}, 'MIDEA':{n:2449,x:2869,s:6}},
+    '2 Ton||Hot And Cold - Rotary':           {'LG':{n:2599,x:2700,s:2}, 'GREE':{n:2049,x:3099,s:5}, 'CLASS PRO':{n:2199,x:2699,s:4}, 'MIDEA':{n:2629,x:3089,s:6}},
+    '2 Ton||Cold - Inverter':                 {'LG':{n:2799,x:3744,s:7}, 'GREE':{n:2899,x:3149,s:2}, 'CLASS PRO':null, 'MIDEA':{n:2099,x:3069,s:5}},
+    '2 Ton||Hot And Cold - Inverter':         {'LG':{n:3309,x:3669,s:5}, 'GREE':{n:3349,x:3349,s:2}, 'CLASS PRO':{n:2549,x:2799,s:4}, 'MIDEA':{n:2179,x:4530,s:5}},
+    '대용량 (2.5~3T)||Cold - Rotary':         {'LG':{n:3699,x:4099,s:2}, 'GREE':{n:3739,x:4599,s:4}, 'CLASS PRO':{n:2949,x:4699,s:8}, 'MIDEA':{n:3529,x:4599,s:6}},
+    '대용량 (2.5~3T)||Hot And Cold - Rotary': {'LG':{n:3899,x:4299,s:2}, 'GREE':{n:4299,x:4849,s:5}, 'CLASS PRO':{n:3249,x:3999,s:4}, 'MIDEA':{n:3729,x:4809,s:6}},
+    '대용량 (2.5~3T)||Cold - Inverter':       {'LG':{n:5399,x:5599,s:2}, 'GREE':{n:3959,x:4849,s:4}, 'CLASS PRO':null, 'MIDEA':null},
+    '대용량 (2.5~3T)||Hot And Cold - Inverter':{'LG':{n:5559,x:6200,s:2}, 'GREE':{n:4499,x:5149,s:4}, 'CLASS PRO':null, 'MIDEA':{n:4659,x:4879,s:4}},
   };
 
   const qBrands = ['LG','GREE','CLASS PRO','MIDEA'];
