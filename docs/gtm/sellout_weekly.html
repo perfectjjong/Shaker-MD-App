@@ -70,7 +70,7 @@ tr:hover td{background:#fafafa}
   <div class="kpi">
     <div class="label">Apr Cumul (W14–W17)</div>
     <div class="value">9,027</div>
-    <div class="sub neutral">+W18 fcst → ~10,815</div>
+    <div class="sub neutral">+W18 fcst → ~11,567</div>
   </div>
   <div class="kpi">
     <div class="label">Q1 Total (W1–W13)</div>
@@ -93,7 +93,7 @@ tr:hover td{background:#fafafa}
 
 <!-- Main Trend Chart -->
 <div class="card" style="margin-bottom:16px">
-  <h3>Weekly Sell-out Actuals + Forecast <span class="tag">W1–W26</span></h3>
+  <h3>Weekly Sell-out Actuals + Forecast <span class="tag">W1–W27</span></h3>
   <canvas id="cMain" height="100"></canvas>
 </div>
 
@@ -121,7 +121,7 @@ tr:hover td{background:#fafafa}
 
   <!-- Forecast Table -->
   <div class="card">
-    <h3>Demand Forecast <span class="tag-green tag">W18–W26</span></h3>
+    <h3>Demand Forecast <span class="tag-green tag">W18–W27</span></h3>
     <table>
       <thead><tr><th>Week</th><th class="num">Total</th><th class="num">Mini Split</th></tr></thead>
       <tbody id="fcstBody"></tbody>
@@ -164,7 +164,7 @@ tr:hover td{background:#fafafa}
   </div>
   <div class="risk-card">
     <h4 style="color:#16a34a">✓ Opportunities & Actions</h4>
-    <div class="risk-item"><span class="pill pill-green">ACT</span><span>Q2 peak (W22+) forecast 2,100–3,000/wk — pre-position inventory by W20</span></div>
+    <div class="risk-item"><span class="pill pill-green">ACT</span><span>Q2 month-end peaks W18(2,540)·W22(3,111)·W27(2,910) — pre-position inventory by W20</span></div>
     <div class="risk-item"><span class="pill pill-green">ACT</span><span>IR rebound in W17 (+IR 3,304) — run BH/BM/Tamkeen promo W19–W20</span></div>
     <div class="risk-item"><span class="pill pill-green">OPP</span><span>Concealed AC W17 spike +58% — check if project pipeline driving demand</span></div>
     <div class="risk-item"><span class="pill pill-green">OPP</span><span>W14 Eid peak +107% vs W13 — replicate promo mechanics for W22 summer kick-off</span></div>
@@ -173,14 +173,14 @@ tr:hover td{background:#fafafa}
 
 </div><!-- /container -->
 
-<div class="footer">LG Saudi Arabia · AC Business Unit · Weekly Management Report W17 (Apr 21–27, 2026) · All 15 channels OR+IR · Data: b2c-unified dashboard</div>
+<div class="footer">LG Saudi Arabia · AC Business Unit · Weekly Management Report W17 (Apr 21–27, 2026) · All 15 channels OR+IR · Forecast: w/ month-end pattern (week_of_month feature) · Data: b2c-unified dashboard</div>
 
 <script>
 Chart.register(ChartDataLabels);
 
 // ---- DATA ----
 const ACTUAL = {W1:1051,W2:1181,W3:763,W4:923,W5:2501,W6:1411,W7:1964,W8:3086,W9:4520,W10:2013,W11:1261,W12:1051,W13:1010,W14:4060,W15:1874,W16:1468,W17:1625};
-const FCST   = {W18:1788,W19:1599,W20:2377,W21:2013,W22:2191,W23:2239,W24:1982,W25:2972,W26:2463};
+const FCST   = {W18:2540,W19:1691,W20:1960,W21:2185,W22:3111,W23:2721,W24:2321,W25:2541,W26:2313,W27:2910};
 const RATIO  = {W13:{ir:44,or:56},W14:{ir:52,or:48},W15:{ir:27,or:73},W16:{ir:27,or:73},W17:{ir:34,or:66},W18:{ir:37,or:63}};
 const CH_APR = [
   ['eXtra',2790],['BH',2202],['IR Others',1435],['Al Manea',918],
@@ -194,7 +194,7 @@ const PRICES = [
 ];
 
 // ---- MAIN TREND CHART ----
-const allWeeks = ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14','W15','W16','W17','W18','W19','W20','W21','W22','W23','W24','W25','W26'];
+const allWeeks = ['W1','W2','W3','W4','W5','W6','W7','W8','W9','W10','W11','W12','W13','W14','W15','W16','W17','W18','W19','W20','W21','W22','W23','W24','W25','W26','W27'];
 const actData  = allWeeks.map(w => ACTUAL[w] ?? null);
 const fcstData = allWeeks.map(w => FCST[w] ?? null);
 
@@ -300,8 +300,8 @@ new Chart(document.getElementById('cChannel'), {
 
 // ---- FORECAST TABLE ----
 const fcstBody = document.getElementById('fcstBody');
-const fcstFull = {W18:[1788,1632],W19:[1599,1438],W20:[2377,2226],W21:[2013,1824],W22:[2191,1874],W23:[2239,1852],W24:[1982,1735],W25:[2972,2622],W26:[2463,2215]};
-const peakWeeks = ['W22','W25','W26'];
+const fcstFull = {W18:[2540,2329],W19:[1691,1558],W20:[1960,1804],W21:[2185,2008],W22:[3111,2704],W23:[2721,2279],W24:[2321,2036],W25:[2541,2213],W26:[2313,2038],W27:[2910,2531]};
+const peakWeeks = ['W18','W22','W27'];
 Object.entries(fcstFull).forEach(([w,[tot,ms]])=>{
   const tr = document.createElement('tr');
   const isPeak = peakWeeks.includes(w);
@@ -313,7 +313,7 @@ const totTr = document.createElement('tr');
 totTr.style.background='#f8fafc';
 const sumTot = Object.values(fcstFull).reduce((a,v)=>a+v[0],0);
 const sumMs  = Object.values(fcstFull).reduce((a,v)=>a+v[1],0);
-totTr.innerHTML = `<td><b>W18–W26</b></td><td class="num"><b>${sumTot.toLocaleString()}</b></td><td class="num"><b>${sumMs.toLocaleString()}</b></td>`;
+totTr.innerHTML = `<td><b>W18–W27</b></td><td class="num"><b>${sumTot.toLocaleString()}</b></td><td class="num"><b>${sumMs.toLocaleString()}</b></td>`;
 fcstBody.appendChild(totTr);
 
 // ---- PRICE TABLE ----
