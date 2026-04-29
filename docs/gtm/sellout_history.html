@@ -111,6 +111,14 @@ canvas{max-width:100%}
     <div class="filter-label">Category</div>
     <div class="ms-wrap" id="fCat"></div>
   </div>
+  <div class="filter-group">
+    <div class="filter-label">Q2 시나리오</div>
+    <div style="display:flex;gap:4px">
+      <button class="grp-btn" id="scn-worst"  onclick="setQ2Scenario('worst')">▼ Worst 32K</button>
+      <button class="grp-btn active" id="scn-likely" onclick="setQ2Scenario('likely')">◆ ML 36K</button>
+      <button class="grp-btn" id="scn-best"   onclick="setQ2Scenario('best')">▲ Best 39K</button>
+    </div>
+  </div>
   <div style="margin-left:auto;align-self:center;font-size:11px" id="filterSummary"></div>
 </div>
 
@@ -174,12 +182,6 @@ canvas{max-width:100%}
 <!-- ═══════════ Q2 TAB ═══════════ -->
 <div class="tab-section" id="tab-q2">
   <div class="insight-box" id="q2Insight"></div>
-  <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-    <span style="font-size:11px;color:#6b7280;font-weight:600">2026 FCST 시나리오:</span>
-    <button class="grp-btn" id="scn-worst"  onclick="setQ2Scenario('worst')">▼ Worst &nbsp;32K</button>
-    <button class="grp-btn" id="scn-likely" onclick="setQ2Scenario('likely')">◆ Most Likely &nbsp;36K</button>
-    <button class="grp-btn" id="scn-best"   onclick="setQ2Scenario('best')">▲ Best &nbsp;39K</button>
-  </div>
   <div class="kpi-row" id="q2Kpi"></div>
   <div class="card">
     <div class="card-h">Q2 카테고리 Mix <span class="tag">연도별</span><span class="tag-fcst">2026 W18–W27 포함 (FCST)</span></div>
@@ -259,7 +261,17 @@ const Q2_SCENARIOS = {
   best:   {label:'Best',        total:39000, color:'#15803d',
            cats:{OnOff:1.35, Inverter:1.05, FloorStanding:1.10, WindowAC:1.0, Concealed:1.10, Cassette:1.10}},
 };
-function setQ2Scenario(s){q2Scenario=s;renderQ2();}
+// 전역 FCST 시나리오 factor — H1/Q2/Monthly 모든 탭에서 사용
+function sf(c){ return Q2_SCENARIOS[q2Scenario].cats[c] || 1.0; }
+function setQ2Scenario(s){
+  q2Scenario = s;
+  // 토글 버튼 active 상태 갱신
+  ['worst','likely','best'].forEach(k=>{
+    const btn = document.getElementById('scn-'+k);
+    if(btn) btn.classList.toggle('active', k===s);
+  });
+  cascadeAndUpdate();
+}
 
 // ── CHART REGISTRY ──
 const CHARTS = {};
@@ -300,7 +312,7 @@ function getMonth(yr, m) {
       const wd = D.weekly['2026']?.[w];
       if(wd?._fcst) {
         const wg = wd[chKey()];
-        if(wg) cats.forEach(c => out[c] = (out[c]||0) + (wg[c]||0));
+        if(wg) cats.forEach(c => out[c] = (out[c]||0) + (wg[c]||0)*sf(c));
       }
     });
   }
@@ -412,7 +424,7 @@ function renderH1() {
   // Insight
   const t25 = totals[2]?._total||0, t26 = totals[3]?._total||0;
   const t26e = t26 + (D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
-    const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);
+    const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);
   },0) : 0);
   const yoy = t25>0 ? ((t26e-t25)/t25*100).toFixed(1) : '—';
   const winAC25 = FILTER_STATE.cat.size===0 ? (D.h1['2025']['Total']['WindowAC']||0) : 0;
@@ -431,7 +443,7 @@ function renderH1() {
     let v = t._total;
     if(y==='2026') {
       const fcstAdd = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
-        const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);
+        const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);
       },0) : 0;
       v = v + fcstAdd;
     }
@@ -479,7 +491,7 @@ function renderH1() {
           let v = D.h1[y][chKey()][cat]||0;
           if(y==='2026'){
             const fcstAdd = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
-              const g=w[chKey()]; return a+(g?g[cat]||0:0);
+              const g=w[chKey()]; return a+(g?(g[cat]||0)*sf(cat):0);
             },0) : 0;
             v += fcstAdd;
           }
@@ -537,7 +549,7 @@ function renderH1() {
     const vals=YEARS.map(y=>{
       let v=D.h1[y][ch][cat]||0;
       if(y==='2026'){
-        const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?g[cat]||0:0);},0):0;
+        const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?(g[cat]||0)*sf(cat):0);},0):0;
         v+=fa;
       }
       return v;
@@ -555,7 +567,7 @@ function renderH1() {
   // total row
   const yrTots = YEARS.map(y=>{
     let v=cats.reduce((a,c)=>a+(D.h1[y][ch][c]||0),0);
-    if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+cats.reduce((s,c)=>s+(g?g[c]||0:0),0);},0):0;v+=fa;}
+    if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+cats.reduce((s,c)=>s+(g?(g[c]||0)*sf(c):0),0);},0):0;v+=fa;}
     return v;
   });
   tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
@@ -648,15 +660,6 @@ function renderQ2() {
   const cats = activeCats();
   const ch = chKey();
   const scn = Q2_SCENARIOS[q2Scenario];
-  const catSf = scn.cats;
-  // sf(cat): per-category FCST scale factor
-  function sf(c){return catSf[c]||1.0;}
-
-  // Update toggle button active states
-  ['worst','likely','best'].forEach(s=>{
-    const btn = document.getElementById('scn-'+s);
-    if(btn) btn.classList.toggle('active', s===q2Scenario);
-  });
 
   function q2Total(yr) {
     const actual = cats.reduce((a,c)=>a+(D.quarterly[yr]['Q2'][ch][c]||0),0);
