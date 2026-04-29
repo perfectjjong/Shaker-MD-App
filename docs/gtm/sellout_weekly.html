@@ -70,7 +70,7 @@ tr:hover td{background:#fafafa}
   <div class="kpi">
     <div class="label">Apr Cumul (W14–W17)</div>
     <div class="value">9,027</div>
-    <div class="sub neutral">+W18 fcst → ~11,567</div>
+    <div class="sub up">+W18 Mega fcst → ~14,107</div>
   </div>
   <div class="kpi">
     <div class="label">Q1 Total (W1–W13)</div>
@@ -78,9 +78,9 @@ tr:hover td{background:#fafafa}
     <div class="sub neutral">Confirmed</div>
   </div>
   <div class="kpi">
-    <div class="label">H1 YTD (W1–W17)</div>
-    <div class="value">31,762</div>
-    <div class="sub neutral">of ~67K H1 target</div>
+    <div class="label">H1 Estimate (W1–W26)</div>
+    <div class="value">~57,600</div>
+    <div class="sub neutral">W1–W17 확정 31,762</div>
   </div>
   <div class="kpi">
     <div class="label">Mini Split Share</div>
@@ -164,8 +164,8 @@ tr:hover td{background:#fafafa}
   </div>
   <div class="risk-card">
     <h4 style="color:#16a34a">✓ Opportunities & Actions</h4>
-    <div class="risk-item"><span class="pill pill-green">ACT</span><span>Q2 month-end peaks W18(2,540)·W22(3,111)·W27(2,910) — pre-position inventory by W20</span></div>
-    <div class="risk-item"><span class="pill pill-green">ACT</span><span>IR rebound in W17 (+IR 3,304) — run BH/BM/Tamkeen promo W19–W20</span></div>
+    <div class="risk-item"><span class="pill pill-green">ACT</span><span>Mega 시즌 H1 최대 피크 W18(5,080)·W19(3,044) — 재고 W16 이전 포지셔닝 필수</span></div>
+    <div class="risk-item"><span class="pill pill-green">ACT</span><span>OR 채널 Mega 프로모 4/26~5/15 — BH/SWS/Black Box 입고 W17 완료 확인 요망</span></div>
     <div class="risk-item"><span class="pill pill-green">OPP</span><span>Concealed AC W17 spike +58% — check if project pipeline driving demand</span></div>
     <div class="risk-item"><span class="pill pill-green">OPP</span><span>W14 Eid peak +107% vs W13 — replicate promo mechanics for W22 summer kick-off</span></div>
   </div>
@@ -173,14 +173,14 @@ tr:hover td{background:#fafafa}
 
 </div><!-- /container -->
 
-<div class="footer">LG Saudi Arabia · AC Business Unit · Weekly Management Report W17 (Apr 21–27, 2026) · All 15 channels OR+IR · Forecast: w/ month-end pattern (week_of_month feature) · Data: b2c-unified dashboard</div>
+<div class="footer">LG Saudi Arabia · AC Business Unit · Weekly Management Report W17 (Apr 21–27, 2026) · All 15 channels OR+IR · Forecast: month-end pattern + Mega promo boost (W18×2.0 / W19×1.8 / W20×1.3) · Data: b2c-unified dashboard</div>
 
 <script>
 Chart.register(ChartDataLabels);
 
 // ---- DATA ----
 const ACTUAL = {W1:1051,W2:1181,W3:763,W4:923,W5:2501,W6:1411,W7:1964,W8:3086,W9:4520,W10:2013,W11:1261,W12:1051,W13:1010,W14:4060,W15:1874,W16:1468,W17:1625};
-const FCST   = {W18:2540,W19:1691,W20:1960,W21:2185,W22:3111,W23:2721,W24:2321,W25:2541,W26:2313,W27:2910};
+const FCST   = {W18:5080,W19:3044,W20:2548,W21:2185,W22:3111,W23:2721,W24:2321,W25:2541,W26:2313,W27:2910};
 const RATIO  = {W13:{ir:44,or:56},W14:{ir:52,or:48},W15:{ir:27,or:73},W16:{ir:27,or:73},W17:{ir:34,or:66},W18:{ir:37,or:63}};
 const CH_APR = [
   ['eXtra',2790],['BH',2202],['IR Others',1435],['Al Manea',918],
@@ -226,7 +226,7 @@ new Chart(document.getElementById('cMain'), {
     plugins: {
       legend: {position:'top', labels:{boxWidth:12,font:{size:11}}},
       datalabels: {
-        display: ctx => ctx.dataset.data[ctx.dataIndex] >= 3000,
+        display: ctx => ctx.dataset.data[ctx.dataIndex] >= 2500,
         anchor:'end', align:'top', font:{size:9,weight:'bold'}, color:'#374151',
         formatter: v => v ? v.toLocaleString() : ''
       }
@@ -300,8 +300,8 @@ new Chart(document.getElementById('cChannel'), {
 
 // ---- FORECAST TABLE ----
 const fcstBody = document.getElementById('fcstBody');
-const fcstFull = {W18:[2540,2329],W19:[1691,1558],W20:[1960,1804],W21:[2185,2008],W22:[3111,2704],W23:[2721,2279],W24:[2321,2036],W25:[2541,2213],W26:[2313,2038],W27:[2910,2531]};
-const peakWeeks = ['W18','W22','W27'];
+const fcstFull = {W18:[5080,4658],W19:[3044,2804],W20:[2548,2345],W21:[2185,2008],W22:[3111,2704],W23:[2721,2279],W24:[2321,2036],W25:[2541,2213],W26:[2313,2038],W27:[2910,2531]};
+const peakWeeks = ['W18','W19','W22','W27'];
 Object.entries(fcstFull).forEach(([w,[tot,ms]])=>{
   const tr = document.createElement('tr');
   const isPeak = peakWeeks.includes(w);
