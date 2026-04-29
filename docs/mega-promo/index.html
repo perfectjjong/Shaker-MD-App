@@ -227,6 +227,7 @@ tr:hover td{background:#f8fafc}
     <div class="tab" onclick="switchTab(4)">AC Detail</div>
     <div class="tab" onclick="switchTab(5)">YoY</div>
     <div class="tab" onclick="switchTab(6)">📦 Stock</div>
+    <div class="tab" onclick="switchTab(7)">💡 Summary</div>
   </div>
 </div>
 
@@ -507,6 +508,67 @@ tr:hover td{background:#f8fafc}
       <div class="ch-wrap"><canvas id="chartStockFamily"></canvas></div>
     </div>
   </div>
+</div>
+
+<!-- ═══ TAB 7: SUMMARY ═══ -->
+<div class="tab-pane" id="pane7">
+
+  <!-- 경쟁구도 테이블 -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--primary)"></span>Mini Split 경쟁구도 — ON/OFF (Rotary)</div>
+    <div class="tbl-wrap">
+    <table id="tblSummaryRotary" style="font-size:12px">
+      <thead><tr>
+        <th>용량</th><th>타입</th>
+        <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
+        <th>C.PRO</th><th>Midea</th><th>기타</th><th>합계</th>
+        <th style="color:var(--primary)">LG가</th><th style="color:var(--amber)">Gree가</th>
+        <th>C.PRO가</th><th>Midea가</th>
+      </tr></thead>
+      <tbody id="tbodyRotary"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>Mini Split 경쟁구도 — Inverter</div>
+    <div class="tbl-wrap">
+    <table id="tblSummaryInverter" style="font-size:12px">
+      <thead><tr>
+        <th>용량</th><th>타입</th>
+        <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
+        <th>C.PRO</th><th>Midea</th><th>기타</th><th>합계</th>
+        <th style="color:var(--primary)">LG가</th><th style="color:var(--amber)">Gree가</th>
+        <th>C.PRO가</th><th>Midea가</th>
+      </tr></thead>
+      <tbody id="tbodyInverter"></tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Insight -->
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title"><span class="dot" style="background:var(--purple)"></span>LG Strategic Insight — eXtra Mega Promo 2026</div>
+    <div style="padding:4px 0">
+
+      <div style="margin-bottom:14px">
+        <div style="font-weight:700;color:var(--green);margin-bottom:6px;font-size:13px">✅ 강점 (Where LG Wins)</div>
+        <div id="insightStrength" style="font-size:12px;line-height:1.8;color:var(--text)"></div>
+      </div>
+
+      <div style="margin-bottom:14px">
+        <div style="font-weight:700;color:var(--red);margin-bottom:6px;font-size:13px">⚠️ 약점 (Structural Gaps)</div>
+        <div id="insightWeakness" style="font-size:12px;line-height:1.8;color:var(--text)"></div>
+      </div>
+
+      <div>
+        <div style="font-weight:700;color:var(--primary);margin-bottom:6px;font-size:13px">🎯 전략적 방향 (Strategic Direction)</div>
+        <div id="insightStrategy" style="font-size:12px;line-height:1.8;color:var(--text)"></div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 </div><!-- /content -->
@@ -836,6 +898,7 @@ function applyFilters(){
 function switchTab(i){
   document.querySelectorAll('.tab').forEach((t,j)=>t.classList.toggle('active',i===j));
   document.querySelectorAll('.tab-pane').forEach((p,j)=>p.classList.toggle('active',i===j));
+  if(i===7) renderSummary();
 }
 
 // ── global metric toggle ──────────────────────────────────
@@ -1926,6 +1989,134 @@ function renderStock(){
     labels:fams,
     datasets:[{data:fams.map(f=>famStock[f]),backgroundColor:fams.map((_,i)=>col(i)),borderWidth:1}],
   },{plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12,padding:6}},tooltip:{callbacks:{label:ctx=>{const t=fams.reduce((s,f)=>s+famStock[f],0);return `${ctx.label}: ${fmt(ctx.parsed)} (${(ctx.parsed/t*100).toFixed(1)}%)`}}},datalabels:{display:false}}});
+}
+
+// ── Summary Tab ──────────────────────────────────────────
+function renderSummary(){
+  if(!window.PROMO_DATA) return;
+  const SF_MINI = DIM.sf.indexOf('MINI SPLIT AIR CONDITIONER');
+  if(SF_MINI < 0) return;
+
+  // 용량 그룹
+  const sizeGroup = s => (s==='2.5 Ton'||s==='3 Ton') ? '대용량 (2.5~3T)' : s;
+  const sizeOrder = ['1 Ton','1.5 Ton','2 Ton','대용량 (2.5~3T)'];
+  const typeOrderR = ['Cold - Rotary','Hot And Cold - Rotary'];
+  const typeOrderI = ['Cold - Inverter','Hot And Cold - Inverter'];
+
+  // 판매 집계 (2026)
+  const segBrand = {};
+  REC.forEach(r => {
+    if(r[CI.sf] !== SF_MINI) return;
+    if(DIM.y[r[CI.y]] !== '2026') return;
+    const sz  = sizeGroup(r[CI.as]>=0 ? DIM.as[r[CI.as]] : 'N/A');
+    const at  = r[CI.at]>=0 ? DIM.at[r[CI.at]] : 'N/A';
+    const br  = DIM.b[r[CI.b]];
+    const key = sz+'||'+at;
+    if(!segBrand[key]) segBrand[key] = {};
+    segBrand[key][br] = (segBrand[key][br]||0) + r[CI.qty];
+  });
+
+  // 가격 데이터 (meta에서 읽기 불가 → Price Tracking 없으므로 하드코딩, 프로모 기간 최저가)
+  const PRICES = {
+    // [sizeGroup][type_short] = {LG, GREE, 'CLASS PRO', MIDEA}
+    '1 Ton||Cold - Rotary':              {LG:null,  GREE:1949, 'CLASS PRO':1299, MIDEA:1729},
+    '1 Ton||Hot And Cold - Rotary':      {LG:null,  GREE:2049, 'CLASS PRO':1429, MIDEA:1829},
+    '1 Ton||Cold - Inverter':            {LG:2299,  GREE:2079, 'CLASS PRO':null, MIDEA:null},
+    '1 Ton||Hot And Cold - Inverter':    {LG:2599,  GREE:2199, 'CLASS PRO':null, MIDEA:null},
+    '1.5 Ton||Cold - Rotary':            {LG:1999,  GREE:2199, 'CLASS PRO':1599, MIDEA:1949},
+    '1.5 Ton||Hot And Cold - Rotary':    {LG:2099,  GREE:2649, 'CLASS PRO':1699, MIDEA:2129},
+    '1.5 Ton||Cold - Inverter':          {LG:2499,  GREE:2359, 'CLASS PRO':null, MIDEA:2589},
+    '1.5 Ton||Hot And Cold - Inverter':  {LG:2749,  GREE:2699, 'CLASS PRO':1999, MIDEA:3819},
+    '2 Ton||Cold - Rotary':              {LG:null,  GREE:2699, 'CLASS PRO':1999, MIDEA:2449},
+    '2 Ton||Hot And Cold - Rotary':      {LG:2599,  GREE:2849, 'CLASS PRO':2199, MIDEA:2629},
+    '2 Ton||Cold - Inverter':            {LG:2799,  GREE:null, 'CLASS PRO':null, MIDEA:3069},
+    '2 Ton||Hot And Cold - Inverter':    {LG:3309,  GREE:null, 'CLASS PRO':2549, MIDEA:3489},
+    '대용량 (2.5~3T)||Cold - Rotary':    {LG:3699,  GREE:3739, 'CLASS PRO':2949, MIDEA:3529},
+    '대용량 (2.5~3T)||Hot And Cold - Rotary': {LG:3899, GREE:4299,'CLASS PRO':3249,MIDEA:3729},
+    '대용량 (2.5~3T)||Cold - Inverter':  {LG:5399,  GREE:3959, 'CLASS PRO':null, MIDEA:null},
+    '대용량 (2.5~3T)||Hot And Cold - Inverter': {LG:5559, GREE:4499,'CLASS PRO':null,MIDEA:4659},
+  };
+
+  const qBrands = ['LG','GREE','CLASS PRO','MIDEA'];
+  const pBrands = ['LG','GREE','CLASS PRO','MIDEA'];
+  const typeLabel = t => t.replace('Cold - Rotary','Cold / ON·OFF')
+                          .replace('Hot And Cold - Rotary','H&C / ON·OFF')
+                          .replace('Cold - Inverter','Cold / INV')
+                          .replace('Hot And Cold - Inverter','H&C / INV');
+
+  function buildRows(types){
+    let html = '';
+    for(const sz of sizeOrder){
+      for(const at of types){
+        const key = sz+'||'+at;
+        const d   = segBrand[key]||{};
+        const tot = Object.values(d).reduce((s,v)=>s+v,0);
+        if(!tot) continue;
+        const pr  = PRICES[key]||{};
+
+        // 수량 셀
+        const qCells = qBrands.map(b=>{
+          const q=d[b]||0;
+          if(!q) return '<td style="color:var(--muted)">—</td>';
+          const isLg=b==='LG', isGr=b==='GREE';
+          const clr=isLg?'var(--primary)':isGr?'var(--amber)':'';
+          return `<td style="${clr?'font-weight:700;color:'+clr:''}">${q}</td>`;
+        });
+        const others = tot - qBrands.reduce((s,b)=>s+(d[b]||0),0);
+        const otherCell = others>0?`<td>${others}</td>`:'<td style="color:var(--muted)">—</td>';
+
+        // 가격 셀
+        const pCells = pBrands.map(b=>{
+          const v=pr[b]; if(!v) return '<td style="color:var(--muted)">없음</td>';
+          const isLg=b==='LG', isGr=b==='GREE';
+          // LG vs Gree 가격 비교 강조
+          let style='';
+          if(isLg && pr['GREE'] && v < pr['GREE']) style='color:var(--green);font-weight:700';
+          if(isLg && pr['GREE'] && v > pr['GREE']) style='color:var(--red)';
+          if(isGr) style='color:var(--amber)';
+          // LG 없음(null)이면 공백 아닌 강조
+          return `<td style="${style}">${v.toLocaleString()}</td>`;
+        });
+
+        // LG 부재 행 강조
+        const lgAbsent = !d['LG'] && tot > 20;
+        const rowStyle = lgAbsent ? 'background:#fff7ed' : '';
+
+        html += `<tr style="${rowStyle}">
+          <td><b>${sz}</b></td>
+          <td style="color:var(--muted)">${typeLabel(at)}</td>
+          ${qCells.join('')}${otherCell}
+          <td style="font-weight:700">${tot}</td>
+          ${pCells.join('')}
+        </tr>`;
+      }
+    }
+    return html;
+  }
+
+  document.getElementById('tbodyRotary').innerHTML   = buildRows(typeOrderR);
+  document.getElementById('tbodyInverter').innerHTML = buildRows(typeOrderI);
+
+  // ── Insight ──────────────────────────────────────────────
+  document.getElementById('insightStrength').innerHTML = `
+    <b>① 2T Inverter 독점 (Cold 148대·H&C 20대):</b> Gree·CLASS PRO 모두 부재. LG가 가격 우위(2,799 SAR)로 해당 세그먼트를 지배. 2T Inverter는 LG의 핵심 캐시카우.<br>
+    <b>② 1.5T 전 구간 경쟁력 유지:</b> Cold Rotary(ON/OFF)에서 가격 우위(1,999 vs Gree 2,199), Cold Inverter에서 소폭 우세(187 vs 171대). 주력 볼륨 세그먼트를 지키고 있음.<br>
+    <b>③ 2T H&C Rotary(ON/OFF) 압도:</b> 71/116대(61%). 가족형 대용량 냉난방 수요를 LG가 리드.<br>
+    <b>④ 브랜드 신뢰 기반 프리미엄 수용:</b> NT 3T Inverter(5,399 SAR)가 Gree 동급(4,849) 대비 550 SAR 비싼데도 22대 판매. LG 브랜드 프리미엄이 작동.
+  `;
+
+  document.getElementById('insightWeakness').innerHTML = `
+    <b>① 대용량(2.5~3T) Inverter 공백 — 단일 최대 손실:</b> 해당 세그먼트 346대 중 Gree 299대(86%) 독점. LG는 NT(5,399 SAR)만 있어 Gree 대비 1,000~1,400 SAR 비쌈. 가격대 자체가 달라 경쟁이 안 되는 구조.<br>
+    <b>② ON/OFF Rotary 포트폴리오 단절:</b> 1T·2T·3T Cold Rotary, 2.5T H&C Rotary에 SKU 없음. 시장 합계 800+대에서 LG 매출 0. 전략적 포기로 볼 수 있으나 CLASS PRO 이탈 수요 흡수 기회를 놓치고 있음.<br>
+    <b>③ 2.5T Rotary(ON/OFF) 가격 경쟁력 미실현:</b> LA302C0(3,699 SAR)이 있으나 D0~D2 판매 거의 없음. Gree Rotary(3,739 SAR)와 가격 거의 동일한데 노출·인지 부족으로 추정.
+  `;
+
+  document.getElementById('insightStrategy').innerHTML = `
+    <b>① 단기 최우선 — 대용량 Inverter 가격 재포지셔닝:</b> 2.5~3T Inverter 시장(346대/프로모 3일)은 검증된 수요. NT 단일 SKU(5,399 SAR)로는 Gree(3,959 SAR)와 경쟁 불가. 3,999~4,499 SAR 구간 대용량 Inverter SKU eXtra 진입이 가장 큰 MS 회복 레버.<br>
+    <b>② 중기 — 2T Cold Rotary(ON/OFF) 진입 검토:</b> 347대 시장, Gree·CLASS PRO·Midea 분산. LG 진입 시 브랜드만으로도 점유 가능. 마진이 낮은 구간이므로 채널 재고 효율과 함께 판단 필요.<br>
+    <b>③ 1.5T 수성 전략:</b> CLASS PRO -10.6%p 이탈 물량이 Gree·TCL·Panasonic으로 분산 중. LG 가격대(1,999 SAR)로 올라오는 수요 존재. 매대 가시성·번들 프로모로 추가 흡수 가능.<br>
+    <b>④ 포트폴리오 연속성 확보:</b> 현재 LG는 1.5T→2T→(공백)→3T NT 구조. 소비자가 용량 업그레이드 시 LG 내에서 선택지가 없어 이탈. 2.5T Inverter 한 개만 추가해도 대용량 사다리가 완성됨.
+  `;
 }
 
 // ── kickoff ───────────────────────────────────────────────
