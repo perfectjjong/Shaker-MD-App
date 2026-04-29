@@ -3,519 +3,836 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LG Saudi AC — H1 Historical Category Summary 2023–2026</title>
+<title>LG Saudi AC — Sell-Out H1 Review 2023–2026E</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-:root{--primary:#2563eb;--border:#e2e8f0;--muted:#94a3b8}
+:root{--primary:#2563eb;--border:#e2e8f0;--muted:#94a3b8;--hdr:57px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293b;font-size:14px}
-.header{background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
-.header h1{font-size:17px;font-weight:700;letter-spacing:.4px}
-.badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;margin-left:8px}
-
-/* ── FILTER BAR (b2c-unified pattern) ── */
-.filters{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:57px;z-index:98;flex-wrap:wrap}
+/* HEADER */
+.header{background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:var(--hdr)}
+.header h1{font-size:16px;font-weight:700;letter-spacing:.3px}
+.badge{background:rgba(255,255,255,.2);border-radius:10px;padding:2px 9px;font-size:10px;font-weight:600;margin-left:7px}
+/* FILTER BAR */
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:7px 24px;display:flex;gap:10px;align-items:flex-end;position:sticky;top:var(--hdr);z-index:98;flex-wrap:wrap}
 .filter-group{position:relative}
 .filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
 .ms-wrap{position:relative;min-width:130px}
 .ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
-.ms-btn::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
+.ms-btn::after{content:"▾";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
 .ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
-.ms-dd{position:absolute;top:calc(100% + 2px);left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;min-width:190px;display:none;padding:4px 0}
+.ms-dd{position:absolute;top:calc(100% + 2px);left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;min-width:200px;display:none;padding:4px 0}
 .ms-dd.open{display:block}
 .ms-dd-head{padding:5px 12px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#374151}
 .ms-dd label{display:flex;align-items:center;gap:7px;padding:5px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
 .ms-dd label:hover{background:#f8fafc}
 .ms-dd input[type=checkbox]{accent-color:var(--primary);cursor:pointer;flex-shrink:0}
-.grp-btn{padding:4px 12px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;font-weight:600;color:#475569}
+.grp-btn{padding:4px 11px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;font-weight:600;color:#475569;transition:all .12s}
 .grp-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
-
-.container{max-width:1280px;margin:0 auto;padding:20px}
+/* TAB NAV */
+.tabnav{background:#fff;border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:0;position:sticky;top:calc(var(--hdr) + 40px);z-index:97}
+.tabnav-btn{padding:10px 20px;font-size:13px;font-weight:600;color:#64748b;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tabnav-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+.tabnav-btn:hover{color:#1e293b}
+/* CONTENT */
+.container{max-width:1320px;margin:0 auto;padding:20px 24px}
+.tab-section{display:none}
+.tab-section.active{display:block}
+/* KPI */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
-.kpi{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.08);position:relative;overflow:hidden}
-.kpi .yr{font-size:11px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.kpi .val{font-size:22px;font-weight:700;color:#1e293b}
-.kpi .yoy{font-size:11px;margin-top:4px}
+.kpi{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);position:relative;overflow:hidden;border-top:3px solid transparent}
+.kpi.yr23{border-top-color:#94a3b8}
+.kpi.yr24{border-top-color:#60a5fa}
+.kpi.yr25{border-top-color:#f59e0b}
+.kpi.yr26{border-top-color:#2563eb}
+.kpi.insight{border-top-color:#10b981}
+.kpi .yr-lbl{font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kpi .val{font-size:21px;font-weight:700;color:#1e293b;letter-spacing:-.3px}
+.kpi .sub{font-size:11px;margin-top:3px}
 .kpi .kbar{position:absolute;bottom:0;left:0;height:3px}
 .up{color:#10b981}.dn{color:#ef4444}.nt{color:#64748b}
-.card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08);margin-bottom:16px}
-.card h3{font-size:13px;font-weight:700;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.tag{font-size:10px;background:#eff6ff;color:#2563eb;border-radius:6px;padding:2px 7px;font-weight:600}
-.tag-amber{background:#fffbeb;color:#d97706}
-.tag-green{background:#f0fdf4;color:#16a34a}
+/* CARD */
+.card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:16px}
+.card-h{font-size:13px;font-weight:700;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:10px;background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-weight:600}
+.tag-or{background:#fef3c7;color:#b45309}
+.tag-ir{background:#dbeafe;color:#1e40af}
+.tag-fcst{background:#fef9c3;color:#ca8a04}
+.tag-green{background:#f0fdf4;color:#15803d}
+.tag-red{background:#fef2f2;color:#dc2626}
 .tag-gray{background:#f8fafc;color:#64748b}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-.divider{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px}
-.tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
-.tab{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid #e2e8f0;background:#fff;color:#64748b;transition:all .15s}
-.tab.active{background:#2563eb;color:#fff;border-color:#2563eb}
-.legend-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.divider{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px;display:flex;align-items:center;gap:8px}
+/* LEGEND */
+.legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
 .legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+/* TABLE */
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f8fafc;color:#475569;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+th{background:#f8fafc;color:#475569;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;white-space:nowrap}
 td{padding:6px 10px;border-bottom:1px solid #f1f5f9}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
 .num{text-align:right;font-weight:600}
-.bar-cell{display:flex;align-items:center;gap:6px}
-.bar-mini{height:6px;border-radius:3px;min-width:2px}
-.footer{text-align:center;padding:16px;color:#94a3b8;font-size:11px}
+.bar-mini{height:5px;border-radius:3px;min-width:2px;display:inline-block}
+/* INSIGHT BOX */
+.insight-box{background:linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%);border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#1e40af;line-height:1.6}
+.insight-box b{color:#1d4ed8}
+.warn-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:#92400e}
+/* MISC */
+.footer{text-align:center;padding:16px;color:#94a3b8;font-size:11px;margin-top:8px}
 canvas{max-width:100%}
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.filters{gap:8px;padding:7px 12px}.container{padding:14px 12px}}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div>
-    <h1>LG Saudi Arabia — AC Historical H1 Summary <span class="badge">2023–2026E</span></h1>
-    <div style="font-size:11px;opacity:.65;margin-top:3px">On/Off · Inverter · Floor Standing · Window AC &nbsp;|&nbsp; 2026: W1–W17 Actual + W18–W27 Forecast</div>
+    <h1>LG Saudi Arabia — AC Sell-Out Review <span class="badge">H1 2023–2026E</span></h1>
+    <div style="font-size:10px;opacity:.6;margin-top:2px">All Channels (OR 5 + IR 8+) &nbsp;·&nbsp; 2026: W1–W17 Actual + W18–W27 Forecast &nbsp;·&nbsp; Generated Apr 29, 2026</div>
   </div>
-  <div style="font-size:11px;opacity:.7;text-align:right">Generated: Apr 29, 2026<br>Source: sellout.db + b2c-unified</div>
+  <div style="font-size:11px;opacity:.7;text-align:right">Source: sellout.db<br>LG SAU AC BU</div>
 </div>
 
-<!-- FILTER BAR (b2c-unified pattern) -->
+<!-- FILTER BAR -->
 <div class="filters">
+  <div class="filter-group">
+    <div class="filter-label">Channel</div>
+    <div style="display:flex;gap:4px" id="chGrp">
+      <button class="grp-btn active" data-ch="All" onclick="setCh('All')">All</button>
+      <button class="grp-btn" data-ch="OR" onclick="setCh('OR')">OR (5)</button>
+      <button class="grp-btn" data-ch="IR" onclick="setCh('IR')">IR (8+)</button>
+    </div>
+  </div>
   <div class="filter-group">
     <div class="filter-label">Category</div>
     <div class="ms-wrap" id="fCat"></div>
   </div>
-  <div style="margin-left:auto;align-self:center;font-size:11px;color:var(--muted)" id="filterSummary"></div>
+  <div style="margin-left:auto;align-self:center;font-size:11px" id="filterSummary"></div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tabnav">
+  <button class="tabnav-btn active" data-tab="h1" onclick="setTab('h1')">📊 H1 Overview</button>
+  <button class="tabnav-btn" data-tab="q1" onclick="setTab('q1')">Q1 &nbsp;Jan–Mar</button>
+  <button class="tabnav-btn" data-tab="q2" onclick="setTab('q2')">Q2 &nbsp;Apr–Jun ★</button>
+  <button class="tabnav-btn" data-tab="monthly" onclick="setTab('monthly')">Monthly Detail</button>
 </div>
 
 <div class="container">
 
-<div class="kpi-row" id="kpiRow"></div>
-
-<div class="divider">H1 Category Summary by Year</div>
-
-<div class="card">
-  <h3>H1 Category Mix — Annual Comparison <span class="tag">2023–2026E</span>
-    <span class="tag-amber">2023/24: Monthly data (end-of-month concentration adjusted)</span>
-    <span class="tag-green">2026: W1–W17 actual + W18–W27 fcst incl. Mega promo</span>
-  </h3>
-  <div class="legend-row" id="annualLegend"></div>
-  <canvas id="cAnnual" height="70"></canvas>
-</div>
-
-<div class="card">
-  <h3>Category YoY Growth <span class="tag">H1 기준</span></h3>
-  <table id="tYoY"></table>
-</div>
-
-<div class="divider">Monthly / Weekly Trend</div>
-
-<div class="card">
-  <h3>Sell-out Trend by Period <span class="tag" id="trendTag"></span>
-    <span class="tag-gray" id="trendNote"></span>
-  </h3>
-  <div class="tabs" id="trendTabs">
-    <div class="tab active" data-yr="2023">2023</div>
-    <div class="tab" data-yr="2024">2024</div>
-    <div class="tab" data-yr="2025">2025</div>
-    <div class="tab active" data-yr="2026">2026E</div>
-  </div>
-  <div class="legend-row" id="trendLegend"></div>
-  <canvas id="cTrend" height="100"></canvas>
-</div>
-
-<div class="card">
-  <h3>Month-by-Month Comparison (All Years) <span class="tag">Jan–Jun H1</span></h3>
-  <canvas id="cMonthly" height="90"></canvas>
-</div>
-
-<div class="divider">Model Breakdown</div>
-
-<div class="card">
-  <h3>Top Model Ranking <span class="tag" id="modelTag"></span></h3>
-  <div style="display:flex;gap:12px;margin-bottom:12px;flex-wrap:wrap;align-items:center">
-    <div style="font-size:11px;color:#64748b;font-weight:600">Year:</div>
-    <div class="tabs" id="modelYrTabs" style="margin-bottom:0">
-      <div class="tab" data-yr="2023">2023</div>
-      <div class="tab" data-yr="2024">2024</div>
-      <div class="tab" data-yr="2025">2025</div>
-      <div class="tab active" data-yr="2026">2026</div>
-    </div>
+<!-- ═══════════ H1 TAB ═══════════ -->
+<div class="tab-section active" id="tab-h1">
+  <div class="insight-box" id="h1Insight"></div>
+  <div class="kpi-row" id="h1Kpi"></div>
+  <div class="divider">카테고리 Mix 연도별 비교</div>
+  <div class="card">
+    <div class="card-h">H1 카테고리 Stacked Mix <span class="tag">2023–2026E</span><span class="tag-fcst">2026: W1–W17 실적 + W18–W27 FCST</span></div>
+    <div class="legend-row" id="h1AnnualLegend"></div>
+    <canvas id="cH1Annual" height="70"></canvas>
   </div>
   <div class="grid2">
-    <div><canvas id="cModels" height="260"></canvas></div>
-    <div style="overflow-y:auto;max-height:420px">
-      <table id="tModels">
-        <thead><tr><th>#</th><th>Model</th><th>Category</th><th class="num">Qty</th><th class="num">Share</th><th>Bar</th></tr></thead>
-        <tbody id="tModelBody"></tbody>
-      </table>
+    <div class="card">
+      <div class="card-h">OR vs IR 채널별 규모 <span class="tag">H1 연도별</span></div>
+      <canvas id="cH1Channel" height="160"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-h">OR/IR 구성비 추이 <span class="tag">H1</span></div>
+      <canvas id="cH1ChannelPct" height="160"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h">Category YoY Growth <span class="tag">H1 기준</span></div>
+    <table id="tH1Yoy"></table>
+  </div>
+</div>
+
+<!-- ═══════════ Q1 TAB ═══════════ -->
+<div class="tab-section" id="tab-q1">
+  <div class="insight-box" id="q1Insight"></div>
+  <div class="kpi-row" id="q1Kpi"></div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h">Q1 카테고리 Mix <span class="tag">연도별</span></div>
+      <div class="legend-row" id="q1Legend"></div>
+      <canvas id="cQ1Cat" height="160"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-h">Q1 OR vs IR <span class="tag">연도별</span></div>
+      <canvas id="cQ1Ch" height="160"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h">Q1 카테고리 상세 테이블</div>
+    <table id="tQ1"></table>
+  </div>
+</div>
+
+<!-- ═══════════ Q2 TAB ═══════════ -->
+<div class="tab-section" id="tab-q2">
+  <div class="insight-box" id="q2Insight"></div>
+  <div class="kpi-row" id="q2Kpi"></div>
+  <div class="card">
+    <div class="card-h">Q2 카테고리 Mix <span class="tag">연도별</span><span class="tag-fcst">2026 W18–W27 포함 (FCST)</span></div>
+    <div class="legend-row" id="q2Legend"></div>
+    <canvas id="cQ2Cat" height="70"></canvas>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <div class="card-h">2025 vs 2026 주간 트렌드 <span class="tag">Q2 W14–W27</span><span class="tag-fcst">2026 W18~ FCST</span></div>
+      <canvas id="cQ2Weekly" height="180"></canvas>
+    </div>
+    <div class="card">
+      <div class="card-h">Q2 OR vs IR <span class="tag">연도별</span></div>
+      <canvas id="cQ2Ch" height="180"></canvas>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h">Q2 카테고리 상세 테이블</div>
+    <table id="tQ2"></table>
+  </div>
+</div>
+
+<!-- ═══════════ MONTHLY TAB ═══════════ -->
+<div class="tab-section" id="tab-monthly">
+  <div class="insight-box" id="moInsight"></div>
+  <div class="card">
+    <div class="card-h">월별 Sell-Out 추이 <span class="tag">전년 비교</span>
+      <span style="margin-left:auto;display:flex;gap:4px" id="moYrSel"></span>
+    </div>
+    <canvas id="cMoMain" height="90"></canvas>
+  </div>
+  <div class="divider">월별 상세 — 클릭하면 카테고리/채널 Detail 보기</div>
+  <div class="grid3" id="moCards"></div>
+  <div class="card" id="moDetailCard" style="display:none">
+    <div class="card-h" id="moDetailTitle"></div>
+    <div class="grid2">
+      <div><canvas id="cMoDetail" height="200"></canvas></div>
+      <div style="overflow-y:auto;max-height:320px"><table id="tMoDetail"></table></div>
     </div>
   </div>
 </div>
 
 </div>
-
-<div class="footer">LG Saudi Arabia · AC Business Unit · H1 Historical Summary 2023–2026E · On/Off = Rotary/Fixed-speed (LA/LB/LC/LO/LK/AM series) · Inverter = NS/ND/NF/NT series · 2023/24: monthly granularity · 2025/26: weekly</div>
+<div class="footer">LG Saudi Arabia · AC BU · Full-Channel Sell-Out (OR 5채널 + IR 8+채널) · On/Off = Rotary·Fixed (LA/LB/LC/LO/LK/AM) · Inverter = NS/ND/NF/NT · 2023/24 Jan·Apr: end-of-month 집중 데이터 · 2026 W18–W27: LightGBM FCST</div>
 
 <script>
 Chart.register(ChartDataLabels);
+const D = {"h1":{"2023":{"IR":{"OnOff":6862,"Inverter":14997,"FloorStanding":4017,"WindowAC":7186,"Concealed":0,"Cassette":0,"_total":33062},"OR":{"OnOff":15664,"Inverter":39736,"FloorStanding":911,"WindowAC":13200,"Concealed":0,"Cassette":0,"_total":69511},"Total":{"OnOff":22526,"Inverter":54733,"FloorStanding":4928,"WindowAC":20386,"Concealed":0,"Cassette":0,"_total":102573}},"2024":{"IR":{"OnOff":11273,"Inverter":18491,"FloorStanding":6366,"WindowAC":19263,"Concealed":0,"Cassette":0,"_total":55393},"OR":{"OnOff":14915,"Inverter":48148,"FloorStanding":1384,"WindowAC":20911,"Concealed":0,"Cassette":0,"_total":85358},"Total":{"OnOff":26188,"Inverter":66639,"FloorStanding":7750,"WindowAC":40174,"Concealed":0,"Cassette":0,"_total":140751}},"2025":{"IR":{"OnOff":22406,"Inverter":11656,"FloorStanding":8409,"WindowAC":9705,"Concealed":0,"Cassette":0,"_total":52176},"OR":{"OnOff":14315,"Inverter":38906,"FloorStanding":1300,"WindowAC":12650,"Concealed":0,"Cassette":0,"_total":67171},"Total":{"OnOff":36721,"Inverter":50562,"FloorStanding":9709,"WindowAC":22355,"Concealed":0,"Cassette":0,"_total":119347}},"2026":{"IR":{"OnOff":8286,"Inverter":4044,"FloorStanding":2328,"WindowAC":19,"Concealed":288,"Cassette":160,"_total":15125},"OR":{"OnOff":7082,"Inverter":8670,"FloorStanding":242,"WindowAC":48,"Concealed":1,"Cassette":2,"_total":16045},"Total":{"OnOff":15368,"Inverter":12714,"FloorStanding":2570,"WindowAC":67,"Concealed":289,"Cassette":162,"_total":31170}}},"quarterly":{"2023":{"Q1":{"IR":{"OnOff":1357,"Inverter":3128,"FloorStanding":733,"WindowAC":823,"Concealed":0,"Cassette":0,"_total":6041},"OR":{"OnOff":2925,"Inverter":8222,"FloorStanding":193,"WindowAC":4423,"Concealed":0,"Cassette":0,"_total":15763},"Total":{"OnOff":4282,"Inverter":11350,"FloorStanding":926,"WindowAC":5246,"Concealed":0,"Cassette":0,"_total":21804}},"Q2":{"IR":{"OnOff":5505,"Inverter":11869,"FloorStanding":3284,"WindowAC":6363,"Concealed":0,"Cassette":0,"_total":27021},"OR":{"OnOff":12739,"Inverter":31514,"FloorStanding":718,"WindowAC":8777,"Concealed":0,"Cassette":0,"_total":53748},"Total":{"OnOff":18244,"Inverter":43383,"FloorStanding":4002,"WindowAC":15140,"Concealed":0,"Cassette":0,"_total":80769}}},"2024":{"Q1":{"IR":{"OnOff":1583,"Inverter":3883,"FloorStanding":880,"WindowAC":600,"Concealed":0,"Cassette":0,"_total":6946},"OR":{"OnOff":5092,"Inverter":11018,"FloorStanding":284,"WindowAC":200,"Concealed":0,"Cassette":0,"_total":16594},"Total":{"OnOff":6675,"Inverter":14901,"FloorStanding":1164,"WindowAC":800,"Concealed":0,"Cassette":0,"_total":23540}},"Q2":{"IR":{"OnOff":9690,"Inverter":14608,"FloorStanding":5486,"WindowAC":18663,"Concealed":0,"Cassette":0,"_total":48447},"OR":{"OnOff":9823,"Inverter":37130,"FloorStanding":1100,"WindowAC":20711,"Concealed":0,"Cassette":0,"_total":68764},"Total":{"OnOff":19513,"Inverter":51738,"FloorStanding":6586,"WindowAC":39374,"Concealed":0,"Cassette":0,"_total":117211}}},"2025":{"Q1":{"IR":{"OnOff":4760,"Inverter":1572,"FloorStanding":1556,"WindowAC":7680,"Concealed":0,"Cassette":0,"_total":15568},"OR":{"OnOff":4727,"Inverter":7490,"FloorStanding":195,"WindowAC":6255,"Concealed":0,"Cassette":0,"_total":18667},"Total":{"OnOff":9487,"Inverter":9062,"FloorStanding":1751,"WindowAC":13935,"Concealed":0,"Cassette":0,"_total":34235}},"Q2":{"IR":{"OnOff":17646,"Inverter":10084,"FloorStanding":6853,"WindowAC":2025,"Concealed":0,"Cassette":0,"_total":36608},"OR":{"OnOff":9588,"Inverter":31416,"FloorStanding":1105,"WindowAC":6395,"Concealed":0,"Cassette":0,"_total":48504},"Total":{"OnOff":27234,"Inverter":41500,"FloorStanding":7958,"WindowAC":8420,"Concealed":0,"Cassette":0,"_total":85112}}},"2026":{"Q1":{"IR":{"OnOff":5320,"Inverter":3325,"FloorStanding":1640,"WindowAC":19,"Concealed":239,"Cassette":127,"_total":10670},"OR":{"OnOff":5074,"Inverter":6246,"FloorStanding":192,"WindowAC":47,"Concealed":1,"Cassette":2,"_total":11562},"Total":{"OnOff":10394,"Inverter":9571,"FloorStanding":1832,"WindowAC":66,"Concealed":240,"Cassette":129,"_total":22232}},"Q2":{"IR":{"OnOff":2966,"Inverter":719,"FloorStanding":688,"WindowAC":0,"Concealed":49,"Cassette":33,"_total":4455},"OR":{"OnOff":2008,"Inverter":2424,"FloorStanding":50,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":4483},"Total":{"OnOff":4974,"Inverter":3143,"FloorStanding":738,"WindowAC":1,"Concealed":49,"Cassette":33,"_total":8938}}}},"monthly":{"2023":{"Jan":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":58,"Inverter":454,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0,"_total":730},"Total":{"OnOff":58,"Inverter":454,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0,"_total":730}},"Feb":{"IR":{"OnOff":246,"Inverter":699,"FloorStanding":139,"WindowAC":108,"Concealed":0,"Cassette":0,"_total":1192},"OR":{"OnOff":542,"Inverter":1647,"FloorStanding":18,"WindowAC":824,"Concealed":0,"Cassette":0,"_total":3031},"Total":{"OnOff":788,"Inverter":2346,"FloorStanding":157,"WindowAC":932,"Concealed":0,"Cassette":0,"_total":4223}},"Mar":{"IR":{"OnOff":1111,"Inverter":2429,"FloorStanding":594,"WindowAC":715,"Concealed":0,"Cassette":0,"_total":4849},"OR":{"OnOff":2325,"Inverter":6121,"FloorStanding":175,"WindowAC":3381,"Concealed":0,"Cassette":0,"_total":12002},"Total":{"OnOff":3436,"Inverter":8550,"FloorStanding":769,"WindowAC":4096,"Concealed":0,"Cassette":0,"_total":16851}},"Apr":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":205,"Inverter":1425,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0,"_total":1895},"Total":{"OnOff":205,"Inverter":1425,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0,"_total":1895}},"May":{"IR":{"OnOff":1314,"Inverter":1846,"FloorStanding":858,"WindowAC":535,"Concealed":0,"Cassette":0,"_total":4553},"OR":{"OnOff":2649,"Inverter":6871,"FloorStanding":95,"WindowAC":2826,"Concealed":0,"Cassette":0,"_total":12441},"Total":{"OnOff":3963,"Inverter":8717,"FloorStanding":953,"WindowAC":3361,"Concealed":0,"Cassette":0,"_total":16994}},"Jun":{"IR":{"OnOff":4191,"Inverter":10023,"FloorStanding":2426,"WindowAC":5828,"Concealed":0,"Cassette":0,"_total":22468},"OR":{"OnOff":9885,"Inverter":23218,"FloorStanding":623,"WindowAC":5686,"Concealed":0,"Cassette":0,"_total":39412},"Total":{"OnOff":14076,"Inverter":33241,"FloorStanding":3049,"WindowAC":11514,"Concealed":0,"Cassette":0,"_total":61880}}},"2024":{"Jan":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"Total":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0}},"Feb":{"IR":{"OnOff":302,"Inverter":938,"FloorStanding":193,"WindowAC":113,"Concealed":0,"Cassette":0,"_total":1546},"OR":{"OnOff":622,"Inverter":1831,"FloorStanding":67,"WindowAC":20,"Concealed":0,"Cassette":0,"_total":2540},"Total":{"OnOff":924,"Inverter":2769,"FloorStanding":260,"WindowAC":133,"Concealed":0,"Cassette":0,"_total":4086}},"Mar":{"IR":{"OnOff":1281,"Inverter":2945,"FloorStanding":687,"WindowAC":487,"Concealed":0,"Cassette":0,"_total":5400},"OR":{"OnOff":4470,"Inverter":9187,"FloorStanding":217,"WindowAC":180,"Concealed":0,"Cassette":0,"_total":14054},"Total":{"OnOff":5751,"Inverter":12132,"FloorStanding":904,"WindowAC":667,"Concealed":0,"Cassette":0,"_total":19454}},"Apr":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"Total":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0}},"May":{"IR":{"OnOff":1624,"Inverter":2747,"FloorStanding":1296,"WindowAC":345,"Concealed":0,"Cassette":0,"_total":6012},"OR":{"OnOff":4148,"Inverter":11067,"FloorStanding":337,"WindowAC":35,"Concealed":0,"Cassette":0,"_total":15587},"Total":{"OnOff":5772,"Inverter":13814,"FloorStanding":1633,"WindowAC":380,"Concealed":0,"Cassette":0,"_total":21599}},"Jun":{"IR":{"OnOff":8066,"Inverter":11861,"FloorStanding":4190,"WindowAC":18318,"Concealed":0,"Cassette":0,"_total":42435},"OR":{"OnOff":5675,"Inverter":26063,"FloorStanding":763,"WindowAC":20676,"Concealed":0,"Cassette":0,"_total":53177},"Total":{"OnOff":13741,"Inverter":37924,"FloorStanding":4953,"WindowAC":38994,"Concealed":0,"Cassette":0,"_total":95612}}},"2025":{"Jan":{"IR":{"OnOff":1960,"Inverter":331,"FloorStanding":223,"WindowAC":400,"Concealed":0,"Cassette":0,"_total":2914},"OR":{"OnOff":978,"Inverter":1369,"FloorStanding":39,"WindowAC":211,"Concealed":0,"Cassette":0,"_total":2597},"Total":{"OnOff":2938,"Inverter":1700,"FloorStanding":262,"WindowAC":611,"Concealed":0,"Cassette":0,"_total":5511}},"Feb":{"IR":{"OnOff":1096,"Inverter":293,"FloorStanding":351,"WindowAC":1879,"Concealed":0,"Cassette":0,"_total":3619},"OR":{"OnOff":1161,"Inverter":2150,"FloorStanding":42,"WindowAC":1579,"Concealed":0,"Cassette":0,"_total":4932},"Total":{"OnOff":2257,"Inverter":2443,"FloorStanding":393,"WindowAC":3458,"Concealed":0,"Cassette":0,"_total":8551}},"Mar":{"IR":{"OnOff":1704,"Inverter":948,"FloorStanding":982,"WindowAC":5401,"Concealed":0,"Cassette":0,"_total":9035},"OR":{"OnOff":2588,"Inverter":3971,"FloorStanding":114,"WindowAC":4465,"Concealed":0,"Cassette":0,"_total":11138},"Total":{"OnOff":4292,"Inverter":4919,"FloorStanding":1096,"WindowAC":9866,"Concealed":0,"Cassette":0,"_total":20173}},"Apr":{"IR":{"OnOff":877,"Inverter":584,"FloorStanding":669,"WindowAC":1762,"Concealed":0,"Cassette":0,"_total":3892},"OR":{"OnOff":792,"Inverter":2960,"FloorStanding":96,"WindowAC":6155,"Concealed":0,"Cassette":0,"_total":10003},"Total":{"OnOff":1669,"Inverter":3544,"FloorStanding":765,"WindowAC":7917,"Concealed":0,"Cassette":0,"_total":13895}},"May":{"IR":{"OnOff":2024,"Inverter":1321,"FloorStanding":1341,"WindowAC":180,"Concealed":0,"Cassette":0,"_total":4866},"OR":{"OnOff":1573,"Inverter":6422,"FloorStanding":275,"WindowAC":148,"Concealed":0,"Cassette":0,"_total":8418},"Total":{"OnOff":3597,"Inverter":7743,"FloorStanding":1616,"WindowAC":328,"Concealed":0,"Cassette":0,"_total":13284}},"Jun":{"IR":{"OnOff":14745,"Inverter":8179,"FloorStanding":4843,"WindowAC":83,"Concealed":0,"Cassette":0,"_total":27850},"OR":{"OnOff":7223,"Inverter":22034,"FloorStanding":734,"WindowAC":92,"Concealed":0,"Cassette":0,"_total":30083},"Total":{"OnOff":21968,"Inverter":30213,"FloorStanding":5577,"WindowAC":175,"Concealed":0,"Cassette":0,"_total":57933}}},"2026":{"Jan":{"IR":{"OnOff":744,"Inverter":659,"FloorStanding":327,"WindowAC":0,"Concealed":26,"Cassette":59,"_total":1815},"OR":{"OnOff":842,"Inverter":1106,"FloorStanding":29,"WindowAC":0,"Concealed":1,"Cassette":2,"_total":1980},"Total":{"OnOff":1586,"Inverter":1765,"FloorStanding":356,"WindowAC":0,"Concealed":27,"Cassette":61,"_total":3795}},"Feb":{"IR":{"OnOff":2242,"Inverter":898,"FloorStanding":677,"WindowAC":0,"Concealed":124,"Cassette":47,"_total":3988},"OR":{"OnOff":2410,"Inverter":2278,"FloorStanding":91,"WindowAC":32,"Concealed":0,"Cassette":0,"_total":4811},"Total":{"OnOff":4652,"Inverter":3176,"FloorStanding":768,"WindowAC":32,"Concealed":124,"Cassette":47,"_total":8799}},"Mar":{"IR":{"OnOff":2334,"Inverter":1768,"FloorStanding":636,"WindowAC":19,"Concealed":89,"Cassette":21,"_total":4867},"OR":{"OnOff":1822,"Inverter":2862,"FloorStanding":72,"WindowAC":15,"Concealed":0,"Cassette":0,"_total":4771},"Total":{"OnOff":4156,"Inverter":4630,"FloorStanding":708,"WindowAC":34,"Concealed":89,"Cassette":21,"_total":9638}},"Apr":{"IR":{"OnOff":2946,"Inverter":709,"FloorStanding":684,"WindowAC":0,"Concealed":49,"Cassette":33,"_total":4421},"OR":{"OnOff":2008,"Inverter":2424,"FloorStanding":50,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":4483},"Total":{"OnOff":4954,"Inverter":3133,"FloorStanding":734,"WindowAC":1,"Concealed":49,"Cassette":33,"_total":8904}},"May":{"IR":{"OnOff":20,"Inverter":10,"FloorStanding":4,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":34},"OR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"Total":{"OnOff":20,"Inverter":10,"FloorStanding":4,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":34}},"Jun":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"Total":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0}}}},"weekly":{"2023":{"W2":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":58,"Inverter":454,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0,"_total":730},"Total":{"OnOff":58,"Inverter":454,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0,"_total":730}},"W5":{"IR":{"OnOff":246,"Inverter":699,"FloorStanding":139,"WindowAC":108,"Concealed":0,"Cassette":0,"_total":1192},"OR":{"OnOff":145,"Inverter":578,"FloorStanding":18,"WindowAC":430,"Concealed":0,"Cassette":0,"_total":1171},"Total":{"OnOff":391,"Inverter":1277,"FloorStanding":157,"WindowAC":538,"Concealed":0,"Cassette":0,"_total":2363}},"W7":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":397,"Inverter":1069,"FloorStanding":0,"WindowAC":394,"Concealed":0,"Cassette":0,"_total":1860},"Total":{"OnOff":397,"Inverter":1069,"FloorStanding":0,"WindowAC":394,"Concealed":0,"Cassette":0,"_total":1860}},"W9":{"IR":{"OnOff":559,"Inverter":1162,"FloorStanding":222,"WindowAC":156,"Concealed":0,"Cassette":0,"_total":2099},"OR":{"OnOff":978,"Inverter":1580,"FloorStanding":23,"WindowAC":1154,"Concealed":0,"Cassette":0,"_total":3735},"Total":{"OnOff":1537,"Inverter":2742,"FloorStanding":245,"WindowAC":1310,"Concealed":0,"Cassette":0,"_total":5834}},"W11":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":393,"Inverter":1972,"FloorStanding":2,"WindowAC":645,"Concealed":0,"Cassette":0,"_total":3012},"Total":{"OnOff":393,"Inverter":1972,"FloorStanding":2,"WindowAC":645,"Concealed":0,"Cassette":0,"_total":3012}},"W13":{"IR":{"OnOff":552,"Inverter":1267,"FloorStanding":372,"WindowAC":559,"Concealed":0,"Cassette":0,"_total":2750},"OR":{"OnOff":954,"Inverter":2569,"FloorStanding":150,"WindowAC":1582,"Concealed":0,"Cassette":0,"_total":5255},"Total":{"OnOff":1506,"Inverter":3836,"FloorStanding":522,"WindowAC":2141,"Concealed":0,"Cassette":0,"_total":8005}},"W15":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":205,"Inverter":1425,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0,"_total":1895},"Total":{"OnOff":205,"Inverter":1425,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0,"_total":1895}},"W18":{"IR":{"OnOff":377,"Inverter":927,"FloorStanding":355,"WindowAC":371,"Concealed":0,"Cassette":0,"_total":2030},"OR":{"OnOff":850,"Inverter":1999,"FloorStanding":14,"WindowAC":799,"Concealed":0,"Cassette":0,"_total":3662},"Total":{"OnOff":1227,"Inverter":2926,"FloorStanding":369,"WindowAC":1170,"Concealed":0,"Cassette":0,"_total":5692}},"W20":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":606,"Inverter":3074,"FloorStanding":0,"WindowAC":643,"Concealed":0,"Cassette":0,"_total":4323},"Total":{"OnOff":606,"Inverter":3074,"FloorStanding":0,"WindowAC":643,"Concealed":0,"Cassette":0,"_total":4323}},"W22":{"IR":{"OnOff":937,"Inverter":919,"FloorStanding":503,"WindowAC":164,"Concealed":0,"Cassette":0,"_total":2523},"OR":{"OnOff":1193,"Inverter":1798,"FloorStanding":81,"WindowAC":1384,"Concealed":0,"Cassette":0,"_total":4456},"Total":{"OnOff":2130,"Inverter":2717,"FloorStanding":584,"WindowAC":1548,"Concealed":0,"Cassette":0,"_total":6979}},"W24":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":1310,"Inverter":3121,"FloorStanding":15,"WindowAC":249,"Concealed":0,"Cassette":0,"_total":4695},"Total":{"OnOff":1310,"Inverter":3121,"FloorStanding":15,"WindowAC":249,"Concealed":0,"Cassette":0,"_total":4695}},"W26":{"IR":{"OnOff":825,"Inverter":1099,"FloorStanding":513,"WindowAC":86,"Concealed":0,"Cassette":0,"_total":2523},"OR":{"OnOff":1180,"Inverter":1945,"FloorStanding":86,"WindowAC":346,"Concealed":0,"Cassette":0,"_total":3557},"Total":{"OnOff":2005,"Inverter":3044,"FloorStanding":599,"WindowAC":432,"Concealed":0,"Cassette":0,"_total":6080}},"W28":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":654,"Inverter":1766,"FloorStanding":12,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2432},"Total":{"OnOff":654,"Inverter":1766,"FloorStanding":12,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2432}},"W31":{"IR":{"OnOff":448,"Inverter":712,"FloorStanding":449,"WindowAC":28,"Concealed":0,"Cassette":0,"_total":1637},"OR":{"OnOff":1892,"Inverter":1243,"FloorStanding":114,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":3251},"Total":{"OnOff":2340,"Inverter":1955,"FloorStanding":563,"WindowAC":30,"Concealed":0,"Cassette":0,"_total":4888}},"W33":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":263,"Inverter":2730,"FloorStanding":0,"WindowAC":27,"Concealed":0,"Cassette":0,"_total":3020},"Total":{"OnOff":263,"Inverter":2730,"FloorStanding":0,"WindowAC":27,"Concealed":0,"Cassette":0,"_total":3020}},"W35":{"IR":{"OnOff":751,"Inverter":955,"FloorStanding":445,"WindowAC":11,"Concealed":0,"Cassette":0,"_total":2162},"OR":{"OnOff":1435,"Inverter":978,"FloorStanding":109,"WindowAC":4,"Concealed":0,"Cassette":0,"_total":2526},"Total":{"OnOff":2186,"Inverter":1933,"FloorStanding":554,"WindowAC":15,"Concealed":0,"Cassette":0,"_total":4688}},"W37":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":288,"Inverter":3480,"FloorStanding":0,"WindowAC":2471,"Concealed":0,"Cassette":0,"_total":6239},"Total":{"OnOff":288,"Inverter":3480,"FloorStanding":0,"WindowAC":2471,"Concealed":0,"Cassette":0,"_total":6239}},"W39":{"IR":{"OnOff":1234,"Inverter":2613,"FloorStanding":312,"WindowAC":2272,"Concealed":0,"Cassette":0,"_total":6431},"OR":{"OnOff":1175,"Inverter":1114,"FloorStanding":95,"WindowAC":2098,"Concealed":0,"Cassette":0,"_total":4482},"Total":{"OnOff":2409,"Inverter":3727,"FloorStanding":407,"WindowAC":4370,"Concealed":0,"Cassette":0,"_total":10913}},"W41":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":141,"Inverter":1579,"FloorStanding":11,"WindowAC":37,"Concealed":0,"Cassette":0,"_total":1768},"Total":{"OnOff":141,"Inverter":1579,"FloorStanding":11,"WindowAC":37,"Concealed":0,"Cassette":0,"_total":1768}},"W44":{"IR":{"OnOff":529,"Inverter":1600,"FloorStanding":334,"WindowAC":106,"Concealed":0,"Cassette":0,"_total":2569},"OR":{"OnOff":463,"Inverter":593,"FloorStanding":87,"WindowAC":20,"Concealed":0,"Cassette":0,"_total":1163},"Total":{"OnOff":992,"Inverter":2193,"FloorStanding":421,"WindowAC":126,"Concealed":0,"Cassette":0,"_total":3732}},"W46":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":232,"Inverter":1834,"FloorStanding":10,"WindowAC":18,"Concealed":0,"Cassette":0,"_total":2094},"Total":{"OnOff":232,"Inverter":1834,"FloorStanding":10,"WindowAC":18,"Concealed":0,"Cassette":0,"_total":2094}},"W48":{"IR":{"OnOff":244,"Inverter":1360,"FloorStanding":172,"WindowAC":690,"Concealed":0,"Cassette":0,"_total":2466},"OR":{"OnOff":445,"Inverter":446,"FloorStanding":48,"WindowAC":47,"Concealed":0,"Cassette":0,"_total":986},"Total":{"OnOff":689,"Inverter":1806,"FloorStanding":220,"WindowAC":737,"Concealed":0,"Cassette":0,"_total":3452}},"W50":{"IR":{"OnOff":0,"Inverter":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":0},"OR":{"OnOff":245,"Inverter":1876,"FloorStanding":0,"WindowAC":349,"Concealed":0,"Cassette":0,"_total":2470},"Total":{"OnOff":245,"Inverter":1876,"FloorStanding":0,"WindowAC":349,"Concealed":0,"Cassette":0,"_total":2470}},"W52":{"IR":{"OnOff":160,"Inverter":1684,"FloorStanding":201,"WindowAC":2635,"Concealed":0,"Cassette":0,"_total":4680},"OR":{"OnOff":162,"Inverter":513,"FloorStanding":36,"WindowAC":18,"Concealed":0,"Cassette":0,"_total":729},"Total":{"OnOff":322,"Inverter":2197,"FloorStanding":237,"WindowAC":2653,"Concealed":0,"Cassette":0,"_total":5409}}},"2024":{"W5":{"IR":{"OnOff":302,"Inverter":938,"FloorStanding":193,"WindowAC":113,"Concealed":0,"Cassette":0,"_total":1546},"OR":{"OnOff":622,"Inverter":1831,"FloorStanding":67,"WindowAC":20,"Concealed":0,"Cassette":0,"_total":2540},"Total":{"OnOff":924,"Inverter":2769,"FloorStanding":260,"WindowAC":133,"Concealed":0,"Cassette":0,"_total":4086}},"W9":{"IR":{"OnOff":639,"Inverter":968,"FloorStanding":88,"WindowAC":192,"Concealed":0,"Cassette":0,"_total":1887},"OR":{"OnOff":2022,"Inverter":5715,"FloorStanding":117,"WindowAC":63,"Concealed":0,"Cassette":0,"_total":7917},"Total":{"OnOff":2661,"Inverter":6683,"FloorStanding":205,"WindowAC":255,"Concealed":0,"Cassette":0,"_total":9804}},"W13":{"IR":{"OnOff":642,"Inverter":1977,"FloorStanding":599,"WindowAC":295,"Concealed":0,"Cassette":0,"_total":3513},"OR":{"OnOff":2448,"Inverter":3472,"FloorStanding":100,"WindowAC":117,"Concealed":0,"Cassette":0,"_total":6137},"Total":{"OnOff":3090,"Inverter":5449,"FloorStanding":699,"WindowAC":412,"Concealed":0,"Cassette":0,"_total":9650}},"W18":{"IR":{"OnOff":671,"Inverter":1236,"FloorStanding":642,"WindowAC":113,"Concealed":0,"Cassette":0,"_total":2662},"OR":{"OnOff":1854,"Inverter":3276,"FloorStanding":90,"WindowAC":34,"Concealed":0,"Cassette":0,"_total":5254},"Total":{"OnOff":2525,"Inverter":4512,"FloorStanding":732,"WindowAC":147,"Concealed":0,"Cassette":0,"_total":7916}},"W22":{"IR":{"OnOff":953,"Inverter":1511,"FloorStanding":654,"WindowAC":232,"Concealed":0,"Cassette":0,"_total":3350},"OR":{"OnOff":2294,"Inverter":7791,"FloorStanding":247,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":10333},"Total":{"OnOff":3247,"Inverter":9302,"FloorStanding":901,"WindowAC":233,"Concealed":0,"Cassette":0,"_total":13683}},"W26":{"IR":{"OnOff":1304,"Inverter":2734,"FloorStanding":1518,"WindowAC":444,"Concealed":0,"Cassette":0,"_total":6000},"OR":{"OnOff":830,"Inverter":7220,"FloorStanding":193,"WindowAC":3,"Concealed":0,"Cassette":0,"_total":8246},"Total":{"OnOff":2134,"Inverter":9954,"FloorStanding":1711,"WindowAC":447,"Concealed":0,"Cassette":0,"_total":14246}},"W30":{"IR":{"OnOff":914,"Inverter":3446,"FloorStanding":591,"WindowAC":13,"Concealed":0,"Cassette":0,"_total":4964},"OR":{"OnOff":415,"Inverter":3064,"FloorStanding":154,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":3635},"Total":{"OnOff":1329,"Inverter":6510,"FloorStanding":745,"WindowAC":15,"Concealed":0,"Cassette":0,"_total":8599}},"W35":{"IR":{"OnOff":795,"Inverter":1610,"FloorStanding":582,"WindowAC":96,"Concealed":0,"Cassette":0,"_total":3083},"OR":{"OnOff":452,"Inverter":2877,"FloorStanding":77,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":3406},"Total":{"OnOff":1247,"Inverter":4487,"FloorStanding":659,"WindowAC":96,"Concealed":0,"Cassette":0,"_total":6489}},"W39":{"IR":{"OnOff":1585,"Inverter":853,"FloorStanding":542,"WindowAC":6615,"Concealed":0,"Cassette":0,"_total":9595},"OR":{"OnOff":1641,"Inverter":6063,"FloorStanding":135,"WindowAC":10854,"Concealed":0,"Cassette":0,"_total":18693},"Total":{"OnOff":3226,"Inverter":6916,"FloorStanding":677,"WindowAC":17469,"Concealed":0,"Cassette":0,"_total":28288}},"W44":{"IR":{"OnOff":858,"Inverter":601,"FloorStanding":258,"WindowAC":5359,"Concealed":0,"Cassette":0,"_total":7076},"OR":{"OnOff":674,"Inverter":2259,"FloorStanding":74,"WindowAC":6018,"Concealed":0,"Cassette":0,"_total":9025},"Total":{"OnOff":1532,"Inverter":2860,"FloorStanding":332,"WindowAC":11377,"Concealed":0,"Cassette":0,"_total":16101}},"W48":{"IR":{"OnOff":1380,"Inverter":1522,"FloorStanding":467,"WindowAC":4114,"Concealed":0,"Cassette":0,"_total":7483},"OR":{"OnOff":812,"Inverter":2444,"FloorStanding":55,"WindowAC":2610,"Concealed":0,"Cassette":0,"_total":5921},"Total":{"OnOff":2192,"Inverter":3966,"FloorStanding":522,"WindowAC":6724,"Concealed":0,"Cassette":0,"_total":13404}},"W52":{"IR":{"OnOff":1230,"Inverter":1095,"FloorStanding":232,"WindowAC":1677,"Concealed":0,"Cassette":0,"_total":4234},"OR":{"OnOff":851,"Inverter":2136,"FloorStanding":75,"WindowAC":1189,"Concealed":0,"Cassette":0,"_total":4251},"Total":{"OnOff":2081,"Inverter":3231,"FloorStanding":307,"WindowAC":2866,"Concealed":0,"Cassette":0,"_total":8485}}},"2025":{"W1":{"IR":{"OnOff":424,"Inverter":128,"FloorStanding":72,"WindowAC":136,"Concealed":0,"Cassette":0,"_total":760},"OR":{"OnOff":309,"Inverter":489,"FloorStanding":1,"WindowAC":57,"Concealed":0,"Cassette":0,"_total":856},"Total":{"OnOff":733,"Inverter":617,"FloorStanding":73,"WindowAC":193,"Concealed":0,"Cassette":0,"_total":1616}},"W2":{"IR":{"OnOff":784,"Inverter":88,"FloorStanding":24,"WindowAC":52,"Concealed":0,"Cassette":0,"_total":948},"OR":{"OnOff":334,"Inverter":371,"FloorStanding":20,"WindowAC":15,"Concealed":0,"Cassette":0,"_total":740},"Total":{"OnOff":1118,"Inverter":459,"FloorStanding":44,"WindowAC":67,"Concealed":0,"Cassette":0,"_total":1688}},"W3":{"IR":{"OnOff":497,"Inverter":49,"FloorStanding":66,"WindowAC":33,"Concealed":0,"Cassette":0,"_total":645},"OR":{"OnOff":171,"Inverter":273,"FloorStanding":16,"WindowAC":64,"Concealed":0,"Cassette":0,"_total":524},"Total":{"OnOff":668,"Inverter":322,"FloorStanding":82,"WindowAC":97,"Concealed":0,"Cassette":0,"_total":1169}},"W4":{"IR":{"OnOff":255,"Inverter":66,"FloorStanding":61,"WindowAC":179,"Concealed":0,"Cassette":0,"_total":561},"OR":{"OnOff":164,"Inverter":236,"FloorStanding":2,"WindowAC":75,"Concealed":0,"Cassette":0,"_total":477},"Total":{"OnOff":419,"Inverter":302,"FloorStanding":63,"WindowAC":254,"Concealed":0,"Cassette":0,"_total":1038}},"W5":{"IR":{"OnOff":412,"Inverter":83,"FloorStanding":75,"WindowAC":606,"Concealed":0,"Cassette":0,"_total":1176},"OR":{"OnOff":252,"Inverter":359,"FloorStanding":3,"WindowAC":264,"Concealed":0,"Cassette":0,"_total":878},"Total":{"OnOff":664,"Inverter":442,"FloorStanding":78,"WindowAC":870,"Concealed":0,"Cassette":0,"_total":2054}},"W6":{"IR":{"OnOff":187,"Inverter":71,"FloorStanding":29,"WindowAC":378,"Concealed":0,"Cassette":0,"_total":665},"OR":{"OnOff":178,"Inverter":228,"FloorStanding":10,"WindowAC":403,"Concealed":0,"Cassette":0,"_total":819},"Total":{"OnOff":365,"Inverter":299,"FloorStanding":39,"WindowAC":781,"Concealed":0,"Cassette":0,"_total":1484}},"W7":{"IR":{"OnOff":185,"Inverter":46,"FloorStanding":135,"WindowAC":341,"Concealed":0,"Cassette":0,"_total":707},"OR":{"OnOff":253,"Inverter":236,"FloorStanding":13,"WindowAC":436,"Concealed":0,"Cassette":0,"_total":938},"Total":{"OnOff":438,"Inverter":282,"FloorStanding":148,"WindowAC":777,"Concealed":0,"Cassette":0,"_total":1645}},"W8":{"IR":{"OnOff":312,"Inverter":93,"FloorStanding":112,"WindowAC":554,"Concealed":0,"Cassette":0,"_total":1071},"OR":{"OnOff":478,"Inverter":1327,"FloorStanding":16,"WindowAC":476,"Concealed":0,"Cassette":0,"_total":2297},"Total":{"OnOff":790,"Inverter":1420,"FloorStanding":128,"WindowAC":1030,"Concealed":0,"Cassette":0,"_total":3368}},"W9":{"IR":{"OnOff":384,"Inverter":268,"FloorStanding":119,"WindowAC":1033,"Concealed":0,"Cassette":0,"_total":1804},"OR":{"OnOff":326,"Inverter":1320,"FloorStanding":37,"WindowAC":661,"Concealed":0,"Cassette":0,"_total":2344},"Total":{"OnOff":710,"Inverter":1588,"FloorStanding":156,"WindowAC":1694,"Concealed":0,"Cassette":0,"_total":4148}},"W10":{"IR":{"OnOff":541,"Inverter":167,"FloorStanding":259,"WindowAC":1107,"Concealed":0,"Cassette":0,"_total":2074},"OR":{"OnOff":232,"Inverter":653,"FloorStanding":15,"WindowAC":823,"Concealed":0,"Cassette":0,"_total":1723},"Total":{"OnOff":773,"Inverter":820,"FloorStanding":274,"WindowAC":1930,"Concealed":0,"Cassette":0,"_total":3797}},"W11":{"IR":{"OnOff":225,"Inverter":164,"FloorStanding":227,"WindowAC":898,"Concealed":0,"Cassette":0,"_total":1514},"OR":{"OnOff":743,"Inverter":723,"FloorStanding":27,"WindowAC":915,"Concealed":0,"Cassette":0,"_total":2408},"Total":{"OnOff":968,"Inverter":887,"FloorStanding":254,"WindowAC":1813,"Concealed":0,"Cassette":0,"_total":3922}},"W12":{"IR":{"OnOff":290,"Inverter":189,"FloorStanding":125,"WindowAC":1544,"Concealed":0,"Cassette":0,"_total":2148},"OR":{"OnOff":534,"Inverter":719,"FloorStanding":22,"WindowAC":1231,"Concealed":0,"Cassette":0,"_total":2506},"Total":{"OnOff":824,"Inverter":908,"FloorStanding":147,"WindowAC":2775,"Concealed":0,"Cassette":0,"_total":4654}},"W13":{"IR":{"OnOff":264,"Inverter":160,"FloorStanding":252,"WindowAC":819,"Concealed":0,"Cassette":0,"_total":1495},"OR":{"OnOff":753,"Inverter":556,"FloorStanding":13,"WindowAC":835,"Concealed":0,"Cassette":0,"_total":2157},"Total":{"OnOff":1017,"Inverter":716,"FloorStanding":265,"WindowAC":1654,"Concealed":0,"Cassette":0,"_total":3652}},"W14":{"IR":{"OnOff":131,"Inverter":66,"FloorStanding":27,"WindowAC":514,"Concealed":0,"Cassette":0,"_total":738},"OR":{"OnOff":180,"Inverter":661,"FloorStanding":7,"WindowAC":1783,"Concealed":0,"Cassette":0,"_total":2631},"Total":{"OnOff":311,"Inverter":727,"FloorStanding":34,"WindowAC":2297,"Concealed":0,"Cassette":0,"_total":3369}},"W15":{"IR":{"OnOff":239,"Inverter":185,"FloorStanding":332,"WindowAC":614,"Concealed":0,"Cassette":0,"_total":1370},"OR":{"OnOff":166,"Inverter":470,"FloorStanding":46,"WindowAC":2889,"Concealed":0,"Cassette":0,"_total":3571},"Total":{"OnOff":405,"Inverter":655,"FloorStanding":378,"WindowAC":3503,"Concealed":0,"Cassette":0,"_total":4941}},"W16":{"IR":{"OnOff":171,"Inverter":206,"FloorStanding":102,"WindowAC":414,"Concealed":0,"Cassette":0,"_total":893},"OR":{"OnOff":223,"Inverter":433,"FloorStanding":9,"WindowAC":1474,"Concealed":0,"Cassette":0,"_total":2139},"Total":{"OnOff":394,"Inverter":639,"FloorStanding":111,"WindowAC":1888,"Concealed":0,"Cassette":0,"_total":3032}},"W17":{"IR":{"OnOff":336,"Inverter":127,"FloorStanding":208,"WindowAC":220,"Concealed":0,"Cassette":0,"_total":891},"OR":{"OnOff":223,"Inverter":1396,"FloorStanding":34,"WindowAC":9,"Concealed":0,"Cassette":0,"_total":1662},"Total":{"OnOff":559,"Inverter":1523,"FloorStanding":242,"WindowAC":229,"Concealed":0,"Cassette":0,"_total":2553}},"W18":{"IR":{"OnOff":391,"Inverter":363,"FloorStanding":201,"WindowAC":136,"Concealed":0,"Cassette":0,"_total":1091},"OR":{"OnOff":307,"Inverter":2565,"FloorStanding":57,"WindowAC":13,"Concealed":0,"Cassette":0,"_total":2942},"Total":{"OnOff":698,"Inverter":2928,"FloorStanding":258,"WindowAC":149,"Concealed":0,"Cassette":0,"_total":4033}},"W19":{"IR":{"OnOff":606,"Inverter":153,"FloorStanding":264,"WindowAC":8,"Concealed":0,"Cassette":0,"_total":1031},"OR":{"OnOff":322,"Inverter":1618,"FloorStanding":35,"WindowAC":6,"Concealed":0,"Cassette":0,"_total":1981},"Total":{"OnOff":928,"Inverter":1771,"FloorStanding":299,"WindowAC":14,"Concealed":0,"Cassette":0,"_total":3012}},"W20":{"IR":{"OnOff":359,"Inverter":229,"FloorStanding":208,"WindowAC":10,"Concealed":0,"Cassette":0,"_total":806},"OR":{"OnOff":309,"Inverter":653,"FloorStanding":25,"WindowAC":15,"Concealed":0,"Cassette":0,"_total":1002},"Total":{"OnOff":668,"Inverter":882,"FloorStanding":233,"WindowAC":25,"Concealed":0,"Cassette":0,"_total":1808}},"W21":{"IR":{"OnOff":203,"Inverter":282,"FloorStanding":212,"WindowAC":14,"Concealed":0,"Cassette":0,"_total":711},"OR":{"OnOff":240,"Inverter":646,"FloorStanding":39,"WindowAC":101,"Concealed":0,"Cassette":0,"_total":1026},"Total":{"OnOff":443,"Inverter":928,"FloorStanding":251,"WindowAC":115,"Concealed":0,"Cassette":0,"_total":1737}},"W22":{"IR":{"OnOff":465,"Inverter":294,"FloorStanding":456,"WindowAC":12,"Concealed":0,"Cassette":0,"_total":1227},"OR":{"OnOff":395,"Inverter":940,"FloorStanding":119,"WindowAC":13,"Concealed":0,"Cassette":0,"_total":1467},"Total":{"OnOff":860,"Inverter":1234,"FloorStanding":575,"WindowAC":25,"Concealed":0,"Cassette":0,"_total":2694}},"W23":{"IR":{"OnOff":258,"Inverter":180,"FloorStanding":204,"WindowAC":3,"Concealed":0,"Cassette":0,"_total":645},"OR":{"OnOff":134,"Inverter":417,"FloorStanding":12,"WindowAC":27,"Concealed":0,"Cassette":0,"_total":590},"Total":{"OnOff":392,"Inverter":597,"FloorStanding":216,"WindowAC":30,"Concealed":0,"Cassette":0,"_total":1235}},"W24":{"IR":{"OnOff":190,"Inverter":180,"FloorStanding":175,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":546},"OR":{"OnOff":88,"Inverter":806,"FloorStanding":21,"WindowAC":28,"Concealed":0,"Cassette":0,"_total":943},"Total":{"OnOff":278,"Inverter":986,"FloorStanding":196,"WindowAC":29,"Concealed":0,"Cassette":0,"_total":1489}},"W25":{"IR":{"OnOff":373,"Inverter":246,"FloorStanding":311,"WindowAC":9,"Concealed":0,"Cassette":0,"_total":939},"OR":{"OnOff":221,"Inverter":933,"FloorStanding":16,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1170},"Total":{"OnOff":594,"Inverter":1179,"FloorStanding":327,"WindowAC":9,"Concealed":0,"Cassette":0,"_total":2109}},"W26":{"IR":{"OnOff":643,"Inverter":383,"FloorStanding":207,"WindowAC":11,"Concealed":0,"Cassette":0,"_total":1244},"OR":{"OnOff":137,"Inverter":827,"FloorStanding":40,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":1006},"Total":{"OnOff":780,"Inverter":1210,"FloorStanding":247,"WindowAC":13,"Concealed":0,"Cassette":0,"_total":2250}},"W27":{"IR":{"OnOff":584,"Inverter":362,"FloorStanding":384,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":1331},"OR":{"OnOff":192,"Inverter":1009,"FloorStanding":15,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":1218},"Total":{"OnOff":776,"Inverter":1371,"FloorStanding":399,"WindowAC":3,"Concealed":0,"Cassette":0,"_total":2549}},"W28":{"IR":{"OnOff":205,"Inverter":207,"FloorStanding":106,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":519},"OR":{"OnOff":213,"Inverter":744,"FloorStanding":13,"WindowAC":4,"Concealed":0,"Cassette":0,"_total":974},"Total":{"OnOff":418,"Inverter":951,"FloorStanding":119,"WindowAC":5,"Concealed":0,"Cassette":0,"_total":1493}},"W29":{"IR":{"OnOff":421,"Inverter":636,"FloorStanding":203,"WindowAC":37,"Concealed":0,"Cassette":0,"_total":1297},"OR":{"OnOff":225,"Inverter":781,"FloorStanding":34,"WindowAC":28,"Concealed":0,"Cassette":0,"_total":1068},"Total":{"OnOff":646,"Inverter":1417,"FloorStanding":237,"WindowAC":65,"Concealed":0,"Cassette":0,"_total":2365}},"W30":{"IR":{"OnOff":422,"Inverter":298,"FloorStanding":216,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":938},"OR":{"OnOff":171,"Inverter":839,"FloorStanding":48,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":1059},"Total":{"OnOff":593,"Inverter":1137,"FloorStanding":264,"WindowAC":3,"Concealed":0,"Cassette":0,"_total":1997}},"W31":{"IR":{"OnOff":1433,"Inverter":563,"FloorStanding":329,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":2326},"OR":{"OnOff":242,"Inverter":1085,"FloorStanding":35,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1362},"Total":{"OnOff":1675,"Inverter":1648,"FloorStanding":364,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":3688}},"W32":{"IR":{"OnOff":466,"Inverter":226,"FloorStanding":150,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":842},"OR":{"OnOff":201,"Inverter":879,"FloorStanding":24,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1104},"Total":{"OnOff":667,"Inverter":1105,"FloorStanding":174,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1946}},"W33":{"IR":{"OnOff":183,"Inverter":225,"FloorStanding":153,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":561},"OR":{"OnOff":342,"Inverter":699,"FloorStanding":7,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1048},"Total":{"OnOff":525,"Inverter":924,"FloorStanding":160,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1609}},"W34":{"IR":{"OnOff":171,"Inverter":185,"FloorStanding":193,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":549},"OR":{"OnOff":315,"Inverter":608,"FloorStanding":9,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":932},"Total":{"OnOff":486,"Inverter":793,"FloorStanding":202,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1481}},"W35":{"IR":{"OnOff":2630,"Inverter":356,"FloorStanding":358,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":3344},"OR":{"OnOff":288,"Inverter":694,"FloorStanding":26,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1008},"Total":{"OnOff":2918,"Inverter":1050,"FloorStanding":384,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":4352}},"W36":{"IR":{"OnOff":107,"Inverter":219,"FloorStanding":136,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":462},"OR":{"OnOff":250,"Inverter":671,"FloorStanding":14,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":935},"Total":{"OnOff":357,"Inverter":890,"FloorStanding":150,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1397}},"W37":{"IR":{"OnOff":241,"Inverter":180,"FloorStanding":136,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":558},"OR":{"OnOff":157,"Inverter":356,"FloorStanding":78,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":591},"Total":{"OnOff":398,"Inverter":536,"FloorStanding":214,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":1149}},"W38":{"IR":{"OnOff":317,"Inverter":371,"FloorStanding":116,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":805},"OR":{"OnOff":599,"Inverter":1502,"FloorStanding":25,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2126},"Total":{"OnOff":916,"Inverter":1873,"FloorStanding":141,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":2931}},"W39":{"IR":{"OnOff":550,"Inverter":449,"FloorStanding":169,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1168},"OR":{"OnOff":846,"Inverter":2370,"FloorStanding":77,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":3293},"Total":{"OnOff":1396,"Inverter":2819,"FloorStanding":246,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":4461}},"W40":{"IR":{"OnOff":2262,"Inverter":467,"FloorStanding":243,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2972},"OR":{"OnOff":461,"Inverter":1886,"FloorStanding":96,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2443},"Total":{"OnOff":2723,"Inverter":2353,"FloorStanding":339,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":5415}},"W41":{"IR":{"OnOff":262,"Inverter":250,"FloorStanding":112,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":624},"OR":{"OnOff":258,"Inverter":476,"FloorStanding":7,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":741},"Total":{"OnOff":520,"Inverter":726,"FloorStanding":119,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1365}},"W42":{"IR":{"OnOff":125,"Inverter":111,"FloorStanding":137,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":373},"OR":{"OnOff":103,"Inverter":653,"FloorStanding":7,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":763},"Total":{"OnOff":228,"Inverter":764,"FloorStanding":144,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1136}},"W43":{"IR":{"OnOff":88,"Inverter":189,"FloorStanding":158,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":435},"OR":{"OnOff":132,"Inverter":292,"FloorStanding":11,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":435},"Total":{"OnOff":220,"Inverter":481,"FloorStanding":169,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":870}},"W44":{"IR":{"OnOff":1148,"Inverter":288,"FloorStanding":303,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1739},"OR":{"OnOff":374,"Inverter":802,"FloorStanding":45,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1221},"Total":{"OnOff":1522,"Inverter":1090,"FloorStanding":348,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":2960}},"W45":{"IR":{"OnOff":129,"Inverter":151,"FloorStanding":34,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":314},"OR":{"OnOff":288,"Inverter":640,"FloorStanding":21,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":949},"Total":{"OnOff":417,"Inverter":791,"FloorStanding":55,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1263}},"W46":{"IR":{"OnOff":130,"Inverter":146,"FloorStanding":34,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":310},"OR":{"OnOff":165,"Inverter":337,"FloorStanding":6,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":508},"Total":{"OnOff":295,"Inverter":483,"FloorStanding":40,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":818}},"W47":{"IR":{"OnOff":315,"Inverter":103,"FloorStanding":50,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":468},"OR":{"OnOff":99,"Inverter":252,"FloorStanding":2,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":353},"Total":{"OnOff":414,"Inverter":355,"FloorStanding":52,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":821}},"W48":{"IR":{"OnOff":350,"Inverter":184,"FloorStanding":36,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":571},"OR":{"OnOff":184,"Inverter":285,"FloorStanding":6,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":475},"Total":{"OnOff":534,"Inverter":469,"FloorStanding":42,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":1046}},"W49":{"IR":{"OnOff":299,"Inverter":538,"FloorStanding":64,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":901},"OR":{"OnOff":179,"Inverter":396,"FloorStanding":22,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":597},"Total":{"OnOff":478,"Inverter":934,"FloorStanding":86,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1498}},"W50":{"IR":{"OnOff":145,"Inverter":170,"FloorStanding":91,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":406},"OR":{"OnOff":88,"Inverter":258,"FloorStanding":5,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":351},"Total":{"OnOff":233,"Inverter":428,"FloorStanding":96,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":757}},"W51":{"IR":{"OnOff":124,"Inverter":175,"FloorStanding":23,"WindowAC":14,"Concealed":0,"Cassette":0,"_total":336},"OR":{"OnOff":94,"Inverter":160,"FloorStanding":7,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":261},"Total":{"OnOff":218,"Inverter":335,"FloorStanding":30,"WindowAC":14,"Concealed":0,"Cassette":0,"_total":597}},"W52":{"IR":{"OnOff":174,"Inverter":141,"FloorStanding":12,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":327},"OR":{"OnOff":177,"Inverter":377,"FloorStanding":5,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":559},"Total":{"OnOff":351,"Inverter":518,"FloorStanding":17,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":886}}},"2026":{"W1":{"IR":{"OnOff":168,"Inverter":93,"FloorStanding":60,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":321},"OR":{"OnOff":291,"Inverter":404,"FloorStanding":9,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":704},"Total":{"OnOff":459,"Inverter":497,"FloorStanding":69,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1025}},"W2":{"IR":{"OnOff":298,"Inverter":299,"FloorStanding":117,"WindowAC":0,"Concealed":11,"Cassette":18,"_total":743},"OR":{"OnOff":168,"Inverter":232,"FloorStanding":8,"WindowAC":0,"Concealed":1,"Cassette":2,"_total":411},"Total":{"OnOff":466,"Inverter":531,"FloorStanding":125,"WindowAC":0,"Concealed":12,"Cassette":20,"_total":1154}},"W3":{"IR":{"OnOff":93,"Inverter":61,"FloorStanding":64,"WindowAC":0,"Concealed":9,"Cassette":23,"_total":250},"OR":{"OnOff":236,"Inverter":235,"FloorStanding":2,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":473},"Total":{"OnOff":329,"Inverter":296,"FloorStanding":66,"WindowAC":0,"Concealed":9,"Cassette":23,"_total":723}},"W4":{"IR":{"OnOff":185,"Inverter":206,"FloorStanding":86,"WindowAC":0,"Concealed":6,"Cassette":18,"_total":501},"OR":{"OnOff":147,"Inverter":235,"FloorStanding":10,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":392},"Total":{"OnOff":332,"Inverter":441,"FloorStanding":96,"WindowAC":0,"Concealed":6,"Cassette":18,"_total":893}},"W5":{"IR":{"OnOff":1281,"Inverter":219,"FloorStanding":309,"WindowAC":0,"Concealed":73,"Cassette":8,"_total":1890},"OR":{"OnOff":236,"Inverter":275,"FloorStanding":21,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":532},"Total":{"OnOff":1517,"Inverter":494,"FloorStanding":330,"WindowAC":0,"Concealed":73,"Cassette":8,"_total":2422}},"W6":{"IR":{"OnOff":142,"Inverter":260,"FloorStanding":157,"WindowAC":0,"Concealed":11,"Cassette":4,"_total":574},"OR":{"OnOff":472,"Inverter":336,"FloorStanding":4,"WindowAC":6,"Concealed":0,"Cassette":0,"_total":818},"Total":{"OnOff":614,"Inverter":596,"FloorStanding":161,"WindowAC":6,"Concealed":11,"Cassette":4,"_total":1392}},"W7":{"IR":{"OnOff":237,"Inverter":214,"FloorStanding":87,"WindowAC":0,"Concealed":27,"Cassette":34,"_total":599},"OR":{"OnOff":779,"Inverter":509,"FloorStanding":31,"WindowAC":23,"Concealed":0,"Cassette":0,"_total":1342},"Total":{"OnOff":1016,"Inverter":723,"FloorStanding":118,"WindowAC":23,"Concealed":27,"Cassette":34,"_total":1941}},"W8":{"IR":{"OnOff":582,"Inverter":205,"FloorStanding":124,"WindowAC":0,"Concealed":13,"Cassette":1,"_total":925},"OR":{"OnOff":923,"Inverter":1158,"FloorStanding":35,"WindowAC":3,"Concealed":0,"Cassette":0,"_total":2119},"Total":{"OnOff":1505,"Inverter":1363,"FloorStanding":159,"WindowAC":3,"Concealed":13,"Cassette":1,"_total":3044}},"W9":{"IR":{"OnOff":1015,"Inverter":1036,"FloorStanding":312,"WindowAC":4,"Concealed":84,"Cassette":14,"_total":2465},"OR":{"OnOff":709,"Inverter":1173,"FloorStanding":19,"WindowAC":6,"Concealed":0,"Cassette":0,"_total":1907},"Total":{"OnOff":1724,"Inverter":2209,"FloorStanding":331,"WindowAC":10,"Concealed":84,"Cassette":14,"_total":4372}},"W10":{"IR":{"OnOff":691,"Inverter":365,"FloorStanding":105,"WindowAC":15,"Concealed":5,"Cassette":2,"_total":1183},"OR":{"OnOff":289,"Inverter":506,"FloorStanding":3,"WindowAC":5,"Concealed":0,"Cassette":0,"_total":803},"Total":{"OnOff":980,"Inverter":871,"FloorStanding":108,"WindowAC":20,"Concealed":5,"Cassette":2,"_total":1986}},"W11":{"IR":{"OnOff":219,"Inverter":179,"FloorStanding":82,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":480},"OR":{"OnOff":324,"Inverter":422,"FloorStanding":21,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":769},"Total":{"OnOff":543,"Inverter":601,"FloorStanding":103,"WindowAC":2,"Concealed":0,"Cassette":0,"_total":1249}},"W12":{"IR":{"OnOff":236,"Inverter":138,"FloorStanding":85,"WindowAC":0,"Concealed":0,"Cassette":3,"_total":462},"OR":{"OnOff":233,"Inverter":326,"FloorStanding":13,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":573},"Total":{"OnOff":469,"Inverter":464,"FloorStanding":98,"WindowAC":1,"Concealed":0,"Cassette":3,"_total":1035}},"W13":{"IR":{"OnOff":173,"Inverter":50,"FloorStanding":52,"WindowAC":0,"Concealed":0,"Cassette":2,"_total":277},"OR":{"OnOff":267,"Inverter":435,"FloorStanding":16,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":719},"Total":{"OnOff":440,"Inverter":485,"FloorStanding":68,"WindowAC":1,"Concealed":0,"Cassette":2,"_total":996}},"W14":{"IR":{"OnOff":2073,"Inverter":334,"FloorStanding":352,"WindowAC":0,"Concealed":47,"Cassette":18,"_total":2824},"OR":{"OnOff":530,"Inverter":640,"FloorStanding":9,"WindowAC":1,"Concealed":0,"Cassette":0,"_total":1180},"Total":{"OnOff":2603,"Inverter":974,"FloorStanding":361,"WindowAC":1,"Concealed":47,"Cassette":18,"_total":4004}},"W15":{"IR":{"OnOff":323,"Inverter":116,"FloorStanding":117,"WindowAC":0,"Concealed":2,"Cassette":8,"_total":566},"OR":{"OnOff":602,"Inverter":669,"FloorStanding":13,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1284},"Total":{"OnOff":925,"Inverter":785,"FloorStanding":130,"WindowAC":0,"Concealed":2,"Cassette":8,"_total":1850}},"W16":{"IR":{"OnOff":215,"Inverter":78,"FloorStanding":118,"WindowAC":0,"Concealed":0,"Cassette":5,"_total":416},"OR":{"OnOff":445,"Inverter":592,"FloorStanding":8,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":1045},"Total":{"OnOff":660,"Inverter":670,"FloorStanding":126,"WindowAC":0,"Concealed":0,"Cassette":5,"_total":1461}},"W17":{"IR":{"OnOff":335,"Inverter":181,"FloorStanding":97,"WindowAC":0,"Concealed":0,"Cassette":2,"_total":615},"OR":{"OnOff":431,"Inverter":523,"FloorStanding":20,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":974},"Total":{"OnOff":766,"Inverter":704,"FloorStanding":117,"WindowAC":0,"Concealed":0,"Cassette":2,"_total":1589}},"W18":{"Total":{"OnOff":832,"Inverter":751,"FloorStanding":134,"Concealed":0,"Cassette":0,"WindowAC":0,"_total":1717},"OR":{"OnOff":474,"Inverter":427,"FloorStanding":76,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":978},"IR":{"OnOff":357,"Inverter":323,"FloorStanding":57,"WindowAC":0,"Concealed":0,"Cassette":0,"_total":738},"_fcst":true},"W19":{"Total":{"OnOff":737,"Inverter":630,"FloorStanding":134,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":1518},"OR":{"OnOff":420,"Inverter":359,"FloorStanding":76,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":865},"IR":{"OnOff":316,"Inverter":270,"FloorStanding":57,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":652},"_fcst":true},"W20":{"Total":{"OnOff":1314,"Inverter":841,"FloorStanding":127,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2299},"OR":{"OnOff":748,"Inverter":479,"FloorStanding":72,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1310},"IR":{"OnOff":565,"Inverter":361,"FloorStanding":54,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":988},"_fcst":true},"W21":{"Total":{"OnOff":831,"Inverter":906,"FloorStanding":162,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":1916},"OR":{"OnOff":473,"Inverter":516,"FloorStanding":92,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1091},"IR":{"OnOff":357,"Inverter":389,"FloorStanding":69,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":824},"_fcst":true},"W22":{"Total":{"OnOff":884,"Inverter":909,"FloorStanding":297,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2107},"OR":{"OnOff":503,"Inverter":518,"FloorStanding":169,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1200},"IR":{"OnOff":380,"Inverter":390,"FloorStanding":127,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":906},"_fcst":true},"W23":{"Total":{"OnOff":870,"Inverter":901,"FloorStanding":364,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2152},"OR":{"OnOff":495,"Inverter":513,"FloorStanding":207,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1226},"IR":{"OnOff":374,"Inverter":387,"FloorStanding":156,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":925},"_fcst":true},"W24":{"Total":{"OnOff":899,"Inverter":768,"FloorStanding":224,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":1908},"OR":{"OnOff":512,"Inverter":437,"FloorStanding":127,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1087},"IR":{"OnOff":386,"Inverter":330,"FloorStanding":96,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":820},"_fcst":true},"W25":{"Total":{"OnOff":1394,"Inverter":1160,"FloorStanding":325,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2896},"OR":{"OnOff":794,"Inverter":661,"FloorStanding":185,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1650},"IR":{"OnOff":599,"Inverter":498,"FloorStanding":139,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":1245},"_fcst":true},"W26":{"Total":{"OnOff":1066,"Inverter":1081,"FloorStanding":233,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2397},"OR":{"OnOff":607,"Inverter":616,"FloorStanding":132,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1366},"IR":{"OnOff":458,"Inverter":464,"FloorStanding":100,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":1030},"_fcst":true},"W27":{"Total":{"OnOff":1409,"Inverter":852,"FloorStanding":344,"Concealed":0,"Cassette":17,"WindowAC":0,"_total":2622},"OR":{"OnOff":802,"Inverter":485,"FloorStanding":196,"WindowAC":0,"Concealed":0,"Cassette":9,"_total":1494},"IR":{"OnOff":606,"Inverter":366,"FloorStanding":147,"WindowAC":0,"Concealed":0,"Cassette":7,"_total":1127},"_fcst":true}}}};
 
-// ── EMBEDDED DATA ──
-const D = {"annual":{"2023":{"Inverter":27657,"OnOff":11765,"FloorStanding":2872,"WindowAC":9553,"Concealed":0,"Cassette":0},"2024":{"Inverter":38669,"OnOff":14764,"FloorStanding":4691,"WindowAC":1626,"Concealed":0,"Cassette":0},"2025":{"Inverter":24321,"OnOff":22531,"FloorStanding":5442,"WindowAC":16601,"Concealed":0,"Cassette":0},"2026":{"Inverter":23829,"OnOff":29840,"FloorStanding":5546,"WindowAC":67,"Concealed":1092,"Cassette":162}},"monthly":{"2023":{"Jan":{"Inverter":454,"OnOff":58,"FloorStanding":0,"WindowAC":218,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2346,"OnOff":788,"FloorStanding":212,"WindowAC":932,"Concealed":0,"Cassette":0},"Mar":{"Inverter":8550,"OnOff":3436,"FloorStanding":939,"WindowAC":4096,"Concealed":0,"Cassette":0},"Apr":{"Inverter":1425,"OnOff":205,"FloorStanding":0,"WindowAC":265,"Concealed":0,"Cassette":0},"May":{"Inverter":8717,"OnOff":3963,"FloorStanding":1017,"WindowAC":3361,"Concealed":0,"Cassette":0},"Jun":{"Inverter":6165,"OnOff":3315,"FloorStanding":704,"WindowAC":681,"Concealed":0,"Cassette":0}},"2024":{"Jan":{"Inverter":0,"OnOff":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2769,"OnOff":931,"FloorStanding":286,"WindowAC":132,"Concealed":0,"Cassette":0},"Mar":{"Inverter":12132,"OnOff":5765,"FloorStanding":976,"WindowAC":667,"Concealed":0,"Cassette":0},"Apr":{"Inverter":0,"OnOff":0,"FloorStanding":0,"WindowAC":0,"Concealed":0,"Cassette":0},"May":{"Inverter":13814,"OnOff":5898,"FloorStanding":1687,"WindowAC":380,"Concealed":0,"Cassette":0},"Jun":{"Inverter":9954,"OnOff":2170,"FloorStanding":1742,"WindowAC":447,"Concealed":0,"Cassette":0}},"2025":{"Jan":{"Inverter":1700,"OnOff":2947,"FloorStanding":286,"WindowAC":607,"Concealed":0,"Cassette":0},"Feb":{"Inverter":2443,"OnOff":2723,"FloorStanding":433,"WindowAC":3001,"Concealed":0,"Cassette":0},"Mar":{"Inverter":4919,"OnOff":7074,"FloorStanding":1129,"WindowAC":7111,"Concealed":0,"Cassette":0},"Apr":{"Inverter":3544,"OnOff":3964,"FloorStanding":801,"WindowAC":5635,"Concealed":0,"Cassette":0},"May":{"Inverter":7743,"OnOff":3728,"FloorStanding":1697,"WindowAC":207,"Concealed":0,"Cassette":0},"Jun":{"Inverter":3972,"OnOff":2095,"FloorStanding":1096,"WindowAC":40,"Concealed":0,"Cassette":0}},"2026":{"Jan":{"Inverter":1765,"OnOff":1586,"FloorStanding":369,"WindowAC":0,"Concealed":137,"Cassette":61},"Feb":{"Inverter":3176,"OnOff":4652,"FloorStanding":667,"WindowAC":32,"Concealed":388,"Cassette":47},"Mar":{"Inverter":4630,"OnOff":4156,"FloorStanding":725,"WindowAC":34,"Concealed":289,"Cassette":21},"Apr":{"Inverter":3133,"OnOff":4954,"FloorStanding":628,"WindowAC":1,"Concealed":278,"Cassette":33},"May":{"Inverter":5875,"OnOff":8645,"FloorStanding":1448,"WindowAC":0,"Concealed":0,"Cassette":0},"Jun":{"Inverter":5250,"OnOff":5847,"FloorStanding":1709,"WindowAC":0,"Concealed":0,"Cassette":0}}},"weekly25":{"W1":{"Inverter":617,"OnOff":733,"FloorStanding":75,"WindowAC":193},"W2":{"Inverter":459,"OnOff":1122,"FloorStanding":61,"WindowAC":66},"W3":{"Inverter":322,"OnOff":670,"FloorStanding":82,"WindowAC":97},"W4":{"Inverter":302,"OnOff":422,"FloorStanding":68,"WindowAC":251},"W5":{"Inverter":442,"OnOff":729,"FloorStanding":78,"WindowAC":805},"W6":{"Inverter":299,"OnOff":553,"FloorStanding":41,"WindowAC":593},"W7":{"Inverter":282,"OnOff":492,"FloorStanding":181,"WindowAC":723},"W8":{"Inverter":1420,"OnOff":949,"FloorStanding":133,"WindowAC":880},"W9":{"Inverter":1588,"OnOff":1046,"FloorStanding":166,"WindowAC":1366},"W10":{"Inverter":820,"OnOff":1323,"FloorStanding":285,"WindowAC":1383},"W11":{"Inverter":887,"OnOff":1621,"FloorStanding":262,"WindowAC":1164},"W12":{"Inverter":908,"OnOff":1591,"FloorStanding":150,"WindowAC":2010},"W13":{"Inverter":716,"OnOff":1493,"FloorStanding":266,"WindowAC":1188},"W14":{"Inverter":727,"OnOff":1194,"FloorStanding":45,"WindowAC":1418},"W15":{"Inverter":655,"OnOff":1461,"FloorStanding":386,"WindowAC":2453},"W16":{"Inverter":639,"OnOff":743,"FloorStanding":123,"WindowAC":1539},"W17":{"Inverter":1523,"OnOff":566,"FloorStanding":247,"WindowAC":225},"W18":{"Inverter":2928,"OnOff":702,"FloorStanding":267,"WindowAC":148},"W19":{"Inverter":1771,"OnOff":932,"FloorStanding":330,"WindowAC":12},"W20":{"Inverter":882,"OnOff":680,"FloorStanding":246,"WindowAC":15},"W21":{"Inverter":928,"OnOff":540,"FloorStanding":260,"WindowAC":19},"W22":{"Inverter":1234,"OnOff":874,"FloorStanding":594,"WindowAC":13},"W23":{"Inverter":597,"OnOff":406,"FloorStanding":256,"WindowAC":17},"W24":{"Inverter":986,"OnOff":306,"FloorStanding":212,"WindowAC":1},"W25":{"Inverter":1179,"OnOff":603,"FloorStanding":377,"WindowAC":9},"W26":{"Inverter":1210,"OnOff":780,"FloorStanding":251,"WindowAC":13}},"weekly26":{"W1":{"Inverter":497,"OnOff":459,"FloorStanding":85,"WindowAC":0,"Concealed":10,"Cassette":0},"W2":{"Inverter":531,"OnOff":466,"FloorStanding":121,"WindowAC":0,"Concealed":43,"Cassette":20},"W3":{"Inverter":296,"OnOff":329,"FloorStanding":75,"WindowAC":0,"Concealed":40,"Cassette":23},"W4":{"Inverter":441,"OnOff":332,"FloorStanding":88,"WindowAC":0,"Concealed":44,"Cassette":18},"W5":{"Inverter":494,"OnOff":1517,"FloorStanding":257,"WindowAC":0,"Concealed":225,"Cassette":8},"W6":{"Inverter":596,"OnOff":614,"FloorStanding":138,"WindowAC":6,"Concealed":53,"Cassette":4},"W7":{"Inverter":723,"OnOff":1016,"FloorStanding":121,"WindowAC":23,"Concealed":47,"Cassette":34},"W8":{"Inverter":1363,"OnOff":1505,"FloorStanding":151,"WindowAC":3,"Concealed":63,"Cassette":1},"W9":{"Inverter":2209,"OnOff":1724,"FloorStanding":370,"WindowAC":10,"Concealed":193,"Cassette":14},"W10":{"Inverter":871,"OnOff":980,"FloorStanding":94,"WindowAC":20,"Concealed":46,"Cassette":2},"W11":{"Inverter":601,"OnOff":543,"FloorStanding":98,"WindowAC":2,"Concealed":17,"Cassette":0},"W12":{"Inverter":464,"OnOff":469,"FloorStanding":98,"WindowAC":1,"Concealed":16,"Cassette":3},"W13":{"Inverter":485,"OnOff":440,"FloorStanding":65,"WindowAC":1,"Concealed":17,"Cassette":2},"W14":{"Inverter":974,"OnOff":2603,"FloorStanding":321,"WindowAC":1,"Concealed":143,"Cassette":18},"W15":{"Inverter":785,"OnOff":925,"FloorStanding":114,"WindowAC":0,"Concealed":42,"Cassette":8},"W16":{"Inverter":670,"OnOff":660,"FloorStanding":97,"WindowAC":0,"Concealed":36,"Cassette":5},"W17":{"Inverter":704,"OnOff":766,"FloorStanding":96,"WindowAC":0,"Concealed":57,"Cassette":2},"W18":{"Inverter":1630,"OnOff":3028,"FloorStanding":422,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W19":{"Inverter":982,"OnOff":1823,"FloorStanding":239,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W20":{"Inverter":1055,"OnOff":1290,"FloorStanding":203,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W21":{"Inverter":964,"OnOff":1044,"FloorStanding":177,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W22":{"Inverter":1244,"OnOff":1460,"FloorStanding":407,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W23":{"Inverter":1094,"OnOff":1185,"FloorStanding":442,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W24":{"Inverter":977,"OnOff":1059,"FloorStanding":285,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W25":{"Inverter":1062,"OnOff":1151,"FloorStanding":328,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W26":{"Inverter":978,"OnOff":1060,"FloorStanding":275,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true},"W27":{"Inverter":1139,"OnOff":1392,"FloorStanding":379,"WindowAC":0,"Concealed":0,"Cassette":0,"_fcst":true}},"models":{"2023":{"NF182C":{"Inverter":10606},"NF242C":{"Inverter":6612},"LO182C":{"OnOff":6147},"C182EC":{"WindowAC":5417},"NV182C":{"Inverter":2848},"APNQ55GT3M":{"FloorStanding":2248},"NF182H":{"Inverter":2073},"C242EC":{"WindowAC":2004},"LO242C":{"OnOff":1570},"NF242H":{"Inverter":1494},"NG242C":{"OnOff":1243},"C182EH":{"WindowAC":1187},"NT382C":{"Inverter":1181},"NG182C":{"OnOff":969},"NV242C":{"Inverter":914},"LO242H":{"OnOff":727},"C242EH":{"WindowAC":588},"NK182H":{"OnOff":420},"NG242H":{"OnOff":418},"NS242C":{"Inverter":345}},"2024":{"NF182C":{"Inverter":10137},"NF242C":{"Inverter":7563},"LO182C":{"OnOff":6656},"NV182C":{"Inverter":5821},"NV242C":{"Inverter":3980},"APNQ55GT3M":{"FloorStanding":3414},"LO242C":{"OnOff":2447},"NW182C":{"Inverter":1973},"NG182C":{"OnOff":1885},"NF182H":{"Inverter":1780},"NG242C":{"OnOff":1476},"NT382C":{"Inverter":1378},"NF242H":{"Inverter":1297},"APNQ55GT3MA":{"FloorStanding":939},"NF122C":{"Inverter":829},"NV182H":{"Inverter":648},"NG182H":{"OnOff":579},"H182EC":{"WindowAC":559},"NS182H":{"Inverter":558},"H242EC":{"WindowAC":556}},"2025":{"C182EC":{"WindowAC":12186},"LO182C":{"OnOff":6173},"ND182C":{"Inverter":4835},"ND242C":{"Inverter":4156},"APNQ55GT3M":{"FloorStanding":4028},"C182EC.SN2":{"OnOff":3921},"LO242C":{"OnOff":3658},"NW182C":{"Inverter":3443},"C242EC":{"WindowAC":2554},"NW242C":{"Inverter":1868},"LB242C":{"OnOff":1824},"C182EH":{"WindowAC":1745},"C182EH.SN2":{"OnOff":1695},"NS182C":{"Inverter":1387},"ND242H":{"Inverter":1317},"ND182H":{"Inverter":1313},"LB182C":{"OnOff":1279},"NT382C":{"Inverter":1224},"NS242C":{"Inverter":1174},"LO182H":{"OnOff":929},"APNQ55GT3MA":{"FloorStanding":873},"LO242H":{"OnOff":818},"NW182H":{"Inverter":729},"NF122C":{"Inverter":611},"NS182H":{"Inverter":589},"LB182H":{"OnOff":446},"NW242H":{"Inverter":418},"AM242C":{"OnOff":408},"NT382H":{"Inverter":398},"NS242H":{"Inverter":341}},"2026":{"LO182C":{"OnOff":3145},"NS182C":{"Inverter":2572},"ND182C":{"Inverter":2067},"LA182C":{"OnOff":1971},"NS242C":{"Inverter":1803},"ND242C":{"Inverter":1781},"LB182C":{"OnOff":1755},"APUW55GT3M":{"FloorStanding":1308},"LA242H":{"OnOff":1045},"LB242C":{"OnOff":1025},"LA242C":{"OnOff":851},"ND182H":{"Inverter":823},"ND242H":{"Inverter":754},"NS182H":{"Inverter":662},"NT382C":{"Inverter":647},"LC242C":{"OnOff":644},"LO242C":{"OnOff":620},"LA182H":{"OnOff":585},"APNQ55GT3M":{"FloorStanding":536},"LO182H":{"OnOff":505},"LC182C":{"OnOff":496},"NS242H":{"Inverter":493},"NF122C":{"Inverter":443},"APNQ55GT3MA":{"FloorStanding":301},"NT382H":{"Inverter":276},"ABUQ60GM3TA":{"Concealed":261},"LO242H":{"OnOff":255},"AM242C":{"OnOff":252},"PREMTB200":{"Concealed":243},"LK242C":{"OnOff":243}}}};
-
-// ── COLOR PALETTE & CONSTANTS ──
+// ── CONSTANTS ──
+const CATS = ['OnOff','Inverter','FloorStanding','WindowAC','Concealed','Cassette'];
+const CAT_LABELS = {OnOff:'On/Off (Rotary)',Inverter:'Inverter',FloorStanding:'Floor Standing',WindowAC:'Window AC',Concealed:'Concealed',Cassette:'Cassette'};
 const C = {
-  Inverter:    {bg:'#2563eb', border:'#1d4ed8'},
-  OnOff:       {bg:'#f59e0b', border:'#d97706'},
+  OnOff:{bg:'#f59e0b',border:'#d97706'},
+  Inverter:{bg:'#2563eb',border:'#1d4ed8'},
   FloorStanding:{bg:'#10b981',border:'#059669'},
-  WindowAC:    {bg:'#8b5cf6', border:'#7c3aed'},
-  Concealed:   {bg:'#06b6d4', border:'#0891b2'},
-  Cassette:    {bg:'#64748b', border:'#475569'},
+  WindowAC:{bg:'#8b5cf6',border:'#7c3aed'},
+  Concealed:{bg:'#06b6d4',border:'#0891b2'},
+  Cassette:{bg:'#64748b',border:'#475569'},
 };
-const ALL_CATS = ['OnOff','Inverter','FloorStanding','WindowAC','Concealed','Cassette'];
-const CAT_LABELS = {OnOff:'On/Off (Rotary)',Inverter:'Inverter',FloorStanding:'Floor Standing AC',WindowAC:'Window AC',Concealed:'Concealed Set',Cassette:'Cassette AC'};
+const YR_C = {'2023':'#94a3b8','2024':'#60a5fa','2025':'#f59e0b','2026':'#2563eb'};
 const YEARS = ['2023','2024','2025','2026'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun'];
+const MONTH_KR = {Jan:'1월',Feb:'2월',Mar:'3월',Apr:'4월',May:'5월',Jun:'6월'};
 
-// ── FILTER STATE (b2c-unified pattern: set = excluded items) ──
+// ── FILTER STATE ──
 const FILTER_STATE = {cat: new Set()};
+let activeChannel = 'All';
+let activeTab = 'h1';
 
-// ── MULTI-SELECT BUILDER (b2c-unified pattern) ──
-function buildMultiSelect(id) {
-  const wrap = document.getElementById(id);
-  if(!wrap) return;
+// ── CHART REGISTRY ──
+const CHARTS = {};
+function destroyChart(id) { if(CHARTS[id]){CHARTS[id].destroy();delete CHARTS[id];} }
+function mkChart(id, cfg) { destroyChart(id); CHARTS[id] = new Chart(document.getElementById(id).getContext('2d'), cfg); return CHARTS[id]; }
+
+// ── DATA HELPERS ──
+function activeCats() { return CATS.filter(c => !FILTER_STATE.cat.has(c)); }
+function chKey() { return activeChannel === 'All' ? 'Total' : activeChannel; }
+
+function getH1(yr) {
+  const grp = D.h1[yr][chKey()];
+  if(!grp) return null;
+  const cats = activeCats();
+  const out = {};
+  cats.forEach(c => out[c] = grp[c]||0);
+  out._total = cats.reduce((a,c)=>a+out[c],0);
+  return out;
+}
+function getQ(yr, q) {
+  const grp = D.quarterly[yr]?.[q]?.[chKey()];
+  if(!grp) return null;
+  const cats = activeCats();
+  const out = {};
+  cats.forEach(c => out[c] = grp[c]||0);
+  out._total = cats.reduce((a,c)=>a+out[c],0);
+  return out;
+}
+function getMonth(yr, m) {
+  const grp = D.monthly[yr]?.[m]?.[chKey()];
+  if(!grp) return null;
+  const cats = activeCats();
+  const out = {};
+  cats.forEach(c => out[c] = grp[c]||0);
+  out._total = cats.reduce((a,c)=>a+out[c],0);
+  return out;
+}
+function getWeek(yr, w) {
+  const wdata = D.weekly[yr]?.[w];
+  if(!wdata) return null;
+  const grp = wdata[chKey()];
+  if(!grp) return null;
+  const cats = activeCats();
+  const out = {};
+  cats.forEach(c => out[c] = grp[c]||0);
+  out._total = cats.reduce((a,c)=>a+out[c],0);
+  out._fcst = wdata._fcst || false;
+  return out;
+}
+
+// ── BUILD LEGEND ──
+function buildLegend(elId) {
+  const el = document.getElementById(elId); if(!el) return;
+  const cats = activeCats();
+  el.innerHTML = cats.map(c => `<div class="legend-item"><div class="legend-dot" style="background:${C[c].bg}"></div>${CAT_LABELS[c]}</div>`).join('');
+}
+
+// ── FMT HELPERS ──
+function fmtN(v) { return v >= 1000 ? (v/1000).toFixed(1)+'K' : String(v); }
+function fmtPct(v, prev) {
+  if(!prev || prev===0) return '<span class="nt">—</span>';
+  const p = (v-prev)/prev*100;
+  return `<span class="${p>=0?'up':'dn'}">${p>=0?'▲ +':'▼ '}${Math.abs(p).toFixed(1)}%</span>`;
+}
+
+// ── MULTI-SELECT FILTER (b2c-unified pattern) ──
+function buildMultiSelect() {
+  const wrap = document.getElementById('fCat');
   const state = FILTER_STATE.cat;
-  const items = ALL_CATS.map(c => ({value:c, label:CAT_LABELS[c]}));
-
-  function getLabel() {
-    const active = items.length - state.size;
-    return state.size === 0 ? `All (${items.length})` : `${active} of ${items.length}`;
-  }
-
+  const items = CATS.map(c => ({value:c, label:CAT_LABELS[c]}));
+  function lbl() { return state.size===0?`All (${items.length})`:`${items.length-state.size} of ${items.length}`; }
   const btn = document.createElement('button');
   btn.className = 'ms-btn';
-  btn.textContent = getLabel();
-
-  const dd = document.createElement('div');
-  dd.className = 'ms-dd';
-
-  // All row
-  const allLbl = document.createElement('label');
-  allLbl.className = 'ms-dd-head';
-  const allCb = document.createElement('input');
-  allCb.type = 'checkbox'; allCb.checked = true;
-  allLbl.appendChild(allCb);
-  allLbl.appendChild(document.createTextNode(' All categories'));
+  btn.textContent = lbl();
+  const dd = document.createElement('div'); dd.className='ms-dd';
+  const allLbl = document.createElement('label'); allLbl.className='ms-dd-head';
+  const allCb = document.createElement('input'); allCb.type='checkbox'; allCb.checked=true;
+  allLbl.appendChild(allCb); allLbl.appendChild(document.createTextNode(' All categories'));
   dd.appendChild(allLbl);
-
-  const itemCbs = [];
+  const cbs = [];
   items.forEach(item => {
-    const lbl = document.createElement('label');
-    const cb = document.createElement('input');
-    cb.type = 'checkbox'; cb.checked = !state.has(item.value);
+    const lbl2 = document.createElement('label');
+    const cb = document.createElement('input'); cb.type='checkbox'; cb.checked=!state.has(item.value);
     cb.addEventListener('change', () => {
       if(!cb.checked) state.add(item.value); else state.delete(item.value);
-      allCb.checked = state.size === 0;
-      btn.className = 'ms-btn' + (state.size > 0 ? ' active-filter' : '');
-      btn.textContent = getLabel();
-      cascadeAndUpdate();
+      allCb.checked = state.size===0;
+      btn.className='ms-btn'+(state.size>0?' active-filter':'');
+      btn.textContent=lbl(); cascadeAndUpdate();
     });
-    lbl.appendChild(cb);
-    const dot = document.createElement('span');
-    dot.style.cssText = `width:9px;height:9px;border-radius:2px;background:${C[item.value].bg};display:inline-block;flex-shrink:0`;
-    lbl.appendChild(dot);
-    lbl.appendChild(document.createTextNode(' ' + item.label));
-    dd.appendChild(lbl);
-    itemCbs.push({cb, value:item.value});
+    lbl2.appendChild(cb);
+    const dot=document.createElement('span');
+    dot.style.cssText=`width:9px;height:9px;border-radius:2px;background:${C[item.value].bg};display:inline-block;flex-shrink:0`;
+    lbl2.appendChild(dot); lbl2.appendChild(document.createTextNode(' '+item.label));
+    dd.appendChild(lbl2); cbs.push({cb,value:item.value});
   });
-
   allCb.addEventListener('change', () => {
-    if(allCb.checked) {
-      state.clear();
-      itemCbs.forEach(x => x.cb.checked = true);
-    } else {
-      items.forEach(item => state.add(item.value));
-      itemCbs.forEach(x => x.cb.checked = false);
-    }
-    btn.className = 'ms-btn' + (state.size > 0 ? ' active-filter' : '');
-    btn.textContent = getLabel();
-    cascadeAndUpdate();
+    if(allCb.checked){state.clear();cbs.forEach(x=>x.cb.checked=true);}
+    else{items.forEach(i=>state.add(i.value));cbs.forEach(x=>x.cb.checked=false);}
+    btn.className='ms-btn'+(state.size>0?' active-filter':'');
+    btn.textContent=lbl(); cascadeAndUpdate();
   });
-
   btn.addEventListener('click', e => {
     e.stopPropagation();
-    document.querySelectorAll('.ms-dd.open').forEach(d => { if(d!==dd) d.classList.remove('open'); });
+    document.querySelectorAll('.ms-dd.open').forEach(d=>{if(d!==dd)d.classList.remove('open');});
     dd.classList.toggle('open');
   });
+  wrap.innerHTML=''; wrap.appendChild(btn); wrap.appendChild(dd);
+}
+document.addEventListener('click', () => document.querySelectorAll('.ms-dd.open').forEach(d=>d.classList.remove('open')));
 
-  wrap.innerHTML = '';
-  wrap.appendChild(btn);
-  wrap.appendChild(dd);
+function setCh(ch) {
+  activeChannel = ch;
+  document.querySelectorAll('#chGrp .grp-btn').forEach(b => b.classList.toggle('active', b.dataset.ch===ch));
+  cascadeAndUpdate();
+}
+function setTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tabnav-btn').forEach(b => b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tab-section').forEach(s => s.classList.toggle('active', s.id==='tab-'+tab));
+  cascadeAndUpdate();
 }
 
-document.addEventListener('click', () => document.querySelectorAll('.ms-dd.open').forEach(d => d.classList.remove('open')));
-
-// ── HELPERS ──
-function activeCats() { return ALL_CATS.filter(c => !FILTER_STATE.cat.has(c)); }
-
-function yrTotal(yr, cats) { return cats.reduce((a,c) => a + (D.annual[yr][c]||0), 0); }
-
-function buildLegend(el, cats) {
-  el.innerHTML = '';
-  cats.forEach(c => {
-    if(!C[c]) return;
-    const d = document.createElement('div'); d.className='legend-item';
-    d.innerHTML = `<div class="legend-dot" style="background:${C[c].bg}"></div>${CAT_LABELS[c]}`;
-    el.appendChild(d);
-  });
-}
-
-function sortWeeks(ws) { return ws.sort((a,b) => parseInt(a.slice(1)) - parseInt(b.slice(1))); }
-
-// ── CHART INSTANCES ──
-let annualChart=null, trendChart=null, monthlyChart=null, modelChart=null;
-let activeTrendYrs = new Set(['2023','2026']);
-let activeModelYr = '2026';
-
-// ── RENDER: KPI CARDS ──
-function renderKPIs() {
-  const cats = activeCats();
-  const totals = YEARS.map(y => yrTotal(y, cats));
-  const maxT = Math.max(...totals);
-  const onoffShare = yr => {
-    const t = yrTotal(yr, cats) || 1;
-    return ((D.annual[yr]['OnOff']||0) / t * 100).toFixed(1);
-  };
-
-  let html = '';
-  YEARS.forEach((y, i) => {
-    const v = totals[i], prev = i > 0 ? totals[i-1] : null;
-    const pct = prev && prev > 0 ? (v - prev) / prev * 100 : null;
-    const cls = pct === null ? 'nt' : pct >= 0 ? 'up' : 'dn';
-    const pctStr = pct === null ? 'Base year'
-      : `${pct>=0?'▲ +':'▼ '}${Math.abs(pct).toFixed(1)}% vs ${YEARS[i-1]}`;
-    const barW = maxT > 0 ? Math.round(v / maxT * 100) : 0;
-    const barClr = pct !== null && pct < 0 ? '#ef4444' : '#3b82f6';
-    html += `<div class="kpi"><div class="yr">${y==='2026'?'2026E':y} H1</div><div class="val">${v.toLocaleString()}</div><div class="yoy ${cls}">${pctStr}</div><div class="kbar" style="width:${barW}%;background:${barClr}"></div></div>`;
-  });
-  // 5th card: On/Off share
-  html += `<div class="kpi"><div class="yr">On/Off Share 2026E</div><div class="val">${onoffShare('2026')}%</div><div class="yoy nt">2025: ${onoffShare('2025')}% &nbsp;|&nbsp; 2024: ${onoffShare('2024')}%</div><div class="kbar" style="width:${onoffShare('2026')}%;background:#f59e0b"></div></div>`;
-  document.getElementById('kpiRow').innerHTML = html;
-}
-
-// ── RENDER: ANNUAL STACKED BAR ──
-function renderAnnual() {
-  const cats = activeCats();
-  buildLegend(document.getElementById('annualLegend'), cats);
-  const datasets = cats.filter(c => YEARS.some(y => D.annual[y][c] > 0)).map(cat => ({
-    label: CAT_LABELS[cat],
-    data: YEARS.map(y => D.annual[y][cat]||0),
-    backgroundColor: C[cat].bg, borderColor: C[cat].border, borderWidth:1, borderRadius:3,
-  }));
-  if(annualChart) annualChart.destroy();
-  annualChart = new Chart(document.getElementById('cAnnual').getContext('2d'), {
-    type:'bar',
-    data:{labels: YEARS.map(y=>y==='2026'?'2026E':y), datasets},
-    options:{
-      responsive:true,
-      plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:10,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K':v}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}
-    }
-  });
-}
-
-// ── RENDER: YoY TABLE ──
-function renderYoY() {
-  const cats = activeCats();
-  const yrTotals = {};
-  YEARS.forEach(y => yrTotals[y] = yrTotal(y, cats));
-
-  let html = '<thead><tr><th>Category</th>';
-  YEARS.forEach(y => html += `<th class="num">${y==='2026'?'2026E':y}</th>`);
-  html += '<th class="num">23→26 CAGR</th></tr></thead><tbody>';
-
-  cats.forEach(cat => {
-    const vals = YEARS.map(y => D.annual[y][cat]||0);
-    if(vals.every(v=>v===0)) return;
-    html += `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
-    vals.forEach((v,i) => {
-      const prev = i>0 ? vals[i-1] : null;
-      const pct = prev&&prev>0 ? ((v-prev)/prev*100).toFixed(1) : null;
-      const col = pct===null?'':(parseFloat(pct)>=0?'#10b981':'#ef4444');
-      const ps = pct===null ? '' : ` <span style="font-size:10px;color:${col}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
-      html += `<td class="num">${v.toLocaleString()}${ps}</td>`;
-    });
-    const v0=vals[0],v3=vals[3];
-    const cagr = v0>0 ? (((v3/v0)**(1/3)-1)*100).toFixed(1) : '—';
-    const cc = v0>0 ? (parseFloat(cagr)>=0?'#10b981':'#ef4444') : '#64748b';
-    html += `<td class="num" style="color:${cc};font-weight:700">${v0>0?(parseFloat(cagr)>=0?'+':'')+cagr+'%':'—'}</td></tr>`;
-  });
-
-  // Total row
-  html += '<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
-  YEARS.forEach((y,i) => {
-    const v=yrTotals[y], prev=i>0?yrTotals[YEARS[i-1]]:null;
-    const pct=prev?((v-prev)/prev*100).toFixed(1):null;
-    const col=pct===null?'':(parseFloat(pct)>=0?'#10b981':'#ef4444');
-    const ps=pct===null?'':` <span style="font-size:10px;color:${col}">${parseFloat(pct)>=0?'+':''}${pct}%</span>`;
-    html+=`<td class="num"><b>${v.toLocaleString()}</b>${ps}</td>`;
-  });
-  const t0=yrTotals['2023'],t3=yrTotals['2026'];
-  const tc=(((t3/t0)**(1/3)-1)*100).toFixed(1);
-  html+=`<td class="num" style="color:${parseFloat(tc)>=0?'#10b981':'#ef4444'};font-weight:700">${parseFloat(tc)>=0?'+':''}${tc}%</td></tr></tbody>`;
-  document.getElementById('tYoY').innerHTML = html;
-}
-
-// ── RENDER: TREND CHART ──
-function renderTrend() {
-  const cats = activeCats();
-  buildLegend(document.getElementById('trendLegend'), cats);
-  const yrs = [...activeTrendYrs].sort();
-  const tag = document.getElementById('trendTag');
-  const note = document.getElementById('trendNote');
-  let labels, datasets=[];
-
-  if(yrs.length===1 && (yrs[0]==='2025'||yrs[0]==='2026')) {
-    const yr=yrs[0], wdata=yr==='2025'?D.weekly25:D.weekly26;
-    labels = sortWeeks(Object.keys(wdata));
-    tag.textContent = yr==='2026'?'2026E Weekly (W1–W27)':'2025 Weekly (W1–W26)';
-    note.textContent = yr==='2026'?'W18–W27: Forecast incl. Mega promo':'Weekly actual';
-    cats.forEach(cat => {
-      const vals=labels.map(w=>wdata[w]?.[cat]||0);
-      if(vals.every(v=>v===0)) return;
-      datasets.push({
-        label:CAT_LABELS[cat], data:vals, borderRadius:2, stack:'main',
-        backgroundColor:labels.map(w=>(yr==='2026'&&wdata[w]?._fcst)?C[cat].bg+'99':C[cat].bg),
-        borderColor:C[cat].border,
-        borderWidth:yr==='2026'?labels.map(w=>wdata[w]?._fcst?1.5:0):0,
-      });
-    });
-  } else {
-    labels=MONTHS;
-    tag.textContent = yrs.join(' + ')+' Monthly';
-    note.textContent = '2023/24: end-of-month concentration in data';
-    yrs.forEach(yr => {
-      cats.forEach(cat => {
-        const vals=MONTHS.map(m=>D.monthly[yr][m]?.[cat]||0);
-        if(vals.every(v=>v===0)) return;
-        datasets.push({
-          label:`${yr} ${CAT_LABELS[cat]}`, data:vals,
-          backgroundColor:C[cat].bg+(yrs.length>1&&yr!='2026'?'88':''),
-          borderRadius:2, stack:yr,
-        });
-      });
-    });
-  }
-
-  if(trendChart) trendChart.destroy();
-  trendChart = new Chart(document.getElementById('cTrend').getContext('2d'), {
-    type:'bar', data:{labels,datasets},
-    options:{
-      responsive:true,
-      plugins:{legend:{display:yrs.length>1,position:'top',labels:{boxWidth:10,font:{size:10}}},datalabels:{display:false}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:9}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(1)+'K':v}}}
-    }
-  });
-}
-
-// ── RENDER: MONTHLY COMPARISON ──
-const YEAR_COLORS={'2023':'#94a3b8','2024':'#60a5fa','2025':'#f59e0b','2026':'#2563eb'};
-function renderMonthly() {
-  const cats = activeCats();
-  const datasets = YEARS.map(yr => ({
-    label:yr==='2026'?'2026E':yr,
-    data:MONTHS.map(m => cats.reduce((a,c)=>a+(D.monthly[yr][m]?.[c]||0),0)),
-    backgroundColor:YEAR_COLORS[yr]+(yr==='2026'?'':'cc'),
-    borderRadius:3,
-  }));
-  if(monthlyChart) monthlyChart.destroy();
-  monthlyChart = new Chart(document.getElementById('cMonthly').getContext('2d'), {
-    type:'bar', data:{labels:MONTHS,datasets},
-    options:{
-      responsive:true,
-      plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=8000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>v>=1000?(v/1000).toFixed(1)+'K':v}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?(v/1000).toFixed(0)+'K':v}}}
-    }
-  });
-}
-
-// ── RENDER: MODEL BREAKDOWN ──
-function renderModels() {
-  const cats = activeCats();
-  const mdata = D.models[activeModelYr];
-  let rows = Object.entries(mdata).map(([model,catObj]) => {
-    const catKey = Object.keys(catObj).find(c=>(catObj[c]||0)>0)||'Inverter';
-    const qty = Object.values(catObj).reduce((a,v)=>a+v,0);
-    return {model, cat:catKey, qty};
-  }).filter(r => cats.includes(r.cat));
-  rows.sort((a,b)=>b.qty-a.qty);
-  const top=rows.slice(0,20), total=rows.reduce((a,r)=>a+r.qty,0);
-
-  document.getElementById('modelTag').textContent =
-    `${activeModelYr==='2026'?'2026 W1–W17 Actual':'H1 '+activeModelYr} · ${cats.length<ALL_CATS.length?cats.map(c=>CAT_LABELS[c]).join(', '):'All Categories'} · Top ${top.length}`;
-
-  if(modelChart) modelChart.destroy();
-  modelChart = new Chart(document.getElementById('cModels').getContext('2d'), {
-    type:'bar',
-    data:{labels:top.map(r=>r.model),datasets:[{label:'Qty',data:top.map(r=>r.qty),backgroundColor:top.map(r=>C[r.cat]?.bg||'#64748b'),borderRadius:3}]},
-    options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'end',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v.toLocaleString()}},scales:{x:{grid:{color:'#f1f5f9'},ticks:{font:{size:9}}},y:{grid:{display:false},ticks:{font:{size:9}}}}}
-  });
-
-  const tbody = document.getElementById('tModelBody');
-  tbody.innerHTML='';
-  top.forEach((r,i)=>{
-    const share=((r.qty/total)*100).toFixed(1);
-    const barW=Math.round((r.qty/top[0].qty)*100);
-    const clr=C[r.cat]?.bg||'#64748b';
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td style="color:#94a3b8;font-size:11px">${i+1}</td><td><b>${r.model}</b></td><td><span style="background:${clr}22;color:${clr};border-radius:4px;padding:1px 6px;font-size:10px;font-weight:700">${CAT_LABELS[r.cat]||r.cat}</span></td><td class="num">${r.qty.toLocaleString()}</td><td class="num">${share}%</td><td><div class="bar-cell"><div class="bar-mini" style="width:${barW}%;background:${clr}"></div></div></td>`;
-    tbody.appendChild(tr);
-  });
-  const tr=document.createElement('tr');
-  tr.style.background='#f8fafc';
-  tr.innerHTML=`<td></td><td colspan="2"><b>합계 (전체 ${rows.length}개 모델)</b></td><td class="num"><b>${total.toLocaleString()}</b></td><td class="num"><b>100%</b></td><td></td>`;
-  tbody.appendChild(tr);
-}
-
-// ── UPDATE FILTER SUMMARY ──
 function updateFilterSummary() {
   const ex = [...FILTER_STATE.cat];
   const el = document.getElementById('filterSummary');
-  if(ex.length===0) { el.textContent='All categories shown'; el.style.color='var(--muted)'; }
-  else { el.textContent=`Excluding: ${ex.map(c=>CAT_LABELS[c]).join(', ')}`; el.style.color='#ef4444'; }
+  const chTxt = activeChannel==='All'?'전 채널':`${activeChannel} 채널`;
+  if(ex.length===0) { el.innerHTML=`<span style="color:var(--muted)">${chTxt} · All categories</span>`; }
+  else { el.innerHTML=`<span style="color:#ef4444">${chTxt} · 제외: ${ex.map(c=>CAT_LABELS[c]).join(', ')}</span>`; }
 }
 
-// ── CASCADE AND UPDATE (main entry point, b2c-unified pattern) ──
+// ══════════════════════════════
+// H1 TAB RENDERS
+// ══════════════════════════════
+function renderH1() {
+  const cats = activeCats();
+  const totals = YEARS.map(y => getH1(y));
+  const maxT = Math.max(...totals.map(t=>t?._total||0));
+
+  // Insight
+  const t25 = totals[2]?._total||0, t26 = totals[3]?._total||0;
+  const t26e = t26 + (D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
+    const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);
+  },0) : 0);
+  const yoy = t25>0 ? ((t26e-t25)/t25*100).toFixed(1) : '—';
+  const winAC25 = FILTER_STATE.cat.size===0 ? (D.h1['2025']['Total']['WindowAC']||0) : 0;
+  document.getElementById('h1Insight').innerHTML =
+    `<b>Business Context:</b> 2026 H1E 총 <b>${(t26e/1000).toFixed(1)}K</b>대 (실적 ${(t26/1000).toFixed(1)}K + FCST ${((t26e-t26)/1000).toFixed(1)}K). ` +
+    `vs 2025 YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    (winAC25>0 ? `⚠ Window AC 제외 시 (+${(winAC25/1000).toFixed(0)}K 왜곡 제거) 실질 성장률 상이 — 우측 필터로 확인.` :
+    `✓ Window AC 필터 적용 중 — 단종 영향 제거된 Like-for-Like 기준.`);
+
+  // KPI
+  let kHtml = '';
+  const klass = ['yr23','yr24','yr25','yr26'];
+  YEARS.forEach((y,i) => {
+    const t = totals[i];
+    if(!t) return;
+    let v = t._total;
+    if(y==='2026') {
+      const fcstAdd = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
+        const g=w[chKey()]; return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);
+      },0) : 0;
+      v = v + fcstAdd;
+    }
+    const prev = i>0 ? (()=>{
+      let pv = totals[i-1]?._total||0;
+      return pv;
+    })() : null;
+    const bw = maxT>0?Math.round(v/maxT*100):0;
+    const orV = y!=='2026' ? (D.h1[y]['OR'] ? cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0) : 0) : null;
+    const irV = y!=='2026' ? (D.h1[y]['IR'] ? cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0) : 0) : null;
+    const onoffShare = t._total>0 ? (t['OnOff']/(t._total)*100).toFixed(0) : 0;
+    kHtml += `<div class="kpi ${klass[i]}">
+      <div class="yr-lbl">${y==='2026'?'2026E':y} H1</div>
+      <div class="val">${(v/1000).toFixed(1)}K</div>
+      <div class="sub">${fmtPct(v, prev)} ${prev?'vs '+(parseInt(YEARS[i-1])):'Base'}</div>
+      ${activeChannel==='All'&&orV!==null?`<div class="sub nt" style="margin-top:2px">OR ${fmtN(orV)} / IR ${fmtN(irV)}</div>`:''}
+      <div class="sub nt">On/Off ${onoffShare}%</div>
+      <div class="kbar" style="width:${bw}%;background:${YR_C[y]}"></div>
+    </div>`;
+  });
+  // 5th: Window AC impact
+  const wac25 = D.h1['2025']['Total']['WindowAC']||0;
+  const wac26 = D.h1['2026']['Total']['WindowAC']||0;
+  const wacDelta = wac25 - wac26;
+  kHtml += `<div class="kpi insight">
+    <div class="yr-lbl">Window AC 단종 영향</div>
+    <div class="val">${fmtN(wacDelta)}</div>
+    <div class="sub dn">2025→2026 감소분</div>
+    <div class="sub nt">2025: ${fmtN(wac25)} / 2026E: ${fmtN(wac26)}</div>
+    <div class="sub" style="color:#8b5cf6">필터 제거 후 실질 비교</div>
+    <div class="kbar" style="width:100%;background:#8b5cf6"></div>
+  </div>`;
+  document.getElementById('h1Kpi').innerHTML = kHtml;
+
+  // Annual stacked bar
+  buildLegend('h1AnnualLegend');
+  const annualCats = cats.filter(c => YEARS.some(y => (D.h1[y]['Total'][c]||0)>0));
+  mkChart('cH1Annual', {
+    type:'bar',
+    data:{
+      labels: YEARS.map(y=>y==='2026'?'2026E':y),
+      datasets: annualCats.map(cat=>({
+        label:CAT_LABELS[cat],
+        data:YEARS.map(y=>{
+          let v = D.h1[y][chKey()][cat]||0;
+          if(y==='2026'){
+            const fcstAdd = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{
+              const g=w[chKey()]; return a+(g?g[cat]||0:0);
+            },0) : 0;
+            v += fcstAdd;
+          }
+          return v;
+        }),
+        backgroundColor:C[cat].bg, borderColor:C[cat].border, borderWidth:1, borderRadius:3,
+      }))
+    },
+    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  // OR vs IR channel bar
+  mkChart('cH1Channel', {
+    type:'bar',
+    data:{
+      labels:YEARS.map(y=>y==='2026'?'2026E':y),
+      datasets:[
+        {label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0)),backgroundColor:'#f59e0b',borderRadius:3},
+        {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0)),backgroundColor:'#2563eb',borderRadius:3},
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=5000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  // OR/IR % stacked
+  mkChart('cH1ChannelPct', {
+    type:'bar',
+    data:{
+      labels:YEARS.map(y=>y==='2026'?'2026E':y),
+      datasets:[
+        {label:'OR %',data:YEARS.map(y=>{
+          const orV=cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0);
+          const tot=cats.reduce((a,c)=>a+(D.h1[y]['Total'][c]||0),0);
+          return tot>0?Math.round(orV/tot*100):0;
+        }),backgroundColor:'#fcd34d',borderRadius:3},
+        {label:'IR %',data:YEARS.map(y=>{
+          const irV=cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0);
+          const tot=cats.reduce((a,c)=>a+(D.h1[y]['Total'][c]||0),0);
+          return tot>0?Math.round(irV/tot*100):0;
+        }),backgroundColor:'#93c5fd',borderRadius:3},
+      ]
+    },
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:true,color:'#374151',font:{size:9,weight:'bold'},formatter:v=>v+'%'}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},y:{stacked:true,max:100,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v+'%'}}}}
+  });
+
+  // YoY table
+  const ch = chKey();
+  let tHtml = '<thead><tr><th>Category</th>';
+  YEARS.forEach(y=>tHtml+=`<th class="num">${y==='2026'?'2026E':y}</th>`);
+  tHtml+='<th class="num">CAGR 23→26</th></tr></thead><tbody>';
+  cats.forEach(cat=>{
+    const vals=YEARS.map(y=>{
+      let v=D.h1[y][ch][cat]||0;
+      if(y==='2026'){
+        const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?g[cat]||0:0);},0):0;
+        v+=fa;
+      }
+      return v;
+    });
+    if(vals.every(v=>v===0)) return;
+    tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
+    vals.forEach((v,i)=>{
+      const prev=i>0?vals[i-1]:null;
+      tHtml+=`<td class="num">${(v/1000).toFixed(1)}K ${prev&&prev>0?fmtPct(v,prev):''}</td>`;
+    });
+    const cagr=vals[0]>0?(((vals[3]/vals[0])**(1/3)-1)*100).toFixed(1):'—';
+    const cc=vals[0]>0?(parseFloat(cagr)>=0?'#15803d':'#dc2626'):'#94a3b8';
+    tHtml+=`<td class="num" style="color:${cc};font-weight:700">${vals[0]>0?(parseFloat(cagr)>=0?'+':'')+cagr+'%':'—'}</td></tr>`;
+  });
+  // total row
+  const yrTots = YEARS.map(y=>{
+    let v=cats.reduce((a,c)=>a+(D.h1[y][ch][c]||0),0);
+    if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+cats.reduce((s,c)=>s+(g?g[c]||0:0),0);},0):0;v+=fa;}
+    return v;
+  });
+  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  yrTots.forEach((v,i)=>{tHtml+=`<td class="num"><b>${(v/1000).toFixed(1)}K</b> ${i>0?fmtPct(v,yrTots[i-1]):''}</td>`;});
+  const tc=yrTots[0]>0?(((yrTots[3]/yrTots[0])**(1/3)-1)*100).toFixed(1):'—';
+  tHtml+=`<td class="num" style="color:${parseFloat(tc)>=0?'#15803d':'#dc2626'};font-weight:700">${parseFloat(tc)>=0?'+':''}${tc}%</td></tr></tbody>`;
+  document.getElementById('tH1Yoy').innerHTML = tHtml;
+}
+
+// ══════════════════════════════
+// Q1 TAB
+// ══════════════════════════════
+function renderQ1() {
+  const cats = activeCats();
+  const ch = chKey();
+  const q1tots = YEARS.map(y=>getQ(y,'Q1'));
+  const maxT = Math.max(...q1tots.map(t=>t?._total||0));
+
+  // Insight
+  const t25=q1tots[2]?._total||0, t26=q1tots[3]?._total||0;
+  const yoy=t25>0?((t26-t25)/t25*100).toFixed(1):'—';
+  document.getElementById('q1Insight').innerHTML =
+    `<b>Q1 (Jan–Mar)</b>는 비수기. 2026 Q1 <b>${(t26/1000).toFixed(1)}K</b>대 vs 2025 <b>${(t25/1000).toFixed(1)}K</b>대, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `Q1:Q2 비율 — 2025 기준 Q1=${((q1tots[2]?._total||0)/(((q1tots[2]?._total||0)+(D.quarterly['2025']['Q2']['Total']?._total||0)))*100).toFixed(0)}% vs Q2=${((D.quarterly['2025']['Q2']['Total']?._total||0)/(((q1tots[2]?._total||0)+(D.quarterly['2025']['Q2']['Total']?._total||0)))*100).toFixed(0)}%. ` +
+    `라마단·내셔널데이 프로모 집중 → Q1 끝에 수요 Spike 예상.`;
+
+  // KPI
+  let kHtml = '';
+  const klass=['yr23','yr24','yr25','yr26'];
+  YEARS.forEach((y,i)=>{
+    const t=q1tots[i]; if(!t) return;
+    const prev=i>0?q1tots[i-1]?._total:null;
+    const bw=maxT>0?Math.round(t._total/maxT*100):0;
+    kHtml+=`<div class="kpi ${klass[i]}">
+      <div class="yr-lbl">${y==='2026'?'2026':y} Q1</div>
+      <div class="val">${(t._total/1000).toFixed(1)}K</div>
+      <div class="sub">${fmtPct(t._total,prev)} ${prev?'vs '+YEARS[i-1]:'Base'}</div>
+      <div class="sub nt">On/Off ${t._total>0?Math.round(t['OnOff']/t._total*100):0}% / Inv ${t._total>0?Math.round(t['Inverter']/t._total*100):0}%</div>
+      <div class="kbar" style="width:${bw}%;background:${YR_C[y]}"></div>
+    </div>`;
+  });
+  kHtml+=`<div class="kpi insight">
+    <div class="yr-lbl">Q1/Q2 비중 (2025)</div>
+    <div class="val">22% / 78%</div>
+    <div class="sub nt">Q2가 비즈니스 핵심</div>
+    <div class="sub">피크: 라마단·메가 프로모</div>
+    <div class="kbar" style="width:22%;background:#10b981"></div>
+  </div>`;
+  document.getElementById('q1Kpi').innerHTML = kHtml;
+
+  buildLegend('q1Legend');
+  const activeCatsFiltered = cats.filter(c=>YEARS.some(y=>(D.quarterly[y]['Q1'][ch][c]||0)>0));
+  mkChart('cQ1Cat',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026':y),
+    datasets:activeCatsFiltered.map(cat=>({label:CAT_LABELS[cat],data:YEARS.map(y=>D.quarterly[y]['Q1'][ch][cat]||0),
+    backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3}))},
+    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+  mkChart('cQ1Ch',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026':y),
+    datasets:[{label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['OR'][c]||0),0)),backgroundColor:'#f59e0b',borderRadius:3},
+              {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['IR'][c]||0),0)),backgroundColor:'#2563eb',borderRadius:3}]},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  let tHtml='<thead><tr><th>Category</th>';
+  YEARS.forEach(y=>tHtml+=`<th class="num">${y==='2026'?'2026':y} Q1</th>`);
+  tHtml+='</tr></thead><tbody>';
+  cats.forEach(cat=>{
+    const vals=YEARS.map(y=>D.quarterly[y]['Q1'][ch][cat]||0);
+    if(vals.every(v=>v===0)) return;
+    tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
+    vals.forEach((v,i)=>tHtml+=`<td class="num">${v.toLocaleString()} ${i>0?fmtPct(v,vals[i-1]):''}</td>`);
+    tHtml+='</tr>';
+  });
+  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  YEARS.forEach((y,i)=>{
+    const v=q1tots[i]?._total||0;
+    const prev=i>0?q1tots[i-1]?._total:null;
+    tHtml+=`<td class="num"><b>${v.toLocaleString()}</b> ${prev?fmtPct(v,prev):''}</td>`;
+  });
+  tHtml+='</tr></tbody>';
+  document.getElementById('tQ1').innerHTML = tHtml;
+}
+
+// ══════════════════════════════
+// Q2 TAB
+// ══════════════════════════════
+function renderQ2() {
+  const cats = activeCats();
+  const ch = chKey();
+
+  function q2Total(yr) {
+    const actual = cats.reduce((a,c)=>a+(D.quarterly[yr]['Q2'][ch][c]||0),0);
+    if(yr!=='2026') return actual;
+    const fcst = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0) : 0;
+    return actual + fcst;
+  }
+  function q2Cats(yr) {
+    const out = {};
+    cats.forEach(c=>{
+      let v = D.quarterly[yr]['Q2'][ch][c]||0;
+      if(yr==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?g[c]||0:0);},0):0;v+=fa;}
+      out[c]=v;
+    });
+    out._total=cats.reduce((a,c)=>a+out[c],0);
+    return out;
+  }
+
+  const q2tots = YEARS.map(q2Total);
+  const maxT = Math.max(...q2tots);
+
+  const t25=q2tots[2], t26=q2tots[3];
+  const yoy=t25>0?((t26-t25)/t25*100).toFixed(1):'—';
+  const actual26 = cats.reduce((a,c)=>a+(D.quarterly['2026']['Q2'][ch][c]||0),0);
+  const fcst26 = t26 - actual26;
+  document.getElementById('q2Insight').innerHTML =
+    `<b>Q2 (Apr–Jun) = 피크 시즌.</b> 2026 Q2E <b>${(t26/1000).toFixed(1)}K</b> (실적 ${(actual26/1000).toFixed(1)}K + FCST ${(fcst26/1000).toFixed(1)}K) vs 2025 ${(t25/1000).toFixed(1)}K, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `Mega 프로모 (Apr 26–May 15, W18–W20) FCST 반영. ` +
+    `Window AC 단종으로 2025 Q2 대비 약 ${((D.quarterly['2025']['Q2']['Total']['WindowAC']||0)/1000).toFixed(0)}K 자연 감소.`;
+
+  let kHtml='';
+  const klass=['yr23','yr24','yr25','yr26'];
+  YEARS.forEach((y,i)=>{
+    const v=q2tots[i], prev=i>0?q2tots[i-1]:null;
+    const bw=maxT>0?Math.round(v/maxT*100):0;
+    const cd=q2Cats(y);
+    kHtml+=`<div class="kpi ${klass[i]}">
+      <div class="yr-lbl">${y==='2026'?'2026E':y} Q2</div>
+      <div class="val">${(v/1000).toFixed(1)}K</div>
+      <div class="sub">${fmtPct(v,prev)} ${prev?'vs '+YEARS[i-1]:'Base'}</div>
+      <div class="sub nt">On/Off ${v>0?Math.round(cd['OnOff']/v*100):0}%</div>
+      ${y==='2026'?'<div class="sub" style="color:#ca8a04">W14-W17실적+W18-W27FCST</div>':''}
+      <div class="kbar" style="width:${bw}%;background:${YR_C[y]}"></div>
+    </div>`;
+  });
+  const wac25q2=D.quarterly['2025']['Q2']['Total']['WindowAC']||0;
+  kHtml+=`<div class="kpi insight">
+    <div class="yr-lbl">Mega 프로모 효과</div>
+    <div class="val">W18×2.0</div>
+    <div class="sub">W19×1.8 / W20×1.3</div>
+    <div class="sub nt">Window AC 단종: -${(wac25q2/1000).toFixed(1)}K YoY</div>
+    <div class="kbar" style="width:100%;background:#ca8a04"></div>
+  </div>`;
+  document.getElementById('q2Kpi').innerHTML = kHtml;
+
+  buildLegend('q2Legend');
+  mkChart('cQ2Cat',{type:'bar',data:{
+    labels:YEARS.map(y=>y==='2026'?'2026E':y),
+    datasets:cats.filter(c=>YEARS.some(y=>q2Cats(y)[c]>0)).map(cat=>({
+      label:CAT_LABELS[cat],data:YEARS.map(y=>q2Cats(y)[cat]||0),
+      backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3}))},
+    options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  // Q2 Weekly W14-W27: 2025 vs 2026
+  const q2Weeks = ['W14','W15','W16','W17','W18','W19','W20','W21','W22','W23','W24','W25','W26','W27'];
+  const w25vals = q2Weeks.map(w=>{const wd=D.weekly['2025']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
+  const w26actual = q2Weeks.map(w=>{if(D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
+  const w26fcst = q2Weeks.map(w=>{if(!D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
+  mkChart('cQ2Weekly',{type:'bar',data:{labels:q2Weeks,datasets:[
+    {label:'2025 Actual',data:w25vals,backgroundColor:'#fcd34d',borderRadius:2},
+    {label:'2026 Actual',data:w26actual,backgroundColor:'#2563eb',borderRadius:2},
+    {label:'2026 FCST',data:w26fcst,backgroundColor:'#93c5fd',borderRadius:2,borderWidth:1.5,borderColor:'#2563eb',borderDash:[4,2]},
+  ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:false}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
+
+  mkChart('cQ2Ch',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026E':y),datasets:[
+    {label:'OR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['OR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['OR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#f59e0b',borderRadius:3},
+    {label:'IR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['IR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['IR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#2563eb',borderRadius:3},
+  ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+  scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
+
+  let tHtml='<thead><tr><th>Category</th>';
+  YEARS.forEach(y=>tHtml+=`<th class="num">${y==='2026'?'2026E':y} Q2</th>`);
+  tHtml+='</tr></thead><tbody>';
+  cats.forEach(cat=>{
+    const vals=YEARS.map(y=>q2Cats(y)[cat]||0);
+    if(vals.every(v=>v===0)) return;
+    tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span><b>${CAT_LABELS[cat]}</b></td>`;
+    vals.forEach((v,i)=>tHtml+=`<td class="num">${v.toLocaleString()} ${i>0?fmtPct(v,vals[i-1]):''}</td>`);
+    tHtml+='</tr>';
+  });
+  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  YEARS.forEach((y,i)=>tHtml+=`<td class="num"><b>${q2tots[i].toLocaleString()}</b> ${i>0?fmtPct(q2tots[i],q2tots[i-1]):''}</td>`);
+  tHtml+='</tr></tbody>';
+  document.getElementById('tQ2').innerHTML = tHtml;
+}
+
+// ══════════════════════════════
+// MONTHLY TAB
+// ══════════════════════════════
+let moActiveYrs = new Set(['2025','2026']);
+let moSelectedMonth = null;
+let moDetailChart = null;
+
+function renderMonthly() {
+  const cats = activeCats();
+  const ch = chKey();
+
+  // Insight
+  document.getElementById('moInsight').innerHTML =
+    `<b>월별 패턴:</b> 사우디 피크는 <b>Mar·Apr·May</b> (라마단+봄철). Jan·Apr는 2023/24년 데이터 결손 (월말 집중 보고 특성). ` +
+    `2026 Apr까지 실적, 이후 FCST. 클릭하면 해당 월 채널/카테고리 상세 확인.`;
+
+  // Year selector
+  const yrSelEl = document.getElementById('moYrSel');
+  yrSelEl.innerHTML = YEARS.map(y=>`<button class="grp-btn${moActiveYrs.has(y)?' active':''}" onclick="toggleMoYr('${y}')">${y==='2026'?'2026E':y}</button>`).join('');
+
+  const activeYrs = [...moActiveYrs].sort();
+  const datasets = activeYrs.map(yr=>({
+    label:yr==='2026'?'2026E':yr,
+    data:MONTHS.map(m=>{const g=D.monthly[yr][m][ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;}),
+    backgroundColor:YR_C[yr]+(yr==='2026'?'':'cc'),
+    borderRadius:3,
+  }));
+  mkChart('cMoMain',{type:'bar',data:{labels:MONTHS,datasets},
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=5000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  // Month mini-cards
+  const moCardsEl = document.getElementById('moCards');
+  moCardsEl.innerHTML = MONTHS.map(m=>{
+    const rows = activeYrs.map(yr=>{
+      const g=D.monthly[yr][m][ch];
+      const v=g?cats.reduce((a,c)=>a+(g[c]||0),0):0;
+      return `<span style="font-size:10px;color:${YR_C[yr]};font-weight:700">${yr==='2026'?'26E':yr}: ${fmtN(v)}</span>`;
+    }).join(' &nbsp;');
+    const cur = D.monthly['2026'][m][ch];
+    const curV = cur?cats.reduce((a,c)=>a+(cur[c]||0),0):0;
+    const prev = D.monthly['2025'][m][ch];
+    const prevV = prev?cats.reduce((a,c)=>a+(prev[c]||0),0):0;
+    const yoy = prevV>0?((curV-prevV)/prevV*100).toFixed(0):null;
+    return `<div class="card" style="cursor:pointer;padding:12px 16px" onclick="showMoDetail('${m}')">
+      <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:6px">${m} ${MONTH_KR[m]}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${rows}</div>
+      ${yoy!==null?`<div style="font-size:11px;${parseFloat(yoy)>=0?'color:#15803d':'color:#dc2626'}">${parseFloat(yoy)>=0?'▲ +':'▼ '}${yoy}% YoY</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function toggleMoYr(yr) {
+  if(moActiveYrs.has(yr)){if(moActiveYrs.size>1)moActiveYrs.delete(yr);}
+  else moActiveYrs.add(yr);
+  renderMonthly();
+}
+
+function showMoDetail(m) {
+  const cats = activeCats();
+  const ch = chKey();
+  const card = document.getElementById('moDetailCard');
+  const title = document.getElementById('moDetailTitle');
+  card.style.display='block';
+  title.innerHTML = `${m} ${MONTH_KR[m]} 카테고리 × 채널 상세 <span class="tag">전년 비교</span>`;
+
+  const activeYrs = [...moActiveYrs].sort();
+  destroyChart('cMoDetail');
+  CHARTS['cMoDetail'] = new Chart(document.getElementById('cMoDetail').getContext('2d'), {
+    type:'bar',
+    data:{
+      labels:activeYrs.map(y=>y==='2026'?'2026E':y),
+      datasets:cats.filter(c=>activeYrs.some(y=>(D.monthly[y][m][ch][c]||0)>0)).map(cat=>({
+        label:CAT_LABELS[cat],
+        data:activeYrs.map(y=>D.monthly[y][m][ch][cat]||0),
+        backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3,
+      }))
+    },
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=500,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+  });
+
+  let tHtml='<thead><tr><th>Category</th><th class="num">OR</th><th class="num">IR</th><th class="num">Total</th><th class="num">2025 YoY</th></tr></thead><tbody>';
+  const grand = {or:0,ir:0,tot:0};
+  cats.forEach(cat=>{
+    const orV=D.monthly['2026'][m]['OR'][cat]||0, irV=D.monthly['2026'][m]['IR'][cat]||0;
+    const totV=orV+irV;
+    const prev25=D.monthly['2025'][m]['Total'][cat]||0;
+    if(totV===0&&prev25===0) return;
+    grand.or+=orV; grand.ir+=irV; grand.tot+=totV;
+    tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span>${CAT_LABELS[cat]}</td>
+      <td class="num">${orV.toLocaleString()}</td><td class="num">${irV.toLocaleString()}</td>
+      <td class="num"><b>${totV.toLocaleString()}</b></td>
+      <td class="num">${prev25>0?fmtPct(totV,prev25):'<span class="nt">—</span>'}</td></tr>`;
+  });
+  const prev25tot = cats.reduce((a,c)=>a+(D.monthly['2025'][m]['Total'][c]||0),0);
+  tHtml+=`<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td><td class="num">${grand.or.toLocaleString()}</td><td class="num">${grand.ir.toLocaleString()}</td><td class="num"><b>${grand.tot.toLocaleString()}</b></td><td class="num">${prev25tot>0?fmtPct(grand.tot,prev25tot):'—'}</td></tr></tbody>`;
+  document.getElementById('tMoDetail').innerHTML = tHtml;
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+// ══════════════════════════════
+// MASTER CASCADE
+// ══════════════════════════════
 function cascadeAndUpdate() {
   updateFilterSummary();
-  renderKPIs();
-  renderAnnual();
-  renderYoY();
-  renderTrend();
-  renderMonthly();
-  renderModels();
+  if(activeTab==='h1') renderH1();
+  else if(activeTab==='q1') renderQ1();
+  else if(activeTab==='q2') renderQ2();
+  else if(activeTab==='monthly') renderMonthly();
 }
 
-// ── INIT FILTER BAR ──
-buildMultiSelect('fCat');
-
-// ── TREND TABS ──
-document.getElementById('trendTabs').querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    const yr=tab.dataset.yr;
-    if(activeTrendYrs.has(yr)){if(activeTrendYrs.size>1)activeTrendYrs.delete(yr);}
-    else activeTrendYrs.add(yr);
-    document.getElementById('trendTabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',activeTrendYrs.has(t.dataset.yr)));
-    renderTrend();
-  });
-});
-
-// ── MODEL YEAR TABS ──
-document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    activeModelYr=tab.dataset.yr;
-    document.getElementById('modelYrTabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.yr===activeModelYr));
-    renderModels();
-  });
-});
-
-// ── INITIAL RENDER ──
+// ── INIT ──
+buildMultiSelect();
 cascadeAndUpdate();
 </script>
 </body>
