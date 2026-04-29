@@ -2079,10 +2079,14 @@ function renderSummary(year){
       PRICES_CURRENT[seg] = {};
       Object.entries(brands).forEach(([br, prices]) => {
         const sorted = [...prices].sort((a,b)=>a-b);
-        // 이상치 제거: 하위 5% / 상위 5% 트리밍 (최소 3건 이상일 때)
-        const cut = sorted.length >= 20 ? Math.floor(sorted.length * 0.05) : 0;
-        const trimmed = sorted.slice(cut, sorted.length - cut || undefined);
-        PRICES_CURRENT[seg][br] = {n: trimmed[0], x: trimmed[trimmed.length-1], s: null};
+        const med = sorted[Math.floor(sorted.length/2)];
+        const lo = med * 0.75, hi = med * 1.35;
+        // 출현 3회 미만이고 허용 범위(±25/35%) 이탈 시 이상치 제거
+        const cnt = {};
+        sorted.forEach(p => { cnt[p] = (cnt[p]||0) + 1; });
+        const clean = sorted.filter(p => cnt[p] >= 3 || (p >= lo && p <= hi));
+        const final = clean.length ? clean : sorted;
+        PRICES_CURRENT[seg][br] = {n: final[0], x: final[final.length-1], s: null};
       });
     });
   }
