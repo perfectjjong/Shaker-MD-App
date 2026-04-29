@@ -752,7 +752,7 @@ function renderMonthly() {
   const activeYrs = [...moActiveYrs].sort();
   const datasets = activeYrs.map(yr=>({
     label:yr==='2026'?'2026E':yr,
-    data:MONTHS.map(m=>{const g=D.monthly[yr][m][ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;}),
+    data:MONTHS.map(m=>{const g=getMonth(yr,m);return g?g._total:0;}),
     backgroundColor:YR_C[yr]+(yr==='2026'?'':'cc'),
     borderRadius:3,
   }));
@@ -765,14 +765,14 @@ function renderMonthly() {
   const moCardsEl = document.getElementById('moCards');
   moCardsEl.innerHTML = MONTHS.map(m=>{
     const rows = activeYrs.map(yr=>{
-      const g=D.monthly[yr][m][ch];
-      const v=g?cats.reduce((a,c)=>a+(g[c]||0),0):0;
+      const g=getMonth(yr,m);
+      const v=g?g._total:0;
       return `<span style="font-size:10px;color:${YR_C[yr]};font-weight:700">${yr==='2026'?'26E':yr}: ${fmtN(v)}</span>`;
     }).join(' &nbsp;');
-    const cur = D.monthly['2026'][m][ch];
-    const curV = cur?cats.reduce((a,c)=>a+(cur[c]||0),0):0;
-    const prev = D.monthly['2025'][m][ch];
-    const prevV = prev?cats.reduce((a,c)=>a+(prev[c]||0),0):0;
+    const curG = getMonth('2026',m);
+    const curV = curG?curG._total:0;
+    const prevG = getMonth('2025',m);
+    const prevV = prevG?prevG._total:0;
     const yoy = prevV>0?((curV-prevV)/prevV*100).toFixed(0):null;
     return `<div class="card" style="cursor:pointer;padding:12px 16px" onclick="showMoDetail('${m}')">
       <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:6px">${m} ${MONTH_KR[m]}</div>
@@ -802,9 +802,9 @@ function showMoDetail(m) {
     type:'bar',
     data:{
       labels:activeYrs.map(y=>y==='2026'?'2026E':y),
-      datasets:cats.filter(c=>activeYrs.some(y=>(D.monthly[y][m][ch][c]||0)>0)).map(cat=>({
+      datasets:cats.filter(c=>activeYrs.some(y=>(getMonth(y,m)?.[c]||0)>0)).map(cat=>({
         label:CAT_LABELS[cat],
-        data:activeYrs.map(y=>D.monthly[y][m][ch][cat]||0),
+        data:activeYrs.map(y=>getMonth(y,m)?.[cat]||0),
         backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3,
       }))
     },
@@ -812,12 +812,19 @@ function showMoDetail(m) {
     scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
+  // Save/restore ch=Total for OR/IR split
+  const _savedCh = activeChannel;
   let tHtml='<thead><tr><th>Category</th><th class="num">OR</th><th class="num">IR</th><th class="num">Total</th><th class="num">2025 YoY</th></tr></thead><tbody>';
   const grand = {or:0,ir:0,tot:0};
+  activeChannel='OR'; const orGrp=getMonth('2026',m)||{};
+  activeChannel='IR'; const irGrp=getMonth('2026',m)||{};
+  activeChannel='Total'; const totGrp=getMonth('2026',m)||{};
+  activeChannel='Total'; const prev25Grp=getMonth('2025',m)||{};
+  activeChannel=_savedCh;
   cats.forEach(cat=>{
-    const orV=D.monthly['2026'][m]['OR'][cat]||0, irV=D.monthly['2026'][m]['IR'][cat]||0;
-    const totV=orV+irV;
-    const prev25=D.monthly['2025'][m]['Total'][cat]||0;
+    const orV=orGrp[cat]||0, irV=irGrp[cat]||0;
+    const totV=totGrp[cat]||0;
+    const prev25=prev25Grp[cat]||0;
     if(totV===0&&prev25===0) return;
     grand.or+=orV; grand.ir+=irV; grand.tot+=totV;
     tHtml+=`<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:2px;background:${C[cat].bg};margin-right:6px"></span>${CAT_LABELS[cat]}</td>
@@ -825,7 +832,7 @@ function showMoDetail(m) {
       <td class="num"><b>${totV.toLocaleString()}</b></td>
       <td class="num">${prev25>0?fmtPct(totV,prev25):'<span class="nt">—</span>'}</td></tr>`;
   });
-  const prev25tot = cats.reduce((a,c)=>a+(D.monthly['2025'][m]['Total'][c]||0),0);
+  const prev25tot = cats.reduce((a,c)=>a+(prev25Grp[c]||0),0);
   tHtml+=`<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td><td class="num">${grand.or.toLocaleString()}</td><td class="num">${grand.ir.toLocaleString()}</td><td class="num"><b>${grand.tot.toLocaleString()}</b></td><td class="num">${prev25tot>0?fmtPct(grand.tot,prev25tot):'—'}</td></tr></tbody>`;
   document.getElementById('tMoDetail').innerHTML = tHtml;
   card.scrollIntoView({behavior:'smooth',block:'nearest'});
