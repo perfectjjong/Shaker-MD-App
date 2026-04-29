@@ -2032,9 +2032,13 @@ function renderSummary(year){
     ? '※ 2025 가격 = Sell-out 단가 × 1.15 (VAT 환산 평균가 / SKU 수 미제공)'
     : '※ 2026 가격 = Price Tracking 실측 (VAT 포함)';
 
-  // Insight 카드: 2026 전용
+  // Insight 카드: 항상 표시 (연도별 내용 다름)
   const insightCard = document.getElementById('summaryInsightCard');
-  if(insightCard) insightCard.style.display = year==='2026' ? '' : 'none';
+  if(insightCard) {
+    insightCard.style.display = '';
+    insightCard.querySelector('.card-title').innerHTML =
+      `<span class="dot" style="background:var(--purple)"></span>LG Strategic Insight — eXtra Mega Promo ${year}`;
+  }
 
   // 용량 그룹
   const sizeGroup = s => (s==='2.5 Ton'||s==='3 Ton') ? '대용량 (2.5~3T)' : s;
@@ -2186,26 +2190,45 @@ function renderSummary(year){
   document.getElementById('tbodyRotary').innerHTML   = buildRows(typeOrderR);
   document.getElementById('tbodyInverter').innerHTML = buildRows(typeOrderI);
 
-  // ── Insight ──────────────────────────────────────────────
-  document.getElementById('insightStrength').innerHTML = `
-    <b>① 2T Inverter 독점 (Cold 148대·H&C 20대):</b> Gree·CLASS PRO 모두 부재. LG가 가격 우위(2,799 SAR)로 해당 세그먼트를 지배. 2T Inverter는 LG의 핵심 캐시카우.<br>
-    <b>② 1.5T 전 구간 경쟁력 유지:</b> Cold Rotary(ON/OFF)에서 가격 우위(1,999 vs Gree 2,199), Cold Inverter에서 소폭 우세(187 vs 171대). 주력 볼륨 세그먼트를 지키고 있음.<br>
-    <b>③ 2T H&C Rotary(ON/OFF) 압도:</b> 71/116대(61%). 가족형 대용량 냉난방 수요를 LG가 리드.<br>
-    <b>④ 브랜드 신뢰 기반 프리미엄 수용:</b> NT 3T Inverter(5,399 SAR)가 Gree 동급(4,849) 대비 550 SAR 비싼데도 22대 판매. LG 브랜드 프리미엄이 작동.
-  `;
-
-  document.getElementById('insightWeakness').innerHTML = `
-    <b>① 대용량(2.5~3T) Inverter 공백 — 단일 최대 손실:</b> 해당 세그먼트 346대 중 Gree 299대(86%) 독점. LG는 NT(5,399 SAR)만 있어 Gree 대비 1,000~1,400 SAR 비쌈. 가격대 자체가 달라 경쟁이 안 되는 구조.<br>
-    <b>② ON/OFF Rotary 포트폴리오 단절:</b> 1T·2T·3T Cold Rotary, 2.5T H&C Rotary에 SKU 없음. 시장 합계 800+대에서 LG 매출 0. 전략적 포기로 볼 수 있으나 CLASS PRO 이탈 수요 흡수 기회를 놓치고 있음.<br>
-    <b>③ 2.5T Rotary(ON/OFF) 가격 경쟁력 미실현:</b> LA302C0(3,699 SAR)이 있으나 D0~D2 판매 거의 없음. Gree Rotary(3,739 SAR)와 가격 거의 동일한데 노출·인지 부족으로 추정.
-  `;
-
-  document.getElementById('insightStrategy').innerHTML = `
-    <b>① 단기 최우선 — 대용량 Inverter 가격 재포지셔닝:</b> 2.5~3T Inverter 시장(346대/프로모 3일)은 검증된 수요. NT 단일 SKU(5,399 SAR)로는 Gree(3,959 SAR)와 경쟁 불가. 3,999~4,499 SAR 구간 대용량 Inverter SKU eXtra 진입이 가장 큰 MS 회복 레버.<br>
-    <b>② 중기 — 2T Cold Rotary(ON/OFF) 진입 검토:</b> 347대 시장, Gree·CLASS PRO·Midea 분산. LG 진입 시 브랜드만으로도 점유 가능. 마진이 낮은 구간이므로 채널 재고 효율과 함께 판단 필요.<br>
-    <b>③ 1.5T 수성 전략:</b> CLASS PRO -10.6%p 이탈 물량이 Gree·TCL·Panasonic으로 분산 중. LG 가격대(1,999 SAR)로 올라오는 수요 존재. 매대 가시성·번들 프로모로 추가 흡수 가능.<br>
-    <b>④ 포트폴리오 연속성 확보:</b> 현재 LG는 1.5T→2T→(공백)→3T NT 구조. 소비자가 용량 업그레이드 시 LG 내에서 선택지가 없어 이탈. 2.5T Inverter 한 개만 추가해도 대용량 사다리가 완성됨.
-  `;
+  // ── Insight (연도별) ─────────────────────────────────────
+  if(year === '2026') {
+    document.getElementById('insightStrength').innerHTML = `
+      <b>① 2T Inverter 독점 (Cold 148대·H&C 20대):</b> Gree·CLASS PRO 모두 부재. LG가 가격 우위(2,799 SAR)로 세그먼트 지배. 2T Inverter는 LG 핵심 캐시카우.<br>
+      <b>② 1.5T 전 구간 경쟁력 유지:</b> Cold Rotary(ON/OFF) 가격 우위(1,999 vs Gree 2,199), Cold Inverter 소폭 우세(187 vs 171대). 주력 볼륨 세그먼트 수성.<br>
+      <b>③ 2T H&C Rotary(ON/OFF) 압도:</b> 71/116대(61%). 가족형 대용량 냉난방 수요 리드.<br>
+      <b>④ 브랜드 프리미엄 수용:</b> NT 3T Inverter(5,399 SAR)가 Gree 동급(4,849) 대비 550 SAR 비싼데도 22대 판매. LG 브랜드 신뢰가 작동 중.
+    `;
+    document.getElementById('insightWeakness').innerHTML = `
+      <b>① 대용량(2.5~3T) Inverter 공백 — 단일 최대 손실:</b> 346대 시장, Gree 299대(86%) 독점. LG NT(5,399 SAR) vs Gree(3,959 SAR) 1,440 SAR 갭. 가격대 자체가 달라 경쟁 구조 성립 안 됨.<br>
+      <b>② ON/OFF 포트폴리오 단절:</b> 1T·2T·3T Cold Rotary, 2.5T H&C Rotary에 SKU 없음. 시장 800+대에서 LG 매출 0. CLASS PRO 이탈 수요 흡수 기회 상실.<br>
+      <b>③ 2.5T Rotary 인지 부족:</b> LA302C0(3,699 SAR)이 Gree(3,739 SAR)와 동가임에도 판매 미미. 노출·매대 배치 문제로 추정.
+    `;
+    document.getElementById('insightStrategy').innerHTML = `
+      <b>① 최우선 — 대용량 Inverter 가격 재포지셔닝:</b> 2.5~3T Inverter 시장(346대/3일)은 검증된 수요. 3,999~4,499 SAR 구간 SKU eXtra 추가 진입이 MS 회복 최대 레버.<br>
+      <b>② 중기 — 2T Cold Rotary 진입 검토:</b> 347대 시장, Gree·CLASS PRO·Midea 분산. LG 진입 시 브랜드만으로도 점유 가능. 마진 구간이므로 채널 재고 효율과 함께 판단.<br>
+      <b>③ 1.5T 수성:</b> CLASS PRO 이탈 물량이 Gree·TCL로 분산. LG 1,999 SAR 가격대로 올라오는 수요 존재. 매대 가시성·번들 프로모로 추가 흡수 가능.<br>
+      <b>④ 포트폴리오 사다리 완성:</b> 현재 LG = 1.5T→2T→(공백)→3T NT. 2.5T Inverter 1개만 추가해도 대용량 사다리 완성 및 이탈 방지.
+    `;
+  } else {
+    // 2025 Insight — 실 데이터 기반 분석
+    document.getElementById('insightStrength').innerHTML = `
+      <b>① 1.5T Cold Inverter 압도적 1위 (71% MS / 2,362대):</b> Gree 7%(219대)를 10배 이상 앞섬. 시즌 최대 단일 Inverter 세그먼트에서 LG가 시장을 사실상 독점. 평균가 2,538 SAR로 Gree(2,790 SAR)보다 오히려 저렴한 가격경쟁력 동반.<br>
+      <b>② 2T Cold Inverter 시장 리더 (56% MS / 1,636대):</b> 2,899대 시장에서 Gree 15%(441대)와 큰 격차. 평균가 3,039 SAR 기준 프리미엄 포지션에서도 볼륨 우위 유지.<br>
+      <b>③ 1T Inverter 지배 (72% MS / 203대):</b> 소형 프리미엄 진입 구간에서도 LG 우위. Gree 22%(63대)와 격차 유지.<br>
+      <b>④ 대용량(2.5~3T) Inverter 대등 경쟁 (44% MS / 320대):</b> Gree 45%(326대)와 사실상 동률. 5,478 SAR로 Gree(4,392 SAR)보다 1,086 SAR 비싼데도 물량 대등 — LG 브랜드 프리미엄이 작동.
+    `;
+    document.getElementById('insightWeakness').innerHTML = `
+      <b>① ON/OFF(Rotary) 전 구간 완전 부재 — 최대 볼륨 공백:</b> 2025 최대 세그먼트 1.5T Cold ROT(9,886대), 2T Cold ROT(3,563대), 1T Cold ROT(3,240대)에서 LG 판매 0. CLASS PRO가 50~80% 지배. LG가 참여하지 않은 시장이 Inverter 전체보다 훨씬 컸음.<br>
+      <b>② 1.5T H&C Inverter 열세 (35% MS / 507대 vs CLASS PRO 47%):</b> 가격 갭(LG 2,719 SAR vs CLASS PRO 1,998 SAR, 720 SAR 차)이 구매 전환 장벽. 고가 브랜드 이미지가 냉난방 Inverter에서는 불리하게 작용.<br>
+      <b>③ 2T H&C Inverter 취약 (27% MS / 330대 vs CLASS PRO 48%):</b> 동일한 가격 갭 구조. 냉난방 수요가 가격 민감도가 높음을 시사.
+    `;
+    document.getElementById('insightStrategy').innerHTML = `
+      <b>① 2026 ON/OFF 신규 진입의 역사적 맥락:</b> 2025에 부재했던 LG가 2026에 1.5T ROT(142대·15% MS), 2T H&C ROT(71대·61% MS)로 진입. 단, 시장 자체가 2025 대비 큰 폭 축소(1.5T ROT: 9,886→921대). 신규 진입 효과보다 시장 위축이 더 큰 변수.<br>
+      <b>② 대용량 Inverter 경고 신호 — 2025 대등 → 2026 역전:</b> 2025엔 LG(44%) vs Gree(45%) 거의 동률이었으나, 2026 초반 페이스에서 LG 8% vs Gree 89%로 역전. 가격 갭(1,000~1,400 SAR)이 프로모션 기간 구매 의사결정에 더 직접 작용하기 시작한 것으로 해석.<br>
+      <b>③ Inverter 지배력 희석 추세:</b> 1.5T Cold INV MS 71%→36% 급락. 경쟁 브랜드(Gree·TCL·Samsung) 진입 확대가 원인. 2025의 LG 독주 구도는 2026 들어 경쟁 심화로 전환됨.<br>
+      <b>④ 2025의 교훈 — ON/OFF 부재가 전략적 선택이었나 포트폴리오 공백이었나:</b> 2025 ON/OFF 시장 규모(1.5T만 9,886대)는 LG가 참여한 Inverter 전체(~8,000대)를 상회. 2026 진입이 뒤늦은 대응이었다면, 향후 ON/OFF 포트폴리오 조기 확보가 필수.
+    `;
+  }
 }
 
 // ── kickoff ───────────────────────────────────────────────
