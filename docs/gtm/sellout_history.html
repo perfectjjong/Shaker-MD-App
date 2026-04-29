@@ -316,7 +316,7 @@ function getMonth(yr, m) {
       }
     });
   }
-  if(!grp && !cats.some(c => out[c]>0)) return null;
+  if(!cats.some(c => out[c]>0)) return null;  // 데이터 없음 (2023/2024 스냅샷 누락 월 포함)
   out._total = cats.reduce((a,c)=>a+out[c],0);
   return out;
 }
@@ -809,8 +809,8 @@ function renderMonthly() {
   moCardsEl.innerHTML = MONTHS.map(m=>{
     const rows = activeYrs.map(yr=>{
       const g=getMonth(yr,m);
-      const v=g?g._total:0;
-      return `<span style="font-size:10px;color:${YR_C[yr]};font-weight:700">${yr==='2026'?'26E':yr}: ${fmtN(v)}</span>`;
+      const v=g?g._total:null;
+      return `<span style="font-size:10px;color:${v!==null?YR_C[yr]:'#9ca3af'};font-weight:700">${yr==='2026'?'26E':yr}: ${v!==null?fmtN(v):'<span style="color:#9ca3af">N/A</span>'}</span>`;
     }).join(' &nbsp;');
     const curG = getMonth('2026',m);
     const curV = curG?curG._total:0;
@@ -844,7 +844,7 @@ function showMoDetail(m) {
   CHARTS['cMoDetail'] = new Chart(document.getElementById('cMoDetail').getContext('2d'), {
     type:'bar',
     data:{
-      labels:activeYrs.map(y=>y==='2026'?'2026E':y),
+      labels:activeYrs.map(y=>{ const g=getMonth(y,m); return (y==='2026'?'2026E':y)+(g?'':' (N/A)'); }),
       datasets:cats.filter(c=>activeYrs.some(y=>(getMonth(y,m)?.[c]||0)>0)).map(cat=>({
         label:CAT_LABELS[cat],
         data:activeYrs.map(y=>getMonth(y,m)?.[cat]||0),
