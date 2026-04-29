@@ -422,7 +422,7 @@ tr:hover td{background:#f8fafc}
     <div class="card">
       <div class="card-title"><span class="dot" style="background:var(--purple)"></span><span id="yoyTableTitle">D-Day Cumulative Table</span></div>
       <div class="tbl-wrap"><table id="tblYoYDay">
-        <thead id="tblYoYDayHead"><tr><th>D-Day</th><th>2025 Date</th><th id="th25">2025 Cum.</th><th>2026 Date</th><th id="th26">2026 Cum.</th><th>YoY</th><th title="Day-of-week adjusted: compares same DOW if they differ">DOW-Adj YoY</th></tr></thead>
+        <thead id="tblYoYDayHead"><tr><th>D-Day</th><th>2025 Date</th><th id="th25">2025 Cum.</th><th>2026 Date</th><th id="th26">2026 Cum.</th><th>YoY</th><th title="요일 보정 YoY: 2025와 2026의 D-Day 요일이 다를 경우, 2025 프로모션 기간 내 요일별 평균 비율로 2025 수치를 보정 (* 표시)">DOW-Adj YoY</th></tr></thead>
         <tbody></tbody>
       </table></div>
     </div>
@@ -1514,13 +1514,46 @@ function renderYoY(){
 
   const cum25={}, cum26={};
   let c25=0, c26=0;
+  // DOW 평균 계산 (2025 프로모션 기간 전체 기준)
+  const dowMean2025 = {};
+  if(start25 && aggByYear['2025']){
+    const dowAcc = {};
+    Object.entries(aggByYear['2025']).forEach(([di, val]) => {
+      const d = new Date(start25); d.setDate(d.getDate() + parseInt(di));
+      const dow = DOW[d.getDay()];
+      if(!dowAcc[dow]) dowAcc[dow] = {total:0, count:0};
+      dowAcc[dow].total += val; dowAcc[dow].count += 1;
+    });
+    Object.entries(dowAcc).forEach(([dow,{total,count}]) => { dowMean2025[dow] = total/count; });
+  }
+
   const tblRows=[];
+  let adjC25=0;
   allDayIndices.forEach(di=>{
     const v25=aggByYear['2025']?.[di], v26=aggByYear['2026']?.[di];
     if(v25 !== undefined) c25 += v25;
     if(v26 !== undefined) c26 += v26;
+
+    // DOW 보정: 2025의 해당 D-Day를 2026 요일 기준으로 환산
+    let adjV25 = v25;
+    if(v25 !== undefined && start25 && start26){
+      const d25=new Date(start25); d25.setDate(d25.getDate()+di);
+      const d26=new Date(start26); d26.setDate(d26.getDate()+di);
+      const dw25=DOW[d25.getDay()], dw26=DOW[d26.getDay()];
+      if(dw25 !== dw26 && dowMean2025[dw25] && dowMean2025[dw26]){
+        adjV25 = v25 * (dowMean2025[dw26] / dowMean2025[dw25]);
+      }
+    }
+    if(adjV25 !== undefined) adjC25 += adjV25;
+
     if(v25 !== undefined || v26 !== undefined){
-      tblRows.push({di, v25, v26, c25: v25!==undefined?c25:null, c26: v26!==undefined?c26:null});
+      tblRows.push({
+        di, v25, v26,
+        c25: v25!==undefined?c25:null,
+        c26: v26!==undefined?c26:null,
+        adjV25: v25!==undefined?adjV25:undefined,
+        adjC25: v25!==undefined?adjC25:null,
+      });
     }
   });
 
@@ -1531,13 +1564,18 @@ function renderYoY(){
   document.getElementById('th26').textContent = `2026 ${modeLabel}`;
 
   const tbody5d=document.querySelector('#tblYoYDay tbody');
-  tbody5d.innerHTML=tblRows.map(({di,v25,v26,c25,c26})=>{
+  tbody5d.innerHTML=tblRows.map(({di,v25,v26,c25,c26,adjV25,adjC25})=>{
     const disp25 = isCum ? c25 : v25;
     const disp26 = isCum ? c26 : v26;
-    // DOW-adjusted: flag when DOW differs between years
+    const adjDisp25 = isCum ? adjC25 : adjV25;
+
     const dow25 = start25 ? (() => { const d=new Date(start25); d.setDate(d.getDate()+di); return DOW[d.getDay()]; })() : null;
     const dow26 = start26 ? (() => { const d=new Date(start26); d.setDate(d.getDate()+di); return DOW[d.getDay()]; })() : null;
-    const dowFlag = (dow25 && dow26 && dow25 !== dow26) ? `<span title="${di<7?'Weekend/weekday mismatch':'DOW differs'}" style="color:var(--amber);font-size:10px"> ⚠</span>` : '';
+    const dowDiffers = dow25 && dow26 && dow25 !== dow26;
+    const adjNote = dowDiffers
+      ? `<span title="2025 ${dow25}→${dow26} 기준 보정 적용" style="color:var(--primary);font-size:10px"> *</span>`
+      : '';
+
     return `<tr>
       <td><b>D${di}</b></td>
       <td>${dayToDate(start25,di)}</td>
@@ -1545,7 +1583,7 @@ function renderYoY(){
       <td>${dayToDate(start26,di)}</td>
       <td>${disp26!=null?fmt(disp26):'-'}</td>
       <td>${yoyStr(disp25,disp26)}</td>
-      <td>${yoyStr(disp25,disp26)}${dowFlag}</td>
+      <td>${yoyStr(adjDisp25,disp26)}${adjNote}</td>
     </tr>`;
   }).join('');
 
