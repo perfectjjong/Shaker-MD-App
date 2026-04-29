@@ -2059,7 +2059,7 @@ function renderSummary(year){
     segBrand[key][br] = (segBrand[key][br]||0) + r[CI.qty];
   });
 
-  // 2025 가격: Sell-out val/qty × 1.15 (VAT 환산 가중평균)
+  // 2025 가격: 일별 val/qty × 1.15 의 min~max (일별 평균가 레인지)
   let PRICES_CURRENT;
   if(year === '2025') {
     const acc = {};
@@ -2071,16 +2071,14 @@ function renderSummary(year){
       const br = DIM.b[r[CI.b]];
       const seg = sz+'||'+at;
       if(!acc[seg]) acc[seg] = {};
-      if(!acc[seg][br]) acc[seg][br] = {v:0, q:0};
-      acc[seg][br].v += r[CI.val];
-      acc[seg][br].q += r[CI.qty];
+      if(!acc[seg][br]) acc[seg][br] = [];
+      acc[seg][br].push(Math.round(r[CI.val] / qty * 1.15));
     });
     PRICES_CURRENT = {};
     Object.entries(acc).forEach(([seg, brands]) => {
       PRICES_CURRENT[seg] = {};
-      Object.entries(brands).forEach(([br, {v, q}]) => {
-        const avg = Math.round(v / q * 1.15);
-        PRICES_CURRENT[seg][br] = {n: avg, x: avg, s: null}; // SKU 수 미제공
+      Object.entries(brands).forEach(([br, prices]) => {
+        PRICES_CURRENT[seg][br] = {n: Math.min(...prices), x: Math.max(...prices), s: null};
       });
     });
   }
