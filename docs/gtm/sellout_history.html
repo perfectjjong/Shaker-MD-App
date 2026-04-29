@@ -174,6 +174,12 @@ canvas{max-width:100%}
 <!-- ═══════════ Q2 TAB ═══════════ -->
 <div class="tab-section" id="tab-q2">
   <div class="insight-box" id="q2Insight"></div>
+  <div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <span style="font-size:11px;color:#6b7280;font-weight:600">2026 FCST 시나리오:</span>
+    <button class="grp-btn" id="scn-worst"  onclick="setQ2Scenario('worst')">▼ Worst &nbsp;32K</button>
+    <button class="grp-btn" id="scn-likely" onclick="setQ2Scenario('likely')">◆ Most Likely &nbsp;36K</button>
+    <button class="grp-btn" id="scn-best"   onclick="setQ2Scenario('best')">▲ Best &nbsp;39K</button>
+  </div>
   <div class="kpi-row" id="q2Kpi"></div>
   <div class="card">
     <div class="card-h">Q2 카테고리 Mix <span class="tag">연도별</span><span class="tag-fcst">2026 W18–W27 포함 (FCST)</span></div>
@@ -243,6 +249,13 @@ const MONTH_KR = {Jan:'1월',Feb:'2월',Mar:'3월',Apr:'4월',May:'5월',Jun:'6�
 const FILTER_STATE = {cat: new Set()};
 let activeChannel = 'All';
 let activeTab = 'h1';
+let q2Scenario = 'likely';
+const Q2_SCENARIOS = {
+  worst:  {label:'Worst',       total:32000, factor:0.9187, color:'#dc2626'},
+  likely: {label:'Most Likely', total:36000, factor:1.0778, color:'#ca8a04'},
+  best:   {label:'Best',        total:39000, factor:1.1971, color:'#15803d'},
+};
+function setQ2Scenario(s){q2Scenario=s;renderQ2();}
 
 // ── CHART REGISTRY ──
 const CHARTS = {};
@@ -630,18 +643,26 @@ function renderQ1() {
 function renderQ2() {
   const cats = activeCats();
   const ch = chKey();
+  const sf = Q2_SCENARIOS[q2Scenario].factor;
+  const scn = Q2_SCENARIOS[q2Scenario];
+
+  // Update toggle button active states
+  ['worst','likely','best'].forEach(s=>{
+    const btn = document.getElementById('scn-'+s);
+    if(btn) btn.classList.toggle('active', s===q2Scenario);
+  });
 
   function q2Total(yr) {
     const actual = cats.reduce((a,c)=>a+(D.quarterly[yr]['Q2'][ch][c]||0),0);
     if(yr!=='2026') return actual;
     const fcst = D.weekly['2026'] ? Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0) : 0;
-    return actual + fcst;
+    return actual + fcst * sf;
   }
   function q2Cats(yr) {
     const out = {};
     cats.forEach(c=>{
       let v = D.quarterly[yr]['Q2'][ch][c]||0;
-      if(yr==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?g[c]||0:0);},0):0;v+=fa;}
+      if(yr==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+(g?g[c]||0:0);},0):0;v+=fa*sf;}
       out[c]=v;
     });
     out._total=cats.reduce((a,c)=>a+out[c],0);
@@ -656,7 +677,8 @@ function renderQ2() {
   const actual26 = cats.reduce((a,c)=>a+(D.quarterly['2026']['Q2'][ch][c]||0),0);
   const fcst26 = t26 - actual26;
   document.getElementById('q2Insight').innerHTML =
-    `<b>Q2 (Apr–Jun) = 피크 시즌.</b> 2026 Q2E <b>${(t26/1000).toFixed(1)}K</b> (실적 ${(actual26/1000).toFixed(1)}K + FCST ${(fcst26/1000).toFixed(1)}K) vs 2025 ${(t25/1000).toFixed(1)}K, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `<b>Q2 (Apr–Jun) = 피크 시즌.</b> 시나리오: <b style="color:${scn.color}">${scn.label} ${(scn.total/1000).toFixed(0)}K</b> &nbsp;|&nbsp; ` +
+    `2026 Q2E <b>${(t26/1000).toFixed(1)}K</b> (실적 ${(actual26/1000).toFixed(1)}K + FCST ${(fcst26/1000).toFixed(1)}K) vs 2025 ${(t25/1000).toFixed(1)}K, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
     `Mega 프로모 (Apr 26–May 15, W18–W20) FCST 반영. ` +
     `Window AC 단종으로 2025 Q2 대비 약 ${((D.quarterly['2025']['Q2']['Total']['WindowAC']||0)/1000).toFixed(0)}K 자연 감소.`;
 
@@ -699,7 +721,7 @@ function renderQ2() {
   const q2Weeks = ['W14','W15','W16','W17','W18','W19','W20','W21','W22','W23','W24','W25','W26','W27'];
   const w25vals = q2Weeks.map(w=>{const wd=D.weekly['2025']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
   const w26actual = q2Weeks.map(w=>{if(D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
-  const w26fcst = q2Weeks.map(w=>{if(!D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
+  const w26fcst = q2Weeks.map(w=>{if(!D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0)*sf:0;});
   mkChart('cQ2Weekly',{type:'bar',data:{labels:q2Weeks,datasets:[
     {label:'2025 Actual',data:w25vals,backgroundColor:'#fcd34d',borderRadius:2},
     {label:'2026 Actual',data:w26actual,backgroundColor:'#2563eb',borderRadius:2},
@@ -708,8 +730,8 @@ function renderQ2() {
   scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
 
   mkChart('cQ2Ch',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026E':y),datasets:[
-    {label:'OR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['OR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['OR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#f59e0b',borderRadius:3},
-    {label:'IR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['IR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['IR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#2563eb',borderRadius:3},
+    {label:'OR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['OR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['OR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa*sf;}return v;}),backgroundColor:'#f59e0b',borderRadius:3},
+    {label:'IR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['IR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['IR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0),0):0);},0):0;v+=fa*sf;}return v;}),backgroundColor:'#2563eb',borderRadius:3},
   ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
   scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
 
