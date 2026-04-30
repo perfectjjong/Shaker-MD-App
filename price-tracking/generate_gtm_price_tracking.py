@@ -131,7 +131,16 @@ def load_extra() -> pd.DataFrame:
     df['brand'] = df['Brand'].apply(norm_brand)
     df['model'] = df['Model_No'].fillna('')
     df['ton'] = pd.to_numeric(df['Cooling_Capacity_Ton'], errors='coerce')
-    df['compressor'] = df['Compressor_Type'].apply(norm_compressor)
+    # Product_Name 기반 폴백: WindFree/Bespoke AI는 Samsung 인버터 기술
+    _INV_KW = ('Inverter', 'WindFree', 'Wind Free', 'Bespoke AI')
+    def _comp_extra(row):
+        if pd.notna(row['Compressor_Type']) and str(row['Compressor_Type']).strip():
+            return norm_compressor(row['Compressor_Type'])
+        name = str(row.get('Product_Name', ''))
+        if any(kw in name for kw in _INV_KW):
+            return 'Inverter'
+        return 'Rotary'
+    df['compressor'] = df.apply(_comp_extra, axis=1)
     df['cold_hc'] = df['Cold_or_HC'].apply(norm_cold_hc)
     df['price'] = pd.to_numeric(df['Sale_Price'], errors='coerce')
     df['url'] = df['SKU'].apply(
@@ -382,13 +391,15 @@ def build_channel_html(ch_name: str, df: pd.DataFrame) -> str:
 
         tons_present = sorted(df_comp['ton'].dropna().unique())
 
-        # 경쟁사 브랜드 목록 (LG 제외, SKU 많은 순)
-        comp_brands = (
-            df_comp[df_comp['brand'] != 'LG']['brand']
-            .value_counts()
-            .index.tolist()
-        )
-        comp_brands = [b for b in comp_brands if b and b != 'LG']
+        # 경쟁사 브랜드 목록 (고정 순서: Gree → Midea → Class Pro → Samsung → 나머지)
+        BRAND_ORDER = ['GREE', 'MIDEA', 'CLASS PRO', 'SAMSUNG']
+        all_comp_brands = [
+            b for b in df_comp[df_comp['brand'] != 'LG']['brand'].dropna().unique()
+            if b and b != 'LG'
+        ]
+        fixed = [b for b in BRAND_ORDER if b in all_comp_brands]
+        rest = sorted([b for b in all_comp_brands if b not in BRAND_ORDER])
+        comp_brands = fixed + rest
 
         title = '▶ Inverter Split' if comp == 'Inverter' else '▶ Rotary Split'
         html_parts.append(f'<h3 class="sec-title">{title}</h3>')

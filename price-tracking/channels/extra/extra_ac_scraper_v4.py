@@ -361,8 +361,9 @@ def parse_product(text, href, category):
     m = re.search(r'([\d,]+)\s*BTU', text)
     data['BTU'] = m.group(1).replace(',', '') if m else ''
 
-    # Compressor
-    if 'Inverter' in text:
+    # Compressor (WindFree/Bespoke AI = Samsung inverter tech)
+    INVERTER_KEYWORDS = ('Inverter', 'WindFree', 'Wind Free', 'Bespoke AI')
+    if any(kw in text for kw in INVERTER_KEYWORDS):
         data['Compressor_Type'] = 'Inverter'
     elif 'Rotary' in text:
         data['Compressor_Type'] = 'Rotary'
