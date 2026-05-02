@@ -38,7 +38,8 @@ INV_SEG_PATTERNS = [
     ('NT',              'Big · NT'),
 ]
 ROT_SEG_PATTERNS = [
-    ('LA', 'Mid · LA'), ('LO', 'Mid · LA'), ('LK', 'Mid · LA'),
+    ('LA', 'Mid · LA'), ('LB', 'Mid · LA'), ('LH', 'Mid · LA'),
+    ('LK', 'Mid · LA'), ('LO', 'Mid · LA'), ('LT', 'Mid · LA'),
 ]
 
 def get_lg_segment(model: str, compressor: str) -> str:
