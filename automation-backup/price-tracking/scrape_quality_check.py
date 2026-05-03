@@ -109,6 +109,56 @@ def notify_telegram(msg: str):
         print(f"[Telegram notify failed] {e}")
 
 
+def check_scrape_quality_filebased(
+    directory,
+    pattern: str,
+    sku_col: str,
+    sheet_name=None,
+    retry_threshold_pct: float = 10.0,
+    exclude_substr: str = '_partial',
+) -> tuple[bool, str]:
+    """
+    파일 기반 품질 점검: 가장 최근 2개 파일 SKU 카운트 비교.
+    Tamkeen 같이 매일 별도 파일로 저장되는 채널용.
+    """
+    try:
+        import openpyxl, glob
+        files = sorted([f for f in glob.glob(f"{directory}/{pattern}") if exclude_substr not in f],
+                       key=os.path.getmtime, reverse=True)
+        if len(files) < 2:
+            return True, f"비교할 전일 파일 없음 (찾음: {len(files)}건)"
+        latest_f, prev_f = files[0], files[1]
+
+        def _count_skus(f):
+            wb = openpyxl.load_workbook(f, read_only=True, data_only=True)
+            ws = wb[sheet_name] if sheet_name and sheet_name in wb.sheetnames else wb.active
+            headers = [str(c.value or '').strip() for c in ws[1]]
+            if sku_col not in headers:
+                wb.close()
+                return None
+            idx = headers.index(sku_col)
+            skus = set()
+            for row in ws.iter_rows(min_row=2, values_only=True):
+                if row[idx] is not None:
+                    skus.add(str(row[idx]))
+            wb.close()
+            return len(skus)
+
+        cur_count = _count_skus(latest_f)
+        prev_count = _count_skus(prev_f)
+        if cur_count is None or prev_count is None:
+            return True, f"SKU 컬럼('{sku_col}') 없음 — 검증 스킵"
+        if prev_count == 0:
+            return True, "전일 파일 SKU 0건"
+        diff_pct = (cur_count - prev_count) / prev_count * 100
+        msg = f"latest({os.path.basename(latest_f)})={cur_count} vs prev({os.path.basename(prev_f)})={prev_count} → {diff_pct:+.1f}%"
+        if diff_pct < -retry_threshold_pct:
+            return False, f"⚠️ SKU -{abs(diff_pct):.1f}% 급감. {msg}"
+        return True, f"정상. {msg}"
+    except Exception as e:
+        return True, f"검증 오류 (스킵): {e}"
+
+
 def run_with_retry(channel_config: dict, scraper_runner, log_func=print, threshold: float = 10.0):
     """
     스크래퍼 실행 후 품질 검증 + 자동 1회 재실행.
