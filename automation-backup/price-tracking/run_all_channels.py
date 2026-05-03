@@ -478,6 +478,24 @@ def main():
         except Exception as e:
             log(f"[SKU Status 오류] {e}", None)
 
+    # ── 빌더 .py 무결성 점검 + 자동 복원 (롤백 방지) ──────────
+    # SKU Status 마커 + DATA records url 키 점검. 위반 시 automation-backup에서 복원 + telegram 알림.
+    integrity_path = '/home/ubuntu/Shaker-MD-App/automation-backup/price-tracking/integrity_check.py'
+    if os.path.isfile(integrity_path):
+        try:
+            log("[Integrity] 빌더 .py 무결성 점검 (--restore --notify)", None)
+            r = subprocess.run(
+                [PYTHON, "-X", "utf8", integrity_path, "--restore", "--notify"],
+                timeout=2 * 60,
+                stdin=subprocess.DEVNULL,
+                capture_output=True, text=True,
+            )
+            log(f"[Integrity] rc={r.returncode}", None)
+            if r.stdout and "위반" in r.stdout:
+                log(f"[Integrity] 출력 일부: {r.stdout[-500:]}", None)
+        except Exception as e:
+            log(f"[Integrity 오류] {e}", None)
+
     stop_flag = threading.Event()
 
     with open(log_path, "w", encoding="utf-8") as lf:
