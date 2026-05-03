@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Bin Momen AC Price Tracking - HTML Dashboard
-Sections: KPIs, Price Alerts, New/Disc, Category KPI, Brand Compare, Price Trend, Full SKU, Stock
-Based on Black Box v2 template, adapted for Bin Momen data structure.
+SWS AC Price Tracking - HTML Dashboard
+Sections: KPIs, Price Alerts, New/Disc, Category KPI, Brand Compare, Price Trend, Full SKU, Stock, Cashback/FreeInstall
+Based on Bin Momen template, adapted for SWS data structure.
 """
 import os, sys, json, math, shutil, subprocess
 from datetime import datetime
@@ -15,8 +15,8 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-INPUT_FILE  = os.path.join(CURRENT_DIR, "Binmomen_AC_Data.xlsx")
-OUTPUT_FILE = os.path.join(CURRENT_DIR, "binmomen_ac_dashboard.html")
+INPUT_FILE  = os.path.join(CURRENT_DIR, "SWS_AC_Price_Tracking_Master.xlsx")
+OUTPUT_FILE = os.path.join(CURRENT_DIR, "sws_ac_dashboard.html")
 
 def safe(v):
     if v is None: return None
@@ -33,67 +33,99 @@ print("[1/3] Loading data...")
 df = pd.read_excel(INPUT_FILE)
 print(f"      {len(df):,} rows, columns: {list(df.columns)}")
 
-# Parse Scrape_Date → date_only
-df['Scrape_Date'] = pd.to_datetime(df['Scrape_Date'])
-df['date_only'] = df['Scrape_Date'].dt.date
+# Parse Timestamp → date_only
+df['Timestamp'] = pd.to_datetime(df['Timestamp'])
+df['date_only'] = df['Timestamp'].dt.date
 
 # Numeric coercion
-for col in ['Tonnage', 'Original_Price', 'Sale_Price', 'Stock_Qty', 'BTU']:
+for col in ['Capacity (Ton)', 'Price (SAR)', 'Original Price (SAR)', 'Final Price (SAR)', 'Capacity (BTU)']:
     if col in df.columns:
         df[col] = pd.to_numeric(df[col], errors='coerce')
 
-# Discount rate from string like "10%" → 0.10
+# Discount rate from string like "-42.08%" → 0.4208
 df['Discount_Rate'] = df['Discount'].str.replace('%', '').str.strip()
 df['Discount_Rate'] = pd.to_numeric(df['Discount_Rate'], errors='coerce') / 100.0
+df['Discount_Rate'] = df['Discount_Rate'].abs()  # Make positive
 
 # Fill missing discount rate from prices
 missing_dr = df['Discount_Rate'].isna()
-valid = missing_dr & df['Original_Price'].notna() & df['Sale_Price'].notna() & (df['Original_Price'] > 0)
-df.loc[valid, 'Discount_Rate'] = 1 - df.loc[valid, 'Sale_Price'] / df.loc[valid, 'Original_Price']
+valid = missing_dr & df['Original Price (SAR)'].notna() & df['Price (SAR)'].notna() & (df['Original Price (SAR)'] > 0)
+df.loc[valid, 'Discount_Rate'] = 1 - df.loc[valid, 'Price (SAR)'] / df.loc[valid, 'Original Price (SAR)']
 
-# In_Stock boolean
-df['_in_stock'] = df['In_Stock'].str.strip().str.lower() == 'yes'
+# In_Stock: parse stock text
+df['_in_stock'] = df['Stock'].str.strip().str.lower().isin(['in stock', 'available'])
 
-# Use SKU as unique identifier
-df['_sku'] = df['SKU'].fillna(df['Product_Name_EN'])
+# Stock qty: extract number from stock text, or set 1 for "In Stock"
+def parse_stock_qty(val):
+    if pd.isna(val): return 0
+    val = str(val).strip().lower()
+    if val in ['out of stock', 'sold out', '']: return 0
+    if val in ['in stock', 'available']: return 1  # binary: in stock
+    # Try extract number
+    import re
+    nums = re.findall(r'\d+', val)
+    if nums: return int(nums[0])
+    return 1
+df['_stock_qty'] = df['Stock'].apply(parse_stock_qty)
 
-all_dates = sorted(df['date_only'].unique())
+# Cashback parsing: "100 SAR" → 100, "10%" → percentage of price
+def parse_cashback(row):
+    cb = row.get('Cashback')
+    if pd.isna(cb) or str(cb).strip() == '': return 0
+    cb = str(cb).strip()
+    if 'SAR' in cb.upper():
+        import re
+        nums = re.findall(r'[\d.]+', cb)
+        return float(nums[0]) if nums else 0
+    if '%' in cb:
+        import re
+        nums = re.findall(r'[\d.]+', cb)
+        if nums:
+            pct = float(nums[0]) / 100.0
+            price = row.get('Price (SAR)', 0)
+            return round(pct * price) if pd.notna(price) else 0
+    return 0
+df['_cashback_amount'] = df.apply(parse_cashback, axis=1)
+df['_cashback_raw'] = df['Cashback'].fillna('')
+
+# Free Install
+df['_free_install'] = df['Free Install'].fillna('No').str.strip()
+
+# Use Product ID as unique key
+df['_sku'] = df['Product ID'].astype(str)
+
+all_dates = sorted(df['date_only'].dropna().unique())
 latest_date = str(all_dates[-1])
 first_date = str(all_dates[0])
-
-# Stock status
-STOCK_RULES = [
-    {'label': 'Out of Stock', 'min': None, 'max': 0},
-    {'label': 'Critical', 'min': 0, 'max': 5},
-    {'label': 'Low', 'min': 5, 'max': 15},
-    {'label': 'High', 'min': 15, 'max': 50},
-    {'label': 'OK', 'min': 50, 'max': None},
-]
 
 # ── Serialize ─────────────────────────────────────────────────────────────────
 print("[2/3] Serializing data...")
 records = []
 for _, r in df.iterrows():
     records.append({
-        'd': str(r['date_only']) if pd.notna(r.get('Scrape_Date')) else None,
+        'd': str(r['date_only']) if pd.notna(r.get('Timestamp')) else None,
         'b': safe(r.get('Brand')),
-        'n': str(r.get('Product_Name_EN',''))[:70] if pd.notna(r.get('Product_Name_EN')) else '',
-        'm': str(r.get('SKU','')) if pd.notna(r.get('SKU')) else '',
+        'n': str(r.get('Product Name',''))[:80] if pd.notna(r.get('Product Name')) else '',
+        'm': str(r.get('Product ID','')) if pd.notna(r.get('Product ID')) else '',
         's': str(r.get('_sku','')),  # unique key
-        'c': safe(r.get('Category')),
-        'h': safe(r.get('Cooling_Type')),
-        'inv': safe(r.get('Inverter')),
-        't': safe(r.get('Tonnage')),
-        'cp': safe(r.get('Compressor')),
-        'sp': safe(r.get('Original_Price')),
-        'sl': safe(r.get('Sale_Price')),
+        'c': safe(r.get('Type')),           # Category = Type
+        'sc': safe(r.get('Sub-Category')),  # Sub-Category
+        'cp': safe(r.get('Compressor')),    # Compressor type
+        'mode': safe(r.get('Mode')),        # CO / H&C
+        't': safe(r.get('Capacity (Ton)')),
+        'btu': safe(r.get('Capacity (BTU)')),
+        'sp': safe(r.get('Original Price (SAR)')),
+        'sl': safe(r.get('Price (SAR)')),
         'dr': safe(r.get('Discount_Rate')),
-        'fp': safe(r.get('Sale_Price')),  # "effective" = Sale_Price for Bin Momen
+        'fp': safe(r.get('Final Price (SAR)')),  # Final = Price - Cashback
         'ins': bool(r.get('_in_stock')) if pd.notna(r.get('_in_stock')) else False,
-        'stk': safe(r.get('Stock_Qty')),
-        'url': str(r.get('Product_URL','')) if pd.notna(r.get('Product_URL')) else '',
-        'btu': safe(r.get('BTU')),
-        'war': str(r.get('Warranty','')) if pd.notna(r.get('Warranty')) else '',
+        'stk': safe(r.get('_stock_qty')),
+        'stkTxt': str(r.get('Stock','')) if pd.notna(r.get('Stock')) else '',
+        'cb': safe(r.get('_cashback_amount')),
+        'cbRaw': str(r.get('_cashback_raw','')),
+        'fi': str(r.get('_free_install','No')),
+        'u': str(r.get('Product_URL','')) if pd.notna(r.get('Product_URL')) and r.get('Product_URL') else '',
+        'url': str(r.get('Product_URL','')) if pd.notna(r.get('Product_URL')) and r.get('Product_URL') else '',
     })
 
 from datetime import date as dt_date
@@ -105,10 +137,10 @@ for d in all_dates:
 
 dates_list = [str(d) for d in all_dates]
 brands_list = sorted(df['Brand'].dropna().unique().tolist())
-categories_list = sorted(df['Category'].dropna().unique().tolist())
-cooling_list = sorted(df['Cooling_Type'].dropna().unique().tolist())
-inverter_list = sorted(df['Inverter'].dropna().unique().tolist())
-ton_list = sorted(df['Tonnage'].dropna().unique().tolist())
+categories_list = sorted(df['Type'].dropna().unique().tolist())
+compressor_list = sorted(df['Compressor'].dropna().unique().tolist())
+mode_list = sorted(df['Mode'].dropna().unique().tolist())
+ton_list = sorted(df['Capacity (Ton)'].dropna().unique().tolist())
 
 BRAND_COLORS = {b: c for b, c in zip(brands_list, [
     '#1F4E79','#2E75B6','#ED7D31','#A9D18E','#FF0000','#70AD47','#FFC000','#4472C4',
@@ -170,7 +202,7 @@ print("[3/3] Generating HTML...")
 HTML_HEAD = """<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Bin Momen AC Price Tracker</title>
+<title>SWS AC Price Tracker</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
@@ -188,11 +220,11 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
 .tbl-wrap tr:nth-child(even) td{background:#f8fafc}.tbl-wrap tr:hover td{background:#e8f0fe}
 .up-cell{color:#dc2626;font-weight:600}.dn-cell{color:#16a34a;font-weight:600}
 .level-cat td{background:#dbeafe!important;font-weight:700;color:#1e3a8a;border-left:4px solid #2563eb}
-.level-cool td{background:#eff6ff!important;font-weight:600;border-left:4px solid #60a5fa}
-.level-inv td{background:#fef9c3!important;font-weight:500;border-left:4px solid #facc15}
+.level-comp td{background:#eff6ff!important;font-weight:600;border-left:4px solid #60a5fa}
+.level-mode td{background:#fef9c3!important;font-weight:500;border-left:4px solid #facc15}
 .level-ton td{background:#fff!important;color:#475569;border-left:4px solid #d1d5db}
 .type-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.3px}
-.type-cat{background:#2563eb;color:#fff}.type-cool{background:#60a5fa;color:#fff}.type-inv{background:#facc15;color:#713f12}.type-ton{background:#e5e7eb;color:#374151}
+.type-cat{background:#2563eb;color:#fff}.type-comp{background:#60a5fa;color:#fff}.type-mode{background:#facc15;color:#713f12}.type-ton{background:#e5e7eb;color:#374151}
 .ms-wrap{position:relative;display:inline-block}
 .ms-btn{display:flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid #d1d5db;border-radius:6px;background:#fff;font-size:11px;cursor:pointer;white-space:nowrap;transition:all .15s}
 .ms-btn:hover{border-color:#2E75B6;background:#f0f7ff}
@@ -212,6 +244,10 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
 .sec-search:focus{outline:none;border-color:#2E75B6;box-shadow:0 0 0 2px rgba(46,117,182,.15)}
 .stk-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700;letter-spacing:.3px}
 .stk-ok{background:#dcfce7;color:#166534}.stk-high{background:#dbeafe;color:#1e40af}.stk-low{background:#fef9c3;color:#854d0e}.stk-critical{background:#fee2e2;color:#991b1b}.stk-out{background:#fecaca;color:#7f1d1d}
+.cb-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700}
+.cb-yes{background:#dcfce7;color:#166534}.cb-no{background:#f3f4f6;color:#9ca3af}
+.fi-badge{display:inline-block;padding:1px 6px;border-radius:4px;font-size:9px;font-weight:700}
+.fi-yes{background:#dbeafe;color:#1e40af}.fi-riyadh{background:#fef3c7;color:#92400e}.fi-no{background:#f3f4f6;color:#9ca3af}
 @media print{.no-print{display:none!important}}
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width:640px){
@@ -239,6 +275,41 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
   .tbl-wrap td{font-size:10px;padding:3px 4px}
   div[style*="height:350px"],div[style*="height:360px"],div[style*="height:400px"],div[style*="height:320px"]{height:180px!important}
 }
+/* === LIGHT MODE === */
+body{background:#f1f3f6}
+header{background:linear-gradient(135deg,#1a2035,#2d3a5e);border-bottom:2px solid #3b82f6}
+section{background:#ffffff;border-color:#e8ecf0;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.sticky.top-0{background:rgba(255,255,255,.97);border-bottom-color:#e2e8f0}
+.shadow-sm{box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.tbl-wrap th{background:#1F4E79;color:#fff}
+.tbl-wrap th:hover{background:#2E75B6}
+.tbl-wrap td{border-bottom-color:#f0f0f0;color:#1e293b}
+.tbl-wrap tr:nth-child(even) td{background:#f8fafc}
+.tbl-wrap tr:nth-child(odd) td{background:#ffffff}
+.tbl-wrap tr:hover td{background:#eff6ff}
+.tbl-wrap a{color:#2563eb}
+.ms-btn{background:#fff;color:#374151;border-color:#d1d5db}
+.ms-btn:hover{border-color:#2563eb;background:#eff6ff}
+.ms-menu{background:#fff;border-color:#e2e8f0;box-shadow:0 8px 25px rgba(0,0,0,.12)}
+.ms-menu label:hover{background:#f1f5f9}
+.ms-menu label{color:#374151}
+.ms-menu .ms-actions button{color:#2563eb}
+.ms-menu .ms-actions button.ms-none{color:#dc2626}
+.pt-sel,.sec-search{background:#fff;color:#374151;border-color:#d1d5db}
+nav a.rounded-full{color:#475569;border-color:#e2e8f0}
+nav a.rounded-full:hover{background:#eff6ff;color:#1e40af}
+nav a.bg-navy-800.rounded-full{color:#fff}
+.dir-btn.active,.s5agg-btn.active,.agg-btn.active{background:#2563eb;color:#fff}
+.dir-btn:not(.active),.s5agg-btn:not(.active),.agg-btn:not(.active){background:#f1f5f9;color:#64748b;border-color:#e2e8f0}
+.level-cat td{background:#dbeafe!important;color:#1e3a8a!important;border-left-color:#2563eb!important}
+.level-comp td{background:#eff6ff!important;color:#1d4ed8!important;border-left-color:#60a5fa!important}
+.level-hc td{background:#fef9c3!important;color:#713f12!important;border-left-color:#facc15!important}
+.level-ton td{background:#fff!important;color:#475569!important;border-left-color:#d1d5db!important}
+.up-cell{color:#dc2626;font-weight:700}
+.dn-cell{color:#16a34a;font-weight:700}
+.type-cat{background:#2563eb;color:#fff}.type-comp{background:#60a5fa;color:#fff}.type-hc{background:#facc15;color:#713f12}.type-ton{background:#e5e7eb;color:#374151}
+.promo-badge{background:#fef3c7;color:#92400e}
+input[type=checkbox]{accent-color:#2563eb}
 </style></head>
 <body class="bg-gray-50 font-sans text-gray-800 text-sm">
 """
@@ -246,7 +317,7 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
 HTML_BODY = """
 <header class="bg-gradient-to-r from-navy-900 to-navy-700 text-white shadow-lg">
   <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
-    <div><h1 class="text-base sm:text-xl font-bold tracking-wide">Bin Momen AC Price Tracker</h1>
+    <div><h1 class="text-base sm:text-xl font-bold tracking-wide">SWS AC Price Tracker</h1>
       <p class="text-xs text-blue-200 mt-1">Saudi Arabia &middot; Air Conditioners &middot; Daily Price Monitoring</p></div>
     <div class="text-right text-xs text-blue-100 space-y-0.5">
       <div><b class="text-white">Last Updated:</b> <span id="metaDate"></span></div>
@@ -261,7 +332,7 @@ HTML_BODY = """
     <span class="text-[10px] font-bold text-navy-700 uppercase tracking-wider">Global</span>
     <div id="gf_date"></div>
     <div class="w-px h-5 bg-gray-300"></div>
-    <div id="gf_cat"></div><div id="gf_cool"></div><div id="gf_inv"></div><div id="gf_ton"></div><div id="gf_brand"></div>
+    <div id="gf_cat"></div><div id="gf_comp"></div><div id="gf_ton"></div><div id="gf_brand"></div>
     <div class="w-px h-5 bg-gray-300"></div>
     <span id="gf_count" class="text-xs text-gray-500 font-medium"></span>
     <button type="button" onclick="resetGlobal()" class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-600 rounded px-2.5 py-1 font-medium">Reset</button>
@@ -270,7 +341,7 @@ HTML_BODY = """
 </div>
 
 <nav class="max-w-[1600px] mx-auto px-3 sm:px-6 pt-2 sm:pt-3 no-print">
-  <div class="flex flex-wrap gap-1.5 text-[11px] pb-1">
+  <div class="flex flex-wrap gap-1.5 text-[11px]">
     <a href="#sec-kpi" class="px-3 py-1 bg-navy-800 text-white rounded-full font-medium">KPIs</a>
     <a href="#sec-alert" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">Price Alerts</a>
     <a href="#sec-new" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">New/Disc</a>
@@ -279,6 +350,7 @@ HTML_BODY = """
     <a href="#sec-trend" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">Price Trend</a>
     <a href="#sec-sku" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">Full SKU</a>
     <a href="#sec-stock" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">Stock</a>
+    <a href="#sec-cashback" class="px-3 py-1 bg-white text-navy-800 rounded-full border border-gray-200 hover:bg-navy-50">Cashback/Install</a>
   </div>
 </nav>
 
@@ -321,7 +393,7 @@ HTML_BODY = """
   <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">Category KPI Table</h2>
   <div class="flex flex-wrap items-center gap-2 mb-3 pb-2 border-b border-gray-100">
     <span class="text-[10px] font-bold text-gray-400 uppercase">Filters</span>
-    <div id="s4_cat"></div><div id="s4_cool"></div><div id="s4_inv"></div><div id="s4_ton"></div><div id="s4_brand"></div>
+    <div id="s4_cat"></div><div id="s4_comp"></div><div id="s4_ton"></div><div id="s4_brand"></div>
     <div class="w-px h-5 bg-gray-200"></div>
     <input type="text" id="s4_search" placeholder="Search SKU/Model..." class="sec-search"/>
     <button type="button" onclick="resetS4()" class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-500 rounded px-2 py-0.5">Reset</button>
@@ -334,7 +406,7 @@ HTML_BODY = """
   <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">Brand Price Comparison</h2>
   <div class="flex flex-wrap items-center gap-2 mb-3 pb-2 border-b border-gray-100">
     <span class="text-[10px] font-bold text-gray-400 uppercase">Filters</span>
-    <div id="s5_cat"></div><div id="s5_cool"></div><div id="s5_inv"></div><div id="s5_ton"></div><div id="s5_brand"></div>
+    <div id="s5_cat"></div><div id="s5_comp"></div><div id="s5_ton"></div><div id="s5_brand"></div>
     <div class="w-px h-5 bg-gray-200"></div>
     <input type="text" id="s5_search" placeholder="Search SKU/Model..." class="sec-search"/>
     <div class="flex rounded-lg overflow-hidden border border-gray-200">
@@ -353,7 +425,7 @@ HTML_BODY = """
   <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">Price Trend (Time Series)</h2>
   <div class="flex flex-wrap items-center gap-2 mb-3 pb-2 border-b border-gray-100">
     <span class="text-[10px] font-bold text-gray-400 uppercase">Filters</span>
-    <div id="s6_cat"></div><div id="s6_cool"></div><div id="s6_inv"></div><div id="s6_ton"></div><div id="s6_brand"></div>
+    <div id="s6_cat"></div><div id="s6_comp"></div><div id="s6_ton"></div><div id="s6_brand"></div>
     <div class="w-px h-5 bg-gray-200"></div>
     <input type="text" id="s6_search" placeholder="Search SKU/Model..." class="sec-search"/>
     <div class="flex rounded-lg overflow-hidden border border-gray-200">
@@ -369,7 +441,7 @@ HTML_BODY = """
   <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">Full SKU Table <span id="skuDateLabel" class="text-xs font-normal text-gray-400"></span></h2>
   <div class="flex flex-wrap items-center gap-2 mb-3 pb-2 border-b border-gray-100">
     <span class="text-[10px] font-bold text-gray-400 uppercase">Filters</span>
-    <div id="s7_cat"></div><div id="s7_cool"></div><div id="s7_inv"></div><div id="s7_ton"></div><div id="s7_brand"></div>
+    <div id="s7_cat"></div><div id="s7_comp"></div><div id="s7_ton"></div><div id="s7_brand"></div>
     <div class="w-px h-5 bg-gray-200"></div>
     <input type="text" id="s7_search" placeholder="Search SKU/Model..." class="sec-search"/>
     <div class="flex rounded-lg overflow-hidden border border-gray-200">
@@ -391,14 +463,14 @@ HTML_BODY = """
   <div class="filter-bar flex flex-wrap items-center gap-1.5 mb-3">
     <span class="text-[10px] font-bold text-gray-400 uppercase">Filters</span>
     <div id="s8_date"></div>
-    <div id="s8_cat"></div><div id="s8_cool"></div><div id="s8_inv"></div><div id="s8_ton"></div><div id="s8_brand"></div>
+    <div id="s8_cat"></div><div id="s8_comp"></div><div id="s8_ton"></div><div id="s8_brand"></div>
     <div class="w-px h-5 bg-gray-200"></div>
     <input type="text" id="s8_search" placeholder="Search SKU/Brand..." class="sec-search"/>
     <button type="button" onclick="resetStock()" class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-500 rounded px-2 py-0.5">Reset</button>
     <span id="s8_compare" class="text-[10px] text-gray-400 ml-auto"></span>
   </div>
   <div id="stockKpiGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 mb-4"></div>
-  <h3 class="text-xs font-bold text-gray-500 uppercase mt-2 mb-2">Stock Trend</h3>
+  <h3 class="text-xs font-bold text-gray-500 uppercase mt-2 mb-2">Stock Trend (SKU Count)</h3>
   <div style="height:350px" class="mb-4"><canvas id="stockTrendChart"></canvas></div>
   <h3 class="text-xs font-bold text-gray-500 uppercase mt-2 mb-2">Stock Change Comparison</h3>
   <div class="flex flex-wrap items-center gap-2 mb-3">
@@ -408,9 +480,8 @@ HTML_BODY = """
     <select id="s8_to" class="text-xs border rounded px-2 py-1"></select>
     <div class="flex rounded-lg overflow-hidden border border-gray-200">
       <button type="button" class="stk-dir-btn active px-3 py-1 text-xs font-medium bg-gray-700 text-white" data-dir="all">All</button>
-      <button type="button" class="stk-dir-btn px-3 py-1 text-xs font-medium bg-gray-50 text-green-600" data-dir="inc">Increased</button>
-      <button type="button" class="stk-dir-btn px-3 py-1 text-xs font-medium bg-gray-50 text-red-600" data-dir="dec">Decreased</button>
-      <button type="button" class="stk-dir-btn px-3 py-1 text-xs font-medium bg-gray-50 text-orange-600" data-dir="out">New Stock-out</button></div>
+      <button type="button" class="stk-dir-btn px-3 py-1 text-xs font-medium bg-gray-50 text-green-600" data-dir="inc">New In</button>
+      <button type="button" class="stk-dir-btn px-3 py-1 text-xs font-medium bg-gray-50 text-red-600" data-dir="dec">Removed</button></div>
     <span id="s8_chgCount" class="text-[10px] text-gray-400 ml-auto"></span>
   </div>
   <div class="tbl-wrap mb-4" style="max-height:350px;overflow-y:auto"><table id="tblStockAlert"><thead></thead><tbody></tbody></table></div>
@@ -420,8 +491,26 @@ HTML_BODY = """
   </div>
 </section>
 
+<!-- SEC 9: Cashback & Free Install Analysis -->
+<section id="sec-cashback" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+  <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">Cashback & Free Install Analysis</h2>
+  <div id="cbKpiGrid" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5 mb-4"></div>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <div>
+      <h3 class="text-xs font-bold text-gray-500 uppercase mb-2">Cashback Distribution</h3>
+      <div style="height:320px"><canvas id="cbChart"></canvas></div>
+    </div>
+    <div>
+      <h3 class="text-xs font-bold text-gray-500 uppercase mb-2">Free Install by Brand</h3>
+      <div style="height:320px"><canvas id="fiChart"></canvas></div>
+    </div>
+  </div>
+  <h3 class="text-xs font-bold text-gray-500 uppercase mb-2">SKUs with Cashback</h3>
+  <div class="tbl-wrap" style="max-height:350px;overflow-y:auto"><table id="tblCashback"><thead></thead><tbody></tbody></table></div>
+</section>
+
 </main>
-<footer class="text-center py-3 text-[10px] text-gray-400">Bin Momen AC Price Tracking Dashboard &middot; Generated GENERATED_AT</footer>
+<footer class="text-center py-3 text-[10px] text-gray-400">SWS AC Price Tracking Dashboard &middot; Generated GENERATED_AT</footer>
 """
 
 HTML_DATA = f"""<script>
@@ -430,15 +519,14 @@ const DATE_META={json.dumps(date_meta)};
 const DATES={json.dumps(dates_list)};
 const BRANDS={json.dumps(brands_list)};
 const CATEGORIES={json.dumps(categories_list)};
-const COOLING={json.dumps(cooling_list)};
-const INVERTER={json.dumps(inverter_list)};
+const COMPRESSORS={json.dumps(compressor_list)};
+const MODES={json.dumps(mode_list)};
 const TONS={json.dumps([float(t) for t in ton_list])};
 const LATEST_DATE={json.dumps(latest_date)};
 const FIRST_DATE={json.dumps(first_date)};
 const BRAND_COLORS={json.dumps(BRAND_COLORS)};
 const SKU_STATUS={json.dumps(sku_status,ensure_ascii=False)};
 const DISC_RECORDS={json.dumps(disc_records,ensure_ascii=False)};
-const STOCK_RULES={json.dumps(STOCK_RULES)};
 </script>
 """
 
@@ -453,14 +541,11 @@ const fmtChg=v=>{if(v==null)return'-';return(v>0?'+':'')+Number(v).toLocaleStrin
 const colorOf=br=>BRAND_COLORS[br]||'#6b7280';
 const alphaC=(hex,a)=>{const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return`rgba(${r},${g},${b},${a})`;};
 const mean=arr=>arr.length?arr.reduce((s,v)=>s+v,0)/arr.length:null;
-const searchMatch=(r,q)=>!q||((r.b||'')+(r.s||'')+(r.m||'')+(r.n||'')+(r.c||'')+(r.h||'')+(r.inv||'')+(r.t||'')).toLowerCase().includes(q);
+const searchMatch=(r,q)=>!q||((r.b||'')+(r.s||'')+(r.m||'')+(r.n||'')+(r.c||'')+(r.cp||'')+(r.mode||'')+(r.t||'')).toLowerCase().includes(q);
 
-function stkStatus(qty){
-  if(qty==null||qty<=0) return {label:'Out of Stock',cls:'stk-out'};
-  if(qty<=5) return {label:'Critical',cls:'stk-critical'};
-  if(qty<=15) return {label:'Low',cls:'stk-low'};
-  if(qty<=50) return {label:'High',cls:'stk-high'};
-  return {label:'OK',cls:'stk-ok'};
+function stkStatus(ins){
+  if(ins) return {label:'In Stock',cls:'stk-ok'};
+  return {label:'Out of Stock',cls:'stk-out'};
 }
 
 function sortTbl(id,colIdx){
@@ -506,7 +591,7 @@ class MS {
       if(this.colorFn)sp.style.cssText=`color:${this.colorFn(o)};font-weight:600`;
       lbl.appendChild(sp);list.appendChild(lbl);
     });
-    menu.appendChild(list);w.appendChild(menu);this.menuEl=menu;
+    menu.appendChild(list);w.appendChild(menu);this.menuEl=menu;menu.addEventListener('click',e=>e.stopPropagation());
     btn.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.ms-menu.open').forEach(m=>{if(m!==menu)m.classList.remove('open')});menu.classList.toggle('open');});
     this.listEl=list;
     this.el.appendChild(w);this._upd();
@@ -534,8 +619,7 @@ document.addEventListener('click',()=>document.querySelectorAll('.ms-menu.open')
 function makeFilters(prefix,cb){
   return {
     cat: new MS(document.getElementById(prefix+'_cat'),CATEGORIES,'Category',cb),
-    cool: new MS(document.getElementById(prefix+'_cool'),COOLING,'Cooling',cb),
-    inv: new MS(document.getElementById(prefix+'_inv'),INVERTER,'Inverter',cb),
+    comp: new MS(document.getElementById(prefix+'_comp'),COMPRESSORS,'Compressor',cb),
     ton: new MS(document.getElementById(prefix+'_ton'),TONS.map(String),'Ton',cb),
     brand: new MS(document.getElementById(prefix+'_brand'),BRANDS,'Brand',cb,colorOf),
   };
@@ -543,18 +627,16 @@ function makeFilters(prefix,cb){
 function applyF(rows,f){
   return rows.filter(r=>{
     if(r.c!=null&&!f.cat.getSelected().has(r.c))return false;
-    if(r.h!=null&&!f.cool.getSelected().has(r.h))return false;
-    if(r.inv!=null&&!f.inv.getSelected().has(r.inv))return false;
+    if(r.cp!=null&&!f.comp.getSelected().has(r.cp))return false;
     if(r.t!=null&&!f.ton.getSelected().has(String(r.t)))return false;
     if(r.b!=null&&!f.brand.getSelected().has(r.b))return false;
     return true;
   });
 }
-function resetF(f){f.cat.reset();f.cool.reset();f.inv.reset();f.ton.reset();f.brand.reset();}
+function resetF(f){f.cat.reset();f.comp.reset();f.ton.reset();f.brand.reset();}
 function syncToSection(src,tgt){
   tgt.cat.setSelected([...src.cat.getSelected()]);
-  tgt.cool.setSelected([...src.cool.getSelected()]);
-  tgt.inv.setSelected([...src.inv.getSelected()]);
+  tgt.comp.setSelected([...src.comp.getSelected()]);
   tgt.ton.setSelected([...src.ton.getSelected()]);
   tgt.brand.setSelected([...src.brand.getSelected()]);
 }
@@ -562,8 +644,7 @@ function syncToSection(src,tgt){
 function cascadeFilters(data,f){
   const dims=[
     {key:'cat',field:'c',ms:f.cat},
-    {key:'cool',field:'h',ms:f.cool},
-    {key:'inv',field:'inv',ms:f.inv},
+    {key:'comp',field:'cp',ms:f.comp},
     {key:'ton',field:'t',ms:f.ton,toString:true},
     {key:'brand',field:'b',ms:f.brand},
   ];
@@ -675,7 +756,7 @@ function refreshGlobal(){
   cascadeFilters(allCurDate,GF);
 
   renderKPIs(curData,prevData);renderAlerts();renderSkuStatus();
-  renderS4();renderS5();renderS6();renderS7();renderStock();
+  renderS4();renderS5();renderS6();renderS7();renderStock();renderCashback();
 }
 
 initSkuTabs();
@@ -697,9 +778,10 @@ function renderKPIs(lat,prev){
   const lm={};lat.forEach(r=>lm[r.s]=r.fp);const pm={};prev.forEach(r=>pm[r.s]=r.fp);
   let up=0,dn=0;Object.keys(lm).filter(s=>s in pm).forEach(s=>{const d=(lm[s]||0)-(pm[s]||0);if(d>0)up++;else if(d<0)dn++;});
   const nw=lat.filter(r=>!(r.s in pm)).length,rm=prev.filter(r=>!(r.s in lm)).length;
-  const inStk=lat.filter(r=>r.stk!=null&&r.stk>0).length;
+  const inStk=lat.filter(r=>r.ins).length;
   const ad=lat.filter(r=>r.dr!=null);const avgD=ad.length?mean(ad.map(r=>r.dr)):null;
-  const af=lat.filter(r=>r.fp!=null);const avgS=af.length?Math.round(mean(af.map(r=>r.fp))):null;
+  const af=lat.filter(r=>r.fp!=null);const avgFP=af.length?Math.round(mean(af.map(r=>r.fp))):null;
+  const cbSkus=lat.filter(r=>r.cb>0).length;
   const cards=[
     {v:lat.length,l:'Total SKUs',c:'border-l-navy-800 bg-navy-50',vc:'text-navy-800'},
     {v:avgD!=null?(avgD*100).toFixed(1)+'%':'-',l:'Avg Discount',c:'border-l-amber-500 bg-amber-50',vc:'text-amber-700'},
@@ -708,13 +790,13 @@ function renderKPIs(lat,prev){
     {v:nw,l:'New SKUs',c:'border-l-blue-500 bg-blue-50',vc:'text-blue-600'},
     {v:rm,l:'Removed',c:'border-l-orange-500 bg-orange-50',vc:'text-orange-600'},
     {v:inStk+'/'+lat.length,l:'In Stock',c:'border-l-teal-500 bg-teal-50',vc:'text-teal-600'},
-    {v:fmtSAR(avgS),l:'Avg Sale Price',c:'border-l-purple-500 bg-purple-50',vc:'text-purple-700'},
+    {v:fmtSAR(avgFP),l:'Avg Final Price',c:'border-l-purple-500 bg-purple-50',vc:'text-purple-700'},
   ];
   document.getElementById('kpiGrid').innerHTML=cards.map(c=>`<div class="rounded-lg border-l-4 ${c.c} p-3"><div class="text-xl font-bold ${c.vc}">${c.v}</div><div class="text-[10px] text-gray-500 mt-1 font-medium">${c.l}</div></div>`).join('');
 }
 
 // ═══ SEC 2: ALERTS ══════════════════════════════════════════════════════════
-const AC=[{k:'b',l:'Brand'},{k:'s',l:'Product'},{k:'m',l:'SKU'},{k:'c',l:'Category'},{k:'h',l:'Cooling'},{k:'inv',l:'Inverter'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
+const AC=[{k:'b',l:'Brand'},{k:'s',l:'Product'},{k:'m',l:'ID'},{k:'c',l:'Type'},{k:'cp',l:'Compressor'},{k:'mode',l:'Mode'},{k:'ton',l:'Ton'},{k:'prev',l:'Prev',f:fmtSAR},{k:'curr',l:'Curr',f:fmtSAR},{k:'chg',l:'Change',f:fmtChg},{k:'chgPct',l:'Chg%',f:fmtPctR}];
 function renderAlerts(){
   const {cur,prev}=getCompareDates();
   const latD=applyF(DATA.filter(r=>r.d===cur),GF);
@@ -724,13 +806,13 @@ function renderAlerts(){
   Object.keys(lm).filter(s=>s in pm).forEach(s=>{
     const rn=lm[s],ro=pm[s],pn=rn.fp,po=ro.fp;
     if(pn==null||po==null)return;const chg=pn-po;if(Math.abs(chg)<1)return;
-    rows.push({b:rn.b,s:rn.n,m:rn.m,c:rn.c,h:rn.h||'-',inv:rn.inv||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0,url:rn.url});
+    rows.push({b:rn.b,s:rn.n,m:rn.m,c:rn.c,cp:rn.cp||'-',mode:rn.mode||'-',ton:rn.t!=null?rn.t.toFixed(1)+'T':'-',prev:po,curr:pn,chg,chgPct:po?chg/po*100:0,u:rn.u});
   });
   if(ST.alertDir==='up')rows=rows.filter(r=>r.chg>0);if(ST.alertDir==='down')rows=rows.filter(r=>r.chg<0);
   rows.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
   const tbl=document.getElementById('tblAlert');
   tbl.querySelector('thead').innerHTML='<tr>'+AC.map((c,i)=>`<th onclick="sortTbl('tblAlert',${i})">${c.l}</th>`).join('')+'</tr>';
-  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';if(c.k==='s'&&r.url)v=`<a href="${r.url}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
+  tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='s'){v=r.u?`<a href="${r.u}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`:v;}let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="11" class="text-center text-gray-400 py-6">No changes</td></tr>';
 }
 
 // ═══ SEC 3: SKU STATUS TRACKER ══════════════════════════════════════════════
@@ -853,22 +935,21 @@ function initSkuTabs(){
 }
 
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════
-const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Sale',k:'avgP',f:fmtSAR},{l:'Avg Original',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'In Stock',k:'inStk'},{l:'LG Avg',k:'lgAvg',f:fmtSAR},{l:'LG Gap',k:'lgGap',f:fmtChg},{l:'LG Gap %',k:'lgGapPct',f:fmtPctR}];
-const TYPE_BADGE={cat:'<span class="type-badge type-cat">Category</span>',cool:'<span class="type-badge type-cool">Cooling</span>',inv:'<span class="type-badge type-inv">Inverter</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Portable AC'];
-const COOL_ORDER=['Cold Only','Hot & Cold'];
-const INV_ORDER=['Yes','No'];
+const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Final',k:'avgP',f:fmtSAR},{l:'Avg Original',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'In Stock',k:'inStk'},{l:'Avg Cashback',k:'avgCB',f:fmtSAR},{l:'Free Install',k:'fiCount'}];
+const TYPE_BADGE={cat:'<span class="type-badge type-cat">Type</span>',comp:'<span class="type-badge type-comp">Compressor</span>',mode:'<span class="type-badge type-mode">Mode</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
+const CAT_ORDER=['Split','Window','Freestanding'];
+const COMP_ORDER=['On-Off','Inverter'];
+const MODE_ORDER=['CO','H&C'];
 
 function segKPI(data){
   const cnt=new Set(data.map(r=>r.s)).size;
   const pArr=data.filter(r=>r.fp!=null).map(r=>r.fp);const avgP=pArr.length?Math.round(mean(pArr)):null;
   const sps=data.filter(r=>r.sp!=null).map(r=>r.sp);const avgStd=sps.length?Math.round(mean(sps)):null;
   const drs=data.filter(r=>r.dr!=null).map(r=>r.dr*100);const avgDisc=drs.length?Math.round(mean(drs)*10)/10:null;
-  const inStk=data.filter(r=>r.stk!=null&&r.stk>0).length;
-  const lgD=data.filter(r=>r.b==='LG'&&r.fp!=null);const lgAvg=lgD.length?Math.round(mean(lgD.map(r=>r.fp))):null;
-  const lgGap=(lgAvg!=null&&avgP!=null)?lgAvg-avgP:null;
-  const lgGapPct=(lgGap!=null&&lgAvg)?Math.round(lgGap/lgAvg*1000)/10:null;
-  return{cnt,avgP,avgStd,avgDisc,inStk,lgAvg,lgGap,lgGapPct};
+  const inStk=data.filter(r=>r.ins).length;
+  const cbArr=data.filter(r=>r.cb>0).map(r=>r.cb);const avgCB=cbArr.length?Math.round(mean(cbArr)):null;
+  const fiCount=data.filter(r=>r.fi!=='No').length;
+  return{cnt,avgP,avgStd,avgDisc,inStk,avgCB,fiCount};
 }
 
 function renderS4(){
@@ -881,17 +962,17 @@ function renderS4(){
   cats.forEach(cat=>{
     const catD=lat.filter(r=>r.c===cat);if(!catD.length)return;
     rows.push({level:'cat',type:'cat',label:cat,...segKPI(catD)});
-    const cools=COOL_ORDER.filter(c=>[...new Set(catD.map(r=>r.h))].includes(c));
-    cools.forEach(cool=>{
-      const coolD=catD.filter(r=>r.h===cool);if(!coolD.length)return;
-      rows.push({level:'cool',type:'cool',label:cool,...segKPI(coolD)});
-      const invs=INV_ORDER.filter(i=>[...new Set(coolD.map(r=>r.inv))].includes(i));
-      invs.forEach(inv=>{
-        const invD=coolD.filter(r=>r.inv===inv);if(!invD.length)return;
-        rows.push({level:'inv',type:'inv',label:'Inverter: '+inv,...segKPI(invD)});
-        const tons=[...new Set(invD.map(r=>r.t))].filter(Boolean).sort((a,b)=>a-b);
+    const comps=COMP_ORDER.filter(c=>[...new Set(catD.map(r=>r.cp))].includes(c));
+    comps.forEach(comp=>{
+      const compD=catD.filter(r=>r.cp===comp);if(!compD.length)return;
+      rows.push({level:'comp',type:'comp',label:comp,...segKPI(compD)});
+      const modes=MODE_ORDER.filter(m=>[...new Set(compD.map(r=>r.mode))].includes(m));
+      modes.forEach(mode=>{
+        const modeD=compD.filter(r=>r.mode===mode);if(!modeD.length)return;
+        rows.push({level:'mode',type:'mode',label:mode==='CO'?'Cool Only':'Hot & Cold',...segKPI(modeD)});
+        const tons=[...new Set(modeD.map(r=>r.t))].filter(Boolean).sort((a,b)=>a-b);
         tons.forEach(t=>{
-          const tD=invD.filter(r=>r.t===t);if(!tD.length)return;
+          const tD=modeD.filter(r=>r.t===t);if(!tD.length)return;
           rows.push({level:'ton',type:'ton',label:t.toFixed(1)+'T',...segKPI(tD)});
         });
       });
@@ -903,8 +984,7 @@ function renderS4(){
   tbl.querySelector('tbody').innerHTML=rows.map(r=>{
     return`<tr class="level-${r.level}">`+CK.map(c=>{
       let v;if(c.k==='type')v=TYPE_BADGE[r.type]||'';else if(c.k==='label')v=r.label;else v=c.f?c.f(r[c.k]):(r[c.k]??'-');
-      let cls='';if(c.k==='lgGap'&&r.lgGap!=null)cls=r.lgGap>0?'up-cell':'dn-cell';if(c.k==='lgGapPct'&&r.lgGapPct!=null)cls=r.lgGapPct>0?'up-cell':'dn-cell';
-      return`<td class="${cls}">${v}</td>`;
+      return`<td>${v}</td>`;
     }).join('')+'</tr>';
   }).join('');
 }
@@ -927,16 +1007,15 @@ function renderS5(){
   const cats=[...new Set(lat.map(r=>r.c))].filter(x=>x!=null).sort();
   const mktLabel5=ST.s5agg==='min'?'Mkt Min':'Mkt Avg';
   cats.forEach(cat=>{const cD=lat.filter(r=>r.c===cat);
-    [...new Set(cD.map(r=>r.h))].filter(x=>x!=null).sort().forEach(cool=>{const coD=cD.filter(r=>r.h===cool);
+    [...new Set(cD.map(r=>r.cp))].filter(x=>x!=null).sort().forEach(comp=>{const coD=cD.filter(r=>r.cp===comp);
       [...new Set(coD.map(r=>r.t))].filter(x=>x!=null&&!isNaN(x)).sort((a,b)=>a-b).forEach(t=>{const tD=coD.filter(r=>r.t===t);if(!tD.length)return;
-        const seg=(cat||'')+' / '+(cool||'')+' / '+Number(t).toFixed(1)+'T';
+        const seg=(cat||'')+' / '+(comp||'')+' / '+Number(t).toFixed(1)+'T';
         const row={seg};const prices=[];
         bList.forEach(b=>{const bD=tD.filter(r=>r.b===b&&r.fp!=null);const v=bD.length?aggFn5(bD.map(r=>r.fp)):null;row[b]=v;if(v!=null)prices.push(v);});
         row['Mkt']=prices.length?aggFn5(prices):null;
-        const lgD=tD.filter(r=>r.b==='LG'&&r.fp!=null);row['LG Min']=lgD.length?Math.round(Math.min(...lgD.map(r=>r.fp))):null;
         segs.push(row);
       });});});
-  const allC=['seg',...bList,'Mkt','LG Min'],allH=['Segment',...bList,mktLabel5,'LG Min'];
+  const allC=['seg',...bList,'Mkt'],allH=['Segment',...bList,mktLabel5];
   const tbl=document.getElementById('tblBrandSeg');
   tbl.querySelector('thead').innerHTML='<tr>'+allH.map((h,i)=>`<th onclick="sortTbl('tblBrandSeg',${i})">${h}</th>`).join('')+'</tr>';
   tbl.querySelector('tbody').innerHTML=segs.length?segs.map(r=>'<tr>'+allC.map(k=>`<td>${k==='seg'?r[k]:(r[k]!=null?fmtSAR(r[k]):'-')}</td>`).join('')+'</tr>').join(''):'<tr><td colspan="99" class="text-center text-gray-400 py-4">No data</td></tr>';
@@ -964,29 +1043,35 @@ function renderS6(){
 }
 
 // ═══ SEC 7: FULL SKU ═══════════════════════════════════════════════════════
-const SK=[{k:'b',l:'Brand'},{k:'n',l:'Product'},{k:'m',l:'SKU'},{k:'c',l:'Category'},{k:'h',l:'Cooling'},{k:'inv',l:'Inverter'},{k:'t',l:'Ton',f:v=>v!=null?v.toFixed(1)+'T':'-'},{k:'sp',l:'Original',f:fmtSAR},{k:'fp',l:'Sale',f:fmtSAR},{k:'dr',l:'Disc%',f:fmtPct},{k:'stk',l:'Stock',f:v=>v!=null?v:'-'},{k:'war',l:'Warranty'}];
+const SK=[{k:'b',l:'Brand'},{k:'n',l:'Product'},{k:'m',l:'ID'},{k:'c',l:'Type'},{k:'cp',l:'Compressor'},{k:'mode',l:'Mode'},{k:'t',l:'Ton',f:v=>v!=null?v.toFixed(1)+'T':'-'},{k:'sp',l:'Original',f:fmtSAR},{k:'sl',l:'Price',f:fmtSAR},{k:'dr',l:'Disc%',f:fmtPct},{k:'cbRaw',l:'Cashback'},{k:'fp',l:'Final',f:fmtSAR},{k:'fi',l:'Free Install'},{k:'stkTxt',l:'Stock'}];
 function renderS7(){
   const {cur}=getCompareDates();cascadeFilters(DATA.filter(r=>r.d===cur),S7F);
   let lat=applyF(DATA.filter(r=>r.d===cur),S7F);
   if(ST.s7q)lat=lat.filter(r=>searchMatch(r,ST.s7q));
-  if(ST.skuStock==='in')lat=lat.filter(r=>r.stk!=null&&r.stk>0);
-  if(ST.skuStock==='out')lat=lat.filter(r=>r.stk==null||r.stk<=0);
+  if(ST.skuStock==='in')lat=lat.filter(r=>r.ins);
+  if(ST.skuStock==='out')lat=lat.filter(r=>!r.ins);
   document.getElementById('skuDateLabel').textContent='('+cur+')';
   document.getElementById('skuCount').textContent=lat.length+' SKUs';
   const tbl=document.getElementById('tblSku');
   tbl.querySelector('thead').innerHTML='<tr>'+SK.map((c,i)=>`<th onclick="sortTbl('tblSku',${i})">${c.l}</th>`).join('')+'</tr>';
-  tbl.querySelector('tbody').innerHTML=lat.length?lat.map(r=>'<tr>'+SK.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='n'&&r.url)v=`<a href="${r.url}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`;if(c.k==='stk'){const st=stkStatus(r.stk);v=`<span class="stk-badge ${st.cls}">${v}</span>`;}return`<td>${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="12" class="text-center text-gray-400 py-6">No data</td></tr>';
+  tbl.querySelector('tbody').innerHTML=lat.length?lat.map(r=>'<tr>'+SK.map(c=>{
+    let v=c.f?c.f(r[c.k]):(r[c.k]??'-');
+    if(c.k==='stkTxt'){const st=stkStatus(r.ins);v=`<span class="stk-badge ${st.cls}">${r.stkTxt||st.label}</span>`;}
+    if(c.k==='fi'){const fi=r.fi||'No';const cls=fi==='Yes'?'fi-yes':fi==='Within Riyadh'?'fi-riyadh':'fi-no';v=`<span class="fi-badge ${cls}">${fi}</span>`;}
+    if(c.k==='cbRaw'){const cb=r.cbRaw||'';v=cb?`<span class="cb-badge cb-yes">${cb}</span>`:`<span class="cb-badge cb-no">-</span>`;}
+    if(c.k==='n'){v=r.u?`<a href="${r.u}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`:v;}
+    return`<td>${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="14" class="text-center text-gray-400 py-6">No data</td></tr>';
 }
 
 function downloadExcel(){
   const {cur}=getCompareDates();
   let lat=applyF(DATA.filter(r=>r.d===cur),S7F);
   if(ST.s7q)lat=lat.filter(r=>searchMatch(r,ST.s7q));
-  if(ST.skuStock==='in')lat=lat.filter(r=>r.stk!=null&&r.stk>0);
-  if(ST.skuStock==='out')lat=lat.filter(r=>r.stk==null||r.stk<=0);
-  const rows=lat.map(r=>({Brand:r.b,Product:r.n,SKU:r.m,Category:r.c,Cooling:r.h,Inverter:r.inv,Ton:r.t,Original:r.sp,Sale:r.fp,Discount:r.dr!=null?(r.dr*100).toFixed(1)+'%':'',Stock:r.stk,Warranty:r.war,URL:r.url}));
+  if(ST.skuStock==='in')lat=lat.filter(r=>r.ins);
+  if(ST.skuStock==='out')lat=lat.filter(r=>!r.ins);
+  const rows=lat.map(r=>({Brand:r.b,Product:r.n,'Product ID':r.m,Type:r.c,Compressor:r.cp,Mode:r.mode,Ton:r.t,'Original Price':r.sp,'Sale Price':r.sl,Discount:r.dr!=null?(r.dr*100).toFixed(1)+'%':'',Cashback:r.cbRaw,'Final Price':r.fp,'Free Install':r.fi,Stock:r.stkTxt}));
   const ws=XLSX.utils.json_to_sheet(rows);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'SKUs');
-  XLSX.writeFile(wb,'BinMomen_AC_'+cur+'.xlsx');
+  XLSX.writeFile(wb,'SWS_AC_'+cur+'.xlsx');
 }
 
 // ═══ SEC 8: STOCK ══════════════════════════════════════════════════════════
@@ -1000,26 +1085,26 @@ function renderStock(){
   document.getElementById('s8_compare').textContent='Stock as of: '+latDate;
 
   // KPIs
-  const total=lat.length;const inStk=lat.filter(r=>r.stk!=null&&r.stk>0).length;
-  const outStk=lat.filter(r=>r.stk==null||r.stk<=0).length;
-  const totalUnits=lat.reduce((s,r)=>s+(r.stk||0),0);
-  const avgStk=total?Math.round(totalUnits/total):0;
-  const lowStk=lat.filter(r=>r.stk!=null&&r.stk>0&&r.stk<=15).length;
+  const total=lat.length;const inStk=lat.filter(r=>r.ins).length;
+  const outStk=lat.filter(r=>!r.ins).length;
+  const fiYes=lat.filter(r=>r.fi==='Yes').length;
+  const fiRiyadh=lat.filter(r=>r.fi==='Within Riyadh').length;
+  const cbCount=lat.filter(r=>r.cb>0).length;
   const sCards=[
     {v:total,l:'Total SKUs',c:'border-l-navy-800 bg-navy-50',vc:'text-navy-800'},
     {v:inStk,l:'In Stock',c:'border-l-green-500 bg-green-50',vc:'text-green-600'},
     {v:outStk,l:'Out of Stock',c:'border-l-red-500 bg-red-50',vc:'text-red-600'},
-    {v:totalUnits.toLocaleString(),l:'Total Units',c:'border-l-blue-500 bg-blue-50',vc:'text-blue-600'},
-    {v:avgStk,l:'Avg Stock/SKU',c:'border-l-purple-500 bg-purple-50',vc:'text-purple-600'},
-    {v:lowStk,l:'Low Stock',c:'border-l-amber-500 bg-amber-50',vc:'text-amber-600'},
+    {v:cbCount,l:'With Cashback',c:'border-l-amber-500 bg-amber-50',vc:'text-amber-600'},
+    {v:fiYes,l:'Free Install',c:'border-l-blue-500 bg-blue-50',vc:'text-blue-600'},
+    {v:fiRiyadh,l:'Install (Riyadh)',c:'border-l-purple-500 bg-purple-50',vc:'text-purple-600'},
   ];
   document.getElementById('stockKpiGrid').innerHTML=sCards.map(c=>`<div class="rounded-lg border-l-4 ${c.c} p-3"><div class="text-xl font-bold ${c.vc}">${c.v}</div><div class="text-[10px] text-gray-500 mt-1 font-medium">${c.l}</div></div>`).join('');
 
-  // Stock Trend
-  const trendData=DATES.map(d=>{const dd=applyF(DATA.filter(r=>r.d===d),S8F);return dd.reduce((s,r)=>s+(r.stk||0),0);});
+  // Stock Trend: count of in-stock SKUs per date
+  const trendData=DATES.map(d=>{const dd=applyF(DATA.filter(r=>r.d===d),S8F);return dd.filter(r=>r.ins).length;});
   const ctx1=document.getElementById('stockTrendChart').getContext('2d');
   if(stockTrendChart)stockTrendChart.destroy();
-  stockTrendChart=new Chart(ctx1,{type:'line',data:{labels:DATES,datasets:[{label:'Total Stock',data:trendData,borderColor:'#2E75B6',backgroundColor:'rgba(46,117,182,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{ticks:{callback:v=>v.toLocaleString()}}}}});
+  stockTrendChart=new Chart(ctx1,{type:'line',data:{labels:DATES,datasets:[{label:'In Stock SKUs',data:trendData,borderColor:'#2E75B6',backgroundColor:'rgba(46,117,182,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{ticks:{callback:v=>v.toLocaleString()}}}}});
 
   // Stock Change
   const fromDate=document.getElementById('s8_from').value;
@@ -1031,40 +1116,91 @@ function renderStock(){
   let changes=[];
   allSKUs.forEach(s=>{
     const fr=fm[s],tr=tm[s];
-    const fStk=fr?fr.stk:null,tStk=tr?tr.stk:null;
-    const chg=(tStk||0)-(fStk||0);
-    if(chg===0&&fStk===tStk)return;
+    const fIn=fr?fr.ins:false,tIn=tr?tr.ins:false;
+    if(fIn===tIn&&fr&&tr)return; // no change
     const r=tr||fr;
-    changes.push({b:r.b,n:r.n,m:r.m,c:r.c,from:fStk!=null?fStk:'-',to:tStk!=null?tStk:'-',chg,newOut:fStk>0&&(tStk==null||tStk<=0)});
+    const chgLabel=!fr?'NEW':!tr?'REMOVED':tIn&&!fIn?'Restocked':'Stock Out';
+    changes.push({b:r.b,n:r.n,m:r.m,c:r.c,u:r.u||'',from:fr?(fr.ins?'In Stock':'Out'):'N/A',to:tr?(tr.ins?'In Stock':'Out'):'N/A',chg:chgLabel,isNew:!fr,isRemoved:!tr});
   });
-  if(ST.stkDir==='inc')changes=changes.filter(r=>r.chg>0);
-  if(ST.stkDir==='dec')changes=changes.filter(r=>r.chg<0);
-  if(ST.stkDir==='out')changes=changes.filter(r=>r.newOut);
-  changes.sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
+  if(ST.stkDir==='inc')changes=changes.filter(r=>r.isNew||r.chg==='Restocked');
+  if(ST.stkDir==='dec')changes=changes.filter(r=>r.isRemoved||r.chg==='Stock Out');
   document.getElementById('s8_chgCount').textContent=changes.length+' changes';
 
-  const stCols=[{k:'b',l:'Brand'},{k:'n',l:'Product'},{k:'m',l:'SKU'},{k:'c',l:'Category'},{k:'from',l:'From'},{k:'to',l:'To'},{k:'chg',l:'Change'}];
+  const stCols=[{k:'b',l:'Brand'},{k:'n',l:'Product'},{k:'m',l:'ID'},{k:'c',l:'Type'},{k:'from',l:'From'},{k:'to',l:'To'},{k:'chg',l:'Status'}];
   const stbl=document.getElementById('tblStockAlert');
   stbl.querySelector('thead').innerHTML='<tr>'+stCols.map((c,i)=>`<th onclick="sortTbl('tblStockAlert',${i})">${c.l}</th>`).join('')+'</tr>';
   stbl.querySelector('tbody').innerHTML=changes.length?changes.map(r=>'<tr>'+stCols.map(c=>{
     let v=r[c.k]??'-';let cls='';
-    if(c.k==='chg'){v=fmtChg(r.chg);cls=r.chg>0?'dn-cell':'up-cell';}
+    if(c.k==='chg'){cls=r.isNew||r.chg==='Restocked'?'dn-cell':'up-cell';}
+    if(c.k==='n'){v=r.u?`<a href="${r.u}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`:v;}
     return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="7" class="text-center text-gray-400 py-4">No changes</td></tr>';
 
-  // Brand bar chart
-  const brandStk={};lat.forEach(r=>{if(!brandStk[r.b])brandStk[r.b]=0;brandStk[r.b]+=(r.stk||0);});
+  // Brand bar chart - SKU count per brand
+  const brandStk={};lat.forEach(r=>{if(!brandStk[r.b])brandStk[r.b]=0;if(r.ins)brandStk[r.b]++;});
   const bItems=Object.entries(brandStk).sort((a,b)=>b[1]-a[1]);
   const ctx2=document.getElementById('stockBrandBar').getContext('2d');
   if(stockBrandBarChart)stockBrandBarChart.destroy();
-  stockBrandBarChart=new Chart(ctx2,{type:'bar',data:{labels:bItems.map(x=>x[0]),datasets:[{label:'Stock Units',data:bItems.map(x=>x[1]),backgroundColor:bItems.map(x=>colorOf(x[0]))}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>v.toLocaleString(),clip:false}},scales:{x:{ticks:{callback:v=>v.toLocaleString()}},y:{ticks:{font:{size:10}}}}}});
+  stockBrandBarChart=new Chart(ctx2,{type:'bar',data:{labels:bItems.map(x=>x[0]),datasets:[{label:'In Stock SKUs',data:bItems.map(x=>x[1]),backgroundColor:bItems.map(x=>colorOf(x[0]))}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>v.toLocaleString(),clip:false}},scales:{x:{ticks:{callback:v=>v.toLocaleString()}},y:{ticks:{font:{size:10}}}}}});
 
   // Category donut
-  const catStk={};lat.forEach(r=>{if(!catStk[r.c])catStk[r.c]=0;catStk[r.c]+=(r.stk||0);});
+  const catStk={};lat.forEach(r=>{if(!catStk[r.c])catStk[r.c]=0;if(r.ins)catStk[r.c]++;});
   const cItems=Object.entries(catStk).sort((a,b)=>b[1]-a[1]);
   const donutColors=['#2563eb','#f97316','#10b981','#8b5cf6','#f43f5e'];
   const ctx3=document.getElementById('stockCatDonut').getContext('2d');
   if(stockCatDonutChart)stockCatDonutChart.destroy();
   stockCatDonutChart=new Chart(ctx3,{type:'doughnut',data:{labels:cItems.map(x=>x[0]),datasets:[{data:cItems.map(x=>x[1]),backgroundColor:donutColors.slice(0,cItems.length)}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10}}},datalabels:{display:true,color:'#fff',font:{size:11,weight:'bold'},formatter:(v,ctx)=>{const sum=ctx.dataset.data.reduce((a,b)=>a+b,0);return sum?(v/sum*100).toFixed(0)+'%':'';}}}}});
+}
+
+// ═══ SEC 9: CASHBACK & FREE INSTALL ═════════════════════════════════════════
+let cbChartObj=null,fiChartObj=null;
+function renderCashback(){
+  const {cur}=getCompareDates();
+  const lat=applyF(DATA.filter(r=>r.d===cur),GF);
+
+  // KPIs
+  const total=lat.length;
+  const cbSkus=lat.filter(r=>r.cb>0);
+  const fiYes=lat.filter(r=>r.fi==='Yes').length;
+  const fiRiyadh=lat.filter(r=>r.fi==='Within Riyadh').length;
+  const avgCB=cbSkus.length?Math.round(mean(cbSkus.map(r=>r.cb))):0;
+  const totalCBSavings=cbSkus.reduce((s,r)=>s+r.cb,0);
+  const cbCards=[
+    {v:total,l:'Total SKUs',c:'border-l-navy-800 bg-navy-50',vc:'text-navy-800'},
+    {v:cbSkus.length,l:'With Cashback',c:'border-l-green-500 bg-green-50',vc:'text-green-600'},
+    {v:fmtSAR(avgCB),l:'Avg Cashback',c:'border-l-amber-500 bg-amber-50',vc:'text-amber-600'},
+    {v:fiYes+fiRiyadh,l:'Free Install',c:'border-l-blue-500 bg-blue-50',vc:'text-blue-600'},
+    {v:fiYes,l:'Nationwide',c:'border-l-teal-500 bg-teal-50',vc:'text-teal-600'},
+    {v:fiRiyadh,l:'Riyadh Only',c:'border-l-purple-500 bg-purple-50',vc:'text-purple-600'},
+  ];
+  document.getElementById('cbKpiGrid').innerHTML=cbCards.map(c=>`<div class="rounded-lg border-l-4 ${c.c} p-3"><div class="text-xl font-bold ${c.vc}">${c.v}</div><div class="text-[10px] text-gray-500 mt-1 font-medium">${c.l}</div></div>`).join('');
+
+  // Cashback by brand bar chart
+  const cbByBrand={};lat.forEach(r=>{if(!cbByBrand[r.b])cbByBrand[r.b]={count:0,total:0};if(r.cb>0){cbByBrand[r.b].count++;cbByBrand[r.b].total+=r.cb;}});
+  const cbItems=Object.entries(cbByBrand).filter(([,v])=>v.count>0).map(([b,v])=>({b,count:v.count,avg:Math.round(v.total/v.count)})).sort((a,b)=>b.count-a.count);
+  const ctx1=document.getElementById('cbChart').getContext('2d');
+  if(cbChartObj)cbChartObj.destroy();
+  cbChartObj=new Chart(ctx1,{type:'bar',data:{labels:cbItems.map(x=>x.b),datasets:[{label:'SKUs with Cashback',data:cbItems.map(x=>x.count),backgroundColor:cbItems.map(x=>colorOf(x.b))}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>v,clip:false}},scales:{x:{grid:{color:'#f0f0f0'}},y:{ticks:{font:{size:10}}}}}});
+
+  // Free Install by brand stacked bar
+  const fiByBrand={};lat.forEach(r=>{if(!fiByBrand[r.b])fiByBrand[r.b]={yes:0,riyadh:0,no:0};if(r.fi==='Yes')fiByBrand[r.b].yes++;else if(r.fi==='Within Riyadh')fiByBrand[r.b].riyadh++;else fiByBrand[r.b].no++;});
+  const fiBrands=Object.entries(fiByBrand).filter(([,v])=>v.yes>0||v.riyadh>0).map(([b,v])=>({b,...v})).sort((a,b)=>(b.yes+b.riyadh)-(a.yes+a.riyadh));
+  const ctx2=document.getElementById('fiChart').getContext('2d');
+  if(fiChartObj)fiChartObj.destroy();
+  fiChartObj=new Chart(ctx2,{type:'bar',data:{labels:fiBrands.map(x=>x.b),datasets:[
+    {label:'Free Install (All)',data:fiBrands.map(x=>x.yes),backgroundColor:'#2563eb'},
+    {label:'Riyadh Only',data:fiBrands.map(x=>x.riyadh),backgroundColor:'#f59e0b'},
+  ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10}}},datalabels:{display:true,font:{size:9,weight:'bold'},color:'#fff',formatter:v=>v>0?v:''}},scales:{x:{stacked:true,grid:{color:'#f0f0f0'}},y:{stacked:true,ticks:{font:{size:10}}}}}});
+
+  // Cashback SKU table
+  const cbCols=[{k:'b',l:'Brand'},{k:'n',l:'Product'},{k:'m',l:'ID'},{k:'c',l:'Type'},{k:'t',l:'Ton',f:v=>v!=null?v.toFixed(1)+'T':'-'},{k:'sl',l:'Price',f:fmtSAR},{k:'cbRaw',l:'Cashback'},{k:'cb',l:'CB Amount',f:fmtSAR},{k:'fp',l:'Final',f:fmtSAR},{k:'fi',l:'Free Install'}];
+  const cbRows=lat.filter(r=>r.cb>0).sort((a,b)=>b.cb-a.cb);
+  const tbl=document.getElementById('tblCashback');
+  tbl.querySelector('thead').innerHTML='<tr>'+cbCols.map((c,i)=>`<th onclick="sortTbl('tblCashback',${i})">${c.l}</th>`).join('')+'</tr>';
+  tbl.querySelector('tbody').innerHTML=cbRows.length?cbRows.map(r=>'<tr>'+cbCols.map(c=>{
+    let v=c.f?c.f(r[c.k]):(r[c.k]??'-');
+    if(c.k==='cbRaw')v=`<span class="cb-badge cb-yes">${r.cbRaw}</span>`;
+    if(c.k==='fi'){const fi=r.fi||'No';const cls=fi==='Yes'?'fi-yes':fi==='Within Riyadh'?'fi-riyadh':'fi-no';v=`<span class="fi-badge ${cls}">${fi}</span>`;}
+    return`<td>${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="10" class="text-center text-gray-400 py-4">No cashback SKUs</td></tr>';
 }
 
 // ═══ BOOT ═══════════════════════════════════════════════════════════════════
@@ -1082,7 +1218,7 @@ print(f"   Size: {size_kb:.0f} KB")
 print(f"   Data: {len(records):,} records, {len(dates_list)} dates, {len(brands_list)} brands")
 
 # ── GitHub Pages Deploy ────────────────────────────────────────────────────────
-DEPLOY_DIR = os.path.join(os.path.expanduser("~"), "tmp_deploy_binmomen")
+DEPLOY_DIR = os.path.join(os.path.expanduser("~"), "tmp_deploy_sws_dashboard")
 if os.path.isdir(os.path.join(DEPLOY_DIR, ".git")):
     shutil.copy2(OUTPUT_FILE, os.path.join(DEPLOY_DIR, "index.html"))
     subprocess.run(["git", "add", "index.html"], cwd=DEPLOY_DIR)
@@ -1092,7 +1228,7 @@ if os.path.isdir(os.path.join(DEPLOY_DIR, ".git")):
         subprocess.run(["git", "pull", "--rebase"], cwd=DEPLOY_DIR)
         result = subprocess.run(["git", "push"], cwd=DEPLOY_DIR)
     if result.returncode == 0:
-        print("\n🚀 Deployed: https://perfectjjong.github.io/binmomen-ac-dashboard/")
+        print("\n🚀 Deployed: https://perfectjjong.github.io/sws-ac-dashboard/")
     else:
         print("\n[WARN] Git push failed. Check deploy directory.")
 else:
@@ -1101,18 +1237,18 @@ else:
 # ── Deploy to Cloudflare (Shaker-MD-App) ──────────────────────
 print("\n[Cloudflare] Deploying to Shaker-MD-App...")
 SHAKER_DIR = os.path.join(os.path.expanduser("~"), "Shaker-MD-App")
-CLOUDFLARE_DEST = os.path.join(SHAKER_DIR, "docs", "dashboards", "binmomen-price")
+CLOUDFLARE_DEST = os.path.join(SHAKER_DIR, "docs", "dashboards", "sws-price")
 if os.path.exists(os.path.join(SHAKER_DIR, ".git")):
     os.makedirs(CLOUDFLARE_DEST, exist_ok=True)
     dest = os.path.join(CLOUDFLARE_DEST, "index.html")
     shutil.copy2(OUTPUT_FILE, dest)
     print(f"  📋 Copied to {dest}")
     try:
-        subprocess.run(["git", "add", "docs/dashboards/binmomen-price/index.html"],
+        subprocess.run(["git", "add", "docs/dashboards/sws-price/index.html"],
                        cwd=SHAKER_DIR, check=True, capture_output=True)
         result = subprocess.run(
             ["git", "commit", "-m",
-             f"Update Bin Momen Price dashboard ({generated_at})"],
+             f"Update SWS Price dashboard ({generated_at})"],
             cwd=SHAKER_DIR, capture_output=True, text=True
         )
         if result.returncode == 0:

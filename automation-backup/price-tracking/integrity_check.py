@@ -77,6 +77,10 @@ def check_builder(name, rel_path, needs_records_url):
             if "'url'" not in block:
                 violations.append("records.append({...}) 블록에 'url' 키 없음 (DATA records url 누락)")
 
+    # 모든 9채널 disc_records 'n' 매핑 강화 마커 점검 (2026-05-03 정정 — extra/technobest 제품 ID만 표시 사고 재발 방지)
+    if "'name_en','Name','Product_Name_EN','Product_Name'" not in content and "'name_en','Name','Product_Name_EN'" not in content:
+        violations.append("disc_records 'n' 매핑 강화 누락 (extra/technobest 등 master 컬럼명 다양성 미커버)")
+
     return violations
 
 
