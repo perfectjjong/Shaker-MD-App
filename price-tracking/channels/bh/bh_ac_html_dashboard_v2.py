@@ -383,6 +383,28 @@ def main():
     ws_only = ws_models - rt_models
     rt_only = rt_models - ws_models
 
+    # ── Retail SKU 4-way Status Classification ──────────────────────────────
+    import datetime as _dt
+    TEMP_OOS_THRESHOLD = 14
+    REACTIVE_GAP_MIN   = 2
+
+    rt_all_dates_seq = sorted(set(r['d'] for r in rt_data if r.get('d')))
+    rt_latest_d = rt_all_dates_seq[-1] if rt_all_dates_seq else None
+
+    # Build SKU → set of dates map
+    rt_sku_date_map = {}
+    for r in rt_data:
+        s = r.get('m','')
+        d = r.get('d')
+        if s and d:
+            rt_sku_date_map.setdefault(s, set()).add(d)
+
+    # RT_SKU_DATES: {sku → sorted list of date strings} — JS does dynamic classification
+    rt_sku_dates_export = {
+        sku: sorted(dates_set)
+        for sku, dates_set in rt_sku_date_map.items()
+    }
+
     generated_at = datetime.now().strftime('%Y-%m-%d %H:%M')
 
     print("[2/4] Building HTML...")
@@ -437,119 +459,10 @@ body{font-family:'Inter','system-ui',sans-serif}
 .tab-btn.active{background:#1F4E79;color:#fff;border-color:#1F4E79}
 .tab-btn:hover:not(.active){background:#e8f0fe;color:#1F4E79}
 .tab-panel{display:none}.tab-panel.active{display:block}
+.sku-tab{padding:4px 12px;font-size:12px;font-weight:600;border-radius:6px;cursor:pointer;border:1px solid #d1d5db;background:#f3f4f6;color:#6b7280;transition:all .15s}
+.sku-tab.active{background:#1F4E79;color:#fff;border-color:#1F4E79}
+.sku-tab:hover:not(.active){background:#e8f0fe;color:#1F4E79}
 @media print{.no-print{display:none!important}}
-/* === DARK MODE (sell-thru-progress unified) === */
-body{background:#0f172a!important;color:#e2e8f0!important}
-header{background:linear-gradient(135deg,#1e293b,#334155)!important;border-bottom:2px solid #3b82f6}
-.bg-white,.bg-gray-50{background:#1e293b!important}
-.bg-white\/95{background:rgba(30,41,59,.95)!important}
-section{background:#1e293b!important;border-color:#334155!important}
-.border-gray-100,.border-gray-200,.border-gray-300{border-color:#334155!important}
-.text-gray-800,.text-gray-700,.text-gray-600,.text-gray-500{color:#e2e8f0!important}
-.text-gray-400{color:#94a3b8!important}
-.text-navy-800{color:#60a5fa!important}
-.text-navy-700{color:#93c5fd!important}
-.bg-navy-800{background:#3b82f6!important}
-.bg-navy-50{background:#1e3a5f!important}
-.tbl-wrap td{border-bottom-color:#334155!important;color:#e2e8f0!important}
-.tbl-wrap tr:nth-child(even) td{background:#1e293b!important}
-.tbl-wrap tr:nth-child(odd) td{background:#0f172a!important}
-.tbl-wrap tr:hover td{background:#334155!important}
-.tbl-wrap th{background:#334155!important;color:#ffffff!important}
-.tbl-wrap th:hover{background:#475569!important}
-.tbl-wrap a{color:#60a5fa!important}
-a.text-blue-600{color:#60a5fa!important}
-.level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
-.level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
-.level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
-.level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-/* Filter readability - dark buttons */
-.ms-btn{background:#0f172a!important;color:#f1f5f9!important;border-color:#64748b!important;font-size:12px!important;font-weight:500!important}
-.ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
-.ms-btn b{color:#93c5fd!important}
-.ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
-.ms-menu .ms-actions{border-bottom-color:#334155!important}
-.ms-menu .ms-actions button{color:#60a5fa!important}
-.ms-menu .ms-actions button.ms-none{color:#f87171!important}
-.ms-menu label{color:#e2e8f0!important}
-.ms-menu label:hover{background:#334155!important}
-.pt-sel,.sec-search{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-.sec-search:focus{border-color:#3b82f6!important;box-shadow:0 0 0 2px rgba(59,130,246,.15)!important}
-.shadow-sm{box-shadow:0 2px 8px rgba(0,0,0,.3)!important}
-a[class*="bg-white"]{background:#1e293b!important;color:#94a3b8!important;border-color:#334155!important}
-a[class*="bg-white"]:hover{background:#334155!important}
-.bg-gray-100{background:#334155!important;color:#e2e8f0!important}
-.bg-gray-100:hover,.bg-gray-200{background:#475569!important}
-.bg-gray-700{background:#334155!important}
-.bg-green-600{background:#10b981!important}
-.text-green-700,.text-green-600{color:#34d399!important}
-.text-red-700,.text-red-600{color:#f87171!important}
-.text-purple-600{color:#a78bfa!important}
-nav .flex .px-3.py-1{border-color:#334155!important}
-.w-px{background:#334155!important}
-input[type=checkbox]{accent-color:#3b82f6}
-select{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-/* KPI card backgrounds */
-.bg-amber-50{background:#2d1f05!important}
-.bg-red-50{background:#2d0f0f!important}
-.bg-green-50{background:#0a2618!important}
-.bg-blue-50{background:#0f1d3d!important}
-.bg-orange-50{background:#2d1507!important}
-.bg-teal-50{background:#0a2625!important}
-.bg-purple-50{background:#1f0a3d!important}
-.bg-cyan-50{background:#0a2833!important}
-.bg-indigo-50{background:#1a1840!important}
-.bg-pink-50{background:#2d0a1a!important}
-/* KPI card text colors */
-.text-amber-700,.text-amber-600{color:#fbbf24!important}
-.text-blue-600{color:#60a5fa!important}
-.text-orange-600,.text-orange-700{color:#fb923c!important}
-.text-teal-600,.text-teal-700{color:#2dd4bf!important}
-.text-purple-700{color:#c4b5fd!important}
-.text-cyan-600{color:#22d3ee!important}
-/* Card borders */
-.border-green-200{border-color:#166534!important}
-.border-red-200{border-color:#991b1b!important}
-.border-amber-200{border-color:#92400e!important}
-/* Stock badges */
-.stk-ok{background:#052e16!important;color:#4ade80!important}
-.stk-high{background:#172554!important;color:#60a5fa!important}
-.stk-low{background:#422006!important;color:#fbbf24!important}
-.stk-critical{background:#450a0a!important;color:#fca5a5!important}
-.stk-out{background:#3b0a0a!important;color:#fca5a5!important}
-/* Cashback/Install badges */
-.cb-yes{background:#052e16!important;color:#4ade80!important}
-.cb-no{background:#334155!important;color:#94a3b8!important}
-.fi-yes{background:#172554!important;color:#60a5fa!important}
-.fi-riyadh{background:#422006!important;color:#fbbf24!important}
-.fi-no{background:#334155!important;color:#94a3b8!important}
-/* Up/Down cell contrast */
-.up-cell{color:#f87171!important;font-weight:700}
-.dn-cell{color:#4ade80!important;font-weight:700}
-/* Nav pills */
-nav a.rounded-full{color:#94a3b8!important;border-color:#475569!important}
-nav a.rounded-full:hover{background:#334155!important;color:#e2e8f0!important}
-nav a.bg-navy-800.rounded-full{color:#fff!important}
-/* Section filter bars */
-.text-\[10px\].font-bold.text-gray-400.uppercase{color:#64748b!important}
-/* New/Disc card text */
-.bg-green-50 .text-gray-700,.bg-red-50 .text-gray-700{color:#f1f5f9!important}
-.bg-green-50 .text-gray-400,.bg-red-50 .text-gray-400{color:#94a3b8!important}
-.bg-green-50,.bg-red-50{color:#e2e8f0!important}
-.bg-green-50 a,.bg-red-50 a{color:#93c5fd!important}
-#newCards span[style*="color"],#discCards span[style*="color"]{color:#e2e8f0!important;text-shadow:none}
-/* Section heading */
-.border-navy-800{border-color:#3b82f6!important}
-.text-sm.font-bold.text-gray-700{color:#f1f5f9!important}
-/* Mode buttons */
-.dir-btn.active,.s5agg-btn.active,.agg-btn.active{background:#3b82f6!important;color:#fff!important}
-.dir-btn:not(.active),.s5agg-btn:not(.active),.agg-btn:not(.active){background:#1e293b!important;color:#94a3b8!important;border-color:#475569!important}
-/* Type badges */
-.type-cat{background:#3b82f6!important}.type-comp{background:#60a5fa!important}.type-hc{background:#f59e0b!important;color:#422006!important}.type-ton{background:#475569!important;color:#e2e8f0!important}
-/* Sticky filter bar */
-.sticky.top-0{background:rgba(15,23,42,.95)!important;border-bottom-color:#334155!important}
-/* Promo badge */
-.promo-badge{background:#422006!important;color:#fbbf24!important}
 </style></head>
 """
 
@@ -861,6 +774,19 @@ nav a.bg-navy-800.rounded-full{color:#fff!important}
       <table id="tblRtFull"><thead></thead><tbody></tbody></table>
     </div>
   </div>
+
+  <!-- SKU Status Tracker -->
+  <div class="bg-white rounded-xl shadow p-4 mt-4">
+    <h2 class="text-base font-bold text-navy-800 mb-3">Retail SKU Status Tracker</h2>
+    <div id="rt_sku_quality_warn" class="hidden mb-2 p-2 bg-yellow-50 border border-yellow-300 rounded text-xs text-yellow-800"></div>
+    <div class="flex gap-2 mb-3 flex-wrap" id="rt_sku_tabs">
+      <button class="sku-tab active" data-tab="new" onclick="rtSwitchSkuTab('new')">🟢 New <span id="rt_cnt_new">0</span></button>
+      <button class="sku-tab" data-tab="reactive" onclick="rtSwitchSkuTab('reactive')">🔵 Reactive <span id="rt_cnt_reactive">0</span></button>
+      <button class="sku-tab" data-tab="temp_disc" onclick="rtSwitchSkuTab('temp_disc')">🟡 Temp OOS <span id="rt_cnt_temp">0</span></button>
+      <button class="sku-tab" data-tab="disc" onclick="rtSwitchSkuTab('disc')">🔴 Discontinued <span id="rt_cnt_disc">0</span></button>
+    </div>
+    <div id="rt_sku_content" class="text-sm"></div>
+  </div>
 </div>
 
 </div><!-- max-w container -->
@@ -885,6 +811,7 @@ const BRAND_COLORS={json.dumps(BRAND_COLORS)};
 const PID={json.dumps(product_id_map)};
 function bhLink(model,label){{const id=PID[model];return id?`<a href="https://bhstore.com.sa/sa-en/details/${{id}}" target="_blank" class="text-blue-600 hover:underline">${{label}}</a>`:label;}}
 const MODEL_OVERLAP={{matched:{len(matched)},wsOnly:{len(ws_only)},rtOnly:{len(rt_only)},total:{len(ws_models|rt_models)}}};
+const RT_SKU_DATES={json.dumps(rt_sku_dates_export,ensure_ascii=False)};
 const GENERATED_AT='{generated_at}';
 </script>
 """
@@ -1639,7 +1566,89 @@ function downloadRtExcel(){
   const ws=XLSX.utils.json_to_sheet(xl);const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'RT Data');XLSX.writeFile(wb,'BH_Retail_'+cur+'.xlsx');
 }
 
-function renderRT(){renderRtKpis();renderRtAlerts();renderRtNewDisc();renderRtCatKpi();renderRtBrandBar();renderRtTrend();renderRtFull();}
+function renderRT(){renderRtKpis();renderRtAlerts();renderRtNewDisc();renderRtCatKpi();renderRtBrandBar();renderRtTrend();renderRtFull();renderRtSkuStatus();}
+
+// ── Retail SKU Status Tracker ──────────────────────────────────────────────
+let rtActiveSkuTab='new';
+function rtSwitchSkuTab(tab){
+  rtActiveSkuTab=tab;
+  document.querySelectorAll('#rt_sku_tabs .sku-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  renderRtSkuStatus();
+}
+const RT_TEMP_OOS_TH=14, RT_REACTIVE_GAP=2;
+function computeRtSkuStatus(cur){
+  const datesUpTo=RT_DATES.filter(d=>d<=cur);
+  const res={new:[],reactive:[],temp_disc:[],disc:[]};
+  for(const [sku,dates] of Object.entries(RT_SKU_DATES)){
+    if(!dates.length)continue;
+    const ds=new Set(dates);
+    const firstD=dates[0];
+    const lastD=dates[dates.length-1];
+    if(firstD>cur)continue; // SKU first appeared after cur
+    if(ds.has(cur)){
+      if(firstD===cur){res.new.push(sku);}
+      else{
+        const idx=datesUpTo.indexOf(cur);
+        let gap=0;for(let i=idx-1;i>=0;i--){if(!ds.has(datesUpTo[i]))gap++;else break;}
+        if(gap>=RT_REACTIVE_GAP)res.reactive.push(sku);
+      }
+    } else {
+      if(datesUpTo.length&&lastD>=datesUpTo[0]){
+        const ab=datesUpTo.filter(d=>d>lastD).length;
+        if(ab>=1)(ab>=RT_TEMP_OOS_TH?res.disc:res.temp_disc).push(sku);
+      }
+    }
+  }
+  return res;
+}
+function renderRtSkuStatus(){
+  const cur=document.getElementById('rt_cur_week')?.value||RT_DATES[RT_DATES.length-1];
+  const st=computeRtSkuStatus(cur);
+  document.getElementById('rt_cnt_new').textContent=st.new.length;
+  document.getElementById('rt_cnt_reactive').textContent=st.reactive.length;
+  document.getElementById('rt_cnt_temp').textContent=st.temp_disc.length;
+  document.getElementById('rt_cnt_disc').textContent=st.disc.length;
+
+  const tab=rtActiveSkuTab;
+  let skuList=st[tab==='temp_disc'?'temp_disc':tab]||[];
+  const el=document.getElementById('rt_sku_content');
+  if(!skuList.length){el.innerHTML='<p class="text-gray-400 text-xs">No SKUs in this category.</p>';return;}
+
+  function getLastRec(sku){
+    const ds=(RT_SKU_DATES[sku]||[]).filter(d=>d<=cur);
+    const lastD=ds[ds.length-1]||'';
+    return RT.find(r=>r.m===sku&&r.d===lastD)||null;
+  }
+  function abCount(sku){const ds=(RT_SKU_DATES[sku]||[]).filter(d=>d<=cur);const lastD=ds[ds.length-1]||'';return RT_DATES.filter(d=>d>lastD&&d<=cur).length;}
+  function gbCount(sku){const ds=new Set(RT_SKU_DATES[sku]||[]);const datesUpTo=RT_DATES.filter(d=>d<=cur);const idx=datesUpTo.indexOf(cur);let g=0;for(let i=idx-1;i>=0;i--){if(!ds.has(datesUpTo[i]))g++;else break;}return g;}
+
+  const cards=skuList.map(sku=>{
+    const rec=tab==='new'||tab==='reactive'
+      ? RT.find(r=>r.m===sku&&r.d===cur)||getLastRec(sku)||{}
+      : getLastRec(sku)||{};
+    const brand=rec.b||sku;
+    const name=(rec.n||sku).substring(0,45);
+    const lastSeen=(RT_SKU_DATES[sku]||[]).filter(d=>d<=cur).slice(-1)[0]||'';
+    const absent=abCount(sku);
+    const gb=gbCount(sku);
+    const price=rec.rtCur||rec.sl||null;
+
+    const badge=tab==='temp_disc'?`<span class="text-xs bg-yellow-100 text-yellow-700 px-1 rounded ml-1">${absent}d absent</span>`:
+                tab==='disc'?`<span class="text-xs bg-red-100 text-red-700 px-1 rounded ml-1">${absent}d absent</span>`:
+                tab==='reactive'?`<span class="text-xs bg-blue-100 text-blue-700 px-1 rounded ml-1">+${gb}d gap</span>`:
+                `<span class="text-xs bg-green-100 text-green-700 px-1 rounded ml-1">new</span>`;
+
+    return `<div class="border rounded p-2 mb-1 bg-gray-50 flex justify-between items-start">
+      <div>
+        <span class="font-semibold text-xs">${sku}</span>${badge}
+        <div class="text-xs text-gray-500">${brand} · ${name}</div>
+        ${lastSeen&&tab!=='new'?`<div class="text-xs text-gray-400">Last seen: ${lastSeen}</div>`:''}
+      </div>
+      <div class="text-right text-xs">${price!=null?'SAR '+Number(price).toLocaleString('en-SA',{maximumFractionDigits:0}):''}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML=cards;
+}
 
 // ══════════════════════════════════════════════════════════════════
 // INIT

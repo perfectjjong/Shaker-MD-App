@@ -146,6 +146,23 @@ BRAND_COLORS = {b: c for b, c in zip(brands_list, [
     '#9E480E','#7030A0','#00B0F0','#FF7F7F','#92D050','#FF00FF','#00B050','#C00000',
     '#B4C6E7','#F4B183','#808080','#5B9BD5','#2F4F4F','#D2691E','#4169E1','#228B22'])}
 
+
+# ── SKU 4-way Status Classification ───────────────────────────────────────────
+# New / Reactive / Temp OOS / Discontinued
+TEMP_OOS_THRESHOLD = 14
+REACTIVE_GAP_MIN   = 2
+
+all_dates_seq = sorted([d for d in df['date_only'].unique() if pd.notna(d)])
+latest_d      = all_dates_seq[-1]
+
+sku_date_map  = df.groupby('_sku')['date_only'].apply(lambda s: set(d for d in s if pd.notna(d))).to_dict()
+
+# SKU_DATES: {sku → sorted list of date strings} — JS does dynamic classification
+sku_dates_export = {
+    sku: sorted(str(d) for d in dates_set)
+    for sku, dates_set in sku_date_map.items()
+}
+
 generated_at = datetime.now().strftime('%Y-%m-%d %H:%M')
 
 # ── Build HTML ────────────────────────────────────────────────────────────────
@@ -227,118 +244,6 @@ tailwind.config={theme:{extend:{fontFamily:{sans:['Inter','system-ui','sans-seri
   .tbl-wrap td{font-size:10px;padding:3px 4px}
   div[style*="height:350px"],div[style*="height:360px"],div[style*="height:400px"],div[style*="height:320px"]{height:180px!important}
 }
-/* === DARK MODE (sell-thru-progress unified) === */
-body{background:#0f172a!important;color:#e2e8f0!important}
-header{background:linear-gradient(135deg,#1e293b,#334155)!important;border-bottom:2px solid #3b82f6}
-.bg-white,.bg-gray-50{background:#1e293b!important}
-.bg-white\/95{background:rgba(30,41,59,.95)!important}
-section{background:#1e293b!important;border-color:#334155!important}
-.border-gray-100,.border-gray-200,.border-gray-300{border-color:#334155!important}
-.text-gray-800,.text-gray-700,.text-gray-600,.text-gray-500{color:#e2e8f0!important}
-.text-gray-400{color:#94a3b8!important}
-.text-navy-800{color:#60a5fa!important}
-.text-navy-700{color:#93c5fd!important}
-.bg-navy-800{background:#3b82f6!important}
-.bg-navy-50{background:#1e3a5f!important}
-.tbl-wrap td{border-bottom-color:#334155!important;color:#e2e8f0!important}
-.tbl-wrap tr:nth-child(even) td{background:#1e293b!important}
-.tbl-wrap tr:nth-child(odd) td{background:#0f172a!important}
-.tbl-wrap tr:hover td{background:#334155!important}
-.tbl-wrap th{background:#334155!important;color:#ffffff!important}
-.tbl-wrap th:hover{background:#475569!important}
-.tbl-wrap a{color:#60a5fa!important}
-a.text-blue-600{color:#60a5fa!important}
-.level-cat td{background:#1e3a5f!important;color:#60a5fa!important;border-left-color:#3b82f6!important}
-.level-comp td{background:#172554!important;color:#93c5fd!important;border-left-color:#60a5fa!important}
-.level-hc td{background:#422006!important;color:#fbbf24!important;border-left-color:#f59e0b!important}
-.level-ton td{background:#0f172a!important;color:#94a3b8!important;border-left-color:#475569!important}
-/* Filter readability - dark buttons */
-.ms-btn{background:#0f172a!important;color:#f1f5f9!important;border-color:#64748b!important;font-size:12px!important;font-weight:500!important}
-.ms-btn:hover{border-color:#60a5fa!important;background:#1e293b!important}
-.ms-btn b{color:#93c5fd!important}
-.ms-menu{background:#1e293b!important;border-color:#475569!important;box-shadow:0 8px 25px rgba(0,0,0,.4)!important}
-.ms-menu .ms-actions{border-bottom-color:#334155!important}
-.ms-menu .ms-actions button{color:#60a5fa!important}
-.ms-menu .ms-actions button.ms-none{color:#f87171!important}
-.ms-menu label{color:#e2e8f0!important}
-.ms-menu label:hover{background:#334155!important}
-.pt-sel,.sec-search{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-.sec-search:focus{border-color:#3b82f6!important;box-shadow:0 0 0 2px rgba(59,130,246,.15)!important}
-.shadow-sm{box-shadow:0 2px 8px rgba(0,0,0,.3)!important}
-a[class*="bg-white"]{background:#1e293b!important;color:#94a3b8!important;border-color:#334155!important}
-a[class*="bg-white"]:hover{background:#334155!important}
-.bg-gray-100{background:#334155!important;color:#e2e8f0!important}
-.bg-gray-100:hover,.bg-gray-200{background:#475569!important}
-.bg-gray-700{background:#334155!important}
-.bg-green-600{background:#10b981!important}
-.text-green-700,.text-green-600{color:#34d399!important}
-.text-red-700,.text-red-600{color:#f87171!important}
-.text-purple-600{color:#a78bfa!important}
-nav .flex .px-3.py-1{border-color:#334155!important}
-.w-px{background:#334155!important}
-input[type=checkbox]{accent-color:#3b82f6}
-select{background:#0f172a!important;color:#e2e8f0!important;border-color:#475569!important}
-/* KPI card backgrounds */
-.bg-amber-50{background:#2d1f05!important}
-.bg-red-50{background:#2d0f0f!important}
-.bg-green-50{background:#0a2618!important}
-.bg-blue-50{background:#0f1d3d!important}
-.bg-orange-50{background:#2d1507!important}
-.bg-teal-50{background:#0a2625!important}
-.bg-purple-50{background:#1f0a3d!important}
-.bg-cyan-50{background:#0a2833!important}
-.bg-indigo-50{background:#1a1840!important}
-.bg-pink-50{background:#2d0a1a!important}
-/* KPI card text colors */
-.text-amber-700,.text-amber-600{color:#fbbf24!important}
-.text-blue-600{color:#60a5fa!important}
-.text-orange-600,.text-orange-700{color:#fb923c!important}
-.text-teal-600,.text-teal-700{color:#2dd4bf!important}
-.text-purple-700{color:#c4b5fd!important}
-.text-cyan-600{color:#22d3ee!important}
-/* Card borders */
-.border-green-200{border-color:#166534!important}
-.border-red-200{border-color:#991b1b!important}
-.border-amber-200{border-color:#92400e!important}
-/* Stock badges */
-.stk-ok{background:#052e16!important;color:#4ade80!important}
-.stk-high{background:#172554!important;color:#60a5fa!important}
-.stk-low{background:#422006!important;color:#fbbf24!important}
-.stk-critical{background:#450a0a!important;color:#fca5a5!important}
-.stk-out{background:#3b0a0a!important;color:#fca5a5!important}
-/* Cashback/Install badges */
-.cb-yes{background:#052e16!important;color:#4ade80!important}
-.cb-no{background:#334155!important;color:#94a3b8!important}
-.fi-yes{background:#172554!important;color:#60a5fa!important}
-.fi-riyadh{background:#422006!important;color:#fbbf24!important}
-.fi-no{background:#334155!important;color:#94a3b8!important}
-/* Up/Down cell contrast */
-.up-cell{color:#f87171!important;font-weight:700}
-.dn-cell{color:#4ade80!important;font-weight:700}
-/* Nav pills */
-nav a.rounded-full{color:#94a3b8!important;border-color:#475569!important}
-nav a.rounded-full:hover{background:#334155!important;color:#e2e8f0!important}
-nav a.bg-navy-800.rounded-full{color:#fff!important}
-/* Section filter bars */
-.text-\[10px\].font-bold.text-gray-400.uppercase{color:#64748b!important}
-/* New/Disc card text */
-.bg-green-50 .text-gray-700,.bg-red-50 .text-gray-700{color:#f1f5f9!important}
-.bg-green-50 .text-gray-400,.bg-red-50 .text-gray-400{color:#94a3b8!important}
-.bg-green-50,.bg-red-50{color:#e2e8f0!important}
-.bg-green-50 a,.bg-red-50 a{color:#93c5fd!important}
-#newCards span[style*="color"],#discCards span[style*="color"]{color:#e2e8f0!important;text-shadow:none}
-/* Section heading */
-.border-navy-800{border-color:#3b82f6!important}
-.text-sm.font-bold.text-gray-700{color:#f1f5f9!important}
-/* Mode buttons */
-.dir-btn.active,.s5agg-btn.active,.agg-btn.active{background:#3b82f6!important;color:#fff!important}
-.dir-btn:not(.active),.s5agg-btn:not(.active),.agg-btn:not(.active){background:#1e293b!important;color:#94a3b8!important;border-color:#475569!important}
-/* Type badges */
-.type-cat{background:#3b82f6!important}.type-comp{background:#60a5fa!important}.type-hc{background:#f59e0b!important;color:#422006!important}.type-ton{background:#475569!important;color:#e2e8f0!important}
-/* Sticky filter bar */
-.sticky.top-0{background:rgba(15,23,42,.95)!important;border-bottom-color:#334155!important}
-/* Promo badge */
-.promo-badge{background:#422006!important;color:#fbbf24!important}
 </style></head>
 <body class="bg-gray-50 font-sans text-gray-800 text-sm">
 """
@@ -403,13 +308,18 @@ HTML_BODY = """
   <div class="tbl-wrap" style="max-height:380px;overflow-y:auto"><table id="tblAlert"><thead></thead><tbody></tbody></table></div>
 </section>
 
-<!-- SEC 3: New & Disc -->
+<!-- SEC 3: SKU Status Tracker -->
 <section id="sec-new" class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-  <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">New & Discontinued SKUs</h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-    <div><h3 class="text-xs font-bold text-green-700 mb-2"><span class="w-2 h-2 bg-green-500 rounded-full inline-block mr-1"></span>New SKUs <span id="newCount" class="text-gray-400 font-normal"></span></h3><div id="newCards" class="space-y-2"></div></div>
-    <div><h3 class="text-xs font-bold text-red-700 mb-2"><span class="w-2 h-2 bg-red-500 rounded-full inline-block mr-1"></span>Discontinued <span id="discCount" class="text-gray-400 font-normal"></span></h3><div id="discCards" class="space-y-2"></div></div>
+  <h2 class="text-sm font-bold text-navy-800 border-b-2 border-navy-800 pb-2 mb-3">SKU Status Tracker</h2>
+  <div class="flex gap-2 mb-3 flex-wrap" id="skuTabBar">
+    <button class="sku-tab active" data-tab="new">🟢 New <span id="cntNew" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-green-100 text-green-700"></span></button>
+    <button class="sku-tab" data-tab="reactive">🔵 Reactive <span id="cntReactive" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-700"></span></button>
+    <button class="sku-tab" data-tab="temp_disc">🟡 Temp OOS <span id="cntTempDisc" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700"></span></button>
+    <button class="sku-tab" data-tab="disc">🔴 Discontinued <span id="cntDisc" class="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-700"></span></button>
   </div>
+  <div id="skuRunWarn"></div>
+  <div id="skuTabDesc" class="text-[10px] text-gray-400 mb-2"></div>
+  <div id="skuCards" class="space-y-2 max-h-[420px] overflow-y-auto"></div>
 </section>
 
 <!-- SEC 4: Category KPI -->
@@ -549,6 +459,7 @@ const TONS={json.dumps([float(t) for t in ton_list])};
 const LATEST_DATE={json.dumps(latest_date)};
 const FIRST_DATE={json.dumps(first_date)};
 const BRAND_COLORS={json.dumps(BRAND_COLORS)};
+const SKU_DATES={json.dumps(sku_dates_export,ensure_ascii=False)};
 </script>
 """
 
@@ -777,10 +688,11 @@ function refreshGlobal(){
   const allCurDate=DATA.filter(r=>gfDate.getSelected().has(r.d));
   cascadeFilters(allCurDate,GF);
 
-  renderKPIs(curData,prevData);renderAlerts();renderNewDisc(curData,prevData);
+  renderKPIs(curData,prevData);renderAlerts();renderSkuStatus();
   renderS4();renderS5();renderS6();renderS7();renderStock();renderCashback();
 }
 
+initSkuTabs();
 function resetGlobal(){gfDate.reset();resetF(GF);refreshGlobal();}
 function resetS4(){resetF(S4F);ST.s4q='';document.getElementById('s4_search').value='';renderS4();}
 function resetS5(){resetF(S5F);ST.s5q='';ST.s5agg='avg';document.getElementById('s5_search').value='';
@@ -836,15 +748,166 @@ function renderAlerts(){
   tbl.querySelector('tbody').innerHTML=rows.length?rows.map(r=>'<tr>'+AC.map(c=>{let v=c.f?c.f(r[c.k]):(r[c.k]??'-');if(c.k==='s'){v=r.u?`<a href="${r.u}" target="_blank" class="text-blue-600 hover:underline">${v}</a>`:v;}let cls='';if((c.k==='chg'||c.k==='chgPct')&&r.chg!=null)cls=r.chg>0?'up-cell':'dn-cell';return`<td class="${cls}">${v}</td>`;}).join('')+'</tr>').join(''):'<tr><td colspan="12" class="text-center text-gray-400 py-6">No changes</td></tr>';
 }
 
-// ═══ SEC 3: NEW/DISC ════════════════════════════════════════════════════════
-function renderNewDisc(lat,prev){
-  const ls=new Set(lat.map(r=>r.s)),ps=new Set(prev.map(r=>r.s));
-  const nw=lat.filter(r=>!ps.has(r.s)),dc=prev.filter(r=>!ls.has(r.s));
-  const card=(r,clr)=>`<div class="border border-${clr}-200 bg-${clr}-50 rounded-lg p-2.5 flex justify-between items-center"><div><span class="text-xs font-bold" style="color:${colorOf(r.b)}">${r.b}</span> <span class="text-[10px] text-gray-400">${r.m||''}</span><div class="text-[11px] mt-0.5 truncate max-w-[280px]">${r.u?`<a href="${r.u}" target="_blank" class="text-blue-600 hover:underline">${r.n}</a>`:r.n}</div><div class="text-[10px] text-gray-400">${r.c||''} &middot; ${r.t?r.t.toFixed(1)+'T':''} &middot; ${r.cp||''} &middot; ${r.fi!=='No'?'Free Install':''}${r.cb>0?' &middot; Cashback: '+r.cbRaw:''}</div></div><div class="text-right"><div class="text-sm font-bold text-gray-700">${fmtSAR(r.fp)} SAR</div>${r.cb>0?'<div class="text-[10px] text-green-600">CB: '+fmtSAR(r.cb)+'</div>':''}</div></div>`;
-  document.getElementById('newCards').innerHTML=nw.length?nw.map(r=>card(r,'green')).join(''):'<p class="text-xs text-gray-400 py-3">None</p>';
-  document.getElementById('newCount').textContent='('+nw.length+')';
-  document.getElementById('discCards').innerHTML=dc.length?dc.map(r=>card(r,'red')).join(''):'<p class="text-xs text-gray-400 py-3">None</p>';
-  document.getElementById('discCount').textContent='('+dc.length+')';
+// ═══ SEC 3: SKU STATUS TRACKER ══════════════════════════════════════════════
+// New        : 역대 첫 등장
+// Reactive   : 2일+ 부재 후 복귀
+// Temp OOS   : 연속 부재 1~13 스크래핑일 (재고 부족 → 영업 챌린지)
+// Discontinued: 연속 부재 14+ 스크래핑일 (단종 가능성)
+
+// 날짜별 카테고리 카운트 (런 품질 체크용)
+const CAT_COUNT_BY_DATE=(()=>{
+  const m={};
+  DATA.forEach(r=>{if(!m[r.d])m[r.d]={};m[r.d][r.c]=(m[r.d][r.c]||0)+1;});
+  return m;
+})();
+
+function checkRunQuality(date){
+  const idx=DATES.indexOf(date);
+  if(idx<=0)return{ok:true,reasons:[]};
+  const baselineDts=DATES.slice(Math.max(0,idx-14),idx);
+  const dayCounts=CAT_COUNT_BY_DATE[date]||{};
+  const totalToday=Object.values(dayCounts).reduce((a,b)=>a+b,0);
+  const reasons=[];
+  const baseTotals=baselineDts.map(d=>Object.values(CAT_COUNT_BY_DATE[d]||{}).reduce((a,b)=>a+b,0)).sort((a,b)=>a-b);
+  if(baseTotals.length>0){
+    const med=baseTotals[Math.floor(baseTotals.length/2)];
+    if(med>0&&totalToday/med<0.85)reasons.push(`총 수집량 급감 (${totalToday}/${med}건, ${Math.round(totalToday/med*100)}%)`);
+  }
+  const knownCats=new Set();
+  baselineDts.forEach(d=>Object.keys(CAT_COUNT_BY_DATE[d]||{}).forEach(c=>knownCats.add(c)));
+  knownCats.forEach(cat=>{
+    const hits=baselineDts.filter(d=>(CAT_COUNT_BY_DATE[d]||{})[cat]>0).length;
+    if(hits>=3&&!(dayCounts[cat]>0))reasons.push(`'${cat}' 카테고리 완전 누락`);
+  });
+  return{ok:reasons.length===0,reasons};
+}
+
+// 탭 상태
+let ACTIVE_SKU_TAB='new';
+
+// 탭별 설명
+const TAB_DESC={
+  new:'역대 처음 등장한 신규 SKU',
+  reactive:'단종/품절 후 재입고된 SKU — 공급 정상화 확인',
+  temp_disc:'최근 1~13일 연속 부재 — 일시 재고 부족 의심 → 영업 챌린지 검토',
+  disc:'14일+ 연속 부재 — 단종 가능성 높음 → 대체 모델 파악'
+};
+
+// 현재 최신 날짜의 런 품질 (전체 섹션 상단 경고용)
+const _latestQ=checkRunQuality(LATEST_DATE);
+
+// ── SKU Status: dynamic per-date classification ────────────────────────────
+const TEMP_OOS_TH=14, REACTIVE_GAP=2;
+function computeSkuStatus(cur){
+  const datesUpTo=DATES.filter(d=>d<=cur);
+  const res={new:[],reactive:[],temp_disc:[],disc:[]};
+  for(const [sku,dates] of Object.entries(SKU_DATES)){
+    const ds=new Set(dates);
+    const firstD=dates[0];
+    const lastD=dates[dates.length-1];
+    if(firstD>cur) continue; // SKU first appeared after cur
+    if(ds.has(cur)){
+      if(firstD===cur){res.new.push(sku);}
+      else{
+        const idx=datesUpTo.indexOf(cur);
+        let gap=0;
+        for(let i=idx-1;i>=0;i--){if(!ds.has(datesUpTo[i]))gap++;else break;}
+        if(gap>=REACTIVE_GAP)res.reactive.push(sku);
+      }
+    } else {
+      if(lastD>=datesUpTo[0]){
+        const ab=datesUpTo.filter(d=>d>lastD).length;
+        if(ab>=1)(ab>=TEMP_OOS_TH?res.disc:res.temp_disc).push(sku);
+      }
+    }
+  }
+  return res;
+}
+function renderSkuStatus(){
+  const {cur}=getCompareDates();
+  const st=computeSkuStatus(cur);
+  document.getElementById('cntNew').textContent=st.new.length;
+  document.getElementById('cntReactive').textContent=st.reactive.length;
+  document.getElementById('cntTempDisc').textContent=st.temp_disc.length;
+  document.getElementById('cntDisc').textContent=st.disc.length;
+
+  // 런 품질 경고 (최신 날짜 이상 시)
+  const warnEl=document.getElementById('skuRunWarn');
+  if(warnEl){
+    if(!_latestQ||_latestQ.ok){warnEl.innerHTML='';}
+    else{warnEl.innerHTML=`<div class="flex items-start gap-2 bg-amber-50 border border-amber-300 rounded-lg p-2.5 mb-2 text-[10px] text-amber-800"><span class="text-amber-500 text-sm leading-none mt-0.5">⚠</span><div><div class="font-bold mb-0.5">수집 이상 — Temp OOS/Disc 신뢰도 낮음</div>${_latestQ.reasons.map(r=>`<div>${r}</div>`).join('')}</div></div>`;}
+  }
+
+  const tabDesc=typeof TAB_DESC!=='undefined'?TAB_DESC:{};
+  const tabDescEl=document.getElementById('skuTabDesc');
+  if(tabDescEl)tabDescEl.textContent=tabDesc[ACTIVE_SKU_TAB]||'';
+
+  // 카드 렌더링
+  const curData=DATA.filter(r=>r.d===cur);
+  const curMap={};curData.forEach(r=>curMap[r.s]=r);
+
+  function getLastRec(sku){
+    const ds=SKU_DATES[sku]||[];
+    for(let i=ds.length-1;i>=0;i--){if(ds[i]<=cur){const d=ds[i];return DATA.find(r=>r.s===sku&&r.d===d)||null;}}
+    return null;
+  }
+  function absentCount(sku){
+    const ds=SKU_DATES[sku]||[];
+    const lastD=ds.filter(d=>d<=cur).slice(-1)[0]||'';
+    return DATES.filter(d=>d>lastD&&d<=cur).length;
+  }
+  function gapCount(sku){
+    const ds=new Set(SKU_DATES[sku]||[]);
+    const idx=DATES.indexOf(cur);
+    let g=0;for(let i=idx-1;i>=0;i--){if(!ds.has(DATES[i]))g++;else break;}return g;
+  }
+
+  function skuCard(rec,ab,gb,cfg){
+    if(!rec)return'';
+    const abLabel=ab>0?`<span class="text-[9px] font-bold px-1.5 py-0.5 rounded-full ${cfg.badgeCls}">${ab}일 부재</span>`:'';
+    const gbLabel=gb>0?`<span class="text-[9px] text-gray-400">(${gb}일 만에 복귀)</span>`:'';
+    const nameHtml=rec.url||rec.u?`<a href="${rec.url||rec.u}" target="_blank" class="text-blue-600 hover:underline">${rec.n||rec.s}</a>`:(rec.n||rec.s);
+    return `<div class="border ${cfg.border} ${cfg.bg} rounded-lg p-2.5 flex justify-between items-start gap-2">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-xs font-bold" style="color:${colorOf(rec.b)}">${rec.b||'Unknown'}</span>
+          <span class="text-[10px] text-gray-400">${rec.m||''}</span>
+          ${abLabel}${gbLabel}
+        </div>
+        <div class="text-[11px] mt-0.5 truncate">${nameHtml}</div>
+        <div class="text-[10px] text-gray-400 mt-0.5">${rec.c||''} · ${rec.t?rec.t.toFixed(1)+'T':''} · 마지막: ${(SKU_DATES[rec.s]||[]).filter(d=>d<=cur).slice(-1)[0]||''}</div>
+      </div>
+      <div class="text-sm font-bold text-gray-700 whitespace-nowrap">${fmtSAR(rec.fp||rec.sl)} SAR</div>
+    </div>`;
+  }
+
+  let html='';
+  if(ACTIVE_SKU_TAB==='new'){
+    const recs=st.new.map(sku=>curMap[sku]).filter(Boolean);
+    html=recs.length?recs.map(r=>skuCard(r,0,0,{border:'border-green-200',bg:'bg-green-50',badgeCls:''})).join(''):'<p class="text-xs text-gray-400 py-4 text-center">신규 SKU 없음</p>';
+  } else if(ACTIVE_SKU_TAB==='reactive'){
+    const recs=st.reactive.map(sku=>{const r=curMap[sku];return r?{...r,_gb:gapCount(sku)}:null;}).filter(Boolean);
+    html=recs.length?recs.map(r=>skuCard(r,0,r._gb,{border:'border-blue-200',bg:'bg-blue-50',badgeCls:'bg-blue-100 text-blue-700'})).join(''):'<p class="text-xs text-gray-400 py-4 text-center">복귀 SKU 없음</p>';
+  } else if(ACTIVE_SKU_TAB==='temp_disc'){
+    const recs=st.temp_disc.map(sku=>{const r=getLastRec(sku);return r?{...r,_ab:absentCount(sku)}:null;}).filter(Boolean).sort((a,b)=>b._ab-a._ab);
+    html=recs.length?recs.map(r=>skuCard(r,r._ab,0,{border:'border-amber-200',bg:'bg-amber-50',badgeCls:'bg-amber-100 text-amber-700'})).join(''):'<p class="text-xs text-gray-400 py-4 text-center">Temp OOS 없음</p>';
+  } else {
+    const recs=st.disc.map(sku=>{const r=getLastRec(sku);return r?{...r,_ab:absentCount(sku)}:null;}).filter(Boolean).sort((a,b)=>b._ab-a._ab);
+    html=recs.length?recs.map(r=>skuCard(r,r._ab,0,{border:'border-red-200',bg:'bg-red-50',badgeCls:'bg-red-100 text-red-700'})).join(''):'<p class="text-xs text-gray-400 py-4 text-center">Discontinued 없음</p>';
+  }
+  document.getElementById('skuCards').innerHTML=html;
+}
+
+// 탭 클릭 이벤트 (init에서 등록)
+function initSkuTabs(){
+  document.querySelectorAll('.sku-tab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      document.querySelectorAll('.sku-tab').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      ACTIVE_SKU_TAB=btn.dataset.tab;
+      renderSkuStatus();
+    });
+  });
 }
 
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════

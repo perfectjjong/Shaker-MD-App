@@ -232,14 +232,14 @@ for sku, dates_set in sku_date_map.items():
         disc_records.append({{
             's':str(sku),'st':st,'ab':absent_days,'ls':str(last_d),
             'b':safe(row.get('brand_en') if 'brand_en' in row else (row.get('Brand') if 'Brand' in row else None)),
-            'n':str(row.get('name_en', row.get('Product_Name_EN', row.get('Name', row.get('Product Name', '')))))[:70],
+            'n':next((str(row[k])[:70] for k in ['name_en','Name','Product_Name_EN','Product_Name','Product Name','product_name','name','title','Title','subtitle','Description','description'] if k in row.index and pd.notna(row.get(k)) and str(row.get(k)).strip()), ''),
             'm':str(sku),
             'c':safe(row.get('category_en') if 'category_en' in row else row.get('Category')),
             'h':safe(row.get('ac_type') if 'ac_type' in row else row.get('Cold_or_HC')),
             'cp':safe(row.get('compressor') if 'compressor' in row else row.get('Compressor_Type')),
             't':safe(row.get('ton') if 'ton' in row else row.get('Cooling_Capacity_Ton')),
             'fp':safe(row.get('price') if 'price' in row else row.get('Final_Sale_Price')),
-            'url':str(row.get('url', row.get('URL', row.get('Product URL', '')))) if pd.notna(row.get('url', row.get('URL', row.get('Product URL')))) else '',
+            'url':next((str(row[k]) for k in ['url','URL','Product URL','Product_URL','URL_Key','product_url','link','Link'] if k in row.index and pd.notna(row.get(k)) and str(row.get(k)).strip()), ''),
         }})
 
 '''

@@ -36,6 +36,7 @@ try:
 except Exception:
     pass
 
+import os
 import re
 import unicodedata
 import requests
@@ -322,6 +323,27 @@ def _extract_free_install(p: dict, description: str) -> str:
     return "No"
 
 
+def parse_bank_promo(subtitle: str | None) -> tuple[float | None, str | None, str | None]:
+    """
+    Salla subtitle 필드 파싱: "1,220رس عند الدفع بالبطاقة|كود NJ6"
+    → (bank_promo_price, bank_promo_code, bank_promo_label)
+    """
+    if not subtitle:
+        return None, None, None
+    # 가격 추출: 숫자(콤마 포함) + رس / ر.س
+    m_price = re.search(r'([\d,]+(?:\.\d+)?)\s*(?:رس|ر\.س)', subtitle)
+    if not m_price:
+        return None, None, None
+    try:
+        bank_price = float(m_price.group(1).replace(',', ''))
+    except ValueError:
+        return None, None, None
+    # 코드 추출: "كود XXXX" 패턴
+    m_code = re.search(r'كود\s+(\S+)', subtitle)
+    bank_code = m_code.group(1).strip() if m_code else None
+    return bank_price, bank_code, subtitle.strip()
+
+
 def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) -> dict:
     brand_ar    = (p.get("brand") or {}).get("name")
     salla_tag   = (p.get("category") or {}).get("name")   # Salla 내부 1차 카테고리 (프로모션 태그 포함)
@@ -336,6 +358,13 @@ def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) ->
     regular  = p.get("regular_price") or 0
     price    = p.get("price") or 0
     disc_pct = f"{round((1 - price / regular) * 100, 1)}%" if regular > 0 else None
+
+    # 은행 연계 프로모 (subtitle: "1,220رس عند الدفع بالبطاقة|كود NJ6")
+    bank_price, bank_code, bank_label = parse_bank_promo(p.get("subtitle"))
+    bank_disc_pct = (
+        f"{round((1 - bank_price / regular) * 100, 1)}%"
+        if bank_price and regular > 0 else None
+    )
 
     # brand_ar 정제: "ال جي: مكيفات سبليت وشباك" → "ال جي" (콜론 뒤 카테고리 제거)
     brand_ar_clean = brand_ar.split(":")[0].strip() if brand_ar else None
@@ -396,6 +425,12 @@ def parse_product(p: dict, category_ar: str, category_en: str, run_date: str) ->
         "regular_price" : regular,        # 정가
         "is_on_sale"    : p.get("is_on_sale"),
         "discount_pct"  : disc_pct,
+
+        # ── 은행 연계 프로모
+        "bank_promo_price"    : bank_price,   # 코드 적용 시 가격 (SAR)
+        "bank_promo_code"     : bank_code,    # 예: NJ6
+        "bank_promo_disc_pct" : bank_disc_pct,# 정가 대비 할인율
+        "bank_promo_label"    : bank_label,   # 원문 전체 (참고용)
 
         # ── 재고 / 상태
         "status"        : p.get("status"),
@@ -469,18 +504,98 @@ def fetch_category(category_ar: str, category_id: str, category_en: str, run_dat
 
 
 # ══════════════════════════════════════════════
+#  수집량 검증 (가짜 Discontinued 방지)
+# ══════════════════════════════════════════════
+
+# 강제 저장: FORCE_SAVE=1 환경변수로 검증 우회 가능
+FORCE_SAVE = os.environ.get("FORCE_SAVE", "0") == "1"
+
+# 카테고리별 급감 임계값 (이전 대비 이 비율 미만이면 경고)
+CAT_DROP_THRESHOLD  = 0.50   # 50% 미만
+TOTAL_DROP_THRESHOLD = 0.80  # 전체 80% 미만
+
+
+def validate_collection(new_df: pd.DataFrame, existing_df: pd.DataFrame | None) -> tuple[bool, list[str]]:
+    """
+    이전 실행 대비 수집량 급감 여부 확인.
+    카테고리 완전 누락 또는 총량 임계값 미달 시 저장 중단.
+    Returns (is_valid, warning_messages)
+    """
+    if existing_df is None or len(existing_df) == 0:
+        return True, []
+
+    prev_dates = sorted(existing_df["run_date"].unique())
+    if not prev_dates:
+        return True, []
+    prev_df = existing_df[existing_df["run_date"] == prev_dates[-1]]
+
+    issues: list[str] = []
+
+    # ── 총량 비교
+    prev_total = len(prev_df)
+    curr_total = len(new_df)
+    if prev_total > 0:
+        ratio = curr_total / prev_total
+        if ratio < TOTAL_DROP_THRESHOLD:
+            issues.append(
+                f"총 수집량 급감: {prev_total}개 → {curr_total}개 "
+                f"({ratio*100:.0f}%, 임계값 {TOTAL_DROP_THRESHOLD*100:.0f}%)"
+            )
+
+    # ── 카테고리별 비교
+    prev_cats = prev_df.groupby("category_en").size()
+    curr_cats = new_df.groupby("category_en").size() if len(new_df) > 0 else pd.Series(dtype=int)
+    for cat, prev_cnt in prev_cats.items():
+        curr_cnt = int(curr_cats.get(cat, 0))
+        if curr_cnt == 0:
+            issues.append(f"카테고리 완전 누락: '{cat}' (이전: {prev_cnt}개 → 오늘: 0개)")
+        elif prev_cnt > 0 and curr_cnt / prev_cnt < CAT_DROP_THRESHOLD:
+            issues.append(
+                f"카테고리 급감: '{cat}' ({prev_cnt}개 → {curr_cnt}개, "
+                f"{curr_cnt/prev_cnt*100:.0f}%)"
+            )
+
+    return len(issues) == 0, issues
+
+
+# ══════════════════════════════════════════════
 #  마스터 파일 누적 저장
 # ══════════════════════════════════════════════
 
-def save_to_master(new_df: pd.DataFrame):
+def save_to_master(new_df: pd.DataFrame) -> pd.DataFrame | None:
     """
-    najm_ac_master.xlsx에 누적 append
-    동일 (product_id + run_date) 조합은 중복 저장하지 않음
+    najm_ac_master.xlsx에 누적 append.
+    수집량 검증 실패 시 저장하지 않고 None 반환.
+    FORCE_SAVE=1 환경변수로 검증 우회 가능.
     """
+    existing: pd.DataFrame | None = None
     if MASTER_XLSX.exists():
         existing = pd.read_excel(MASTER_XLSX, engine="openpyxl")
+
+    is_valid, issues = validate_collection(new_df, existing)
+
+    if issues:
+        print(f"\n{'!'*55}")
+        print("  🚨 수집량 검증 경고:")
+        for msg in issues:
+            print(f"     • {msg}")
+
+    if not is_valid:
+        if FORCE_SAVE:
+            print("  ⚠  FORCE_SAVE=1 → 검증 실패 무시하고 강제 저장합니다.")
+        else:
+            print("  🛑 마스터 파일 업데이트 중단 (가짜 Discontinued 방지)")
+            print("     강제 저장: FORCE_SAVE=1 python3 najm_scraper.py")
+            print(f"{'!'*55}\n")
+            return None
+
+    if existing is not None:
+        # run_date 타입 통일 (Excel 읽기 시 Timestamp로 변환되어 dedup 실패 방지)
+        existing["run_date"] = existing["run_date"].astype(str).str[:10]
+        new_df = new_df.copy()
+        new_df["run_date"] = new_df["run_date"].astype(str).str[:10]
         combined = pd.concat([existing, new_df], ignore_index=True)
-        # 같은 날짜에 같은 제품 중복 방지
+        # product_id+run_date 기준 dedup (다중 카테고리 중복 포함)
         combined = combined.drop_duplicates(subset=["product_id", "run_date"], keep="last")
     else:
         combined = new_df
@@ -522,6 +637,10 @@ def main():
 
     new_df = pd.DataFrame(all_products)
     master = save_to_master(new_df)
+
+    if master is None:
+        print("\n스크래핑은 완료되었으나 검증 실패로 저장을 중단했습니다.")
+        return new_df  # 수집 데이터는 반환 (분석 가능)
 
     print(f"\n{'='*55}")
     print(f"  오늘 수집 : {len(new_df)}개")
