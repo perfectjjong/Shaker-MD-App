@@ -136,7 +136,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 20px;
       padding: 24px;
       max-width: 1200px;
@@ -367,6 +367,14 @@
           { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '💰', indent: true },
           { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '💰' },
           { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '💰', indent: true },
+        ],
+      },
+      {
+        name: 'GTM Weekly',
+        description: 'GTM weekly reports by channel',
+        icon: '📰',
+        children: [
+          { name: 'GTM Week 18 — OR', description: 'OR 5-Channel Weekly Report | W18 (2026-05-03)', url: '/gtm-weekly/or/w18/', icon: '📋' },
         ],
       },
       {

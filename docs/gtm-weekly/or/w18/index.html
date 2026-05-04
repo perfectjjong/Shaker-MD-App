@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GTM Week 18 — OR 5-Channel Weekly Report</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f172a;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* ── Header ── */
+    .page-header {
+      background: linear-gradient(135deg, #0f172a 0%, #1a2744 60%, #0f2d2d 100%);
+      border-bottom: 1px solid #1e3a5f;
+      padding: 36px 24px 28px;
+      text-align: center;
+    }
+    .page-header h1 {
+      font-size: clamp(18px, 4vw, 26px);
+      font-weight: 700;
+      color: #f8fafc;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .page-header h1 span { color: #10b981; }
+    .page-header .subtitle {
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
+    .page-header .note {
+      display: inline-block;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* ── Layout ── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    /* ── Section headers ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 32px 0 14px;
+    }
+    .section-label .badge {
+      background: #10b981;
+      color: #0f172a;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+    .section-label .title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #1e293b;
+    }
+
+    /* ── Table wrapper ── */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 10px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      min-width: 700px;
+    }
+    thead tr th {
+      background: #0f2233;
+      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 10px 12px;
+      text-align: right;
+      border-bottom: 1px solid #1e3a5f;
+      white-space: nowrap;
+    }
+    thead tr th:first-child { text-align: left; }
+    thead tr.sub-header th {
+      background: #0d1f30;
+      font-size: 10px;
+      color: #64748b;
+      padding: 6px 12px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #162032;
+      transition: background 0.15s;
+    }
+    tbody tr:hover { background: #243044; }
+    tbody tr.total-row {
+      background: #162a3a;
+      border-top: 2px solid #2dd4bf;
+      border-bottom: none;
+    }
+    tbody tr.total-row td { font-weight: 700; color: #2dd4bf; }
+
+    td {
+      padding: 10px 12px;
+      text-align: right;
+      font-size: 13px;
+      color: #cbd5e1;
+      white-space: nowrap;
+    }
+    td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    /* WOS color logic */
+    .wos-red   { color: #ef4444; font-weight: 700; }
+    .wos-yellow { color: #f59e0b; font-weight: 700; }
+    .wos-green  { color: #10b981; font-weight: 700; }
+
+    /* AR / DSO color logic */
+    .cl-red    { color: #ef4444; font-weight: 700; }
+    .ovd-red   { color: #ef4444; font-weight: 700; }
+    .na-grey   { color: #64748b; }
+
+    /* ── Commentary cards ── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 18px 20px;
+      border-left: 4px solid transparent;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+    .card.green  { border-color: #10b981; }
+    .card.yellow { border-color: #f59e0b; }
+    .card.orange { border-color: #f97316; }
+    .card.red    { border-color: #ef4444; }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #f8fafc;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-status {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .status-green  { background: rgba(16,185,129,0.15); color: #10b981; }
+    .status-yellow { background: rgba(245,158,11,0.15);  color: #f59e0b; }
+    .status-orange { background: rgba(249,115,22,0.15);  color: #f97316; }
+    .status-red    { background: rgba(239,68,68,0.15);   color: #ef4444; }
+
+    .card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .card ul li {
+      font-size: 12.5px;
+      color: #94a3b8;
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+    }
+    .card ul li::before {
+      content: '·';
+      position: absolute;
+      left: 0;
+      color: #4b6280;
+    }
+    .card-action {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: rgba(45,212,191,0.07);
+      border: 1px solid rgba(45,212,191,0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      color: #2dd4bf;
+      font-weight: 600;
+    }
+    .card-action::before { content: '▶ '; font-size: 10px; }
+
+    /* ── Priority list ── */
+    .priority-card {
+      background: #1e293b;
+      border-radius: 10px;
+      padding: 20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+    }
+    .priority-list {
+      list-style: none;
+      counter-reset: priority;
+    }
+    .priority-list li {
+      counter-increment: priority;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 11px 0;
+      border-bottom: 1px solid #162032;
+      font-size: 13px;
+      color: #cbd5e1;
+    }
+    .priority-list li:last-child { border-bottom: none; }
+    .priority-list li::before {
+      content: counter(priority);
+      flex-shrink: 0;
+      width: 26px;
+      height: 26px;
+      background: linear-gradient(135deg, #10b981, #2dd4bf);
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 12px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .priority-list li .channel-tag {
+      display: inline-block;
+      background: #0f2233;
+      border: 1px solid #1e3a5f;
+      border-radius: 4px;
+      padding: 0 7px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    /* ── Footer nav ── */
+    .footer-nav {
+      margin-top: 44px;
+      text-align: center;
+    }
+    .footer-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #10b981;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 20px;
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 8px;
+      transition: background 0.2s;
+    }
+    .footer-nav a:hover { background: rgba(16,185,129,0.1); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .page-header { padding: 24px 16px 20px; }
+      .cards-grid  { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════ -->
+<div class="page-header">
+  <h1>GTM <span>Week 18</span> — OR 5-Channel Weekly Report</h1>
+  <p class="subtitle">Reporting Period: W18 (2026-05-03)&nbsp;&nbsp;|&nbsp;&nbsp;SO Avg Basis: W15–W18 (4-Week)</p>
+  <span class="note">Sets basis &nbsp;/&nbsp; Accessories excluded &nbsp;|&nbsp; WOS(Stock): channel stock only &nbsp;|&nbsp; WOS(+OUD): channel stock + LG warehouse</span>
+</div>
+
+<div class="container">
+
+  <!-- ═════════════════════ SELL STATUS ═════════════════════ -->
+  <div class="section-label">
+    <span class="badge">Sell Status</span>
+    <span class="title">Channel Sell-Thru / Stock / WOS Summary</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2" style="text-align:left; vertical-align:bottom;">Channel</th>
+          <th>Sell-Thru</th>
+          <th>Sell-Out</th>
+          <th></th>
+          <th>Ch. Stock</th>
+          <th>OUD</th>
+          <th>WOS</th>
+          <th>WOS</th>
+          <th>4W Avg</th>
+        </tr>
+        <tr class="sub-header">
+          <th>('26 Jan 1 ~ May 03)</th>
+          <th>(W1–W18)</th>
+          <th>ST%</th>
+          <th>(W18)</th>
+          <th>(May 02)</th>
+          <th>(Stock)</th>
+          <th>(+OUD)</th>
+          <th>SO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- eXtra -->
+        <tr>
+          <td>eXtra</td>
+          <td>22,857</td>
+          <td>11,089</td>
+          <td>48.5%</td>
+          <td>17,378</td>
+          <td>98</td>
+          <td class="wos-green">17.4w</td>
+          <td class="wos-green">17.5w</td>
+          <td>999</td>
+        </tr>
+        <!-- Al Manea -->
+        <tr>
+          <td>Al Manea</td>
+          <td>3,909</td>
+          <td>4,417</td>
+          <td>113.0%</td>
+          <td>1,535</td>
+          <td>18</td>
+          <td class="wos-yellow">4.5w</td>
+          <td class="wos-yellow">4.5w</td>
+          <td>344</td>
+        </tr>
+        <!-- SWS -->
+        <tr>
+          <td>SWS</td>
+          <td>2,727</td>
+          <td>1,686</td>
+          <td>61.8%</td>
+          <td>318</td>
+          <td>1,414</td>
+          <td class="wos-red">2.8w</td>
+          <td class="wos-green">15.4w</td>
+          <td>113</td>
+        </tr>
+        <!-- Black Box -->
+        <tr>
+          <td>Black Box</td>
+          <td>2,503</td>
+          <td>1,375</td>
+          <td>54.9%</td>
+          <td>571</td>
+          <td>1,388</td>
+          <td class="wos-green">6.1w</td>
+          <td class="wos-green">21.0w</td>
+          <td>93</td>
+        </tr>
+        <!-- Al Khunizan -->
+        <tr>
+          <td>Al Khunizan</td>
+          <td>31</td>
+          <td>466</td>
+          <td class="na-grey">N/A</td>
+          <td>849</td>
+          <td>0</td>
+          <td class="wos-green" style="color:#ef4444;">44.1w</td>
+          <td class="wos-green" style="color:#ef4444;">44.1w</td>
+          <td>19</td>
+        </tr>
+        <!-- Total -->
+        <tr class="total-row">
+          <td>OR Total</td>
+          <td>32,027</td>
+          <td>19,033</td>
+          <td>59.4%</td>
+          <td>20,651</td>
+          <td>2,918</td>
+          <td>13.2w</td>
+          <td>15.0w</td>
+          <td>1,568</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═════════════════════ AR / DSO ═════════════════════ -->
+  <div class="section-label">
+    <span class="badge">AR / DSO</span>
+    <span class="title">Accounts Receivable &amp; Days Sales Outstanding</span>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align:left;">Channel</th>
+          <th>CL (M)</th>
+          <th>AR (M)</th>
+          <th>CL Util.</th>
+          <th>OVD%</th>
+          <th>OVD 60+%</th>
+          <th>Terms</th>
+          <th>DSO Simple</th>
+          <th>DSO Aged</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- eXtra -->
+        <tr>
+          <td>eXtra</td>
+          <td>101.5</td>
+          <td>74.11</td>
+          <td>73%</td>
+          <td>0.0%</td>
+          <td>0.0%</td>
+          <td>120d</td>
+          <td>141.2d <span style="color:#64748b;font-size:11px;">(+21d)</span></td>
+          <td>15.0d</td>
+        </tr>
+        <!-- Al Manea -->
+        <tr>
+          <td>Al Manea</td>
+          <td>19.1</td>
+          <td>12.35</td>
+          <td>65%</td>
+          <td>2.8%</td>
+          <td>1.9%</td>
+          <td>90d</td>
+          <td>133.2d <span style="color:#64748b;font-size:11px;">(+43d)</span></td>
+          <td>16.7d</td>
+        </tr>
+        <!-- SWS -->
+        <tr>
+          <td>SWS</td>
+          <td>12.2</td>
+          <td>7.58</td>
+          <td>62%</td>
+          <td>2.9%</td>
+          <td>0.0%</td>
+          <td>90d</td>
+          <td>131.9d <span style="color:#64748b;font-size:11px;">(+42d)</span></td>
+          <td>15.9d</td>
+        </tr>
+        <!-- Black Box -->
+        <tr>
+          <td>Black Box</td>
+          <td>7.5</td>
+          <td>7.21</td>
+          <td class="cl-red">96%</td>
+          <td>0.0%</td>
+          <td>0.0%</td>
+          <td>90d</td>
+          <td>145.5d <span style="color:#64748b;font-size:11px;">(+56d)</span></td>
+          <td>15.0d</td>
+        </tr>
+        <!-- Al Khunizan -->
+        <tr>
+          <td>Al Khunizan</td>
+          <td>6.0</td>
+          <td>1.84</td>
+          <td>31%</td>
+          <td class="ovd-red">62.0%</td>
+          <td class="ovd-red">61.5%</td>
+          <td>90d</td>
+          <td class="na-grey">N/A</td>
+          <td class="ovd-red">61.1d</td>
+        </tr>
+        <!-- Total -->
+        <tr class="total-row">
+          <td>OR Total</td>
+          <td>146.3</td>
+          <td>103.09</td>
+          <td>70%</td>
+          <td>1.7%</td>
+          <td>1.3%</td>
+          <td>—</td>
+          <td>142.6d</td>
+          <td>16.1d</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═════════════════════ CHANNEL COMMENTARY ═════════════════════ -->
+  <div class="section-label">
+    <span class="badge">Commentary</span>
+    <span class="title">Channel-by-Channel Assessment</span>
+  </div>
+
+  <div class="cards-grid">
+
+    <!-- eXtra -->
+    <div class="card green">
+      <div class="card-title">
+        eXtra
+        <span class="card-status status-green">HEALTHY</span>
+      </div>
+      <ul>
+        <li>ST% 48.5% YTD. W18 Sell-Out surged to 2,007 sets, lifting 4W avg to 999 sets/week.</li>
+        <li>Ch. Stock 17,378 sets (WOS 17.4w). AR SAR 74.1M, zero overdue (DSO Aged 15.0d).</li>
+      </ul>
+      <div class="card-action">Monitor W19 SO to confirm W18 spike is sustained trend.</div>
+    </div>
+
+    <!-- Al Manea -->
+    <div class="card yellow">
+      <div class="card-title">
+        Al Manea
+        <span class="card-status status-yellow">WATCH</span>
+      </div>
+      <ul>
+        <li>ST% 113.0% YTD — only channel exceeding 100%, selling down prior-year stock. W18 SO spiked to 689 sets.</li>
+        <li>Ch. Stock 1,535 sets | WOS(Stock) 4.5w — approaching shortage (&lt;4w threshold). OUD near zero (18 sets).</li>
+        <li>AR SAR 12.4M, CL headroom SAR 6.7M. DSO Aged 16.7d — AR quality healthy.</li>
+      </ul>
+      <div class="card-action">Initiate replenishment discussion before stock falls below 4-week cover.</div>
+    </div>
+
+    <!-- SWS -->
+    <div class="card yellow">
+      <div class="card-title">
+        SWS
+        <span class="card-status status-yellow">WATCH — OUD Delivery Urgent</span>
+      </div>
+      <ul>
+        <li>Ch. Stock 318 sets | WOS(Stock) <span style="color:#ef4444;font-weight:700;">2.8w</span> — BELOW 4w threshold.</li>
+        <li>OUD 1,414 sets sitting in LG warehouse | WOS(+OUD) 15.4w. Immediate delivery extends coverage to ~15 weeks.</li>
+        <li>Zero OVD 60+. DSO Aged 15.9d — AR quality healthy.</li>
+      </ul>
+      <div class="card-action">URGENT — Push logistics to deliver OUD 1,414 sets this week.</div>
+    </div>
+
+    <!-- Black Box -->
+    <div class="card orange">
+      <div class="card-title">
+        Black Box
+        <span class="card-status status-orange">CAUTION</span>
+      </div>
+      <ul>
+        <li>CL Util. <span style="color:#ef4444;font-weight:700;">96%</span> (SAR 0.3M headroom). OUD surged +1,024 sets this week.</li>
+        <li>At current SO pace (93 sets/week), total inventory clears in ~21 weeks, exceeding 90d credit terms.</li>
+        <li>No overdue currently (DSO Aged 15.0d), but SO acceleration critical.</li>
+      </ul>
+      <div class="card-action">Hold new sell-thru. If SO &lt; 80 sets/week by W20, escalate AR recovery plan.</div>
+    </div>
+
+    <!-- Al Khunizan -->
+    <div class="card red">
+      <div class="card-title">
+        Al Khunizan
+        <span class="card-status status-red">CRITICAL</span>
+      </div>
+      <ul>
+        <li>YTD Sell-Thru only 31 sets (net negative from returns). 4W avg SO 19 sets/week — effectively dormant.</li>
+        <li>Ch. Stock WOS 44.1w (~11 months to clear). Zero OUD.</li>
+        <li>OVD <span style="color:#ef4444;font-weight:700;">62.0%</span>, OVD 60+ SAR 1.13M (61.5% of AR). DSO Aged <span style="color:#ef4444;font-weight:700;">61.1d</span> — worst in channel.</li>
+      </ul>
+      <div class="card-action">Immediate AR recovery meeting. Secure written repayment for SAR 1.13M. No new sell-thru.</div>
+    </div>
+
+  </div><!-- /cards-grid -->
+
+  <!-- ═════════════════════ KEY PRIORITIES ═════════════════════ -->
+  <div class="section-label">
+    <span class="badge">Priorities</span>
+    <span class="title">Key Actions This Week</span>
+  </div>
+
+  <div class="priority-card">
+    <ol class="priority-list">
+      <li>
+        <span><span class="channel-tag">SWS</span> Deliver OUD 1,414 sets from LG warehouse — WOS(Stock) at <span style="color:#ef4444;font-weight:700;">2.8w</span></span>
+      </li>
+      <li>
+        <span><span class="channel-tag">Al Manea</span> Initiate replenishment — WOS(Stock) 4.5w, nearing shortage</span>
+      </li>
+      <li>
+        <span><span class="channel-tag">Black Box</span> Hold new sell-thru — CL Util. <span style="color:#ef4444;font-weight:700;">96%</span>, monitor SO vs. 90d terms</span>
+      </li>
+      <li>
+        <span><span class="channel-tag">Al Khunizan</span> Enforce AR recovery — OVD 60+ SAR 1.13M, secure repayment plan</span>
+      </li>
+      <li>
+        <span><span class="channel-tag">eXtra</span> Confirm W19 SO sustains W18 momentum (2,007 sets spike)</span>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ═════════════════════ FOOTER ═════════════════════ -->
+  <div class="footer-nav">
+    <a href="/">&#8592; Back to Dashboard</a>
+  </div>
+
+</div><!-- /container -->
+</body>
+</html>
