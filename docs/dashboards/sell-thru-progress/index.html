@@ -1999,10 +1999,11 @@ function fhGetAccounts(){
     var cache=window._fhAmCache&&window._fhAmCache[sid];
     var dso_s=cache?cache.dso_simple:null;
     var dso_a=cache?cache.dso_aged:null;
+    var x_s=dso_s;
+    var x_a=dso_a;
     var bal=a.bal||0, ovd=a.ovd||0;
     var ovd_rate=bal>0?(ovd/bal*100):0;
-    var no_rev=(cache&&cache.v26<=0&&bal>0); // 매출 없음/마이너스 + AR 잔액 있음
-    // no_rev 계정: DSO=null이지만 차트 포함 — X는 renderFHChart에서 우측 끝에 배치
+    var no_rev=(cache&&cache.v26<=0&&bal>0);
     accts.push({
       id:sid, name:a.nm||sid, cls:cls, pt:pt,
       cl:a.cl||0, bal:bal, ovd:ovd, ovd_rate:ovd_rate,
