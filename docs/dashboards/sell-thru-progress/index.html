@@ -2005,10 +2005,11 @@ function fhBuildGradeFilter(){
 
 function fhGetAccounts(){
   if(!RAW) return [];
-  var CLS_MAP2={}, PT_MAP={};
+  var CLS_MAP2={}, PT_MAP={}, NAME_MAP={};
   (RAW.master||[]).forEach(function(m){
     var mid=String(int_id(m.id));
     CLS_MAP2[mid]=m.classification||'Unclassified';
+    NAME_MAP[mid]=m.name||'';
     if(m.pt) PT_MAP[mid]=m.pt;
   });
   // Sell-Thru KPI와 동일: txn에 거래 기록 있는 계정만 포함
@@ -2046,7 +2047,7 @@ function fhGetAccounts(){
     var ovd_rate=bal>0?(ovd/bal*100):0;
     var no_rev=(cache&&cache.v26<=0&&bal>0);
     accts.push({
-      id:sid, name:a.nm||sid, cls:cls, pt:pt,
+      id:sid, name:a.nm||NAME_MAP[sid]||sid, cls:cls, pt:pt,
       cl:a.cl||0, bal:bal, ovd:ovd, ovd_rate:ovd_rate,
       o1:a.o1||0, o2:a.o2||0, o3:a.o3||0,
       dso_simple:dso_s, dso_aged:dso_a,
@@ -2383,17 +2384,33 @@ function fhShowTrend(accountId, accountName){
       var a=s.accts&&s.accts[accountId];
       if(!a) return;
       var bal=a.bal||0, ovd=a.ovd||0;
-      dates.push(s.date.substring(5)); // MM-DD
+      dates.push(s.date.substring(5));
       ovdRates.push(bal>0?parseFloat((ovd/bal*100).toFixed(1)):0);
       bals.push(Math.round(bal/1000));
       ovds.push(Math.round(ovd/1000));
     });
+
+    // ar.current가 히스토리 마지막보다 최신이면 current 포인트 추가 (불일치 방지)
+    var curSnap=RAW&&RAW.ar&&RAW.ar.current;
+    var curDate=curSnap?curSnap.date:'';
+    var lastHistDate=snaps.length?snaps[snaps.length-1].date:'';
+    if(curSnap&&curDate&&curDate!==lastHistDate){
+      var ca=curSnap.accts&&curSnap.accts[accountId];
+      if(ca){
+        var bal=ca.bal||0, ovd=ca.ovd||0;
+        dates.push(curDate.substring(5)+'★');
+        ovdRates.push(bal>0?parseFloat((ovd/bal*100).toFixed(1)):0);
+        bals.push(Math.round(bal/1000));
+        ovds.push(Math.round(ovd/1000));
+      }
+    }
+
     if(dates.length===0){
       document.getElementById('fhTrendPanel').style.display='none';
       return;
     }
     document.getElementById('fhTrendPanel').style.display='';
-    document.getElementById('fhTrendTitle').textContent='Trend — '+accountName+' ('+dates[0]+' ~ '+dates[dates.length-1]+')';
+    document.getElementById('fhTrendTitle').textContent='Trend — '+accountName+' ('+dates[0].replace('★','')+' ~ '+dates[dates.length-1]+')';
 
     _fhTrendCharts.forEach(function(c){try{c.destroy();}catch(e){}});
     _fhTrendCharts=[];
