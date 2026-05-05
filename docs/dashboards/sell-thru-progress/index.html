@@ -1112,7 +1112,7 @@ function renderTopTable(){
   // Sell-Thru aggregation
   data.forEach(function(r){
     var id=r[C.ID],yr=r[C.Y];
-    if(!am[id])am[id]={id:id,nm:r[C.NM],tm:r[C.TM],st:r[C.ST],v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
+    if(!am[id])am[id]={id:id,nm:r[C.NM],tm:r[C.TM],st:r[C.ST],v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
     if(yr===2024){am[id].v24+=r[C.VL];am[id].q24+=r[C.QT];}
     else if(yr===2025){am[id].v25+=r[C.VL];am[id].q25+=r[C.QT];}
     else if(yr===2026){am[id].v26+=r[C.VL];am[id].q26+=r[C.QT];}
@@ -1136,7 +1136,7 @@ function renderTopTable(){
       am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
                opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
-               ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
+               ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
     });
   })();
   // OUD merge (category-aware)
@@ -1191,7 +1191,7 @@ function renderTopTable(){
         am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
                  opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
-                 ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
+                 ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
       });
     });
   }
@@ -1225,7 +1225,7 @@ function renderTopTable(){
       var a=AR_SNAP.accts[id];
       if(am[nid]){
         // Account in filtered sell-thru → merge AR data
-        am[nid].ar_bal=a.bal||0; am[nid].ar_ovd=a.ovd||0;
+        am[nid].ar_cl=a.cl||0; am[nid].ar_bal=a.bal||0; am[nid].ar_ovd=a.ovd||0;
         am[nid].ar_o1=a.o1||0; am[nid].ar_o2=a.o2||0; am[nid].ar_o3=a.o3||0;
       } else if(!ACCT_TEAM[nid] && SEL.div.has('Others')){
         // Truly AR-only: no sell-thru history at all → add as "AR Only"
@@ -1233,7 +1233,7 @@ function renderTopTable(){
         am[nid]={id:nid,nm:a.nm||'',tm:'AR Only',st:'-',v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,rem_v:0,rem_q:0,opn_v:0,opn_q:0,
                  oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
-                 ar_bal:a.bal||0,ar_ovd:a.ovd||0,ar_o1:a.o1||0,ar_o2:a.o2||0,ar_o3:a.o3||0,
+                 ar_cl:a.cl||0,ar_bal:a.bal||0,ar_ovd:a.ovd||0,ar_o1:a.o1||0,ar_o2:a.o2||0,ar_o3:a.o3||0,
                  col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
       }
       // else: sell-thru account filtered out by current filters → skip (don't add)
@@ -1251,7 +1251,7 @@ function renderTopTable(){
         // Respects div filter: maps to Others division
         am[nid]={id:nid,nm:COL_SNAP.accts[id].nm||'',tm:'AR Only',st:'-',v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
                  pgi_v:0,pgi_q:0,rem_v:0,rem_q:0,opn_v:0,opn_q:0,
-                 oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,
+                 oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,
                  col_mtd:COL_SNAP.accts[id].mtd||0,col_ytd:COL_SNAP.accts[id].ytd||0,mar_tq:0,mar_tv:0};
       }
     });
@@ -1271,7 +1271,7 @@ function renderTopTable(){
       var nm=itgt.nm||String(id),tm='IR',st='New';
       for(var mi=0;mi<_ml.length;mi++){if(+_ml[mi].id===nid){nm=_ml[mi].name||nm;tm=_ml[mi].team||tm;st=_ml[mi].status||st;break;}}
       if(!SEL.team.has(tm)||!SEL.div.has(getDiv(tm))||!SEL.status.has(st)||!SEL.cls.has(CLS_MAP[String(nid)]||'Unclassified')) return; // team/div/status/cls filtered out
-      am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:itgt.mar_tq||0,mar_tv:itgt.mar_tv||0};
+      am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:itgt.mar_tq||0,mar_tv:itgt.mar_tv||0};
     });
   }
   // [FIX] Ensure ALL RSM FCST accounts appear in table regardless of date filter
@@ -1296,7 +1296,7 @@ function renderTopTable(){
     am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
              pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
              opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
-             ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
+             ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
   });}
   // am-level cls filter: accounts injected via non-txn paths or year-agnostic txn paths
   // must be cls-filtered here so table account count matches the Account dropdown
@@ -1368,6 +1368,7 @@ function getSortCols(){
     cols.push({key:'oud_d',label:'OUD \u0394',get:function(a){return isVal?a.oud_dv:a.oud_dq;},type:'num',grp:'oud'});
   }
   if(hasAr){
+    cols.push({key:'cr_lim',label:'Cr.Limit',get:function(a){return a.ar_cl;},type:'num',grp:'cr'});
     cols.push({key:'ar_bal',label:'Balance',get:function(a){return a.ar_bal;},type:'num',grp:'ar'});
     cols.push({key:'ar_ovd',label:'Overdue',get:function(a){return a.ar_ovd;},type:'num',grp:'ar'});
     cols.push({key:'ar_o1',label:'OVD 0-30',get:function(a){return a.ar_o1;},type:'num',grp:'ar'});
@@ -1426,6 +1427,7 @@ function buildTable(arr){
   if(hasRemain) h+='<th colspan="'+(hasRemPrev?2:1)+'" class="col-group g-remain">REMAIN ('+unitLabel+')</th>';
   if(hasOpen) h+='<th colspan="'+(hasOpnPrev?2:1)+'" class="col-group g-open">OPEN ('+unitLabel+')</th>';
   if(hasOud) h+='<th colspan="2" class="col-group g-oud">OUD</th>';
+  if(hasAr) h+='<th colspan="1" class="col-group" style="background:#1e1a4a;color:#818cf8;font-weight:700;">CREDIT LIMIT</th>';
   if(hasAr) h+='<th colspan="5" class="col-group g-ar">AR / OVERDUE (SAR)</th>';
   if(hasCol) h+='<th colspan="2" class="col-group g-col">COLLECTION (SAR)</th>';
   if(hasAr) h+='<th colspan="2" class="col-group g-dso">DSO (days)</th>';
@@ -1452,6 +1454,8 @@ function buildTable(arr){
     h+='<th class="num" style="'+thStyle+'color:#fbbf24;" onclick="sortTable(\'oud_d\')">\u0394'+arrow('oud_d')+'</th>';
   }
   if(hasAr){
+    var crCol=cols.find(function(cc){return cc.key==='cr_lim';});
+    h+='<th class="num" style="'+thStyle+'color:#818cf8;" onclick="sortTable(\'cr_lim\')">'+crCol.label+arrow('cr_lim')+'</th>';
     ['ar_bal','ar_ovd','ar_o1','ar_o2','ar_o3'].forEach(function(k){
       var c=cols.find(function(cc){return cc.key===k;});
       var sColor=k==='ar_bal'?'color:#60a5fa;':'color:#f87171;';
@@ -1487,6 +1491,7 @@ function buildTable(arr){
       h+='<td class="num" style="color:'+dColor+'">'+(odv?(odv>0?'+':'')+fmtF(odv):'-')+'</td>';
     }
     if(hasAr){
+      h+='<td class="num" data-col="cr_lim" data-val="'+(a.ar_cl||0)+'" style="color:#818cf8">'+(a.ar_cl?fmtF(a.ar_cl):'-')+'</td>';
       h+='<td class="num" data-col="ar_bal" data-val="'+(a.ar_bal||0)+'" style="color:#60a5fa">'+(a.ar_bal?fmtF(a.ar_bal):'-')+'</td>';
       h+='<td class="num" data-col="ar_ovd" data-val="'+(a.ar_ovd||0)+'" style="color:#ef4444">'+(a.ar_ovd?fmtF(a.ar_ovd):'-')+'</td>';
       h+='<td class="num" data-col="ar_o1" data-val="'+(a.ar_o1||0)+'" style="color:#fbbf24">'+(a.ar_o1?fmtF(a.ar_o1):'-')+'</td>';
@@ -1505,7 +1510,7 @@ function buildTable(arr){
   });
   h+='</tbody>';
   // Build tfoot totals from arr
-  var tot={rsm:0,v24:0,v25:0,v26:0,pgi:0,rem:0,opn:0,oud:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,v26_ytd:0};
+  var tot={rsm:0,v24:0,v25:0,v26:0,pgi:0,rem:0,opn:0,oud:0,ar_cl:0,ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,v26_ytd:0};
   var rsmByTm={};
   arr.forEach(function(a){
     var rv=_rsmGet(a.id)||0;
@@ -1516,7 +1521,7 @@ function buildTable(arr){
     if(hasRemain) tot.rem+=(isVal?a.rem_v:a.rem_q)||0;
     if(hasOpen) tot.opn+=(isVal?a.opn_v:a.opn_q)||0;
     if(hasOud) tot.oud+=(isVal?a.oud_v:a.oud_q)||0;
-    if(hasAr){tot.ar_bal+=a.ar_bal||0;tot.ar_ovd+=a.ar_ovd||0;tot.ar_o1+=a.ar_o1||0;tot.ar_o2+=a.ar_o2||0;tot.ar_o3+=a.ar_o3||0;tot.v26_ytd+=a.v26_ytd||0;}
+    if(hasAr){tot.ar_cl+=a.ar_cl||0;tot.ar_bal+=a.ar_bal||0;tot.ar_ovd+=a.ar_ovd||0;tot.ar_o1+=a.ar_o1||0;tot.ar_o2+=a.ar_o2||0;tot.ar_o3+=a.ar_o3||0;tot.v26_ytd+=a.v26_ytd||0;}
     if(hasCol){tot.col_mtd+=a.col_mtd||0;tot.col_ytd+=a.col_ytd||0;}
   });
   _tblRsmTotal=tot.rsm;
@@ -1534,6 +1539,7 @@ function buildTable(arr){
   if(hasOpen){ h+='<td '+tfN+'color:#0ea5e9;" data-col="opn">'+fmtF(tot.opn)+'</td>'; if(hasOpnPrev) h+='<td '+tfN+'color:#64748b;">-</td>'; }
   if(hasOud){ h+='<td '+tfN+'color:#fbbf24;" data-col="oud">'+fmtF(tot.oud)+'</td><td '+tfN+'color:#64748b;">-</td>'; }
   if(hasAr){
+    h+='<td '+tfN+'color:#818cf8;" data-col="cr_lim">'+fmtF(tot.ar_cl)+'</td>';
     h+='<td '+tfN+'color:#60a5fa;" data-col="ar_bal">'+fmtF(tot.ar_bal)+'</td>';
     h+='<td '+tfN+'color:#ef4444;" data-col="ar_ovd">'+fmtF(tot.ar_ovd)+'</td>';
     h+='<td '+tfN+'color:#fbbf24;" data-col="ar_o1">'+fmtF(tot.ar_o1)+'</td>';
@@ -1592,7 +1598,7 @@ function exportExcel(){
   if(hasRemain){ header.push('Remaining_'+label); if(hasRemPrev) header.push('Remain_Delta'); }
   if(hasOpen){ header.push('Open_'+label); if(hasOpnPrev) header.push('Open_Delta'); }
   if(hasOud){ header.push('OUD_'+label,'OUD_Delta_'+label); }
-  if(hasAr){ header.push('AR_Balance','AR_Overdue','OVD_0-30','OVD_30-60','OVD_60+','DSO_Simple','DSO_Aged'); }
+  if(hasAr){ header.push('Credit_Limit','AR_Balance','AR_Overdue','OVD_0-30','OVD_30-60','OVD_60+','DSO_Simple','DSO_Aged'); }
   if(hasCol){ header.push('Col_MTD','Col_YTD'); }
   var sq=document.getElementById('tblSearch'), q=(sq?sq.value:'').toLowerCase();
   var filtered=q?_tblData.filter(function(a){return(a.nm||'').toLowerCase().includes(q);}):_tblData;
@@ -1605,7 +1611,7 @@ function exportExcel(){
     if(hasRemain){ row.push(Math.round(isVal?a.rem_v:a.rem_q)); if(hasRemPrev) row.push(Math.round(isVal?a.rem_dv:a.rem_dq)); }
     if(hasOpen){ row.push(Math.round(isVal?a.opn_v:a.opn_q)); if(hasOpnPrev) row.push(Math.round(isVal?a.opn_dv:a.opn_dq)); }
     if(hasOud){ row.push(Math.round(isVal?a.oud_v:a.oud_q),Math.round(isVal?a.oud_dv:a.oud_dq)); }
-    if(hasAr){ row.push(Math.round(a.ar_bal),Math.round(a.ar_ovd),Math.round(a.ar_o1),Math.round(a.ar_o2),Math.round(a.ar_o3)); row.push(a.dso_simple!=null?a.dso_simple.toFixed(1):'',a.dso_aged!=null?a.dso_aged.toFixed(1):''); }
+    if(hasAr){ row.push(Math.round(a.ar_cl),Math.round(a.ar_bal),Math.round(a.ar_ovd),Math.round(a.ar_o1),Math.round(a.ar_o2),Math.round(a.ar_o3)); row.push(a.dso_simple!=null?a.dso_simple.toFixed(1):'',a.dso_aged!=null?a.dso_aged.toFixed(1):''); }
     if(hasCol){ row.push(Math.round(a.col_mtd),Math.round(a.col_ytd)); }
     csv+=row.join(',')+'\n';
   });
