@@ -660,7 +660,10 @@ function updateWOS(){
         if(s>0&&w&&w[field]!=null&&w[field]>0){tStock+=s;tSO+=s/w[field]}else{tStock+=s}
       });
     });
-    return tSO>0?Math.round(tStock/tSO*10)/10:null;
+    if(tSO>0)return Math.round(tStock/tSO*10)/10;
+    let fbStk=0,fbSO=0;
+    activeChannels.forEach(ch=>{const cd=sd.channels[ch];if(!cd)return;const wbw=(cd.wos_by_week||{})[week];if(!wbw)return;const stk=(cd.total_by_week||{})[week]||0;const v=wbw['wos_'+field];if(stk>0&&v!=null&&v>0){fbStk+=stk;fbSO+=stk/v}});
+    return fbSO>0?Math.round(fbStk/fbSO*10)/10:null;
   }
   // Find p8Week from filtered models
   let p8Week=latestW;
