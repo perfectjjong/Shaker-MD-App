@@ -287,6 +287,18 @@ tfoot .fz{background:#0f172a}
   <div style="overflow-x:auto;max-height:400px;overflow-y:auto;"><table id="fhTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
 </div>
 
+<!-- FH Trend Panel -->
+<div id="fhTrendPanel" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:24px;display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <h3 id="fhTrendTitle" style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Trend</h3>
+    <button onclick="fhCloseTrend()" style="padding:3px 10px;background:#334155;color:#94a3b8;border:none;border-radius:5px;cursor:pointer;font-size:11px;">✕ Close</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div><div style="font-size:10px;color:#64748b;margin-bottom:6px;">Overdue Rate (%)</div><div id="fhTrendChartOvdWrap" style="height:180px;"></div></div>
+    <div><div style="font-size:10px;color:#64748b;margin-bottom:6px;">AR Balance vs Overdue (SAR)</div><div id="fhTrendChartBalWrap" style="height:180px;"></div></div>
+  </div>
+</div>
+
 </div><!-- /fhTab -->
 
 <div id="data-loading" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0f172a;z-index:9999;display:flex;align-items:center;justify-content:center"><div style="text-align:center;color:#94a3b8"><div style="font-size:18px;font-weight:600;margin-bottom:8px">Loading Dashboard Data...</div><div style="font-size:12px">Please wait</div><div style="margin-top:16px;width:40px;height:40px;border:3px solid #334155;border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite;margin:16px auto 0"></div></div></div><style>@keyframes spin{to{transform:rotate(360deg)}}</style>
@@ -2169,6 +2181,7 @@ function renderFHChart(accts){
           _fhSelAccount=(_fhSelAccount===a.id)?null:a.id;
           renderFHTable(_fhSelAccount?[a]:fhGetAccounts());
           document.getElementById('fhTableTitle').textContent=_fhSelAccount?'— '+a.name:'';
+          if(_fhSelAccount) fhShowTrend(a.id, a.name); else fhCloseTrend();
         }
       },
       plugins:{
@@ -2287,6 +2300,8 @@ function fhRowClick(sid){
   var subset=_fhSelAccount?accts.filter(function(a){return a.id===sid;}):accts;
   document.getElementById('fhTableTitle').textContent=_fhSelAccount?'— '+(subset[0]?subset[0].name:''):'';
   renderFHTable(subset);
+  if(_fhSelAccount&&subset[0]) fhShowTrend(sid, subset[0].name);
+  else fhCloseTrend();
 }
 
 function fhClearSelection(){
@@ -2300,7 +2315,75 @@ function fhReset(){
   _fhSelAccount=null;
   _fhDsoMode='simple';
   document.getElementById('fhTableTitle').textContent='';
+  fhCloseTrend();
   renderFH();
+}
+
+// ======== FH TREND ========
+var _arHistory=null;
+var _fhTrendCharts=[];
+
+function fhLoadHistory(cb){
+  if(_arHistory){cb(_arHistory);return;}
+  fetch('ar_history.json').then(function(r){return r.json();}).then(function(d){
+    _arHistory=d; cb(d);
+  }).catch(function(){ _arHistory={snapshots:[]}; cb(_arHistory); });
+}
+
+function fhShowTrend(accountId, accountName){
+  fhLoadHistory(function(hist){
+    var snaps=hist.snapshots||[];
+    var dates=[], ovdRates=[], bals=[], ovds=[];
+    snaps.forEach(function(s){
+      var a=s.accts&&s.accts[accountId];
+      if(!a) return;
+      var bal=a.bal||0, ovd=a.ovd||0;
+      dates.push(s.date.substring(5)); // MM-DD
+      ovdRates.push(bal>0?parseFloat((ovd/bal*100).toFixed(1)):0);
+      bals.push(Math.round(bal/1000));
+      ovds.push(Math.round(ovd/1000));
+    });
+    if(dates.length===0){
+      document.getElementById('fhTrendPanel').style.display='none';
+      return;
+    }
+    document.getElementById('fhTrendPanel').style.display='';
+    document.getElementById('fhTrendTitle').textContent='Trend — '+accountName+' ('+dates[0]+' ~ '+dates[dates.length-1]+')';
+
+    _fhTrendCharts.forEach(function(c){try{c.destroy();}catch(e){}});
+    _fhTrendCharts=[];
+
+    // Overdue Rate 차트
+    var w1=document.getElementById('fhTrendChartOvdWrap');
+    w1.innerHTML='<canvas id="fhTrendOvd"></canvas>';
+    _fhTrendCharts.push(new Chart(document.getElementById('fhTrendOvd').getContext('2d'),{
+      type:'line',
+      data:{labels:dates,datasets:[{label:'OVD Rate %',data:ovdRates,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,pointRadius:3,fill:true,tension:0.3}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},
+        scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#1e293b'}},
+          y:{ticks:{color:'#64748b',font:{size:9},callback:function(v){return v+'%';}},grid:{color:'#1e293b'}}}}
+    }));
+
+    // AR Balance vs Overdue 차트
+    var w2=document.getElementById('fhTrendChartBalWrap');
+    w2.innerHTML='<canvas id="fhTrendBal"></canvas>';
+    _fhTrendCharts.push(new Chart(document.getElementById('fhTrendBal').getContext('2d'),{
+      type:'line',
+      data:{labels:dates,datasets:[
+        {label:'AR Bal (K)',data:bals,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.08)',borderWidth:2,pointRadius:2,fill:true,tension:0.3},
+        {label:'Overdue (K)',data:ovds,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,0.08)',borderWidth:2,pointRadius:2,fill:true,tension:0.3}
+      ]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}},datalabels:{display:false}},
+        scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#1e293b'}},
+          y:{ticks:{color:'#64748b',font:{size:9},callback:function(v){return v+'K';}},grid:{color:'#1e293b'}}}}
+    }));
+  });
+}
+
+function fhCloseTrend(){
+  document.getElementById('fhTrendPanel').style.display='none';
+  _fhTrendCharts.forEach(function(c){try{c.destroy();}catch(e){}});
+  _fhTrendCharts=[];
 }
 </script>
 </body>
