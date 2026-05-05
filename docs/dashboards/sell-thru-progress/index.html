@@ -1911,10 +1911,41 @@ function fhSetDsoMode(mode){
 function fhBuildGradeFilter(){
   var bar=document.getElementById('fhGradeFilter');
   bar.innerHTML='';
+
+  // Grade별 계정 수 계산
+  var gradeCnt={};
+  if(RAW){
+    var CLS_MAP2={};
+    (RAW.master||[]).forEach(function(m){ CLS_MAP2[String(int_id(m.id))]=m.classification||'Unclassified'; });
+    var txnIds=new Set();
+    (RAW.txn||[]).forEach(function(t){ txnIds.add(String(int_id(t[C.ID]))); });
+    var ar=((RAW.ar||{}).current||{}).accts||{};
+    Object.keys(ar).forEach(function(sid){
+      if(!txnIds.has(sid)) return;
+      var cls=CLS_MAP2[sid]||'Unclassified';
+      gradeCnt[cls]=(gradeCnt[cls]||0)+1;
+    });
+  }
+
+  // All 버튼
+  var allSel=_fhSelGrades.size===FH_ALL_GRADES.length;
+  var allBtn=document.createElement('button');
+  allBtn.textContent='All';
+  allBtn.style.cssText='padding:3px 12px;border-radius:4px;border:1px solid '+(allSel?'#94a3b8':'#334155')+';background:'+(allSel?'#94a3b822':'transparent')+';color:'+(allSel?'#e2e8f0':'#475569')+';cursor:pointer;font-size:11px;font-weight:700;margin-right:4px;';
+  allBtn.onclick=function(){
+    _fhSelGrades=new Set(FH_ALL_GRADES);
+    _fhSelAccount=null;
+    fhBuildGradeFilter();
+    renderFH();
+  };
+  bar.appendChild(allBtn);
+
+  // Grade별 버튼
   FH_ALL_GRADES.forEach(function(g){
     var btn=document.createElement('button');
     var sel=_fhSelGrades.has(g);
-    btn.textContent=g;
+    var cnt=gradeCnt[g]||0;
+    btn.innerHTML=g+'<span style="font-size:9px;font-weight:400;opacity:0.8;margin-left:3px;">('+cnt+')</span>';
     btn.style.cssText='padding:3px 10px;border-radius:4px;border:1px solid '+(sel?FH_GRADE_COLORS[g]:'#334155')+';background:'+(sel?FH_GRADE_COLORS[g]+'22':'transparent')+';color:'+(sel?FH_GRADE_COLORS[g]:'#475569')+';cursor:pointer;font-size:11px;font-weight:600;';
     btn.onclick=function(){
       if(_fhSelGrades.has(g)){
