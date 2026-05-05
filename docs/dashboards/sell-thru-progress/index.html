@@ -1891,7 +1891,7 @@ function switchMainTab(tab){
 
 // ======== B2C FINANCIAL HEALTH ========
 var _fhDsoMode='simple';
-var _fhSelGrades=new Set(['A+','A','B','C','D']);
+var _fhSelGrades=new Set(['A+']);
 var _fhSelAccount=null;
 var _fhChart=null;
 
@@ -1932,34 +1932,50 @@ function fhBuildGradeFilter(){
 
 function fhGetAccounts(){
   if(!RAW) return [];
-  var PT_MAP={}, CLS_MAP2={};
+  var CLS_MAP2={}, PT_MAP={};
   (RAW.master||[]).forEach(function(m){
     var mid=String(int_id(m.id));
     CLS_MAP2[mid]=m.classification||'Unclassified';
     if(m.pt) PT_MAP[mid]=m.pt;
   });
   var ar=((RAW.ar||{}).current||{}).accts||{};
+
+  // 1단계: 전체 등급별 평균 DSO 계산 (선택 등급 무관하게 전체 기준)
+  var gradeDsoS={}, gradeDsoA={};
+  Object.keys(ar).forEach(function(sid){
+    var cls=CLS_MAP2[sid]||'Unclassified';
+    var cache=window._fhAmCache&&window._fhAmCache[sid];
+    if(!cache) return;
+    if(cache.dso_simple!=null){ if(!gradeDsoS[cls]) gradeDsoS[cls]=[]; gradeDsoS[cls].push(cache.dso_simple); }
+    if(cache.dso_aged!=null){   if(!gradeDsoA[cls]) gradeDsoA[cls]=[]; gradeDsoA[cls].push(cache.dso_aged); }
+  });
+  var avgDsoS={}, avgDsoA={};
+  Object.keys(gradeDsoS).forEach(function(g){ avgDsoS[g]=gradeDsoS[g].reduce(function(a,b){return a+b;},0)/gradeDsoS[g].length; });
+  Object.keys(gradeDsoA).forEach(function(g){ avgDsoA[g]=gradeDsoA[g].reduce(function(a,b){return a+b;},0)/gradeDsoA[g].length; });
+
+  // 2단계: 선택된 등급 계정 빌드
   var accts=[];
   Object.keys(ar).forEach(function(sid){
     var a=ar[sid];
     var cls=CLS_MAP2[sid]||'Unclassified';
     if(!_fhSelGrades.has(cls)) return;
     var pt=PT_MAP[sid]||90;
-    var dso_s=null, dso_a=null;
-    // find in _tblData (already computed)
-    if(window._fhAmCache && window._fhAmCache[sid]){
-      dso_s=window._fhAmCache[sid].dso_simple;
-      dso_a=window._fhAmCache[sid].dso_aged;
-    }
-    var x_s=dso_s!=null?pt-dso_s:null;
-    var x_a=dso_a!=null?pt-dso_a:null;
-    var nm=a.nm||sid;
+    var cache=window._fhAmCache&&window._fhAmCache[sid];
+    var dso_s=cache?cache.dso_simple:null;
+    var dso_a=cache?cache.dso_aged:null;
+    var bal=a.bal||0, ovd=a.ovd||0;
+    // X = 등급 평균 DSO − 개별 DSO (오른쪽=평균보다 낮음=좋음)
+    var x_s=(dso_s!=null&&avgDsoS[cls]!=null)?avgDsoS[cls]-dso_s:null;
+    var x_a=(dso_a!=null&&avgDsoA[cls]!=null)?avgDsoA[cls]-dso_a:null;
+    // Y = −(Overdue Rate %) (위쪽=낮음=좋음, 기준선 −20%)
+    var ovd_rate=bal>0?(ovd/bal*100):0;
     accts.push({
-      id:sid, name:nm, cls:cls, pt:pt,
-      cl:a.cl||0, bal:a.bal||0, ovd:a.ovd||0,
+      id:sid, name:a.nm||sid, cls:cls, pt:pt,
+      cl:a.cl||0, bal:bal, ovd:ovd, ovd_rate:ovd_rate,
       o1:a.o1||0, o2:a.o2||0, o3:a.o3||0,
       dso_simple:dso_s, dso_aged:dso_a,
-      x_simple:x_s, x_aged:x_a
+      dso_avg_s:avgDsoS[cls], dso_avg_a:avgDsoA[cls],
+      x_simple:x_s, x_aged:x_a, y_val:-ovd_rate
     });
   });
   return accts;
@@ -2031,7 +2047,7 @@ function renderFHChart(accts){
   var xKey=_fhDsoMode==='simple'?'x_simple':'x_aged';
   // filter accounts with valid x and y
   var pts=accts.filter(function(a){return a[xKey]!=null;});
-  var maxCl=Math.max.apply(null,pts.map(function(a){return a.cl||1;}));
+  var maxBal=Math.max.apply(null,pts.map(function(a){return a.bal||1;}));
   var datasets=[];
   var gradeGroups={};
   pts.forEach(function(a){
@@ -2041,24 +2057,29 @@ function renderFHChart(accts){
   Object.keys(gradeGroups).forEach(function(cls){
     var color=FH_GRADE_COLORS[cls]||'#94a3b8';
     var data=gradeGroups[cls].map(function(a){
-      var r=a.cl>0?Math.max(6,Math.min(30,Math.sqrt(a.cl/maxCl)*40)):6;
-      return {x:a[xKey],y:-(a.ovd||0),r:r,_a:a};
+      var r=a.bal>0?Math.max(6,Math.min(32,Math.sqrt(a.bal/maxBal)*42)):6;
+      return {x:a[xKey],y:a.y_val,r:r,_a:a};
     });
     datasets.push({label:cls,data:data,backgroundColor:color+'99',borderColor:color,borderWidth:1.5,pointHoverRadius:8});
   });
   if(_fhChart){_fhChart.destroy();}
   var ctx=document.getElementById('fhChart').getContext('2d');
-  // quadrant plugin
   var quadrantPlugin={id:'quadrant',beforeDraw:function(chart){
     var ctx2=chart.ctx, xa=chart.scales.x, ya=chart.scales.y;
-    var x0=xa.getPixelForValue(0), y0=ya.getPixelForValue(0);
+    var x0=xa.getPixelForValue(0), y0=ya.getPixelForValue(-20); // X=0, Y=-20% 기준
     var l=xa.left,r2=xa.right,t=ya.top,b=ya.bottom;
     ctx2.save();
     ctx2.fillStyle='rgba(16,185,129,0.15)';  ctx2.fillRect(x0,t,r2-x0,y0-t);  // 우상: Safe
     ctx2.fillStyle='rgba(251,191,36,0.15)';  ctx2.fillRect(x0,y0,r2-x0,b-y0); // 우하: Watch
     ctx2.fillStyle='rgba(251,146,60,0.15)';  ctx2.fillRect(l,t,x0-l,y0-t);    // 좌상: Anomaly
     ctx2.fillStyle='rgba(239,68,68,0.20)';   ctx2.fillRect(l,y0,x0-l,b-y0);   // 좌하: Critical
-    var fs=11; ctx2.font='bold '+fs+'px sans-serif'; ctx2.globalAlpha=0.7;
+    // 기준선 표시
+    ctx2.setLineDash([4,3]); ctx2.lineWidth=1;
+    ctx2.strokeStyle='rgba(100,116,139,0.6)';
+    ctx2.beginPath(); ctx2.moveTo(x0,t); ctx2.lineTo(x0,b); ctx2.stroke();
+    ctx2.beginPath(); ctx2.moveTo(l,y0); ctx2.lineTo(r2,y0); ctx2.stroke();
+    ctx2.setLineDash([]);
+    var fs=11; ctx2.font='bold '+fs+'px sans-serif'; ctx2.globalAlpha=0.75;
     ctx2.fillStyle='#10b981'; ctx2.fillText('✅ Safe',x0+8,t+16);
     ctx2.fillStyle='#f59e0b'; ctx2.fillText('⚠ Watch',x0+8,b-10);
     ctx2.fillStyle='#fb923c'; ctx2.fillText('🔶 Anomaly',l+8,t+16);
@@ -2091,19 +2112,22 @@ function renderFHChart(accts){
         },
         tooltip:{callbacks:{label:function(ctx){
           var a=ctx.raw._a;
-          var x=ctx.raw.x;
+          var xv=ctx.raw.x;
+          var dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
+          var avg=_fhDsoMode==='simple'?a.dso_avg_s:a.dso_avg_a;
           return [a.name+' ('+a.cls+')',
-            'Term−DSO: '+(x>=0?'+':'')+x.toFixed(1)+'d  '+(x>=0?'✅여유':'🔴초과'),
-            'Overdue: SAR '+(a.ovd/1000).toFixed(0)+'K',
-            'Credit: SAR '+(a.cl/1000).toFixed(0)+'K'];
+            'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  '+a.cls+' 평균: '+(avg!=null?avg.toFixed(1):'?')+'d  '+(xv>=0?'✅':'⬅초과'),
+            'Overdue Rate: '+a.ovd_rate.toFixed(1)+'%  '+(a.ovd_rate<=20?'✅':'🔴 >20%'),
+            'AR Balance: SAR '+(a.bal/1000).toFixed(0)+'K',
+            'Overdue: SAR '+(a.ovd/1000).toFixed(0)+'K'];
         }}}
       },
       scales:{
-        x:{title:{display:true,text:'Credit Term − DSO  →  오른쪽: 여유  |  왼쪽: 초과',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){return(v>=0?'+':'')+v+'d';}},
+        x:{title:{display:true,text:'← DSO 높음 ('+(_fhDsoMode==='simple'?'Simple':'Aged')+' 등급 평균 기준)  DSO 낮음 →',color:'#64748b',font:{size:11}},
+          ticks:{color:'#64748b',callback:function(v){return(v>=0?'+':'')+v.toFixed(0)+'d';}},
           grid:{color:'#1e293b'},border:{color:'#475569'}},
-        y:{title:{display:true,text:'Overdue  ↑ 낮을수록 좋음',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){var av=Math.abs(v);return av>=1000000?(av/1000000).toFixed(1)+'M':av>=1000?(av/1000).toFixed(0)+'K':av;}},
+        y:{title:{display:true,text:'← Overdue Rate 높음  |  낮음 → (기준선 20%)',color:'#64748b',font:{size:11}},
+          ticks:{color:'#64748b',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
           grid:{color:'#1e293b'},border:{color:'#475569'}}
       }
     },
@@ -2124,27 +2148,31 @@ function renderFHTable(accts){
     +'<th style="'+thS+'">Credit Limit</th>'
     +'<th style="'+thS+'">AR Balance</th>'
     +'<th style="'+thS+'">Overdue</th>'
+    +'<th style="'+thS+'">OVD Rate</th>'
     +'<th style="'+thS+'">OVD 0-30</th>'
     +'<th style="'+thS+'">OVD 31-60</th>'
     +'<th style="'+thS+'">OVD 60+</th>'
     +'<th style="'+thS+'">'+dsoLabel+'</th>'
-    +'<th style="'+thS+'">DSO−Term</th>'
+    +'<th style="'+thS+'">vs 등급평균</th>'
     +'<th style="'+thS+'">Quadrant</th>'
     +'</tr></thead><tbody>';
   var sorted=accts.slice().sort(function(a,b){return (b[xKey]||0)-(a[xKey]||0);});
   var fmtN=function(v){return v>=1000000?(v/1000000).toFixed(2)+'M':v>=1000?(v/1000).toFixed(1)+'K':v.toFixed(0);};
   sorted.forEach(function(a){
     var x=a[xKey], dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
-    var quad='-';
-    if(x!=null&&a.ovd!=null){
-      if(x<=0&&a.ovd<=0) quad='<span style="color:#10b981;font-weight:600;">Safe</span>';
-      else if(x>0&&a.ovd<=0) quad='<span style="color:#f59e0b;font-weight:600;">Watch</span>';
-      else if(x<=0&&a.ovd>0) quad='<span style="color:#fb923c;font-weight:600;">Anomaly</span>';
-      else quad='<span style="color:#ef4444;font-weight:600;">Critical</span>';
-    }
+    var avg=_fhDsoMode==='simple'?a.dso_avg_s:a.dso_avg_a;
+    var isSafe=x!=null&&x>=0&&a.ovd_rate<=20;
+    var isWatch=x!=null&&x>=0&&a.ovd_rate>20;
+    var isAnom=x!=null&&x<0&&a.ovd_rate<=20;
+    var quad=x==null?'-':isSafe?'<span style="color:#10b981;font-weight:600;">Safe</span>'
+      :isWatch?'<span style="color:#f59e0b;font-weight:600;">Watch</span>'
+      :isAnom?'<span style="color:#fb923c;font-weight:600;">Anomaly</span>'
+      :'<span style="color:#ef4444;font-weight:600;">Critical</span>';
     var tdS='padding:5px 8px;text-align:right;color:#cbd5e1;border-bottom:1px solid #1e293b;white-space:nowrap;';
     var tdSL='padding:5px 8px;text-align:left;color:#e2e8f0;border-bottom:1px solid #1e293b;';
     var clsColor=FH_GRADE_COLORS[a.cls]||'#94a3b8';
+    var rateColor=a.ovd_rate>20?'#ef4444':a.ovd_rate>10?'#f59e0b':'#10b981';
+    var xColor=x!=null&&x<0?'#ef4444':'#10b981';
     h+='<tr style="cursor:pointer;" onclick="fhRowClick(\''+a.id+'\')">'
       +'<td style="'+tdSL+'">'+a.name+'</td>'
       +'<td style="'+tdS+'"><span style="color:'+clsColor+';font-weight:700;">'+a.cls+'</span></td>'
@@ -2152,11 +2180,12 @@ function renderFHTable(accts){
       +'<td style="'+tdS+'color:#818cf8;">'+fmtN(a.cl)+'</td>'
       +'<td style="'+tdS+'color:#60a5fa;">'+fmtN(a.bal)+'</td>'
       +'<td style="'+tdS+'color:#f87171;">'+fmtN(a.ovd)+'</td>'
+      +'<td style="'+tdS+'color:'+rateColor+';">'+a.ovd_rate.toFixed(1)+'%</td>'
       +'<td style="'+tdS+'">'+fmtN(a.o1)+'</td>'
       +'<td style="'+tdS+'">'+fmtN(a.o2)+'</td>'
       +'<td style="'+tdS+'">'+fmtN(a.o3)+'</td>'
-      +'<td style="'+tdS+'color:#2dd4bf;">'+(dso!=null?dso.toFixed(1)+' d':'-')+'</td>'
-      +'<td style="'+tdS+(x!=null&&x>0?'color:#ef4444;':'color:#10b981;')+'">'+(x!=null?(x>0?'+':'')+x.toFixed(1)+'d':'-')+'</td>'
+      +'<td style="'+tdS+'color:#2dd4bf;">'+(dso!=null?dso.toFixed(1)+'d':'-')+'</td>'
+      +'<td style="'+tdS+'color:'+xColor+';">'+(x!=null?(x>=0?'+':'')+x.toFixed(1)+'d':'-')+'</td>'
       +'<td style="'+tdS+'">'+quad+'</td>'
       +'</tr>';
   });
