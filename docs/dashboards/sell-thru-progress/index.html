@@ -1292,12 +1292,17 @@ function renderTopTable(){
     var nm=String(nid),st='Active';
     if(RAW.ir_target&&RAW.ir_target[id]){nm=RAW.ir_target[id].nm||nm;}
     for(var mi=0;mi<_rsmMl.length;mi++){if(+_rsmMl[mi].id===nid){nm=_rsmMl[mi].name||nm;st=_rsmMl[mi].status||st;break;}}
-    if(!SEL.status.has(st)) return; // status filtered out
+    if(!SEL.status.has(st)||!SEL.cls.has(CLS_MAP[String(nid)]||'Unclassified')) return; // status/cls filtered out
     am[nid]={id:nid,nm:nm,tm:tm,st:st,v24:0,v25:0,v26:0,q24:0,q25:0,q26:0,
              pgi_v:0,pgi_q:0,pgi_dv:0,pgi_dq:0,rem_v:0,rem_q:0,rem_dv:0,rem_dq:0,
              opn_v:0,opn_q:0,opn_dv:0,opn_dq:0,oud_v:0,oud_q:0,oud_dv:0,oud_dq:0,
              ar_bal:0,ar_ovd:0,ar_o1:0,ar_o2:0,ar_o3:0,col_mtd:0,col_ytd:0,mar_tq:0,mar_tv:0};
   });}
+  // am-level cls filter: accounts injected via non-txn paths or year-agnostic txn paths
+  // must be cls-filtered here so table account count matches the Account dropdown
+  if(SEL.cls.size < ALL.cls.size){
+    Object.keys(am).forEach(function(id){ if(!SEL.cls.has(CLS_MAP[String(+id)]||'Unclassified')) delete am[id]; });
+  }
   _tblData=Object.values(am);
   // Pre-compute YTD 2026 revenue per account (period-independent, for DSO)
   var _v26YtdMap={};
