@@ -1999,18 +1999,17 @@ function fhGetAccounts(){
     var dso_s=cache?cache.dso_simple:null;
     var dso_a=cache?cache.dso_aged:null;
     var bal=a.bal||0, ovd=a.ovd||0;
-    // X = 실제 DSO 값 (기준선은 차트에서 선택 등급 통합 평균으로 동적 계산)
-    var x_s=dso_s;
-    var x_a=dso_a;
-    // Y = −(Overdue Rate %) (위쪽=낮음=좋음, 기준선 −20%)
     var ovd_rate=bal>0?(ovd/bal*100):0;
+    var no_rev=(cache&&cache.v26<=0&&bal>0); // 매출 없음/마이너스 + AR 잔액 있음
+    // no_rev 계정: DSO=null이지만 차트 포함 — X는 renderFHChart에서 우측 끝에 배치
     accts.push({
       id:sid, name:a.nm||sid, cls:cls, pt:pt,
       cl:a.cl||0, bal:bal, ovd:ovd, ovd_rate:ovd_rate,
       o1:a.o1||0, o2:a.o2||0, o3:a.o3||0,
       dso_simple:dso_s, dso_aged:dso_a,
       dso_avg_s:avgDsoS[cls], dso_avg_a:avgDsoA[cls],
-      x_simple:x_s, x_aged:x_a, y_val:-ovd_rate
+      x_simple:x_s, x_aged:x_a, y_val:-ovd_rate,
+      no_rev:!!no_rev
     });
   });
   return accts;
@@ -2086,12 +2085,21 @@ function renderFHKpi(accts){
 
 function renderFHChart(accts){
   var xKey=_fhDsoMode==='simple'?'x_simple':'x_aged';
-  var pts=accts.filter(function(a){return a[xKey]!=null;});
-  var maxBal=Math.max.apply(null,pts.map(function(a){return a.bal||1;}));
+  // 정상 계정(DSO 계산 가능)과 no_rev 계정 분리
+  var normalPts=accts.filter(function(a){return a[xKey]!=null;});
+  var noRevPts=accts.filter(function(a){return a.no_rev&&a[xKey]==null&&a.bal>0;});
 
-  // 선택된 등급들의 통합 평균 DSO (기준선)
-  var dsoVals=pts.map(function(a){return a[xKey];}).filter(function(v){return v!=null;});
+  // 기준선: 정상 계정들의 통합 평균 DSO
+  var dsoVals=normalPts.map(function(a){return a[xKey];});
   var selAvgDso=dsoVals.length?dsoVals.reduce(function(a,b){return a+b;},0)/dsoVals.length:0;
+
+  // no_rev 계정 X값: 정상 계정 최대 DSO + 30% (차트 우측 끝 Critical 영역)
+  var maxNormalDso=dsoVals.length?Math.max.apply(null,dsoVals):selAvgDso*2;
+  var noRevX=maxNormalDso*1.3+50;
+  noRevPts.forEach(function(a){ a._chartX=noRevX; });
+
+  var pts=normalPts.concat(noRevPts);
+  var maxBal=Math.max.apply(null,pts.map(function(a){return a.bal||1;}));
 
   var datasets=[];
   var gradeGroups={};
@@ -2103,9 +2111,16 @@ function renderFHChart(accts){
     var color=FH_GRADE_COLORS[cls]||'#94a3b8';
     var data=gradeGroups[cls].map(function(a){
       var r=a.bal>0?Math.max(6,Math.min(32,Math.sqrt(a.bal/maxBal)*42)):6;
-      return {x:a[xKey],y:a.y_val,r:r,_a:a};
+      var xv=a.no_rev?a._chartX:a[xKey];
+      return {x:xv,y:a.y_val,r:r,_a:a};
     });
-    datasets.push({label:cls,data:data,backgroundColor:color+'99',borderColor:color,borderWidth:1.5,pointHoverRadius:8});
+    // no_rev 계정은 점선 테두리로 구분
+    var hasNoRev=gradeGroups[cls].some(function(a){return a.no_rev;});
+    datasets.push({
+      label:cls,data:data,
+      backgroundColor:color+'99',borderColor:color,borderWidth:1.5,pointHoverRadius:8,
+      borderDash:hasNoRev&&gradeGroups[cls].length===gradeGroups[cls].filter(function(a){return a.no_rev;}).length?[4,3]:undefined
+    });
   });
   if(_fhChart){_fhChart.destroy();}
   var ctx=document.getElementById('fhChart').getContext('2d');
@@ -2167,8 +2182,9 @@ function renderFHChart(accts){
           var xv=ctx.raw.x;
           var dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
           var avg=_fhDsoMode==='simple'?a.dso_avg_s:a.dso_avg_a;
-          return [a.name+' ('+a.cls+')',
-            'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  선택등급 평균: '+selAvgDso.toFixed(1)+'d  '+(dso!=null&&dso<=selAvgDso?'✅평균이하':'⬆평균초과'),
+          return [a.name+' ('+a.cls+')'+(a.no_rev?' ⚠ No Revenue':''),
+            a.no_rev?'DSO: N/A (2026 매출 없음/마이너스) → Critical 강제배치'
+              :'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  선택등급 평균: '+selAvgDso.toFixed(1)+'d  '+(dso!=null&&dso<=selAvgDso?'✅평균이하':'⬆평균초과'),
             'Overdue Rate: '+a.ovd_rate.toFixed(1)+'%  '+(a.ovd_rate<=20?'✅':'🔴 >20%'),
             'AR Balance: SAR '+(a.bal/1000).toFixed(0)+'K',
             'Overdue: SAR '+(a.ovd/1000).toFixed(0)+'K'];
@@ -2211,7 +2227,12 @@ function renderFHTable(accts){
   // 테이블용 선택 등급 통합 평균 DSO
   var tblDsoVals=accts.filter(function(a){return a[xKey]!=null;}).map(function(a){return a[xKey];});
   var tblAvgDso=tblDsoVals.length?tblDsoVals.reduce(function(a,b){return a+b;},0)/tblDsoVals.length:0;
-  var sorted=accts.slice().sort(function(a,b){return (a[xKey]||999)-(b[xKey]||999);});
+  // no_rev 계정은 맨 앞(가장 위험)에 정렬
+  var sorted=accts.slice().sort(function(a,b){
+    if(a.no_rev&&!b.no_rev) return -1;
+    if(!a.no_rev&&b.no_rev) return 1;
+    return (a[xKey]||999)-(b[xKey]||999);
+  });
   var fmtN=function(v){return v>=1000000?(v/1000000).toFixed(2)+'M':v>=1000?(v/1000).toFixed(1)+'K':v.toFixed(0);};
   sorted.forEach(function(a){
     var x=a[xKey], dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
@@ -2223,13 +2244,21 @@ function renderFHTable(accts){
       :isWatch?'<span style="color:#f59e0b;font-weight:600;">Watch</span>'
       :isAnom?'<span style="color:#fb923c;font-weight:600;">Anomaly</span>'
       :'<span style="color:#ef4444;font-weight:600;">Critical</span>';
+    var rowBg=a.no_rev?'background:rgba(239,68,68,0.07);':'';
     var tdS='padding:5px 8px;text-align:right;color:#cbd5e1;border-bottom:1px solid #1e293b;white-space:nowrap;';
     var tdSL='padding:5px 8px;text-align:left;color:#e2e8f0;border-bottom:1px solid #1e293b;';
     var clsColor=FH_GRADE_COLORS[a.cls]||'#94a3b8';
     var rateColor=a.ovd_rate>20?'#ef4444':a.ovd_rate>10?'#f59e0b':'#10b981';
-    var xColor=x!=null&&x<0?'#ef4444':'#10b981';
-    h+='<tr style="cursor:pointer;" onclick="fhRowClick(\''+a.id+'\')">'
-      +'<td style="'+tdSL+'">'+a.name+'</td>'
+    var xColor=x!=null&&x<tblAvgDso?'#ef4444':'#10b981';
+    var dsoCell=a.no_rev
+      ?'<span style="color:#ef4444;font-size:10px;">N/A ⚠</span>'
+      :(dso!=null?dso.toFixed(1)+'d':'-');
+    var vsAvgCell=a.no_rev
+      ?'<span style="color:#ef4444;font-size:10px;">No Revenue</span>'
+      :(x!=null?(x-tblAvgDso>=0?'+':'')+(x-tblAvgDso).toFixed(1)+'d':'-');
+    var criticalQuad='<span style="color:#ef4444;font-weight:600;">Critical</span>';
+    h+='<tr style="cursor:pointer;'+rowBg+'" onclick="fhRowClick(\''+a.id+'\')">'
+      +'<td style="'+tdSL+'">'+(a.no_rev?'<span style="color:#ef4444;font-size:10px;margin-right:3px;">⚠</span>':'')+a.name+'</td>'
       +'<td style="'+tdS+'"><span style="color:'+clsColor+';font-weight:700;">'+a.cls+'</span></td>'
       +'<td style="'+tdS+'">'+a.pt+'d</td>'
       +'<td style="'+tdS+'color:#818cf8;">'+fmtN(a.cl)+'</td>'
@@ -2239,9 +2268,9 @@ function renderFHTable(accts){
       +'<td style="'+tdS+'">'+fmtN(a.o1)+'</td>'
       +'<td style="'+tdS+'">'+fmtN(a.o2)+'</td>'
       +'<td style="'+tdS+'">'+fmtN(a.o3)+'</td>'
-      +'<td style="'+tdS+'color:#2dd4bf;">'+(dso!=null?dso.toFixed(1)+'d':'-')+'</td>'
-      +'<td style="'+tdS+'color:'+xColor+';">'+(x!=null?(x-tblAvgDso>=0?'+':'')+(x-tblAvgDso).toFixed(1)+'d':'-')+'</td>'
-      +'<td style="'+tdS+'">'+quad+'</td>'
+      +'<td style="'+tdS+'color:#2dd4bf;">'+dsoCell+'</td>'
+      +'<td style="'+tdS+'color:'+xColor+';">'+vsAvgCell+'</td>'
+      +'<td style="'+tdS+'">'+(a.no_rev?criticalQuad:quad)+'</td>'
       +'</tr>';
   });
   h+='</tbody>';
