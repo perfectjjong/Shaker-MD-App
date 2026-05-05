@@ -257,9 +257,12 @@ tfoot .fz{background:#0f172a}
     <span style="font-size:11px;font-weight:600;color:#94a3b8;margin-right:6px;">Grade</span>
     <div id="fhGradeFilter" style="display:inline-flex;flex-wrap:wrap;gap:4px;"></div>
   </div>
-  <div style="margin-left:auto;display:flex;gap:4px;">
-    <button id="fhDsoSimpleBtn" onclick="fhSetDsoMode('simple')" style="padding:5px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:12px;font-weight:600;">DSO Simple</button>
-    <button id="fhDsoAgedBtn" onclick="fhSetDsoMode('aged')" style="padding:5px 14px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">DSO Aged</button>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+    <div style="display:flex;gap:0;">
+      <button id="fhDsoSimpleBtn" onclick="fhSetDsoMode('simple')" style="padding:5px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:12px;font-weight:600;">DSO Simple</button>
+      <button id="fhDsoAgedBtn" onclick="fhSetDsoMode('aged')" style="padding:5px 14px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">DSO Aged</button>
+    </div>
+    <button onclick="fhReset()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Reset all filters">↺ Reset</button>
   </div>
 </div>
 
@@ -2289,6 +2292,14 @@ function fhClearSelection(){
   _fhSelAccount=null;
   document.getElementById('fhTableTitle').textContent='';
   renderFHTable(fhGetAccounts());
+}
+
+function fhReset(){
+  _fhSelGrades=new Set(['A+']);
+  _fhSelAccount=null;
+  _fhDsoMode='simple';
+  document.getElementById('fhTableTitle').textContent='';
+  renderFH();
 }
 </script>
 </body>
