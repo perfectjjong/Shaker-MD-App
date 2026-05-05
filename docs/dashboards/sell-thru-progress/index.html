@@ -1998,33 +1998,39 @@ function _buildFhAmCache(){
   if(!RAW) return;
   window._fhAmCache={};
   var ar=((RAW.ar||{}).current||{}).accts||{};
-  var _dDays=_computeDdays();
+  // Sell-Thru KPI와 동일: calcDaysYtd() + passFilterNoPeriod 적용
+  var _dDays=calcDaysYtd();
+  var v26Map={};
+  RAW.txn.forEach(function(t){
+    if(t[C.Y]!==2026) return;
+    if(!passFilterNoPeriod(t)) return;
+    var sid=String(int_id(t[C.ID]));
+    v26Map[sid]=(v26Map[sid]||0)+(t[C.VL]||0);
+  });
   Object.keys(ar).forEach(function(sid){
     var a=ar[sid];
-    var v26=0;
-    (RAW.txn||[]).forEach(function(t){
-      if(t[C.Y]===2026 && String(int_id(t[C.ID]))===sid) v26+=t[C.VL]||0;
-    });
+    var v26=v26Map[sid]||0;
     var bal=a.bal||0, ovd=a.ovd||0, o1=a.o1||0, o2=a.o2||0, o3=a.o3||0;
     var dso_s=(bal>0&&v26>0)?(bal/v26*_dDays):null;
     var dso_a=bal>0?calcAgedDso(bal,ovd,o1,o2,o3):null;
-    window._fhAmCache[sid]={dso_simple:dso_s, dso_aged:dso_a};
+    window._fhAmCache[sid]={dso_simple:dso_s, dso_aged:dso_a, v26:v26};
   });
-}
-
-function _computeDdays(){
-  var now=new Date(), jan1=new Date(now.getFullYear(),0,1);
-  return Math.round((now-jan1)/86400000)+1;
 }
 
 function renderFHKpi(accts){
-  var totCl=0,totBal=0,totOvd=0,dsoSum=0,dsoCnt=0;
+  var totCl=0,totBal=0,totOvd=0,totRev=0;
   accts.forEach(function(a){
     totCl+=a.cl; totBal+=a.bal; totOvd+=a.ovd;
-    var dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
-    if(dso!=null){dsoSum+=dso;dsoCnt++;}
+    // 집계 방식: Sell-Thru KPI와 동일 (Total AR / Total YTD Rev * days)
+    var cache=window._fhAmCache&&window._fhAmCache[a.id];
+    totRev+=cache?cache.v26||0:0;
   });
-  var avgDso=dsoCnt?dsoSum/dsoCnt:0;
+  // Sell-Thru KPI와 동일한 집계 DSO
+  var _dDays=calcDaysYtd();
+  var avgDso=(_fhDsoMode==='simple')
+    ?(totBal>0&&totRev>0?totBal/totRev*_dDays:0)
+    :(function(){var s=0,c=0;accts.forEach(function(a){var d=a.dso_aged;if(d!=null){s+=d;c++;}});return c?s/c:0;})();
+  var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var fmt2=function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v.toFixed(0);};
   var kpis=[
