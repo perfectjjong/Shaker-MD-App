@@ -1951,8 +1951,8 @@ function fhGetAccounts(){
       dso_s=window._fhAmCache[sid].dso_simple;
       dso_a=window._fhAmCache[sid].dso_aged;
     }
-    var x_s=dso_s!=null?dso_s-pt:null;
-    var x_a=dso_a!=null?dso_a-pt:null;
+    var x_s=dso_s!=null?pt-dso_s:null;
+    var x_a=dso_a!=null?pt-dso_a:null;
     var nm=a.nm||sid;
     accts.push({
       id:sid, name:nm, cls:cls, pt:pt,
@@ -2042,7 +2042,7 @@ function renderFHChart(accts){
     var color=FH_GRADE_COLORS[cls]||'#94a3b8';
     var data=gradeGroups[cls].map(function(a){
       var r=a.cl>0?Math.max(6,Math.min(30,Math.sqrt(a.cl/maxCl)*40)):6;
-      return {x:a[xKey],y:a.ovd,r:r,_a:a};
+      return {x:a[xKey],y:-(a.ovd||0),r:r,_a:a};
     });
     datasets.push({label:cls,data:data,backgroundColor:color+'99',borderColor:color,borderWidth:1.5,pointHoverRadius:8});
   });
@@ -2054,15 +2054,15 @@ function renderFHChart(accts){
     var x0=xa.getPixelForValue(0), y0=ya.getPixelForValue(0);
     var l=xa.left,r2=xa.right,t=ya.top,b=ya.bottom;
     ctx2.save();
-    ctx2.fillStyle='rgba(16,185,129,0.06)'; ctx2.fillRect(l,y0,x0-l,b-y0);   // 좌하: Safe
-    ctx2.fillStyle='rgba(251,191,36,0.06)'; ctx2.fillRect(x0,y0,r2-x0,b-y0); // 우하: Watch
-    ctx2.fillStyle='rgba(251,146,60,0.06)'; ctx2.fillRect(l,t,x0-l,y0-t);    // 좌상: Anomaly
-    ctx2.fillStyle='rgba(239,68,68,0.08)';  ctx2.fillRect(x0,t,r2-x0,y0-t); // 우상: Critical
-    var fs=10; ctx2.font='bold '+fs+'px sans-serif'; ctx2.globalAlpha=0.5;
-    ctx2.fillStyle='#10b981'; ctx2.fillText('Safe ✓',l+6,b-8);
-    ctx2.fillStyle='#f59e0b'; ctx2.fillText('Watch ⚠',x0+6,b-8);
-    ctx2.fillStyle='#fb923c'; ctx2.fillText('Anomaly',l+6,t+14);
-    ctx2.fillStyle='#ef4444'; ctx2.fillText('Critical ✕',x0+6,t+14);
+    ctx2.fillStyle='rgba(16,185,129,0.15)';  ctx2.fillRect(x0,t,r2-x0,y0-t);  // 우상: Safe
+    ctx2.fillStyle='rgba(251,191,36,0.15)';  ctx2.fillRect(x0,y0,r2-x0,b-y0); // 우하: Watch
+    ctx2.fillStyle='rgba(251,146,60,0.15)';  ctx2.fillRect(l,t,x0-l,y0-t);    // 좌상: Anomaly
+    ctx2.fillStyle='rgba(239,68,68,0.20)';   ctx2.fillRect(l,y0,x0-l,b-y0);   // 좌하: Critical
+    var fs=11; ctx2.font='bold '+fs+'px sans-serif'; ctx2.globalAlpha=0.7;
+    ctx2.fillStyle='#10b981'; ctx2.fillText('✅ Safe',x0+8,t+16);
+    ctx2.fillStyle='#f59e0b'; ctx2.fillText('⚠ Watch',x0+8,b-10);
+    ctx2.fillStyle='#fb923c'; ctx2.fillText('🔶 Anomaly',l+8,t+16);
+    ctx2.fillStyle='#ef4444'; ctx2.fillText('🔴 Critical',l+8,b-10);
     ctx2.restore();
   }};
   _fhChart=new Chart(ctx,{
@@ -2093,20 +2093,18 @@ function renderFHChart(accts){
           var a=ctx.raw._a;
           var x=ctx.raw.x;
           return [a.name+' ('+a.cls+')',
-            'DSO−Term: '+(x>0?'+':'')+x.toFixed(1)+'d',
+            'Term−DSO: '+(x>=0?'+':'')+x.toFixed(1)+'d  '+(x>=0?'✅여유':'🔴초과'),
             'Overdue: SAR '+(a.ovd/1000).toFixed(0)+'K',
             'Credit: SAR '+(a.cl/1000).toFixed(0)+'K'];
         }}}
       },
       scales:{
-        x:{title:{display:true,text:'DSO − Credit Term (days)',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){return(v>0?'+':'')+v+'d';}},
-          grid:{color:'#1e293b'},
-          border:{color:'#475569'}},
-        y:{title:{display:true,text:'Overdue (SAR)',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v;}},
-          grid:{color:'#1e293b'},
-          border:{color:'#475569'}}
+        x:{title:{display:true,text:'Credit Term − DSO  →  오른쪽: 여유  |  왼쪽: 초과',color:'#64748b',font:{size:11}},
+          ticks:{color:'#64748b',callback:function(v){return(v>=0?'+':'')+v+'d';}},
+          grid:{color:'#1e293b'},border:{color:'#475569'}},
+        y:{title:{display:true,text:'Overdue  ↑ 낮을수록 좋음',color:'#64748b',font:{size:11}},
+          ticks:{color:'#64748b',callback:function(v){var av=Math.abs(v);return av>=1000000?(av/1000000).toFixed(1)+'M':av>=1000?(av/1000).toFixed(0)+'K':av;}},
+          grid:{color:'#1e293b'},border:{color:'#475569'}}
       }
     },
     plugins:[quadrantPlugin]
