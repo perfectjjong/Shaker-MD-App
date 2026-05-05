@@ -490,17 +490,10 @@ function buildFilterBar(){
     const avail=available(d.key);
     const isDn=(d.key==='account'||d.key==='team'||d.key==='cls');
     if(d.key==='cls'){
-      var prevClsAvailKey=SEL._clsAvailKey||'';
-      var curClsAvailKey=CLS_ORDER.filter(function(v){return avail.has(v);}).join('|');
-      if(prevClsAvailKey!==curClsAvailKey){
-        SEL[d.key]=new Set(avail);
-        SEL._clsAvailKey=curClsAvailKey;
-      } else {
-        var newClsSel=new Set();
-        SEL[d.key].forEach(function(v){ if(avail.has(v)) newClsSel.add(v); });
-        if(newClsSel.size===0) newClsSel=new Set(avail);
-        SEL[d.key]=newClsSel;
-      }
+      var newClsSel=new Set();
+      SEL[d.key].forEach(function(v){ if(avail.has(v)) newClsSel.add(v); });
+      if(newClsSel.size===0) newClsSel=new Set(avail);
+      SEL[d.key]=newClsSel;
     }
     if(d.key==='team'){
       var prevTeamAvailKey=SEL._teamAvailKey||'';
