@@ -262,12 +262,18 @@ tfoot .fz{background:#0f172a}
       <button id="fhDsoSimpleBtn" onclick="fhSetDsoMode('simple')" style="padding:5px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:12px;font-weight:600;">DSO Simple</button>
       <button id="fhDsoAgedBtn" onclick="fhSetDsoMode('aged')" style="padding:5px 14px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">DSO Aged</button>
     </div>
+    <div style="display:flex;align-items:center;gap:5px;">
+      <span style="font-size:11px;color:#64748b;">📅</span>
+      <select id="fhDateSelect" onchange="fhSetDate(this.value)" style="padding:5px 8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:11px;outline:none;">
+        <option value="latest">Latest</option>
+      </select>
+    </div>
     <button onclick="fhReset()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Reset all filters">↺ Reset</button>
   </div>
 </div>
 
 <!-- FH KPI Strip -->
-<div id="fhKpiStrip" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;"></div>
+<div id="fhKpiStrip" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;"></div>
 
 <!-- FH Chart -->
 <div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
@@ -1906,10 +1912,33 @@ function switchMainTab(tab){
 var _fhDsoMode='simple';
 var _fhSelGrades=new Set(['A+']);
 var _fhSelAccount=null;
+var _fhSelDate='latest'; // 'latest' or 'YYYY-MM-DD'
 var _fhChart=null;
 
 var FH_GRADE_COLORS={'A+':'#f59e0b','A':'#10b981','B':'#3b82f6','C':'#8b5cf6','D':'#ef4444','IR-X':'#64748b','OR-X':'#64748b','SME-X':'#64748b'};
 var FH_ALL_GRADES=['A+','A','B','C','D','IR-X','OR-X','SME-X'];
+
+function fhSetDate(val){
+  _fhSelDate=val;
+  _fhSelAccount=null;
+  document.getElementById('fhTableTitle').textContent='';
+  fhCloseTrend();
+  // 날짜 변경 시 캐시 재빌드
+  _buildFhAmCache();
+  var accts=fhGetAccounts();
+  renderFHKpi(accts);
+  renderFHChart(accts);
+  renderFHTable(accts);
+}
+
+function fhGetArData(){
+  // 선택된 날짜의 AR 스냅샷 반환 (latest면 RAW.ar.current)
+  if(_fhSelDate==='latest'||!_arHistory) return ((RAW.ar||{}).current||{}).accts||{};
+  var snaps=_arHistory.snapshots||[];
+  var snap=null;
+  for(var i=0;i<snaps.length;i++){ if(snaps[i].date===_fhSelDate){snap=snaps[i];break;} }
+  return snap?snap.accts:{};
+}
 
 function fhSetDsoMode(mode){
   _fhDsoMode=mode;
@@ -1985,7 +2014,7 @@ function fhGetAccounts(){
   // Sell-Thru KPI와 동일: txn에 거래 기록 있는 계정만 포함
   var txnIds=new Set();
   (RAW.txn||[]).forEach(function(t){ txnIds.add(String(int_id(t[C.ID]))); });
-  var ar=((RAW.ar||{}).current||{}).accts||{};
+  var ar=fhGetArData();
 
   // 1단계: 전체 등급별 평균 DSO 계산 (선택 등급 무관하게 전체 기준)
   var gradeDsoS={}, gradeDsoA={};
@@ -2033,19 +2062,30 @@ function int_id(v){ return Math.round(parseFloat(v)); }
 
 function renderFH(){
   if(!RAW) return;
-  // cache am data (dso values) from renderTopTable output
-  _buildFhAmCache();
-  fhBuildGradeFilter();
-  var accts=fhGetAccounts();
-  renderFHKpi(accts);
-  renderFHChart(accts);
-  renderFHTable(_fhSelAccount?accts.filter(function(a){return a.id===_fhSelAccount;}):accts);
+  fhLoadHistory(function(hist){
+    // 날짜 드롭다운 채우기
+    var sel=document.getElementById('fhDateSelect');
+    if(sel&&sel.options.length<=1){
+      var snaps=(hist.snapshots||[]).slice().reverse();
+      snaps.forEach(function(s){
+        var opt=document.createElement('option');
+        opt.value=s.date; opt.textContent=s.date;
+        sel.appendChild(opt);
+      });
+    }
+    _buildFhAmCache();
+    fhBuildGradeFilter();
+    var accts=fhGetAccounts();
+    renderFHKpi(accts);
+    renderFHChart(accts);
+    renderFHTable(_fhSelAccount?accts.filter(function(a){return a.id===_fhSelAccount;}):accts);
+  });
 }
 
 function _buildFhAmCache(){
   if(!RAW) return;
   window._fhAmCache={};
-  var ar=((RAW.ar||{}).current||{}).accts||{};
+  var ar=fhGetArData();
   // FH는 독립 탭 — Year 등 Sell-Thru 필터 영향 없이 계정별 실제 2026 전체 매출 사용
   var _dDays=calcDaysYtd();
   var v26Map={};
@@ -2080,12 +2120,14 @@ function renderFHKpi(accts){
   var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var fmt2=function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v.toFixed(0);};
+  var dateLabel=_fhSelDate==='latest'?((RAW.ar&&RAW.ar.current)?RAW.ar.current.date:'Latest'):_fhSelDate;
   var kpis=[
     {label:'Total Credit Limit',val:'SAR '+fmt2(totCl),color:'#818cf8'},
     {label:'Total AR Balance',val:'SAR '+fmt2(totBal),color:'#60a5fa'},
     {label:'Total Overdue',val:'SAR '+fmt2(totOvd),color:'#f87171'},
     {label:'Overdue %',val:ovdPct.toFixed(1)+'%',color:'#fb923c'},
     {label:'Avg DSO ('+ (_fhDsoMode==='simple'?'Simple':'Aged')+')',val:avgDso.toFixed(1)+' days',color:'#2dd4bf'},
+    {label:'Data Date',val:dateLabel,color:'#64748b'},
   ];
   var g=document.getElementById('fhKpiStrip');
   g.innerHTML=kpis.map(function(k){
@@ -2314,6 +2356,9 @@ function fhReset(){
   _fhSelGrades=new Set(['A+']);
   _fhSelAccount=null;
   _fhDsoMode='simple';
+  _fhSelDate='latest';
+  var sel=document.getElementById('fhDateSelect');
+  if(sel) sel.value='latest';
   document.getElementById('fhTableTitle').textContent='';
   fhCloseTrend();
   renderFH();
