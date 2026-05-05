@@ -2035,12 +2035,11 @@ function _buildFhAmCache(){
   if(!RAW) return;
   window._fhAmCache={};
   var ar=((RAW.ar||{}).current||{}).accts||{};
-  // Sell-Thru KPI와 동일: calcDaysYtd() + passFilterNoPeriod 적용
+  // FH는 독립 탭 — Year 등 Sell-Thru 필터 영향 없이 계정별 실제 2026 전체 매출 사용
   var _dDays=calcDaysYtd();
   var v26Map={};
   RAW.txn.forEach(function(t){
     if(t[C.Y]!==2026) return;
-    if(!passFilterNoPeriod(t)) return;
     var sid=String(int_id(t[C.ID]));
     v26Map[sid]=(v26Map[sid]||0)+(t[C.VL]||0);
   });
@@ -2097,8 +2096,8 @@ function renderFHChart(accts){
   var selAvgDso=dsoVals.length?dsoVals.reduce(function(a,b){return a+b;},0)/dsoVals.length:0;
 
   // no_rev 계정 X값: 정상 계정 최대 DSO + 30% (차트 우측 끝 Critical 영역)
-  var maxNormalDso=dsoVals.length?Math.max.apply(null,dsoVals):selAvgDso*2;
-  var noRevX=maxNormalDso*1.3+50;
+  var maxNormalDso=dsoVals.length?Math.max.apply(null,dsoVals):300;
+  var noRevX=(maxNormalDso>0?maxNormalDso:300)*1.3+50;
   noRevPts.forEach(function(a){ a._chartX=noRevX; });
 
   var pts=normalPts.concat(noRevPts);
