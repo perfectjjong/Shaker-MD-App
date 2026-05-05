@@ -488,7 +488,20 @@ function buildFilterBar(){
     const wrap=document.createElement('div');
     wrap.className='ms-wrap';
     const avail=available(d.key);
-    const isDn=(d.key==='account'||d.key==='team');
+    const isDn=(d.key==='account'||d.key==='team'||d.key==='cls');
+    if(d.key==='cls'){
+      var prevClsAvailKey=SEL._clsAvailKey||'';
+      var curClsAvailKey=CLS_ORDER.filter(function(v){return avail.has(v);}).join('|');
+      if(prevClsAvailKey!==curClsAvailKey){
+        SEL[d.key]=new Set(avail);
+        SEL._clsAvailKey=curClsAvailKey;
+      } else {
+        var newClsSel=new Set();
+        SEL[d.key].forEach(function(v){ if(avail.has(v)) newClsSel.add(v); });
+        if(newClsSel.size===0) newClsSel=new Set(avail);
+        SEL[d.key]=newClsSel;
+      }
+    }
     if(d.key==='team'){
       var prevTeamAvailKey=SEL._teamAvailKey||'';
       var curTeamAvailKey=[...avail].sort().join('|');
@@ -560,7 +573,7 @@ function buildFilterBar(){
     var isDownstream=(d.key==='account' || d.key==='team');
     var renderSet=isDownstream?[...avail]:[...ALL[d.key]];
     if(d.key==='div') renderSet=DIV_ORDER.filter(function(v){return ALL[d.key].has(v);});
-    else if(d.key==='cls') renderSet=CLS_ORDER.filter(function(v){return ALL[d.key].has(v);});
+    else if(d.key==='cls') renderSet=CLS_ORDER.filter(function(v){return avail.has(v);});
     else renderSet.sort(function(a,b){return String(a).localeCompare(String(b));});
     renderSet.forEach(function(val){
       const isAvail=avail.has(val), isSel=SEL[d.key].has(val);
