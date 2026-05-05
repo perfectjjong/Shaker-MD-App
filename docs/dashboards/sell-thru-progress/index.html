@@ -1889,7 +1889,7 @@ function switchMainTab(tab){
   document.getElementById('mainTabST').style.color=tab==='st'?'#fff':'#64748b';
   document.getElementById('mainTabFH').style.background=tab==='fh'?'#3b82f6':'#1e293b';
   document.getElementById('mainTabFH').style.color=tab==='fh'?'#fff':'#64748b';
-  if(tab==='fh') renderFH();
+  if(tab==='fh') requestAnimationFrame(function(){ requestAnimationFrame(renderFH); });
 }
 
 // ======== B2C FINANCIAL HEALTH ========
