@@ -252,9 +252,11 @@ const DIV_MAP={
   'Showrooms':'Others','E-Commerce':'Others','Shop In Shop':'Others'
 };
 const DIV_ORDER=['B2C','B2B','Others'];
+const CLS_ORDER=['A+','A','B','C','D','IR-X','OR-X','SME-X','Unclassified'];
 function getDiv(team){ return DIV_MAP[team]||'Others'; }
 
 // ======== OUD HELPERS ========
+var CLS_MAP={};
 var OUD_IDS=new Set();
 var AR_SNAP=null;
 var COL_SNAP=null;
@@ -272,6 +274,8 @@ function _initRawDeps(){
     }
   }
   COL_SNAP=RAW.col||null;
+  CLS_MAP={};
+  (RAW.master||[]).forEach(function(m){ CLS_MAP[String(m.id)]=m.classification||'Unclassified'; });
 }
 
 // ======== RSM FCST (localStorage persistent manual input — Value/Qty separated) ========
@@ -377,6 +381,7 @@ let _openFilter=null;
 const DIMS=[
   {key:'year',col:C.Y,label:'Year'},
   {key:'div',col:'_div',label:'Division'},
+  {key:'cls',col:'_cls',label:'Class'},
   {key:'team',col:C.TM,label:'Team'},
   {key:'account',col:C.NM,label:'Account'},
   {key:'oud',col:'_oud',label:'OUD'},
@@ -386,7 +391,7 @@ const DIMS=[
 
 var dayFrom='01-01', dayTo='12-31';
 var ALL={}, SEL={};
-function colVal(r,d){ return d.key==='div'?getDiv(r[C.TM]):d.key==='oud'?(OUD_IDS.has(r[C.ID])?'OUD':'Non OUD'):r[d.col]; }
+function colVal(r,d){ return d.key==='div'?getDiv(r[C.TM]):d.key==='oud'?(OUD_IDS.has(r[C.ID])?'OUD':'Non OUD'):d.key==='cls'?(CLS_MAP[String(r[C.ID])]||'Unclassified'):r[d.col]; }
 var ACCT_TEAM={};
 function _initFilters(){
   dayFrom='01-01'; dayTo='12-31';
@@ -554,6 +559,7 @@ function buildFilterBar(){
     var isDownstream=(d.key==='account' || d.key==='team');
     var renderSet=isDownstream?[...avail]:[...ALL[d.key]];
     if(d.key==='div') renderSet=DIV_ORDER.filter(function(v){return ALL[d.key].has(v);});
+    else if(d.key==='cls') renderSet=CLS_ORDER.filter(function(v){return ALL[d.key].has(v);});
     else renderSet.sort(function(a,b){return String(a).localeCompare(String(b));});
     renderSet.forEach(function(val){
       const isAvail=avail.has(val), isSel=SEL[d.key].has(val);
