@@ -472,6 +472,7 @@ function available(dk){
       if(d.key===dk) continue;
       if(d.key==='account' && dk!=='account') continue;
       if(d.key==='team' && dk==='div') continue;
+      if(d.key==='cls' && dk!=='cls') continue;
       if(!SEL[d.key].has(colVal(r,d))){ok=false;break;}
     }
     if(ok) result.add(colVal(r,dTarget));
