@@ -275,9 +275,7 @@ tfoot .fz{background:#0f172a}
     <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Financial Health Matrix <span id="fhChartSubtitle" style="color:#64748b;font-size:11px;"></span></h3>
     <span style="font-size:10px;color:#475569;">X축: DSO − Credit Term (초과일수) &nbsp;|&nbsp; Y축: Overdue (SAR) &nbsp;|&nbsp; 버블 크기: Credit Limit</span>
   </div>
-  <div style="position:relative;height:480px;">
-    <canvas id="fhChart"></canvas>
-  </div>
+  <div id="fhChartWrap" style="position:relative;height:480px;"></div>
 </div>
 
 <!-- FH Table -->
@@ -1889,7 +1887,7 @@ function switchMainTab(tab){
   document.getElementById('mainTabST').style.color=tab==='st'?'#fff':'#64748b';
   document.getElementById('mainTabFH').style.background=tab==='fh'?'#3b82f6':'#1e293b';
   document.getElementById('mainTabFH').style.color=tab==='fh'?'#fff':'#64748b';
-  if(tab==='fh') requestAnimationFrame(function(){ requestAnimationFrame(renderFH); });
+  if(tab==='fh') setTimeout(renderFH, 50);
 }
 
 // ======== B2C FINANCIAL HEALTH ========
@@ -2124,7 +2122,10 @@ function renderFHChart(accts){
       borderDash:hasNoRev&&gradeGroups[cls].length===gradeGroups[cls].filter(function(a){return a.no_rev;}).length?[4,3]:undefined
     });
   });
-  if(_fhChart){_fhChart.destroy();}
+  if(_fhChart){_fhChart.destroy();_fhChart=null;}
+  // canvas를 매번 새로 생성 — hidden tab 0x0 크기 문제 완전 차단
+  var wrap=document.getElementById('fhChartWrap');
+  wrap.innerHTML='<canvas id="fhChart" style="width:100%;height:100%;"></canvas>';
   var ctx=document.getElementById('fhChart').getContext('2d');
   var quadrantPlugin={id:'quadrant',beforeDraw:function(chart){
     var ctx2=chart.ctx, xa=chart.scales.x, ya=chart.scales.y;
