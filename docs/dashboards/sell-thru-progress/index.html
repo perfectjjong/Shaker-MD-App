@@ -1938,6 +1938,9 @@ function fhGetAccounts(){
     CLS_MAP2[mid]=m.classification||'Unclassified';
     if(m.pt) PT_MAP[mid]=m.pt;
   });
+  // Sell-Thru KPI와 동일: txn에 거래 기록 있는 계정만 포함
+  var txnIds=new Set();
+  (RAW.txn||[]).forEach(function(t){ txnIds.add(String(int_id(t[C.ID]))); });
   var ar=((RAW.ar||{}).current||{}).accts||{};
 
   // 1단계: 전체 등급별 평균 DSO 계산 (선택 등급 무관하게 전체 기준)
@@ -1953,9 +1956,10 @@ function fhGetAccounts(){
   Object.keys(gradeDsoS).forEach(function(g){ avgDsoS[g]=gradeDsoS[g].reduce(function(a,b){return a+b;},0)/gradeDsoS[g].length; });
   Object.keys(gradeDsoA).forEach(function(g){ avgDsoA[g]=gradeDsoA[g].reduce(function(a,b){return a+b;},0)/gradeDsoA[g].length; });
 
-  // 2단계: 선택된 등급 계정 빌드
+  // 2단계: 선택된 등급 계정 빌드 (txn 기반 계정만 — Sell-Thru KPI와 동일 범위)
   var accts=[];
   Object.keys(ar).forEach(function(sid){
+    if(!txnIds.has(sid)) return; // txn에 없는 계정 제외
     var a=ar[sid];
     var cls=CLS_MAP2[sid]||'Unclassified';
     if(!_fhSelGrades.has(cls)) return;
