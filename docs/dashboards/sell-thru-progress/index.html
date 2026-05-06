@@ -1975,6 +1975,7 @@ function switchMainTab(tab){
 // ======== B2C FINANCIAL HEALTH ========
 var _fhDsoMode='simple';
 var _fhAdvisory=null;  // fh_advisory.json 캐시
+var _fhSortCol=null, _fhSortDir='asc';
 var _fhAdvLang='en';   // 'en' | 'ko'
 var _fhAdvCurrent=null; // 현재 표시 중인 adv 객체
 var _fhCompareMode=false;
@@ -2867,35 +2868,65 @@ function renderFHChart(accts){
   document.getElementById('fhChartSubtitle').textContent='('+pts.length+' accounts)';
 }
 
+function fhTableSort(col){
+  if(_fhSortCol===col) _fhSortDir=_fhSortDir==='asc'?'desc':'asc';
+  else{_fhSortCol=col;_fhSortDir='asc';}
+  renderFHTable(_fhSelAccount?fhGetAccounts().filter(function(a){return a.id===_fhSelAccount;}):fhGetAccounts());
+}
+
 function renderFHTable(accts){
   var xKey=_fhDsoMode==='simple'?'x_simple':'x_aged';
   var dsoLabel=_fhDsoMode==='simple'?'DSO Simple ('+(_fhRevMode==='t12m'?'T12M':'YTD')+')':'DSO Aged';
-  var thS='padding:6px 8px;text-align:right;color:#64748b;font-size:10px;font-weight:600;border-bottom:1px solid #334155;white-space:nowrap;';
-  var thSL='padding:6px 8px;text-align:left;color:#64748b;font-size:10px;font-weight:600;border-bottom:1px solid #334155;white-space:nowrap;';
+  var GRD_ORDER={'A+':0,'A':1,'B':2,'C':3,'D':4,'':5};
+  var QUAD_ORDER={'Safe':0,'Anomaly':1,'Watch':2,'Critical':3,'':4};
+
+  // 헤더 스타일 공통 함수
+  function th(col, label, align){
+    var isActive=_fhSortCol===col;
+    var arrow=isActive?(_fhSortDir==='asc'?' ▲':' ▼'):'';
+    var base='padding:6px 8px;font-size:10px;font-weight:600;border-bottom:1px solid #334155;white-space:nowrap;cursor:pointer;user-select:none;';
+    var color=isActive?'color:#60a5fa;':'color:#64748b;';
+    var align_s='text-align:'+(align||'right')+';';
+    return '<th style="'+base+color+align_s+'" onclick="fhTableSort(\''+col+'\')">'+label+arrow+'</th>';
+  }
+
   var h='<thead><tr>'
-    +'<th style="'+thSL+'">Account</th>'
-    +'<th style="'+thS+'">Grade</th>'
-    +'<th style="'+thS+'">Credit Term</th>'
-    +'<th style="'+thS+'">Credit Limit</th>'
-    +'<th style="'+thS+'">AR Balance</th>'
-    +'<th style="'+thS+'">Overdue</th>'
-    +'<th style="'+thS+'">OVD Rate</th>'
-    +'<th style="'+thS+'">OVD 0-30</th>'
-    +'<th style="'+thS+'">OVD 30-60</th>'
-    +'<th style="'+thS+'">OVD 60+</th>'
-    +'<th style="'+thS+'">'+dsoLabel+'</th>'
-    +'<th style="'+thS+'">vs DPO 180d</th>'
-    +'<th style="'+thS+'">Quadrant</th>'
-    +'<th style="'+thS+'">Advisory</th>'
+    +th('name',     'Account',      'left')
+    +th('cls',      'Grade')
+    +th('pt',       'Credit Term')
+    +th('cl',       'Credit Limit')
+    +th('bal',      'AR Balance')
+    +th('ovd',      'Overdue')
+    +th('ovd_rate', 'OVD Rate')
+    +th('o1',       'OVD 0-30')
+    +th('o2',       'OVD 30-60')
+    +th('o3',       'OVD 60+')
+    +th('dso',      dsoLabel)
+    +th('vs180',    'vs DPO 180d')
+    +th('quad',     'Quadrant')
+    +'<th style="padding:6px 8px;text-align:right;color:#64748b;font-size:10px;font-weight:600;border-bottom:1px solid #334155;">Advisory</th>'
     +'</tr></thead><tbody>';
+
   // Y 기준선: 테이블 계정 평균 OVD Rate
   var tblOvdVals=accts.filter(function(a){return a.bal>0;}).map(function(a){return a.ovd_rate;});
   var tblAvgOvd=tblOvdVals.length?tblOvdVals.reduce(function(a,b){return a+b;},0)/tblOvdVals.length:20;
-  // no_rev 계정은 맨 앞(가장 위험)에 정렬
+
+  // 정렬
   var sorted=accts.slice().sort(function(a,b){
-    if(a.no_rev&&!b.no_rev) return -1;
-    if(!a.no_rev&&b.no_rev) return 1;
-    return (a[xKey]||999)-(b[xKey]||999);
+    var col=_fhSortCol, dir=_fhSortDir==='asc'?1:-1;
+    if(!col){
+      // 기본: no_rev 먼저, 이후 DSO 오름차순
+      if(a.no_rev&&!b.no_rev) return -1;
+      if(!a.no_rev&&b.no_rev) return 1;
+      return (a[xKey]||999)-(b[xKey]||999);
+    }
+    var av, bv;
+    if(col==='name'){ av=a.name||''; bv=b.name||''; return dir*(av<bv?-1:av>bv?1:0); }
+    if(col==='cls'){  av=GRD_ORDER[a.cls]??5; bv=GRD_ORDER[b.cls]??5; return dir*(av-bv); }
+    if(col==='dso'){  av=a[xKey]??9999; bv=b[xKey]??9999; return dir*(av-bv); }
+    if(col==='vs180'){av=a[xKey]!=null?a[xKey]-180:9999; bv=b[xKey]!=null?b[xKey]-180:9999; return dir*(av-bv); }
+    if(col==='quad'){ av=a.no_rev?4:(a[xKey]>180&&a.ovd_rate>tblAvgOvd?3:a[xKey]>180?1:a.ovd_rate>tblAvgOvd?2:0); bv=b.no_rev?4:(b[xKey]>180&&b.ovd_rate>tblAvgOvd?3:b[xKey]>180?1:b.ovd_rate>tblAvgOvd?2:0); return dir*(av-bv); }
+    av=a[col]??0; bv=b[col]??0; return dir*(av-bv);
   });
   var fmtN=function(v){return v>=1000000?(v/1000000).toFixed(2)+'M':v>=1000?(v/1000).toFixed(1)+'K':v.toFixed(0);};
   sorted.forEach(function(a){
