@@ -2843,6 +2843,7 @@ function renderFHTable(accts){
     +'<th style="'+thS+'">'+dsoLabel+'</th>'
     +'<th style="'+thS+'">vs DPO 180d</th>'
     +'<th style="'+thS+'">Quadrant</th>'
+    +'<th style="'+thS+'">Advisory</th>'
     +'</tr></thead><tbody>';
   // Y 기준선: 테이블 계정 평균 OVD Rate
   var tblOvdVals=accts.filter(function(a){return a.bal>0;}).map(function(a){return a.ovd_rate;});
@@ -2876,6 +2877,7 @@ function renderFHTable(accts){
       ?'<span style="color:#ef4444;font-size:10px;">No Revenue</span>'
       :(x!=null?(x-180>=0?'+':'')+(x-180).toFixed(1)+'d':'-');
     var criticalQuad='<span style="color:#ef4444;font-weight:600;">Critical</span>';
+    var advBtn='<button onclick="event.stopPropagation();fhShowAdvisory(\''+a.id+'\',\''+a.name.replace(/'/g,"\\'")+'\')" style="padding:2px 8px;background:#1e1b4b;color:#a78bfa;border:1px solid #4c1d95;border-radius:4px;cursor:pointer;font-size:9px;white-space:nowrap;">Advisory</button>';
     h+='<tr style="cursor:pointer;'+rowBg+'" onclick="fhRowClick(\''+a.id+'\')">'
       +'<td style="'+tdSL+'">'+(a.no_rev?'<span style="color:#ef4444;font-size:10px;margin-right:3px;">⚠</span>':'')+a.name+'</td>'
       +'<td style="'+tdS+'"><span style="color:'+clsColor+';font-weight:700;">'+a.cls+'</span></td>'
@@ -2890,6 +2892,7 @@ function renderFHTable(accts){
       +'<td style="'+tdS+'color:#2dd4bf;">'+dsoCell+'</td>'
       +'<td style="'+tdS+'color:'+xColor+';">'+vsAvgCell+'</td>'
       +'<td style="'+tdS+'">'+(a.no_rev?criticalQuad:quad)+'</td>'
+      +'<td style="'+tdS+'">'+advBtn+'</td>'
       +'</tr>';
   });
   h+='</tbody>';
