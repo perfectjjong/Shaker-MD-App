@@ -2193,6 +2193,7 @@ function _renderCompareChart(wrapId, accts, chartRef, avgOvd, modeLabel, titleCo
       responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{labels:{color:'#94a3b8',font:{size:10}}},
+        datalabels:{display:false},
         tooltip:{callbacks:{label:function(ctx){
           var a=ctx.raw._a;
           return [
@@ -2243,7 +2244,10 @@ function renderFHCompare(){
   var ytdMap={}, t12mMap={};
   ytdAccts.forEach(function(a){ytdMap[a.id]=a;});
   t12mAccts.forEach(function(a){t12mMap[a.id]=a;});
-  var allSids=Object.keys(Object.assign({},ytdMap,t12mMap));
+  var _unionMap={};
+  Object.keys(ytdMap).forEach(function(k){_unionMap[k]=1;});
+  Object.keys(t12mMap).forEach(function(k){_unionMap[k]=1;});
+  var allSids=Object.keys(_unionMap);
   var moves=[];
   allSids.forEach(function(sid){
     var ay=ytdMap[sid], at=t12mMap[sid];
@@ -2308,7 +2312,7 @@ function renderFH(){
     fhBuildGradeFilter();
     var accts=fhGetAccounts();
     renderFHKpi(accts);
-    if(_fhCompareMode){ renderFHCompare(); return; }
+    if(_fhCompareMode){ setTimeout(function(){ renderFHCompare(); },50); return; }
     // 일반 뷰 진입 시 비교 차트 인스턴스 정리
     if(_fhCompChartY){_fhCompChartY.destroy();_fhCompChartY=null;}
     if(_fhCompChartT){_fhCompChartT.destroy();_fhCompChartT=null;}
