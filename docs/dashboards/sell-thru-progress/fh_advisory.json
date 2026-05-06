@@ -9030,7 +9030,16 @@
           "Set a formal credit limit review trigger: if 2026 records ≥3 consecutive months of sell-out above 4,000u/month AND YTD DSO compresses to ≤120d by end-Q3, reopen the credit expansion case with updated AR data"
         ],
         "risk_level": "green",
-        "risk_reason": "Zero overdue on SAR 74M balance sustained for 6+ days; immediate collection risk is low, with T12M DSO structural legacy as the sole medium-term watch item heading into peak-season exposure buildup."
+        "risk_reason": "Zero overdue on SAR 74M balance sustained for 6+ days; immediate collection risk is low, with T12M DSO structural legacy as the sole medium-term watch item heading into peak-season exposure buildup.",
+        "headline_ko": "United Electronics는 SAR 74M 잔액에 대해 연체 제로를 유지하며 YTD DSO가 개선되고 있으나, DPO 대비 65일을 초과하는 T12M DSO 245일은 구조적 대금 지연 패턴을 시사하며, 회수 행태가 정상화되기 전까지 신용한도 확대는 배제됩니다.",
+        "analysis_ko": "표면적인 AR 건전성은 모범적 수준입니다: SAR 74.2M 잔액에 대해 5월 4일까지 6회 연속 일별 스냅샷 전체에서 연체율 0.0%를 유지하였으며, 세 aging 버킷 모두 제로입니다. 이는 YTD OR 채널 OVD 기준치 35.4% 대비 결정적으로 우수한 성과이며, Grade A+ / Q1-Safe 등급은 현 스냅샷 데이터로 완전히 뒷받침됩니다. 즉각적인 회수 조치는 불필요합니다. 2026년 매입 속도가 T12M 평균의 1.7배 수준으로 진행 중이라는 점은 5~9월 시즌을 앞두고 실질적인 피크 전 수요를 시사하며 고무적입니다.\n\n그러나 구조적 분석은 보다 신중한 시각을 요합니다. T12M DSO 245일은 120일 여신 조건과 180일 DPO를 모두 크게 초과하며, 이는 최근 12개월 결제 패턴이 계약상 한도를 상습적으로 초과해온 계정임을 의미합니다. YTD DSO 143일은 의미 있는 개선이며 현재 DPO 이내에 진입하였으나, 합의된 여신 조건보다 여전히 23일을 초과합니다. sell-in이 피크 시즌을 앞두고 1.7배 가속되면서 AR 익스포저는 Q2~Q3에 걸쳐 빠르게 확대될 것입니다. DSO가 ≤120일 방향으로 계속 압축되지 않으면, 잔액 증가와 과거 245일 결제 경향의 조합이 8월경 회수를 연체 구간으로 밀어낼 수 있습니다. 따라서 1.7배 매입 가속이 재고 적재가 아닌 수요 주도임을 반드시 검증해야 합니다 — 2025년 sell-out은 YoY 33.4% 급락(51,736u → 34,474u)하였고, 현재 재고는 3,148u로 채널 속도가 아직 회복되지 않음을 시사합니다.\n\n신용 정책 측면에서 한도 확대는 시기상조입니다. 2025년 sell-out 부진이 아직 반전되지 않았고, 2026년 월별 sell-out 데이터가 본 스냅샷에 전혀 부재하며, T12M DSO 레거시는 먼 과거가 아닌 최근 실적입니다. 현 익스포저를 유지하면 파트너십을 보전하면서 정상적인 피크 시즌 로딩을 수용하되, 구조적 지연 결제 계정에 대한 적절한 규율을 유지할 수 있습니다. DSO가 ≤120일로 정상화되고 2026년 sell-out 연속 강세로 채널 회복이 확인될 때 신용한도 확대 논의를 재개할 수 있습니다.",
+        "action_ko": [
+          "Q2~Q3 전반에 걸쳐 DSO를 주간 단위로 추적하십시오: 피크 시즌 sell-in이 적재되는 시점에 YTD DSO가 160일을 초과하면 즉시 플래그 처리 — 이는 2026년 개선세가 정체되고 있다는 신호입니다",
+          "추가 sell-in 승인 전 영업팀과 1.7배 매입 속도를 검증하십시오: 가속이 실수요 풀스루인지 채널 재고 적재인지를 확인하되, 현 재고 3,148u 및 강세 연도 기준 5~9월 예상 sell-out 런레이트(월 4,000~6,000u)를 벤치마크로 활용하십시오",
+          "공식 신용한도 검토 트리거를 설정하십시오: 2026년에 월 4,000u 초과 sell-out이 3개월 연속 이상 기록되고 Q3 말까지 YTD DSO가 ≤120일로 압축되면, 최신 AR 데이터를 기반으로 신용한도 확대 케이스를 재개하십시오"
+        ],
+        "credit_rationale_ko": "연체 제로와 빠르게 개선되는 YTD DSO는 현 익스포저 유지를 정당화하나, T12M DSO 245일 레거시와 2025년 sell-out 급락(-33%)의 조합은 결제 행태가 지속적으로 ≤120일에 도달하고 2026년 채널 속도가 확인되기 전까지 신용한도 확대를 시기상조로 만듭니다.",
+        "risk_reason_ko": "SAR 74M 잔액에 대한 연체 제로가 6일 이상 지속되고 있으며 즉각적인 회수 리스크는 낮은 수준입니다. T12M DSO 구조적 레거시가 피크 시즌 익스포저 확대를 앞두고 유일한 중기 모니터링 항목입니다."
       },
       "sales": {
         "headline": "eXtra cleared its 2025 inventory overhang and is re-accelerating at 1.7x buy pace entering peak season, but a catastrophic sell-out collapse last summer (-33% YoY, May-Jun halved, Sep -54%) demands immediate sell-out investment to avoid a second consecutive peak failure.",
@@ -9048,14 +9057,24 @@
         ],
         "has_sellout_data": true,
         "channel_signal": "yellow",
-        "channel_reason": "Buy pace and AR health are recovering, but consecutive peak sell-out failures (-33% in 2025) and thin current stock create execution risk heading into the most critical 8 weeks of the Saudi AC season."
+        "channel_reason": "Buy pace and AR health are recovering, but consecutive peak sell-out failures (-33% in 2025) and thin current stock create execution risk heading into the most critical 8 weeks of the Saudi AC season.",
+        "headline_ko": "eXtra는 2025년 재고 과잉을 해소하고 피크 시즌 진입 시점에 1.7배 구매 속도로 재가속 중이나, 지난 여름의 치명적인 Sell-Out 급락(-33% YoY, 5~6월 반토막, 9월 -54%)은 연속 2년 피크 실패를 방지하기 위한 즉각적인 Sell-Out 투자를 요구합니다.",
+        "analysis_ko": "Sell-In 차원: 2025년 40% 위축(SAR 152.8M→90.6M) 이후, eXtra는 2026년 T12M 평균 대비 1.7배 속도로 구매를 재개하였습니다 — 재고 과잉이 해소되고 거래처가 적극적으로 재가동되고 있음을 보여주는 가장 명확한 신호입니다. 다만, 2026년 YTD 절대 물량(SAR 64.7M)은 2024년 런레이트를 여전히 크게 하회하며, YTD DSO 143일은 120일 신용 조건을 초과합니다. T12M DSO 245일은 2025년 재고 과잉 기간 동안의 현금 흐름 압박을 반영하는 수치이며, 현재 OVD 0%는 연체 지속이 아닌 문제 해결을 확인해 줍니다. 채널은 구조적으로 지불 능력이 있으며 — 리스크는 신용이 아니라 Sell-Out 속도에 있습니다.\n\nSell-Out 차원: 2025년 패턴은 경보 수준입니다. 3~4월 선행 Sell-Out(5,546대/5,594대)은 실제로 견조했으나, 진정한 여름 피크는 붕괴되었습니다 — 5월은 2024년 6,078대 대비 3,009대로 급락(-51%), 6월은 5,461대 대비 2,722대(-50%), 핵심 9월 구간은 10,243대에서 4,729대로 하락(-54%)하였습니다. 사우디 AC 시장이 구조적으로 성장하고 있음에도 불구하고 연간 Sell-Out은 33% 감소하였습니다. 근본 원인 위계: (1) 2024년 과잉 재고 적재(51K대 Sell-Out 대비 SAR 152.8M Sell-In)가 2025년 H1 내내 매장 공간과 현금을 잠식하여 재주문 억제; (2) 경쟁사 침투 — eXtra의 재고 소진 기간 동안 Samsung, Hisense, Midea가 진열 공간 및 프로모션 우선권을 확보했을 가능성이 높음; (3) NF/C에서 ND/NW 시리즈로의 모델 전환이 진열대에서 일시적 품목 공백을 초래. 현재 재고 3,148대는 2024년 피크 수준(9월 단독 10K+대) 기준 불과 1~2주치 공급량에 해당하며, eXtra가 5~9월 피크 구간에 위험할 만큼 얇은 재고로 진입 중임을 의미합니다. 적합 모델은 재고 중(NW182C 647대, ND182C 427대, ND242C 384대는 2025년 상위 판매 모델과 일치)이나, 물량이 부족합니다.\n\n투자 근거: 해당 거래처는 재고 과잉을 자체 해소하고 구매를 재가동하여, 깨끗한 AR 상태로 피크에 진입하고 있습니다. 2026년 기회 창은 6~7월 폭염 피크로 진열 배분이 확정되기 전까지 4~6주 열려 있습니다. 지금 즉시 Sell-Out 지원과 공동 마케팅을 전개하는 것이 3년 연속 피크 실적 부진을 방지하는 직접적인 레버입니다. 투자를 보류할 경우 Samsung에 진열 공간을 영구적으로 빼앗길 위험이 있으며 — 가전 최대 OR 채널에서 A+ 거래처를 잃는 것은 분기 미달이 아닌 구조적 후퇴입니다.",
+        "action_ko": [
+          "NW182C 및 ND 시리즈 대상 5~6월 Sell-Out 프로모션 개시(번들/캐시백/설치기사 인센티브), 2024년 피크 수준 회복 목표(5+6월 벤치마크: 11,500대); 6월 플래노그램 확정 전 2주 이내에 eXtra 트레이드 마케팅으로부터 프로모션 확약 확보",
+          "주요 eXtra 전점 진열 현황 감사(branch-level display audit) 실시 — 2024→2025 피크 붕괴 패턴은 진열 강등 또는 경쟁사 침투를 강력히 시사함; 6~7월 피크 전 LG NW/ND 플래그십 SKU 대상 핵심 진열 공간 재배분 협상 진행",
+          "추가 Sell-In 3,500~4,000대 제안(NW182C 및 ND242C 우선)으로 WOS를 약 4주에서 6주 이상으로 확충; 재무 보고 시 신용 확대가 아닌 OVD 0% 및 1.7배 구매 모멘텀을 근거로 한 선행 피크 투자로 프레이밍"
+        ],
+        "investment_rationale_ko": "피크 시즌이 열려 있고 재고는 부족하며 2025년 붕괴는 Sell-Out 주도로 발생하였습니다 — 이번 달 집중 프로모션과 진열 투자는 경쟁사가 여름 포지셔닝을 확정하기 전에 eXtra의 재개된 구매 속도를 즉각적인 진열 판매 속도로 전환하는 직접적 수단입니다.",
+        "channel_reason_ko": "구매 속도와 AR 건전성은 회복세이나, 연속 피크 Sell-Out 실패(-33% in 2025)와 현재 얇은 재고가 사우디 AC 시즌의 가장 중요한 8주를 앞두고 실행 리스크를 형성합니다."
       },
       "synthesis": {
         "headline": "eXtra is clean on AR today but dangerously thin on stock entering the peak — the window to prevent a third consecutive summer failure closes in 2 weeks.",
         "verdict": {
           "risk_level": "green",
           "investment_signal": "invest",
-          "one_line": "Risk GREEN — INVEST. AR is pristine, the account self-corrected its 2025 overhang, and the May–Sep peak window is open right now; inaction risks ceding floor space to Samsung permanently."
+          "one_line": "Risk GREEN — INVEST. AR is pristine, the account self-corrected its 2025 overhang, and the May–Sep peak window is open right now; inaction risks ceding floor space to Samsung permanently.",
+          "one_line_ko": "리스크 GREEN — invest. AR은 최상의 상태이며, 계정은 2025년 과잉 재고를 자체적으로 해소하였고, 5~9월 피크 윈도우가 현재 열려 있습니다. 비대응 시 매대 공간을 Samsung에 영구적으로 내줄 위험이 있습니다."
         },
         "summary_3lines": [
           "eXtra carries SAR 74.2M at 0% overdue with a 1.7x accelerating buy pace — the credit crisis of 2025 is resolved and the account is re-engaging at scale heading into peak season.",
@@ -9095,7 +9114,46 @@
             "deadline": "2026-09-30"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "headline_ko": "eXtra의 AR은 현재 양호한 상태이나, 피크 시즌 진입을 앞두고 재고가 위험 수준으로 부족합니다 — 세 번째 연속 여름 실패를 방지할 수 있는 기회의 창이 2주 후 닫힙니다.",
+        "summary_3lines_ko": [
+          "eXtra는 SAR 74.2M의 AR을 보유하면서 OVD 0%, 매입 속도 1.7배 가속 중입니다 — 2025년 신용 위기는 해소되었으며, 피크 시즌을 앞두고 계정이 대규모로 재참여하고 있습니다.",
+          "2025년 sell-out 급락(YoY −33%, 5~6월 반토막, 9월 −54%)은 구조적 이탈이 아닌 재고 부족에서 비롯된 것입니다 — 다만 해당 재고 소진 기간 동안 경쟁사가 매대를 확보하였으며, 현재 재고 3,148u는 2024년 피크 기준으로 1~2주분에 불과합니다.",
+          "향후 2주 내 sell-out 투자 및 추가 재고 보충이 이루어지지 않을 경우, eXtra는 세 번째 연속 피크 시즌에 재고 부족·프로모션 부재 상태로 6월 플래노그램 동결을 맞이하게 됩니다 — 이는 회복 가능한 2025년 일시적 부진을 왕국 최대 OR 체인에서의 영구적 점유율 손실로 전환시킬 수 있습니다."
+        ],
+        "decision_required_ko": "eXtra의 6월 플래노그램 동결로 경쟁 SKU가 핵심 진열 위치를 선점하기 전에, 이번 주 내로 5~6월 sell-out 투자 패키지(프로모션 + 추가 sell-in 3,500~4,000u)를 승인하시기 바랍니다.",
+        "options_ko": [
+          {
+            "option": "Option A — invest: NW182C/ND 시리즈 대상 5~6월 프로모션 실행 + 추가 sell-in 3,500~4,000u + 진열 실사 및 재협상",
+            "consequence": "피크 시즌 오픈 윈도우를 선점하여 2024년 5~6월 기준(합산 약 11,500u) 회복을 목표로 하며, 6월 플래노그램 동결 전에 매대 존재감을 재확보합니다 — 현재 sell-in 속도 기준 추가 매출 상향 여력은 SAR 15~20M이며, DSO 리스크는 OVD 0% 실적 및 주간 모니터링 트리거로 관리됩니다."
+          },
+          {
+            "option": "Option B — hold: 추가 sell-out 지출 없이 현재 sell-in 속도 유지, DSO가 ≤120d로 정상화될 때까지 대기",
+            "consequence": "4~6주의 플래노그램 동결 이전 기회의 창을 상실하게 됩니다. eXtra는 재고 부족 상태로 6~7월 혹서기 피크를 맞이하는 가운데 경쟁 SKU가 핵심 진열 위치를 점유하게 되며, A+ 계정에서 세 번째 연속 여름 부진이 발생할 위험이 있습니다 — 이는 보수적 입장으로 위장된 구조적 손실입니다."
+          }
+        ],
+        "timeline_ko": [
+          {
+            "step": "5~6월 프로모션(NW182C/ND 번들 또는 캐시백, 설치 인센티브)에 대한 eXtra 트레이드 마케팅 확약 확보 — 6월 플래노그램 동결 이전에 즉시 협상 착수",
+            "deadline": "2026-05-20"
+          },
+          {
+            "step": "eXtra 주요 매장 지점별 진열 실사 완료 및 LG NW/ND 플래그십 SKU 매대·진열 재배치 협상",
+            "deadline": "2026-05-20"
+          },
+          {
+            "step": "추가 3,500~4,000u(NW182C + ND242C 우선) 승인 및 출고 — 6월 혹서기 피크 고정 전에 WOS를 약 2주에서 6주 이상으로 확대",
+            "deadline": "2026-05-27"
+          },
+          {
+            "step": "주간 DSO 검토 트리거: Q2 sell-in 적재 시 YTD DSO가 160d 초과 확대될 경우 즉시 플래그 — 추가 신용 수용의 중단 기준점",
+            "deadline": "2026-06-30 (주간 지속)"
+          },
+          {
+            "step": "공식 신용 한도 재검토: 2026년 sell-out이 3개월 연속 4,000u/월 초과이며 YTD DSO가 ≤120d로 압축된 경우에 한해 재개",
+            "deadline": "2026-09-30"
+          }
+        ]
       }
     },
     "1120000002": {
@@ -11126,5 +11184,6 @@
         ]
       }
     }
-  }
+  },
+  "translated_at": "2026-05-06 14:07"
 }
