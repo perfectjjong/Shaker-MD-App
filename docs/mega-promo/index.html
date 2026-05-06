@@ -529,15 +529,15 @@ tr:hover td{background:#f8fafc}
     <div class="tbl-wrap">
     <table id="tblSummaryRotary" style="font-size:12px;table-layout:fixed">
       <colgroup>
-        <col style="width:9%"><col style="width:7%">
-        <col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%">
-        <col style="width:6%"><col style="width:7%">
-        <col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:11%">
+        <col style="width:8%"><col style="width:6%">
+        <col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:5%"><col style="width:5%">
+        <col style="width:5%"><col style="width:6%">
+        <col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:9%">
       </colgroup>
       <thead><tr>
         <th>용량</th><th>타입</th>
         <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
-        <th>C.PRO</th><th>Midea</th><th>기타</th><th>합계</th>
+        <th>C.PRO</th><th>Midea</th><th>TCL</th><th>Panasonic</th><th>기타</th><th>합계</th>
         <th style="color:var(--primary)">LG가</th><th style="color:var(--amber)">Gree가</th>
         <th>C.PRO가</th><th>Midea가</th>
       </tr></thead>
@@ -551,15 +551,15 @@ tr:hover td{background:#f8fafc}
     <div class="tbl-wrap">
     <table id="tblSummaryInverter" style="font-size:12px;table-layout:fixed">
       <colgroup>
-        <col style="width:9%"><col style="width:7%">
-        <col style="width:7%"><col style="width:7%"><col style="width:7%"><col style="width:7%">
-        <col style="width:6%"><col style="width:7%">
-        <col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:11%">
+        <col style="width:8%"><col style="width:6%">
+        <col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:6%"><col style="width:5%"><col style="width:5%">
+        <col style="width:5%"><col style="width:6%">
+        <col style="width:9%"><col style="width:9%"><col style="width:9%"><col style="width:9%">
       </colgroup>
       <thead><tr>
         <th>용량</th><th>타입</th>
         <th style="color:var(--primary)">LG</th><th style="color:var(--amber)">Gree</th>
-        <th>C.PRO</th><th>Midea</th><th>기타</th><th>합계</th>
+        <th>C.PRO</th><th>Midea</th><th>TCL</th><th>Panasonic</th><th>기타</th><th>합계</th>
         <th style="color:var(--primary)">LG가</th><th style="color:var(--amber)">Gree가</th>
         <th>C.PRO가</th><th>Midea가</th>
       </tr></thead>
@@ -2135,7 +2135,7 @@ function renderSummary(year){
 
   if(!PRICES_CURRENT) PRICES_CURRENT = PRICES_2026;
 
-  const qBrands = ['LG','GREE','CLASS PRO','MIDEA'];
+  const qBrands = ['LG','GREE','CLASS PRO','MIDEA','TCL','PANASONIC'];
   const pBrands = ['LG','GREE','CLASS PRO','MIDEA'];
   const typeLabel = t => t.replace('Cold - Rotary','Cold / ON·OFF')
                           .replace('Hot And Cold - Rotary','H&C / ON·OFF')
@@ -2144,7 +2144,7 @@ function renderSummary(year){
 
   function buildRows(types){
     let html = '';
-    const grandTot = {LG:0, GREE:0, 'CLASS PRO':0, MIDEA:0, others:0, total:0};
+    const grandTot = {LG:0, GREE:0, 'CLASS PRO':0, MIDEA:0, TCL:0, PANASONIC:0, others:0, total:0};
 
     for(const sz of sizeOrder){
       for(const at of types){
