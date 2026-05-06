@@ -1981,7 +1981,7 @@ function fhBuildGradeFilter(){
     (RAW.master||[]).forEach(function(m){ CLS_MAP2[String(int_id(m.id))]=m.classification||'Unclassified'; });
     var txnIds=new Set();
     (RAW.txn||[]).forEach(function(t){ txnIds.add(String(int_id(t[C.ID]))); });
-    var ar=((RAW.ar||{}).current||{}).accts||{};
+    var ar=fhGetArData();
     Object.keys(ar).forEach(function(sid){
       if(!txnIds.has(sid)) return;
       var cls=CLS_MAP2[sid]||'Unclassified';
