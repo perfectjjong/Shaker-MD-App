@@ -1922,7 +1922,7 @@ function renderStock(){
   if(el2) el2.textContent = wk;
   const th = document.getElementById('thStockUnits');
   if(th) th.textContent = `${wk} Stock (units)`;
-  const promoEnd = new Date('2026-05-15');
+  const promoEnd = new Date(PROMO_DATA.meta.promo_years['2026'].end);
   const today = new Date();
   const remain = Math.max(0, Math.ceil((promoEnd - today) / 86400000));
   const elR = document.getElementById('stockPromoRemain');
