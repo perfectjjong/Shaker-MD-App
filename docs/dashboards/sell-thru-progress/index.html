@@ -2274,8 +2274,9 @@ function renderFHCompare(){
   }).join('')+'</tr>';
   var rows=moves.map(function(mv){
     var interp=FH_MOVE_INTERP[mv.qY+''+mv.qT]||'Quadrant shift';
-    var bY='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qY]+'22;color:'+FH_Q_COLORS[mv.qY]+';font-size:10px;font-weight:700;">'+mv.qY+'분면</span>';
-    var bT='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qT]+'22;color:'+FH_Q_COLORS[mv.qT]+';font-size:10px;font-weight:700;">'+mv.qT+'분면</span>';
+    var QN={1:'Safe',2:'Anomaly',3:'Critical',4:'Watch'};
+    var bY='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qY]+'22;color:'+FH_Q_COLORS[mv.qY]+';font-size:10px;font-weight:700;">'+QN[mv.qY]+'</span>';
+    var bT='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qT]+'22;color:'+FH_Q_COLORS[mv.qT]+';font-size:10px;font-weight:700;">'+QN[mv.qT]+'</span>';
     var rowBg=mv.qY===1&&mv.qT===2?'background:rgba(249,115,22,0.07);':
               mv.qY===2&&mv.qT===1?'background:rgba(16,185,129,0.07);':
               mv.qY===1&&mv.qT===3?'background:rgba(239,68,68,0.10);':'';
