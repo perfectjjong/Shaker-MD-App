@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-05-06 09:59",
+  "generated_at": "2026-05-06 10:36",
   "version": 2,
   "sell_thru_date": "05-05",
-  "account_count": 66,
+  "account_count": 77,
   "accounts": {
     "1110000002": {
       "sid": "1110000002",
@@ -3625,6 +3625,1043 @@
       "synthesis": {
         "raw": "You've hit your limit · resets 11:20am (Asia/Riyadh)",
         "parse_error": true
+      }
+    },
+    "2071878": {
+      "sid": "2071878",
+      "name": "شركه مصنع الخيام الاوربيه",
+      "cls": "D",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero 2026 AR exposure masks a structurally broken account — Grade D, Q3 Critical, dormant since 2024 with no sign of return.",
+        "analysis": "Current AR balance is SAR 0 with no overdue aging whatsoever, which superficially reads as clean. However, this is not a sign of health — it reflects total dormancy. The account recorded SAR 532,132 in Sell-In during 2024 and has generated zero revenue in 2026 (and likely 2025 as well, given no T12M DSO is available). The absence of activity is itself a signal: this account has either self-selected out of ordering, or has been operationally constrained by prior credit restrictions. Either way, LG holds no live receivable risk today.\n\nThe deeper concern is the underlying credit quality profile. Grade D is the bottom of the risk tier, and the Q3 Critical quadrant classification — defined by DSO exceeding DPO 180d and elevated OVD — tells us this account historically failed to pay within terms, and the stress was severe enough to hit both collection and repayment simultaneously. With peak season (May–September) now beginning, there is a real possibility the account attempts to re-engage for summer inventory. If new Sell-In is granted without disciplined controls, LG risks replicating the prior overdue pattern at a point in the season when collection leverage diminishes post-peak.\n\nCredit policy recommendation is unambiguous: do not expand credit. The combination of Grade D, Q3 Critical history, and multi-year dormancy does not support any credit limit increase. If the account resurfaces with orders, a zero-credit (prepayment or secured LC) policy should be enforced until at least two consecutive clean payment cycles are demonstrated. Maintaining a nominal limit on paper while enforcing prepayment in practice is the prudent structure here.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D rating combined with Q3 Critical historical classification and complete 2026 dormancy justifies reducing or zeroing the credit limit to eliminate re-engagement risk without prepayment controls.",
+        "action": [
+          "Flag account in credit system as 'prepayment-only' before any new order is accepted — no open credit releases regardless of season demand pressure",
+          "Confirm with Sales whether account has made any informal inquiries for Q2/Q3 2026 stock; if so, qualify solvency before engaging",
+          "Schedule formal credit review in 90 days — if still zero activity, consider reclassifying as inactive and archiving from active coverage reporting"
+        ],
+        "risk_level": "red",
+        "risk_reason": "Zero current exposure is deceptive — Grade D + Q3 Critical history + peak-season re-engagement risk makes this account a latent high-risk exposure if credit is extended without prepayment enforcement."
+      },
+      "sales": {
+        "headline": "Complete 2026 radio silence into peak season — account has effectively disengaged from LG.",
+        "analysis": "The account purchased SAR 532K in 2024 but has posted zero Sell-In through May 2026 — the opening month of Saudi peak season. For an IR_Others account with a 90-day credit term, the absence of any order activity at this point in the calendar year is not a timing anomaly; it is a structural disengagement signal. The zero AR balance confirms there is no residual commercial relationship in play: no open orders, no outstanding receivables, nothing to indicate the account is warm but slow. The pipeline is empty in both directions.\n\nRoot cause hypotheses, in order of likelihood: (1) Competitor switch — a Grade D IR_Others account with modest historical volume is a prime target for Samsung or Gree aggressive pricing during pre-season loading; (2) Business model shift — the account name ('European Tents Factory') suggests a manufacturing or B2B-adjacent operation, and their AC procurement pattern may have moved to project-based or direct-sourcing channels; (3) Financial stress leading to voluntary disengagement — they may have chosen not to open credit exposure ahead of the 90-day cycle given internal cash constraints, even though current AR is clean.\n\nWith Q3-Critical quadrant designation and a Grade D rating, this account carried structural risk even when it was buying. The combination of zero 2026 revenue, no active AR, and peak season already opening without a single purchase order makes the investment case essentially nil. Deploying sell-out support, co-marketing, or credit uplift into this account would require proof of life — evidence the account is still actively retailing AC — which does not currently exist.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Zero 2026 Sell-In into peak season with no AR activity confirms disengagement; Grade D IR_Others account does not justify proactive resource allocation without a concrete re-engagement signal from the account.",
+        "action": [
+          "Field visit within 2 weeks: confirm account is still operational and understand 2026 non-purchase reason (competitor switch, business change, or financial withdrawal)",
+          "If account is still active retailer: one-time re-engagement offer tied to a minimum order threshold (e.g., SAR 100K pre-season loading) — no credit extension without proof of sell-through",
+          "If no positive response by end of May: formally downgrade to dormant, reallocate any earmarked BTL budget to higher-grade IR accounts heading into peak June–July demand"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero purchases in 2026 through peak season open with no AR activity — account is effectively inactive."
+      },
+      "synthesis": {
+        "headline": "Account is effectively dead — zero 2026 activity into peak season opening; the only decision is whether to formally close it or run one last field visit before archiving.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. No live AR exposure today, but Grade D + Q3 Critical history demands prepayment-only lock before any peak-season re-engagement attempt."
+        },
+        "summary_3lines": [
+          "SAR 532K buyer in 2024 has gone completely silent — zero Sell-In, zero AR, zero pipeline activity through the opening of Saudi peak season 2026.",
+          "Grade D rating and Q3 Critical quadrant confirm this account historically failed on both collection and payment simultaneously; dormancy is not recovery — it is either competitor defection, business model shift, or self-imposed credit retreat.",
+          "If no action is taken and the account spontaneously re-engages in June–July under a season-pressure sales cycle, LG risks replicating the prior overdue pattern at the worst possible collection window — when leverage disappears post-peak."
+        ],
+        "decision_required": "Enforce prepayment-only policy NOW and dispatch a field visit within 2 weeks — if no confirmed operational status and re-engagement signal by end of May, formally archive as dormant and reallocate any reserved budget.",
+        "options": [
+          {
+            "option": "Option A — Prepayment lock + field visit (recommended)",
+            "consequence": "Credit system flagged prepayment-only immediately; sales rep visits within 2 weeks to confirm account is still operational; if active, a single conditional re-engagement offer (SAR 100K+ prepaid minimum) is extended; if no response by 31 May, account is archived. Cost: 1 field visit. Risk: near-zero."
+          },
+          {
+            "option": "Option B — Passive watch with no action",
+            "consequence": "Account remains on standard credit terms on paper; if re-engagement occurs under peak-season urgency, sales may release an order without finance sign-off, reinstating Grade D credit exposure during June–August — the exact window where post-peak collection deteriorates fastest."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Flag account as 'prepayment-only' in credit system — block any order release without CFO sign-off",
+            "deadline": "2026-05-07 (this week, before any order is accepted)"
+          },
+          {
+            "step": "Field visit: confirm account is still operational, identify 2026 non-purchase reason, and assess competitor/financial situation",
+            "deadline": "2026-05-20"
+          },
+          {
+            "step": "Go/No-Go decision: if no positive re-engagement signal, formally reclassify as dormant, archive from active coverage, reallocate BTL budget to higher-grade IR accounts for peak season",
+            "deadline": "2026-05-31"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1150000011": {
+      "sid": "1150000011",
+      "name": "GOLDEN OVEN .CO",
+      "cls": "D",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Dormant Grade-D account with zero 2026 activity entering peak season — no live AR exposure but historically distressed payment profile warrants hard credit freeze.",
+        "analysis": "AR health is superficially clean: SAR 0 balance, SAR 0 overdue as of 2026-05-05. However, this cleanliness is not a sign of financial strength — it reflects complete commercial inactivity in 2026. The account placed SAR 999,985 Sell-In in 2024 but has generated zero revenue in 2026 YTD, including the opening months of Saudi peak season (May entry). Zero orders from a channel-active IR account in peak season is itself a distress signal: the account either lost credit access, redirected volume to competitors, or is operationally impaired.\n\nCollection risk on existing balance is technically nil — nothing to collect. But the systemic risk is the Q3 Critical quadrant designation, which is driven by DSO historically exceeding DPO (180d), combined with a 35.4% YTD OVD baseline. Grade D further confirms chronic payment stress. If LG were to extend new credit today, it would be extending into a profile that has demonstrated inability to honor even 90-day terms. The 35.4% OVD baseline means over one-third of past receivables historically aged past due — far above acceptable IR channel standards.\n\nCredit policy is straightforward: this account must not receive incremental credit exposure without a formal credit review and settlement of any legacy obligations. The combination of Grade D + Q3 Critical + zero 2026 engagement is a pattern consistent with account deterioration, not recovery. Maintaining credit limit at current level is acceptable only if that limit effectively functions as a freeze. Any reactive credit extension to 'reactivate' this account in peak season would be high-risk capital deployment with low collection confidence.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D, Q3 Critical quadrant, 35.4% historical OVD baseline, and full 2026 commercial dormancy collectively indicate the existing credit ceiling should be reduced to zero or near-zero until a formal credit rehabilitation review is completed.",
+        "action": [
+          "Freeze new Sell-In approvals for GOLDEN OVEN .CO pending a mandatory credit review — no shipments without Finance sign-off regardless of open order requests",
+          "Conduct account status investigation via IR sales team: determine why zero orders in 2026 peak season entry (voluntary exit, LG credit block, or account insolvency)",
+          "If account requests reactivation, require: (1) signed payment commitment letter, (2) minimum 30% advance payment on first order, (3) reduce credit term from 90d to 30d COD-forward until two clean payment cycles are confirmed"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR exposure today, but Grade D + Q3 Critical history + zero 2026 activity creates high probability of collection failure if credit is extended — watchlist status maintained."
+      },
+      "sales": {
+        "headline": "GOLDEN OVEN has gone dark — zero 2026 sell-in entering peak season signals effective self-exit from LG",
+        "analysis": "The account posted SAR ~1M in 2024 sell-in but has recorded zero revenue through May 2026, with peak season (May–September) already underway. In the IR_Others segment, a D-grade account that has not placed a single order by Week 18 of the calendar year is not exhibiting a slow-start pattern — it has disengaged. The clean AR balance (SAR 0) is not a positive signal here; it simply means there is no active trade relationship to speak of, rather than any evidence of improved financial discipline.\n\nRoot cause is most likely one of two scenarios: (1) inventory overhang — if 2024 purchases were over-stocked relative to sell-out velocity, the account may still be liquidating and has no headroom or appetite to re-order; or (2) competitor switch — Gree, Midea, or Hisense have been aggressive on price in the IR channel, and a Grade D account with tight margins is exactly the profile that migrates to lowest-cost supply. The 35.4% YTD OVD baseline on the portfolio further confirms this account has historically struggled to convert sell-in into timely cash, suggesting sell-out velocity was always weak.\n\nWith credit term already at 90 days and a Critical Q3 quadrant driven by chronic overdue patterns, extending further credit or funding promotional support into this account carries asymmetric downside. There is no current momentum signal — no open order, no recent engagement, no evidence of pipeline — that would justify unlocking additional investment. The account should be classified as effectively inactive.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Zero 2026 sell-in at peak season onset, Grade D classification, and chronic OVD history offer no credible return on incremental investment; resources are better redeployed to active IR accounts showing Q1/Q2 momentum.",
+        "action": [
+          "Confirm account status with local sales rep — one direct call to determine if disengagement is intentional (competitor switch, business wind-down) or recoverable (cash flow pause)",
+          "Do not extend new credit or initiate any promotional outreach until account places an order and demonstrates willingness to re-engage on LG terms",
+          "If rep confirms account is actively buying from competitors, flag for formal inactive classification and reallocate 90d credit line capacity to higher-grade IR accounts"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 sell-in through peak season entry with no open order pipeline — account is functionally inactive"
+      },
+      "synthesis": {
+        "headline": "GOLDEN OVEN has self-exited LG at peak season — no current AR fire, but any credit extension into this Grade D / Q3 Critical profile would be capital destruction.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. Zero AR exposure today, but Grade D + 35.4% OVD history makes reactivation credit a trap; redeploy the 90d line to performing IR accounts."
+        },
+        "summary_3lines": [
+          "GOLDEN OVEN placed SAR 1M Sell-In in 2024 but has recorded zero revenue through May 2026 — entering peak season with no open orders, no pipeline, no signal of intent to re-engage.",
+          "Root cause is most likely competitor migration (Gree / Midea / Hisense price pressure on a margin-thin Grade D buyer) or uncleared 2024 inventory overhang suppressing reorder appetite — either way, the account is functionally inactive.",
+          "If LG takes no action, the account exits the ecosystem permanently and the 90d credit capacity sits idle through peak; if LG reactively re-extends credit to force reactivation, it repeats the same chronic OVD cycle with no sell-out velocity to backstop it."
+        ],
+        "decision_required": "This week: authorize one field confirmation call to determine if disengagement is permanent (competitor switch / business wind-down) or recoverable — then immediately classify as inactive or set hard rehabilitation conditions before any shipment clears Finance.",
+        "options": [
+          {
+            "option": "Option A — Immediate Inactive Classification",
+            "consequence": "Freeze credit line to zero, no outreach, reallocate 90d capacity to Q1/Q2 IR accounts with demonstrated sell-out momentum. GOLDEN OVEN re-engages only if it self-initiates on LG's revised terms (30% advance + 30d COD until two clean cycles). Opportunity cost: ~SAR 1M revenue foregone if account was recoverable, but zero collection risk."
+          },
+          {
+            "option": "Option B — Controlled Recovery Probe",
+            "consequence": "One sales rep call by May 9 to determine root cause. If recoverable, require (1) signed payment commitment, (2) 30% advance on first order, (3) credit term reduced from 90d to 30d. If rep confirms competitor switch or wind-down, immediately execute Option A. Limits downside while preserving a narrow reactivation window during peak season."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Sales rep direct call to GOLDEN OVEN — determine voluntary exit vs recoverable pause",
+            "deadline": "2026-05-09 (this week, before any order could theoretically enter the pipeline)"
+          },
+          {
+            "step": "Finance credit freeze formalized in system — no Sell-In approval without CFO sign-off regardless of order request",
+            "deadline": "2026-05-07 (immediate, pre-emptive — before rep call outcome)"
+          },
+          {
+            "step": "Decision gate — classify inactive OR issue conditional reactivation terms based on rep feedback",
+            "deadline": "2026-05-13 (end of following week, final verdict before peak season accelerates)"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1110000178": {
+      "sid": "1110000178",
+      "name": "ATALLAH MAJOUL AL-HUDHALI",
+      "cls": "D",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Dormant D-grade account with zero 2026 activity and zero current AR — collection risk is nil today, but structural Grade D / Q3-Critical history means any peak-season reactivation must be treated as a new credit application, not a renewal.",
+        "analysis": "Current AR position is clean at SAR 0, so there is no live collection risk as of 05-May-2026. However, this cleanliness is misleading: it reflects complete account dormancy, not healthy trading. The account generated SAR 668K in sell-in during 2024, implying a real commercial relationship existed — yet 2026 shows zero revenue with peak season now opening. Dormancy of this kind in IR_Others typically signals one of three scenarios: (1) LG internally froze credit due to past overdue behavior, (2) the dealer is under liquidity stress and unable to commit orders, or (3) the dealer has defected to a competing brand. Grade D classification and the Q3-Critical quadrant tag — which requires both DSO > 180d (2× credit term of 90d) and elevated OVD — confirm this account carried a structurally poor payment history prior to going dark.\n\nCredit policy assessment is straightforward: with a Grade D rating, Q3-Critical history, and a full fiscal year of zero activity, there is no justification for maintaining or expanding a credit line. The portfolio-level YTD OVD baseline of 35.4% is already elevated; exposing additional credit to a Grade D dormant account in a high-OVD environment compounds concentration risk. If the account reactivates for peak season (May–September), the correct entry gate is Cash-in-Advance (CIA) or 30d maximum with 50% prepayment — not the original 90d credit term.\n\nThe single actionable question for sales: why did this account go silent in 2026? The answer determines whether this is a recoverable relationship worth re-engaging under tighter terms, or a de facto write-off candidate to be formally closed and replaced with a healthier IR dealer in the same region.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D + Q3-Critical history with zero 2026 activity eliminates any basis for open credit; reactivation terms must revert to CIA or secured prepayment until a minimum 2-quarter clean payment record is established.",
+        "action": [
+          "Instruct sales to conduct an immediate account status call — determine whether dormancy is LG-side (credit freeze) or dealer-side (liquidity/defection); document outcome in CRM before any peak-season order is accepted.",
+          "Flag account in ERP: block standard 90d credit term; require finance pre-approval with CIA or ≥50% prepayment condition for any new order above SAR 50K during May–September peak window.",
+          "If dealer confirms intent to reactivate, initiate formal Grade D re-evaluation: request updated bank reference, trade references, and current balance sheet before restoring any open credit line."
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "Zero live AR means no immediate collection loss, but Grade D + Q3-Critical precedent and full-year dormancy create high reactivation risk if credit terms are not tightened before any new peak-season order is booked."
+      },
+      "sales": {
+        "headline": "Account has gone completely dark in 2026 — zero purchases entering peak season signals probable competitor switch or terminal disengagement.",
+        "analysis": "ATALLAH MAJOUL AL-HUDHALI recorded SAR 668K in sell-in during 2024 but shows zero 2026 revenue as of May 2026 — the heart of Saudi AC pre-peak loading season. AR balance is also zero, meaning the account has cleared prior obligations and simply stopped ordering. This pattern — debt settled, buying stopped — is a classic quiet exit: the account has likely either shifted its sourcing to a competitor (Gree/Midea at lower price points are common IR_Others switchers) or is sitting on unsold 2024/2025 inventory with no capacity to absorb new stock. There is no sell-out visibility to confirm which, but the complete absence of any 2026 buy activity through May, when even marginal IR accounts typically load ahead of summer, is a strong disengagement signal.\n\nThe Q3 Critical quadrant classification reflects the historical stress pattern — elevated OVD and extended DSO on prior cycles — but current financials are technically clean (SAR 0 balance). This does not rehabilitate the account; it simply means LG has no current exposure. The Grade D rating confirms this is a low-strategic-value outlet in the IR_Others tier, where switching costs for the account are minimal and LG brand pull is weakest relative to price-competitive alternatives.\n\nWith peak season (May–September) already opening and no orders placed, the window to generate meaningful 2026 volume from this account has effectively closed. Even if the account were to reactivate now, sell-through of new stock before season-end would be uncertain, and extending credit to a historically stressed D-grade account into a peak cycle carries collection risk with limited upside. Investment here diverts attention and credit headroom from higher-grade, actively buying IR accounts.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Zero 2026 activity entering peak season on a Grade D, historically stressed account offers no credible return on any form of LG investment.",
+        "action": [
+          "Confirm no open orders or outstanding commitments — if truly clean, formally close active account management coverage and reallocate sales visit frequency to Grade B/C IR accounts with 2026 momentum.",
+          "Conduct a single reactivation call to determine root cause (inventory overhang vs. competitor switch vs. financial constraint) — log finding for future cycle review, but do not offer credit extension or promotional support.",
+          "If competitor switch is confirmed, flag to IR channel manager as a price-positioning signal for IR_Others segment — pattern may indicate a broader Gree/Midea encroachment in this sub-tier."
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 sell-in with zero AR balance entering peak season — account has quietly exited without formal notice."
+      },
+      "synthesis": {
+        "headline": "Account has quietly exited — zero 2026 buys entering peak season on a Grade D / Q3-Critical history means there is no live collection risk today, but any reactivation attempt without tightened terms converts a dormant risk into an active one.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. Account cleared debt and stopped buying; reactivation on legacy 90d terms would create new exposure with near-zero upside."
+        },
+        "summary_3lines": [
+          "ATALLAH went silent in 2026 — SAR 668K buyer in 2024, zero orders in 2026 entering peak season, AR balance fully cleared to SAR 0.",
+          "Grade D + Q3-Critical classification confirms structurally stressed payment history prior to dormancy; quiet exit pattern (debt settled, buying stopped) signals competitor switch (Gree/Midea) or inventory overhang — not a temporary pause.",
+          "If management does nothing and a sales rep extends the original 90d credit line to restart the relationship during peak season, LG books new exposure on a Grade D account at the worst possible time — with no sell-out visibility and no collection leverage."
+        ],
+        "decision_required": "Decide this week whether to formally close active coverage and reallocate credit headroom, or run a single CIA-only reactivation probe — there is no middle path where legacy 90d terms are acceptable.",
+        "options": [
+          {
+            "option": "Option A — Controlled Exit: Close active account management, conduct one diagnostic call (competitor switch vs. inventory overhang), log finding, reallocate sales visits and credit headroom to active Grade B/C IR accounts.",
+            "consequence": "Zero new credit exposure; intelligence captured for IR_Others channel pricing review; no peak-season volume from this account but also no collection risk."
+          },
+          {
+            "option": "Option B — CIA-Only Reactivation Probe: Allow a single order this peak season under Cash-in-Advance or minimum 50% prepayment terms, with a SAR 50K order cap and finance pre-approval gate.",
+            "consequence": "Potential partial volume recovery (likely sub-SAR 200K given late-season entry); establishes whether account is genuinely reclaimable before formal exit decision; adds minimal credit risk if CIA terms are enforced."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Sales conducts single diagnostic call — confirm root cause (competitor switch / inventory overhang / LG-side credit freeze) and document in CRM",
+            "deadline": "2026-05-09 (this week)"
+          },
+          {
+            "step": "Finance blocks 90d credit term in ERP regardless of outcome; CIA / ≥50% prepayment flag activated on account",
+            "deadline": "2026-05-09 (this week)"
+          },
+          {
+            "step": "Based on diagnostic outcome: formally close account OR issue CIA-only proforma for peak-season order — no decision in limbo beyond this date",
+            "deadline": "2026-05-13 (end of next week)"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1180000982": {
+      "sid": "1180000982",
+      "name": "Misc. Acc. Khalid Alessa",
+      "cls": "C",
+      "team": "SME",
+      "signal": "red",
+      "investment_signal": "hold",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero current exposure masks a dormant Grade-C account that has generated no 2026 revenue entering peak season — structural risk, not active collection risk.",
+        "analysis": "AR health is superficially clean: SAR 0 balance, SAR 0 overdue, all aging buckets empty. There is literally nothing to collect, which eliminates near-term collection risk. However, the zero balance must be read alongside context: this account produced SAR 1.06M in 2024 Sell-In and has placed zero orders in 2026 through May — the precise month peak season begins (May–September). The dormancy is the signal, not the clean AR. A Grade C SME account going silent at season entry typically indicates one of three scenarios: (a) cash-flow stress forcing the account to pause purchasing, (b) a relationship or service breakdown, or (c) the account has shifted wallet-share to a competitor. All three carry downstream risk if credit is extended when activity resumes.\n\nThe Q3 Critical quadrant classification is consistent with the 35.4% YTD avg OVD baseline — meaning when this account is active, more than one-third of its balance historically sits overdue. Paired with a 90-day credit term and the Critical label (DSO > 180d DPO threshold), the account's payment discipline under active trading conditions has been materially weak. The current zero-balance 'clean' state does not represent a rehabilitation of that behavior; it represents inactivity.\n\nCredit policy should be tightened, not preserved at prior limits. A Grade C, Q3 Critical account with no 2026 activity should not carry a standing credit line that reflects 2024 peak-season volumes. If the account re-engages, any new credit exposure should be approved on a per-order basis with tighter terms (cash-in-advance or 30-day max) until the account demonstrates consistent on-time payment and earns a grade upgrade. Maintaining a legacy credit limit signals tolerance for a risk profile that the data does not support.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade C + Q3 Critical classification with 35.4% historical OVD rate and full 2026 dormancy justifies reducing credit limit to minimum or per-order cash basis until payment behavior is rehabilitated.",
+        "action": [
+          "Freeze standing credit limit — require per-order approval with cash-in-advance or ≤30d terms if account re-engages during peak season (May–Sep)",
+          "Conduct outreach to determine cause of 2026 dormancy before any new order acceptance — distinguish cash-stress vs. competitor shift vs. relationship gap",
+          "Flag account for Q2 credit review: if no Sell-In by end of June, reclassify as inactive and remove from credit exposure reporting to avoid distorting SME channel metrics"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "Zero current AR exposure eliminates red-level immediacy, but Grade C + 35.4% historical OVD + complete 2026 dormancy at peak-season entry creates latent credit risk if the account reactivates without tighter terms in place."
+      },
+      "sales": {
+        "headline": "Dormant SME account — zero 2026 revenue entering peak season signals likely competitor defection or business contraction.",
+        "analysis": "Khalid Alessa posted SAR 1.06M in 2024 but shows zero sell-in for 2026 YTD, and T12M DSO is N/A — indicating no meaningful purchase activity for at least 12–18 months. We are now at peak season entry (May), the single highest-urgency buy window for any Saudi AC account; continued silence at this juncture is not a seasonal gap but a structural signal. Root cause is most likely competitor lock-in (Samsung or Gree are aggressive in SME pricing) or business-level contraction, rather than inventory overhang — there is no open AR balance suggesting outstanding stock to work through.\n\nThe clean AR (SAR 0 balance, SAR 0 overdue) is the one constructive data point: there is no collection liability, meaning LG has no financial exposure and the account has a clean slate for potential re-engagement. However, the Grade C classification and a historical OVD baseline of 35.4% confirm this account carried above-average payment risk when it was active. The 90-day credit term is already tight for SME, which likely constrained their buy appetite versus competitors offering softer terms.\n\nInvestment priority is low. With zero 2026 momentum, no sell-out visibility, and peak season already open, deploying co-marketing or credit extension here would be speculative. The correct move is a single targeted re-engagement call — probe why they went dark, assess whether a competitor has locked them in, and determine if a small trial order is possible before end of May. If no response or confirmed competitor lock-in emerges within 2 weeks, classify as exit and reallocate resources to active SME accounts.",
+        "investment_signal": "hold",
+        "investment_type": [
+          "relationship_recovery"
+        ],
+        "investment_rationale": "Account is dormant but AR is clean — one peak-season re-engagement attempt is warranted before writing off the SAR 1M annual run rate; no broader investment until buy intent is confirmed.",
+        "action": [
+          "Sales rep direct outreach within 48 hours — confirm account is still operational and identify why purchasing stopped (competitor switch, financial issue, or business change)",
+          "If account is active, offer a limited peak-season trial order (small SKU, short credit window) to test re-engagement with low exposure",
+          "If no response or confirmed competitor lock-in by end of May, reclassify to exit and redirect SME development resources to higher-grade accounts"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 revenue with T12M DSO N/A — effectively dormant entering the most critical buy window of the year."
+      },
+      "synthesis": {
+        "headline": "2024년 SAR 1.06M 실적 계정이 피크 시즌 진입 시점에 완전 침묵 — 경쟁사 이탈 또는 사업 위축 여부를 48시간 내 확인하지 않으면 해당 물량을 영구 상실할 위험.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "hold",
+          "one_line": "Risk Yellow — Hold. AR 노출은 제로이나 Grade C + 35.4% 연체 이력 보유 계정이 피크 시즌 첫 달에 침묵 중 — 재활성화 시 신용 확대 금지, 재활성화 가능성 확인 후 투자 결정."
+        },
+        "summary_3lines": [
+          "2024년 SAR 1.06M 매입 계정이 2026년 YTD 매입 제로, T12M DSO N/A — 최소 12~18개월간 실질 거래 없음.",
+          "Grade C + Q3 Critical + 역사적 OVD 35.4% 조합은 활성 거래 시 신용 리스크가 높았음을 증명하며, 현재 침묵은 재활성화 아닌 이탈 신호일 가능성이 높음.",
+          "48시간 내 원인 파악 없이 피크 시즌(5~9월)이 지나면 SAR 1M 연간 물량은 삼성·Gree 등 경쟁사로 영구 귀속될 수 있음."
+        ],
+        "decision_required": "48시간 내 직접 아웃리치로 이탈 원인을 확인하고 — '재활성화 시도(소량 Trial Order + ≤30일 조건)' vs. '즉시 Exit 및 자원 재배분' 중 하나를 선택.",
+        "options": [
+          {
+            "option": "Option A — 제한적 재활성화 시도",
+            "consequence": "48시간 내 담당 영업 직접 접촉 → 계정 운영 확인 시 소량 SKU + 30일 이하 신용조건 Trial Order 제안. 5월 말까지 반응 없거나 경쟁사 고착 확인 시 즉시 Exit으로 전환. 성공 시 SAR 1M 물량 일부 회수 가능, 실패해도 추가 신용 노출 없음."
+          },
+          {
+            "option": "Option B — 즉시 Exit 및 자원 재배분",
+            "consequence": "아웃리치 없이 비활성 처리, SME 개발 자원을 고등급 활성 계정에 집중 재배분. SAR 1M 연간 물량은 포기하되, Grade C 계정 재활성화에 따른 신용 리스크 완전 차단."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "담당 영업 직접 아웃리치 — 2026년 침묵 원인 확인 (경쟁사 이탈 / 자금 문제 / 사업 변화)",
+            "deadline": "2026-05-08 (48시간 내)"
+          },
+          {
+            "step": "재활성화 가능 시: 소량 Trial Order 제안 (≤30일 조건, 현금선불 또는 선결제 우선), 신용한도 동결 유지",
+            "deadline": "2026-05-15"
+          },
+          {
+            "step": "반응 없거나 경쟁사 고착 확인 시: 비활성 재분류 + 신용 보고에서 제거 + SME 자원 재배분",
+            "deadline": "2026-05-31"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1110000173": {
+      "sid": "1110000173",
+      "name": "Specialized Treatment Company",
+      "cls": "C",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "hold",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Dormant Grade-C account with zero 2026 activity — no live AR exposure today, but re-engagement ahead of peak season without cleared Q3-Critical status creates latent credit risk.",
+        "analysis": "AR Health: The account carries a zero balance as of 2026-05-05, meaning there is no outstanding receivable to collect and no immediate impairment risk. The Q3-Critical quadrant classification is therefore a legacy signal — reflecting the account's historical payment behavior profile (OVD pattern and DSO exceeding DPO of 180d in prior periods) rather than a live collection emergency. On a pure AR-health basis, collection risk today is nil.\n\nDormancy Signal: The complete absence of 2026 Sell-In activity against SAR 1.12M shipped in 2024 is the substantive red flag. Whether this dormancy reflects the account switching to a competitor, LG's own internal credit suspension, or the customer's financial incapacity to place orders is unresolved and must be investigated before any peak-season exposure decision. A Grade-C IR_Others account going dark at the exact start of the May–September peak window is a pattern consistent with either financial distress or active de-prioritization of LG — both scenarios demand field-level confirmation, not a desk assumption.\n\nCredit Policy Rationale: With zero live exposure, reducing the credit limit has no practical protective value. Conversely, extending standard 90d open credit to re-engage this account without first clearing the Q3-Critical classification would be imprudent — the historical OVD structure that drove this grade has not been disproven, merely paused. The operationally sound posture is to maintain the limit on paper but require advance payment or a significantly compressed term (net-30 or net-45) for any first new order, pending one clean payment cycle that allows DSO recalculation.",
+        "credit_recommendation": "maintain",
+        "credit_rationale": "Zero live exposure removes urgency to cut limits, but Grade-C Q3-Critical history blocks any increase until re-engagement terms are cleared and at least one full payment cycle is verified clean.",
+        "action": [
+          "Assign Sales Director to conduct a field visit by 2026-05-13 to confirm root cause of 2026 dormancy — self-exit, internal credit hold, or customer financial incapacity — and report back before any new order is accepted.",
+          "If re-engagement is approved, require 40–50% advance payment on the first shipment and cap terms at net-45 (not the 90d credit line) until a clean billing cycle is logged; escalate exceptions to CFO.",
+          "Retain Q3-Critical flag and block standard 90d open credit release until end-of-June 2026 review confirms positive DSO and OVD trend from at least one completed cycle."
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR today, but a Grade-C dormant account with unresolved Q3-Critical history entering peak season is a latent risk if standard credit terms are extended without conditions."
+      },
+      "sales": {
+        "headline": "Complete 2026 buy-out with zero activity entering peak season — account has effectively gone dark.",
+        "analysis": "Specialized Treatment Company posted SAR 1.12M in 2024 Sell-In but shows zero 2026 revenue through May — five months into the year and three months before peak-season demand peaks in July–August. The clean AR balance (SAR 0 outstanding, SAR 0 overdue) tells only half the story: the account has settled prior debt but stopped reordering entirely. This is the most dangerous disengagement pattern — it looks financially clean on the ledger but masks a relationship rupture or competitor switch. With no 2026 orders and the peak window now open, any inventory they are selling is either prior-cycle stock or sourced from a competitor like Samsung or Gree.\n\nThe Q3 Critical quadrant designation — driven by DSO > DPO 180d and a 35.4% YTD average overdue baseline — reflects how the account behaved when it was actually buying. The fact that they cleared their balance without reordering in 2026 suggests either: (a) financial stress preventing new commitment, (b) a deliberate switch to a competing brand that offered better credit terms or margins, or (c) structural business change (downsizing, pivot away from AC). IR_Others channel placement and Grade C classification further reinforce limited strategic weight — this was never a tier-1 account.\n\nThe investment calculus is straightforward: there is no active channel to support. Injecting promotional support, co-marketing, or credit expansion into an account that hasn't placed a single order in 2026 would be capital misallocation during peak season, when those same resources could drive velocity in active Q1/Q2 accounts. The priority action is a diagnostic visit to understand whether the account is salvageable before peak closes in September.",
+        "investment_signal": "hold",
+        "investment_type": [
+          "relationship_recovery",
+          "collection_focus"
+        ],
+        "investment_rationale": "Zero 2026 revenue entering peak season disqualifies active investment — relationship triage must establish disengagement cause before any resource commitment.",
+        "action": [
+          "Assign KAM for in-person visit within 2 weeks: determine root cause of zero 2026 orders — financial freeze, competitor switch, or business contraction",
+          "If account confirms intent to reorder: offer limited 60d credit (down from 90d) contingent on minimum SAR 300K peak-season order by end of June, with overdue rate clause",
+          "If no reorder intent confirmed by mid-June: flag for commercial team as dormant and reallocate any reserved credit line to active IR_Others accounts"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 Sell-In across 5 months including pre-peak April; account appears fully disengaged with no forward buy signals."
+      },
+      "synthesis": {
+        "headline": "Account went completely dark in 2026 (SAR 0 vs SAR 1.12M in 2024) — no live AR risk today, but root cause of disengagement is unknown with peak season now open; extending standard 90d credit without a field diagnosis would be a policy error.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "hold",
+          "one_line": "Risk Yellow — Hold. Zero AR exposure removes urgency, but unresolved Q3-Critical history plus zero 2026 activity means no resource commitment until a KAM visit confirms the account is alive and on what terms."
+        },
+        "summary_3lines": [
+          "Specialized Treatment Company cleared all prior debt but placed zero orders in 2026 — five months of silence entering the May–September peak window.",
+          "The Q3-Critical flag reflects a historical OVD and DSO-over-DPO pattern; the account is financially quiet now only because it stopped buying, not because behavior improved.",
+          "If we do nothing: the peak window closes in September with this account either fully in a competitor's pocket or permanently dormant, and the SAR 1.12M revenue base is written off with no deliberate decision ever made."
+        ],
+        "decision_required": "Authorize a KAM field visit by 2026-05-13 to determine whether this account is recoverable — competitor switch, financial freeze, or structural exit — before committing any credit, promotional support, or peak-season inventory allocation.",
+        "options": [
+          {
+            "option": "Option A — Diagnostic-first re-engagement",
+            "consequence": "KAM visits within 7 days, confirms intent and capacity; if positive, offer 60d (not 90d) credit with 40–50% advance on first shipment and SAR 300K minimum order by end of June; first clean cycle clears Q3-Critical flag for H2 review. Upside: recover SAR 1M+ revenue in peak season on controlled terms. Downside: KAM time cost if account is unsalvageable."
+          },
+          {
+            "option": "Option B — Formal dormancy declaration",
+            "consequence": "Flag account as commercially inactive by mid-June if no reorder intent confirmed; reallocate reserved credit line to active IR_Others accounts; remove from peak-season planning. Upside: capital and attention redirected to accounts with proven 2026 velocity. Downside: permanently cedes the account to a competitor with no recovery attempt on record."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "KAM field visit — diagnose root cause of zero 2026 activity (competitor switch / financial freeze / business contraction) and report findings",
+            "deadline": "2026-05-13"
+          },
+          {
+            "step": "Re-engagement decision gate — if account confirms intent to reorder, issue conditional credit offer (net-60, 40–50% advance, SAR 300K minimum); if no intent, trigger Option B dormancy flag",
+            "deadline": "2026-06-15"
+          },
+          {
+            "step": "Q3-Critical status review — if first shipment billed and payment received clean, recalculate DSO and consider grade upgrade; if no activity, close out peak-season allocation and reallocate",
+            "deadline": "2026-07-15"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1110000035": {
+      "sid": "1110000035",
+      "name": "Abdullah  A.Alwahid Trading Est.",
+      "cls": "C",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Dormant account with zero 2026 activity and 2025 net returns — no live AR exposure, but Q3 Critical history demands a hard hold on any new credit extension.",
+        "analysis": "On the surface, AR looks clean: zero balance, zero overdue, all aging buckets empty. But this reflects account dormancy, not financial health. There has been zero sell-in in 2026, and 2025 closed at SAR -15,334 — a net negative, meaning the year ended with returns or unresolved credit notes rather than revenue. That is a structural red flag: the commercial relationship either deteriorated or was deliberately wound down, and the negative close leaves open the question of whether all claims have been properly settled. The Q3 Critical quadrant assignment — requiring DSO to exceed DPO of 180d AND elevated OVD — confirms this account had severe payment stress when it was active, with a 35.4% YTD average OVD baseline as the underlying chronic pattern.",
+        "analysis_2": "Collection risk in the immediate term is negligible precisely because there is nothing to collect. However, zero AR on a dormant account is not equivalent to a healthy account with zero AR — the distinction matters for policy. Grade C classification, Q3 Critical quadrant, and a 2025 net-return close together describe an account that absorbed product, delayed payment beyond DPO, and ultimately sent goods back. The pipeline into peak season (May–September) creates sales-side pressure to re-engage IR_Others channel accounts, and that commercial urgency is the primary risk vector here: a rushed shipment to fill peak-season volume targets would recreate Q3 Critical conditions within 90–180 days.",
+        "analysis_3": "Credit policy should be maintained at its current de facto restricted state. Decreasing the limit is technically moot since exposure is already zero, but the policy signal must be explicit and documented: no new open-credit orders approved without joint finance and sales leadership sign-off. Any re-engagement requires first resolving the 2025 negative balance (confirm returns fully credited, no open claims), then establishing a cash-in-advance or short prepayment structure before any credit terms are reinstated. The 90d credit term on file is academic until that rehabilitation process is completed.",
+        "credit_recommendation": "maintain",
+        "credit_rationale": "Zero current exposure makes a decrease moot, but the Q3 Critical history and 2025 net-return close prohibit any credit expansion — hold at current restricted level until account formally rehabilitated.",
+        "action": [
+          "Audit the 2025 SAR -15,334 figure immediately: confirm whether returns are fully credited, pricing disputes closed, and no residual open claims — do not consider re-engagement until this is clean",
+          "Issue internal credit block flag on this account so no shipment order can be processed without explicit finance sign-off, preventing peak-season commercial pressure from bypassing controls",
+          "Define written rehabilitation criteria for reactivation (minimum: 1 cash-in-advance order, 30d credit maximum for second order, upgrade from Grade C) and communicate to sales team before peak season kicks in"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR eliminates immediate collection exposure, but dormant Q3 Critical account with 2025 net returns is a reactivation trap — credit extension without controls would recreate the same stressed position within one credit cycle."
+      },
+      "sales": {
+        "headline": "Account has effectively ceased all purchasing — 2025 net returns wiped prior year revenue and 2026 shows zero activity entering peak season.",
+        "analysis": "Channel health is critically deteriorated. The 2024 sell-in of SAR 1.53M collapsed to a net negative SAR -15,334 in 2025, meaning product returns or credit notes exceeded any new purchases — a clear sign the account was unwinding its LG inventory position, not building it. With zero sell-in and zero AR balance in 2026, the account has gone completely dark heading into the May–September peak window. A Grade C IR_Others account that has already missed the pre-season stocking cycle (typically March–April) is almost certainly not going to buy meaningfully for 2026.\n\nThe buy/sell dynamics point to structural disengagement rather than a seasonal delay. The -2025 figure is the critical signal: it is not a slow year, it is a net unwind. Root cause hypotheses in order of likelihood: (1) inventory overhang from 2024 that did not sell through, forcing returns; (2) a competitor switch — Samsung, Gree, or Midea gaining share in this sub-channel with better margin or credit terms; (3) financial stress causing the dealer to reduce exposure to any single supplier. The 35.4% YTD OVD baseline on this grade of account corroborates a pattern of financial strain even in periods when they were buying.\n\nFrom an investment standpoint, there is no current financial exposure (SAR 0 balance) so the risk is already contained. However, committing sell-out support, credit extension, or co-marketing to an account that has net returned product and gone silent in 2026 would be capital misallocation. The opportunity cost — redirecting those resources to active or growing IR accounts within the same channel — is substantially higher. The only marginal value in engaging this account now is a low-cost diagnostic call to confirm whether the disengagement is recoverable in 2027 or permanent.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Net negative 2025 sell-in and zero 2026 activity entering peak season confirm the account has already exited the LG purchasing relationship; no investment vehicle can generate return on a dormant channel partner at this stage of the season.",
+        "action": [
+          "One diagnostic call (sales rep, not KAM) to confirm whether account is permanently switching suppliers or has a specific grievance addressable in 2027 planning",
+          "Do not extend credit, approve promotions, or assign display support until account places a confirmed purchase order",
+          "Flag account for 2027 grade review — if zero sell-in persists through year-end, recommend formal delisting from active coverage"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Net returns in 2025 plus zero 2026 buy-in at peak season onset = confirmed channel disengagement"
+      },
+      "synthesis": {
+        "headline": "Account has net-unwound the LG relationship — 2025 ended in returns, 2026 is dark entering peak season; the only urgent action is a credit block to prevent peak-season pressure from forcing a bad reinvestment.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. Zero live AR eliminates collection urgency, but absent a hard internal block the peak-season pipeline will recreate Q3 Critical conditions within one credit cycle."
+        },
+        "summary_3lines": [
+          "2024 SAR 1.53M sell-in collapsed to a net negative SAR -15,334 in 2025 (returns exceeded purchases), and 2026 is zero — the account has already exited the LG purchasing relationship heading into peak season.",
+          "Root cause is structural disengagement, not a seasonal delay: Q3 Critical quadrant, 35.4% chronic OVD baseline, and a net-return close in 2025 together describe an account that over-stocked on LG product, could not service the debt, and unwound its position.",
+          "If no action is taken, the default risk is not collection loss today — it is that a rep ships peak-season stock under commercial pressure without finance sign-off, the account re-enters Q3 Critical by Q3 2026, and we are recovering SAR 1M+ overdue in September."
+        ],
+        "decision_required": "Formally issue an internal credit block on this account THIS WEEK — before peak season shipment pressure begins — requiring joint finance and sales leadership sign-off on any order, and mandate one diagnostic call (rep-level, not KAM) to determine whether disengagement is recoverable for 2027 or permanent.",
+        "options": [
+          {
+            "option": "Option A: Hard block now + diagnostic call",
+            "consequence": "Peak-season commercial pressure cannot bypass controls; one low-cost call clarifies whether 2027 recovery is viable; account is flagged for formal delisting if zero sell-in persists through year-end. Resource cost near zero. Downside: potential friction if sales rep was counting on this account for volume."
+          },
+          {
+            "option": "Option B: No action — allow account to remain on standard 90d terms",
+            "consequence": "High probability a rep ships to fill Q3 volume targets; account re-enters Q3 Critical within one credit cycle (90–180d); finance recovers overdue SAR at peak season end when the account has no liquidity; 2025 net-return root cause remains unresolved and uncredited."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Issue internal credit block flag — no shipment without joint finance + sales leadership sign-off",
+            "deadline": "2026-05-09 (before peak-season order window opens)"
+          },
+          {
+            "step": "Audit 2025 SAR -15,334: confirm returns fully credited, no open pricing disputes or residual claims",
+            "deadline": "2026-05-16"
+          },
+          {
+            "step": "One rep-level diagnostic call — confirm permanent supplier switch or specific 2027-addressable grievance; document outcome",
+            "deadline": "2026-05-23"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1110000053": {
+      "sid": "1110000053",
+      "name": "SULTAN SALEM BAWAHAB EST",
+      "cls": "D",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero AR exposure in 2026 masks a Grade-D account that has gone completely dark — prior Critical quadrant classification signals historical payment stress that likely triggered the inactivity.",
+        "analysis": "Current AR balance is SAR 0 with no 2026 Sell-In activity whatsoever, meaning there is no live receivable to collect. However, the absence of AR is not a clean bill of health — it reflects a complete commercial halt rather than timely settlement. The account carried SAR 813,371 in 2024 Sell-In, and the Q3 Critical quadrant designation (DSO > 180d DPO, elevated OVD) indicates that prior balances were paid slowly or partially, consistent with the Grade D classification and a 35.4% YTD OVD baseline across the portfolio context. The most probable explanation for zero 2026 revenue is that credit was tightened or the account self-selected out after collection friction.\n\nCollection risk on the current balance is technically zero — there is nothing outstanding to pursue. However, the underlying risk profile remains elevated: if this account were reactivated on standard 90-day credit terms, the historical payment pattern (Critical quadrant) strongly suggests new AR would age past due at a high rate. Grade D with no demonstrated 2026 payment activity offers no basis for confidence that behavior has improved.\n\nCredit policy should be tightened to prepayment or cash-on-delivery for any new orders. The peak season window (May–September) creates temptation to push volume through dormant Grade-D channels, but extending credit to a Critical-quadrant account entering the high-demand period with no 2026 track record would recreate exactly the overdue exposure that drove the Q3 classification. Volume recovery, if pursued, must be on secured terms only.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D + Q3 Critical history + zero 2026 activity = no evidence of rehabilitation; any new exposure should be prepayment or COD only.",
+        "action": [
+          "Block standard 90-day credit terms; require prepayment or letter of credit for any new 2026 orders before peak season activation",
+          "Conduct a brief account health call to understand why the account went silent in 2026 — determine if inactivity is due to a prior dispute, liquidity issues, or competitor shift",
+          "If account expresses intent to order for peak season, negotiate a minimum partial prepayment (≥50%) as condition of order acceptance and flag for Finance approval before PGI"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR exposure today, but Grade D + Critical quadrant history means reactivation without secured terms would rapidly recreate overdue risk entering peak season."
+      },
+      "sales": {
+        "headline": "Account has gone completely dark in 2026 — zero sell-in entering peak season despite SAR 813K baseline in 2024, signaling full disengagement.",
+        "analysis": "The dominant signal is a total absence of 2026 purchases. We are now in May — the opening of Saudi peak season (May–September) — and SULTAN SALEM BAWAHAB has placed zero orders. A Grade D IR_Others account with SAR 813K in 2024 that generates no revenue by peak-season entry is not a slow starter; it is a disengaged account. The Q3 Critical quadrant designation reflects historical stress patterns (DSO/OVD elevated), and while the current AR balance is clean at zero, that cleanliness is itself a symptom: nothing owed because nothing has been purchased in months.\n\nRoot cause hypotheses, in order of likelihood: (1) Competitor switch — Samsung or a value-tier brand (Gree/Midea) offered better terms or margin, and the account quietly pivoted; (2) Financial constraints — 90-day credit may have been insufficient or the account's own liquidity deteriorated, making them unable or unwilling to commit to stock; (3) Business contraction or dormancy — Grade D with no 2025 data visible and no 2026 activity may indicate the account is scaling down or has partially exited the AC category; (4) Relationship breakdown — no active coverage or key contact loss. Without sell-out data, inventory overhang at this account is unconfirmed, but zero buy-in argues against it being a push-back from excess stock.\n\nInvestment case is weak. With peak season now underway and zero momentum, any credit increase or co-marketing spend would be deployed into a void. The clean AR removes collection risk, but it also means LG has no leverage or active relationship to build from. The only justified action is a low-cost diagnostic — a direct sales call to determine whether the account is recoverable for even partial 2026 season capture. If the account confirms competitor allegiance or business dormancy, a formal exit decision should be logged before investing further coverage time.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "relationship_recovery"
+        ],
+        "investment_rationale": "Zero 2026 revenue entering peak season with no pipeline signal — account is effectively inactive and does not justify financial or coverage investment until disengagement root cause is confirmed.",
+        "action": [
+          "Immediate diagnostic call by sales rep: confirm whether account is still operational, why zero 2026 orders, and whether a competitor switch has occurred — deadline within this week before peak window narrows further",
+          "If account confirms intent to buy, offer a single time-limited peak-season deal (no credit increase, standard 90d terms) to test re-engagement with minimal exposure",
+          "If account is dormant or has fully switched competitors, formally downgrade to inactive status and reallocate coverage time to higher-potential IR_Others accounts with active buy momentum"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 sell-in through May with peak season open — account has disengaged from LG supply chain entirely."
+      },
+      "synthesis": {
+        "headline": "Account is commercially dead entering peak season — zero 2026 orders from a SAR 813K Grade-D buyer signals full disengagement, not a slow start. No collection risk today, but any credit extension to reactivate would recreate Critical-quadrant overdue within 90 days.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. Clean AR is a symptom of disengagement, not rehabilitation; reactivation is only viable on prepayment terms after a diagnostic call confirms the account is still operational."
+        },
+        "summary_3lines": [
+          "SULTAN SALEM BAWAHAB placed zero orders in 2026 — entering May peak season with no momentum after SAR 813K in 2024, indicating a full commercial break, not a delayed start.",
+          "Root cause is unconfirmed but most likely a competitor switch (Samsung/Gree) or liquidity-driven self-exit triggered by the prior Q3 Critical classification and collection friction that followed.",
+          "If no diagnostic action is taken this week, the peak-season window closes without resolution — the account either quietly stays with a competitor for the full 2026 season, or LG misses the only remaining opportunity for even a partial recovery under secured terms."
+        ],
+        "decision_required": "Authorize a single diagnostic call this week to determine whether the account is operational and willing to buy under COD/prepayment terms — this is the binary gate before any further resource allocation or formal exit decision.",
+        "options": [
+          {
+            "option": "Option A — Diagnostic call + COD-only re-engagement",
+            "consequence": "If account confirms intent to buy: offer one time-limited peak-season deal under prepayment or ≥50% deposit, no credit extension. Upside: partial 2026 season capture on zero-risk terms. Downside: coverage cost for a Grade-D account with low conversion probability."
+          },
+          {
+            "option": "Option B — Immediate formal exit, reallocate coverage",
+            "consequence": "Mark account inactive without a call. Zero cost, zero risk, but forfeits any chance of peak-season recovery and leaves root cause (competitor switch vs. temporary dormancy) undiagnosed — a data gap that weakens future IR_Others territory planning."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Sales rep diagnostic call — confirm operational status, reason for zero 2026 orders, and whether competitor switch has occurred",
+            "deadline": "By May 9 (this week, before peak window narrows further)"
+          },
+          {
+            "step": "Decision gate — based on call outcome: (a) issue COD/prepayment proforma and flag for Finance approval before PGI, OR (b) log formal inactive status in CRM",
+            "deadline": "By May 12"
+          },
+          {
+            "step": "If reactivating: confirm prepayment receipt before any goods issue; if exiting: reallocate coverage hours to active IR_Others accounts with buy momentum for remainder of peak season",
+            "deadline": "By May 15"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1110000186": {
+      "sid": "1110000186",
+      "name": "AHMED IBRAHIM SHAIBA EST.",
+      "cls": "D",
+      "team": "IR_Others",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Dormant Grade-D account with zero 2026 activity and a net-negative 2025 sell-in — collection risk is moot today, but re-engagement without cash terms would be the real exposure.",
+        "analysis": "Current AR is SAR 0 across all aging buckets, so there is no live collection risk at this moment. However, this clean balance sheet is not a sign of health — it reflects a relationship that has effectively wound down. The 2025 sell-in figure of SAR -2,602 indicates net returns exceeded purchases, meaning the account's last meaningful commercial act was to send product back. Zero 2026 revenue through early May — entering peak season — confirms the account is dormant, not recovering.\n\nThe Q3 Critical quadrant tag (DSO > DPO 180d, elevated OVD) is a residual classification from prior cycles when the account did carry AR. Grade D reinforces that this account has historically struggled to pay on schedule; the 35.4% YTD average OVD baseline on the broader portfolio further contextualizes the risk profile of accounts in this tier. The combination of Grade D + Q3 Critical + negative 2025 sell-in + zero 2026 activity paints a clear picture: this is not a temporarily quiet account — it is one that has exited the active customer base under poor financial terms.\n\nCredit policy implication is straightforward: there is no case for extending or maintaining meaningful open credit here. If the account were to re-engage — which peak season could prompt — any order acceptance should be conditioned on cash-in-advance or a cleared pro-forma basis. Reopening a 90-day credit line to a Grade-D, Q3-Critical account with a wind-down trajectory would be absorbing risk with no volume justification.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade-D account has effectively exited the customer base via net returns in 2025 and zero 2026 activity; any re-engagement must be on pro-forma/CIA terms, not open credit.",
+        "action": [
+          "Flag account as 'Dormant — CIA Only': block credit order creation in SAP until account is formally re-onboarded with updated credit assessment",
+          "If account contacts sales team during peak season (May–Sep), require 100% advance payment and management approval before order release",
+          "Conduct a brief account visit or call to confirm no hidden AR (undocumented side agreements, consignment exposure) before closing the file"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "Zero active AR eliminates immediate collection risk, but Grade D + Q3 Critical history + dormant status creates re-engagement risk if orders are accepted on credit terms."
+      },
+      "sales": {
+        "headline": "Account has effectively disengaged — zero 2026 revenue, net return in 2025, entering peak season with no replenishment signal.",
+        "analysis": "AHMED IBRAHIM SHAIBA EST. shows a clear two-year disengagement trajectory: SAR 548K in 2024 sell-in collapsed to a net return of SAR -2,602 in 2025, with zero purchases recorded in 2026 to date. Entering May — the opening month of Saudi peak season — with no open orders and no inventory top-up is the strongest possible disengagement signal. The account has not sourced a single unit ahead of the highest-demand window of the year, which rules out seasonal timing as an explanation.\n\nRoot cause ranking: (1) Competitor switch is the most probable driver — Grade D accounts with mid-tier volume (~548K) are Samsung's and Gree's primary poaching targets on price and credit terms; the clean SAR 0 AR balance suggests the account settled its 2024 obligations and quietly migrated its sourcing elsewhere. (2) Inventory overhang from a 2024 over-buy that still hasn't cleared at retail, suppressing any 2025–2026 replenishment demand, is the second hypothesis — the SAR -2,602 net return is consistent with a slow-moving stock return rather than a commercial dispute. (3) Business contraction or exit from the AC category cannot be ruled out at this grade level.\n\nFrom an investment standpoint, the risk/reward calculus is unfavorable. The 35.4% historical OVD baseline on a Grade D account means credit extension carries asymmetric downside. The account has demonstrated zero pull-through during the 12 months when it should have been most active. Allocating sell-out support, co-marketing, or credit increase to an account with no active sell-in pipeline would be resource misallocation at peak season when the same budget yields measurable ROI in active accounts.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "relationship_recovery"
+        ],
+        "investment_rationale": "No commercial activity in 18+ months entering peak season — withdraw proactive investment until root cause of disengagement is confirmed and account demonstrates renewed buy intent.",
+        "action": [
+          "Assign sales rep for a single diagnostic visit this week: confirm whether account switched to competitor, exited the category, or has residual LG stock — the answer determines next step",
+          "If competitor switch confirmed: do not extend credit or offer promotions without a signed minimum-volume commitment for May–June; Grade D credit risk does not justify speculative recovery spend at peak",
+          "If inventory overhang confirmed: offer a structured sell-out support package (POS material, installer incentive) contingent on proof of sell-through before any new shipment — protect against a second return cycle"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "18 months of zero net purchasing into peak season — account is dormant or migrated to competitor."
+      },
+      "synthesis": {
+        "headline": "Account has commercially exited — zero AR today masks the real risk: a Grade-D, Q3-Critical account that may re-engage during peak season and request credit we should not extend.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. No live exposure today, but unconfirmed root cause + peak season timing creates a credit trap if we re-engage without guardrails."
+        },
+        "summary_3lines": [
+          "AHMED IBRAHIM SHAIBA EST. generated SAR 548K in 2024, net-returned in 2025, and has purchased zero units in 2026 — entering Saudi peak season (May–Sep) with no replenishment signal whatsoever.",
+          "Most probable cause is competitor migration (Samsung/Gree on price + credit terms); secondary hypothesis is unsold 2024 inventory overhang driving the net return, with business contraction as a tail risk — root cause is unconfirmed.",
+          "If we take no action and the account contacts us in peak season requesting credit, a Grade-D account with Q3-Critical history could be re-onboarded on 90-day open terms by default — the same terms that contributed to its original deterioration."
+        ],
+        "decision_required": "Before this account makes inbound contact during peak season: formally classify it as Dormant-CIA-Only in SAP and set the re-engagement threshold — do we require a minimum volume commitment + 100% advance payment, or are we willing to offer structured sell-out support contingent on proven stock clearance?",
+        "options": [
+          {
+            "option": "Option A — Diagnostic visit this week, then hard CIA gate",
+            "consequence": "Confirm root cause (competitor switch vs. overhang vs. exit); block credit in SAP immediately; if account wants to return, require 100% advance payment + management sign-off. Protects margin and cash, sacrifices any chance of volume recovery in peak season."
+          },
+          {
+            "option": "Option B — Diagnostic visit this week, conditional sell-out support if overhang confirmed",
+            "consequence": "If inventory overhang is the root cause, offer POS/installer incentive package contingent on verified sell-through before new shipment — allows controlled re-engagement with no credit exposure. If competitor switch is confirmed, revert to Option A immediately. Requires active monitoring but preserves upside if the account can be salvaged within peak window."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Sales rep diagnostic visit or call — confirm: competitor switch / inventory overhang / business exit",
+            "deadline": "This week (by 2026-05-09)"
+          },
+          {
+            "step": "SAP flag update: block credit order creation, set account to Dormant-CIA-Only pending re-onboarding decision",
+            "deadline": "Immediately (before peak order cycle opens)"
+          },
+          {
+            "step": "If re-engagement viable (Option B path): issue conditional sell-out support terms and set a sell-through proof deadline before any new shipment release",
+            "deadline": "2026-05-31 — before June peak demand peak"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1170000007": {
+      "sid": "1170000007",
+      "name": "Misc. SAMIR EZZAT EISSA ELSHEIKH",
+      "cls": "D",
+      "team": "SME",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero AR balance masks a dormant Grade-D SME that generated SAR 603K in 2024 but has gone completely silent in 2026 peak season — structural disengagement, not healthy collection.",
+        "analysis": "AR position is technically clean: SAR 0 balance, SAR 0 overdue across all aging buckets. However, this cleanliness is misleading. The account carried SAR 603K in 2024 Sell-In yet has posted zero 2026 revenue through May — the opening month of peak season (May–Sep). For a D-grade SME in Q3 Critical quadrant, zero activity is more likely a sign of credit freeze, voluntary disengagement after past disputes, or business distress than of a healthy account that has simply not reordered yet.\n\nThe Q3 Critical classification (DSO > DPO 180d AND OVD elevated) confirms this account has historically struggled on both collection and payment fronts. The YTD avg OVD baseline of 35.4% further corroborates a chronic overdue tendency in the SME portfolio this account belongs to. With T12M DSO unavailable and no 2026 invoices to measure against, we cannot confirm whether the slate was cleared through genuine collection or through write-off/credit note activity — that distinction matters before any re-engagement decision.\n\nFrom a credit policy standpoint, there is no justification to extend or increase credit at this stage. The account is Grade D, sits in the most stressed quadrant, has no demonstrated 2026 payment behavior, and is entering peak season with zero orders. Any new credit extension would be speculative at best. The appropriate posture is to maintain a minimal or zero credit limit, require full pre-payment or secured terms for any new orders, and flag for KAM-led re-qualification before reverting to standard trade terms.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D, Q3 Critical, zero 2026 revenue with no payment track record this year — no basis to hold open credit lines; require pre-payment or secured terms pending full re-qualification.",
+        "action": [
+          "Verify how 2025/2024 AR was cleared — confirm whether settlement was cash collection, credit note, or write-off before considering any re-engagement",
+          "KAM to make direct contact and determine reason for zero 2026 orders; assess whether account is still operational and financially solvent entering peak season",
+          "Set credit limit to SAR 0 or minimum until account completes re-qualification: submits updated financials, demonstrates pre-payment on a pilot order, and is re-graded above D"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR exposure today, but dormant Grade-D account with Q3 Critical history and 35.4% OVD baseline entering peak season — re-engagement without controls carries elevated credit risk."
+      },
+      "sales": {
+        "headline": "Account has gone completely dark in 2026 — zero Sell-In entering peak season signals effective disengagement, not just slowdown.",
+        "analysis": "Channel health is critical. SAR 603K in 2024 established this as a viable SME contributor, but zero 2026 revenue through May — the threshold month of Saudi AC peak season — indicates the account is either operationally inactive, has switched to a competitor, or is deliberately avoiding LG credit. The zero AR balance is not a positive signal; it simply reflects the absence of any 2026 transactions rather than clean payment behavior. Historical OVD baseline of 35.4% confirms chronic payment discipline issues, and the Q3 Critical quadrant classification (DSO > 180d, OVD elevated) reflects a structural risk pattern, not a one-off event.\n\nFrom a buy/sell dynamic perspective, there is no evidence of sell-out pull. Without any 2026 Sell-In, downstream inventory is either exhausted and not being replenished, or the account is sourcing from an alternate supplier. For a D-grade SME with 90-day credit terms and a history of overdue stress, Samsung or grey-market price-competitive suppliers (Gree, Midea) are the most likely substitutes. The timing — zero buys at the precise moment demand accelerates — makes passive channel decay unlikely; this looks like an active switch or business-level stress.\n\nInvestment rationale is weak. The account has no current momentum, carries a high historical credit risk profile, and has not demonstrated willingness to re-engage even as peak season begins. Extending credit or deploying sell-out resources here would be capital deployed into a dormant relationship with no demand signal to amplify. The only justifiable action is a targeted reactivation probe — proforma only, no credit extension — before writing the account off for 2026.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Zero 2026 Sell-In through peak season entry, D grade, and 35.4% historical OVD rate together indicate account is either disengaged or operationally inactive — deploying trade resources here has no demand signal to leverage.",
+        "action": [
+          "Immediate outreach (call, not email) to understand root cause of zero 2026 purchases — distinguish between business closure, competitor switch, or credit avoidance",
+          "If account is still operating, offer proforma-only reactivation (no credit) with a peak-season bundle; if rejected, escalate to dormant classification by end of May",
+          "Formally flag account for quarterly review: if no Sell-In by June 2026, reallocate any allocated display or sell-out support to active D-grade SME accounts with better momentum"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 Sell-In through May, D grade, Q3 Critical history, and 35.4% OVD baseline — account is effectively dormant entering peak season."
+      },
+      "synthesis": {
+        "headline": "SAR 603K 2024 contributor has gone completely dark entering 2026 peak season — zero AR is not a positive signal, it is the absence of any 2026 relationship; the only question is whether this account is retrievable on secured terms or should be written off for the year.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. No live AR exposure today, but a dormant Grade-D Q3-Critical account with zero 2026 Sell-In through peak season entry and 35.4% chronic OVD history; re-engage only on proforma or formally close out for 2026."
+        },
+        "summary_3lines": [
+          "What is happening: A SAR 603K 2024 SME account has posted zero Sell-In through May 2026 — the opening month of Saudi AC peak season — with no AR, no orders, and no payment activity; the account is operationally invisible.",
+          "Why: Grade D classification, Q3 Critical quadrant (DSO > 180d, OVD elevated), and 35.4% chronic overdue baseline indicate this is not a seasonal timing issue — the account has either switched to a competitor (Samsung, Gree, Midea), is avoiding LG credit terms, or is under financial distress; all three scenarios are materially different but share the same response posture.",
+          "If we do nothing: The account drifts into permanent dormancy through the peak window (May–Sep); the SAR 600K revenue run-rate is lost for 2026, any residual brand equity with this dealer dissolves, and we receive no early warning if the account owes obligations to other LG channels or re-emerges with a dispute claim."
+        ],
+        "decision_required": "By this Friday: authorize KAM to make a single proforma-only reactivation call — no credit, no display commitment — and set a hard gate: if no confirmed pilot order on pre-payment terms by May 31, formally classify as dormant and reallocate any reserved SME support budget to active D-grade accounts with positive momentum.",
+        "options": [
+          {
+            "option": "Option A — Controlled Reactivation Probe",
+            "consequence": "KAM calls this week; offers peak-season bundle on proforma-only (100% pre-payment); if account responds and pays, reopen at SAR 0 credit limit with quarterly re-qualification gate — upside: recovers SAR 600K run-rate with zero new credit exposure; downside: KAM time cost on a low-probability conversion."
+          },
+          {
+            "option": "Option B — Immediate Dormant Classification",
+            "consequence": "Set credit limit to SAR 0, remove from active SME pipeline, flag for quarterly review only; if account self-initiates contact with pre-payment, handle reactively — upside: zero resource waste, zero credit risk; downside: permanently cedes this dealer relationship to competitor and forfeits any peak-season recovery."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "KAM direct call (not email) to determine account status — operational, competitor-switched, or distressed; document reason for zero 2026 orders",
+            "deadline": "2026-05-09 (this Friday)"
+          },
+          {
+            "step": "Finance to verify how 2024–2025 AR was cleared — cash collection vs. credit note vs. write-off; result gates any credit re-engagement decision",
+            "deadline": "2026-05-13"
+          },
+          {
+            "step": "Hard gate review: if no confirmed proforma pilot order received, formally classify as dormant, reallocate SME support resources to active accounts, and remove from 2026 Sell-In forecast",
+            "deadline": "2026-05-31"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1170000031": {
+      "sid": "1170000031",
+      "name": "Misc Customers - Ahmad Edris",
+      "cls": "C",
+      "team": "SME",
+      "signal": "red",
+      "investment_signal": "hold",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero AR exposure with complete 2026 dormancy — clean books, but Q3-Critical history and Grade C signal this account went quiet for the wrong reasons.",
+        "analysis": "Current AR position is technically clean: SAR 0 balance, zero overdue, no aging exposure in any bucket. However, the absence of any 2026 Sell-In activity is the operative risk signal — this account generated SAR 1.09M in 2024 and has since gone completely dark. In the context of a Q3-Critical quadrant classification (triggered by DSO exceeding DPO 180d and elevated OVD historically), the zero-balance state most likely reflects a credit freeze or voluntary disengagement after collection stress, not a healthy account that has simply not re-ordered yet.\n\nThe Grade C designation compounds the concern. Grade C in SME channel typically means the account already demonstrated payment indiscipline — slow cycles, partial payments, or pressure-only collections. The YTD avg OVD baseline of 35.4% reflects broader portfolio strain, but for an account already sitting in Critical quadrant, any resumption of credit exposure carries above-average recycling risk. DSO N/A is not neutral — it is a data gap masking a prior >180d payment cycle that triggered the Critical flag in the first place.\n\nCredit policy conclusion is straightforward: no justification for credit expansion. The account has not demonstrated recovery — no 2025 activity data, no 2026 orders, no signal of improved liquidity or commitment. If Ahmad Edris re-engages ahead of the May–September peak season, any new exposure should be gated behind prepayment or a prorated credit reinstatement plan tied to verified settlement of any residual legacy obligations. Extending credit now on the basis of a zero-balance snapshot would be misreading absence-of-exposure as creditworthiness.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Q3-Critical history with full 2026 dormancy offers zero evidence of payment behavior recovery — any credit line should be suspended until the account re-activates under prepayment terms.",
+        "action": [
+          "Verify whether any legacy 2024/2025 balances were written off or settled outside system — reconcile account ledger before treating zero balance as clean",
+          "Classify account as 'dormant-restricted': block new Sell-In on standard credit terms; require 100% prepayment for any peak-season orders",
+          "Assign sales team to conduct account health check on Ahmad Edris — determine if disengagement is voluntary, financial stress, or competitor switch, and escalate if reactivation is commercially viable under revised terms"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "No live AR exposure today, but Q3-Critical classification and full 2026 inactivity indicate latent credit risk if account re-engages — zero balance ≠ zero risk."
+      },
+      "sales": {
+        "headline": "Account fully disengaged in 2026 — zero revenue entering peak season despite SAR 1.1M 2024 base.",
+        "analysis": "Ahmad Edris (SME / Grade C) posted SAR 1,086,292 in 2024 sell-in but has recorded zero transactions in 2026 YTD. With peak season now open (May), the absence of any buy activity is a strong disengagement signal — not a timing lag. The clean AR balance (SAR 0) suggests the account settled prior obligations and effectively walked away rather than defaulting, which is a softer exit but an exit nonetheless.\n\nRoot cause hypotheses ranked by likelihood: (1) competitor switch — Samsung, Gree, or Midea offering better credit terms or pricing to SME tier; (2) business contraction — SME customers in Saudi construction/fitout cycle are sensitive to project flow; (3) residual credit friction — Q3 Critical quadrant implies prior DSO stress; even with AR cleared, the account may have perceived LG's credit posture as restrictive and moved on. No sell-out data is available, but the sell-in silence for 4+ months into the fiscal year rules out a simple inventory overhang explanation.\n\nInvestment calculus is unfavorable at this stage. Grade C SME with a Critical quadrant history and zero 2026 activity does not warrant proactive credit expansion or co-marketing spend. The 35.4% OVD baseline on the broader portfolio context reinforces caution. However, the SAR 1M historical base is not trivial for an SME account — a low-cost relationship recovery touch (direct call, pricing check) before the peak window closes in September is warranted before writing this off entirely.",
+        "investment_signal": "hold",
+        "investment_type": [
+          "relationship_recovery"
+        ],
+        "investment_rationale": "Account has disengaged but carries a material 2024 base — one targeted recovery contact during peak season costs little and could reactivate before the window closes.",
+        "action": [
+          "Sales rep direct call this week to understand why account went silent — competitor switch, project slowdown, or credit friction?",
+          "If competitor-switched: present Q2 promotional pricing or bundle offer specific to SME project SKUs (split units 1.5–2.5TR range)",
+          "Do NOT extend additional credit or approve open order without documented reactivation — hold at current SAR 0 exposure until at least one 2026 transaction clears"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Zero 2026 sell-in with peak season open — full disengagement from a previously SAR 1M account."
+      },
+      "synthesis": {
+        "headline": "Ahmad Edris went silent after SAR 1.1M in 2024 — peak season is open now and we have one narrow window to recover or formally exit before the year is lost.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "hold",
+          "one_line": "Risk Yellow — Hold. Zero live exposure today, but dormancy entering peak season is a disengagement signal, not a clean bill of health."
+        },
+        "summary_3lines": [
+          "Ahmad Edris (SME / Grade C) generated SAR 1.09M in 2024 sell-in and has posted zero transactions in 2026 YTD — a complete disengagement entering the May–September peak window.",
+          "The Q3-Critical quadrant flag was earned through prior DSO >180d and elevated overdue history; the current SAR 0 balance reflects settlement and quiet exit, not account health recovery — Grade C payment behavior is still the baseline assumption.",
+          "If no recovery contact is made before June, this account defaults to full-year zero and the SAR 1M revenue base is permanently lost to a competitor — most likely Samsung or Gree offering looser SME credit terms."
+        ],
+        "decision_required": "Authorize one targeted sales recovery call this week to diagnose the reason for disengagement — competitor switch, project slowdown, or credit friction — and determine whether reactivation under prepayment terms is commercially viable before the peak window closes.",
+        "options": [
+          {
+            "option": "Option A — Targeted Recovery Contact (Recommended)",
+            "consequence": "Sales rep calls Ahmad Edris this week; if competitor-switched, present SME-specific Q2 pricing or bundle on 1.5–2.5TR split units; any reactivation gated behind 100% prepayment or documented installment plan — protects LG from repeating the DSO >180d cycle while testing whether the SAR 1M base is recoverable."
+          },
+          {
+            "option": "Option B — Formal Dormancy Exit",
+            "consequence": "Account is classified dormant-restricted with no further sales pursuit; credit line suspended indefinitely; removes revenue upside but eliminates any risk of re-exposing LG to a Grade C payer with Q3-Critical history under a season-end payment crunch in September."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Reconcile account ledger — confirm SAR 0 is a genuine clean close, not a write-off or deferred balance sitting outside the system",
+            "deadline": "2026-05-07"
+          },
+          {
+            "step": "Sales rep direct call to Ahmad Edris — diagnose disengagement root cause (competitor / project / credit friction) and gauge reactivation appetite",
+            "deadline": "2026-05-09"
+          },
+          {
+            "step": "Go/No-Go decision: if reactivation viable, issue prepayment pro-forma and set 2026 first-order target; if not, formally close account in CRM and reallocate SME quota",
+            "deadline": "2026-05-14"
+          }
+        ],
+        "signal": "yellow"
+      }
+    },
+    "1170000027": {
+      "sid": "1170000027",
+      "name": "MISC  Mohammed Manasrh",
+      "cls": "D",
+      "team": "SME",
+      "signal": "red",
+      "investment_signal": "exit",
+      "quadrant": {
+        "ytd": 3,
+        "ytd_name": "Critical"
+      },
+      "metrics": {
+        "bal": 0,
+        "ovd": 0,
+        "ovd_rate": 0,
+        "o1": 0,
+        "o2": 0,
+        "o3": 0,
+        "dso_ytd": null,
+        "dso_t12m": null,
+        "pt": 90,
+        "buy_ratio": null,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Zero AR exposure masks a commercially dead Grade-D account — the clean balance reflects relationship collapse, not creditworthiness.",
+        "analysis": "Current AR is SAR 0 across all aging buckets, so there is no active collection crisis. However, this zero balance is structurally deceptive: it does not reflect a healthy, paying customer. The 2025 sell-in of SAR –1,987 (net negative) indicates that returns or credit notes exceeded any new purchases for the full year — a near-certain signal of a dispute, forced product reversal, or negotiated settlement that effectively terminated the trading relationship. With zero 2026 activity now entering the peak season window (May–September), this account is commercially dormant.\n\nCollection risk in the conventional sense is minimal — you cannot collect what is not owed. But the latent risk is reactivation exposure. The account carries a Grade D classification and a Q3-Critical quadrant designation, which historically reflects DSO exceeding the 180-day DPO threshold and chronically elevated overdue ratios. The portfolio YTD OVD baseline of 35.4% provides the macro context: SME-channel Grade D accounts in this cohort are statistically high-default profiles. If any new shipment is made under open credit terms, recovery probability is materially lower than standard SME accounts.\n\nCredit policy conclusion is clear: the de facto credit line is already zero by commercial inactivity, and this should be formalized. No credit expansion is justifiable given Grade D, negative 2025 sell-in, and zero 2026 engagement entering the highest-volume quarter. Any future reactivation must be conditioned on grade rehabilitation, a cash-advance pilot order, and explicit field sales endorsement — not automatic credit reinstatement.",
+        "credit_recommendation": "decrease",
+        "credit_rationale": "Grade D dormant account with negative 2025 net sell-in and zero 2026 revenue entering peak season — formal suspension of credit limit prevents inadvertent exposure if account is reactivated without proper review.",
+        "action": [
+          "Formally set credit limit to SAR 0 in the system and flag account status as 'Suspended — Reactivation Review Required' to block accidental order processing on open terms",
+          "Dispatch AR/field sales inquiry to establish root cause of SAR –1,987 in 2025: dispute, product rejection, or voluntary exit — document findings to determine if account rehabilitation is viable",
+          "If account is to be retained for 2026 peak season, require 100% cash-in-advance on a pilot order (minimum SAR 50K) and a minimum Grade C upgrade before any credit terms are restored"
+        ],
+        "risk_level": "yellow",
+        "risk_reason": "Zero current AR eliminates immediate collection risk, but Grade D classification, negative 2025 sell-in, and full commercial dormancy create high reactivation risk if credit terms are applied without controls."
+      },
+      "sales": {
+        "headline": "Account has effectively churned — 2025 net negative (returns), zero 2026 activity entering peak season.",
+        "analysis": "Channel health is critically deteriorated. The 2024 sell-in of SAR 603K suggests the account was once a meaningful SME buyer, but 2025 recorded SAR -1,987 — net returns with no new purchases — and 2026 shows zero revenue as of early May, the threshold of peak season. This is not a slow buyer; this is a disengaged account. The return activity in 2025 implies the channel held excess inventory it could not sell through, likely a combination of overhang from 2024 loading and possible competitor displacement at the end-user level.\n\nRoot cause hierarchy: (1) Inventory overhang from 2024 pushed the account into return mode — Grade D SME buyers typically lack the financial buffer to absorb unsold stock and will return rather than carry. (2) Competitor switch is a strong secondary hypothesis — Samsung, Gree, and Midea are all active in SME/project channels with aggressive pricing; without sell-out data, we cannot confirm, but zero re-order in 6+ months strongly implies sourcing has moved. (3) Business contraction or project pipeline dry-up is a tertiary possibility given the SME nature of the account.\n\nInvestment case is weak. The only positive data point is a clean AR (SAR 0 balance, zero overdue) — but this is a consequence of inactivity, not discipline. The 35.4% YTD OVD baseline suggests historical payment stress when the account was active. Investing credit or promotional support into an account that returned product and has gone silent for 6+ months, entering peak season, carries high risk of zero utilization or repeat return cycle. Relationship recovery (a direct visit to diagnose departure) is the only justifiable action before any resource commitment.",
+        "investment_signal": "exit",
+        "investment_type": [
+          "relationship_recovery"
+        ],
+        "investment_rationale": "Account has churned with net returns in 2025 and zero 2026 activity — no investment vehicle makes sense until root cause of disengagement is confirmed via direct contact.",
+        "action": [
+          "Sales visit / call within 1 week: diagnose whether account switched supplier, faced business contraction, or is open to re-engagement — do not offer terms before understanding the departure reason",
+          "If competitor switch confirmed: assess whether a targeted peak-season promotional offer (discounted split unit bundle, short 30d credit) can recover a trial order before June heat peak",
+          "If no credible re-engagement signal within 2 weeks: deprioritize account for 2026 peak allocation; redirect SME channel focus to active Grade B/C accounts with positive buy momentum"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "red",
+        "channel_reason": "Net return in 2025, zero purchase in 2026, silent entering peak season — effective churn with no recovery signal yet."
+      },
+      "synthesis": {
+        "headline": "SAR 0 AR is a tombstone, not a clean bill of health — this account churned in 2025 and is silent entering peak season; the only open question is whether a 1-week rescue visit changes the math.",
+        "verdict": {
+          "risk_level": "yellow",
+          "investment_signal": "exit",
+          "one_line": "Risk Yellow — Exit. Zero AR reflects commercial death, not creditworthiness; no investment is justified until a sales visit confirms re-engagement is real."
+        },
+        "summary_3lines": [
+          "A once-meaningful SAR 603K SME buyer returned product in 2025 (net SAR –1,987) and has placed zero orders in 2026 entering the peak May–September window — effective churn.",
+          "Root cause is most likely 2024 inventory overhang that forced returns, compounded by probable competitor displacement (Samsung/Gree/Midea); Grade D profile with 35.4% portfolio OVD baseline confirms this account historically underperformed on payment when active.",
+          "If no action is taken this week, the peak season window closes without resolution — the account will either self-exit permanently, or worse, be reactivated informally on 90-day credit terms with no controls, recreating the exact exposure profile that earned it a Grade D in the first place."
+        ],
+        "decision_required": "Authorize a mandatory sales diagnostic visit within 5 business days — the outcome of that visit is the gating condition for every subsequent resource decision on this account for 2026 peak.",
+        "options": [
+          {
+            "option": "Option A — Rescue Attempt: Conduct sales visit, diagnose departure, offer cash-in-advance pilot (SAR 50K minimum) with 30-day terms if competitor switch is reversible",
+            "consequence": "If credible re-engagement signal exists, you recover a historically SAR 600K+ SME account before June heat peak at controlled risk (cash-first); if no signal, you formally close the loop with documented evidence and move on cleanly."
+          },
+          {
+            "option": "Option B — Formal Exit: Suspend credit limit to SAR 0 in-system today, deprioritize for 2026 peak allocation, redirect SME channel capacity to active Grade B/C accounts",
+            "consequence": "Eliminates any reactivation exposure immediately and frees field sales bandwidth for accounts with positive buy momentum — but forfeits any chance of recovering a historically significant SME buyer before the highest-volume quarter ends."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "Finance formally sets credit limit to SAR 0 in-system and flags 'Suspended — Reactivation Review Required' to block accidental order processing on open terms",
+            "deadline": "2026-05-07 (tomorrow)"
+          },
+          {
+            "step": "Sales visit or direct call to diagnose: did account switch supplier, face business contraction, or is re-engagement possible — document outcome, do not offer terms before root cause is confirmed",
+            "deadline": "2026-05-13 (end of week)"
+          },
+          {
+            "step": "Decision gate: if credible re-engagement signal → approve cash-in-advance pilot order only; if no signal → formally deprioritize and reallocate peak season SME focus to active accounts",
+            "deadline": "2026-05-15"
+          }
+        ],
+        "signal": "yellow"
       }
     }
   }
