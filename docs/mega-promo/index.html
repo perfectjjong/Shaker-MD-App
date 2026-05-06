@@ -475,7 +475,7 @@ tr:hover td{background:#f8fafc}
 <!-- ═══ TAB 6: STOCK ═══ -->
 <div class="tab-pane" id="pane6">
   <div class="info-box">
-    📦 <b>Stock Basis:</b> W17 (as of 4/27) · Days of Cover = W17 Stock ÷ Daily Run-rate (D0+D1 avg) · Promo remaining: 18 days
+    📦 <b>Stock Basis:</b> <span id="stockBasisLabel">—</span> · Days of Cover = <span id="stockWeekLabel">—</span> Stock ÷ Daily Run-rate (D0+D1 avg) · Promo remaining: <span id="stockPromoRemain">—</span> days
   </div>
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
     <div class="kpi red"><div class="kpi-lbl">Stock-out Risk</div><div class="kpi-val" id="kpiStockRisk">—</div><div class="kpi-sub" id="subStockRisk">brands</div></div>
@@ -489,7 +489,7 @@ tr:hover td{background:#f8fafc}
     <div class="tbl-wrap"><table id="tblStock">
       <thead><tr>
         <th>Brand</th>
-        <th>W17 Stock (units)</th>
+        <th id="thStockUnits">— Stock (units)</th>
         <th>Daily Run-rate</th>
         <th>Days of Cover</th>
         <th>Status</th>
@@ -1912,6 +1912,22 @@ function renderYoY(){
 function renderStock(){
   if(!window.PROMO_DATA?.stock) return;
   const stock = PROMO_DATA.stock;
+
+  // 주차·날짜 동적 표시
+  const wk = stock.week || '—';
+  const asOf = stock.as_of_date ? stock.as_of_date.slice(5).replace('-','/') : '—';
+  const el = document.getElementById('stockBasisLabel');
+  if(el) el.textContent = `${wk} (as of ${asOf})`;
+  const el2 = document.getElementById('stockWeekLabel');
+  if(el2) el2.textContent = wk;
+  const th = document.getElementById('thStockUnits');
+  if(th) th.textContent = `${wk} Stock (units)`;
+  const promoEnd = new Date('2026-05-15');
+  const today = new Date();
+  const remain = Math.max(0, Math.ceil((promoEnd - today) / 86400000));
+  const elR = document.getElementById('stockPromoRemain');
+  if(elR) elR.textContent = remain;
+
   const fbStock = {};  // family+brand → qty
   const fbRegStock = {};  // family+brand+region → qty
 
