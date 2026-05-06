@@ -319,6 +319,10 @@ tfoot .fz{background:#0f172a}
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
       <span id="fhAdvGenerated" style="font-size:10px;color:#475569;"></span>
+      <div style="display:flex;gap:0;">
+        <button id="fhAdvLangEn" onclick="fhAdvSetLang('en')" style="padding:3px 10px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:11px;font-weight:700;">ENG</button>
+        <button id="fhAdvLangKo" onclick="fhAdvSetLang('ko')" style="padding:3px 10px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:11px;font-weight:700;">KOR</button>
+      </div>
       <button onclick="fhCloseAdvisory()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;cursor:pointer;font-size:11px;">✕ Close</button>
     </div>
   </div>
@@ -1971,6 +1975,8 @@ function switchMainTab(tab){
 // ======== B2C FINANCIAL HEALTH ========
 var _fhDsoMode='simple';
 var _fhAdvisory=null;  // fh_advisory.json 캐시
+var _fhAdvLang='en';   // 'en' | 'ko'
+var _fhAdvCurrent=null; // 현재 표시 중인 adv 객체
 var _fhCompareMode=false;
 var _fhCompChartY=null, _fhCompChartT=null;
 var _fhRevMode='ytd';
@@ -2156,6 +2162,18 @@ function fhAdvSwitchTab(idx){
   });
 }
 
+function fhAdvSetLang(lang){
+  _fhAdvLang=lang;
+  var enBtn=document.getElementById('fhAdvLangEn');
+  var koBtn=document.getElementById('fhAdvLangKo');
+  if(enBtn&&koBtn){
+    enBtn.style.background=lang==='en'?'#3b82f6':'#1e293b';
+    enBtn.style.color=lang==='en'?'#fff':'#64748b';
+    koBtn.style.background=lang==='ko'?'#3b82f6':'#1e293b';
+    koBtn.style.color=lang==='ko'?'#fff':'#64748b';
+  }
+  if(_fhAdvCurrent) fhRenderAdvisoryContent(_fhAdvCurrent);
+}
 function fhCloseAdvisory(){
   document.getElementById('fhAdvisoryPanel').style.display='none';
 }
@@ -2166,14 +2184,23 @@ var SIG_COLOR={'red':'#ef4444','yellow':'#f59e0b','green':'#10b981'};
 function fhRenderAdvisoryContent(adv){
   var panel=document.getElementById('fhAdvisoryPanel');
   panel.style.display='';
+  _fhAdvCurrent=adv;
+  var ko=_fhAdvLang==='ko';
 
   // 헤더
   var signal=adv.signal||'yellow';
   document.getElementById('fhAdvSignal').textContent=SIG_ICON[signal]||'🟡';
   document.getElementById('fhAdvName').textContent=adv.name||'';
   var synth=adv.synthesis||{};
-  document.getElementById('fhAdvHeadline').textContent=synth.headline||adv.finance&&adv.finance.headline||'';
+  var headlineEn=synth.headline||adv.finance&&adv.finance.headline||'';
+  var headlineKo=synth.headline_ko||adv.finance&&adv.finance.headline_ko||'';
+  document.getElementById('fhAdvHeadline').textContent=(ko&&headlineKo)?headlineKo:headlineEn;
   document.getElementById('fhAdvGenerated').textContent=(_fhAdvisory&&_fhAdvisory.generated_at)?'Updated: '+_fhAdvisory.generated_at:'';
+  // KO 번역 미완 시 안내
+  var koReady=!!(synth.headline_ko||(adv.finance&&adv.finance.headline_ko));
+  var koNote=document.getElementById('fhAdvLangKo');
+  if(koNote) koNote.title=koReady?'한국어 번역 완료':'번역 준비 중...';
+
   // Investment badge
   var invSignal=adv.investment_signal||(synth.verdict&&synth.verdict.investment_signal)||'hold';
   var invCfg={invest:{bg:'#10b98122',color:'#10b981',icon:'✅ INVEST'},hold:{bg:'#f59e0b22',color:'#f59e0b',icon:'⏸ HOLD'},exit:{bg:'#ef444422',color:'#ef4444',icon:'❌ EXIT'}};
@@ -2184,39 +2211,45 @@ function fhRenderAdvisoryContent(adv){
   // 탭 0 — Finance
   var fin=adv.finance||{};
   var c0=document.getElementById('fhAdvContent0');
-  c0.innerHTML=_renderAdvSection(fin, signal, adv.metrics||{});
+  c0.innerHTML=_renderAdvSection(fin, signal, adv.metrics||{}, ko);
 
   // 탭 1 — Sales
   var sal=adv.sales||{};
   var c1=document.getElementById('fhAdvContent1');
   var salesNote=sal.has_sellout_data===false?
     '<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:10px;color:#64748b;">⚠ No weekly sell-out data for this account — analysis based on Sell-In patterns only</div>':'';
-  c1.innerHTML=salesNote+_renderAdvSection(sal, sal.signal||'yellow', adv.metrics||{});
+  c1.innerHTML=salesNote+_renderAdvSection(sal, sal.signal||'yellow', adv.metrics||{}, ko);
 
   // 탭 2 — Synthesis
   c2=document.getElementById('fhAdvContent2');
-  c2.innerHTML=_renderSynthSection(synth, signal, adv);
+  c2.innerHTML=_renderSynthSection(synth, signal, adv, ko);
 
   fhAdvSwitchTab(0);
   panel.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-function _renderAdvSection(data, signal, metrics){
+function _renderAdvSection(data, signal, metrics, ko){
   if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">분석 데이터를 불러오는 중입니다. 잠시 후 다시 시도해주세요.</p>';
   var sc=SIG_COLOR[signal]||'#f59e0b';
   var html='';
-  if(data.headline){
+  var headline=(ko&&data.headline_ko)||data.headline||'';
+  var analysis=(ko&&data.analysis_ko)||data.analysis||'';
+  var actions=(ko&&data.action_ko&&data.action_ko.length)?data.action_ko:data.action||[];
+  if(ko&&!data.headline_ko){
+    html+='<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:10px;color:#64748b;">한국어 번역 준비 중입니다. 잠시 후 다시 확인해주세요.</div>';
+  }
+  if(headline){
     html+='<div style="background:'+sc+'22;border-left:3px solid '+sc+';padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;">'
-         +'<span style="color:'+sc+';font-weight:700;font-size:12px;">'+data.headline+'</span></div>';
+         +'<span style="color:'+sc+';font-weight:700;font-size:12px;">'+headline+'</span></div>';
   }
-  if(data.analysis){
+  if(analysis){
     html+='<div style="color:#cbd5e1;font-size:11px;line-height:1.7;margin-bottom:14px;">'+
-      data.analysis.replace(/\n/g,'<br>')+'</div>';
+      analysis.replace(/\n/g,'<br>')+'</div>';
   }
-  if(data.action&&data.action.length){
+  if(actions.length){
     html+='<div style="background:#1e293b;border-radius:8px;padding:12px 14px;">'
          +'<div style="font-size:10px;font-weight:700;color:#7c3aed;letter-spacing:1px;margin-bottom:8px;">ACTION</div>';
-    data.action.forEach(function(a){
+    actions.forEach(function(a){
       html+='<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">'
            +'<span style="color:#7c3aed;font-weight:700;margin-top:1px;">▶</span>'
            +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+a+'</span></div>';
@@ -2226,10 +2259,18 @@ function _renderAdvSection(data, signal, metrics){
   return html;
 }
 
-function _renderSynthSection(data, signal, adv){
+function _renderSynthSection(data, signal, adv, ko){
   if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">종합 분석 데이터를 불러오는 중입니다.</p>';
   var sc=SIG_COLOR[signal]||'#f59e0b';
   var html='';
+  var summary=(ko&&data.summary_3lines_ko&&data.summary_3lines_ko.length)?data.summary_3lines_ko:data.summary_3lines||[];
+  var decision=(ko&&data.decision_required_ko)||data.decision_required||'';
+  var options=(ko&&data.options_ko&&data.options_ko.length)?data.options_ko:data.options||[];
+  var timeline=(ko&&data.timeline_ko&&data.timeline_ko.length)?data.timeline_ko:data.timeline||[];
+
+  if(ko&&!data.summary_3lines_ko){
+    html+='<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:10px;color:#64748b;">한국어 번역 준비 중입니다. 잠시 후 다시 확인해주세요.</div>';
+  }
 
   // Verdict 2축 배너
   var verdict=data.verdict||{};
@@ -2244,15 +2285,16 @@ function _renderSynthSection(data, signal, adv){
          +'<div style="font-size:10px;color:#94a3b8;margin-bottom:4px;font-weight:600;">INVESTMENT</div>'
          +'<div style="font-size:18px;font-weight:700;color:'+ic.color+';">'+ic.label+'</div></div>'
          +'</div>';
-    if(verdict.one_line){
-      html+='<div style="background:#1e293b;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#e2e8f0;font-style:italic;">'+verdict.one_line+'</div>';
+    var oneLine=(ko&&verdict.one_line_ko)||verdict.one_line||'';
+    if(oneLine){
+      html+='<div style="background:#1e293b;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#e2e8f0;font-style:italic;">'+oneLine+'</div>';
     }
   }
 
   // 3줄 요약
-  if(data.summary_3lines&&data.summary_3lines.length){
+  if(summary.length){
     html+='<div style="margin-bottom:16px;">';
-    data.summary_3lines.forEach(function(l,i){
+    summary.forEach(function(l,i){
       html+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;">'
            +'<span style="background:'+sc+';color:#000;font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap;margin-top:2px;">'+(i+1)+'</span>'
            +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+l+'</span></div>';
@@ -2261,16 +2303,16 @@ function _renderSynthSection(data, signal, adv){
   }
 
   // 결정 필요사항
-  if(data.decision_required){
+  if(decision){
     html+='<div style="background:#7c3aed22;border:1px solid #7c3aed;border-radius:8px;padding:12px 14px;margin-bottom:14px;">'
          +'<div style="font-size:10px;color:#a78bfa;font-weight:700;letter-spacing:1px;margin-bottom:6px;">DECISION REQUIRED NOW</div>'
-         +'<div style="color:#e2e8f0;font-size:12px;font-weight:600;">'+data.decision_required+'</div></div>';
+         +'<div style="color:#e2e8f0;font-size:12px;font-weight:600;">'+decision+'</div></div>';
   }
 
   // 옵션
-  if(data.options&&data.options.length){
+  if(options.length){
     html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">';
-    data.options.forEach(function(opt,i){
+    options.forEach(function(opt,i){
       html+='<div style="background:#1e293b;border-radius:8px;padding:12px;">'
            +'<div style="font-size:10px;color:#64748b;font-weight:700;margin-bottom:4px;">OPTION '+(i===0?'A':'B')+'</div>'
            +'<div style="color:#e2e8f0;font-size:11px;font-weight:600;margin-bottom:4px;">'+(opt.option||'')+'</div>'
@@ -2280,10 +2322,10 @@ function _renderSynthSection(data, signal, adv){
   }
 
   // 타임라인
-  if(data.timeline&&data.timeline.length){
+  if(timeline.length){
     html+='<div style="background:#1e293b;border-radius:8px;padding:12px 14px;">'
          +'<div style="font-size:10px;font-weight:700;color:#7c3aed;letter-spacing:1px;margin-bottom:10px;">TIMELINE</div>';
-    data.timeline.forEach(function(t,i){
+    timeline.forEach(function(t){
       html+='<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:8px;">'
            +'<div style="background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;margin-top:2px;">'+(t.deadline||'TBD')+'</div>'
            +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+(t.step||'')+'</span></div>';
