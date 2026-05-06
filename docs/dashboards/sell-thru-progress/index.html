@@ -293,7 +293,7 @@ tfoot .fz{background:#0f172a}
         <div id="fhCompareYtdWrap" style="position:relative;height:380px;"></div>
       </div>
       <div>
-        <div style="font-size:11px;color:#a78bfa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">T12M (Trailing 12M) ▶</div>
+        <div style="font-size:11px;color:#a78bfa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">T12M (Trailing T12M) ▶</div>
         <div id="fhCompareT12mWrap" style="position:relative;height:380px;"></div>
       </div>
     </div>
@@ -2106,17 +2106,17 @@ function int_id(v){ return Math.round(parseFloat(v)); }
 var FH_Q_COLORS={1:'#10b981',2:'#f97316',3:'#ef4444',4:'#f59e0b'};
 var FH_MOVE_INTERP={
   '12':'Peak-season revenue swells the YTD denominator — AR collection is lagging behind order intake growth',
-  '21':'2026 order volume trailing prior-year pace — declining channel engagement widens the YTD vs 12M revenue gap',
-  '13':'Seasonal orders masking a critical collection breakdown — both DSO and overdue elevated on a full 12M basis',
+  '21':'2026 order volume trailing prior-year pace — declining channel engagement widens the YTD vs T12M revenue gap',
+  '13':'Seasonal orders masking a critical collection breakdown — both DSO and overdue elevated on a full T12M basis',
   '31':'Strong 2026 ordering pace absorbing the AR burden — healthy revenue flow normalising DSO and overdue simultaneously',
   '14':'New invoices being settled but prior balances quietly accumulating — selective payment pattern beginning to form',
-  '41':'Recent payment discipline outpacing 12M overdue average — collection posture structurally improving',
+  '41':'Recent payment discipline outpacing T12M overdue average — collection posture structurally improving',
   '23':'Overdue compounding on top of already-elevated DSO — receivable aging accelerating with each billing cycle',
-  '32':'Slow payer but invoices eventually cleared over time — AR aging without active default on full 12M horizon',
-  '24':'DSO rising on 12M basis while overdue stays contained — growing balance without full payment breakdown',
-  '42':'Overdue improving but DSO deteriorating on 12M view — cash flow tightening despite recent payment intent',
+  '32':'Slow payer but invoices eventually cleared over time — AR aging without active default on full T12M horizon',
+  '24':'DSO rising on T12M basis while overdue stays contained — growing balance without full payment breakdown',
+  '42':'Overdue improving but DSO deteriorating on T12M view — cash flow tightening despite recent payment intent',
   '34':'New invoices cleared while aged balances persist — account cherry-picks which invoices to settle first',
-  '43':'Both DSO and overdue compounding over the 12M horizon — account health eroding beyond seasonal fluctuation'
+  '43':'Both DSO and overdue compounding over the T12M horizon — account health eroding beyond seasonal fluctuation'
 };
 
 function _fhDynamicInsight(mv, ytdAvgOvd){
@@ -2154,7 +2154,7 @@ function _fhDynamicInsight(mv, ytdAvgOvd){
         +'If Sell-out pace does not match Sell-in rate within 4 weeks, proactively shorten next order cycle to de-risk AR.';
     } else {
       ph='T12M DSO '+Math.round(dsoT)+'d vs YTD '+Math.round(dsoY)+'d (+'+Math.round(dsoT-dsoY)+'d). '
-        +'Purchase pace relative to 12M baseline is '+(buyRatio>=1.1?pct(buyRatio)+'% above average':'broadly stable')+'.';
+        +'Purchase pace relative to T12M baseline is '+(buyRatio>=1.1?pct(buyRatio)+'% above average':'broadly stable')+'.';
       act='Confirm whether elevated T12M DSO stems from a prior large invoice or structural slowdown. Review account aging bucket before next order approval.';
     }
   } else if(key==='21'){
@@ -2172,7 +2172,7 @@ function _fhDynamicInsight(mv, ytdAvgOvd){
     ph='New invoices settled promptly but prior-period balances lingering — selective payment behaviour emerging. OVD '+ovd.toFixed(1)+'% above grade baseline.';
     act='Enforce old-before-new collection policy on next order. Link Sell-in approval to clearance of oldest outstanding invoice.';
   } else if(key==='41'){
-    ph='Recent payment run-rate outpacing 12M overdue average — account self-correcting. OVD '+ovd.toFixed(1)+'% now below grade baseline.';
+    ph='Recent payment run-rate outpacing T12M overdue average — account self-correcting. OVD '+ovd.toFixed(1)+'% now below grade baseline.';
     act='Reinforce positive behaviour with order fulfilment priority. Monitor for 2 consecutive months before considering grade upgrade.';
   } else {
     return FH_MOVE_INTERP[key]||'Quadrant shift';
