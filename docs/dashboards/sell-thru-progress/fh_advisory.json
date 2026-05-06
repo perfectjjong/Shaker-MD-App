@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06 12:16",
+  "generated_at": "2026-05-06 12:19",
   "version": 2,
   "sell_thru_date": "05-05",
   "account_count": 77,
@@ -2793,61 +2793,60 @@
         "has_sellout_data": false
       },
       "finance": {
-        "headline": "Ghassan Trading is post-payment clean with minimal near-term collection risk, but structural DSO overrun and a 74% sell-in collapse since 2024 cap any case for credit expansion.",
-        "analysis": "AR health is sound as of May 5: total overdue of SAR 4,878 (2.1%) sits entirely in the 0–30d bucket with zero aging into 30–60d or 60d+. A payment made between May 2–3 reduced the balance by ~SAR 26K and cut OVD from 11.5% to 2.1% — a positive behavioral signal entering peak season. Current exposure of SAR 233,848 is modest and comfortably within the DPO-safe Q1 threshold. The 1.2x buy pace vs T12M average confirms the account is re-engaging, not withdrawing.\n\nCollection risk is low acutely but structurally elevated in the medium term. YTD DSO of 127d and T12M DSO of 150d both materially exceed the 90-day credit term, confirming this account chronically pays outside agreed terms — yet consistently before the DPO ceiling of 180d. The YTD OVD baseline of 35.4% is the account's normalized operating level; today's 2.1% is a post-payment low that will drift upward as May–June peak-season invoices land and age. No immediate collection action is warranted, but proactive monitoring is essential before OVD structurally rebuilds above 30%.\n\nCredit policy should be maintained, not expanded. The sell-in trajectory tells a concerning story: SAR 1.38M in 2024 collapsed to SAR 355K in 2025 (-74%), with 2026 YTD at SAR 229K implying an annualized run-rate of roughly SAR 450–500K — structural shrinkage, not cyclical softness. Grade C classification reflects this accurately. Extending credit to a contracting Grade C account with chronic DSO overrun introduces asymmetric exposure — limited volume upside, meaningful collection tail risk if the account's buying capacity deteriorates further.",
-        "credit_recommendation": "maintain",
-        "credit_rationale": "Grade C account with persistent DSO overrun and a multi-year sell-in decline offers no volume upside to justify expanding credit exposure at current risk profile.",
-        "action": [
-          "Monitor OVD weekly through May–July as peak-season invoices age; trigger escalation review if OVD re-breaches 20% with any balance entering 30–60d bucket",
-          "Condition peak-season shipment releases on adherence to 90d payment terms — flag each invoice at T+75d before it becomes overdue",
-          "Conduct Q2 2026 account review: if annualized sell-in remains below SAR 450K, initiate tiering reassessment with credit term tightening from 90d to 60d"
-        ],
-        "risk_level": "green",
-        "risk_reason": "Zero 60d+ aging, OVD at 2.1% post-payment, balance within DPO-safe Q1 — near-term collection risk minimal despite structural DSO overrun."
+        "error": "timeout"
       },
       "sales": {
-        "raw": "{\"headline\":\"Ghassan Trading is financially clean but operationally hollowed out — 74% sell-in collapse since 2024 demands root-cause confirmation before any resource commitment.\",\"analysis\":\"Channel health is structurally distressed. Sell-In cratered from SAR 1.38M (2024) to SAR 355k (2025), a 74% single-year drop that cannot be explained by normal seasonal variance. The most probable hypothesis is a 2024 over-stocking event: account loaded aggressively, inventory sat unsold through the year, a",
-        "parse_error": true
+        "headline": "2024→2025 sell-in collapsed 74% signaling likely competitor shift or severe overhang; 2026 shows tentative re-engagement at 1.2x pace but absolute volume remains a fraction of peak.",
+        "analysis": "Ghassan Trading presents a classic post-overhang recovery pattern. The 2024 buy volume of SAR 1.38M was exceptionally high — likely aggressive pre-season loading — followed by a brutal 74% crash to SAR 355K in 2025. This is not a seasonal dip; it is a structural disengagement. Root cause candidates in priority order: (1) severe inventory overhang from 2024 overbuy, units still moving through retail into 2025 suppressing new orders; (2) competitor reallocation — Grade C IR_Others accounts are the first to diversify toward Gree or Midea on margin; (3) reduced floor space or channel exit at key sub-dealers. Sell-out data absence means we cannot confirm actual off-take, but the magnitude of the 2024→2025 drop makes a pure overhang hypothesis compelling.\n\n2026 YTD shows SAR 229,936 through early May. Annualized at current pace, this projects ~SAR 550–600K — above 2025 full year but still less than half of 2024. The 1.2x buy pace vs T12M average is encouraging as a directional signal entering peak season (May–September). DSO also improved sharply: YTD 127d vs T12M 150d, and the OVD drop from 11.5% on May 2 to 2.1% on May 3 confirms a timely payment was made — payment behavior is disciplined, not distressed. The account is not a credit risk; it is a volume risk.\n\nInvestment thesis is weak at this stage. The account is Grade C, channel IR_Others (lowest strategic priority tier), and is operating at <20% of its 2024 volume. Recovery trajectory is positive but unproven — one quarter does not confirm a trend reversal. Committing promotional budget or credit line expansion before the peak-season buy pattern clarifies in June–July would be premature. The rational play is to monitor May–June order flow: if buy pace sustains or accelerates through Ramadan-to-summer transition, a targeted sellout support conversation is warranted in July.",
+        "investment_signal": "hold",
+        "investment_type": [
+          "none"
+        ],
+        "investment_rationale": "Recovery signals are too early-stage and volume too low relative to 2024 peak to justify resource allocation ahead of confirmed peak-season momentum.",
+        "action": [
+          "Monitor May–June order intake weekly; flag if 2026 cumulative pace falls below 2025 run-rate — that would signal full exit, not recovery",
+          "Schedule a June field visit to assess floor presence, stock levels, and competitor share — key to diagnosing whether 2024→2025 drop was overhang or competitor switch",
+          "If buy pace sustains at 1.2x or higher through July, escalate to targeted sellout support (installer incentive or display refresh) as a Q3 activation"
+        ],
+        "has_sellout_data": false,
+        "channel_signal": "yellow",
+        "channel_reason": "Tentative recovery in 2026 buy pace (1.2x) and clean AR, but sell-in still 57% below 2024 peak with no confirmed structural turnaround yet."
       },
       "synthesis": {
-        "headline": "Ghassan pays reliably but is commercially hollowed — peak season opens NOW and the root cause of a 74% sell-in collapse is still unconfirmed; a field visit this week is the only way to avoid investing blind or exiting prematurely.",
+        "headline": "AR is clean and DSO is improving — this is not a credit emergency. The defining question is whether the 74% sell-in collapse in 2025 reflects inventory overhang now clearing, or a permanent competitor switch. Peak season (May–July) is the only diagnostic that answers it.",
         "verdict": {
           "risk_level": "green",
           "investment_signal": "hold",
-          "one_line": "Risk Green — Hold. Account honors DPO with intent-to-pay behavior, but volume base has eroded 74% with undiagnosed root cause; no resource commitment until field visit confirms whether this is inventory drawdown or competitive displacement."
+          "one_line": "Risk GREEN — HOLD. Payment behavior is disciplined and AR healthy, but annualised 2026 volume still lands at less than half of 2024 peak — premature investment before June–July buy pattern confirms structural recovery."
         },
         "summary_3lines": [
-          "Ghassan is financially clean as of May 5 — OVD at 2.1%, zero aged exposure beyond 30d, SAR 26K payment on May 2–3 confirming payment intent entering peak season — collection risk is negligible in the near term.",
-          "The commercial picture is structurally distressed: sell-in collapsed 74% from SAR 1.38M (2024) to SAR 355K (2025), most likely from a 2024 overstock event still in drawdown, but Samsung/Gree shelf displacement is an equally plausible and more dangerous hypothesis that we cannot dismiss without eyes on the ground.",
-          "If we do nothing this week, we lose the diagnostic window — peak season invoices will distort inventory signals by June, the account will either recover on its own (wasted upside left on the table) or continue eroding undetected into a structural exit candidate by Q3."
+          "Ghassan paid down overdue on May 3 (OVD 11.5% → 2.1%), AR balance is SAR 234K with only SAR 4.9K aged 0–30d, and DSO is trending down from T12M 150d to YTD 127d — no collection action required.",
+          "The 74% sell-in crash from 2024 (SAR 1.38M) to 2025 (SAR 355K) is structural, not seasonal; 2026 is tracking at 1.2x buy pace vs T12M but annualised projection of SAR 550–600K remains a fraction of peak — root cause (overhang vs. competitor shift) is still undiagnosed.",
+          "Without a June field touchpoint, we risk either missing a narrow window to recapture floor space before a competitor locks in seasonal reorders, or allocating Q3 sellout budget to an account quietly trending toward full exit."
         ],
-        "decision_required": "Authorize an immediate field visit to Ghassan this week to determine: (1) whether 2024 overstock has cleared or overhang persists, and (2) whether Samsung or Gree has captured LG shelf or display position — this single data point unlocks the invest-vs-exit decision before peak season closes the window.",
+        "decision_required": "Approve or defer a June field visit to diagnose root cause of the 2024→2025 volume collapse before any peak-season resource commitment is made.",
         "options": [
           {
-            "option": "Option A — Field visit this week, then decide",
-            "consequence": "Low cost, high information value. If root cause is inventory drawdown and shelves are LG-held, reopen targeted sell-out support conversation when monthly Sell-In crosses SAR 60K for two consecutive months. If competitive displacement is confirmed, initiate managed account exit before peak-season credit exposure builds further."
+            "option": "Option A — Active Monitoring + June Field Diagnostic",
+            "consequence": "Minimal cost (one field rep visit in June); yields floor presence data, stock depth, and competitor brand visibility. If buy pace sustains ≥1.2x through July, provides evidence base to activate targeted Q3 support (installer incentive or display refresh) with confidence. Preserves optionality on both upside and downside."
           },
           {
-            "option": "Option B — Monitor passively through June without field visit",
-            "consequence": "Lose the pre-peak diagnostic window. Buy pace data alone cannot distinguish recovery from competitor floor space recovery; we commit neither resources nor exit decision, and risk being caught in Q3 with an overdue OVD rebuild and no action plan in place."
+            "option": "Option B — Passive Watch Only Through H2 Review",
+            "consequence": "Zero incremental cost in H1; but if the 2025 drop was a competitor switch, the window to recapture seasonal shelf position closes in June before competitors lock summer reorders. Recovery opportunity is lost without visibility, and we will not know until Q4 data confirms exit."
           }
         ],
         "timeline": [
           {
-            "step": "Field visit: confirm 2024 inventory clearance status and LG vs competitor shelf/display share at Ghassan outlet(s)",
-            "deadline": "By 2026-05-13"
+            "step": "Track weekly order intake May–June vs. 2025 run-rate; trigger escalation alert if 2026 cumulative pace falls below 2025 trajectory",
+            "deadline": "2026-06-07"
           },
           {
-            "step": "OVD weekly monitoring: escalate for credit review if OVD re-breaches 20% AND any balance enters 30–60d bucket as peak-season invoices age",
-            "deadline": "Weekly through 2026-07-31"
+            "step": "Conduct field visit: assess floor presence, on-hand inventory depth, and competitor brand display share at key sub-dealers",
+            "deadline": "2026-06-30"
           },
           {
-            "step": "Sell-In gate check: if monthly buy pace holds above 1.0x T12M AND absolute monthly Sell-In crosses SAR 60K for two consecutive months (June + July), escalate to sell-out support discussion",
-            "deadline": "Decision trigger by 2026-07-15"
-          },
-          {
-            "step": "Q2 account review: if annualized 2026 Sell-In tracks below SAR 450K, initiate credit term tightening from 90d to 60d and formal tiering reassessment",
-            "deadline": "By 2026-06-30"
+            "step": "Gate decision: if cumulative buy pace ≥1.2x through July, activate Q3 sellout support; if pace decelerates or stalls, reclassify as exit-track and reduce credit exposure proactively",
+            "deadline": "2026-07-15"
           }
         ],
         "signal": "yellow"
