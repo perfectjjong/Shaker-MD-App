@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-06 12:19",
+  "generated_at": "2026-05-06 13:55",
   "version": 2,
   "sell_thru_date": "05-05",
   "account_count": 77,
@@ -9020,124 +9020,82 @@
         "has_sellout_data": true
       },
       "finance": {
-        "headline": "United Electronics carries zero overdue today but its T12M DSO of 245 days — double the contracted 120-day credit term — exposes a chronic slow-pay structure that a clean snapshot obscures.",
-        "analysis": "AR health at face value is excellent: SAR 74.2M balance, zero overdue across all aging buckets, and the Apr 29–May 4 trend confirms gradual active repayment (balance declining from SAR 77.98M). The account is technically current. However, the DSO lens tells a structurally different story — YTD DSO at 143 days already breaches the 120-day credit term by 23 days on just five months of data, while T12M DSO at 245 days is nearly double the credit term and well above LG's DPO ceiling of 180 days. United Electronics routinely settles late; LG is absorbing ~125 days of financing beyond what the credit agreement mandates. The OVD% staying at 0% is not evidence of disciplined payment — it signals the account clears invoices just before they age into overdue classification.\n\nThe 2026 commercial picture adds complexity. Buy pace is accelerating at 1.7x T12M average entering peak season (May–September), and YTD sell-in of SAR 64.7M is already 71% of 2025's full-year SAR 90.6M. This is commercially reasonable pre-season positioning. But sell-out trajectory is a latent risk: 2024's 51,697 units collapsed 33% to 34,432 units in 2025, and 2026 sell-out is unreported at zero. If sell-through does not recover alongside the accelerated buy pace, channel inventory will pile up, payment timing will stretch further, and the current clean AR could deteriorate rapidly as peak season invoices mature in Q3.\n\nOn credit policy: the YTD DSO improvement from 245d (T12M) to 143d (YTD) suggests tightened payment discipline in 2026 — encouraging, but one quarter of data is insufficient to call a structural inflection. Increasing the credit limit now would amplify exposure on an account that has historically taken 2x its credit term to pay. Decreasing is unwarranted given A+ grade, zero overdue, and peak-season commercial importance. Maintain current limit with a hard reassessment trigger tied to sell-out recovery and DSO normalization below 150d by end-Q2.",
+        "headline": "United Electronics posts zero overdue on SAR 74M balance with improving YTD DSO, but a T12M DSO of 245d — 65 days beyond DPO — reveals structural payment stretching that rules out credit expansion until collection behavior normalizes.",
+        "analysis": "AR health on the surface is exemplary: SAR 74.2M balance, 0.0% overdue sustained across six consecutive daily snapshots through May 4, with all three aging buckets at zero. This outperforms the YTD OR-channel OVD baseline of 35.4% by a decisive margin, and the Grade A+ / Q1-Safe classification is fully supported by current snapshot data. No immediate collection action is warranted. The 2026 buy pace running at 1.7x the T12M average signals genuine pre-peak appetite, which is encouraging ahead of the May–September season.\n\nHowever, the structural layer tells a more cautious story. T12M DSO of 245d exceeds both the 120d credit term and the 180d DPO by a wide margin — meaning the trailing 12-month payment pattern reflects an account that habitually stretched well beyond contractual limits. YTD DSO of 143d is a meaningful improvement and now falls within DPO, but it still overshoots the agreed credit term by 23 days. With sell-in accelerating 1.7x into peak season, AR exposure will grow rapidly over Q2–Q3. If DSO does not continue compressing toward ≤120d, the combination of a larger balance and the historical 245d payment tendency could push collections into overdue territory by August. The 1.7x buy acceleration therefore needs to be validated as demand-driven, not inventory-loading — 2025 sell-out collapsed 33.4% YoY (51,736u → 34,474u), and current stock stands at 3,148u, which suggests channel velocity has not yet recovered.\n\nOn credit policy: expanding the limit is premature. The 2025 sell-out weakness has not yet reversed, 2026 monthly sell-out data is entirely absent from this snapshot, and the T12M DSO legacy is a recent track record — not distant history. Maintaining current exposure preserves the relationship and accommodates normal peak-season loading while holding appropriate discipline on a structurally slow payer. A credit increase conversation can be reopened once DSO normalizes to ≤120d and consecutive months of strong 2026 sell-out confirm channel recovery.",
         "credit_recommendation": "maintain",
-        "credit_rationale": "Account pays but T12M DSO at 245d reveals chronic settlement beyond credit terms; maintain current limit and reassess after Q2 sell-out data confirms whether the 1.7x buy acceleration is backed by real channel velocity.",
+        "credit_rationale": "Zero overdue and a rapidly improving YTD DSO justify holding current exposure, but the 245d T12M DSO legacy combined with the 2025 sell-out collapse (-33%) make credit expansion premature until payment behavior sustainably reaches ≤120d and 2026 channel velocity is confirmed.",
         "action": [
-          "Obtain May sell-out data from United Electronics by mid-May — if the 1.7x buy pace is not matched by sell-through recovery, initiate credit limit review before Q3 peak invoices mature",
-          "Set YTD DSO threshold alert at 150d: if breached, escalate to credit committee regardless of OVD% remaining at zero",
-          "Condition any peak-season supplemental order approvals on rolling DSO improvement confirmation — do not extend incremental credit until T12M DSO trends toward the DPO 180d ceiling"
+          "Track DSO weekly through Q2–Q3: flag immediately if YTD DSO widens above 160d as peak-season sell-in loads — this would signal the 2026 improvement is stalling",
+          "Validate the 1.7x buy pace with the sales team before approving further sell-in: confirm whether acceleration is pull-through demand or channel inventory stuffing, benchmarking against the 3,148u stock-on-hand and expected May–Sep sell-out run rate (4,000–6,000u/month in a strong year)",
+          "Set a formal credit limit review trigger: if 2026 records ≥3 consecutive months of sell-out above 4,000u/month AND YTD DSO compresses to ≤120d by end-Q3, reopen the credit expansion case with updated AR data"
         ],
-        "risk_level": "yellow",
-        "risk_reason": "Zero overdue today but YTD DSO 143d breaches credit term, T12M DSO 245d reveals habitual slow-pay, and accelerating 2026 buy pace against an unconfirmed sell-out recovery creates concentrated Q3 collection risk.",
-        "headline_ko": "United Electronics는 현재 연체 잔액이 없으나, T12M DSO 245일은 계약상 신용 조건인 120일의 두 배에 달하며, 표면상 양호한 스냅샷 뒤에 가려진 만성적 지연 결제 구조를 드러냅니다.",
-        "analysis_ko": "표면적인 AR 건전성은 양호합니다: SAR 74.2M 잔액, 전 연령 구간 연체 없음, 4월 29일~5월 4일 추이상 잔액이 SAR 77.98M에서 점진적으로 감소하며 능동적 상환이 확인됩니다. 기술적으로 계정은 정상 상태입니다. 그러나 DSO 관점에서는 구조적으로 다른 이야기를 합니다 — YTD DSO 143일은 불과 5개월 데이터만으로도 이미 120일 신용 조건을 23일 초과하였으며, T12M DSO 245일은 신용 조건의 약 두 배이자 LG의 DPO 상한선인 180일을 크게 상회합니다. United Electronics는 상시적으로 늦게 결제하며, LG는 신용 계약이 규정하는 수준을 초과하여 약 125일분의 금융 부담을 흡수하고 있습니다. OVD%가 0%를 유지하는 것은 규율 있는 결제의 증거가 아니라, 계정이 연체 분류 직전에 청구서를 정리한다는 신호입니다.\n\n2026년 영업 상황은 복잡성을 더합니다. 피크 시즌(5~9월) 진입을 앞두고 구매 속도가 T12M 평균 대비 1.7배로 가속되고 있으며, YTD Sell-In SAR 64.7M은 이미 2025년 연간 SAR 90.6M의 71%에 달합니다. 이는 시즌 전 포지셔닝으로서 상업적으로 합리적입니다. 그러나 Sell-Out 추이는 잠재 리스크입니다: 2024년 51,697대에서 2025년 34,432대로 33% 급감하였고, 2026년 Sell-Out은 현재 보고치 없음(0)입니다. 구매 가속에 Sell-Thru 회복이 동반되지 않으면, 채널 재고가 쌓이고 결제 시점이 더욱 늘어나며, Q3 피크 시즌 청구서가 만기에 도달하면서 현재 양호한 AR이 급격히 악화될 수 있습니다.\n\n여신 정책 측면에서: T12M 대비 YTD DSO가 245일에서 143일로 개선된 점은 2026년 결제 규율이 강화되었음을 시사하며 긍정적입니다. 다만 단 한 분기의 데이터만으로 구조적 전환점을 선언하기에는 부족합니다. 현재 신용 한도 증액은 역사적으로 신용 조건의 2배에 달하는 기간에 결제해온 계정에 대한 익스포저를 확대시킵니다. 반면 A+ 등급, 연체 없음, 피크 시즌 영업 중요도를 감안할 때 한도 축소도 적절하지 않습니다. 현행 한도를 유지하되, Sell-Out 회복과 Q2 말까지 DSO 150일 이하 정상화를 연계한 강제 재검토 트리거를 설정할 것을 권고합니다.",
-        "action_ko": [
-          "5월 중순까지 United Electronics의 5월 Sell-Out 데이터를 확보하고, 1.7배 구매 속도에 Sell-Thru 회복이 동반되지 않을 경우 Q3 피크 시즌 청구서 만기 전 신용 한도 검토를 착수할 것",
-          "YTD DSO 임계값 경보를 150일로 설정하고, OVD%가 0%를 유지하더라도 초과 시 신용위원회에 즉시 에스컬레이션할 것",
-          "피크 시즌 추가 주문 승인은 DSO 지속 개선 확인을 조건으로 하고, T12M DSO가 DPO 상한선 180일 수준으로 수렴하는 추세가 확인되기 전까지 신용 한도 추가 확대를 허용하지 말 것"
-        ],
-        "credit_rationale_ko": "계정은 결제를 이행하고 있으나 T12M DSO 245일은 신용 조건을 상시 초과하는 만성적 결제 구조를 드러냅니다. 현행 한도를 유지하고, Q2 Sell-Out 데이터로 1.7배 구매 가속이 실질적인 채널 속도에 의해 뒷받침되는지 확인한 후 재검토할 것을 권고합니다.",
-        "risk_reason_ko": "현재 연체 없음이나 YTD DSO 143일이 신용 조건을 초과하며, T12M DSO 245일은 상습적 지연 결제를 확인합니다. 아울러 2026년 가속된 구매 속도 대비 Sell-Out 회복이 미확인인 상황이 Q3 집중 회수 리스크를 형성합니다."
+        "risk_level": "green",
+        "risk_reason": "Zero overdue on SAR 74M balance sustained for 6+ days; immediate collection risk is low, with T12M DSO structural legacy as the sole medium-term watch item heading into peak-season exposure buildup."
       },
       "sales": {
-        "headline": "Accelerating 2026 buy pace (1.7x) signals recovery intent, but 6,969u NW242H overhang from 2025 and zero reported sell-out create a pending inventory crisis entering peak season",
-        "analysis": "United Electronics is LG's highest-grade OR account with impeccable payment discipline — OVD has held at 0% across all recent snapshots, and the 2026 buy pace running 1.7x above T12M average confirms they are restocking aggressively at peak season entry (May). On paper this looks bullish. But the channel health picture is more complex: sell-in compressed 40.7% from 2024 (SAR 152.8M) to 2025 (SAR 90.6M), driven by a demand-side failure in 2025 where sell-out fell 33.4% to 34,432u — the lowest in the three-year window — leaving 6,969u of NW242H unsold at year-end. That overhang is four times the 2024 year-end stock (1,690u), confirming the 2025 season was a structural miss, not a one-time blip. The SKU pattern reinforces this: NW242H has been dead weight for two consecutive years, while the sell-out mix has rotated toward ND-series (ND242C, ND182C dominated 2025 top sellers). The critical unknown is 2026 sell-out showing 0u — this must be verified before any investment decision is finalized. If it is a reporting lag, the 1.7x buy pace is genuine recovery momentum. If it is real, the account is loading up on inventory with no consumer movement visible, which would mean the 2025 overhang has not cleared and a second cycle is forming heading into the peak months.",
+        "headline": "eXtra cleared its 2025 inventory overhang and is re-accelerating at 1.7x buy pace entering peak season, but a catastrophic sell-out collapse last summer (-33% YoY, May-Jun halved, Sep -54%) demands immediate sell-out investment to avoid a second consecutive peak failure.",
+        "analysis": "Sell-In dimension: after a 40% contraction in 2025 (SAR 152.8M→90.6M), eXtra has resumed buying in 2026 at 1.7x the T12M avg pace — the clearest signal that inventory overhang has been cleared and the account is actively re-engaging. However, absolute 2026 YTD volume (SAR 64.7M) remains well below the 2024 run-rate, and YTD DSO at 143d still exceeds the 120d credit term. T12M DSO of 245d reflects a year of stressed cash flow during the 2025 overhang period; current OVD 0% confirms resolution, not ongoing delinquency. The channel is structurally solvent — the risk is not credit, it is sell-out velocity.\n\nSell-Out dimension: the 2025 pattern is alarming. Mar-Apr front-loaded sell-out (5,546u/5,594u) was actually strong, but the true summer peak collapsed — May dropped to 3,009u vs 6,078u in 2024 (-51%), Jun to 2,722u vs 5,461u (-50%), and the critical Sep window fell from 10,243u to 4,729u (-54%). Full-year sell-out declined 33% despite a structurally growing Saudi AC market. Root cause hierarchy: (1) 2024 over-stocking (SAR 152.8M sell-in against 51K unit sell-out) created excess inventory that consumed floor space and cash through H1 2025, suppressing reorder; (2) competitive displacement — Samsung, Hisense, and Midea likely gained shelf and promotional priority during eXtra's de-stocking period; (3) model transition from NF/C to ND/NW series created a momentary assortment gap at shelf. Current stock of 3,148u translates to only 1-2 weeks of supply at 2024 peak rates (10K+ units in Sep alone), meaning eXtra is entering the May-Sep window dangerously thin. The right models are in stock (NW182C 647u, ND182C 427u, ND242C 384u mirror 2025's top sellers), but volume is insufficient.\n\nInvestment case: the account has self-corrected its overhang, re-activated buying, and is entering peak with a clean AR slate. The 2026 window is open for 4-6 weeks before the June-July heat peak locks in shelf allocations. Deploying sell-out support and co-marketing NOW is a direct lever on preventing a third year of peak underperformance. Withholding investment risks losing floor space to Samsung permanently — an A+ account lost at the category's largest OR chain is a structural setback, not a quarterly miss.",
         "investment_signal": "invest",
         "investment_type": [
           "sellout_support",
           "co_marketing"
         ],
-        "investment_rationale": "A+ account with clean AR and accelerating purchases at peak season entry warrants proactive sell-out investment to convert inventory velocity into consumer demand — without it, 1.7x buy pace compounds the NW242H overhang and risks a hard stop in Q3",
+        "investment_rationale": "Peak season is open, stock is thin, and 2025's collapse was sell-out-driven — targeted promotions and display investment this month directly converts eXtra's resumed buy pace into shelf velocity before competitors lock in summer positioning.",
         "action": [
-          "Verify 2026 sell-out data within 48 hours — confirm whether 0u is a pipeline reporting lag or actual zero consumer movement; if the latter, escalate to account team immediately before additional orders ship",
-          "Deploy NW242H-targeted sell-out support (consumer promotions, installer cash incentive, dedicated floor display) to liquidate 6,969u overhang before new 2026 stock compounds the burden",
-          "Set a weekly WOS guardrail review through September: if WOS exceeds 6 weeks at any point, pause new shipments regardless of 1.7x buy momentum — protect the channel from a third consecutive overhang year"
+          "Launch May-Jun sell-out promotion on NW182C and ND series (bundle/cashback/installer incentive) targeting recovery to 2024 peak levels (May+Jun benchmark: 11,500u); secure promotional commitment from eXtra trade marketing within 2 weeks before June planogram freeze",
+          "Conduct branch-level display audit across top eXtra stores — the 2024→2025 peak collapse pattern strongly implies shelf demotion or competitive displacement; negotiate reallocation of prime display to LG NW/ND flagship SKUs ahead of June-July peak",
+          "Propose incremental sell-in of 3,500-4,000u (NW182C and ND242C priority) to build WOS from ~4 weeks to 6+ weeks buffer; frame to finance as forward peak investment backed by 0% OVD and 1.7x buy momentum, not a credit expansion"
         ],
         "has_sellout_data": true,
         "channel_signal": "yellow",
-        "channel_reason": "Clean AR and strong reorder pace are positives, but 33% sell-out decline in 2025, 6,969u dead stock, and unverified 2026 consumer movement make channel health conditionally stable — not safe to declare green until peak-season sell-out confirms",
-        "headline_ko": "2026년 구매 속도 가속(1.7배)은 회복 의지를 시사하나, 2025년 이월된 NW242H 재고 6,969대와 보고된 소비자 판매 0대는 피크 시즌 진입 시점에 재고 위기로 이어질 수 있는 잠재적 리스크입니다",
-        "analysis_ko": "United Electronics는 LG의 OR 채널 내 최고 등급 거래처로, 결제 규율이 탁월합니다. 최근 전체 스냅샷에서 OVD는 0%를 유지하고 있으며, 2026년 구매 속도가 T12M 평균 대비 1.7배로 운영되고 있다는 점은 피크 시즌 진입(5월) 시점에 공격적인 재입고가 이루어지고 있음을 확인해 줍니다. 표면적으로는 긍정적인 신호입니다. 그러나 채널 건전성의 실상은 보다 복잡합니다. Sell-In은 2024년(SAR 152.8M)에서 2025년(SAR 90.6M)으로 40.7% 압축되었으며, 이는 2025년 수요 측 부진에서 기인합니다. Sell-Out이 33.4% 감소하여 34,432대로 3개년 구간 최저치를 기록하면서 NW242H 6,969대가 연말 재고로 이월되었습니다. 해당 이월 재고는 2024년 연말 재고(1,690대)의 4배 수준으로, 2025년 시즌이 일회성 부진이 아닌 구조적 미스였음을 뒷받침합니다. SKU 패턴 역시 이를 강화합니다. NW242H는 2년 연속 비기여 품목으로 남아 있으며, Sell-Out 믹스는 ND 시리즈(ND242C, ND182C가 2025년 상위 품목 주도)로 이동했습니다. 현재 가장 중요한 미확인 사항은 2026년 Sell-Out이 0대로 표시된다는 점으로, 투자 결정 확정 전 반드시 검증이 필요합니다. 이것이 보고 시차에 따른 파이프라인 지연이라면, 1.7배 구매 속도는 실질적인 회복 모멘텀입니다. 반면 이것이 실제 수치라면, 거래처는 소비자 이동이 전무한 상태에서 재고를 계속 적재하고 있는 것이며, 2025년 이월 재고가 해소되지 않은 채 피크 월로 향하는 두 번째 사이클이 형성되고 있음을 의미합니다.",
-        "action_ko": [
-          "48시간 이내 2026년 Sell-Out 데이터 검증 — 0대가 파이프라인 보고 시차인지 실제 소비자 이동 제로인지 확인; 후자인 경우 추가 오더 출하 전 즉시 거래처 팀으로 에스컬레이션",
-          "NW242H 집중 Sell-Out 지원 실행(소비자 프로모션, 설치기사 인센티브, 전용 매장 디스플레이) — 신규 2026년 재고 입고 전 6,969대 이월 재고 소진",
-          "9월까지 주간 WOS 가드레일 점검 운영 — 임의 시점에 WOS가 6주를 초과할 경우 1.7배 구매 모멘텀과 무관하게 신규 출하 일시 중단, 3년 연속 이월 리스크로부터 채널 보호"
-        ],
-        "investment_rationale_ko": "AR이 깔끔하고 피크 시즌 진입 시점에 구매가 가속되는 A+ 거래처는 재고 속도를 소비자 수요로 전환하기 위한 선제적 Sell-Out 투자가 정당화됩니다 — 이를 수반하지 않을 경우 1.7배 구매 속도는 NW242H 이월 재고를 가중시켜 Q3 내 하드 스톱 리스크로 이어질 수 있습니다",
-        "channel_reason_ko": "깔끔한 AR과 강한 재주문 속도는 긍정적이나, 2025년 Sell-Out 33% 감소, 6,969대 불량 재고, 2026년 소비자 이동 미검증 상태는 채널 건전성을 조건부 안정으로 평가하게 합니다 — 피크 시즌 Sell-Out이 확인되기 전까지 그린 선언은 유보 권고"
+        "channel_reason": "Buy pace and AR health are recovering, but consecutive peak sell-out failures (-33% in 2025) and thin current stock create execution risk heading into the most critical 8 weeks of the Saudi AC season."
       },
       "synthesis": {
-        "headline": "2026 sell-out data must be verified within 48 hours — United Electronics is re-loading at 1.7x pace while 2025's 6,969u NW242H overhang is unconfirmed as cleared; if consumer movement is genuinely zero, peak-season shipments are building a third consecutive inventory crisis on an account that chronically settles at 2× its contracted credit term.",
+        "headline": "eXtra is clean on AR today but dangerously thin on stock entering the peak — the window to prevent a third consecutive summer failure closes in 2 weeks.",
         "verdict": {
-          "risk_level": "yellow",
+          "risk_level": "green",
           "investment_signal": "invest",
-          "one_line": "Risk YELLOW — Invest conditionally. A+ account with zero overdue and 1.7x buy acceleration is commercially compelling, but T12M DSO of 245d and unverified 2026 sell-out mean investment must be led by sell-out activation, not incremental credit extension.",
-          "one_line_ko": "Risk YELLOW — 조건부 invest. 연체 전무에 1.7배 구매 가속화를 보이는 A+ 거래처는 상업적으로 매력적이지만, T12M DSO 245일과 미검증 2026년 sell-out은 투자가 추가 신용 확대가 아닌 sell-out 활성화 주도로 이루어져야 함을 의미합니다."
+          "one_line": "Risk GREEN — INVEST. AR is pristine, the account self-corrected its 2025 overhang, and the May–Sep peak window is open right now; inaction risks ceding floor space to Samsung permanently."
         },
         "summary_3lines": [
-          "United Electronics carries SAR 74.2M with zero overdue and is accelerating 2026 purchases at 1.7x T12M pace entering Ramadan/summer peak — on the surface, LG's strongest OR account is fully engaged.",
-          "Beneath the clean AR, T12M DSO at 245 days means LG is financing this account 125 days beyond contracted terms; 2025 sell-out collapsed 33% leaving 6,969u NW242H stranded in channel, and 2026 consumer movement is reported at zero.",
-          "If sell-out is genuinely stalled and the 1.7x buy pace continues unchecked, peak-season invoices mature in Q3 with no channel velocity to support payment — converting today's clean AR into a concentrated SAR 80M+ collection crisis at the worst possible time."
+          "eXtra carries SAR 74.2M at 0% overdue with a 1.7x accelerating buy pace — the credit crisis of 2025 is resolved and the account is re-engaging at scale heading into peak season.",
+          "The 2025 sell-out collapse (−33% YoY, May/Jun halved, Sep −54%) was inventory-driven, not structural disloyalty — but competitors gained shelf during that de-stocking window, and current stock of 3,148u is only 1–2 weeks of supply at 2024 peak rates.",
+          "Without sell-out investment and incremental replenishment in the next 2 weeks, eXtra enters June planogram freeze under-stocked and under-promoted for the third consecutive peak — turning a recoverable 2025 dip into a permanent share loss at the kingdom's largest OR chain."
         ],
-        "decision_required": "Confirm within 48 hours whether 2026 sell-out at 0u is a POS reporting lag or real zero consumer movement — everything else (investment commitment, shipment continuation, credit posture) pivots on this single data point.",
+        "decision_required": "Approve the May–June sell-out investment package (promotion + 3,500–4,000u incremental sell-in) THIS WEEK before eXtra's June planogram freeze locks competitor SKUs into prime display.",
         "options": [
           {
-            "option": "Option A — Verify first, then invest: hold incremental shipments for 48–72 hours pending sell-out confirmation, then deploy NW242H liquidation support and co-marketing budget in full if consumer velocity is confirmed",
-            "consequence": "Caps Q3 collection exposure; if sell-out data is positive, investment proceeds at full throttle with markedly lower downside risk; if sell-out is genuinely zero, avoids compounding a third overhang year on a 245d DSO account"
+            "option": "Option A — Invest: launch May-Jun promotion on NW182C/ND series + incremental sell-in of 3,500–4,000u + display audit/renegotiation",
+            "consequence": "Captures the open peak window, targets recovery to 2024 May+Jun benchmark (~11,500u combined), rebuilds shelf presence before June planogram freeze — incremental revenue upside SAR 15–20M at current sell-in pace; DSO risk is contained by 0% OVD track record and weekly monitoring trigger."
           },
           {
-            "option": "Option B — Invest at full pace now without sell-out verification: approve all pending orders and deploy co-marketing immediately on the strength of A+ grade and 1.7x buy signal",
-            "consequence": "Maximises peak-season revenue capture if channel velocity recovers, but adds SAR 20–30M+ in Q3 exposure on an account with habitual 2× credit-term settlement and an unverified channel floor — if sell-out is zero, AR deterioration in August–September is highly probable"
+            "option": "Option B — Hold: no additional sell-out spend, maintain current sell-in pace, wait for DSO to normalize to ≤120d before acting",
+            "consequence": "Loses the 4–6 week pre-freeze window; eXtra enters June–July heat peak under-stocked with competitor SKUs holding prime display; risks a third consecutive summer underperformance at an A+ account — a structural loss disguised as a conservative posture."
           }
         ],
         "timeline": [
           {
-            "step": "Obtain and validate 2026 sell-out data from United Electronics POS — determine definitively whether 0u is reporting lag or real zero consumer movement; escalate immediately to account team if confirmed real",
-            "deadline": "2026-05-08"
+            "step": "Secure eXtra trade marketing commitment on May-Jun promotion (NW182C/ND bundle or cashback, installer incentive) — negotiate NOW before June planogram freeze",
+            "deadline": "2026-05-20"
           },
           {
-            "step": "If sell-out confirmed: activate NW242H liquidation plan (consumer promotions + installer cash incentive + dedicated floor display) and co-marketing deployment; set WOS guardrail at 6 weeks with weekly review through September",
-            "deadline": "2026-05-13"
+            "step": "Complete branch-level display audit at top eXtra stores and negotiate shelf/display reallocation to LG NW/ND flagship SKUs",
+            "deadline": "2026-05-20"
           },
           {
-            "step": "Set YTD DSO threshold alert at 150d — if breached by end-Q2, escalate to credit committee regardless of OVD% remaining zero; condition any supplemental Q3 order approvals on T12M DSO trending below 180d",
-            "deadline": "2026-06-30"
+            "step": "Approve and ship incremental 3,500–4,000u (NW182C + ND242C priority) to build WOS from ~2 weeks to 6+ weeks before June heat peak locks in",
+            "deadline": "2026-05-27"
+          },
+          {
+            "step": "Weekly DSO review trigger: flag immediately if YTD DSO widens above 160d as Q2 sell-in loads — stall point for further credit accommodation",
+            "deadline": "2026-06-30 (ongoing weekly)"
+          },
+          {
+            "step": "Formal credit limit review: reopen only if ≥3 consecutive months of 2026 sell-out exceed 4,000u/month AND YTD DSO compresses to ≤120d",
+            "deadline": "2026-09-30"
           }
         ],
-        "signal": "yellow",
-        "headline_ko": "2026년 sell-out 데이터는 48시간 이내 반드시 검증되어야 합니다 — United Electronics는 2025년 NW242H 6,969대 재고 잔여 해소 여부가 미확인인 상태에서 1.7배 속도로 재적재 중이며, 소비자 이동이 실제 제로라면 피크 시즌 출하는 계약 신용 기간의 2배로 만성적으로 결제하는 거래처에 세 번째 연속 재고 위기를 누적시키고 있습니다.",
-        "summary_3lines_ko": [
-          "United Electronics는 SAR 74.2M의 AR을 보유하면서 연체는 전무하며, 라마단/여름 피크 시즌을 앞두고 2026년 구매를 T12M 대비 1.7배 속도로 가속화하고 있습니다 — 외형상 LG 최강 OR 거래처가 완전히 적극적으로 참여하는 모습입니다.",
-          "양호한 AR 이면에는 T12M DSO 245일이 존재하며, 이는 LG가 계약 조건을 125일 초과하여 이 거래처를 금융 지원하고 있음을 의미합니다. 2025년 sell-out은 33% 급락하여 NW242H 6,969대가 채널에 적체된 채 남아 있으며, 2026년 소비자 이동은 제로로 보고되고 있습니다.",
-          "sell-out이 실제로 정체된 상태에서 1.7배 구매 속도가 제어 없이 지속된다면, 피크 시즌 인보이스는 채널 회전율 없이 Q3에 만기가 도래합니다 — 현재의 양호한 AR이 최악의 시기에 SAR 80M+ 규모의 집중적인 수금 위기로 전환될 수 있습니다."
-        ],
-        "decision_required_ko": "2026년 sell-out 0대가 POS 보고 지연인지 실제 소비자 이동 제로인지를 48시간 이내에 확인하십시오 — 투자 결정, 출하 지속, 신용 정책 등 이후 모든 판단은 이 단일 데이터 포인트에 달려 있습니다.",
-        "options_ko": [
-          {
-            "option": "Option A — 검증 후 투자: sell-out 확인이 완료될 때까지 48~72시간 추가 출하를 보류하고, 소비자 회전율이 확인되면 NW242H 재고 소진 지원 및 공동 마케팅 예산을 전면 집행합니다",
-            "consequence": "Q3 수금 리스크를 제한하며, sell-out 데이터가 긍정적이면 하방 리스크가 현저히 낮아진 상태에서 투자를 전속력으로 진행합니다. sell-out이 실제 제로라면 DSO 245일 거래처에 세 번째 재고 적체 연도가 중복되는 상황을 방지합니다"
-          },
-          {
-            "option": "Option B — sell-out 검증 없이 현재 전속력 투자: A+ 등급과 1.7배 구매 신호를 근거로 대기 중인 모든 주문을 승인하고 공동 마케팅을 즉시 집행합니다",
-            "consequence": "채널 회전율이 회복된다면 피크 시즌 매출 확보를 극대화할 수 있으나, 계약 신용 기간의 2배 결제가 습관화된 거래처에 미검증 채널 하방 리스크와 함께 Q3 노출을 SAR 20~30M+ 추가합니다 — sell-out이 제로라면 8~9월 AR 악화는 상당히 개연성이 높습니다"
-          }
-        ],
-        "timeline_ko": [
-          {
-            "step": "United Electronics POS로부터 2026년 sell-out 데이터를 수집·검증하여 0대가 보고 지연인지 실제 소비자 이동 제로인지 확정적으로 판단하고, 실제 제로로 확인될 경우 즉시 담당 팀에 에스컬레이션하십시오",
-            "deadline": "2026-05-08"
-          },
-          {
-            "step": "sell-out 확인 시: NW242H 재고 소진 계획(소비자 프로모션 + 설치 기사 현금 인센티브 + 전용 플로어 디스플레이)과 공동 마케팅을 즉시 가동하고, 9월까지 WOS 가드레일을 6주로 설정하여 주간 검토를 실시하십시오",
-            "deadline": "2026-05-13"
-          },
-          {
-            "step": "YTD DSO 임계치 알림을 150일로 설정하십시오 — Q2 말까지 초과 시 OVD% 제로 유지 여부와 무관하게 신용위원회에 에스컬레이션하며, 추가 Q3 주문 승인은 T12M DSO가 180일 이하로 추세 개선되는 조건에 연동하십시오",
-            "deadline": "2026-06-30"
-          }
-        ]
+        "signal": "yellow"
       }
     },
     "1120000002": {
@@ -11168,6 +11126,5 @@
         ]
       }
     }
-  },
-  "translated_at": "2026-05-06 13:28"
+  }
 }
