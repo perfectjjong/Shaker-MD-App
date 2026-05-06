@@ -738,10 +738,11 @@ function fmt(n){if(n==null)return'-';if(Math.abs(n)>=1e6)return(n/1e6).toFixed(1
 function fmtF(n){return n?Math.round(n).toLocaleString('en-US'):'0';}
 function gv(r){return mode==='value'?r[C.VL]:r[C.QT];}
 function calcDaysYtd(){
+  var yr=_fhCurY||new Date().getFullYear();
   var sd=RAW?RAW.sell_thru_date||'05-02':'05-02';
   var p=sd.split('-');
-  var d=new Date(2026,parseInt(p[0])-1,parseInt(p[1]));
-  return Math.round((d-new Date(2026,0,1))/86400000)+1;
+  var d=new Date(yr,parseInt(p[0])-1,parseInt(p[1]));
+  return Math.round((d-new Date(yr,0,1))/86400000)+1;
 }
 function calcAgedDso(bal,ovd,o1,o2,o3){
   if(!bal||bal<=0) return null;
@@ -1919,6 +1920,7 @@ var _fhSelGrades=new Set(['A+']);
 var _fhSelAccount=null;
 var _fhSelDate='latest'; // 'latest' or 'YYYY-MM-DD'
 var _fhChart=null;
+var _fhCurY=new Date().getFullYear();
 
 var FH_GRADE_COLORS={'A+':'#f59e0b','A':'#10b981','B':'#3b82f6','C':'#8b5cf6','D':'#ef4444','IR-X':'#64748b','OR-X':'#64748b','SME-X':'#64748b'};
 var FH_ALL_GRADES=['A+','A','B','C','D','IR-X','OR-X','SME-X'];
@@ -2104,11 +2106,12 @@ function _buildFhAmCache(){
   if(!RAW) return;
   window._fhAmCache={};
   var ar=fhGetArData();
-  var _dDays=calcDaysYtd();
   // 현재 연도: txn 최대 연도 (data.json 갱신 시 자동 반영)
   var _curY=0;
   RAW.txn.forEach(function(t){ if(t[C.Y]>_curY) _curY=t[C.Y]; });
   if(!_curY) _curY=new Date().getFullYear();
+  _fhCurY=_curY;
+  var _dDays=calcDaysYtd();
   // T12M 기간: sell_thru_date 기준 정확히 365일 전 ~ 오늘 (일 단위 슬라이드)
   var _sdStr=(RAW.sell_thru_date||'01-01'); // "MM-DD"
   var _t12EndDate=_curY+'-'+_sdStr;          // "2026-05-05"
@@ -2116,7 +2119,7 @@ function _buildFhAmCache(){
   var v26Map={}, t12mMap={};
   RAW.txn.forEach(function(t){
     var sid=String(int_id(t[C.ID]));
-    if(t[C.Y]===_curY) v26Map[sid]=(v26Map[sid]||0)+(t[C.VL]||0);
+    if(t[C.Y]===_curY&&(!t[C.DY]||t[C.DY]<=_t12EndDate)) v26Map[sid]=(v26Map[sid]||0)+(t[C.VL]||0);
     var dy=t[C.DY];
     if(dy&&dy>=_t12StDate&&dy<=_t12EndDate) t12mMap[sid]=(t12mMap[sid]||0)+(t[C.VL]||0);
   });
@@ -2144,7 +2147,6 @@ function renderFHKpi(accts){
   var avgDso=(_fhDsoMode==='simple')
     ?(totBal>0&&totRev>0?totBal/totRev*_dDays:0)
     :(function(){var s=0,c=0;accts.forEach(function(a){var d=a.dso_aged;if(d!=null){s+=d;c++;}});return c?s/c:0;})();
-  var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var ovdPct=totBal>0?(totOvd/totBal*100):0;
   var fmt2=function(v){return v>=1000000?(v/1000000).toFixed(1)+'M':v>=1000?(v/1000).toFixed(0)+'K':v.toFixed(0);};
   var dateLabel=_fhSelDate==='latest'?((RAW.ar&&RAW.ar.current)?RAW.ar.current.date:'Latest'):_fhSelDate;
@@ -2271,7 +2273,7 @@ function renderFHChart(accts){
           var xv=ctx.raw.x;
           var dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
           return [a.name+' ('+a.cls+')'+(a.no_rev?' ⚠ No Revenue':''),
-            a.no_rev?'DSO: N/A ('+(_fhRevMode==='t12m'?'T12M':'2026')+' 매출 없음/마이너스) → Critical 강제배치'
+            a.no_rev?'DSO: N/A ('+(_fhRevMode==='t12m'?'T12M':String(_fhCurY))+' 매출 없음/마이너스) → Critical 강제배치'
               :'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  DPO 기준 180d  '+(dso!=null&&dso<=180?'✅회수완료':'🔴미회수'),
             'Overdue Rate: '+a.ovd_rate.toFixed(1)+'%  |  등급평균 '+selAvgOvd.toFixed(0)+'%  '+(a.ovd_rate<=selAvgOvd?'✅':'🔴초과'),
             'AR Balance: SAR '+(a.bal/1000).toFixed(0)+'K',
