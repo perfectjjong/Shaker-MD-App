@@ -1,0 +1,90 @@
+{
+  "generated_at": "2026-05-06 09:22",
+  "sell_thru_date": "05-05",
+  "account_count": 1,
+  "accounts": {
+    "1110000007": {
+      "sid": "1110000007",
+      "name": "Alkhunaizan Trading Co.",
+      "cls": "A",
+      "team": "OR",
+      "signal": "red",
+      "quadrant_shift": {
+        "ytd": 3,
+        "ytd_name": "Critical",
+        "t12m": 4,
+        "t12m_name": "Watch"
+      },
+      "metrics": {
+        "bal": 1840963.0,
+        "ovd": 1140674.0,
+        "ovd_rate": 62.0,
+        "o1": 9340.0,
+        "o2": 0,
+        "o3": 1131334.0,
+        "dso_ytd": null,
+        "dso_t12m": 125.2,
+        "pt": 90,
+        "has_sellout_data": false
+      },
+      "finance": {
+        "headline": "Alkhunaizan is carrying SAR 1.13M in chronic 60d+ overdue with zero collection movement for 8 consecutive days — a structural payment failure, not a timing issue, entering peak season with no new supply.",
+        "analysis": "The AR picture is unambiguous: 99% of all overdue sits in the 60d+ bucket (SAR 1,131,334), meaning this is not fresh aging — this debt has been sitting unpaid well beyond the 90-day credit term. The 8-day snapshot shows a perfectly flat balance with no collection whatsoever, which rules out a cash-flow timing explanation. The account has effectively stopped paying while retaining the outstanding balance.\n\nThe structural context deepens the concern. T12M DSO of 125 days against a 90-day term means this account has habitually paid 35 days late on average across the last year — and the YTD OVD baseline of 35.4% vs T12M baseline of 47.6% suggests the problem was actually worse in prior periods. The absence of any YTD sell-in confirms LG has already de-risked the supply side, but SAR 1.84M in open exposure remains fully at risk. The DPO of 180 days signals the distributor's own cash cycle is stretched to the limit — they are likely funding their working capital on LG's credit.\n\nThe quadrant shift from Q3 (Critical on YTD) to Q4 (Watch on T12M) must not be misread as improvement — it reflects T12M revenue history diluting the YTD signal, not actual recovery. Entering peak season (May–September) with a frozen AR and no new inventory, this account will miss the highest-velocity sell-through window of the year, further impairing their ability to generate cash to repay the overdue balance. The risk of this debt aging into write-off territory increases materially by Q3 if no collection action is taken now.",
+        "action": [
+          "Escalate to MD/ownership level immediately: issue a formal written demand for minimum SAR 570,000 (50% of 60d+ balance) within 7 days, with documented payment commitment as condition for any future credit discussion",
+          "Enforce hard credit block on all new sell-in orders until 60d+ overdue falls below SAR 500K — do not allow peak season demand to be used as leverage to release supply without collection",
+          "Initiate weekly AR review cadence with documented payment receipts; if no payment received by May 13, escalate to legal/collections and reclassify account to Grade C with DSO watch flag"
+        ],
+        "signal": "red",
+        "signal_reason": "SAR 1.13M in 60d+ chronic overdue, zero collection movement over 8 days, no YTD sell-in, and peak season approaching with no structural resolution in sight"
+      },
+      "sales": {
+        "headline": "Grade-A OR account effectively frozen: zero 2026 sell-in, SAR 1.13M stuck 60d+ overdue, and no AR movement for 8 consecutive days entering peak season.",
+        "analysis": "Alkhunaizan's profile signals a credit-blocked account, not a slow payer. YTD sell-in is zero — meaning LG has almost certainly imposed a shipment hold due to the 62% OVD rate. The SAR 1,131,334 in 60d+ bucket represents invoices from approximately November–December 2025 that remain fully unpaid despite 90-day terms, now 4–5 months aged. The AR balance has been arithmetically flat (SAR 1.86M → 1.84M) over 8 snapshot days with no inbound payments and no new orders, confirming a complete standstill. T12M DSO of 125 days is 35 days beyond contractual terms, indicating this payment pattern predates the current crisis.\n\nThe quadrant deterioration from Q4 (T12M Watch) to Q3 (YTD Critical) is the clearest leading indicator: this account was already flagged as decelerating over the trailing 12 months, and 2026 YTD has produced zero revenue against a live overdue balance — the textbook Q3 signature. Without sell-out visibility, two hypotheses compete: (a) inventory overhang from late-2025 purchases is still sitting unsold in their warehouse, creating a cash flow squeeze that prevents payment and new orders; or (b) the account is redirecting purchasing toward competitors (Samsung, Gree) on better terms while delaying LG settlement. Either way, the channel is commercially inactive during the most critical 30-day window of the year — May pre-peak.\n\nThe timing risk compounds the financial risk. May–September is the peak consumption window for Saudi AC, and distributors who are not ordering in late April–early May will miss shelf-stocking for the surge. Every week Alkhunaizan stays frozen is volume that flows to Samsung or Gree. For a Grade-A OR account to be dark in Week 1 of May is not a routine collection matter — it is a potential full-season loss of one of five OR slots.",
+        "action": [
+          "Immediate field intervention (this week): AM + Finance jointly visit Alkhunaizan senior management. Objective: quantify their on-hand LG inventory, assess cash flow position, and extract a binding payment commitment for the SAR 1.13M 60d+ tranche. No written plan = no path to resume shipments.",
+          "Set a hard unlock threshold before any new PGI: OVD must drop below 30% of AR balance (currently 62%) as a precondition for resuming sell-in. Propose a structured settlement — partial payment upfront (minimum SAR 500K) + post-dated cheques for the remainder — to unblock shipments before mid-May.",
+          "Contingency volume reallocation: If no credible payment commitment is secured within 7 days, escalate to Sales Director level and begin re-routing Alkhunaizan's peak-season allocation (model mix, inventory) to the remaining 4 OR channels with clean AR profiles — volume must not sit undeployed during peak."
+        ],
+        "has_sellout_data": false,
+        "signal": "red",
+        "signal_reason": "Zero YTD revenue, SAR 1.13M in 60d+ overdue with zero balance movement for 8 days, entering Saudi AC peak season — account is effectively credit-blocked at the worst possible time."
+      },
+      "synthesis": {
+        "headline": "Alkhunaizan is effectively a dead channel entering peak season — SAR 1.13M in chronic 60d+ overdue with zero collection or sell-in for 8+ days; without a binding payment commitment this week, we lose one of five OR slots for the entire 2026 peak cycle.",
+        "summary_3lines": [
+          "99% of overdue sits in the 60d+ bucket (invoices ~Nov–Dec 2025, 4–5 months unpaid), T12M DSO of 125 days confirms this is habitual non-payment, not a timing blip — the account is funding its working capital on LG's credit.",
+          "Zero YTD sell-in means LG has already cut supply, but SAR 1.84M in open AR exposure remains fully at risk, and every day the account stays dark in early May is peak-season volume permanently diverted to Samsung or Gree across the OR channel.",
+          "Quadrant shift Q3→Q4 is a statistical artifact of T12M dilution, not recovery — YTD reality is Q3 Critical with no revenue, no payment, and no engagement, making this a potential write-off candidate if unresolved by June."
+        ],
+        "decision_required": "Do we execute a structured settlement offer this week (partial payment + post-dated cheques to unblock shipments before mid-May), or do we enforce a hard credit block, begin legal escalation, and reallocate Alkhunaizan's peak-season volume to the other 4 OR channels now?",
+        "options": [
+          {
+            "option": "Structured settlement: AM + Finance joint visit this week, demand minimum SAR 500K immediate payment + post-dated cheques for remainder as condition to resume shipments before May 15",
+            "consequence": "If accepted, preserves the Grade-A OR channel relationship and recovers peak-season volume; if Alkhunaizan cannot produce SAR 500K within 7 days, this option self-eliminates and confirms insolvency — at least the visit generates ground intelligence on their inventory position and cash flow reality."
+          },
+          {
+            "option": "Hard credit block + legal escalation: issue formal written demand for 50% of 60d+ balance (SAR 570K) within 7 days, reclassify to Grade C, begin reallocation of peak-season inventory and model mix to the 4 remaining OR channels with clean AR",
+            "consequence": "Caps downside on the SAR 1.13M exposure and secures peak-season volume deployment through healthier channels, but permanently damages the relationship and concedes Alkhunaizan's shelf space and end-customer base to competitors for the full 2026 season — a recoverable but costly strategic retreat."
+          }
+        ],
+        "timeline": [
+          {
+            "step": "AM + Finance joint visit to Alkhunaizan senior management: map their LG on-hand inventory, assess cash position, and extract written payment commitment (SAR 500K minimum + post-dated cheques schedule)",
+            "deadline": "By May 9 (this Friday)"
+          },
+          {
+            "step": "Decision gate: if binding payment commitment secured → issue structured settlement agreement and prepare shipment release queue; if no commitment → trigger formal written demand, reclassify to Grade C, and begin peak-season volume reallocation to remaining 4 OR channels",
+            "deadline": "May 13 (Tuesday EOD)"
+          },
+          {
+            "step": "If no payment received by May 13: escalate to MD/legal/collections, enforce shipment block formally, and confirm reallocation of Alkhunaizan's seasonal allocation — volume must be deployed before May 20 to capture peak sell-through window",
+            "deadline": "May 20 (hard deadline for reallocation to avoid missing peak)"
+          }
+        ],
+        "signal": "red",
+        "signal_reason": "SAR 1.13M chronic 60d+ overdue, zero collection or sell-in movement for 8 days, Grade-A OR channel dark at the start of Saudi AC peak season — every day without resolution is irreversible volume loss."
+      }
+    }
+  }
+}
