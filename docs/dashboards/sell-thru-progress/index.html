@@ -302,6 +302,32 @@ tfoot .fz{background:#0f172a}
     <h3 style="margin:0 0 12px;font-size:13px;color:#e2e8f0;font-weight:500;">Quadrant Shifts <span id="fhMoveCount" style="color:#94a3b8;font-size:11px;"></span></h3>
     <div style="overflow-x:auto;max-height:360px;overflow-y:auto;"><table id="fhMoveTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
   </div>
+  <!-- Advisory Panel -->
+  <div id="fhAdvisoryPanel" style="display:none;background:#0f172a;border-radius:10px;border:1px solid #7c3aed;margin-bottom:16px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#1e1b4b,#1e293b);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span id="fhAdvSignal" style="font-size:22px;"></span>
+        <div>
+          <div id="fhAdvName" style="font-size:14px;font-weight:700;color:#e2e8f0;"></div>
+          <div id="fhAdvHeadline" style="font-size:11px;color:#a78bfa;margin-top:2px;"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span id="fhAdvGenerated" style="font-size:10px;color:#475569;"></span>
+        <button onclick="fhCloseAdvisory()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;cursor:pointer;font-size:11px;">✕ Close</button>
+      </div>
+    </div>
+    <!-- 탭 -->
+    <div style="display:flex;border-bottom:1px solid #1e293b;">
+      <button id="fhAdvTab0" onclick="fhAdvSwitchTab(0)" style="flex:1;padding:10px;background:#1e1b4b;color:#a78bfa;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid #7c3aed;">💰 Finance</button>
+      <button id="fhAdvTab1" onclick="fhAdvSwitchTab(1)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📊 Sales</button>
+      <button id="fhAdvTab2" onclick="fhAdvSwitchTab(2)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📋 Synthesis</button>
+    </div>
+    <!-- 탭 콘텐츠 -->
+    <div id="fhAdvContent0" style="padding:20px;"></div>
+    <div id="fhAdvContent1" style="padding:20px;display:none;"></div>
+    <div id="fhAdvContent2" style="padding:20px;display:none;"></div>
+  </div>
 </div>
 
 <!-- FH Chart -->
@@ -1940,6 +1966,7 @@ function switchMainTab(tab){
 
 // ======== B2C FINANCIAL HEALTH ========
 var _fhDsoMode='simple';
+var _fhAdvisory=null;  // fh_advisory.json 캐시
 var _fhCompareMode=false;
 var _fhCompChartY=null, _fhCompChartT=null;
 var _fhRevMode='ytd';
@@ -2101,6 +2128,166 @@ function fhGetAccounts(){
 }
 
 function int_id(v){ return Math.round(parseFloat(v)); }
+
+// ======== FH ADVISORY ========
+function fhLoadAdvisory(cb){
+  if(_fhAdvisory){cb(_fhAdvisory);return;}
+  fetch('fh_advisory.json?t='+Date.now())
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(data){_fhAdvisory=data;cb(data);})
+    .catch(function(){cb(null);});
+}
+
+var _fhAdvTab=0;
+function fhAdvSwitchTab(idx){
+  _fhAdvTab=idx;
+  [0,1,2].forEach(function(i){
+    var btn=document.getElementById('fhAdvTab'+i);
+    var cont=document.getElementById('fhAdvContent'+i);
+    var active=i===idx;
+    btn.style.background=active?'#1e1b4b':'transparent';
+    btn.style.color=active?'#a78bfa':'#64748b';
+    btn.style.borderBottom=active?'2px solid #7c3aed':'2px solid transparent';
+    cont.style.display=active?'':'none';
+  });
+}
+
+function fhCloseAdvisory(){
+  document.getElementById('fhAdvisoryPanel').style.display='none';
+}
+
+var SIG_ICON={'red':'🔴','yellow':'🟡','green':'🟢'};
+var SIG_COLOR={'red':'#ef4444','yellow':'#f59e0b','green':'#10b981'};
+
+function fhRenderAdvisoryContent(adv){
+  var panel=document.getElementById('fhAdvisoryPanel');
+  panel.style.display='';
+
+  // 헤더
+  var signal=adv.signal||'yellow';
+  document.getElementById('fhAdvSignal').textContent=SIG_ICON[signal]||'🟡';
+  document.getElementById('fhAdvName').textContent=adv.name||'';
+  var synth=adv.synthesis||{};
+  document.getElementById('fhAdvHeadline').textContent=synth.headline||adv.finance&&adv.finance.headline||'';
+  document.getElementById('fhAdvGenerated').textContent=(_fhAdvisory&&_fhAdvisory.generated_at)?'Updated: '+_fhAdvisory.generated_at:'';
+
+  // 탭 0 — Finance
+  var fin=adv.finance||{};
+  var c0=document.getElementById('fhAdvContent0');
+  c0.innerHTML=_renderAdvSection(fin, signal, adv.metrics||{});
+
+  // 탭 1 — Sales
+  var sal=adv.sales||{};
+  var c1=document.getElementById('fhAdvContent1');
+  var salesNote=sal.has_sellout_data===false?
+    '<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:10px;color:#64748b;">⚠ No weekly sell-out data for this account — analysis based on Sell-In patterns only</div>':'';
+  c1.innerHTML=salesNote+_renderAdvSection(sal, sal.signal||'yellow', adv.metrics||{});
+
+  // 탭 2 — Synthesis
+  c2=document.getElementById('fhAdvContent2');
+  c2.innerHTML=_renderSynthSection(synth, signal, adv);
+
+  fhAdvSwitchTab(0);
+  panel.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function _renderAdvSection(data, signal, metrics){
+  if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">분석 데이터를 불러오는 중입니다. 잠시 후 다시 시도해주세요.</p>';
+  var sc=SIG_COLOR[signal]||'#f59e0b';
+  var html='';
+  if(data.headline){
+    html+='<div style="background:'+sc+'22;border-left:3px solid '+sc+';padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;">'
+         +'<span style="color:'+sc+';font-weight:700;font-size:12px;">'+data.headline+'</span></div>';
+  }
+  if(data.analysis){
+    html+='<div style="color:#cbd5e1;font-size:11px;line-height:1.7;margin-bottom:14px;">'+
+      data.analysis.replace(/\n/g,'<br>')+'</div>';
+  }
+  if(data.action&&data.action.length){
+    html+='<div style="background:#1e293b;border-radius:8px;padding:12px 14px;">'
+         +'<div style="font-size:10px;font-weight:700;color:#7c3aed;letter-spacing:1px;margin-bottom:8px;">ACTION</div>';
+    data.action.forEach(function(a){
+      html+='<div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:6px;">'
+           +'<span style="color:#7c3aed;font-weight:700;margin-top:1px;">▶</span>'
+           +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+a+'</span></div>';
+    });
+    html+='</div>';
+  }
+  return html;
+}
+
+function _renderSynthSection(data, signal, adv){
+  if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">종합 분석 데이터를 불러오는 중입니다.</p>';
+  var sc=SIG_COLOR[signal]||'#f59e0b';
+  var html='';
+
+  // 3줄 요약
+  if(data.summary_3lines&&data.summary_3lines.length){
+    html+='<div style="margin-bottom:16px;">';
+    data.summary_3lines.forEach(function(l,i){
+      html+='<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;">'
+           +'<span style="background:'+sc+';color:#000;font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;white-space:nowrap;margin-top:2px;">'+(i+1)+'</span>'
+           +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+l+'</span></div>';
+    });
+    html+='</div>';
+  }
+
+  // 결정 필요사항
+  if(data.decision_required){
+    html+='<div style="background:#7c3aed22;border:1px solid #7c3aed;border-radius:8px;padding:12px 14px;margin-bottom:14px;">'
+         +'<div style="font-size:10px;color:#a78bfa;font-weight:700;letter-spacing:1px;margin-bottom:6px;">DECISION REQUIRED NOW</div>'
+         +'<div style="color:#e2e8f0;font-size:12px;font-weight:600;">'+data.decision_required+'</div></div>';
+  }
+
+  // 옵션
+  if(data.options&&data.options.length){
+    html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">';
+    data.options.forEach(function(opt,i){
+      html+='<div style="background:#1e293b;border-radius:8px;padding:12px;">'
+           +'<div style="font-size:10px;color:#64748b;font-weight:700;margin-bottom:4px;">OPTION '+(i===0?'A':'B')+'</div>'
+           +'<div style="color:#e2e8f0;font-size:11px;font-weight:600;margin-bottom:4px;">'+(opt.option||'')+'</div>'
+           +'<div style="color:#94a3b8;font-size:10px;">'+(opt.consequence||'')+'</div></div>';
+    });
+    html+='</div>';
+  }
+
+  // 타임라인
+  if(data.timeline&&data.timeline.length){
+    html+='<div style="background:#1e293b;border-radius:8px;padding:12px 14px;">'
+         +'<div style="font-size:10px;font-weight:700;color:#7c3aed;letter-spacing:1px;margin-bottom:10px;">TIMELINE</div>';
+    data.timeline.forEach(function(t,i){
+      html+='<div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:8px;">'
+           +'<div style="background:#7c3aed;color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;margin-top:2px;">'+(t.deadline||'TBD')+'</div>'
+           +'<span style="color:#e2e8f0;font-size:11px;line-height:1.5;">'+(t.step||'')+'</span></div>';
+    });
+    html+='</div>';
+  }
+
+  return html;
+}
+
+function fhShowAdvisory(sid, name){
+  fhLoadAdvisory(function(advisory){
+    if(!advisory){
+      alert('Advisory data not yet generated.\n텔레그램에서 "FH 어드바이저리 업데이트" 를 요청하세요.');
+      return;
+    }
+    var adv=advisory.accounts&&advisory.accounts[sid];
+    if(!adv){
+      // 데이터 없는 계정 — 기본 패널 표시
+      document.getElementById('fhAdvisoryPanel').style.display='';
+      document.getElementById('fhAdvSignal').textContent='⏳';
+      document.getElementById('fhAdvName').textContent=name;
+      document.getElementById('fhAdvHeadline').textContent='Advisory not yet generated for this account';
+      document.getElementById('fhAdvContent0').innerHTML='<p style="color:#64748b;font-size:12px;padding:20px 0;">이 계정의 어드바이저리가 아직 생성되지 않았습니다.<br><br>텔레그램에서 <strong style="color:#a78bfa;">FH 어드바이저리 업데이트</strong>를 요청하시거나,<br>서버에서 <code style="color:#7c3aed;">python3 generate_fh_advisory.py</code> 를 실행하세요.</p>';
+      [1,2].forEach(function(i){document.getElementById('fhAdvContent'+i).innerHTML='';});
+      fhAdvSwitchTab(0);
+      document.getElementById('fhAdvisoryPanel').scrollIntoView({behavior:'smooth',block:'start'});
+      return;
+    }
+    fhRenderAdvisoryContent(adv);
+  });
+}
 
 // ======== FH COMPARE ========
 var FH_Q_COLORS={1:'#10b981',2:'#f97316',3:'#ef4444',4:'#f59e0b'};
@@ -2369,8 +2556,15 @@ function renderFHCompare(){
     var rowBg=mv.qY===1&&mv.qT===2?'background:rgba(249,115,22,0.07);':
               mv.qY===2&&mv.qT===1?'background:rgba(16,185,129,0.07);':
               mv.qY===1&&mv.qT===3?'background:rgba(239,68,68,0.10);':'';
-    return '<tr style="'+rowBg+'border-bottom:1px solid #1e293b;">'+
-      '<td style="padding:6px 8px;color:#e2e8f0;">'+mv.a.name+'</td>'+
+    var sid=mv.a.id, acctName=mv.a.name;
+    var hasAdv=_fhAdvisory&&_fhAdvisory.accounts&&_fhAdvisory.accounts[sid];
+    var advBadge=hasAdv
+      ? '<span style="margin-left:6px;padding:1px 6px;background:#7c3aed22;color:#a78bfa;font-size:9px;border-radius:3px;font-weight:700;">'+
+        (SIG_ICON[_fhAdvisory.accounts[sid].signal]||'')+'Advisory</span>'
+      : '<span style="margin-left:6px;padding:1px 6px;background:#334155;color:#475569;font-size:9px;border-radius:3px;">Advisory</span>';
+    var rowClick='onclick="fhShowAdvisory(\''+sid+'\',\''+acctName.replace(/'/g,"\\'")+'\')"';
+    return '<tr '+rowClick+' style="'+rowBg+'border-bottom:1px solid #1e293b;cursor:pointer;" onmouseover="this.style.background=\'rgba(124,58,237,0.05)\'" onmouseout="this.style.background=\''+rowBg.replace('background:','').replace(';','').trim()+'\'">'+
+      '<td style="padding:6px 8px;color:#e2e8f0;">'+mv.a.name+advBadge+'</td>'+
       '<td style="padding:6px 8px;"><span style="color:'+FH_GRADE_COLORS[mv.a.cls]+';font-weight:600;">'+mv.a.cls+'</span></td>'+
       '<td style="padding:6px 8px;color:#94a3b8;font-family:monospace;">'+(mv.dsoY!=null?mv.dsoY.toFixed(0)+'d':'N/A')+'</td>'+
       '<td style="padding:6px 8px;color:#94a3b8;font-family:monospace;">'+(mv.dsoT!=null?mv.dsoT.toFixed(0)+'d':'N/A')+'</td>'+
