@@ -1957,12 +1957,7 @@ function fhSetDate(val){
   _fhSelAccount=null;
   document.getElementById('fhTableTitle').textContent='';
   fhCloseTrend();
-  // 날짜 변경 시 캐시 재빌드
-  _buildFhAmCache();
-  var accts=fhGetAccounts();
-  renderFHKpi(accts);
-  renderFHChart(accts);
-  renderFHTable(accts);
+  renderFH();
 }
 
 function fhGetArData(){
@@ -2244,12 +2239,13 @@ function renderFHCompare(){
   _renderCompareChart('fhCompareT12mWrap',t12mAccts,cT,t12mAvgOvd,'(T12M)','#a78bfa');
   _fhCompChartY=cY.ch; _fhCompChartT=cT.ch;
 
-  // 이동 계정 맵핑
+  // 이동 계정 맵핑 (YTD/T12M union — 한쪽에만 있는 계정도 포함)
   var ytdMap={}, t12mMap={};
   ytdAccts.forEach(function(a){ytdMap[a.id]=a;});
   t12mAccts.forEach(function(a){t12mMap[a.id]=a;});
+  var allSids=Object.keys(Object.assign({},ytdMap,t12mMap));
   var moves=[];
-  Object.keys(ytdMap).forEach(function(sid){
+  allSids.forEach(function(sid){
     var ay=ytdMap[sid], at=t12mMap[sid];
     if(!ay||!at) return;
     var qY=_fhQuadrant(ay.x_simple,ay.ovd_rate,ytdAvgOvd);
@@ -2259,10 +2255,14 @@ function renderFHCompare(){
   moves.sort(function(a,b){
     var kA=a.qY+''+a.qT, kB=b.qY+''+b.qT;
     if(kA!==kB) return kA<kB?-1:1;
-    return Math.abs((b.dsoT||0)-(b.dsoY||0))-Math.abs((a.dsoT||0)-(a.dsoY||0));
+    // null DSO(no_rev)는 정렬 후순위로
+    var dA=(a.dsoY!=null&&a.dsoT!=null)?Math.abs(a.dsoT-a.dsoY):-Infinity;
+    var dB=(b.dsoY!=null&&b.dsoT!=null)?Math.abs(b.dsoT-b.dsoY):-Infinity;
+    return dB-dA;
   });
 
-  document.getElementById('fhMoveCount').textContent='— '+moves.length+'건 사분면 이동';
+  document.getElementById('fhMoveCount').textContent=
+    '— '+moves.length+'건  |  Y기준선  YTD '+ytdAvgOvd.toFixed(0)+'%  /  T12M '+t12mAvgOvd.toFixed(0)+'%';
 
   var tbl=document.getElementById('fhMoveTable');
   var th='<tr>'+['계정명','등급','YTD DSO','T12M DSO','이동','해석'].map(function(h){
@@ -2309,6 +2309,9 @@ function renderFH(){
     var accts=fhGetAccounts();
     renderFHKpi(accts);
     if(_fhCompareMode){ renderFHCompare(); return; }
+    // 일반 뷰 진입 시 비교 차트 인스턴스 정리
+    if(_fhCompChartY){_fhCompChartY.destroy();_fhCompChartY=null;}
+    if(_fhCompChartT){_fhCompChartT.destroy();_fhCompChartT=null;}
     renderFHChart(accts);
     renderFHTable(_fhSelAccount?accts.filter(function(a){return a.id===_fhSelAccount;}):accts);
   });
