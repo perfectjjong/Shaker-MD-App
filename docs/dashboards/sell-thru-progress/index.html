@@ -302,35 +302,36 @@ tfoot .fz{background:#0f172a}
     <h3 style="margin:0 0 12px;font-size:13px;color:#e2e8f0;font-weight:500;">Quadrant Shifts <span id="fhMoveCount" style="color:#94a3b8;font-size:11px;"></span></h3>
     <div style="overflow-x:auto;max-height:360px;overflow-y:auto;"><table id="fhMoveTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
   </div>
-  <!-- Advisory Panel -->
-  <div id="fhAdvisoryPanel" style="display:none;background:#0f172a;border-radius:10px;border:1px solid #7c3aed;margin-bottom:16px;overflow:hidden;">
-    <div style="background:linear-gradient(135deg,#1e1b4b,#1e293b);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
-      <div style="display:flex;align-items:center;gap:12px;">
-        <span id="fhAdvSignal" style="font-size:22px;"></span>
-        <div>
-          <div style="display:flex;align-items:center;gap:8px;">
-            <span id="fhAdvName" style="font-size:14px;font-weight:700;color:#e2e8f0;"></span>
-            <span id="fhAdvInvBadge" style="font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;"></span>
-          </div>
-          <div id="fhAdvHeadline" style="font-size:11px;color:#a78bfa;margin-top:2px;"></div>
+</div>
+
+<!-- Advisory Panel (전체 FH 탭에서 접근 가능 — CompareWrap 밖) -->
+<div id="fhAdvisoryPanel" style="display:none;background:#0f172a;border-radius:10px;border:1px solid #7c3aed;margin-bottom:16px;overflow:hidden;">
+  <div style="background:linear-gradient(135deg,#1e1b4b,#1e293b);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <span id="fhAdvSignal" style="font-size:22px;"></span>
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span id="fhAdvName" style="font-size:14px;font-weight:700;color:#e2e8f0;"></span>
+          <span id="fhAdvInvBadge" style="font-size:10px;padding:2px 8px;border-radius:4px;font-weight:700;"></span>
         </div>
-      </div>
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span id="fhAdvGenerated" style="font-size:10px;color:#475569;"></span>
-        <button onclick="fhCloseAdvisory()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;cursor:pointer;font-size:11px;">✕ Close</button>
+        <div id="fhAdvHeadline" style="font-size:11px;color:#a78bfa;margin-top:2px;"></div>
       </div>
     </div>
-    <!-- 탭 -->
-    <div style="display:flex;border-bottom:1px solid #1e293b;">
-      <button id="fhAdvTab0" onclick="fhAdvSwitchTab(0)" style="flex:1;padding:10px;background:#1e1b4b;color:#a78bfa;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid #7c3aed;">💰 Finance</button>
-      <button id="fhAdvTab1" onclick="fhAdvSwitchTab(1)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📊 Sales</button>
-      <button id="fhAdvTab2" onclick="fhAdvSwitchTab(2)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📋 Synthesis</button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span id="fhAdvGenerated" style="font-size:10px;color:#475569;"></span>
+      <button onclick="fhCloseAdvisory()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;cursor:pointer;font-size:11px;">✕ Close</button>
     </div>
-    <!-- 탭 콘텐츠 -->
-    <div id="fhAdvContent0" style="padding:20px;"></div>
-    <div id="fhAdvContent1" style="padding:20px;display:none;"></div>
-    <div id="fhAdvContent2" style="padding:20px;display:none;"></div>
   </div>
+  <!-- 탭 -->
+  <div style="display:flex;border-bottom:1px solid #1e293b;">
+    <button id="fhAdvTab0" onclick="fhAdvSwitchTab(0)" style="flex:1;padding:10px;background:#1e1b4b;color:#a78bfa;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid #7c3aed;">💰 Finance</button>
+    <button id="fhAdvTab1" onclick="fhAdvSwitchTab(1)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📊 Sales</button>
+    <button id="fhAdvTab2" onclick="fhAdvSwitchTab(2)" style="flex:1;padding:10px;background:transparent;color:#64748b;border:none;cursor:pointer;font-size:12px;font-weight:600;border-bottom:2px solid transparent;">📋 Synthesis</button>
+  </div>
+  <!-- 탭 콘텐츠 -->
+  <div id="fhAdvContent0" style="padding:20px;"></div>
+  <div id="fhAdvContent1" style="padding:20px;display:none;"></div>
+  <div id="fhAdvContent2" style="padding:20px;display:none;"></div>
 </div>
 
 <!-- FH Chart -->
