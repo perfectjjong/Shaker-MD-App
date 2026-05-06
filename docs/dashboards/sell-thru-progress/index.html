@@ -272,6 +272,7 @@ tfoot .fz{background:#0f172a}
         <option value="latest">Latest</option>
       </select>
     </div>
+    <button id="fhCompareBtn" onclick="fhToggleCompare()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="YTD vs T12M 비교 보기">↔ 비교</button>
     <button onclick="fhReset()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Reset all filters">↺ Reset</button>
   </div>
 </div>
@@ -279,8 +280,32 @@ tfoot .fz{background:#0f172a}
 <!-- FH KPI Strip -->
 <div id="fhKpiStrip" style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:16px;"></div>
 
+<!-- FH Compare View -->
+<div id="fhCompareWrap" style="display:none;">
+  <div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+      <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">YTD vs T12M 비교 <span style="color:#64748b;font-size:11px;">— Simple DSO 기준</span></h3>
+      <span style="font-size:10px;color:#475569;">X축: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y축: Overdue Rate (%)</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+      <div>
+        <div style="font-size:11px;color:#60a5fa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">◀ YTD (연초~현재)</div>
+        <div id="fhCompareYtdWrap" style="position:relative;height:380px;"></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#a78bfa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">T12M (최근 12개월) ▶</div>
+        <div id="fhCompareT12mWrap" style="position:relative;height:380px;"></div>
+      </div>
+    </div>
+  </div>
+  <div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
+    <h3 style="margin:0 0 12px;font-size:13px;color:#94a3b8;font-weight:500;">사분면 이동 계정 <span id="fhMoveCount" style="color:#64748b;font-size:11px;"></span></h3>
+    <div style="overflow-x:auto;max-height:360px;overflow-y:auto;"><table id="fhMoveTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
+  </div>
+</div>
+
 <!-- FH Chart -->
-<div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
+<div id="fhChartBox" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Financial Health Matrix <span id="fhChartSubtitle" style="color:#64748b;font-size:11px;"></span></h3>
     <span style="font-size:10px;color:#475569;">X축: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y축: Overdue Rate (%) vs 선택계정 평균 &nbsp;|&nbsp; 버블 크기: AR Balance</span>
@@ -289,7 +314,7 @@ tfoot .fz{background:#0f172a}
 </div>
 
 <!-- FH Table -->
-<div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:24px;">
+<div id="fhTableBox" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:24px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
     <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Account Detail <span id="fhTableTitle" style="color:#64748b;font-size:11px;"></span></h3>
     <button onclick="fhClearSelection()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Show All</button>
@@ -1915,6 +1940,8 @@ function switchMainTab(tab){
 
 // ======== B2C FINANCIAL HEALTH ========
 var _fhDsoMode='simple';
+var _fhCompareMode=false;
+var _fhCompChartY=null, _fhCompChartT=null;
 var _fhRevMode='ytd';
 var _fhSelGrades=new Set(['A+']);
 var _fhSelAccount=null;
@@ -2080,6 +2107,186 @@ function fhGetAccounts(){
 
 function int_id(v){ return Math.round(parseFloat(v)); }
 
+// ======== FH COMPARE ========
+var FH_Q_COLORS={1:'#10b981',2:'#f97316',3:'#ef4444',4:'#f59e0b'};
+var FH_MOVE_INTERP={
+  '12':'잠재 Anomaly — 성수기 매출로 YTD DSO 희석',
+  '21':'착시 Anomaly — 현재 매출 부진 or 비수기 효과',
+  '13':'숨겨진 Critical — T12M이 진짜 위험 노출',
+  '31':'YTD 과장, T12M은 Safe',
+  '14':'YTD Safe → T12M Watch (OVD 기준 초과)',
+  '41':'YTD Watch → T12M Safe',
+  '23':'Anomaly 악화 → Critical',
+  '32':'Critical 개선 → Anomaly',
+  '24':'Anomaly → Watch',
+  '42':'Watch → Anomaly',
+  '34':'Critical → Watch',
+  '43':'Watch → Critical'
+};
+
+function _fhQuadrant(dso, ovd_rate, ovdThresh){
+  if(dso==null) return 3;
+  if(dso<=180&&ovd_rate<=ovdThresh) return 1;
+  if(dso>180&&ovd_rate<=ovdThresh) return 2;
+  if(dso>180&&ovd_rate>ovdThresh) return 3;
+  return 4;
+}
+
+function fhToggleCompare(){
+  _fhCompareMode=!_fhCompareMode;
+  var btn=document.getElementById('fhCompareBtn');
+  btn.style.background=_fhCompareMode?'#7c3aed':'#0f172a';
+  btn.style.color=_fhCompareMode?'#fff':'#64748b';
+  btn.style.border=_fhCompareMode?'none':'1px solid #334155';
+  renderFH();
+}
+
+function _renderCompareChart(wrapId, accts, chartRef, avgOvd, modeLabel, titleColor){
+  var normalPts=accts.filter(function(a){return a.x_simple!=null;});
+  var noRevPts=accts.filter(function(a){return a.no_rev&&a.x_simple==null&&a.bal>0;});
+  var selAvgDso=180;
+  var dsoVals=normalPts.map(function(a){return a.x_simple;});
+  var maxNormalDso=dsoVals.length?Math.max.apply(null,dsoVals):300;
+  var noRevX=(Math.max(maxNormalDso,180))*1.3+50;
+  noRevPts.forEach(function(a){a._chartX=noRevX;});
+  var pts=normalPts.concat(noRevPts);
+  var maxBal=pts.length?Math.max.apply(null,pts.map(function(a){return a.bal||1;})):1;
+  var gradeGroups={};
+  pts.forEach(function(a){ if(!gradeGroups[a.cls]) gradeGroups[a.cls]=[]; gradeGroups[a.cls].push(a); });
+  var datasets=[];
+  Object.keys(gradeGroups).forEach(function(cls){
+    var color=FH_GRADE_COLORS[cls]||'#94a3b8';
+    datasets.push({
+      label:cls,
+      data:gradeGroups[cls].map(function(a){
+        var xv=a.no_rev?a._chartX:a.x_simple;
+        return {x:xv,y:a.y_val,r:Math.max(5,Math.min(26,Math.sqrt(a.bal/maxBal)*36)),_a:a};
+      }),
+      backgroundColor:color+'99',borderColor:color,borderWidth:1.5
+    });
+  });
+  if(chartRef.ch){chartRef.ch.destroy();chartRef.ch=null;}
+  var wrap=document.getElementById(wrapId);
+  wrap.innerHTML='<canvas style="width:100%;height:100%;"></canvas>';
+  var ctx=wrap.querySelector('canvas').getContext('2d');
+  var qp={id:'qp_'+wrapId,beforeDraw:function(chart){
+    var c2=chart.ctx,xa=chart.scales.x,ya=chart.scales.y;
+    var x0=xa.getPixelForValue(selAvgDso),y0=ya.getPixelForValue(-avgOvd);
+    var l=xa.left,r2=xa.right,t=ya.top,b=ya.bottom;
+    c2.save();
+    c2.fillStyle='rgba(253,186,116,0.30)'; c2.fillRect(l,t,x0-l,y0-t);
+    c2.fillStyle='rgba(252,165,165,0.30)'; c2.fillRect(l,y0,x0-l,b-y0);
+    c2.fillStyle='rgba(134,239,172,0.30)'; c2.fillRect(x0,t,r2-x0,y0-t);
+    c2.fillStyle='rgba(253,224,71,0.30)';  c2.fillRect(x0,y0,r2-x0,b-y0);
+    c2.setLineDash([4,3]); c2.lineWidth=1.5; c2.strokeStyle='rgba(148,163,184,0.7)';
+    c2.beginPath(); c2.moveTo(x0,t); c2.lineTo(x0,b); c2.stroke();
+    c2.beginPath(); c2.moveTo(l,y0); c2.lineTo(r2,y0); c2.stroke();
+    c2.setLineDash([]);
+    c2.font='bold 9px sans-serif'; c2.globalAlpha=0.75; c2.fillStyle='#94a3b8';
+    c2.fillText('DPO 180d',x0+3,t+10);
+    c2.fillText('Avg '+avgOvd.toFixed(0)+'%',l+3,y0-3);
+    c2.globalAlpha=0.7; c2.font='bold 10px sans-serif';
+    c2.fillStyle='#fb923c'; c2.fillText('🔶',l+4,t+14);
+    c2.fillStyle='#ef4444'; c2.fillText('🔴',l+4,b-6);
+    c2.fillStyle='#10b981'; c2.fillText('✅',x0+4,t+14);
+    c2.fillStyle='#f59e0b'; c2.fillText('⚠',x0+4,b-6);
+    c2.restore();
+  }};
+  chartRef.ch=new Chart(ctx,{
+    type:'bubble',data:{datasets:datasets},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{labels:{color:'#94a3b8',font:{size:10}}},
+        tooltip:{callbacks:{label:function(ctx){
+          var a=ctx.raw._a;
+          return [
+            a.name+' ('+a.cls+')',
+            'DSO: '+(a.x_simple!=null?a.x_simple.toFixed(1)+'d':'N/A')+'  OVD: '+a.ovd_rate.toFixed(1)+'%',
+            'AR: SAR '+(a.bal/1000).toFixed(0)+'K'
+          ];
+        }}}
+      },
+      scales:{
+        x:{reverse:true,
+          title:{display:true,text:'DSO Simple '+modeLabel+' (days)  |  ←높음  낮음→',color:titleColor,font:{size:10}},
+          ticks:{color:'#64748b'},grid:{color:'#1e293b'},border:{color:'#475569'}},
+        y:{title:{display:true,text:'Overdue Rate (%)',color:'#64748b',font:{size:10}},
+          ticks:{color:'#64748b',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
+          grid:{color:'#1e293b'},border:{color:'#475569'}}
+      }
+    },
+    plugins:[qp]
+  });
+}
+
+function renderFHCompare(){
+  var savedRev=_fhRevMode;
+
+  // YTD
+  _fhRevMode='ytd'; _buildFhAmCache();
+  var ytdAccts=fhGetAccounts();
+  var ytdNorm=ytdAccts.filter(function(a){return a.x_simple!=null;});
+  var ytdAvgOvd=ytdNorm.length?ytdNorm.reduce(function(s,a){return s+a.ovd_rate;},0)/ytdNorm.length:20;
+
+  // T12M
+  _fhRevMode='t12m'; _buildFhAmCache();
+  var t12mAccts=fhGetAccounts();
+  var t12mNorm=t12mAccts.filter(function(a){return a.x_simple!=null;});
+  var t12mAvgOvd=t12mNorm.length?t12mNorm.reduce(function(s,a){return s+a.ovd_rate;},0)/t12mNorm.length:20;
+
+  // 복원
+  _fhRevMode=savedRev; _buildFhAmCache();
+
+  // 차트
+  var cY={ch:_fhCompChartY}, cT={ch:_fhCompChartT};
+  _renderCompareChart('fhCompareYtdWrap',ytdAccts,cY,ytdAvgOvd,'(YTD)','#60a5fa');
+  _renderCompareChart('fhCompareT12mWrap',t12mAccts,cT,t12mAvgOvd,'(T12M)','#a78bfa');
+  _fhCompChartY=cY.ch; _fhCompChartT=cT.ch;
+
+  // 이동 계정 맵핑
+  var ytdMap={}, t12mMap={};
+  ytdAccts.forEach(function(a){ytdMap[a.id]=a;});
+  t12mAccts.forEach(function(a){t12mMap[a.id]=a;});
+  var moves=[];
+  Object.keys(ytdMap).forEach(function(sid){
+    var ay=ytdMap[sid], at=t12mMap[sid];
+    if(!ay||!at) return;
+    var qY=_fhQuadrant(ay.x_simple,ay.ovd_rate,ytdAvgOvd);
+    var qT=_fhQuadrant(at.x_simple,at.ovd_rate,t12mAvgOvd);
+    if(qY!==qT) moves.push({a:ay,qY:qY,qT:qT,dsoY:ay.x_simple,dsoT:at.x_simple});
+  });
+  moves.sort(function(a,b){
+    var kA=a.qY+''+a.qT, kB=b.qY+''+b.qT;
+    if(kA!==kB) return kA<kB?-1:1;
+    return Math.abs((b.dsoT||0)-(b.dsoY||0))-Math.abs((a.dsoT||0)-(a.dsoY||0));
+  });
+
+  document.getElementById('fhMoveCount').textContent='— '+moves.length+'건 사분면 이동';
+
+  var tbl=document.getElementById('fhMoveTable');
+  var th='<tr>'+['계정명','등급','YTD DSO','T12M DSO','이동','해석'].map(function(h){
+    return '<th style="padding:6px 8px;border-bottom:1px solid #334155;color:#64748b;font-weight:600;text-align:left;white-space:nowrap;">'+h+'</th>';
+  }).join('')+'</tr>';
+  var rows=moves.map(function(mv){
+    var interp=FH_MOVE_INTERP[mv.qY+''+mv.qT]||'사분면 이동';
+    var bY='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qY]+'22;color:'+FH_Q_COLORS[mv.qY]+';font-size:10px;font-weight:700;">'+mv.qY+'분면</span>';
+    var bT='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qT]+'22;color:'+FH_Q_COLORS[mv.qT]+';font-size:10px;font-weight:700;">'+mv.qT+'분면</span>';
+    var rowBg=mv.qY===1&&mv.qT===2?'background:rgba(249,115,22,0.07);':
+              mv.qY===2&&mv.qT===1?'background:rgba(16,185,129,0.07);':
+              mv.qY===1&&mv.qT===3?'background:rgba(239,68,68,0.10);':'';
+    return '<tr style="'+rowBg+'border-bottom:1px solid #1e293b;">'+
+      '<td style="padding:6px 8px;color:#e2e8f0;">'+mv.a.name+'</td>'+
+      '<td style="padding:6px 8px;"><span style="color:'+FH_GRADE_COLORS[mv.a.cls]+';font-weight:600;">'+mv.a.cls+'</span></td>'+
+      '<td style="padding:6px 8px;color:#94a3b8;font-family:monospace;">'+(mv.dsoY!=null?mv.dsoY.toFixed(0)+'d':'N/A')+'</td>'+
+      '<td style="padding:6px 8px;color:#94a3b8;font-family:monospace;">'+(mv.dsoT!=null?mv.dsoT.toFixed(0)+'d':'N/A')+'</td>'+
+      '<td style="padding:6px 8px;">'+bY+' → '+bT+'</td>'+
+      '<td style="padding:6px 8px;color:#64748b;font-size:10px;">'+interp+'</td>'+
+      '</tr>';
+  });
+  tbl.innerHTML='<thead>'+th+'</thead><tbody>'+(rows.length?rows.join(''):'<tr><td colspan="6" style="padding:16px;text-align:center;color:#475569;">사분면 이동 계정 없음 — YTD와 T12M 결과 동일</td></tr>')+'</tbody>';
+}
+
 function renderFH(){
   if(!RAW) return;
   fhLoadHistory(function(hist){
@@ -2093,10 +2300,15 @@ function renderFH(){
         sel.appendChild(opt);
       });
     }
+    // 비교 모드 / 일반 모드 전환
+    document.getElementById('fhChartBox').style.display=_fhCompareMode?'none':'';
+    document.getElementById('fhTableBox').style.display=_fhCompareMode?'none':'';
+    document.getElementById('fhCompareWrap').style.display=_fhCompareMode?'':'none';
     _buildFhAmCache();
     fhBuildGradeFilter();
     var accts=fhGetAccounts();
     renderFHKpi(accts);
+    if(_fhCompareMode){ renderFHCompare(); return; }
     renderFHChart(accts);
     renderFHTable(_fhSelAccount?accts.filter(function(a){return a.id===_fhSelAccount;}):accts);
   });
@@ -2383,6 +2595,9 @@ function fhClearSelection(){
 }
 
 function fhReset(){
+  _fhCompareMode=false;
+  var cbtn=document.getElementById('fhCompareBtn');
+  if(cbtn){cbtn.style.background='#0f172a';cbtn.style.color='#64748b';cbtn.style.border='1px solid #334155';}
   _fhSelGrades=new Set(['A+']);
   _fhSelAccount=null;
   _fhSelDate='latest';
