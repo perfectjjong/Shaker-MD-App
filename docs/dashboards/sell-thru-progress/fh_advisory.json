@@ -9030,7 +9030,16 @@
           "Set a DSO review checkpoint at end of Q2 (June 30): if YTD DSO has not compressed below 130d, escalate to credit committee for potential limit tightening ahead of Q3 second-peak shipments"
         ],
         "risk_level": "yellow",
-        "risk_reason": "Zero OVD today, but T12M DSO 245d vs 120d credit term is a structural slow-pay pattern that a single clean snapshot cannot neutralize — watch DSO trajectory through peak season."
+        "risk_reason": "Zero OVD today, but T12M DSO 245d vs 120d credit term is a structural slow-pay pattern that a single clean snapshot cannot neutralize — watch DSO trajectory through peak season.",
+        "headline_ko": "연체 제로가 구조적 DSO 문제를 가리고 있습니다 — T12M DSO 245일은 120일 여신 조건 대비 125일을 초과하며, 유동성은 건전하나 구조적으로 결제가 지연되는 A+ 계정이 매입 가속 사이클에 진입하고 있습니다.",
+        "analysis_ko": "AR은 표면적으로 양호합니다: SAR 74.2M 잔액, 전 연령 구간에 걸쳐 연체 없음, 4월 29일 이후 OVD 0.0% 유지. 즉각적인 수금 조치는 불필요합니다. 그러나 OVD 제로 수치를 단독으로 결제 건전성 신호로 해석해서는 안 됩니다. T12M DSO 245일 대비 120일 여신 조건은 125일의 구조적 초과를 의미하며, 이는 해당 계정이 롤링 기준으로 만기일로부터 4개월 이상 지연하여 청구서를 결제해 왔음을 뜻합니다. YTD DSO 143일은 T12M 대비 일부 개선을 보이나 여전히 여신 조건을 23일 초과합니다. 계정은 결제를 이행하고 있으나 속도가 느리며, 현재 OVD 제로는 결제 행태 개선이 아닌 일시적 결제 사이클을 반영할 가능성이 높습니다.\n\n상업적 측면에서, 2026년 매입 속도가 T12M 평균 대비 1.7배 수준으로 운영되고 있는 것은 5~9월 피크 시즌을 앞두고 주목할 만합니다. 다만 이 가속은 2025년 Sell-Out -33.4% 급감(2024년 51,736대 → 2025년 34,474대)과 대비하여 해석해야 합니다. 채널은 2024년에 공격적으로 매입했으나 동일한 속도로 판매 전환에는 실패했습니다. 2026년 매입 가속이 Sell-Through 개선으로 이어지지 않을 경우 채널 과적재 위험이 발생합니다 — LG가 출하하고 계정이 재고를 보유하면서 결제 사이클이 다시 연장될 수 있습니다. 현재 재고 3,148대는 소규모이며 주로 NW/ND 18K–24K 스플릿으로 구성되어 여름 고회전 SKU에 해당하므로, 단기 Sell-Out 흡수는 가능하나 보장되지는 않습니다.\n\n여신 정책은 구조적으로 결제가 느린 A+ 계정이 피크 시즌에 매입을 가속화하고 있으며, 2025년 Sell-Out 실적이 무제한적 여신 확대를 정당화하지 못한다는 긴장 관계를 반영해야 합니다. 신중한 입장은 현행 한도를 유지하면서 피크 시즌을 통해 Sell-Out 회복 여부를 검증하고, 향후 2개 결제 사이클에서 DSO가 150일 미만으로 압축됨이 입증된 경우에만 조건부로 한도 증액을 승인하는 것입니다.",
+        "action_ko": [
+          "United Electronics로부터 Q2 청구서에 대한 결제 확약 일정을 요청하십시오 — T12M DSO 245일을 감안할 때, 만기일 사전 확인은 60일 이상 연체 구간으로의 무음 고령화를 방지합니다.",
+          "NW182C, ND182C, ND242C(합산 1,458대 = 현재 재고의 46%)의 주간 Sell-Out 데이터를 5~6월 피크 기간 동안 추적하여, 현재 출하 속도를 초과하는 가속 승인 전 채널 흡수를 검증하십시오.",
+          "Q2 말(6월 30일)에 DSO 검토 체크포인트를 설정하십시오: YTD DSO가 130일 미만으로 압축되지 않을 경우, Q3 2차 피크 출하를 앞두고 한도 축소 가능성 검토를 위해 여신위원회에 에스컬레이션하십시오."
+        ],
+        "credit_rationale_ko": "120일 여신 조건 대비 T12M DSO 245일은 구조적 결제 지연을 나타내며, 2026년 매입 가속만으로는 이를 상쇄할 수 없습니다 — DSO가 150일 미만의 지속적 압축을 실증할 때까지 한도를 유지합니다.",
+        "risk_reason_ko": "현재 OVD는 제로이나, T12M DSO 245일 대 120일 여신 조건은 단일 청정 스냅샷으로 무력화될 수 없는 구조적 결제 지연 패턴입니다 — 피크 시즌 전반에 걸쳐 DSO 추이를 모니터링하십시오."
       },
       "sales": {
         "headline": "A+ 계정 1.7x 가속매입 + 0% OVD로 표면은 완벽하나, 2025 Sell-Out -33% + T12M DSO 245d가 2024 오버스톡 패턴 재현 경고를 보내고 있다",
@@ -9050,14 +9059,26 @@
         ],
         "has_sellout_data": true,
         "channel_signal": "yellow",
-        "channel_reason": "0% OVD·1.7x 매입은 그린이나 2025 Sell-Out -33%·T12M DSO 245d·WOS 4.3주 피크 진입이 구조적 옐로우 판정"
+        "channel_reason": "0% OVD·1.7x 매입은 그린이나 2025 Sell-Out -33%·T12M DSO 245d·WOS 4.3주 피크 진입이 구조적 옐로우 판정",
+        "headline_ko": "A+ 계정 1.7x 가속매입 + 0% OVD로 표면은 완벽하나, 2025 Sell-Out -33% + T12M DSO 245d가 2024 오버스톡 패턴 재현 경고를 보내고 있습니다",
+        "analysis_ko": "【Sell-Through: LG→채널】 2024 Sell-In 152.8M이 2025에 90.6M(-40.7%)으로 급락한 것은 채널이 전년도 과잉재고를 소화하며 주문을 억제한 결과입니다. 2026 YTD 64.7M은 buy pace 1.7x로 피크시즌 대응 전환을 의미하나, 이 가속이 실수요 기반인지 투기적 적치인지 검증이 선행돼야 합니다. T12M DSO 245d는 120d credit term의 2배로, 최근 12개월 내 결제 지연 구조가 존재했음을 시사하며, YTD 143d 개선 추세는 긍정적이나 0% OVD는 May 2026 시점의 스냅샷에 불과합니다. 현 AR 74.2M 전액 미연체는 최우선 계정다운 이행력을 보여주나, 잔액 규모 자체가 LG 익스포저 집중도 주의 수준입니다.\n\n【Sell-Out: 채널→소비자】 2025 연간 34,474u(-33.4% YoY)는 단순 부진이 아닌 구조적 수요 이탈 신호입니다. 2025 패턴을 해부하면 Mar(5,546u)·Apr(5,594u) 전반기는 견조했으나 May-Sep 피크시즌이 2024 대비 반토막(May 3,009 vs 6,078u; Sep 4,729 vs 10,243u), Q4는 완전 붕괴(Oct 819 vs 5,945u)를 기록하였습니다. 루트코즈 1순위: 2024 대량매입(152.8M)→재고과잉→2025 피크시즌 채널 추가 발주 억제→Sell-Out 속도 자체 저하 악순환입니다. 2순위: Samsung·Gree 피크시즌 프로모션 공세로 인한 소비자 이탈입니다. 현재 재고 3,148u, 2025 피크 소진율 727u/주 기준 WOS ≈ 4.3주로 피크 초입에 안전재고 하한선에 근접하고 있습니다. 특히 C182EC(2023~2025 연속 Top 3)가 78u로 최소 적치 상태로, 피크 선반 이탈 리스크가 가장 높으며, NW182C 647u는 2025 Top 5 미진입 모델로 상대적 과잉 가능성이 있습니다.\n\n【투자 판단】 United Electronics는 OR 채널 대표 A+ 계정으로 LG가 포기할 수 없는 파트너입니다. 그러나 투자 없이 1.7x 매입만 방치하면 2024 오버스톡→2025 Sell-Out 붕괴 패턴이 2026에 그대로 재현될 가능성이 높습니다. 지금 피크시즌 sell-out 지원(프로모션·인스톨러 인센티브·공동 마케팅)을 투입해야 매입 가속이 실소비자 전환으로 연결되고, 채널 재고 건강성과 LG DSO 개선이 동시에 달성될 수 있습니다.",
+        "action_ko": [
+          "C182EC 재고 즉시 보충 협의—역대 Top 3 페레니얼 모델 78u는 피크 2~3주 내 품절이 예상되며, 선반 공백은 Samsung 전환으로 직결됩니다",
+          "NW182C 647u 과잉 여부 확인 후 집중 sell-out 프로모션 배정 또는 모델 스왑 협의(2025 Top 5 미진입 재고 우선 소화)",
+          "피크시즌(May–Sep) 주간 WOS 모니터링 체계 수립—WOS 6주 이하 시 자동 보충 발주 트리거를 설정하여 재고 단절을 방지하시기 바랍니다",
+          "2025 Sep 급락(vs 2024 -54%) 원인에 대한 채널 담당자 인터뷰 진행—Samsung 프로모션 충격 vs 재고 소진 vs 가격 이탈 여부를 판별한 후 2026 대응책을 수립하시기 바랍니다",
+          "T12M DSO 245d → 120d credit term 준수 로드맵 협의—2026 YTD 143d 개선 모멘텀을 활용하여 결제 인센티브(추가 리베이트) 조건과 연계하시기 바랍니다"
+        ],
+        "investment_rationale_ko": "피크시즌 1.7x 가속매입 모멘텀이 존재하나 sell-out 지원 없이는 2024 오버스톡 악순환 재현 확률이 높으며, 현 시점이 ROI 최고인 개입 타이밍입니다",
+        "channel_reason_ko": "0% OVD·1.7x 매입은 그린 신호이나, 2025 Sell-Out -33%·T12M DSO 245d·WOS 4.3주 피크 진입이 구조적 옐로우 판정 근거입니다"
       },
       "synthesis": {
         "headline": "AR 74.2M 전액 정상이지만 T12M DSO 245d 구조적 지연 + 2025 Sell-Out -33% 속에서 1.7x 매입 가속 중 — 지금 투자 없이 방치하면 2024 오버스톡 사이클이 2026에 그대로 재현된다",
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest conditionally. Zero OVD 표면은 깨끗하나 T12M DSO 245d 구조적 지연이 여전하고, 피크 sell-out 지원 없는 1.7x 매입 가속은 2024 채널 과부하 재현 트리거다."
+          "one_line": "Risk Yellow — Invest conditionally. Zero OVD 표면은 깨끗하나 T12M DSO 245d 구조적 지연이 여전하고, 피크 sell-out 지원 없는 1.7x 매입 가속은 2024 채널 과부하 재현 트리거다.",
+          "one_line_ko": "Risk Yellow — Invest conditionally. Zero OVD 표면은 깨끗하나 T12M DSO 245d 구조적 지연이 여전하며, 피크 sell-out 지원 없는 1.7x 매입 가속은 2024 채널 과부하 재현 트리거입니다."
         },
         "summary_3lines": [
           "2026 피크 진입 시점에 AR 74.2M 전액 정상·OVD 0%이나 T12M DSO 245d는 120d 크레딧 텀의 2배로 구조적 지연 패턴이 존재하며, 2026 buy pace는 T12M 평균의 1.7배로 가속 중이다",
@@ -9097,7 +9118,46 @@
             "deadline": "2026-05-20"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "headline_ko": "AR 74.2M 전액 정상이지만 T12M DSO 245d 구조적 지연 + 2025 Sell-Out -33% 속에서 1.7x 매입 가속 중 — 지금 투자 없이 방치하면 2024 오버스톡 사이클이 2026에 그대로 재현됩니다",
+        "summary_3lines_ko": [
+          "2026 피크 진입 시점에 AR 74.2M 전액 정상·OVD 0%이나 T12M DSO 245d는 120d 크레딧 텀의 2배로 구조적 지연 패턴이 존재하며, 2026 매입 페이스는 T12M 평균의 1.7배로 가속 중입니다",
+          "2024 Sell-In 152.8M 공격적 적치 → 채널 과잉재고 → 2025 Sell-Out 피크 월 반토막(Sep 2024: 10,243u → 2025: 4,729u) → DSO 245d 악화로 이어진 패턴이 2026 재진입 조건을 충족하고 있습니다",
+          "지금 sell-out 개입 없이 1.7x 가속을 방치하면 C182EC 피크 품절(현 78u)로 Samsung 전환이 발생하는 동시에 NW182C 647u는 적치되고 DSO는 다시 T12M 수준으로 회귀합니다"
+        ],
+        "decision_required_ko": "이번 주 피크시즌 조건부 투자 패키지(C182EC 긴급 보충 + NW182C sell-out 프로모 + 주간 WOS 트래킹 + 결제 일정 확약) 승인 여부 — 5월 수요 빌드업 전 결정해야 옵션이 남습니다",
+        "options_ko": [
+          {
+            "option": "Option A — 조건부 투자 승인: 1.7x 매입 페이스 유지 + sell-out 지원 패키지 동시 가동",
+            "consequence": "C182EC 보충으로 피크 선반 유지, NW182C 프로모 투입으로 재고 소화, 주간 WOS 모니터링으로 2024 과부하 조기 탐지 가능 — DSO 6/30 체크포인트에서 130d 이하 미달 시 Q3 크레딧 검토로 하방 제어가 가능합니다"
+          },
+          {
+            "option": "Option B — 보수 유지: 출하 페이스 T12M 평균 동결, 투자 보류",
+            "consequence": "DSO 리스크 단기 통제되나 C182EC 피크 품절 → Samsung 전환 → LG 연간 Sell-Out 회복 기회 상실, A+ 파트너십 약화, 피크 모멘텀 소실로 2026 연간 실적 목표 미달 가능성이 상승합니다"
+          }
+        ],
+        "timeline_ko": [
+          {
+            "step": "C182EC 긴급 보충 발주 협의 — 현 78u는 피크 2주 내 품절 예상, 선반 공백은 Samsung 전환으로 직결됩니다",
+            "deadline": "2026-05-09 (이번 주 내)"
+          },
+          {
+            "step": "United Electronics로부터 Q2 인보이스 결제 일정 확약 수령 + NW182C 647u sell-out 프로모 또는 모델 스왑 협의 착수",
+            "deadline": "2026-05-13"
+          },
+          {
+            "step": "주간 WOS 트래킹 개시 — NW182C/ND182C/ND242C 3모델(현 재고 46%) 소화 속도 기준, WOS 6주 이하 시 자동 보충 트리거 설정",
+            "deadline": "2026-05-15"
+          },
+          {
+            "step": "YTD DSO 체크포인트 — 130d 이하 미달 시 크레딧 위원회 상정 및 Q3 출하 조건 재협의",
+            "deadline": "2026-06-30"
+          },
+          {
+            "step": "2025 Sep 급락 원인 채널 담당자 인터뷰 완료 (Samsung 프로모 충격 vs 재고 과부하 vs 가격 이탈 판별) + Q3 대응책 확정",
+            "deadline": "2026-05-20"
+          }
+        ]
       }
     },
     "1120000002": {
@@ -11128,5 +11188,6 @@
         ]
       }
     }
-  }
+  },
+  "translated_at": "2026-05-06 14:19"
 }
