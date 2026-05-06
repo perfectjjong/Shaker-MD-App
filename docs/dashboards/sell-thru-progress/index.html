@@ -2132,11 +2132,14 @@ function _fhDynamicInsight(mv, ytdAvgOvd){
     var ph2='', act2='';
     if(ovd>=50&&o3ratio>=0.8){
       // Alkhunaizan 패턴: 거래 중단 + 장기 연체 고착
-      ph2='Zero revenue in 2026 (ordering halted). '+ovdStr2+' overdue ('+ovd.toFixed(0)+'% of AR balance) with '
-        +Math.round(o3ratio*100)+'% aged 60d+ against '+pt+'d credit term — fully delinquent, no natural collection path via new orders.';
-      act2='Initiate formal collection procedure immediately. '
-        +'Do NOT approve any new Sell-in until full overdue cleared. '
-        +'Refer to Credit/Legal team for recovery plan and assess bad debt provision requirement.';
+      ph2='Ordering halted in 2026 (net returns recorded). '+ovdStr2+' overdue ('+ovd.toFixed(0)+'% of AR), '
+        +Math.round(o3ratio*100)+'% aged 60d+ against '+pt+'d credit term. '
+        +'Account has effectively exited the relationship — this is no longer a collection issue, it is a trading continuity decision.';
+      act2='⚠ Escalate to senior management for trading relationship review: '
+        +'(1) Terminate credit line and pursue full legal recovery, OR '
+        +'(2) Negotiate structured settlement (partial cash + credit note) as the only condition for any future business. '
+        +'Do not approve new Sell-in under any circumstance until resolved. '
+        +'Assess '+ovdStr2+' for bad debt provision this quarter.';
     } else if(ovd>=20){
       ph2='No 2026 revenue — account disengaged. '+ovdStr2+' overdue ('+ovd.toFixed(0)+'% of AR). '
         +'60d+ bucket: '+Math.round(o3ratio*100)+'%. Collection cannot rely on new order flow.';
