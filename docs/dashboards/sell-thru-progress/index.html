@@ -254,26 +254,26 @@ tfoot .fz{background:#0f172a}
 <!-- FH Filter Bar -->
 <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
   <div>
-    <span style="font-size:11px;font-weight:600;color:#94a3b8;margin-right:6px;">Grade</span>
+    <span style="font-size:11px;font-weight:600;color:#e2e8f0;margin-right:6px;">Grade</span>
     <div id="fhGradeFilter" style="display:inline-flex;flex-wrap:wrap;gap:4px;"></div>
   </div>
   <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
     <div style="display:flex;gap:0;">
       <button id="fhRevYtdBtn" onclick="fhSetRevMode('ytd')" style="padding:5px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:12px;font-weight:600;">YTD</button>
-      <button id="fhRevT12mBtn" onclick="fhSetRevMode('t12m')" style="padding:5px 14px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">T12M</button>
+      <button id="fhRevT12mBtn" onclick="fhSetRevMode('t12m')" style="padding:5px 14px;background:#1e293b;color:#94a3b8;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">T12M</button>
     </div>
     <div style="display:flex;gap:0;">
       <button id="fhDsoSimpleBtn" onclick="fhSetDsoMode('simple')" style="padding:5px 14px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:12px;font-weight:600;">DSO Simple</button>
-      <button id="fhDsoAgedBtn" onclick="fhSetDsoMode('aged')" style="padding:5px 14px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">DSO Aged</button>
+      <button id="fhDsoAgedBtn" onclick="fhSetDsoMode('aged')" style="padding:5px 14px;background:#1e293b;color:#94a3b8;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:12px;font-weight:600;">DSO Aged</button>
     </div>
     <div style="display:flex;align-items:center;gap:5px;">
-      <span style="font-size:11px;color:#64748b;">📅</span>
+      <span style="font-size:11px;color:#94a3b8;">📅</span>
       <select id="fhDateSelect" onchange="fhSetDate(this.value)" style="padding:5px 8px;background:#0f172a;color:#e2e8f0;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:11px;outline:none;">
         <option value="latest">Latest</option>
       </select>
     </div>
-    <button id="fhCompareBtn" onclick="fhToggleCompare()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="YTD vs T12M 비교 보기">↔ 비교</button>
-    <button onclick="fhReset()" style="padding:5px 14px;background:#0f172a;color:#64748b;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Reset all filters">↺ Reset</button>
+    <button id="fhCompareBtn" onclick="fhToggleCompare()" style="padding:5px 14px;background:#0f172a;color:#94a3b8;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Compare YTD vs T12M">↔ Compare</button>
+    <button onclick="fhReset()" style="padding:5px 14px;background:#0f172a;color:#94a3b8;border:1px solid #334155;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;" title="Reset all filters">↺ Reset</button>
   </div>
 </div>
 
@@ -284,22 +284,22 @@ tfoot .fz{background:#0f172a}
 <div id="fhCompareWrap" style="display:none;">
   <div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-      <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">YTD vs T12M 비교 <span style="color:#64748b;font-size:11px;">— Simple DSO 기준</span></h3>
-      <span style="font-size:10px;color:#475569;">X축: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y축: Overdue Rate (%)</span>
+      <h3 style="margin:0;font-size:13px;color:#e2e8f0;font-weight:500;">YTD vs T12M Comparison <span style="color:#94a3b8;font-size:11px;">— Simple DSO basis</span></h3>
+      <span style="font-size:10px;color:#94a3b8;">X: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y: Overdue Rate (%)</span>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
       <div>
-        <div style="font-size:11px;color:#60a5fa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">◀ YTD (연초~현재)</div>
+        <div style="font-size:11px;color:#60a5fa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">◀ YTD (Year-to-Date)</div>
         <div id="fhCompareYtdWrap" style="position:relative;height:380px;"></div>
       </div>
       <div>
-        <div style="font-size:11px;color:#a78bfa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">T12M (최근 12개월) ▶</div>
+        <div style="font-size:11px;color:#a78bfa;font-weight:700;text-align:center;margin-bottom:8px;letter-spacing:0.5px;">T12M (Trailing 12M) ▶</div>
         <div id="fhCompareT12mWrap" style="position:relative;height:380px;"></div>
       </div>
     </div>
   </div>
   <div style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
-    <h3 style="margin:0 0 12px;font-size:13px;color:#94a3b8;font-weight:500;">사분면 이동 계정 <span id="fhMoveCount" style="color:#64748b;font-size:11px;"></span></h3>
+    <h3 style="margin:0 0 12px;font-size:13px;color:#e2e8f0;font-weight:500;">Quadrant Shifts <span id="fhMoveCount" style="color:#94a3b8;font-size:11px;"></span></h3>
     <div style="overflow-x:auto;max-height:360px;overflow-y:auto;"><table id="fhMoveTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
   </div>
 </div>
@@ -307,8 +307,8 @@ tfoot .fz{background:#0f172a}
 <!-- FH Chart -->
 <div id="fhChartBox" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:16px;">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Financial Health Matrix <span id="fhChartSubtitle" style="color:#64748b;font-size:11px;"></span></h3>
-    <span style="font-size:10px;color:#475569;">X축: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y축: Overdue Rate (%) vs 선택계정 평균 &nbsp;|&nbsp; 버블 크기: AR Balance</span>
+    <h3 style="margin:0;font-size:13px;color:#e2e8f0;font-weight:500;">Financial Health Matrix <span id="fhChartSubtitle" style="color:#94a3b8;font-size:11px;"></span></h3>
+    <span style="font-size:10px;color:#94a3b8;">X: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y: Overdue Rate (%) vs selected acct avg &nbsp;|&nbsp; Bubble: AR Balance</span>
   </div>
   <div id="fhChartWrap" style="position:relative;height:480px;"></div>
 </div>
@@ -316,8 +316,8 @@ tfoot .fz{background:#0f172a}
 <!-- FH Table -->
 <div id="fhTableBox" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:24px;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <h3 style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Account Detail <span id="fhTableTitle" style="color:#64748b;font-size:11px;"></span></h3>
-    <button onclick="fhClearSelection()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Show All</button>
+    <h3 style="margin:0;font-size:13px;color:#e2e8f0;font-weight:500;">Account Detail <span id="fhTableTitle" style="color:#94a3b8;font-size:11px;"></span></h3>
+    <button onclick="fhClearSelection()" style="padding:4px 12px;background:#334155;color:#e2e8f0;border:none;border-radius:6px;font-size:11px;cursor:pointer;">Show All</button>
   </div>
   <div style="overflow-x:auto;max-height:400px;overflow-y:auto;"><table id="fhTable" style="width:100%;border-collapse:collapse;font-size:11px;"></table></div>
 </div>
@@ -325,12 +325,12 @@ tfoot .fz{background:#0f172a}
 <!-- FH Trend Panel -->
 <div id="fhTrendPanel" style="background:#1e293b;border-radius:10px;padding:16px;border:1px solid #334155;margin-bottom:24px;display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-    <h3 id="fhTrendTitle" style="margin:0;font-size:13px;color:#94a3b8;font-weight:500;">Trend</h3>
-    <button onclick="fhCloseTrend()" style="padding:3px 10px;background:#334155;color:#94a3b8;border:none;border-radius:5px;cursor:pointer;font-size:11px;">✕ Close</button>
+    <h3 id="fhTrendTitle" style="margin:0;font-size:13px;color:#e2e8f0;font-weight:500;">Trend</h3>
+    <button onclick="fhCloseTrend()" style="padding:3px 10px;background:#334155;color:#e2e8f0;border:none;border-radius:5px;cursor:pointer;font-size:11px;">✕ Close</button>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div><div style="font-size:10px;color:#64748b;margin-bottom:6px;">Overdue Rate (%)</div><div id="fhTrendChartOvdWrap" style="height:180px;"></div></div>
-    <div><div style="font-size:10px;color:#64748b;margin-bottom:6px;">AR Balance vs Overdue (SAR)</div><div id="fhTrendChartBalWrap" style="height:180px;"></div></div>
+    <div><div style="font-size:10px;color:#94a3b8;margin-bottom:6px;">Overdue Rate (%)</div><div id="fhTrendChartOvdWrap" style="height:180px;"></div></div>
+    <div><div style="font-size:10px;color:#94a3b8;margin-bottom:6px;">AR Balance vs Overdue (SAR)</div><div id="fhTrendChartBalWrap" style="height:180px;"></div></div>
   </div>
 </div>
 
@@ -2015,7 +2015,7 @@ function fhBuildGradeFilter(){
   var allSel=_fhSelGrades.size===FH_ALL_GRADES.length;
   var allBtn=document.createElement('button');
   allBtn.textContent='All';
-  allBtn.style.cssText='padding:3px 12px;border-radius:4px;border:1px solid '+(allSel?'#94a3b8':'#334155')+';background:'+(allSel?'#94a3b822':'transparent')+';color:'+(allSel?'#e2e8f0':'#475569')+';cursor:pointer;font-size:11px;font-weight:700;margin-right:4px;';
+  allBtn.style.cssText='padding:3px 12px;border-radius:4px;border:1px solid '+(allSel?'#94a3b8':'#334155')+';background:'+(allSel?'#94a3b822':'transparent')+';color:'+(allSel?'#e2e8f0':'#94a3b8')+';cursor:pointer;font-size:11px;font-weight:700;margin-right:4px;';
   allBtn.onclick=function(){
     _fhSelGrades=new Set(FH_ALL_GRADES);
     _fhSelAccount=null;
@@ -2030,7 +2030,7 @@ function fhBuildGradeFilter(){
     var sel=_fhSelGrades.has(g);
     var cnt=gradeCnt[g]||0;
     btn.innerHTML=g+'<span style="font-size:9px;font-weight:400;opacity:0.8;margin-left:3px;">('+cnt+')</span>';
-    btn.style.cssText='padding:3px 10px;border-radius:4px;border:1px solid '+(sel?FH_GRADE_COLORS[g]:'#334155')+';background:'+(sel?FH_GRADE_COLORS[g]+'22':'transparent')+';color:'+(sel?FH_GRADE_COLORS[g]:'#475569')+';cursor:pointer;font-size:11px;font-weight:600;';
+    btn.style.cssText='padding:3px 10px;border-radius:4px;border:1px solid '+(sel?FH_GRADE_COLORS[g]:'#334155')+';background:'+(sel?FH_GRADE_COLORS[g]+'22':'transparent')+';color:'+(sel?FH_GRADE_COLORS[g]:'#94a3b8')+';cursor:pointer;font-size:11px;font-weight:600;';
     btn.onclick=function(){
       if(_fhSelGrades.has(g)){
         if(_fhSelGrades.size>1) _fhSelGrades.delete(g);
@@ -2105,18 +2105,18 @@ function int_id(v){ return Math.round(parseFloat(v)); }
 // ======== FH COMPARE ========
 var FH_Q_COLORS={1:'#10b981',2:'#f97316',3:'#ef4444',4:'#f59e0b'};
 var FH_MOVE_INTERP={
-  '12':'잠재 Anomaly — 성수기 매출로 YTD DSO 희석',
-  '21':'착시 Anomaly — 현재 매출 부진 or 비수기 효과',
-  '13':'숨겨진 Critical — T12M이 진짜 위험 노출',
-  '31':'YTD 과장, T12M은 Safe',
-  '14':'YTD Safe → T12M Watch (OVD 기준 초과)',
-  '41':'YTD Watch → T12M Safe',
-  '23':'Anomaly 악화 → Critical',
-  '32':'Critical 개선 → Anomaly',
-  '24':'Anomaly → Watch',
-  '42':'Watch → Anomaly',
-  '34':'Critical → Watch',
-  '43':'Watch → Critical'
+  '12':'Peak-season revenue swells the YTD denominator — AR collection is lagging behind order intake growth',
+  '21':'2026 order volume trailing prior-year pace — declining channel engagement widens the YTD vs 12M revenue gap',
+  '13':'Seasonal orders masking a critical collection breakdown — both DSO and overdue elevated on a full 12M basis',
+  '31':'Strong 2026 ordering pace absorbing the AR burden — healthy revenue flow normalising DSO and overdue simultaneously',
+  '14':'New invoices being settled but prior balances quietly accumulating — selective payment pattern beginning to form',
+  '41':'Recent payment discipline outpacing 12M overdue average — collection posture structurally improving',
+  '23':'Overdue compounding on top of already-elevated DSO — receivable aging accelerating with each billing cycle',
+  '32':'Slow payer but invoices eventually cleared over time — AR aging without active default on full 12M horizon',
+  '24':'DSO rising on 12M basis while overdue stays contained — growing balance without full payment breakdown',
+  '42':'Overdue improving but DSO deteriorating on 12M view — cash flow tightening despite recent payment intent',
+  '34':'New invoices cleared while aged balances persist — account cherry-picks which invoices to settle first',
+  '43':'Both DSO and overdue compounding over the 12M horizon — account health eroding beyond seasonal fluctuation'
 };
 
 function _fhQuadrant(dso, ovd_rate, ovdThresh){
@@ -2192,7 +2192,7 @@ function _renderCompareChart(wrapId, accts, chartRef, avgOvd, modeLabel, titleCo
     options:{
       responsive:true,maintainAspectRatio:false,
       plugins:{
-        legend:{labels:{color:'#94a3b8',font:{size:10}}},
+        legend:{labels:{color:'#e2e8f0',font:{size:10}}},
         datalabels:{display:false},
         tooltip:{callbacks:{label:function(ctx){
           var a=ctx.raw._a;
@@ -2205,10 +2205,10 @@ function _renderCompareChart(wrapId, accts, chartRef, avgOvd, modeLabel, titleCo
       },
       scales:{
         x:{reverse:true,
-          title:{display:true,text:'DSO Simple '+modeLabel+' (days)  |  ←높음  낮음→',color:titleColor,font:{size:10}},
-          ticks:{color:'#64748b'},grid:{color:'#1e293b'},border:{color:'#475569'}},
-        y:{title:{display:true,text:'Overdue Rate (%)',color:'#64748b',font:{size:10}},
-          ticks:{color:'#64748b',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
+          title:{display:true,text:'DSO Simple '+modeLabel+' (days)  |  ←Higher  Lower→',color:titleColor,font:{size:10}},
+          ticks:{color:'#94a3b8'},grid:{color:'#1e293b'},border:{color:'#475569'}},
+        y:{title:{display:true,text:'Overdue Rate (%)',color:'#94a3b8',font:{size:10}},
+          ticks:{color:'#94a3b8',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
           grid:{color:'#1e293b'},border:{color:'#475569'}}
       }
     },
@@ -2266,14 +2266,14 @@ function renderFHCompare(){
   });
 
   document.getElementById('fhMoveCount').textContent=
-    '— '+moves.length+'건  |  Y기준선  YTD '+ytdAvgOvd.toFixed(0)+'%  /  T12M '+t12mAvgOvd.toFixed(0)+'%';
+    '— '+moves.length+' shifts  |  OVD baseline  YTD '+ytdAvgOvd.toFixed(0)+'%  /  T12M '+t12mAvgOvd.toFixed(0)+'%';
 
   var tbl=document.getElementById('fhMoveTable');
-  var th='<tr>'+['계정명','등급','YTD DSO','T12M DSO','이동','해석'].map(function(h){
+  var th='<tr>'+['Account','Grade','YTD DSO','T12M DSO','Shift','Insight'].map(function(h){
     return '<th style="padding:6px 8px;border-bottom:1px solid #334155;color:#64748b;font-weight:600;text-align:left;white-space:nowrap;">'+h+'</th>';
   }).join('')+'</tr>';
   var rows=moves.map(function(mv){
-    var interp=FH_MOVE_INTERP[mv.qY+''+mv.qT]||'사분면 이동';
+    var interp=FH_MOVE_INTERP[mv.qY+''+mv.qT]||'Quadrant shift';
     var bY='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qY]+'22;color:'+FH_Q_COLORS[mv.qY]+';font-size:10px;font-weight:700;">'+mv.qY+'분면</span>';
     var bT='<span style="padding:2px 7px;border-radius:4px;background:'+FH_Q_COLORS[mv.qT]+'22;color:'+FH_Q_COLORS[mv.qT]+';font-size:10px;font-weight:700;">'+mv.qT+'분면</span>';
     var rowBg=mv.qY===1&&mv.qT===2?'background:rgba(249,115,22,0.07);':
@@ -2288,7 +2288,7 @@ function renderFHCompare(){
       '<td style="padding:6px 8px;color:#64748b;font-size:10px;">'+interp+'</td>'+
       '</tr>';
   });
-  tbl.innerHTML='<thead>'+th+'</thead><tbody>'+(rows.length?rows.join(''):'<tr><td colspan="6" style="padding:16px;text-align:center;color:#475569;">사분면 이동 계정 없음 — YTD와 T12M 결과 동일</td></tr>')+'</tbody>';
+  tbl.innerHTML='<thead>'+th+'</thead><tbody>'+(rows.length?rows.join(''):'<tr><td colspan="6" style="padding:16px;text-align:center;color:#64748b;">No quadrant shifts — YTD and T12M produce identical positioning</td></tr>')+'</tbody>';
 }
 
 function renderFH(){
@@ -2478,39 +2478,39 @@ function renderFHChart(accts){
         }
       },
       plugins:{
-        legend:{labels:{color:'#94a3b8',font:{size:11}}},
+        legend:{labels:{color:'#e2e8f0',font:{size:11}}},
         datalabels:{
           display:function(ctx){
             var a=ctx.dataset.data[ctx.dataIndex]._a;
             return ['A+','A','B'].includes(a.cls)||ctx.dataset.data[ctx.dataIndex].r>18;
           },
           formatter:function(val){return val._a.name.split(' ').slice(0,2).join(' ');},
-          color:'#e2e8f0',font:{size:9},align:'top',offset:4,
+          color:'#ffffff',font:{size:9},align:'top',offset:4,
         },
         tooltip:{callbacks:{label:function(ctx){
           var a=ctx.raw._a;
           var xv=ctx.raw.x;
           var dso=_fhDsoMode==='simple'?a.dso_simple:a.dso_aged;
           return [a.name+' ('+a.cls+')'+(a.no_rev?' ⚠ No Revenue':''),
-            a.no_rev?'DSO: N/A ('+(_fhRevMode==='t12m'?'T12M':String(_fhCurY))+' 매출 없음/마이너스) → Critical 강제배치'
-              :'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  DPO 기준 180d  '+(dso!=null&&dso<=180?'✅회수완료':'🔴미회수'),
-            'Overdue Rate: '+a.ovd_rate.toFixed(1)+'%  |  등급평균 '+selAvgOvd.toFixed(0)+'%  '+(a.ovd_rate<=selAvgOvd?'✅':'🔴초과'),
+            a.no_rev?'DSO: N/A ('+(_fhRevMode==='t12m'?'T12M':String(_fhCurY))+' revenue absent/negative) → Forced to Critical'
+              :'DSO: '+(dso!=null?dso.toFixed(1):'?')+'d  |  DPO 180d  '+(dso!=null&&dso<=180?'✅Within terms':'🔴Outstanding'),
+            'Overdue Rate: '+a.ovd_rate.toFixed(1)+'%  |  Selected avg '+selAvgOvd.toFixed(0)+'%  '+(a.ovd_rate<=selAvgOvd?'✅':'🔴Above avg'),
             'AR Balance: SAR '+(a.bal/1000).toFixed(0)+'K',
             'Overdue: SAR '+(a.ovd/1000).toFixed(0)+'K'];
         }}}
       },
       scales:{
-        x:{reverse:true,title:{display:true,text:'DSO '+(_fhDsoMode==='simple'?'Simple ('+(_fhRevMode==='t12m'?'T12M':'YTD')+')':'Aged')+' (days)  |  기준선: DPO 180d  ←높음  낮음→',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){return v.toFixed(0)+'d';}},
+        x:{reverse:true,title:{display:true,text:'DSO '+(_fhDsoMode==='simple'?'Simple ('+(_fhRevMode==='t12m'?'T12M':'YTD')+')':'Aged')+' (days)  |  Baseline: DPO 180d  ←Higher  Lower→',color:'#94a3b8',font:{size:11}},
+          ticks:{color:'#94a3b8',callback:function(v){return v.toFixed(0)+'d';}},
           grid:{color:'#1e293b'},border:{color:'#475569'}},
-        y:{title:{display:true,text:'← Overdue Rate 높음  |  낮음 → (기준선: 선택 계정 평균)',color:'#64748b',font:{size:11}},
-          ticks:{color:'#64748b',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
+        y:{title:{display:true,text:'← Higher Overdue Rate  |  Lower → (Baseline: selected acct avg)',color:'#94a3b8',font:{size:11}},
+          ticks:{color:'#94a3b8',callback:function(v){return Math.abs(v).toFixed(0)+'%';}},
           grid:{color:'#1e293b'},border:{color:'#475569'}}
       }
     },
     plugins:[quadrantPlugin]
   });
-  document.getElementById('fhChartSubtitle').textContent='('+pts.length+'개 계정)';
+  document.getElementById('fhChartSubtitle').textContent='('+pts.length+' accounts)';
 }
 
 function renderFHTable(accts){
@@ -2684,11 +2684,11 @@ function fhShowTrend(accountId, accountName){
       type:'line',
       data:{labels:dates,datasets:[{label:'OVD Rate %',data:ovdRates,borderColor:'#ef4444',backgroundColor:'rgba(239,68,68,0.1)',borderWidth:2,pointRadius:3,fill:true,tension:0.3}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},
-        scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#1e293b'}},
-          y:{ticks:{color:'#64748b',font:{size:9},callback:function(v){return v+'%';}},grid:{color:'#1e293b'}}}}
+        scales:{x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#1e293b'}},
+          y:{ticks:{color:'#94a3b8',font:{size:9},callback:function(v){return v+'%';}},grid:{color:'#1e293b'}}}}
     }));
 
-    // AR Balance vs Overdue 차트
+    // AR Balance vs Overdue chart
     var w2=document.getElementById('fhTrendChartBalWrap');
     w2.innerHTML='<canvas id="fhTrendBal"></canvas>';
     _fhTrendCharts.push(new Chart(document.getElementById('fhTrendBal').getContext('2d'),{
@@ -2697,9 +2697,9 @@ function fhShowTrend(accountId, accountName){
         {label:'AR Bal (K)',data:bals,borderColor:'#60a5fa',backgroundColor:'rgba(96,165,250,0.08)',borderWidth:2,pointRadius:2,fill:true,tension:0.3},
         {label:'Overdue (K)',data:ovds,borderColor:'#f87171',backgroundColor:'rgba(248,113,113,0.08)',borderWidth:2,pointRadius:2,fill:true,tension:0.3}
       ]},
-      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:10}}},datalabels:{display:false}},
-        scales:{x:{ticks:{color:'#64748b',font:{size:9}},grid:{color:'#1e293b'}},
-          y:{ticks:{color:'#64748b',font:{size:9},callback:function(v){return v+'K';}},grid:{color:'#1e293b'}}}}
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e2e8f0',font:{size:10}}},datalabels:{display:false}},
+        scales:{x:{ticks:{color:'#94a3b8',font:{size:9}},grid:{color:'#1e293b'}},
+          y:{ticks:{color:'#94a3b8',font:{size:9},callback:function(v){return v+'K';}},grid:{color:'#1e293b'}}}}
     }));
   });
 }
