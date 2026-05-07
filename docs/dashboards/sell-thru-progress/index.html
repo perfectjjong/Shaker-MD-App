@@ -2194,13 +2194,8 @@ function fhRenderAdvisoryContent(adv){
   document.getElementById('fhAdvName').textContent=adv.name||'';
   var synth=adv.synthesis||{};
   var headlineEn=synth.headline||adv.finance&&adv.finance.headline||'';
-  var headlineKo=synth.headline_ko||adv.finance&&adv.finance.headline_ko||'';
-  document.getElementById('fhAdvHeadline').textContent=(ko&&headlineKo)?headlineKo:headlineEn;
+  document.getElementById('fhAdvHeadline').textContent=headlineEn;
   document.getElementById('fhAdvGenerated').textContent=(_fhAdvisory&&_fhAdvisory.generated_at)?'Updated: '+_fhAdvisory.generated_at:'';
-  // KO 번역 미완 시 안내
-  var koReady=!!(synth.headline_ko||(adv.finance&&adv.finance.headline_ko));
-  var koNote=document.getElementById('fhAdvLangKo');
-  if(koNote) koNote.title=koReady?'한국어 번역 완료':'번역 준비 중...';
 
   // Investment badge
   var invSignal=adv.investment_signal||(synth.verdict&&synth.verdict.investment_signal)||'hold';
@@ -2233,12 +2228,9 @@ function _renderAdvSection(data, signal, metrics, ko){
   if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">분석 데이터를 불러오는 중입니다. 잠시 후 다시 시도해주세요.</p>';
   var sc=SIG_COLOR[signal]||'#f59e0b';
   var html='';
-  var headline=(ko&&data.headline_ko)||data.headline||'';
-  var analysis=(ko&&data.analysis_ko)||data.analysis||'';
-  var actions=(ko&&data.action_ko&&data.action_ko.length)?data.action_ko:data.action||[];
-  if(ko&&!data.headline_ko){
-    html+='<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:10px;color:#64748b;">한국어 번역 준비 중입니다. 잠시 후 다시 확인해주세요.</div>';
-  }
+  var headline=data.headline||'';
+  var analysis=data.analysis||'';
+  var actions=data.action||[];
   if(headline){
     html+='<div style="background:'+sc+'22;border-left:3px solid '+sc+';padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:14px;">'
          +'<span style="color:'+sc+';font-weight:700;font-size:12px;">'+headline+'</span></div>';
@@ -2264,14 +2256,10 @@ function _renderSynthSection(data, signal, adv, ko){
   if(!data||data.parse_error) return '<p style="color:#64748b;font-size:11px;">종합 분석 데이터를 불러오는 중입니다.</p>';
   var sc=SIG_COLOR[signal]||'#f59e0b';
   var html='';
-  var summary=(ko&&data.summary_3lines_ko&&data.summary_3lines_ko.length)?data.summary_3lines_ko:data.summary_3lines||[];
-  var decision=(ko&&data.decision_required_ko)||data.decision_required||'';
-  var options=(ko&&data.options_ko&&data.options_ko.length)?data.options_ko:data.options||[];
-  var timeline=(ko&&data.timeline_ko&&data.timeline_ko.length)?data.timeline_ko:data.timeline||[];
-
-  if(ko&&!data.summary_3lines_ko){
-    html+='<div style="background:#1e293b;border:1px solid #334155;border-radius:6px;padding:6px 12px;margin-bottom:10px;font-size:10px;color:#64748b;">한국어 번역 준비 중입니다. 잠시 후 다시 확인해주세요.</div>';
-  }
+  var summary=data.summary_3lines||[];
+  var decision=data.decision_required||'';
+  var options=data.options||[];
+  var timeline=data.timeline||[];
 
   // Verdict 2축 배너
   var verdict=data.verdict||{};
@@ -2286,7 +2274,7 @@ function _renderSynthSection(data, signal, adv, ko){
          +'<div style="font-size:10px;color:#94a3b8;margin-bottom:4px;font-weight:600;">INVESTMENT</div>'
          +'<div style="font-size:18px;font-weight:700;color:'+ic.color+';">'+ic.label+'</div></div>'
          +'</div>';
-    var oneLine=(ko&&verdict.one_line_ko)||verdict.one_line||'';
+    var oneLine=verdict.one_line||'';
     if(oneLine){
       html+='<div style="background:#1e293b;border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:#e2e8f0;font-style:italic;">'+oneLine+'</div>';
     }
