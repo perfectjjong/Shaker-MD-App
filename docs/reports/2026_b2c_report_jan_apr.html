@@ -104,7 +104,7 @@ tr:hover td{background:#fafbff}
 <div class="section">
   <div class="section-header">
     <h2 id="st11Title">1-1. Sell-Through by Channel × Month (Value, excl. VAT)</h2>
-    <span id="st11Sub">Unit: SAR | YoY: vs 2025 Q1</span>
+    <span id="st11Sub">Unit: SAR | YoY: vs 2025 Jan–Apr</span>
   </div>
   <div class="section-body">
     <table>
@@ -134,7 +134,7 @@ tr:hover td{background:#fafbff}
 
 <div class="section">
   <div class="section-header">
-    <h2 id="st12Title">1-2. Q1 Sell-Through by Category</h2>
+    <h2 id="st12Title">1-2. Jan–Apr Sell-Through by Category</h2>
     <span id="st12Sub">Unit: SAR</span>
   </div>
   <div class="section-body">
@@ -142,8 +142,8 @@ tr:hover td{background:#fafbff}
       <thead>
         <tr>
           <th>Category</th>
-          <th id="catCol26">2026 Q1 Value</th>
-          <th id="catCol25">2025 Q1 Value</th>
+          <th id="catCol26">2026 Jan–Apr Value</th>
+          <th id="catCol25">2025 Jan–Apr Value</th>
           <th>YoY</th>
           <th>Share (2026)</th>
         </tr>
@@ -201,7 +201,7 @@ tr:hover td{background:#fafbff}
 
 <div class="section">
   <div class="section-header">
-    <h2>2-2. Q1 Sell-Out by Category</h2>
+    <h2>2-2. Jan–Apr Sell-Out by Category</h2>
     <span>Unit: Units</span>
   </div>
   <div class="section-body">
@@ -209,8 +209,8 @@ tr:hover td{background:#fafbff}
       <thead>
         <tr>
           <th>Category</th>
-          <th>2026 Q1 Units</th>
-          <th>2025 Q1 Units</th>
+          <th>2026 Jan–Apr Units</th>
+          <th>2025 Jan–Apr Units</th>
           <th>YoY</th>
           <th>Share (2026)</th>
         </tr>
@@ -652,15 +652,14 @@ function setStMode(mode) {
   document.getElementById('st11Title').textContent = isQty
     ? '1-1. Sell-Through by Channel × Month (Quantity)' : '1-1. Sell-Through by Channel × Month (Value, excl. VAT)';
   document.getElementById('st11Sub').textContent   = isQty
-    ? 'Unit: Units | YoY: vs 2025 Q1' : 'Unit: SAR | YoY: vs 2025 Q1';
+    ? 'Unit: Units | YoY: vs 2025 Jan–Apr' : 'Unit: SAR | YoY: vs 2025 Jan–Apr';
   document.getElementById('st11Note').textContent  = isQty
     ? '* Quantity basis: SAP shipment Qty. Net incl. returns (ZCD/ZDRO/ZRE).'
     : '* Value basis: excl. VAT 15%. Net incl. returns (ZCD/ZDRO/ZRE). | * Negative values indicate returns exceed shipments in that month.';
-  document.getElementById('st12Title').textContent = isQty
-    ? '1-2. Q1 Sell-Through by Category' : '1-2. Q1 Sell-Through by Category';
+  document.getElementById('st12Title').textContent = '1-2. Jan–Apr Sell-Through by Category';
   document.getElementById('st12Sub').textContent   = isQty ? 'Unit: Units' : 'Unit: SAR';
-  document.getElementById('catCol26').textContent  = isQty ? '2026 Q1 Units' : '2026 Q1 Value';
-  document.getElementById('catCol25').textContent  = isQty ? '2025 Q1 Units' : '2025 Q1 Value';
+  document.getElementById('catCol26').textContent  = isQty ? '2026 Jan–Apr Units' : '2026 Jan–Apr Value';
+  document.getElementById('catCol25').textContent  = isQty ? '2025 Jan–Apr Units' : '2025 Jan–Apr Value';
   const cats = getCats();
   renderKPI(cats);
   renderST(cats);
@@ -713,7 +712,7 @@ function renderKPI(cats) {
       <div class="kpi-label">Sell Thru Q1 2026 (SAP)</div>
       <div class="kpi-value">${fmtSt(st26)}${isQty?' units':''}</div>
       <div class="kpi-yoy ${st26>=st25?'up':'down'}">${pct(st25,st26)} YoY</div>
-      <div class="kpi-sub">vs 2025 Q1: ${fmtSt(st25)}${isQty?' units':''}</div>
+      <div class="kpi-sub">vs 2025 Jan–Apr: ${fmtSt(st25)}${isQty?' units':''}</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-label">OR Total Sell Thru Q1</div>
@@ -731,7 +730,7 @@ function renderKPI(cats) {
       <div class="kpi-label">Sell Out Q1 2026 (Dealer)</div>
       <div class="kpi-value">${fmtQ(so26)} units</div>
       <div class="kpi-yoy ${so26>=so25?'up':'down'}">${pct(so25,so26)} YoY</div>
-      <div class="kpi-sub">vs 2025 Q1: ${fmtQ(so25)} units</div>
+      <div class="kpi-sub">vs 2025 Jan–Apr: ${fmtQ(so25)} units</div>
     </div>
   `;
 }
