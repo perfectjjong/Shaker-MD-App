@@ -65,7 +65,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest. 재무 리스크 없는 A+ 계정이나 전략 Sell-Out -22% + LG 가격 프리미엄(Gree 대비 최대 +48%)이 피크 시즌 소진 가속을 이번 주 결단 과제로 만든다."
+          "one_line": "Risk Yellow — Invest. 재무 리스크 없는 A+ 계정이나 전략 Sell-Out -22% + LG 가격 프리미엄(Gree 대비 최대 +48%)이 피크 시즌 소진 가속을 이번 주 결단 과제로 만든다.",
+          "one_line_ko": "Risk Yellow — Invest. 재무 리스크 없는 A+ 계정이나 전략 Sell-Out -22% + LG 가격 프리미엄(Gree 대비 최대 +48%)이 피크 시즌 소진 가속을 이번 주 결단 과제로 만들고 있습니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 감소(2026 YTD Sell-In SAR 11.5M, annualized 기준 전년 대비 pace 하락) → Sell-Out -23% YoY(5,535u→4,280u, Jan-Apr 동기 비교) → Stock WOS 4.3w 🟢(정상 하단) → 주력 모델 전환 중(2025 C182EC 5,905u→2026 탑5 不在, LO182C·NS/ND 라인으로 이동) → 모델 전환기 소비자 인지도 갭 + 가격 프리미엄이 복합 작용. WOS 4.3w는 피크 진입 시 2~3주 내 언더스톡 전환 가능성 — 지금이 보충 발주 타이밍.",
@@ -103,7 +104,17 @@
             "deadline": "2026-06-01"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Hamad Al-Manea는 재무상 최우량(AR SAR 10.5M, 연체 0%, A+/Q1-Safe)이나 Split+Floor 전략 Sell-Out이 -22% YoY로 피크 시즌에 진입하고 있으며, Split WOS는 4.3주로 정상 범위 하단에 위치합니다.",
+          "근본 원인은 두 가지 복합 작용입니다: ① 2025 상반기 이례적 하이베이스(라마단 타이밍·모델 전환 전 사전 적재)로 인한 기저 효과, ② 주력 세그먼트(1.5T~2.5T Inverter) 전반에서 Gree 대비 +13~48% 가격 프리미엄으로 인한 소비자 Pull 약화 — 채널 이탈이 아닌 소진 속도 둔화 문제입니다.",
+          "지금 소진 지원 없이 방치하면 5~6월 Split WOS가 4주 이하로 붕괴하면서 추가 Sell-In 창이 닫히고, 피크 시즌(5~9월) 전체를 Gree·삼성에 내주는 기회 손실이 발생합니다. 2023→2025 Split 꾸준 성장(+6%→+30%) 계정을 피크 시즌에 방어하지 못하면 채널 신뢰 복구 비용이 소진 지원 비용을 초과합니다."
+        ],
+        "decision_required_ko": "이번 주 내 Split 볼륨 3대 모델(LO182C·NS242C3·NS182C) 대상 5월 소진 프로모션 및 1.5T~2.5T Inverter 가격 갭 완화 프로그램(번들/트레이드인)을 승인하고, 5월 3주차 이전 Split 보충 발주 일정을 확정하십시오.",
+        "options_ko": [
+          "Option A — 즉시 투자: 5월 1주차 소진 프로모 가동 + Inverter 세그먼트 번들 프로그램 승인 + Split 보충 발주 5월 3주차 전 확정 → 피크 시즌 개막 타이밍에 소비자 Pull을 확보하고 WOS 4주+ 방어에 성공. A+ 계정 재무건전성을 레버리지로 신용 리스크 없이 투자 효과 극대화. 5~6월 Split SO 회복 시 Q3 추가 Sell-In 기회까지 연결됩니다.",
+          "Option B — 홀드: 5월 Sell-Out 데이터 확인 후 6월 재검토 → 5월 2~3주 데이터 대기하는 동안 피크 시즌 개막 주를 경쟁사에 헌납. Split WOS가 4주 이하로 내려가면 보충 발주 리드타임(통상 3~4주) 감안 시 6~7월 언더스톡 가능성이 높아지며, 기회비용이 투자비용보다 클 가능성이 있습니다."
+        ]
       }
     },
     "1110000005": {
@@ -168,7 +179,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest in sellout activation. April recovery signal is real but fragile; without immediate in-store activation the 1,414u OUD pipeline inflates WOS above 20w entering June, collapsing margin and widening DSO past the 150d tripwire."
+          "one_line": "Risk Yellow — Invest in sellout activation. April recovery signal is real but fragile; without immediate in-store activation the 1,414u OUD pipeline inflates WOS above 20w entering June, collapsing margin and widening DSO past the 150d tripwire.",
+          "one_line_ko": "리스크 Yellow — Sell-Out 활성화 투자 실행 필요. 4월 회복 시그널은 실재하나 취약하며, 즉각적인 매장 활성화 없이는 1,414대 OUD 파이프라인이 6월 진입 WOS 20주 이상으로 부풀려 마진 붕괴 및 DSO 150일 임계치 초과를 야기합니다."
         },
         "category_flow": {
           "Split": "Sell-Thru accelerating (buy pace 1.4x T12M, 1,104u OUD incoming) → Sell-Out recovering: YTD −10% YoY but April inflected to +3% YoY (451u vs 438u), first positive comp of 2026, with Sep-2025 precedent of 245u/wk showing this channel can absorb velocity → WOS 12.7w OVERSTOCK: hold-Sell-In gate triggered, next order unlock only when WOS falls below 8w → LO182C (96u on hand, 263u YTD top seller), NS182C (44u), LK182C (33u) are primary activation SKUs representing 54% of physical stock → Ex-Window verdict: underlying consumer demand is recovering at peak entry; WOS digestion is the binding constraint, not demand destruction.",
@@ -210,7 +222,17 @@
             "deadline": "2026-06-30"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Split+Floor Sell-Out YTD는 전년比 −10%이나 4월에 +3%로 전환되며 2026년 첫 플러스 실적을 기록했습니다 — 한편 WOS 12.7주(과재고 임계치)인 상황에서 1,414대 OUD 파이프라인이 추가 입고 예정이며, 피크 시즌 활성화 가능 창은 지금 열려 있고 5월 말 닫힙니다.",
+          "지속적인 YoY 하락의 근본 원인은 최고 회전율 구간인 1.0T~1.5T 인버터 세그먼트에서 LG가 Gree·Midea 대비 28~50% 가격 프리미엄을 유지하며 진열 회전 속도를 압박하는 구조적 문제입니다 — 4월 회복은 소비자 수요가 실재함을 확인해 주지만, 피크 기간 내내 지속하려면 정가 인하가 아닌 캐시백·번들 방식의 가격-가치 연결 메커니즘이 필요합니다.",
+          "5월 내 활성화 미실행 시 1,414대 OUD가 기존 재고 318대 위에 쌓여 6월 진입 시 WOS 20주 초과, 계정 자력 할인 소진 돌입, DSO 150일 임계치 초과로 이어지며 — SAR 1,900만 연간 Sell-In 규모의 Grade-A OR 관계가 최악의 시점에 재무 스트레스 상태로 진입하게 됩니다."
+        ],
+        "decision_required_ko": "WOS 20주 초과 전 1,414대 OUD 파이프라인을 소비자 현금으로 전환하기 위해, 5월 즉시 실행 가능한 매장 내 피크 시즌 Sell-Out 활성화 예산(POSM 교체, 진열 배치, 설치기사 Pull-Through 인센티브)을 즉시 승인하십시오.",
+        "options_ko": [
+          "옵션 A — 지금 즉시 활성화 실행 (권고안): 5~6월 피크 기간 Sell-Out 가속 → WOS 12.7주→8주 목표 수렴 → 현금 회수 개선 및 YTD DSO 133일→90일 신용 조건 압축 → 4월 +3% 모멘텀 지속·검증 → 변곡점에서 Grade-A 관계에 투자 보상. 단, 공동 마케팅 예산 집행은 계정의 SAR 152K 연체 해소 및 Q3 말까지 DSO <120일 약정 조건부로 진행.",
+          "옵션 B — 예산 보류, 추가 Sell-Out 데이터 관망: 1,414대 OUD가 5월 말 진열에 도착 → WOS 20주 초과 → 계정 자력 할인 소진으로 마진 훼손 → DSO 150일 임계치 초과로 공식 신용 검토 및 Sell-In 동결 강제 → 6월~7월은 과재고 긴급 세일로 변질되어 피크 시즌 한복판에 OR 채널 내 LG 브랜드 포지셔닝 붕괴 — 4월 회복 시그널 소멸."
+        ]
       }
     },
     "1110000000": {
@@ -274,7 +296,8 @@
         "verdict": {
           "risk_level": "red",
           "investment_signal": "hold",
-          "one_line": "Risk RED — HOLD. 채널 소비 역량은 실재하나 DSO 318일(계약 120일의 2.65배)·60d+ 연체 SAR 34.4M 고착·WOS 31.5주 3중 임계 초과로 신규 출하는 즉시 손실 확대이며, 30일 내 SAR 10M 이상 회수 확인을 재활성화 유일 조건으로 설정."
+          "one_line": "Risk RED — HOLD. 채널 소비 역량은 실재하나 DSO 318일(계약 120일의 2.65배)·60d+ 연체 SAR 34.4M 고착·WOS 31.5주 3중 임계 초과로 신규 출하는 즉시 손실 확대이며, 30일 내 SAR 10M 이상 회수 확인을 재활성화 유일 조건으로 설정.",
+          "one_line_ko": "Risk RED — HOLD. 채널 소비 역량은 실재하나 DSO 318일(계약 120일의 2.65배)·60d+ 연체 SAR 34.4M 고착·WOS 31.5주 3중 임계 초과로 신규 출하는 즉시 손실 확대이며, 30일 내 SAR 10M 이상 회수 확인을 재활성화 유일 조건으로 설정하시기 바랍니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 축소(연간 SAR 111M→62M→26M YTD 감소 추세, 신중한 채권 관리 반영) → Sell-Out Jan-Apr +17% YoY(4,554→5,320u, LB182C 2,051u·LB242C 1,029u 주도, 소비자 수요 실재) → 유효재고 SEVERE OVERSTOCK(Stock 6,294u + OUD 3,854u = 10,148u, WOS 25.6주 / Inverter 단독 47.2주) → WOS 25.6주는 적정 상한(8주)의 3.2배: 소비 모멘텀은 명확하나 현 재고 소진에 최소 6개월 이상 소요, 신규 Sell-In은 물리적으로도 수용 불가 수준",
@@ -316,7 +339,17 @@
             "deadline": "2026-06-06 (30일 후)"
           }
         ],
-        "signal": "red"
+        "signal": "red",
+        "summary_3lines_ko": [
+          "채널 소비자 수요는 진짜입니다(Split+Floor +13% YoY ex-Window). 그러나 WOS 31.5주(Split 25.6주·Inverter 47.2주·Floor 41.5주)의 구조적 과적과 OUD 7,286u 파이프라인이 겹쳐 있어, 채널이 신규 재고를 소화할 물리적 공간이 이미 소진된 상태입니다.",
+          "2024년 Window 집중 스토킹(16,236u)이 형성한 대규모 AR이 60일+ 연체 SAR 34.4M으로 굳어졌으며, 계정은 미회수 상태에서 구매를 오히려 1.3배 가속하고 있습니다. 이는 유동성 압박 속 '제품으로 현금 대체(물건 수취로 결제 유예)' 패턴의 전형적 신호로, 이 가설이 맞다면 출하 지속은 회수 불능 채권을 확대하는 구조입니다.",
+          "출하 보류 없이 피크 시즌(5~9월)에 진입하면 계정은 '성수기 긴급 수요'를 이유로 추가 주문을 압박할 것이며, LG의 협상 레버리지는 소멸합니다. 지금 멈추지 않으면 SAR 34.4M 60일+ 연체가 SAR 50M+ 구조 부실로 굳어질 현실적 경로가 열립니다."
+        ],
+        "decision_required_ko": "2026-05-09까지 OUD 7,286u PGI 전면 보류 공식 결재 및 Bin Hamood C레벨 대상 SAR 34.4M(60d+) 30일 분할상환 서면 합의를 착수하고, 30일 내 SAR 10M 이상 회수 확인을 Split Rotary 출하 재개의 유일한 선행 조건으로 문서화하시기 바랍니다.",
+        "options_ko": [
+          "Option A — 즉각 출하 보류 + 30일 회수 집중 (권고): OUD 7,286u PGI 전면 보류 및 48시간 내 공식 통보, C레벨 면담 1주 내 착수. 30일 내 SAR 10M 이상 회수 확인 시 Split Rotary(WOS 18.4주) 출하 재개 검토. 단기 Sell-In 기회비용이 발생하나 SAR 34.4M 회수 협상력 최대화 및 추가 손실 차단 효과가 있으며, 계정 관계의 단기 긴장은 감수해야 합니다.",
+          "Option B — 조건부 소량 출하 유지(회수 마일스톤 연동): 월 SAR 5M 회수를 선행 이행 조건으로 Split Rotary OUD 일부(2,794u)만 단계적 출하 허용. 계정 관계 및 피크 시즌 셀아웃 모멘텀을 부분적으로 보호할 수 있으나, 마일스톤 불이행 시 재협상 비용 상승 및 신규 노출 SAR 5~10M 추가 위험이 확정되며, 이행 감시 체계 부재 시 Option A보다 나쁜 결과로 귀결될 수 있습니다."
+        ]
       }
     },
     "1110000007": {
@@ -382,7 +415,8 @@
         "verdict": {
           "risk_level": "red",
           "investment_signal": "hold",
-          "one_line": "Risk RED — HOLD. 2025 과잉 Sell-In이 Rotary dead stock을 채널에 누적시켜 딜러 현금흐름을 고사시켰고, SAR 1.13M 60d+ 채권이 7일 연속 flatline — 신규 투자 전 재고·채권 쌍방 해소가 선행조건."
+          "one_line": "Risk RED — HOLD. 2025 과잉 Sell-In이 Rotary dead stock을 채널에 누적시켜 딜러 현금흐름을 고사시켰고, SAR 1.13M 60d+ 채권이 7일 연속 flatline — 신규 투자 전 재고·채권 쌍방 해소가 선행조건.",
+          "one_line_ko": "Risk RED — HOLD: 2025년 과잉 Sell-In으로 Rotary dead stock이 채널에 누적되어 딜러 현금흐름이 고사 상태이며, SAR 1.13M 60d+ 채권이 7일 연속 flatline — 신규 투자 전 재고·채권 쌍방 해소가 선행조건입니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 2026 전면 중단(net -SAR 180K 반품, 신규 출하 0) → Sell-Out +28% YoY(357u, 소비자 수요 생존·피크 모멘텀 확인) → Stock 515u: Inverter 102u·12.1 WOS(경계선), Rotary 413u·115.9 WOS(현 소화속도 4u/주 기준 2년+ 잔존 = 사실상 dead stock) → 주요 재고 LO182C 148u·LA182H 76u 중심이나 Rotary가 채널 유동성 전체를 잠식 → ex-Window 판단: Split 소비자 수요는 구조적으로 건강하나 Rotary dead stock 해소 없이 Inverter 성장도 채권 회수도 불가",
@@ -420,7 +454,17 @@
             "deadline": "2026-05-18"
           }
         ],
-        "signal": "red"
+        "signal": "red",
+        "summary_3lines_ko": [
+          "Split 소비자 수요는 +28% YoY로 살아있으나, Floor/Cassette -56% 급락·Rotary 415u(115.9 WOS) dead stock·2026 Sell-In 전면 중단·SAR 1.13M 60d+ 채권 7일 연속 flatline이 겹쳐 채널 전략 지표(ex-Window)는 -12% 하락이며 딜러 유동성은 사실상 고갈 상태입니다.",
+          "근본 원인: 2025년 Sell-In +67%(SAR 10.1M) 급증이 Sell-Out +38% 성장을 크게 초과하며 Rotary·대형 SKU를 채널에 누적시켰고, 가격 프리미엄(Gree 대비 대형 Inverter +41~145%)이 소화를 구조적으로 차단해 딜러 현금흐름이 고사 상태 — OVD 62% flatline이 수금 중단을 확인해 줍니다.",
+          "방치 시: 5~9월 피크 시즌(2025년 5월 최고 243u/월) 동안 Alkhunaizan이 재고 과잉·자금경색 상태로 경쟁사 채널에 수요를 고스란히 내주게 되며, 60d+ SAR 1.13M은 90d+ 심화·대손 전환 가능성이 높아져 2025년 SAR 10.1M 채널 기반이 이번 여름 붕괴될 수 있습니다."
+        ],
+        "decision_required_ko": "Rotary 재고 반품과 SAR 1.13M 채권 상계를 연계한 구조적 딜을 이번 주 Alkhunaizan C레벨과 착수할 것인지 — 채권 회수·재고 출구·피크 시즌 Split Inverter 재개 세 과제를 동시에 해소하는 유일한 연결고리이며, 5월 피크 진입 이후에는 협상 레버리지가 소멸됩니다.",
+        "options_ko": [
+          "Option A — Rotary 반품·채권 상계 + Split Inverter 조건부 재개 패키지 협상: Rotary 413u LG 반품 처리 → 60d+ SAR 1.13M 채권 일부 상계·잔여 분할납부 스케줄 확정 → 딜러 유동성 즉시 개선 → WOS 12주 미만 도달 시 Split Inverter(LO182C·LA182H) 한정 Sell-In 재개 → 피크 시즌 매출 부분 회복. 비용: LG 반품 처리·재고 재분배 비용이 발생하나 대손 처리 대비 순손실 최소화 가능합니다.",
+          "Option B — 신용 동결 유지·현금 분할 회수만 추진: 재고 지원 없이 현금 회수 협상만 진행 → 딜러 자체 유동성으로 Rotary 소화 기간 2년 이상 소요 → 5~9월 피크 수요가 경쟁사로 유출돼 2026 Sell-Out 전면 부진 확정 → 채권 연체 장기화·대손 위험 증대 → Grade A 채널 기반 장기 손상이 우려됩니다."
+        ]
       }
     },
     "1110000008": {
@@ -643,7 +687,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest (sell-out only). Grade-A pioneer with zero overdue and improving YTD DSO, but 27.8w Inverter overstock entering peak demands immediate demand-pull investment; block new Sell-In until WOS < 12w and SAR 2M pre-2026 AR is settled."
+          "one_line": "Risk Yellow — Invest (sell-out only). Grade-A pioneer with zero overdue and improving YTD DSO, but 27.8w Inverter overstock entering peak demands immediate demand-pull investment; block new Sell-In until WOS < 12w and SAR 2M pre-2026 AR is settled.",
+          "one_line_ko": "리스크 옐로우 — 투자 (셀아웃 한정): 연체 0건에 YTD DSO 개선 중인 Grade-A 파이오니어 계정이나, 피크 진입 시점의 27.8주분 인버터 과잉재고가 즉각적인 수요 견인 투자를 요구하며, WOS 12주 미만 및 2026년 이전 미수금 SAR 200만 정산 완료 전까지 신규 Sell-In을 차단해야 합니다."
         },
         "category_flow": {
           "Split": "Sell-Thru declining trend (SAR 17.9M→11.1M→6.1M YTD) but 2026 buy pace is 1.6x T12M avg — channel is still actively ordering. Sell-Out -5% YoY same-period (1,465u→1,395u Jan–Apr), within tolerance. Stock: CRITICAL — Inverter 27.8w / Rotary 15.2w / Overall Split 19.7w vs healthy 4–8w target; 1,268u OUD pipeline already in motion on top of 558u physical = 1,826u effective Split stock at 92u/wk. Key models: LO182C (392u), LO182H, LK182H driving volume but LG Inverter price premium of 13–37% above Gree and +27% vs Samsung on the pivotal 2.0T C Inv is actively suppressing velocity. DO NOT approve new Split Sell-In; full sell-out activation required before OUD lands on shelf.",
@@ -685,7 +730,17 @@
             "deadline": "W22 (by 2026-06-05)"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Black Box는 연체 0건의 Grade-A OR 파이오니어 계정으로 2026년 매입 속도가 T12M 대비 1.6배로 가속되고 있으나, 채널에는 이미 1,959대의 유효 스플릿 재고(인버터 WOS 27.8주)가 쌓인 채 5~9월 피크 시즌에 진입하고 있으며, 1,268대 규모의 스플릿 OUD 파이프라인은 이미 실행 중이라 청구서 발행을 막을 수 없는 상황입니다.",
+          "수급 갭은 구조적 문제입니다: LG 인버터는 핵심 2.0T 세그먼트에서 Gree 대비 13~37%, 삼성 대비 27% 높은 가격으로 자연 소진 속도가 주당 약 94대에 그쳐 피크 종료 전 재고 소진에 필요한 주당 150대에 크게 못 미치며, T12M DSO 240일이 DPO 180일을 초과하고 SAR 720만의 미수금 잔액이 이미 2026년 YTD Sell-In을 초과해 AR 리스크가 현실화되고 있습니다.",
+          "W20 이전에 셀아웃 프로모션이 시작되지 않는다면, 27.8주분 인버터 과잉재고는 6~7월에 걸쳐 더욱 누적되고, OUD 파이프라인 청구서는 이미 2026년 이전 잔액을 보유한 채널의 AR 장부에 추가 적재되며, YTD DSO는 현재 148일에서 더욱 악화되어 피크 이후 논의는 성장이 아닌 신용 재협상 국면으로 전환될 것입니다."
+        ],
+        "decision_required_ko": "인버터 피크 시즌 셀아웃 프로모션(목표: 현재 주당 94대 → 150대)을 승인하고, 동시에 다음 PO 발행은 'WOS 12주 미만 + 2026년 이전 미수금 SAR 200만 최소 정산' 충족을 조건으로 게이팅하되, OUD 파이프라인이 W20에 입고되기 전 이번 주 내 의사결정을 확정해야 합니다.",
+        "options_ko": [
+          "Option A — 셀아웃 프로모션 즉시 실행 + AR 정산 조건부 게이팅: 소비자 대면 인버터 가격 지원 또는 번들 프로모션으로 Gree·삼성 대비 13~37% 가격 갭을 해소하고 셀아웃을 주당 150대로 가속시키며, WOS를 6월 말까지 10~12주로 낮추고, SAR 200만 정산으로 다음 청구서 피크 이전 AR 익스포저를 줄여 YTD DSO 개선 궤도를 유지하고 피크 기간 Grade A 등급을 보호합니다. 비용: 프로모션 예산(규모 미정). 리스크: 피크 정점을 잡으려면 W21 이전 실행 개시가 필수입니다.",
+          "Option B — 관망, 자연 피크 수요 대기: 1,959대 유효 재고가 수요 견인 없이 입고되고 LG 가격 프리미엄이 Gree·삼성 대비 유지되어 셀아웃이 주당 94대 수준에 머물며, 인버터 WOS가 7월까지 20주 이상 지속되고 OUD 파이프라인 청구서가 SAR 720만 AR 잔액을 더욱 키우며, T12M DSO는 DPO 180일 초과 상태가 이어지고, 3분기 OVD가 발생할 경우 Grade A 지위와 파이오니어 Window 런칭 관계 모두 위험에 처하게 됩니다."
+        ]
       }
     },
     "1110000009": {
@@ -750,7 +805,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest (targeted). Split+Floor +90% YoY 실수요가 채널 건강을 증명하나, Rotary 20.8w 과재고 해소 전 전면 Sell-In 확대는 금지 — Floor/Cassette 결품 긴급 보충과 Rotary 채널 판촉 소진에 자원을 집중할 것."
+          "one_line": "Risk Yellow — Invest (targeted). Split+Floor +90% YoY 실수요가 채널 건강을 증명하나, Rotary 20.8w 과재고 해소 전 전면 Sell-In 확대는 금지 — Floor/Cassette 결품 긴급 보충과 Rotary 채널 판촉 소진에 자원을 집중할 것.",
+          "one_line_ko": "Risk Yellow — Invest (집중형). Split+Floor +90% YoY 실수요가 채널 건강을 증명하나, Rotary 20.8w 과재고 해소 전 전면 Sell-In 확대는 금지 — Floor/Cassette 결품 긴급 보충과 Rotary 채널 판촉 소진에 자원을 집중하십시오."
         },
         "category_flow": {
           "Split": "Sell-Thru 1.7x T12M 대비 가속 → Sell-Out +281% YoY(625u, NS182C·LO182C 주도) 강세 확인 → Stock 272u 내 Inverter 87u/7.4w(🟢 정상) vs Rotary 185u/20.8w(🔴 심각 과재고) 비대칭 구조 → 소비자 흡인력은 검증됨; LG Rotary 가격 프리미엄(vs Gree +55%, vs Midea +24%)이 소화 속도 제약 — Rotary WOS 12w 이하 정상화 전 신규 Rotary Sell-In 절대 Hold",
@@ -796,7 +852,17 @@
             "deadline": "2026-06-05"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "전략 카테고리(Split+Floor, Window 제외) +90% YoY 실수요 확인 — Window 단종 효과를 제거하면 채널은 근본적으로 건강하며, NS182C·LO182C 중심 소비자 흡인력이 실판매로 전환되는 피크 진입 국면에 있습니다.",
+          "Rotary 185u/20.8w 과재고는 LG 프리미엄 가격(vs Gree +55%)이 채널 소화 속도를 억제하는 구조적 병목이며, Floor/Cassette 6u/1.0w 결품은 수요가 존재함에도 매주 약 6u의 판매 기회를 직접 잠식 중입니다. AR 136일 YTD DSO는 피크 Sell-In 확대 시 신용 잔고 급증 리스크를 내포합니다.",
+          "조치가 없을 경우: Rotary 소화 지연이 6~7월까지 채널 공간을 점유해 Inverter·Floor/Cassette 보충 여력을 제한하고, Floor/Cassette 결품 지속은 5~6월 피크 핵심 판매 기회를 누락시키며, SAR 704K 미회수는 5월 AR 잔고 급증 시 30~60일 연체로 전이될 수 있습니다 — 세 가지 모두 방치 비용이 매우 높습니다."
+        ],
+        "decision_required_ko": "이번 주 안에 두 가지를 동시 확정하십시오: ① Floor/Cassette(APNQ55GT3E6) 긴급 보충 발주 승인(피크 판매 기회 즉각 회복), ② Rotary 신규 Sell-In Hold 공식화 + 채널 판촉 자원 배정(WOS 12주 이하 정상화를 조건부 해제 기준으로 설정).",
+        "options_ko": [
+          "Option A — 즉시 3중 병렬 실행 (권고): Floor/Cassette 긴급 보충 + Rotary Sell-In Hold + SAR 704K 조기 회수를 동시 진행합니다. 결품 해소로 5~6월 피크 판매 기회가 즉시 회복되고, Rotary 채널 부담 완화로 WOS 정상화 기반이 마련되며, AR 선정리로 6월 신용한도 재검토 경로가 확보됩니다. 세 실행이 상호 보강하여 피크 시즌 수익화를 극대화하고 7월 Inverter 보충·Rotary 재개 옵션도 열립니다.",
+          "Option B — 보수적 대기: SAR 704K 회수 확인 후 모든 Sell-In 결정을 보류합니다. 신용 리스크는 단기 최소화되나, Floor/Cassette 결품이 피크 5~6월 판매 기회를 주별로 누적 잠식하고 경쟁사(Gree·Midea 저가) 선점 위험이 증가합니다. 이미 검증된 +90% YoY 모멘텀 활용 타이밍이 소멸하고 하반기 만회 비용이 더 커질 수 있습니다."
+        ]
       }
     },
     "1110000010": {
@@ -861,7 +927,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "hold",
-          "one_line": "Risk Yellow — Hold. 4월 Split 반등 모멘텀은 살리되, Split 20.8주·Floor 29.0주가 12주 이하로 정상화될 때까지 OUD 431u를 포함한 신규 Sell-In 전량 동결한다."
+          "one_line": "Risk Yellow — Hold. 4월 Split 반등 모멘텀은 살리되, Split 20.8주·Floor 29.0주가 12주 이하로 정상화될 때까지 OUD 431u를 포함한 신규 Sell-In 전량 동결한다.",
+          "one_line_ko": "Risk Yellow — Hold. 4월 Split 반등 모멘텀은 살리되, Split 20.8주·Floor 29.0주가 12주 이하로 정상화될 때까지 OUD 431u를 포함한 신규 Sell-In 전량을 동결합니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 1.2x 가속(buy pace T12M 대비) → Sell-Out YTD -36%이나 4월 261u로 +25% YoY 첫 반전, LO182C(293u)·NS182C(129u) 주도 → 실재고 801u+OUD 431u=유효재고 1,232u, WOS 20.8주 SEVERE OVERSTOCK(임계 12주의 1.7배) → Inverter WOS 26.4주가 Rotary 16.5주보다 더 심각; 4월 반등 모멘텀을 sell-out 드라이브로 이어가되 신규 Sell-In은 WOS 12주 이하 달성 전까지 절대 동결",
@@ -903,7 +970,17 @@
             "deadline": "2026-07-07"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Split은 4월 첫 YoY 플러스(+25%) 전환으로 회복 가능성을 열었으나 Floor/Cassette -88% 붕괴가 전략 지표(ex-Window) -50%를 주도 — Window 구형 감소는 구조적 단종으로 성과 왜곡 원천 제거가 필수합니다.",
+          "Sell-In 1.2x 가속 vs Sell-Out -36% 역행으로 채널 재고가 22주까지 축적됐고, LG-Gree 최대 +60% 가격 프리미엄과 Floor 상업 프로젝트 수주 손실(추정)이 소진 부진의 복합 원인으로 의심됩니다.",
+          "OUD 431u를 지금 납품하면 Split Inverter WOS 26.4주→30주 이상으로 악화되어 피크 시즌에도 채널 포화가 유지되고, DSO 196일 구조와 결합해 Q3 OVD 스파이크로 직결될 가능성이 높습니다."
+        ],
+        "decision_required_ko": "이번 주 내 OUD 431u 파이프라인 전량 PGI 보류 vs 선별 조건부 납품 중 택일 — 연체 SAR 745,570 결제 계획 서면 확약 수령과 반드시 연동하여 결정해야 합니다.",
+        "options_ko": [
+          "Option A — OUD 전량 즉시 보류 + 연체 선결제 조건부 해제: 재고 과잉 방어 최대화(Split WOS 20.8주 추가 악화 차단) 및 연체 SAR 745,570 수금 레버리지 최대 확보 — 단, 계정 관계 마찰 및 4월 반등 모멘텀 단절 위험이 있습니다.",
+          "Option B — WOS 12주 이하 모델 한정 선별 납품 + 결제 계획 서면 확약: 4월 반등 모멘텀 유지가 가능하나, 현재 WOS 12주 이하 모델이 사실상 전무하여 실질 납품 가능 물량이 극소화됩니다 — 재고 관리와 관계 유지의 균형점이나 운영 복잡도가 증가합니다."
+        ]
       }
     },
     "1110000012": {
@@ -1400,7 +1477,8 @@
         "verdict": {
           "risk_level": "red",
           "investment_signal": "exit",
-          "one_line": "Risk RED — Exit. 87% AR overdue with 925d DSO vs 90d term, zero buy pressure from 39.6w Rotary overstock, and SAR 856K in the hardest-to-recover aging bucket — existing exposure must be collected before any commercial reinvestment is discussed."
+          "one_line": "Risk RED — Exit. 87% AR overdue with 925d DSO vs 90d term, zero buy pressure from 39.6w Rotary overstock, and SAR 856K in the hardest-to-recover aging bucket — existing exposure must be collected before any commercial reinvestment is discussed.",
+          "one_line_ko": "리스크 RED — 철수. AR의 87%가 연체 중이고 DSO 925일(약정 90일 대비), Rotary 39.6주치 과재고로 구매 압력 전무, SAR 856K가 회수 난이도 최고 버킷에 적체된 상황으로, 상업적 재투자 논의 이전에 기존 익스포저 회수가 선행되어야 합니다."
         },
         "category_flow": {
           "Split": "Sell-Thru near-zero (2026 buy pace 0.2x, SAR 155K YTD vs SAR 9.3M in 2024) → Sell-Out recovering +16% YoY same-period (477u vs 411u, LA242C 187u dominant) → Stock SEVERE OVERSTOCK: Rotary 647u at 39.6w, Inverter 127u at 13.8w, Overall Split 30.1w — channel has demand signal but 10 months of Rotary inventory in-hand; WOS gate (>12w) blocks all new Sell-In regardless of demand trend",
@@ -1446,7 +1524,17 @@
             "deadline": "2026-09-30"
           }
         ],
-        "signal": "red"
+        "signal": "red",
+        "summary_3lines_ko": [
+          "전략 채널 수요(Split+Floor, Window 제외)는 YoY +21% 회복 중이며 LA242C가 명확한 수요 앵커이나, 채널은 이미 807대(Rotary 단독 39.6주치)를 보유 중이어서 LG는 추가 출하를 통한 수금 레버리지를 전혀 활용할 수 없는 상황입니다.",
+          "근본 원인은 2024년 과매입 악순환으로, SAR 930만의 Sell-In이 소화 가능한 Sell-Thru 역량을 대폭 초과했고 미소화 재고가 계정 현금 포지션을 잠식하면서 결제가 동결되었으며, 현재 SAR 856K가 60일 이상 연체 상태이고 YTD DSO는 신용 조건 90일 대비 925일에 달합니다.",
+          "5월 중순까지 구조적 상환 합의가 이루어지지 않을 경우, 60일+ 버킷은 성수기(5~9월)를 거치며 사실상 회수 불가 영역으로 추가 노화될 것이며, 계정의 과재고 포지션으로 인해 수금 레버리지를 창출할 자생적 구매 활동도 기대할 수 없습니다."
+        ],
+        "decision_required_ko": "SAR 856K에 대한 30일 구조적 상환 최후통첩과 함께 공식 신용 보류를 발동하거나 법적 채권 추심으로 escalate할지 여부를 성수기 전인 5월 9일까지 반드시 결정해야 합니다.",
+        "options_ko": [
+          "옵션 A — 구조적 상환 최후통첩 (권고안): 즉시 공식 신용 보류를 발동하고, 30일 내 SAR 30만 부분 결제 및 잔액 SAR 55.6만에 대한 3~6개월 분할 상환 계획을 요구하되, 연체 이자 면제를 유일한 양보 조건으로 제시합니다. 수락 시 OVD 50% 미만·잔액 SAR 50만 미만 조건 충족 시에 한해 조건부 Sell-In 재개를 허용함으로써 성수기 종료 전 현금 회수를 강제하면서 거래 관계를 유지합니다.",
+          "옵션 B — 즉시 법적 escalation: 5월 14일까지 SAR 856K 60일+ 채권을 외부 추심 기관 또는 법무 대리인에게 이관하여 노화 버킷의 회수 가능성을 극대화하되 상업적 거래 관계는 종료됩니다. 옵션 A에 14일 내 응답이 없거나 비공식 정보상 지급 불능 위험이 감지될 경우 적용합니다."
+        ]
       }
     },
     "1110000016": {
@@ -4543,7 +4631,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "hold",
-          "one_line": "Risk Yellow — Hold. Floor/Cassette Sell-Out is real and growing, but Split overstock at 48w and DSO at 159d structurally prohibit any new Sell-In or credit until AR milestones are cleared."
+          "one_line": "Risk Yellow — Hold. Floor/Cassette Sell-Out is real and growing, but Split overstock at 48w and DSO at 159d structurally prohibit any new Sell-In or credit until AR milestones are cleared.",
+          "one_line_ko": "리스크 Yellow — Hold. Floor/Cassette Sell-Out은 실질적이고 성장세에 있으나, Split 48주 WOS와 DSO 159일은 AR 마일스톤 달성 이전의 신규 Sell-In 및 신용 공여를 구조적으로 차단합니다."
         },
         "category_flow": {
           "Split": "Sell-Thru: elevated and compounding — 190u Inverter OUD still inbound on top of 86u existing stock, total effective stock 276u → Sell-Out: declining, -20% YoY same-period, running at only 6u/wk with no acceleration signal → Stock: SEVERE OVERSTOCK at 48w overall (Inverter 64w, Rotary 92w) — no model in healthy WOS range → Key models: LA182C at 41u is dead weight at current velocity; NF182C2 phase-out risk; Rotary SKUs collectively at 92w WOS are stranded inventory → Verdict: Hard freeze on all new Split Sell-In with no exceptions; urgently activate Sell-Out support (installer incentive, display push) to absorb the 190u OUD before it lands and buries the channel deeper entering peak.",
@@ -4581,7 +4670,17 @@
             "deadline": "2026-06-01"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Floor/Cassette Sell-Out은 APNQ55GT3M6을 고정 주력 모델로 YoY +376%(1~4월 276대)의 실질 강세를 보이고 있으나, Split은 기존 재고 86대에 Inverter OUD 190대가 추가 입고 예정인 48주 WOS의 구조적 공급 과잉 위기 상태로, 수요 신호와 무관하게 채널이 Split을 물리적으로 소화할 수 없는 상황입니다.",
+          "근본 원인은 이중적입니다: 수 분기에 걸쳐 Split Sell-In이 Sell-Out을 지속 초과하며 자초한 과잉재고를 형성한 동시에, 계정이 선택적 대금 지급 AR 패턴을 사실상 정상화하고 있습니다(DSO 159일 vs 계약 90일, OVD 40.9%로 급등하였으나 6회 연속 스냅샷에 걸쳐 자체 조정 전무) — LG는 계약 기준 1.77배로 이 계정을 사실상 금융 지원하고 있으며, 직접 개입 없이는 계정이 변화할 유인이 없습니다.",
+          "현 상태 방치 시: Inverter OUD 190대가 피크 시즌 한복판에 이미 포화된 Split 재고에 추가 입고되어 Rotary WOS가 120주 이상으로 치솟고, A+ 계정은 AR 무대응을 고착된 행동 규범으로 내재화하며, LG는 하반기에 동결 채권과 물리적으로 Split 추가 수주가 불가한 채널을 안고 진입하게 됩니다 — 현금 회수와 피크 시즌 최고마진 카테고리 소진율을 동시에 포기하는 결과입니다."
+        ],
+        "decision_required_ko": "이번 주 AR 입장과 Sell-In 게이트를 확정해야 합니다: 외과적 동결(Split 즉시 동결 + SAR 177만 상환 스케줄 서명 조건부 Floor/Cassette OUD 출고 허용) vs. 전면 신용 보류(OVD 20% 미만 달성 시까지 전 오더 동결) — 이 선택이 Floor/Cassette 피크 시즌 기회 보전 여부와 AR 보호 우선 여부를 동시에 결정합니다.",
+        "options_ko": [
+          "옵션 A — 조건부 출고 포함 외과적 동결 (권고안): Split Sell-In을 즉시 전면 동결합니다 — 48주 WOS는 명백하며 협상 여지가 없습니다. Floor/Cassette OUD(214대)는 계정이 구조적 상환 스케줄에 서명한 경우에 한해 분할 출고를 허용합니다(SAR 42.4만의 30~60일·60일+ 버킷을 5월 15일까지 1차 완납, 잔액 SAR 134.1만은 7월까지 월별 할부). 이 구조는 계정의 유일한 전략적 성장 포인트인 Floor/Cassette 수요 모멘텀을 보전하고, 피크 시즌 공급을 원하는 계정에 대금 지급의 상업적 유인을 부여하며, 재고가 건전한 카테고리에 한정해 LG의 추가 익스포저를 통제합니다. 리스크: 계정이 서명을 지연할 경우 협상이 2주 이상 장기화되어 Floor/Cassette OUD가 피크 수요 윈도우를 놓칠 수 있습니다.",
+          "옵션 B — 전면 신용 보류: OVD 비율이 20% 미만으로 하락하고 60일+ 연체 SAR 246,689가 전액 완납될 때까지 Split·Floor/Cassette 모든 신규 출하를 동결합니다. AR 보호 극대화 및 LG가 구조적 DSO 위반을 용인하지 않는다는 가장 명확한 레버리지 메시지를 전달할 수 있습니다. 리스크: 계정의 유일한 실질 성장 동력인 Floor/Cassette 수요 모멘텀을 훼손하며, 전환 비용이 낮은 5~8월 피크 시즌 중 삼성·Gree로의 구매 이탈을 초래할 수 있습니다. 계정이 72시간 내 옵션 A 협의를 거부하는 경우에만 적용이 적절합니다."
+        ]
       }
     },
     "1110000067": {
@@ -6252,7 +6351,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "hold",
-          "one_line": "Risk Yellow — Hold (targeted). Split 수요 펀더멘털 강건하나 Floor/Cassette 31.6W 과재고 + 204d DSO 구조가 증분 투자를 차단 — OUD 동결 선행, 회수 조건 충족 시 Split만 재개."
+          "one_line": "Risk Yellow — Hold (targeted). Split 수요 펀더멘털 강건하나 Floor/Cassette 31.6W 과재고 + 204d DSO 구조가 증분 투자를 차단 — OUD 동결 선행, 회수 조건 충족 시 Split만 재개.",
+          "one_line_ko": "리스크 옐로우 — 선별적 홀드: Split 수요 펀더멘털은 견조하나 Floor/Cassette 31.6주치 과재고 및 DSO 204일 구조가 증분 투자를 차단하고 있으므로, OUD 동결을 선행하고 회수 조건 충족 시 Split만 재개하시기를 권고드립니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 안정(1.0x T12M 페이스, 투기적 과발주 없음) → Sell-Out +82% 가속(534u YTD, 월 133u) → Stock WATCH 10.7W 전체(Inverter 16.0W OVERSTOCK·신규 발주 보류 / Rotary 7.2W OK·보충 유지) → 신모델 LA-시리즈(LA242C 112u, LA182C 70u)가 ND 구형 빠르게 대체 중 → 전략 카테고리 건전, 단 Inverter 추가 Sell-In 게이팅 필수",
@@ -6290,7 +6390,17 @@
             "deadline": "2026-06-30"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "Star Appliances의 Split 수요는 월 173대로 +82% 가속 중이며 LA-시리즈 신모델 전환도 시장 적합성이 확인되었습니다. 다만 Floor/Cassette OUD 305대는 이미 31.6주치 과재고 계정에 납품 대기 중이고, 재무 측면에서는 60일 이상 연체 SAR 133만 구조가 7일째 회수 움직임 없이 고착되어 있습니다.",
+          "공급-수요 불균형이 핵심 리스크입니다. Split Rotary(7.2주치)만 보충 대상이며 Inverter(16.0주치)는 이미 과재고 상태입니다. Floor/Cassette는 주 10대 소진 속도로 피크시즌 내 OUD 305대 소화가 물리적으로 불가능하며, DSO 204일 계정에 추가 재고를 적재하면 현금 전환 시점이 Q4로 이연됩니다.",
+          "이번 주 OUD 동결 없이 납품이 진행될 경우, 피크시즌 이후 Floor/Cassette 체화재고 심화 → 소진 지연 → 대금 회수 추가 지연의 연쇄 구조가 작동합니다. 이미 구조화된 60일 이상 연체 위에 신규 AR이 적재되면 Q3 재무 노출이 연쇄적으로 악화될 수 있음을 유의하셔야 합니다."
+        ],
+        "decision_required_ko": "Floor/Cassette OUD 305대 파이프라인을 이번 주(2026-05-08) 내 납품 취소 또는 Q4 이연으로 확정하셔야 합니다 — 승인 또는 동결, 중간 옵션은 없습니다.",
+        "options_ko": [
+          "Option A (권고): OUD 305대 즉시 동결(취소 또는 Q4 이연) + Split Rotary 보충 지속 + 60일 이상 연체 SAR 70만 14일 내 회수를 피크시즌 Split 추가 공급의 전제조건으로 설정 → Floor/Cassette 과재고 악화를 차단하고 AR 추가 노출을 억제하면서, Split 피크시즌 물량 확보로 +82% 수요 포착을 유지할 수 있습니다. A+ 계정 관계 손상 없이 재고·재무 리밸런싱 달성이 가능합니다.",
+          "Option B (현행 유지): OUD 305대 납품 진행 + 추가 조치 없음 → Floor/Cassette WOS 31.6주치에서 추가 악화, 피크시즌 이후 대규모 체화재고 발생, 소진 지연으로 대금 회수가 구조적으로 Q4 지연되며, 60일 이상 SAR 133만 위에 신규 AR이 적재되어 연간 DSO가 추가 상승할 위험이 있습니다."
+        ]
       }
     },
     "1110000127": {
@@ -7660,7 +7770,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "invest",
-          "one_line": "Risk Yellow — Invest (F/C 한정, 회수 조건부). A+ 계정 피크 진입 모멘텀(Apr 104u)과 F/C 즉각 기회손실 위험이 공존하며, Rotary 31.8w 과잉이 무차별 Sell-In을 차단하는 구조적 제약."
+          "one_line": "Risk Yellow — Invest (F/C 한정, 회수 조건부). A+ 계정 피크 진입 모멘텀(Apr 104u)과 F/C 즉각 기회손실 위험이 공존하며, Rotary 31.8w 과잉이 무차별 Sell-In을 차단하는 구조적 제약.",
+          "one_line_ko": "Risk Yellow — Invest (F/C 한정, 회수 조건부): A+ 계정 피크 진입 모멘텀(4월 104u)과 F/C 즉각 기회손실 위험이 공존하며, Rotary 31.8w 과잉이 무차별 Sell-In을 차단하는 구조적 제약으로 작용하고 있습니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 1.5x 가속(YTD SAR 1.62M = 2025 연간 SAR 2.79M의 58%를 4개월 만에 달성) → Sell-Out 급가속(Jan-Apr 120u, 2025 연간 148u의 81% in 4개월 / Apr 단독 기여 분이 피크 진입 확인) → Stock 비대칭 구조: Rotary 298u·WOS 31.8w SEVERE OVERSTOCK(LA182C 79u·ND182C 18u 중심) — Gree 대비 가격 프리미엄 14~37%가 소비자 저항의 근본 원인, Inverter 53u·WOS 11.3w WATCH 수준 → 결론: Rotary 신규 Sell-In 전면 동결 필수, SO 촉진 지원(가격 갭 해소 또는 번들 프로모) 선행 없이 추가 입고는 재고 부담만 가중",
@@ -7698,7 +7809,17 @@
             "deadline": "2026-05-20"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "4월 104u SO로 피크 시즌 진입을 확인하였으며, Split+F/C(ex-Window) 소진율이 2025년 연간 대비 4개월 만에 80%+를 달성하였습니다 — 채널 자체는 전략적으로 건강한 상태이며, F/C 1.7주차 품절 위기만이 즉각적인 기회손실 변수입니다.",
+          "F/C 품절은 Sell-In 타이밍 미스 또는 공급 병목에서 기인하며, Split Rotary 과잉(31.8w)은 LG의 Gree 대비 14~37% 가격 프리미엄이 소비자 저항을 유발하는 구조적 미스매치입니다 — 두 문제는 원인이 상이하므로 처방도 분리하여 접근하여야 합니다.",
+          "이번 주 무대응 시: F/C 품절로 피크 수요 기회손실이 직접 발생하며, Rotary 방치 시 피크 후 잔재고가 채널 신뢰를 훼손합니다. 60d+ OVD 미회수 상태로 피크 시즌이 진행될 경우 AR 노출이 SAR 3M+ 구간에 진입할 수 있습니다."
+        ],
+        "decision_required_ko": "F/C 즉시 보충(40~60u)을 60d+ OVD SAR 422K 부분 회수(≥50%)와 조건부 연계하여 금주 내 집행할 것인지, 혹은 전액 회수 선결 후 보충을 진행할 것인지 결정이 필요합니다.",
+        "options_ko": [
+          "Option A — 조건부 분할 보충 (권고): SAR 211K(60d+ 50%) 입금 확인 즉시 F/C 50% 물량(20~30u)을 릴리즈하고, 잔여 50%는 SAR 422K 전액 클리어 후 릴리즈합니다. Split Rotary 추가 Sell-In 동결은 유지합니다. → 피크 기회손실 최소화와 회수 레버리지를 동시에 활용할 수 있으며, 계정의 F/C 수요 급박함을 협상 지렛대로 전환하여 5~6월 내 전액 회수 가능성이 높고 DSO 개선 벡터를 유지합니다.",
+          "Option B — 전액 회수 선결 후 보충: SAR 422K 전액 입금 확인 후 F/C 전량을 릴리즈합니다. → 재무 원칙 최우선이나, 보충 지연 1~2주 내 F/C 품절이 현실화되며 피크 시즌 초입 기회손실이 확정됩니다. A+ 계정과의 관계 긴장 고조 및 경쟁사 채널 이탈 위험이 수반됩니다."
+        ]
       }
     },
     "1110000299": {
@@ -7763,7 +7884,8 @@
         "verdict": {
           "risk_level": "red",
           "investment_signal": "hold",
-          "one_line": "Risk RED — Hold. Demand is confirmed but the commercial relationship is in runoff; collection comes before any new supply, and the negotiation window closes before the dealer realizes their Rotary stock covers peak season without LG."
+          "one_line": "Risk RED — Hold. Demand is confirmed but the commercial relationship is in runoff; collection comes before any new supply, and the negotiation window closes before the dealer realizes their Rotary stock covers peak season without LG.",
+          "one_line_ko": "위험 RED — 홀드. 수요는 확인됐으나 상업 관계가 런오프 국면에 진입한 상태이며, 신규 공급보다 채권 회수가 선행되어야 하고, Rotary 재고가 피크 시즌을 커버한다는 사실을 딜러가 인지하기 전에 협상 창이 닫힙니다."
         },
         "category_flow": {
           "Split": "Sell-Thru → ZERO 2026 (credit frozen since late 2025) → Sell-Out → STRONG ACCELERATION (379u YTD Jan–Apr, 140u in April alone; LO182C 177u + LA242C 163u as dual demand engines) → Stock SEVERE OVERSTOCK: Rotary 21.8w WOS, Inverter 184.1w WOS (NS182C 114u/6u SO, NS242C 22u/0u SO = dead stock) → Ex-Window verdict: consumer demand is structurally intact; the overstock and credit freeze are the only blockers, not demand.",
@@ -7801,7 +7923,17 @@
             "deadline": "2026-05-31"
           }
         ],
-        "signal": "red"
+        "signal": "red",
+        "summary_3lines_ko": [
+          "Split 소비자 수요가 피크 시즌 진입과 함께 급가속 중입니다 (4월 단독 140대, YTD 379대) — LO182C·LA242C가 명확한 수요 앵커로 작동하고 있으며, 실소진이 확인된 상업적으로 유효한 딜러이지, 사멸 계정이 아닙니다.",
+          "이 계정은 전형적인 런오프를 실행 중입니다: 2025년 LG 매입 재고를 속도감 있게 소진하여 소비자 현금을 수취하면서, 850일 동안(신용 기간 90일의 9.4배) LG에 단 1원도 송금하지 않고 있습니다 — 이는 유동성 위기가 아니라 지불 우선순위 결정이며, 현금은 명백히 존재합니다.",
+          "LG가 이번 주 내로 조치하지 않으면, Rotary WOS 21.8주의 재고만으로 신규 발주 없이 10월 초까지 버틸 수 있어 회수 레버리지가 6월 이전에 소멸되고 SAR 160만이 피크 시즌 내내 묶이게 됩니다."
+        ],
+        "decision_required_ko": "5월 12일까지 경영진 레벨 채권 회수 개입을 승인하십시오: 사후 수표 담보 하에 SAR 48~80만(30~50% 선납) 구조화 결제 요구를 제시하고, WOS 4주 도달 시에만 LA242C 보충 트란쉐를 조건부로 제공 — 딜러가 Q3 재고 계획에 LG 파이프라인을 필요로 하는 지금 이 순간 집행해야 합니다.",
+        "options_ko": [
+          "옵션 A — 지금 즉시 구조화 회수 협상 체결 (권고): 5월 14일까지 30~50% 결제(SAR 48~80만) 수취, 대가로 Rotary WOS 4주 시점 보충 트리거 제공 — LG는 부분 AR 회수와 H2 상업 레버리지를 동시에 확보하고, 관계를 재설정된 조건 위에서 유지하며, Inverter 사장 재고는 AR 잔액 상계 크레딧으로 해소.",
+          "옵션 B — 강경 신용 동결 + 법적 에스컬레이션, 협상 없음: 공식 지급 요구서 발송 후 5월 15일까지 이행 없으면 채권추심 기관 투입 — SAR 160만 전액 회수 가능성은 높아지나 관계 종료 가능성 큼; 딜러는 기존 재고로 피크 시즌을 자력으로 소화하여 조기 지불 유인 없음; 회수 소요 기간 6~18개월 연장."
+        ]
       }
     },
     "1110000360": {
@@ -8484,7 +8616,8 @@
         "verdict": {
           "risk_level": "yellow",
           "investment_signal": "hold",
-          "one_line": "Risk Yellow — Hold Sell-In. 전략 Sell-Out +14% 성장세는 건강하나 Inverter 과재고(WOS 20.1w)가 성수기 현금 회전의 병목이며, T12M DSO 245d는 추가 신용 투입의 구조적 한계선."
+          "one_line": "Risk Yellow — Hold Sell-In. 전략 Sell-Out +14% 성장세는 건강하나 Inverter 과재고(WOS 20.1w)가 성수기 현금 회전의 병목이며, T12M DSO 245d는 추가 신용 투입의 구조적 한계선.",
+          "one_line_ko": "Risk Yellow — Sell-In Hold 유지. 전략 Sell-Out +14% 성장세는 건강하나 Inverter 과재고(WOS 20.1w)가 성수기 현금 회전의 병목이며, T12M DSO 245d는 추가 신용 투입의 구조적 한계선입니다."
         },
         "category_flow": {
           "Split": "Sell-Thru 가속(2026 buy pace 1.7x) → Sell-Out Jan-Apr +14% YoY(9,867u→11,224u) 성장 확인 → Stock 16,765u·Inverter WOS 20.1w(🔴 Severe Overstock)·Rotary WOS 11.2w(🟡 Watch) → 주요 모델 LA182C(2,078u)·NS182C(1,260u)·ND182C(1,225u) 견인 → 수요 기초체력은 견고하나 Inverter 재고가 임계 과부하: WOS 12w 이하 소진 전까지 Sell-In Hold 필수, 1.5T Inverter 가격 프리미엄(Midea 대비 +48%·Samsung +14%)이 소진 속도의 최대 마찰 변수",
@@ -8522,7 +8655,17 @@
             "deadline": "2026-05-21"
           }
         ],
-        "signal": "yellow"
+        "signal": "yellow",
+        "summary_3lines_ko": [
+          "eXtra 전략 카테고리(Split+Floor)는 Jan-Apr +14% YoY(11,342u)로 수요 기초체력이 견고하나, 채널 재고는 Inverter WOS 20.1w·F/C WOS 62.9w 이중 과부하 상태입니다 — AR SAR 74.5M 전액 OVD 0%로 표면은 건강해 보이나 T12M DSO 245d는 LG DPO(180d)·신용 한도(120d)를 동시 초과 중입니다.",
+          "구조적 원인으로는, buy pace 1.7x 가속 Sell-In이 Sell-Out 소화 속도를 앞질렀고, 1.5T Inverter 프리미엄 포지셔닝(Midea 대비 +48%·Gree +32%·Samsung +14%)이 성수기 전 재고 소진 속도를 억제하고 있습니다 — Sell-In↑·Sell-Out↓ 역행 구조가 T12M DSO 245d라는 만성 수치에 그대로 반영되어 있습니다.",
+          "5~9월 성수기 Sell-Out이 재고 소진을 충분히 앞서지 못할 경우, SAR 74.5M AR 잔액이 Q3 연체로 전환되고, 동시에 채널 과재고가 LG 제품의 가격 방어력과 매장 노출 우선순위를 훼손하는 이중 손실이 발생할 수 있습니다."
+        ],
+        "decision_required_ko": "성수기(5~9월) 진입 전, Sell-In 추가 투입 Hold를 확정하고 Inverter WOS 12w 이하 도달을 Replenishment 재개 게이트로 공식 설정할 것인지 — 이번 주 내 영업·재무 공동 승인이 필요합니다.",
+        "options_ko": [
+          "Option A: Sell-In Full Hold + Sell-Out 집중 투자 (권고) — eXtra 인스톨러 인센티브·설치 번들 캠페인을 즉시 실행하여 Inverter WOS를 5월 내 12w→8w로 단계 소진합니다. DSO 추가 악화 없이 AR 구조를 방어하며, 단기 Sell-In 매출은 0이나 Q3 채널 건강도·대금 회수를 동시에 확보할 수 있습니다 — 5월 3주차 재고 실사 후 성수기 Replenishment 재개 가능, Floor/Cassette 613u는 B2B·타 채널로 즉시 재배치합니다.",
+          "Option B: Rotary 한정 제한적 Sell-In 재개 + Inverter Hold 유지 — Rotary WOS 11.2w(🟡 Watch) 구간에서 소량 보충을 허용하여 성수기 SKU 공백을 방지하고, Inverter는 WOS 12w 이하 확인까지 Hold를 유지합니다. Sell-In 매출 일부를 확보하되 Inverter 과재고 리스크는 잔존하며 — T12M DSO 245d 추가 악화 차단을 위해 6월 만기 채권 선제 회수 조건을 병행하는 것이 필수입니다."
+        ]
       }
     },
     "1120000002": {
