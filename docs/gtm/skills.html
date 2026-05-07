@@ -123,6 +123,7 @@
     .source-mattpocock { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
     .source-superpowers { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
     .source-builtin { background: rgba(6,182,212,0.12); color: #22d3ee; border: 1px solid rgba(6,182,212,0.3); }
+    .source-nimrodfisher { background: rgba(234,179,8,0.12); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
 
     .skill-desc { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
     .skill-trigger {
@@ -162,7 +163,7 @@
 
 <div class="header">
   <h1>⚡ Claude Code Skills</h1>
-  <div class="subtitle">설치된 전체 스킬 레퍼런스 — gstack · Matt Pocock · Superpowers · Built-in</div>
+  <div class="subtitle">설치된 전체 스킬 레퍼런스 — gstack · Matt Pocock · Superpowers · Built-in · Data Analytics</div>
 </div>
 
 <nav class="nav-links">
@@ -186,6 +187,7 @@
     <button class="filter-btn" data-filter="utility">유틸·설정</button>
     <button class="filter-btn" data-filter="superpowers">Superpowers</button>
     <button class="filter-btn" data-filter="builtin">Built-in</button>
+    <button class="filter-btn" data-filter="data">📊 데이터 분석</button>
   </div>
 </div>
 
@@ -194,6 +196,7 @@
   <span class="stat"><span class="stat-dot" style="background:#4ade80"></span>Matt Pocock 12</span>
   <span class="stat"><span class="stat-dot" style="background:#fb923c"></span>Superpowers 13</span>
   <span class="stat"><span class="stat-dot" style="background:#22d3ee"></span>Built-in 10</span>
+  <span class="stat"><span class="stat-dot" style="background:#facc15"></span>Data Analytics 31</span>
   <span id="visibleCount" style="margin-left:auto"></span>
 </div>
 
@@ -291,6 +294,45 @@ const SKILLS = [
   { cat: 'superpowers', name: 'superpowers:using-git-worktrees', source: 'superpowers', desc: '피처 작업 전 격리된 git worktree 생성. 현재 작업공간 보호', trigger: '자동 발동' },
   { cat: 'superpowers', name: 'superpowers:writing-skills', source: 'superpowers', desc: '새 스킬 작성·기존 스킬 편집·배포 전 검증', trigger: '자동 발동' },
 
+  // ── 데이터 분석 (nimrodfisher/data-analytics-skills) ─────
+  // 01. 데이터 품질·검증
+  { cat: 'data', name: '/programmatic-eda', source: 'nimrodfisher', desc: '체계적 탐색적 데이터 분석. 구조 점검·결측치·이상치·분포·상관관계 자동 프로파일링. 새 데이터셋 첫 분석 시 필수', trigger: '"데이터 분석해줘" / "EDA 해줘"' },
+  { cat: 'data', name: '/data-quality-audit', source: 'nimrodfisher', desc: '비즈니스 규칙·스키마 제약·데이터 신선도 기준 종합 품질 감사. 파이프라인 출력 검증 전 실행', trigger: '"데이터 품질 체크" / "data quality"' },
+  { cat: 'data', name: '/query-validation', source: 'nimrodfisher', desc: 'SQL 쿼리 정확성·성능·모범 사례 리뷰. 프로덕션 실행 전 또는 예상치 못한 결과 발생 시 활용', trigger: '"이 쿼리 맞아?" / "SQL 검토해줘"' },
+  { cat: 'data', name: '/schema-mapper', source: 'nimrodfisher', desc: '데이터베이스 스키마 이해 및 관계 매핑. 낯선 DB 탐색·테이블 관계 문서화·ERD 자동 생성', trigger: '"테이블 구조 파악해줘" / "schema 그려줘"' },
+  { cat: 'data', name: '/metric-reconciliation', source: 'nimrodfisher', desc: '크로스 소스 지표 검증 및 불일치 조사. 시스템 간 수치가 안 맞을 때, 데이터 마이그레이션 정확도 검증', trigger: '"왜 숫자가 다르지?" / "지표 불일치 조사"' },
+  // 02. 문서화·지식화
+  { cat: 'data', name: '/semantic-model-builder', source: 'nimrodfisher', desc: '비즈니스 지표·차원·엔터티 구조화 문서 생성. dbt Semantic Layer 호환 YAML 정의 자동 작성', trigger: '"지표 정의 문서화해줘" / "semantic model"' },
+  { cat: 'data', name: '/analysis-documentation', source: 'nimrodfisher', desc: '재현 가능한 구조적 분석 문서 생성. 분석 노트북·감사 추적·아카이브용 문서화', trigger: '"분석 결과 문서화해줘"' },
+  { cat: 'data', name: '/data-catalog-entry', source: 'nimrodfisher', desc: '데이터 자산 표준 메타데이터 생성. 데이터 카탈로그·데이터 딕셔너리 작성으로 팀 검색성 향상', trigger: '"데이터 카탈로그 만들어줘" / "data dictionary"' },
+  { cat: 'data', name: '/sql-to-business-logic', source: 'nimrodfisher', desc: 'SQL 쿼리 → 평이한 한국어 비즈니스 로직 번역. 비기술 이해관계자 설명·쿼리 카탈로그 구축', trigger: '"이 SQL 무슨 의미야?" / "쿼리 설명해줘"' },
+  { cat: 'data', name: '/analysis-assumptions-log', source: 'nimrodfisher', desc: '분석 가정과 의사결정 추적·문서화. 트레이드오프 기록·투명성 확보·감사 추적 생성', trigger: '"분석 가정 기록해줘" / "assumptions log"' },
+  // 03. 분석·조사
+  { cat: 'data', name: '/cohort-analysis', source: 'nimrodfisher', desc: '시간 기반 코호트 분석 — 리텐션·매출·기능 채택 추적. 고객 그룹 행동 패턴 측정', trigger: '"코호트 분석해줘" / "retention 분석"' },
+  { cat: 'data', name: '/segmentation-analysis', source: 'nimrodfisher', desc: '고객/사용자 세분화 + 실행 가능한 인사이트. 고가치 세그먼트 프로파일링·세분화 가설 검증', trigger: '"세그먼트 나눠줘" / "고객 분류해줘"' },
+  { cat: 'data', name: '/funnel-analysis', source: 'nimrodfisher', desc: '전환 퍼널 이탈 지점 조사. 다단계 프로세스 병목 식별·세그먼트별 전환율 비교', trigger: '"퍼널 분석해줘" / "전환율 어디서 떨어져?"' },
+  { cat: 'data', name: '/time-series-analysis', source: 'nimrodfisher', desc: '시계열 패턴 탐지·시즌성·이상치·간단한 예측 모델. WoW/MoM/YoY 트렌드 분석에 직접 활용', trigger: '"시계열 분석해줘" / "트렌드 봐줘"' },
+  { cat: 'data', name: '/root-cause-investigation', source: 'nimrodfisher', desc: '지표 변화·이상치 체계적 조사. 5 Whys 기반 드릴다운 — KPI 급락·이상 신호 원인 규명', trigger: '"왜 떨어졌지?" / "원인 파악해줘"' },
+  { cat: 'data', name: '/ab-test-analysis', source: 'nimrodfisher', desc: '엄격한 A/B 테스트 통계 분석. 유의미성 계산·샘플 비율 불일치 탐지·테스트 설계 검증', trigger: '"A/B 결과 분석해줘" / "실험 유의미해?"' },
+  { cat: 'data', name: '/business-metrics-calculator', source: 'nimrodfisher', desc: '표준 비즈니스 지표 계산 + 산업 벤치마크. SaaS(MRR·Churn·LTV·CAC)·이커머스·제품 분석 KPI', trigger: '"KPI 계산해줘" / "LTV CAC 뽑아줘"' },
+  // 04. 스토리텔링·시각화
+  { cat: 'data', name: '/insight-synthesis', source: 'nimrodfisher', desc: '데이터 발견사항 → 실행 가능한 인사이트로 전환. 비즈니스 임팩트 연결·이해관계자 소통 준비', trigger: '"인사이트 정리해줘" / "발견사항 요약해줘"' },
+  { cat: 'data', name: '/visualization-builder', source: 'nimrodfisher', desc: '효과적·출판 품질 데이터 시각화 생성. 차트 유형 선택·대시보드 차트 설계·시각 디자인 모범 사례', trigger: '"차트 만들어줘" / "시각화 추천해줘"' },
+  { cat: 'data', name: '/executive-summary-generator', source: 'nimrodfisher', desc: '상세 분석 → 간결한 임원 요약 생성. 이사회 덱·경영진 브리핑·의사결정용 포맷 자동화', trigger: '"임원 보고 요약해줘" / "executive summary"' },
+  { cat: 'data', name: '/dashboard-specification', source: 'nimrodfisher', desc: '효과적인 대시보드 설계 명세서 작성. 신규 대시보드 기획·기존 개선·요구사항 개발 전 문서화', trigger: '"대시보드 설계해줘" / "dashboard spec"' },
+  { cat: 'data', name: '/data-narrative-builder', source: 'nimrodfisher', desc: '데이터 기반 설득력 있는 내러티브 구성. 분석 결과 → 특정 의사결정을 유도하는 스토리 생성', trigger: '"데이터로 스토리 만들어줘" / "narrative 짜줘"' },
+  // 05. 이해관계자 소통
+  { cat: 'data', name: '/technical-to-business-translator', source: 'nimrodfisher', desc: '통계·기술 분석 → 비즈니스 언어 번역. 데이터팀과 비즈니스팀 소통 간극 해소', trigger: '"비전문가에게 설명해줘" / "쉽게 설명해줘"' },
+  { cat: 'data', name: '/stakeholder-requirements-gathering', source: 'nimrodfisher', desc: '분석 요청 구조적 요건 도출. 신규 분석 프로젝트 스코핑·모호한 비즈니스 질문 명확화', trigger: '"분석 요건 뽑아줘" / "requirements 정리해줘"' },
+  { cat: 'data', name: '/analysis-qa-checklist', source: 'nimrodfisher', desc: '분석 납품 전 품질보증 체크리스트. 완성도·가정 검증·권고안 명확성 확인', trigger: '"분석 검토해줘" / "QA 체크해줘"' },
+  { cat: 'data', name: '/methodology-explainer', source: 'nimrodfisher', desc: '다양한 청중 대상 분석 방법론 설명. "어떻게 분석했는지" 섹션 문서화·신뢰 구축·방법론 교육', trigger: '"방법론 설명해줘" / "어떻게 분석한 거야?"' },
+  { cat: 'data', name: '/impact-quantification', source: 'nimrodfisher', desc: '인사이트 비즈니스 임팩트 추정 및 소통. 기회 규모화·권고 액션 ROI 계산·이니셔티브 우선순위', trigger: '"임팩트 얼마야?" / "ROI 계산해줘"' },
+  // 06. 워크플로우 최적화
+  { cat: 'data', name: '/analysis-planning', source: 'nimrodfisher', desc: '분석 시작 전 접근법 구조화. 신규 분석 요청 분해·복잡한 질문 단계적 계획·반복 워크플로우 설계', trigger: '"분석 어떻게 접근해?" / "analysis plan 짜줘"' },
+  { cat: 'data', name: '/context-packager', source: 'nimrodfisher', desc: 'AI 분석용 컨텍스트 효율적 패키징. 복잡한 분석 과제 준비·컨텍스트 문서 구성·프롬프트 구조화', trigger: '"Claude에게 분석 시킬 컨텍스트 정리해줘"' },
+  { cat: 'data', name: '/peer-review-template', source: 'nimrodfisher', desc: '분석 동료 리뷰 구조적 템플릿. 팀원 분석 리뷰·건설적 피드백·분석 품질 기준 수립', trigger: '"분석 peer review 해줘"' },
+  { cat: 'data', name: '/analysis-retrospective', source: 'nimrodfisher', desc: '분석 완료 후 학습 및 프로세스 개선. 주요 분석 프로젝트 완료 후 교훈 문서화·팀 역량 향상', trigger: '"분석 회고해줘" / "retrospective"' },
+
   // ── Built-in ─────────────────────────────────────────────
   { cat: 'builtin', name: 'update-config', source: 'builtin', desc: 'settings.json 훅·권한·환경변수 설정. 자동화 동작("X할 때마다") 등록', trigger: '"훅 설정해줘" / "allow X"' },
   { cat: 'builtin', name: 'keybindings-help', source: 'builtin', desc: '키보드 단축키 커스터마이징. ~/.claude/keybindings.json 수정', trigger: '"단축키 바꿔줘"' },
@@ -314,16 +356,19 @@ const CAT_LABELS = {
   utility: '유틸·설정',
   superpowers: 'Superpowers',
   builtin: 'Built-in',
+  data: '데이터 분석 (Data Analytics)',
 };
 
 const CAT_ICONS = {
   workflow: '⚙️', planning: '🧭', quality: '🛡️', qa: '🔍',
   browser: '🌐', deploy: '🚀', utility: '🔧', superpowers: '🦸', builtin: '📦',
+  data: '📊',
 };
 
 const SOURCE_LABELS = {
   gstack: 'gstack', mattpocock: 'Matt Pocock',
   superpowers: 'Superpowers', builtin: 'Built-in',
+  nimrodfisher: 'Data Analytics',
 };
 
 let currentFilter = 'all';
@@ -349,7 +394,7 @@ function render() {
     grouped[s.cat].push(s);
   });
 
-  const catOrder = ['workflow','planning','quality','qa','browser','deploy','utility','superpowers','builtin'];
+  const catOrder = ['workflow','planning','quality','qa','browser','deploy','utility','superpowers','builtin','data'];
   const main = document.getElementById('mainContent');
 
   if (filtered.length === 0) {

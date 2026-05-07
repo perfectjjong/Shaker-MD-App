@@ -145,6 +145,7 @@
     <a class="nav-link" href="/ir/"><span class="nav-link-icon">📊</span> IR Ch.</a>
     <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
     <a class="nav-link active" href="/gtm/"><span class="nav-link-icon">🎯</span> GTM Dashboard</a>
+    <a class="nav-link" href="/gtm/skills.html"><span class="nav-link-icon">⚡</span> Skills</a>
   </nav>
 
   <div class="grid" id="dashboardGrid"></div>
@@ -214,6 +215,13 @@
             <div class="sub-list">${subItems}</div>
           </div>
         </div>
+        <a class="accordion-card" href="/gtm/skills.html" style="text-decoration:none;color:inherit;">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <div class="card-name">Claude Code Skills</div>
+            <div class="card-desc">설치된 전체 스킬 레퍼런스 — gstack · Matt Pocock · Superpowers · Data Analytics 31개 포함. 검색·카테고리 필터 지원</div>
+          </div>
+        </a>
       `;
 
       grid.querySelectorAll('.sub-item').forEach(el => el.addEventListener('click', e => e.stopPropagation()));
