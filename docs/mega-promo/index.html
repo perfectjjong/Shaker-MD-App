@@ -1923,7 +1923,7 @@ function renderStock(){
   const th = document.getElementById('thStockUnits');
   if(th) th.textContent = `${wk} Stock (units)`;
   const promoEnd = new Date(PROMO_DATA.meta.promo_years['2026'].end);
-  const today = new Date();
+  const today = new Date(); today.setHours(0,0,0,0);
   const remain = Math.max(0, Math.ceil((promoEnd - today) / 86400000));
   const elR = document.getElementById('stockPromoRemain');
   if(elR) elR.textContent = remain;
@@ -1972,7 +1972,6 @@ function renderStock(){
 
   // 잔여 프로모 일수 기반 동적 임계값
   const promoEnd2026 = new Date(PROMO_DATA.meta.promo_years['2026'].end);
-  const today = new Date(); today.setHours(0,0,0,0);
   const remainDays = Math.max(1, Math.round((promoEnd2026 - today) / 86400000));
   // Risk: 프로모 못 버팀 / Tight: 버퍼 50% 미만 / Healthy: 적정 / Overhang: 프로모 3배 초과
   const THR_RISK  = remainDays;           // < remainDays
