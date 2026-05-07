@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0f172a">
+  <title>Claude Code Skills Reference</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --accent: #3b82f6;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --border: #334155;
+      --green: #22c55e;
+      --purple: #a855f7;
+      --orange: #f97316;
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+      --yellow: #eab308;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .header {
+      background: var(--surface);
+      padding: 24px 20px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .header .subtitle { font-size: 14px; color: var(--text-dim); }
+
+    .nav-links {
+      display: flex; justify-content: center; gap: 12px; padding: 16px 20px;
+      flex-wrap: wrap; background: var(--surface); border-bottom: 1px solid var(--border);
+    }
+    .nav-link {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+      border-radius: 8px; background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .nav-link:hover { border-color: var(--accent); background: #1e3a5f; }
+    .nav-link.active { border-color: var(--accent); background: rgba(59,130,246,0.15); }
+
+    .controls {
+      display: flex; align-items: center; gap: 12px; padding: 16px 24px;
+      flex-wrap: wrap; max-width: 1400px; margin: 0 auto; width: 100%;
+    }
+    .search-box {
+      flex: 1; min-width: 200px; padding: 9px 14px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); font-size: 14px; outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-box:focus { border-color: var(--accent); }
+    .search-box::placeholder { color: var(--text-dim); }
+    .filter-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-btn {
+      padding: 7px 14px; border-radius: 8px; border: 1px solid var(--border);
+      background: var(--surface2); color: var(--text-dim); font-size: 12px;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+    .filter-btn.active { border-color: var(--accent); background: rgba(59,130,246,0.15); color: var(--accent); font-weight: 600; }
+
+    .stats-bar {
+      display: flex; gap: 20px; padding: 0 24px 16px;
+      max-width: 1400px; margin: 0 auto; width: 100%;
+      font-size: 13px; color: var(--text-dim);
+    }
+    .stat { display: flex; align-items: center; gap: 6px; }
+    .stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+    .main { flex: 1; padding: 0 24px 24px; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    .category-section { margin-bottom: 32px; }
+    .category-header {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; font-weight: 700; color: var(--text);
+      padding: 10px 0 12px; border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .category-badge {
+      padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+      background: var(--surface2); color: var(--text-dim);
+    }
+
+    .skills-table { width: 100%; border-collapse: separate; border-spacing: 0 6px; }
+    .skills-table th {
+      text-align: left; font-size: 11px; font-weight: 600; color: var(--text-dim);
+      padding: 6px 14px; text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .skill-row {
+      background: var(--surface); border-radius: 8px;
+      transition: all 0.2s; cursor: default;
+    }
+    .skill-row:hover { background: var(--surface2); }
+    .skill-row td { padding: 12px 14px; vertical-align: middle; }
+    .skill-row td:first-child { border-radius: 8px 0 0 8px; }
+    .skill-row td:last-child { border-radius: 0 8px 8px 0; }
+
+    .skill-name {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 13px; font-weight: 600; color: var(--accent);
+      white-space: nowrap;
+    }
+    .skill-source {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
+      white-space: nowrap;
+    }
+    .source-gstack { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
+    .source-mattpocock { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+    .source-superpowers { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
+    .source-builtin { background: rgba(6,182,212,0.12); color: #22d3ee; border: 1px solid rgba(6,182,212,0.3); }
+
+    .skill-desc { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
+    .skill-trigger {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 11px; color: var(--text-dim);
+      background: var(--bg); padding: 3px 8px; border-radius: 4px;
+      border: 1px solid var(--border); white-space: nowrap;
+    }
+    .auto-badge {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 10px; font-weight: 600; background: rgba(234,179,8,0.12);
+      color: #facc15; border: 1px solid rgba(234,179,8,0.3);
+    }
+
+    .empty-state {
+      text-align: center; padding: 60px 20px; color: var(--text-dim);
+    }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+
+    .footer { text-align: center; padding: 20px; font-size: 13px; color: var(--text-dim); border-top: 1px solid var(--border); }
+    .footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .header h1 { font-size: 20px; }
+      .controls { padding: 12px 16px; }
+      .main { padding: 0 16px 24px; }
+      .skills-table th:nth-child(3),
+      .skill-row td:nth-child(3) { display: none; }
+    }
+    @media (max-width: 500px) {
+      .skills-table th:nth-child(4),
+      .skill-row td:nth-child(4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>⚡ Claude Code Skills</h1>
+  <div class="subtitle">설치된 전체 스킬 레퍼런스 — gstack · Matt Pocock · Superpowers · Built-in</div>
+</div>
+
+<nav class="nav-links">
+  <a class="nav-link" href="/"><span>🏠</span> Home</a>
+  <a class="nav-link" href="/gtm/"><span>🎯</span> GTM Dashboard</a>
+  <a class="nav-link" href="/or/"><span>📦</span> OR Ch.</a>
+  <a class="nav-link" href="/ir/"><span>📊</span> IR Ch.</a>
+  <a class="nav-link active" href="/gtm/skills.html"><span>⚡</span> Skills</a>
+</nav>
+
+<div class="controls">
+  <input class="search-box" id="searchInput" type="text" placeholder="스킬 검색... (예: debug, review, deploy)">
+  <div class="filter-btns" id="filterBtns">
+    <button class="filter-btn active" data-filter="all">전체</button>
+    <button class="filter-btn" data-filter="workflow">개발 워크플로우</button>
+    <button class="filter-btn" data-filter="planning">계획·리뷰</button>
+    <button class="filter-btn" data-filter="quality">품질·보안</button>
+    <button class="filter-btn" data-filter="qa">QA·테스트</button>
+    <button class="filter-btn" data-filter="browser">브라우저·UI</button>
+    <button class="filter-btn" data-filter="deploy">배포·릴리즈</button>
+    <button class="filter-btn" data-filter="utility">유틸·설정</button>
+    <button class="filter-btn" data-filter="superpowers">Superpowers</button>
+    <button class="filter-btn" data-filter="builtin">Built-in</button>
+  </div>
+</div>
+
+<div class="stats-bar">
+  <span class="stat"><span class="stat-dot" style="background:#c084fc"></span>gstack 40+</span>
+  <span class="stat"><span class="stat-dot" style="background:#4ade80"></span>Matt Pocock 12</span>
+  <span class="stat"><span class="stat-dot" style="background:#fb923c"></span>Superpowers 13</span>
+  <span class="stat"><span class="stat-dot" style="background:#22d3ee"></span>Built-in 10</span>
+  <span id="visibleCount" style="margin-left:auto"></span>
+</div>
+
+<div class="main" id="mainContent"></div>
+
+<div class="footer">
+  <a href="https://github.com/perfectjjong" target="_blank">github.com/perfectjjong</a>
+</div>
+
+<script>
+const SKILLS = [
+  // ── 개발 워크플로우 ──────────────────────────────────────
+  { cat: 'workflow', name: '/grill-me', source: 'mattpocock', desc: '계획·설계를 팝업 인터뷰로 집요하게 검증. 결정 트리 전체 분기 해결', trigger: '"grill me"' },
+  { cat: 'workflow', name: '/grill-with-docs', source: 'mattpocock', desc: 'grill-me + CONTEXT.md 도메인 용어 + ADR 자동 업데이트. 코드 작업 전 필수', trigger: '/grill-with-docs' },
+  { cat: 'workflow', name: '/tdd', source: 'mattpocock', desc: 'Red→Green→Refactor TDD 루프. 수직 슬라이스(Tracer Bullet) 방식', trigger: '"테스트 짜면서 개발해줘"' },
+  { cat: 'workflow', name: '/diagnose', source: 'mattpocock', desc: '6단계 버그 진단: 피드백루프 구축→재현→가설→계측→수정→정리', trigger: '"이 버그 왜 이러지?"' },
+  { cat: 'workflow', name: '/to-prd', source: 'mattpocock', desc: '대화 내용 → PRD 생성 + 이슈 트래커 자동 발행', trigger: '/to-prd' },
+  { cat: 'workflow', name: '/to-issues', source: 'mattpocock', desc: 'PRD → GitHub 이슈로 수직 슬라이스 분해', trigger: '/to-issues' },
+  { cat: 'workflow', name: '/triage', source: 'mattpocock', desc: '이슈 트리아지 상태머신: needs-triage → ready-for-agent / ready-for-human', trigger: '"이슈 정리해줘"' },
+  { cat: 'workflow', name: '/prototype', source: 'mattpocock', desc: '설계 검증용 throwaway 프로토타입. 터미널 앱 또는 UI 변형 생성', trigger: '"프로토타입 만들어줘"' },
+  { cat: 'workflow', name: '/improve-codebase-architecture', source: 'mattpocock', desc: 'CONTEXT.md + ADR 기반 코드베이스 설계 개선 기회 탐색. 수일에 한 번 권장', trigger: '/improve-codebase-architecture' },
+  { cat: 'workflow', name: '/zoom-out', source: 'mattpocock', desc: '낯선 코드를 시스템 전체 맥락에서 설명. 온보딩 시 유용', trigger: '"이 코드 전체적으로 설명해줘"' },
+  { cat: 'workflow', name: '/caveman', source: 'mattpocock', desc: '토큰 75% 절감 초압축 통신 모드. 기술 정확도 유지하며 불필요한 말 제거', trigger: '"caveman mode"' },
+  { cat: 'workflow', name: '/investigate', source: 'gstack', desc: '4단계 근본 원인 추적: 조사→분석→가설→구현. "원인 없이 수정 없다" 철학', trigger: '"왜 안 되지?" / "버그 있어"' },
+  { cat: 'workflow', name: '/context-save', source: 'gstack', desc: '현재 작업 상태·결정·잔여 작업 저장. 세션 간 컨텍스트 유지', trigger: '"진행 저장해줘"' },
+  { cat: 'workflow', name: '/context-restore', source: 'gstack', desc: '저장된 컨텍스트 복원. /context-save와 짝으로 사용', trigger: '"이어서 해줘"' },
+
+  // ── 계획·리뷰 ────────────────────────────────────────────
+  { cat: 'planning', name: '/office-hours', source: 'gstack', desc: 'YC 스타일 6개 강제 질문으로 제품 아이디어 검증. 스타트업 모드 / 빌더 모드', trigger: '"이 아이디어 어때?" / "office hours"' },
+  { cat: 'planning', name: '/plan-ceo-review', source: 'gstack', desc: 'CEO 시각 전략 리뷰. 범위 확장·축소 4가지 모드. 10-star 제품 탐색', trigger: '"더 크게 생각해줘" / "전략 리뷰"' },
+  { cat: 'planning', name: '/plan-eng-review', source: 'gstack', desc: 'EM 시각 아키텍처·데이터플로우·엣지케이스·테스트 커버리지 검토', trigger: '"설계 검토해줘" / "tech review"' },
+  { cat: 'planning', name: '/plan-design-review', source: 'gstack', desc: '디자이너 시각 UI/UX 계획 0-10 점수 + 개선 방향. 구현 전 실행 권장', trigger: '"디자인 계획 검토해줘"' },
+  { cat: 'planning', name: '/plan-devex-review', source: 'gstack', desc: 'DX 계획 리뷰: 페르소나·경쟁사 벤치마크·마찰 포인트. API/SDK/CLI 개발에 필수', trigger: '"DX 리뷰해줘" / "devex review"' },
+  { cat: 'planning', name: '/autoplan', source: 'gstack', desc: 'CEO+디자인+엔지니어링+DX 리뷰 자동 순차 실행. 중간 질문 없이 원스톱', trigger: '"자동으로 다 리뷰해줘" / "autoplan"' },
+
+  // ── 코드 품질·보안 ───────────────────────────────────────
+  { cat: 'quality', name: '/review', source: 'gstack', desc: 'PR diff 코드 리뷰: SQL 안전성·LLM 신뢰경계·조건부 사이드이펙트 분석', trigger: '"코드 리뷰해줘"' },
+  { cat: 'quality', name: '/health', source: 'gstack', desc: '타입체커·린터·테스트·죽은코드 종합 품질 0-10 점수 + 트렌드 추적', trigger: '"코드 상태 확인해줘" / "health check"' },
+  { cat: 'quality', name: '/cso', source: 'gstack', desc: 'OWASP Top 10 + STRIDE 위협 모델링 + 공급망 보안 감사. 일간/월간 모드', trigger: '"보안 감사해줘" / "security review"' },
+  { cat: 'quality', name: '/careful', source: 'gstack', desc: 'rm -rf, DROP TABLE, force-push 등 위험 명령 실행 전 경고. 프로덕션 작업 시 권장', trigger: '"신중하게 해줘" / "careful mode"' },
+  { cat: 'quality', name: '/guard', source: 'gstack', desc: '/careful + /freeze 결합. 위험 명령 경고 + 특정 디렉토리 외 편집 차단', trigger: '"최대 안전 모드" / "lock it down"' },
+  { cat: 'quality', name: '/freeze', source: 'gstack', desc: '특정 디렉토리 외 편집 차단. 디버깅 시 관련 없는 코드 수정 방지', trigger: '"이 폴더만 건드려" / "freeze"' },
+  { cat: 'quality', name: '/unfreeze', source: 'gstack', desc: '/freeze로 설정한 편집 제한 해제', trigger: '"freeze 풀어줘"' },
+  { cat: 'quality', name: '/codex', source: 'gstack', desc: 'OpenAI Codex CLI 3모드: 코드리뷰·도전(적대적)·자문. "200 IQ" 독립 의견', trigger: '"second opinion 줘" / "codex review"' },
+
+  // ── QA·테스트 ────────────────────────────────────────────
+  { cat: 'qa', name: '/qa', source: 'gstack', desc: '웹앱 QA 테스트 + 버그 자동 수정. Quick/Standard/Exhaustive 3단계. 헬스스코어 산출', trigger: '"QA 해줘" / "test the site"' },
+  { cat: 'qa', name: '/qa-only', source: 'gstack', desc: 'QA 리포트만 생성, 수정 없음. 버그 목록 + 재현 경로 + 스크린샷', trigger: '"버그만 찾아줘" / "qa report"' },
+  { cat: 'qa', name: '/benchmark', source: 'gstack', desc: 'Core Web Vitals·페이지 로드·번들 사이즈 측정. PR별 before/after 비교', trigger: '"성능 측정해줘" / "lighthouse"' },
+  { cat: 'qa', name: '/benchmark-models', source: 'gstack', desc: 'Claude·GPT·Gemini 동일 프롬프트 실행 → 지연·토큰·비용·품질 비교', trigger: '"어떤 모델이 나아?" / "model shootout"' },
+  { cat: 'qa', name: '/canary', source: 'gstack', desc: '배포 후 콘솔 오류·성능 회귀·페이지 실패 지속 모니터링. 스크린샷 비교', trigger: '"배포 감시해줘" / "canary"' },
+
+  // ── 브라우저·UI ──────────────────────────────────────────
+  { cat: 'browser', name: '/browse', source: 'gstack', desc: '헤드리스 브라우저로 페이지 탐색·상호작용·스크린샷. ~100ms/명령', trigger: '"사이트 열어봐줘" / "take a screenshot"' },
+  { cat: 'browser', name: '/open-gstack-browser', source: 'gstack', desc: '실시간 보이는 Chromium 실행. 사이드바 활동 피드 + 안티봇 스텔스', trigger: '"브라우저 열어줘" / "open chrome"' },
+  { cat: 'browser', name: '/setup-browser-cookies', source: 'gstack', desc: '실제 브라우저 쿠키 → 헤드리스 세션 이식. 인증 필요 페이지 QA 전 실행', trigger: '"로그인 상태로 테스트해줘" / "import cookies"' },
+  { cat: 'browser', name: '/scrape', source: 'gstack', desc: '웹 페이지 데이터 추출. 첫 호출은 프로토타입, 이후 ~200ms 캐시 실행', trigger: '"이 페이지에서 데이터 뽑아줘" / "scrape"' },
+  { cat: 'browser', name: '/skillify', source: 'gstack', desc: '최근 /scrape 플로우 → 영구 browser-skill로 코드화. script.ts + 테스트 자동 생성', trigger: '"이 스크랩 스킬로 저장해줘" / "skillify"' },
+  { cat: 'browser', name: '/design-consultation', source: 'gstack', desc: '완전한 디자인 시스템 제안 + DESIGN.md 생성. 폰트·컬러·레이아웃·모션', trigger: '"디자인 시스템 만들어줘" / "brand guidelines"' },
+  { cat: 'browser', name: '/design-shotgun', source: 'gstack', desc: '여러 AI 디자인 변형 생성 → 비교 보드 → 피드백 → 반복', trigger: '"디자인 옵션 보여줘" / "design variants"' },
+  { cat: 'browser', name: '/design-review', source: 'gstack', desc: '실사이트 비주얼 QA: 간격·계층·AI slop 패턴 탐지 + 원자적 수정 + 검증', trigger: '"디자인 감사해줘" / "visual QA"' },
+  { cat: 'browser', name: '/design-html', source: 'gstack', desc: '승인된 디자인 → 프로덕션 HTML/CSS. 리플로우·동적 레이아웃. 30KB 오버헤드', trigger: '"이 디자인 HTML로 만들어줘" / "make it real"' },
+  { cat: 'browser', name: '/devex-review', source: 'gstack', desc: '실제 DX 테스트: 문서 탐색·온보딩 플로우·TTHW 측정. DX 스코어카드 생성', trigger: '"DX 테스트해줘" / "try the onboarding"' },
+  { cat: 'browser', name: '/pair-agent', source: 'gstack', desc: '원격 에이전트와 브라우저 탭 공유. OpenClaw·Hermes·Codex·Cursor 지원', trigger: '"에이전트 연결해줘" / "share browser"' },
+
+  // ── 배포·릴리즈 ──────────────────────────────────────────
+  { cat: 'deploy', name: '/ship', source: 'gstack', desc: '테스트+리뷰+VERSION bump+CHANGELOG+커밋+푸시+PR 생성 원스톱', trigger: '"배포해줘" / "PR 올려줘" / "ship"' },
+  { cat: 'deploy', name: '/land-and-deploy', source: 'gstack', desc: 'PR 머지 + CI 대기 + 프로덕션 카나리 체크. /ship 이후 실행', trigger: '"머지해줘" / "land it"' },
+  { cat: 'deploy', name: '/setup-deploy', source: 'gstack', desc: '배포 플랫폼 자동 감지(Fly/Vercel/Netlify 등) + CLAUDE.md 설정 기록', trigger: '"배포 설정해줘" / "setup deploy"' },
+  { cat: 'deploy', name: '/landing-report', source: 'gstack', desc: '현재 열린 PR·VERSION 슬롯·WIP 워크스페이스 현황 읽기 전용 대시보드', trigger: '"큐 현황 보여줘" / "landing report"' },
+  { cat: 'deploy', name: '/document-release', source: 'gstack', desc: '배포 후 README·CHANGELOG·CLAUDE.md 자동 업데이트. TODOS 정리 + VERSION bump', trigger: '"문서 동기화해줘" / "update the docs"' },
+  { cat: 'deploy', name: '/retro', source: 'gstack', desc: '주간 엔지니어링 회고. 커밋 히스토리·작업 패턴·코드 품질 분석. 팀원별 기여 분석', trigger: '"주간 회고 해줘" / "retro"' },
+
+  // ── 유틸·설정 ────────────────────────────────────────────
+  { cat: 'utility', name: '/setup-matt-pocock-skills', source: 'mattpocock', desc: '이슈 트래커·트리아지 라벨·도메인 문서 구조 초기 설정. Matt Pocock 스킬 사용 전 1회 실행', trigger: '/setup-matt-pocock-skills' },
+  { cat: 'utility', name: '/setup-gbrain', source: 'gstack', desc: 'gbrain 메모리 시스템 설치·초기화·MCP 등록. 에이전트 지식 베이스', trigger: '"gbrain 설정해줘"' },
+  { cat: 'utility', name: '/sync-gbrain', source: 'gstack', desc: '저장소 코드 → gbrain 재인덱싱 + CLAUDE.md 검색 가이드 갱신', trigger: '"gbrain 동기화해줘"' },
+  { cat: 'utility', name: '/make-pdf', source: 'gstack', desc: '마크다운 → 출판 품질 PDF. 여백·페이지 번호·TOC·DRAFT 워터마크', trigger: '"PDF로 만들어줘" / "make a pdf"' },
+  { cat: 'utility', name: '/gstack-upgrade', source: 'gstack', desc: 'gstack 최신 버전 업그레이드. 글로벌/벤더 설치 자동 감지', trigger: '"gstack 업그레이드해줘"' },
+  { cat: 'utility', name: '/plan-tune', source: 'gstack', desc: 'gstack 질문 민감도 조정. "never-ask / always-ask" 설정 + 개발자 프로파일', trigger: '"질문 너무 많아" / "stop asking me that"' },
+  { cat: 'utility', name: '/learn', source: 'gstack', desc: 'gstack이 학습한 내용 조회·검색·정리·내보내기. 과거 패턴 회상', trigger: '"그동안 뭘 배웠지?" / "show learnings"' },
+
+  // ── Superpowers ──────────────────────────────────────────
+  { cat: 'superpowers', name: 'superpowers:brainstorming', source: 'superpowers', desc: '창작 작업 전 요구사항·설계 탐색. 구현 전 반드시 자동 발동', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:writing-plans', source: 'superpowers', desc: '스펙 → 다단계 구현 계획 작성. 코드 수정 전 실행', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:executing-plans', source: 'superpowers', desc: '구현 계획 → 별도 세션 서브에이전트 실행 + 리뷰 체크포인트', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:test-driven-development', source: 'superpowers', desc: '기능 구현·버그 수정 전 TDD 가이드. 구현 코드 작성 전 자동 발동', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:systematic-debugging', source: 'superpowers', desc: '버그·테스트 실패·예상치 못한 동작 발생 시 체계적 디버깅', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:requesting-code-review', source: 'superpowers', desc: '작업 완료·주요 기능 구현 후 요구사항 충족 여부 검증', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:receiving-code-review', source: 'superpowers', desc: '리뷰 피드백 수신 시 기술적 검증 후 구현. 맹목적 동의 금지', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:verification-before-completion', source: 'superpowers', desc: '"완료" 선언 전 검증 강제. 증거 없이 성공 주장 금지', trigger: '자동 발동 (완료 전)' },
+  { cat: 'superpowers', name: 'superpowers:dispatching-parallel-agents', source: 'superpowers', desc: '2개 이상 독립 작업 → 병렬 에이전트 분산 처리', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:subagent-driven-development', source: 'superpowers', desc: '현재 세션에서 독립 작업 서브에이전트로 실행', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:finishing-a-development-branch', source: 'superpowers', desc: '구현 완료 + 테스트 통과 후 머지/PR/정리 옵션 안내', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:using-git-worktrees', source: 'superpowers', desc: '피처 작업 전 격리된 git worktree 생성. 현재 작업공간 보호', trigger: '자동 발동' },
+  { cat: 'superpowers', name: 'superpowers:writing-skills', source: 'superpowers', desc: '새 스킬 작성·기존 스킬 편집·배포 전 검증', trigger: '자동 발동' },
+
+  // ── Built-in ─────────────────────────────────────────────
+  { cat: 'builtin', name: 'update-config', source: 'builtin', desc: 'settings.json 훅·권한·환경변수 설정. 자동화 동작("X할 때마다") 등록', trigger: '"훅 설정해줘" / "allow X"' },
+  { cat: 'builtin', name: 'keybindings-help', source: 'builtin', desc: '키보드 단축키 커스터마이징. ~/.claude/keybindings.json 수정', trigger: '"단축키 바꿔줘"' },
+  { cat: 'builtin', name: 'init', source: 'builtin', desc: 'CLAUDE.md 초기화. 코드베이스 문서 자동 생성', trigger: '/init' },
+  { cat: 'builtin', name: 'review', source: 'builtin', desc: 'PR 리뷰 (빌트인 버전)', trigger: '/review' },
+  { cat: 'builtin', name: 'security-review', source: 'builtin', desc: '현재 브랜치 보안 리뷰', trigger: '/security-review' },
+  { cat: 'builtin', name: 'simplify', source: 'builtin', desc: '변경된 코드 재사용성·품질·효율성 검토 후 수정', trigger: '/simplify' },
+  { cat: 'builtin', name: 'fewer-permission-prompts', source: 'builtin', desc: '트랜스크립트 스캔 → 자주 쓰는 명령 allowlist 자동 추가', trigger: '/fewer-permission-prompts' },
+  { cat: 'builtin', name: 'loop', source: 'builtin', desc: '명령을 반복 주기로 실행. 폴링·상태 감시에 활용', trigger: '/loop 5m /command' },
+  { cat: 'builtin', name: 'schedule', source: 'builtin', desc: 'cron 스케줄 원격 에이전트 생성·관리. 예약 실행 설정', trigger: '/schedule' },
+  { cat: 'builtin', name: 'claude-api', source: 'builtin', desc: 'Claude API·Anthropic SDK 개발·디버깅·모델 마이그레이션. 프롬프트 캐싱 포함', trigger: 'anthropic import 감지 시 자동' },
+];
+
+const CAT_LABELS = {
+  workflow: '개발 워크플로우',
+  planning: '계획·리뷰 파이프라인',
+  quality: '코드 품질·보안',
+  qa: 'QA·테스트',
+  browser: '브라우저·UI',
+  deploy: '배포·릴리즈',
+  utility: '유틸·설정',
+  superpowers: 'Superpowers',
+  builtin: 'Built-in',
+};
+
+const CAT_ICONS = {
+  workflow: '⚙️', planning: '🧭', quality: '🛡️', qa: '🔍',
+  browser: '🌐', deploy: '🚀', utility: '🔧', superpowers: '🦸', builtin: '📦',
+};
+
+const SOURCE_LABELS = {
+  gstack: 'gstack', mattpocock: 'Matt Pocock',
+  superpowers: 'Superpowers', builtin: 'Built-in',
+};
+
+let currentFilter = 'all';
+let searchQuery = '';
+
+function render() {
+  const query = searchQuery.toLowerCase();
+  const filtered = SKILLS.filter(s => {
+    const matchCat = currentFilter === 'all' || s.cat === currentFilter;
+    const matchSearch = !query ||
+      s.name.toLowerCase().includes(query) ||
+      s.desc.toLowerCase().includes(query) ||
+      s.trigger.toLowerCase().includes(query) ||
+      SOURCE_LABELS[s.source].toLowerCase().includes(query);
+    return matchCat && matchSearch;
+  });
+
+  document.getElementById('visibleCount').textContent = `${filtered.length}개 표시 중`;
+
+  const grouped = {};
+  filtered.forEach(s => {
+    if (!grouped[s.cat]) grouped[s.cat] = [];
+    grouped[s.cat].push(s);
+  });
+
+  const catOrder = ['workflow','planning','quality','qa','browser','deploy','utility','superpowers','builtin'];
+  const main = document.getElementById('mainContent');
+
+  if (filtered.length === 0) {
+    main.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><div>"${searchQuery}" 검색 결과 없음</div></div>`;
+    return;
+  }
+
+  main.innerHTML = catOrder
+    .filter(c => grouped[c])
+    .map(c => {
+      const skills = grouped[c];
+      const rows = skills.map(s => `
+        <tr class="skill-row">
+          <td><span class="skill-name">${s.name}</span></td>
+          <td><span class="skill-source source-${s.source}">${SOURCE_LABELS[s.source]}</span></td>
+          <td><span class="skill-desc">${s.desc}</span></td>
+          <td>${s.trigger === '자동 발동' || s.trigger.includes('자동') ?
+            `<span class="auto-badge">자동</span>` :
+            `<span class="skill-trigger">${s.trigger}</span>`
+          }</td>
+        </tr>
+      `).join('');
+      return `
+        <div class="category-section">
+          <div class="category-header">
+            <span>${CAT_ICONS[c]}</span>
+            <span>${CAT_LABELS[c]}</span>
+            <span class="category-badge">${skills.length}개</span>
+          </div>
+          <table class="skills-table">
+            <thead>
+              <tr>
+                <th style="width:180px">스킬</th>
+                <th style="width:110px">출처</th>
+                <th>기능</th>
+                <th style="width:200px">트리거</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+    }).join('');
+}
+
+document.getElementById('searchInput').addEventListener('input', e => {
+  searchQuery = e.target.value;
+  render();
+});
+
+document.getElementById('filterBtns').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-btn');
+  if (!btn) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
