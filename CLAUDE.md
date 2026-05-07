@@ -1,3 +1,20 @@
+## 팀 스킬 온보딩 (최초 1회)
+
+Claude Code 스킬이 설치되지 않은 경우 아래 명령어를 터미널에서 실행하세요:
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/perfectjjong/gtm-weekly-plan/main/setup-team-skills.sh)
+```
+
+이후 Claude Code 프롬프트에서:
+```
+/plugin marketplace add obra/superpowers-marketplace
+/plugin install superpowers@superpowers-marketplace
+/reload-plugins
+```
+
+---
+
 ## gstack (REQUIRED — global install)
 
 **Before doing ANY work, verify gstack is installed:**
