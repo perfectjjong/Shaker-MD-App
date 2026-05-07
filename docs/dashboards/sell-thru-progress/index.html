@@ -320,8 +320,8 @@ tfoot .fz{background:#0f172a}
     <div style="display:flex;align-items:center;gap:10px;">
       <span id="fhAdvGenerated" style="font-size:10px;color:#475569;"></span>
       <div style="display:flex;gap:0;">
-        <button id="fhAdvLangEn" onclick="fhAdvSetLang('en')" style="padding:3px 10px;background:#3b82f6;color:#fff;border:none;border-radius:6px 0 0 6px;cursor:pointer;font-size:11px;font-weight:700;">ENG</button>
-        <button id="fhAdvLangKo" onclick="fhAdvSetLang('ko')" style="padding:3px 10px;background:#1e293b;color:#64748b;border:1px solid #334155;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:11px;font-weight:700;">KOR</button>
+        <button id="fhAdvLangEn" onclick="fhAdvSetLang('en')" style="padding:3px 10px;background:#1e293b;color:#64748b;border:1px solid #334155;border-radius:6px 0 0 6px;cursor:pointer;font-size:11px;font-weight:700;">ENG</button>
+        <button id="fhAdvLangKo" onclick="fhAdvSetLang('ko')" style="padding:3px 10px;background:#3b82f6;color:#fff;border:none;border-left:none;border-radius:0 6px 6px 0;cursor:pointer;font-size:11px;font-weight:700;">KOR</button>
       </div>
       <button onclick="fhCloseAdvisory()" style="padding:4px 12px;background:#334155;color:#94a3b8;border:none;border-radius:6px;cursor:pointer;font-size:11px;">✕ Close</button>
     </div>
@@ -1976,7 +1976,7 @@ function switchMainTab(tab){
 var _fhDsoMode='simple';
 var _fhAdvisory=null;  // fh_advisory.json 캐시
 var _fhSortCol=null, _fhSortDir='asc';
-var _fhAdvLang='en';   // 'en' | 'ko'
+var _fhAdvLang='ko';   // 'ko' | 'en'  — 한국어 기본
 var _fhAdvCurrent=null; // 현재 표시 중인 adv 객체
 var _fhCompareMode=false;
 var _fhCompChartY=null, _fhCompChartT=null;
