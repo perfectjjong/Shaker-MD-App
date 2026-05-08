@@ -94,23 +94,23 @@ tr:hover td{background:#fafbff}
 </div>
 
 <!-- SECTION 0: KPI Cards -->
-<div style="margin:0 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 0 — Executive Summary</div>
+<div style="margin:0 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 0 — 경영진 요약</div>
 <div class="kpi-grid" id="kpiGrid"><!-- rendered by JS --></div>
 
 <!-- SECTION 1: Sell-Through -->
 <div id="s1"></div>
-<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 1 — Sell-Through</div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 1 — Sell-Through (출하 실적)</div>
 
 <div class="section">
   <div class="section-header">
-    <h2 id="st11Title">1-1. Sell-Through by Channel × Month (Value, excl. VAT)</h2>
-    <span id="st11Sub">Unit: SAR | YoY: vs 2025 Jan–Apr</span>
+    <h2 id="st11Title">1-1. 채널별 × 월별 Sell-Through (금액, VAT 제외)</h2>
+    <span id="st11Sub">단위: SAR | YoY: 2025년 1~4월 대비</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th>Channel</th>
+          <th>채널</th>
           <th colspan="2">Jan</th><th colspan="2">Feb</th><th colspan="2">Mar</th>
           <th colspan="2" style="background:#e8f5e9">Q1</th>
           <th colspan="2" style="background:#fff3e0">Apr</th>
@@ -128,24 +128,24 @@ tr:hover td{background:#fafbff}
       </thead>
       <tbody id="stBody"><!-- rendered by JS --></tbody>
     </table>
-    <p class="note" id="st11Note">* Value basis: excl. VAT 15%. Net incl. returns (ZCD/ZDRO/ZRE). | * Negative values indicate returns exceed shipments in that month.</p>
+    <p class="note" id="st11Note">* 금액 기준: VAT 15% 제외. 반품(ZCD/ZDRO/ZRE) 포함 순액. | * 음수는 해당 월 반품이 출하를 초과함을 의미.</p>
   </div>
 </div>
 
 <div class="section">
   <div class="section-header">
-    <h2 id="st12Title">1-2. Jan–Apr Sell-Through by Category</h2>
-    <span id="st12Sub">Unit: SAR</span>
+    <h2 id="st12Title">1-2. 1~4월 카테고리별 Sell-Through</h2>
+    <span id="st12Sub">단위: SAR</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th>Category</th>
-          <th id="catCol26">2026 Jan–Apr Value</th>
-          <th id="catCol25">2025 Jan–Apr Value</th>
+          <th>카테고리</th>
+          <th id="catCol26">2026년 1~4월 금액</th>
+          <th id="catCol25">2025년 1~4월 금액</th>
           <th>YoY</th>
-          <th>Share (2026)</th>
+          <th>비중 (2026)</th>
         </tr>
       </thead>
       <tbody id="catBody"><!-- rendered by JS --></tbody>
@@ -156,7 +156,7 @@ tr:hover td{background:#fafbff}
 <!-- SECTION 2: Sell Out -->
 <div id="s2"></div>
 <div class="filter-bar" style="margin-top:20px;border-left:3px solid #43a047;">
-  <span class="filter-label">Section 2 Filter</span>
+  <span class="filter-label">Section 2 필터</span>
   <button class="filter-btn2 active2" data-cat2="all" onclick="handleFilter2(this,'all')">All</button>
   <button class="filter-btn2" data-cat2="Split Inverter" onclick="handleFilter2(this,'Split Inverter')">Split Inverter</button>
   <button class="filter-btn2" data-cat2="Split on/off" onclick="handleFilter2(this,'Split on/off')">Split on/off</button>
@@ -167,18 +167,18 @@ tr:hover td{background:#fafbff}
   <button class="filter-btn2" data-cat2="Others" onclick="handleFilter2(this,'Others')">Others</button>
   <span id="filterInfo2" style="display:none"></span>
 </div>
-<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 2 — Sell-Out (Dealer Sales) / Sales Results</div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 2 — Sell-Out (딜러 판매 실적)</div>
 
 <div class="section">
   <div class="section-header">
-    <h2>2-1. Sell-Out by Channel × Month (Quantity)</h2>
-    <span>Unit: Units | YoY: vs 2025 Q1</span>
+    <h2>2-1. 채널별 × 월별 Sell-Out (수량)</h2>
+    <span>단위: 대(Units) | YoY: 2025년 1~4월 대비</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th>Channel</th>
+          <th>채널</th>
           <th colspan="2">Jan</th><th colspan="2">Feb</th><th colspan="2">Mar</th>
           <th colspan="2" style="background:#e8f5e9">Q1</th>
           <th colspan="2" style="background:#fff3e0">Apr</th>
@@ -201,18 +201,18 @@ tr:hover td{background:#fafbff}
 
 <div class="section">
   <div class="section-header">
-    <h2>2-2. Jan–Apr Sell-Out by Category</h2>
-    <span>Unit: Units</span>
+    <h2>2-2. 1~4월 카테고리별 Sell-Out</h2>
+    <span>단위: 대(Units)</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th>Category</th>
-          <th>2026 Jan–Apr Units</th>
-          <th>2025 Jan–Apr Units</th>
+          <th>카테고리</th>
+          <th>2026년 1~4월 수량</th>
+          <th>2025년 1~4월 수량</th>
           <th>YoY</th>
-          <th>Share (2026)</th>
+          <th>비중 (2026)</th>
         </tr>
       </thead>
       <tbody id="soCatBody"><!-- rendered by JS --></tbody>
@@ -222,7 +222,7 @@ tr:hover td{background:#fafbff}
 
 <!-- SECTION STOCK: OR/IR Channel Stock -->
 <div id="s_stock"></div>
-<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 3 — Channel Stock Status / Channel Stock Analysis</div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 3 — 채널별 재고 현황</div>
 
 <div class="section" style="border-left:4px solid #1565c0;"><div class="section-header" style="background:#0d47a1;"><h2>3-1. OR Channel Stock Status by Category (Inventory Quantity)</h2><span>5 OR Channels × Category | 2025 Jan–Apr Monthly Closing vs 2026 Jan–Apr (W18)</span></div><div class="section-body"><table><thead><tr><th rowspan="2" style="text-align:left">Channel</th><th rowspan="2">Category</th><th colspan="4" style="background:#fffde7;border-bottom:1px solid #f0d060">2025 On-Hand (Monthly Closing)</th><th colspan="3" style="background:#e3f2fd;border-bottom:1px solid #90caf9">2026 On-Hand (Monthly)</th><th colspan="3" style="background:#c8e6c9;border-bottom:1px solid #81c784">2026 Apr (W18)</th><th rowspan="2" style="background:#f3e5f5">Apr YoY<br><small style="font-weight:400">Apr'25 vs Apr'26</small></th></tr><tr><th style="background:#fffde7;font-size:10px">Jan</th><th style="background:#fffde7;font-size:10px">Feb</th><th style="background:#fffde7;font-size:10px">Mar</th><th style="background:#fff3cd;font-size:10px;font-weight:700">Apr</th><th style="background:#e3f2fd;font-size:10px">Jan</th><th style="background:#e3f2fd;font-size:10px">Feb</th><th style="background:#e3f2fd;font-size:10px">Mar</th><th style="background:#c8e6c9;font-size:10px">Stock<br><small>(W18)</small></th><th style="background:#a5d6a7;font-size:10px">OUD<br><small>(2-May)</small></th><th style="background:#66bb6a;font-size:10px;font-weight:700;color:#fff">Stock+OUD</th></tr></thead><tbody><tr><td rowspan="3" style="color:#1565c0;font-weight:700;vertical-align:middle;border-right:2px solid #ddd">eXtra</td><td style="color:#1565c0;font-weight:600;font-size:11px">Split AC</td><td style="text-align:center;background:#fffde7">2,483</td><td style="text-align:center;background:#fffde7">2,896</td><td style="text-align:center;background:#fffde7">5,396</td><td style="text-align:center;background:#fff3cd">3,322</td><td style="text-align:center;background:#e3f2fd">2,866</td><td style="text-align:center;background:#e3f2fd">5,750</td><td style="text-align:center;background:#e3f2fd">9,266</td><td style="text-align:center;background:#c8e6c9">16,765</td><td style="text-align:center;background:#a5d6a7">98</td><td style="text-align:center;font-weight:700;background:#66bb6a;color:#fff">16,863</td><td style="text-align:center;font-weight:700;color:#27ae60">+407.6%<br><small style="font-weight:400;color:#666">Apr'25 3,322→W18 16,765+OUD 98=16,863</small></td></tr>
 <tr><td style="color:#6a1b9a;font-weight:600;font-size:11px">Window AC</td><td style="text-align:center;background:#fffde7">309</td><td style="text-align:center;background:#fffde7">1,436</td><td style="text-align:center;background:#fffde7">1,605</td><td style="text-align:center;background:#fff3cd">181</td><td style="color:#ccc;text-align:center;background:#e3f2fd">—</td><td style="color:#ccc;text-align:center;background:#e3f2fd">—</td><td style="color:#ccc;text-align:center;background:#e3f2fd">—</td><td style="color:#ccc;text-align:center;background:#c8e6c9">—</td><td style="color:#ccc;text-align:center;background:#a5d6a7">—</td><td style="color:#ccc;text-align:center;background:#66bb6a">—</td><td style="text-align:center;font-weight:700;color:#e74c3c">-100.0%<br><small style="font-weight:400;color:#666">Apr'25 181→Apr'26 0</small></td></tr>
@@ -312,7 +312,7 @@ tr:hover td{background:#fafbff}
 
 <!-- SECTION ASP: Price Positioning -->
 <div id="s_asp"></div>
-<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 4 — ASP Comparison Analysis / Average Selling Price Comparison</div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 4 — 평균 판매단가(ASP) 비교 분석</div>
 
 <div class="section" style="border-left:4px solid #7b1fa2;"><div class="section-header" style="background:#6a1b9a;"><h2>4-1. eXtra Channel — Split Inverter 18K CO ASP Comparison (LG vs Competitors)</h2><span>1.5T CO Inv | 2025 Jan–Apr: eXtra Sell-Out ASP (inc-VAT) | 2026 Jan: MS Value | 2026 Feb–Apr 30: Price Tracking Posted Price (inc-VAT)</span></div><div class="section-body"><table><thead><tr><th rowspan="2" style="text-align:left;min-width:80px">Brand</th><th rowspan="2" style="min-width:52px">Grade</th><th colspan="4" style="background:#fff8e1;border-bottom:1px solid #ffe082">2025 — eXtra MS Value ASP (inc-VAT, SAR)</th><th colspan="4" style="background:#e3f2fd;border-bottom:1px solid #90caf9">2026 — eXtra ASP (inc-VAT, SAR)</th><th rowspan="2" style="background:#f3e5f5;min-width:90px">Apr YoY<br><small>Apr'25 vs Apr'26</small></th></tr><tr><th style="background:#fffde7;font-size:10px">Jan</th><th style="background:#fffde7;font-size:10px">Feb</th><th style="background:#fffde7;font-size:10px">Mar</th><th style="background:#fff3cd;font-size:10px;font-weight:700">Apr<br><small style="color:#e65100">Sell-Out</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Jan<br><small style="color:#1565c0">Sell-Out</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Feb<br><small style="color:#1565c0">Price Track</small></th><th style="background:#bbdefb;font-size:11px;font-weight:700">Mar<br><small style="color:#1565c0">Price Track</small></th><th style="background:#c8e6c9;font-size:11px;font-weight:700">Apr 30<br><small style="color:#1b5e20">Price Track</small></th></tr></thead><tbody><tr><td rowspan="3" style="color:#1565c0;font-weight:700;vertical-align:middle;border-right:2px solid #ddd;padding-right:8px">LG</td><td style="background:#e8f5e9;color:#66bb6a;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Entry</td><td style="text-align:center;font-size:12px;background:#fffde7">2,770</td><td style="text-align:center;font-size:12px;background:#fffde7">2,638</td><td style="text-align:center;font-size:12px;background:#fffde7">2,621</td><td style="text-align:center;font-size:12px;background:#fff3cd">2,594</td><td style="text-align:center;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,529</td><td style="text-align:center;background:#e3f2fd;font-weight:700;color:#0d47a1;font-size:13px">2,492</td><td style="text-align:center;background:#e3f2fd;font-weight:700;color:#0d47a1;font-size:13px">2,575</td><td style="text-align:center;background:#e8f5e9;font-weight:700;color:#1b5e20;font-size:13px">2,499</td><td style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-3.7%<br><small style="font-weight:400;color:#666">2,594→2,499</small></td></tr>
 <tr><td style="background:#fff3e0;color:#bf360c;font-weight:700;text-align:center;font-size:11px;white-space:nowrap">Mid</td><td style="text-align:center;font-size:12px;background:#fffde7">2,939</td><td style="text-align:center;font-size:12px;background:#fffde7">2,809</td><td style="text-align:center;font-size:12px;background:#fffde7">2,894</td><td style="text-align:center;font-size:12px;background:#fff3cd">2,730</td><td style="text-align:center;background:#bbdefb;font-weight:700;color:#0d47a1;font-size:13px">2,622</td><td style="text-align:center;background:#e3f2fd;font-weight:700;color:#0d47a1;font-size:13px">2,699</td><td style="text-align:center;background:#e3f2fd;font-weight:700;color:#0d47a1;font-size:13px">2,851</td><td style="text-align:center;background:#e8f5e9;font-weight:700;color:#1b5e20;font-size:13px">2,699</td><td style="text-align:center;background:#f3e5f5;font-weight:700;color:#e74c3c;vertical-align:middle">-1.1%<br><small style="font-weight:400;color:#666">2,730→2,699</small></td></tr>
@@ -349,35 +349,35 @@ tr:hover td{background:#fafbff}
 
 <!-- SECTION 5: Q2 Outlook -->
 <div id="s3"></div>
-<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 5 — Q2 2026 Outlook &amp; Strategy</div>
+<div style="margin:8px 0 8px;font-size:16px;font-weight:700;color:#1a237e;">Section 5 — 2026 Q2 전망 및 전략</div>
 
 
 <div class="section">
   <div class="section-header">
-    <h2>5-1. Q2 Sell-Through Forecast</h2>
-    <span>Apr: 2026 Actual ST | May–Jun: Q2 Target − Apr Actual (OR SAR 46.6M / IR SAR 63.4M)</span>
+    <h2>5-1. Q2 Sell-Through 예측</h2>
+    <span>4월: 2026 실적 | 5~6월: Q2 목표 − 4월 실적 (OR SAR 46.6M / IR SAR 63.4M)</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th rowspan="2" style="min-width:110px">Channel</th>
-          <th rowspan="2" style="text-align:center;min-width:80px">2025<br>Jan-Apr</th>
-          <th rowspan="2" style="text-align:center">Jan-Apr<br>YoY</th>
-          <th colspan="3" style="text-align:center;background:#e3f2fd;border-bottom:1px solid #90caf9">2026 Q2 Forecast</th>
+          <th rowspan="2" style="min-width:110px">채널</th>
+          <th rowspan="2" style="text-align:center;min-width:80px">2025<br>1~4월</th>
+          <th rowspan="2" style="text-align:center">1~4월<br>YoY</th>
+          <th colspan="3" style="text-align:center;background:#e3f2fd;border-bottom:1px solid #90caf9">2026 Q2 예측</th>
           <th rowspan="2" style="text-align:center">Q2<br>YoY</th>
-          <th rowspan="2" style="min-width:80px;text-align:center">W18<br>Stock(u)</th>
-          <th rowspan="2" style="min-width:80px;text-align:center">Apr SO<br>(u)</th>
-          <th rowspan="2">Multi-Angle Story (ST · SO · Stock)</th>
+          <th rowspan="2" style="min-width:80px;text-align:center">W18<br>재고(대)</th>
+          <th rowspan="2" style="min-width:80px;text-align:center">4월 SO<br>(대)</th>
+          <th rowspan="2">다각도 분석 (ST · SO · 재고)</th>
         </tr>
         <tr style="background:#e3f2fd">
-          <th style="font-size:11px;text-align:center;background:#c8e6c9">Apr Actual</th>
-          <th style="font-size:11px;text-align:center;background:#bbdefb">May+Jun Fcst</th>
-          <th style="font-size:11px;text-align:center;background:#1565c0;color:#fff">Q2 Total</th>
+          <th style="font-size:11px;text-align:center;background:#c8e6c9">4월 실적</th>
+          <th style="font-size:11px;text-align:center;background:#bbdefb">5~6월 예측</th>
+          <th style="font-size:11px;text-align:center;background:#1565c0;color:#fff">Q2 합계</th>
         </tr>
       </thead>
       <tbody>
-        <tr class="sep-row"><td colspan="10"><span class="badge-or">OR</span> OR Channels</td></tr>
+        <tr class="sep-row"><td colspan="10"><span class="badge-or">OR</span> OR 채널</td></tr>
         <tr>
           <td style="padding-left:16px;font-weight:600">eXtra</td>
           <td style="text-align:center;font-size:12px">SAR 44.7M</td>
@@ -388,7 +388,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-41.9%</td>
           <td style="text-align:center;font-size:12px">17,378</td>
           <td style="text-align:center;font-size:12px">3,995</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Apr ST 18.0M✅ (Mega 4/26~5/16 lift). SO 3,995u strong. W18 3,597u. May+Jun need 8.0M only → HIGH probability. May Mega encore drives SO peak; June summer season sustains.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">4월 ST 18.0M ✅ (Mega 4/26~5/16 효과). SO 3,995대 강세. W18 재고 3,597대. 5~6월 8.0M만 추가 필요 → 달성 유력. 5월 Mega 재가동이 SO 피크 견인, 6월 여름 시즌으로 지속.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Al Manea</td>
           <td style="text-align:center;font-size:12px">SAR 28.2M</td>
@@ -399,7 +399,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-78.7%</td>
           <td style="text-align:center;font-size:12px">1,535</td>
           <td style="text-align:center;font-size:12px">1,378</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Apr ST 1.75M; W18 2,014u stocked. Anniversary promo (May) key driver → 4.25M May+Jun needed (+103% vs 25 May+Jun). Stock adequate; sell-out velocity must double from Apr pace.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">4월 ST 1.75M; W18 재고 2,014대. Anniversary 프로모(5월)가 핵심 드라이버 → 5~6월 4.25M 필요 (25년 5~6월 대비 +103%). 재고는 충분하나 SO 속도를 4월 대비 2배로 높여야 함.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">SWS</td>
           <td style="text-align:center;font-size:12px">SAR 5.3M</td>
@@ -410,7 +410,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#27ae60">+33.0%</td>
           <td style="text-align:center;font-size:12px">318</td>
           <td style="text-align:center;font-size:12px">451</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">⚠️ Stock risk: W18 only 529u at Apr SO 451u/mo → depletes by mid-May. May+Jun need 3.93M. Urgent replenishment before June gap. Mega halo effect can boost May SO if stock arrives.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">⚠️ 재고 위험: W18 529대, 4월 SO 451대/월 → 5월 중순 고갈. 5~6월 3.93M 필요. 6월 공백 전 긴급 보충 필수. 재고 도착 시 Mega 파급효과로 5월 SO 가속 가능.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Black Box</td>
           <td style="text-align:center;font-size:12px">SAR 6.2M</td>
@@ -421,7 +421,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-49.4%</td>
           <td style="text-align:center;font-size:12px">571</td>
           <td style="text-align:center;font-size:12px">373</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">✅ EFFECTIVELY ACHIEVED: Apr ST 2.78M alone, only 0.32M left of 3.1M target. W18 931u ample. Window AC high-ASP items primary driver. Jun surplus likely.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">✅ 사실상 달성: 4월 ST 2.78M만으로 목표 3.1M의 0.32M만 잔여. W18 931대 충분. Window AC 고ASP 제품이 주요 성장 동력. 6월 초과 달성 예상.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Al Khunizan</td>
           <td style="text-align:center;font-size:12px">SAR 4.5M</td>
@@ -432,7 +432,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-4.7%</td>
           <td style="text-align:center;font-size:12px">849</td>
           <td style="text-align:center;font-size:12px">77</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">🚨 HIGH RISK: Apr SO only 77u / ST ≈0. W18 570u idle. May+Jun need 4.32M — requires 10× April velocity. Account visit + Mega promotion support critical. Without intervention, Q2 shortfall.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">🚨 고위험: 4월 SO 77대 / ST ≈0. W18 570대 유휴. 5~6월 4.32M 필요 — 4월 대비 10배 속도 요구. 현장 방문 + Mega 프로모 지원 없으면 Q2 목표 달성 불가.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">OR_Others</td>
           <td style="text-align:center;font-size:12px">SAR 1.5M</td>
@@ -443,7 +443,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-78.1%</td>
           <td style="text-align:center;font-size:12px">0</td>
           <td style="text-align:center;font-size:12px">0</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Minor accounts; base case trajectory.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">소형 계정. 기본 궤도 유지.</td>
         </tr>
         <tr style="background:#e8f0fe;font-weight:600;color:#1565c0">
           <td>OR Subtotal</td>
@@ -455,7 +455,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-48.5%</td>
           <td colspan="3"></td>
         </tr>
-        <tr class="sep-row"><td colspan="10"><span class="badge-ir">IR</span> IR Channels</td></tr>
+        <tr class="sep-row"><td colspan="10"><span class="badge-ir">IR</span> IR 채널</td></tr>
         <tr>
           <td style="padding-left:16px;font-weight:600">BH</td>
           <td style="text-align:center;font-size:12px">SAR 28.9M</td>
@@ -466,7 +466,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-5.9%</td>
           <td style="text-align:center;font-size:12px">6,156</td>
           <td style="text-align:center;font-size:12px">1,447</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">W18 12,925u (largest IR stock). Apr SO 1,447u / ST 5.65M. May+Jun need 21.55M. Peak season (Hajj May-Jun) drives velocity uplift → target 2,500-3,000u SO/mo = SAR 5-6M ST/mo. Achievable IF peak season demand materializes. Monitor WOS weekly.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">W18 12,925대(IR 최대 재고). 4월 SO 1,447대 / ST 5.65M. 5~6월 21.55M 필요. Hajj 피크 시즌(5~6월)이 SO 가속 변수 → 목표 2,500~3,000대/월 = SAR 5~6M ST/월. 피크 수요 실현 여부가 관건. WOS 주간 모니터링 필수.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">BM</td>
           <td style="text-align:center;font-size:12px">SAR 3.3M</td>
@@ -477,7 +477,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-4.0%</td>
           <td style="text-align:center;font-size:12px">1,017</td>
           <td style="text-align:center;font-size:12px">112</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Conservative target (-27.6% vs 25). Apr SO 112u / ST 0.81M. W18 624u. May+Jun 2.39M at current pace feasible. Low risk channel.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">보수적 목표 (25년 대비 -27.6%). 4월 SO 112대 / ST 0.81M. W18 624대. 현 속도로 5~6월 2.39M 달성 가능. 저위험 채널.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Tamkeen</td>
           <td style="text-align:center;font-size:12px">SAR 2.5M</td>
@@ -488,7 +488,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#27ae60">+38.1%</td>
           <td style="text-align:center;font-size:12px">986</td>
           <td style="text-align:center;font-size:12px">260</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">⚠️ Apr SO 260u but ST 0.00M — invoice recognition gap. W18 1,539u healthy. Full 3.4M riding on May+Jun. Confirm Apr invoice processing; if delayed, May ST doubles. Account follow-up priority.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">⚠️ 4월 SO 260대에도 ST 0.00M — 인보이스 인식 갭. W18 1,539대 양호. Q2 목표 3.4M 전액이 5~6월에 집중. 4월 인보이스 처리 확인 필수; 지연 시 5월 ST 2배 인식 가능. 계정 후속 조치 우선.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Zagzoog</td>
           <td style="text-align:center;font-size:12px">SAR 2.2M</td>
@@ -499,7 +499,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-65.6%</td>
           <td style="text-align:center;font-size:12px">593</td>
           <td style="text-align:center;font-size:12px">140</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Intentional exposure cap (payment risk). Apr SO 140u / ST 0.00M. W18 593u. Q2 target 0.745M only. No aggressive push; collect outstanding AR first.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">의도적 익스포저 상한 (대금 미수 위험). 4월 SO 140대 / ST 0.00M. W18 593대. Q2 목표 0.745M 소형. 무리한 Push 금지; 기존 AR 회수 우선.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Dhamin</td>
           <td style="text-align:center;font-size:12px">SAR 1.5M</td>
@@ -510,7 +510,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-9.4%</td>
           <td style="text-align:center;font-size:12px">846</td>
           <td style="text-align:center;font-size:12px">94</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Apr ST 0.10M low; W18 392u moderate. Q2 target +22% vs 25. Co-marketing support activates May → May+Jun 1.30M achievable with promoter support.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">4월 ST 0.10M 저조; W18 392대. Q2 목표 25년 대비 +22%. Co-marketing 지원 연동 → 5~6월 1.30M 달성 가능.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Star Appliance</td>
           <td style="text-align:center;font-size:12px">SAR 1.3M</td>
@@ -521,7 +521,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#27ae60">+124.8%</td>
           <td style="text-align:center;font-size:12px">790</td>
           <td style="text-align:center;font-size:12px">190</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">🚨 STOCK ALERT: W18 4,606u at Apr SO 190u → WOS 24 weeks. Apr ST -0.10M (credit notes). May+Jun need 3.0M → requires SO 600u/mo (3× Apr). Promoter activation + display enhancement required urgently.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">🚨 재고 경보: W18 4,606대, 4월 SO 190대 → WOS 24주. 4월 ST -0.10M (크레딧 노트). 5~6월 3.0M 필요 → SO 600대/월(4월의 3배) 필요. 판촉원 배치 + 진열 강화 긴급.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Al Ghanem</td>
           <td style="text-align:center;font-size:12px">SAR 1.4M</td>
@@ -532,7 +532,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#e74c3c">-59.0%</td>
           <td style="text-align:center;font-size:12px">570</td>
           <td style="text-align:center;font-size:12px">100</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">✅ EXCEEDED: Apr ST 1.47M already surpasses 0.554M Q2 target. Large B2B order likely. W18 2,199u. Revise Q2 target upward; negotiate further orders for May-Jun.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">✅ 초과 달성: 4월 ST 1.47M이 Q2 목표 0.554M 이미 초과. 대형 B2B 발주 추정. W18 2,199대. Q2 목표 상향 검토; 5~6월 추가 주문 협의.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">Al Shathri</td>
           <td style="text-align:center;font-size:12px">SAR 1.2M</td>
@@ -543,7 +543,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#27ae60">+224.3%</td>
           <td style="text-align:center;font-size:12px">208</td>
           <td style="text-align:center;font-size:12px">97</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">🚨 STOCK CRITICAL: W18 only 228u at Apr SO 97u → stock out by June. May+Jun need 2.85M impossible without replenishment. Urgent: prioritize shipment allocation in next PGI.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">🚨 재고 위기: W18 228대, 4월 SO 97대 → 6월 재고 소진. 보충 없이 5~6월 2.85M 달성 불가. 긴급: 다음 PGI에서 출하 우선 배정 필요.</td>
         </tr><tr>
           <td style="padding-left:16px;font-weight:600">IR_Others</td>
           <td style="text-align:center;font-size:12px">SAR 14.1M</td>
@@ -554,7 +554,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-size:11px;color:#27ae60">+41.9%</td>
           <td style="text-align:center;font-size:12px">0</td>
           <td style="text-align:center;font-size:12px">0</td>
-          <td style="font-size:10px;color:#555;line-height:1.5">Apr ST 5.18M solid. May+Jun 14.82M needed. SME + misc accounts peak season effect. Consistent performance expected.</td>
+          <td style="font-size:10px;color:#555;line-height:1.5">4월 ST 5.18M 견조. 5~6월 14.82M 필요. SME + 기타 계정 피크 시즌 효과. 안정적 실적 예상.</td>
         </tr>
         <tr style="background:#e8f0fe;font-weight:600;color:#1e3a5f">
           <td>IR Subtotal</td>
@@ -574,28 +574,28 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center;font-weight:700">SAR 70.3M</td>
           <td style="text-align:center;font-weight:700">SAR 110.0M</td>
           <td style="text-align:center;font-size:11px;color:#e74c3c">-25.1%</td>
-          <td colspan="3" style="font-size:11px;color:#f57c00">Apr actuals locked. May–Jun velocity is the critical execution lever.</td>
+          <td colspan="3" style="font-size:11px;color:#f57c00">4월 실적 확정. 5~6월 SO 속도가 Q2 달성의 핵심 실행 변수.</td>
         </tr>
       </tbody>
     </table>
-    <p class="note">* Apr: 2026 actual Sell-Thru from SAP data.json (as of 2026-05-06). May–Jun: back-calculated from Q2 targets (OR SAR 46.6M / IR SAR 63.4M). May/Jun split follows 2025 monthly ratio. 🚨 = urgent action required.</p>
+    <p class="note">* 4월: SAP data.json 기준 2026년 실적 (2026-05-06 기준). 5~6월: Q2 목표에서 4월 실적을 뺀 역산값 (OR SAR 46.6M / IR SAR 63.4M). 5월·6월 배분은 2025년 비율 적용. 🚨 = 긴급 조치 필요.</p>
   </div>
 </div>
 
 <div class="section">
   <div class="section-header">
-    <h2>5-2. Q2 Monthly Breakdown Forecast</h2>
-    <span>Apr: 2026 Actual | May–Jun: Target-minus-April, split by 2025 seasonality ratio</span>
+    <h2>5-2. Q2 월별 상세 예측</h2>
+    <span>4월: 2026 실적 | 5~6월: Q2 목표 − 4월 실적 역산, 2025 계절성 비율 적용</span>
   </div>
   <div class="section-body">
     <table>
       <thead>
         <tr>
-          <th rowspan="2">Channel</th>
-          <th colspan="2" style="text-align:center;background:#e8f5e9">Apr — Actual</th>
-          <th colspan="2" style="text-align:center;background:#e3f2fd">May — Forecast (W18~W22)</th>
-          <th colspan="2" style="text-align:center;background:#e8eaf6">Jun — Forecast (W23~W26)</th>
-          <th colspan="2" style="text-align:center;background:#fff3e0">Q2 Total</th>
+          <th rowspan="2">채널</th>
+          <th colspan="2" style="text-align:center;background:#e8f5e9">4월 — 실적</th>
+          <th colspan="2" style="text-align:center;background:#e3f2fd">5월 — 예측 (W18~W22)</th>
+          <th colspan="2" style="text-align:center;background:#e8eaf6">6월 — 예측 (W23~W26)</th>
+          <th colspan="2" style="text-align:center;background:#fff3e0">Q2 합계</th>
         </tr>
         <tr style="font-size:11px">
           <th style="text-align:center;background:#c8e6c9">2025 Act</th><th style="text-align:center;background:#a5d6a7;font-weight:700">2026 Actual</th>
@@ -605,7 +605,7 @@ tr:hover td{background:#fafbff}
         </tr>
       </thead>
       <tbody>
-        <tr class="sep-row"><td colspan="9"><span class="badge-or">OR</span> OR Channels</td></tr>
+        <tr class="sep-row"><td colspan="9"><span class="badge-or">OR</span> OR 채널</td></tr>
         <tr>
           <td style="padding-left:16px">eXtra</td>
           <td style="text-align:center;font-size:11px">SAR 11.7M</td>
@@ -678,7 +678,7 @@ tr:hover td{background:#fafbff}
           <td style="text-align:center">SAR 90.5M</td>
           <td style="text-align:center">SAR 46.6M</td>
         </tr>
-        <tr class="sep-row"><td colspan="9"><span class="badge-ir">IR</span> IR Channels</td></tr>
+        <tr class="sep-row"><td colspan="9"><span class="badge-ir">IR</span> IR 채널</td></tr>
         <tr>
           <td style="padding-left:16px">BH</td>
           <td style="text-align:center;font-size:11px">SAR 4.2M</td>
@@ -794,25 +794,25 @@ tr:hover td{background:#fafbff}
         </tr>
       </tbody>
     </table>
-    <p class="note">* Apr 2026: actual ST from SAP. May/Jun 2026: back-calc from Q2 targets; monthly split follows 2025 May:Jun ratio per channel. Negative May+Jun (Al Ghanem exceeded) shown as 0.</p>
+    <p class="note">* 4월 2026: SAP 실제 ST. 5~6월 2026: Q2 목표 역산; 채널별 2025 5월:6월 비율 적용. 5~6월 합이 음수인 채널(Al Ghanem 초과 달성)은 0으로 표시.</p>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-header"><h2>5-3. Q2 Strategy Highlights (RSM-based)</h2></div>
+  <div class="section-header"><h2>5-3. Q2 전략 주요 사항 (RSM 기반)</h2></div>
   <div class="section-body" style="padding:20px 24px;">
     <table>
-      <thead><tr><th>#</th><th>Channel</th><th>Q1 Status</th><th>Q2 Action</th><th>Priority</th></tr></thead>
+      <thead><tr><th>#</th><th>채널</th><th>Q1 현황</th><th>Q2 액션</th><th>우선순위</th></tr></thead>
       <tbody>
-        <tr><td>1</td><td><span class="badge-or">OR</span> eXtra</td><td>Largest OR channel in Q1 | YoY +45.6%</td><td>Focus on Mega promotion / Transition On/Off models to new models (EOL Fade out)</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
-        <tr><td>2</td><td><span class="badge-or">OR</span> Al Manea</td><td>Q1 YoY -59.6% | Returns occurred in Mar</td><td>Q2 shipment resumption meeting — 4/22</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
-        <tr><td>3</td><td><span class="badge-ir">IR</span> BH</td><td>Largest IR channel in Q1 | YoY -9.8%</td><td>Q2 inventory management focused on high-stock 18K Inverter models</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
-        <tr><td>4</td><td><span class="badge-ir">IR</span> IR_Others</td><td>Q1 YoY +99.5% (+110.9%)</td><td>Strengthen indirect sales & small-mid dealer development support activities</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
-        <tr><td>5</td><td><span class="badge-ir">IR</span> Zagzoog</td><td>Sell-through = 0, Payment bad</td><td>Review Q2 sales & payment progress, then decide on continuing business</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
-        <tr><td>6</td><td><span class="badge-ir">IR</span> Al Ghanem</td><td>Low performance</td><td>Drive Sell-Out &amp; Sell-Through expansion through Q2 Co-Marketing support</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
-        <tr><td>7</td><td>Pricing Strategy</td><td>2026 Q1 price tracking system in operation</td><td>Post-Mega competitor gap review / Maintain NS 18K positioning, <a href="https://shaker-dashboard.pages.dev/price/" target="_blank" style="color:#1565c0;text-decoration:underline">Daily Price Tracking</a></td><td style="color:#27ae60;font-weight:700">Ongoing</td></tr>
-        <tr><td>8</td><td>OR Overall</td><td>Q1 YoY -0.7% (Decline → inventory efficiency needed)</td><td>Secure Mega promotion inventory / Co-MKT support by channel</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
-        <tr><td>9</td><td>IR Overall</td><td>Q1 YoY +27.1% (Growth → maintain momentum)</td><td>Expand 18K Inverter market share / Scale up On/Off new model supply</td><td style="color:#27ae60;font-weight:700">Ongoing</td></tr>
+        <tr><td>1</td><td><span class="badge-or">OR</span> eXtra</td><td>OR 최대 채널 | YoY +45.6%</td><td>Mega 프로모 집중 / On/Off 단종 모델 신모델 전환(EOL Fade out)</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>2</td><td><span class="badge-or">OR</span> Al Manea</td><td>Q1 YoY -59.6% | 3월 반품 발생</td><td>Q2 출하 재개 협의 — 4/22 완료, Anniversary 프로모 공동 진행</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>3</td><td><span class="badge-ir">IR</span> BH</td><td>IR 최대 채널 | YoY -9.8%</td><td>18K Inverter 고재고 모델 중심 Q2 재고 회전 관리</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
+        <tr><td>4</td><td><span class="badge-ir">IR</span> IR_Others</td><td>Q1 YoY +99.5% (+110.9%)</td><td>간접 판매 강화 및 중소 딜러 개발 지원 활동 확대</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
+        <tr><td>5</td><td><span class="badge-ir">IR</span> Zagzoog</td><td>Sell-Through = 0, 대금 회수 불량</td><td>Q2 판매·대금 진행 상황 점검 후 거래 지속 여부 결정</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>6</td><td><span class="badge-ir">IR</span> Al Ghanem</td><td>저조한 실적</td><td>Q2 Co-Marketing 지원을 통한 Sell-Out·Sell-Through 확대</td><td style="color:#f39c12;font-weight:700">Medium</td></tr>
+        <tr><td>7</td><td>가격 전략</td><td>2026 Q1 가격 추적 시스템 운영 중</td><td>Mega 이후 경쟁사 가격 갭 검토 / NS 18K 포지셔닝 유지, <a href="https://shaker-dashboard.pages.dev/price/" target="_blank" style="color:#1565c0;text-decoration:underline">가격 일일 추적</a></td><td style="color:#27ae60;font-weight:700">지속</td></tr>
+        <tr><td>8</td><td>OR 전체</td><td>Q1 YoY -0.7% (감소 → 재고 효율화 필요)</td><td>Mega 프로모 재고 확보 / 채널별 Co-MKT 지원</td><td style="color:#e74c3c;font-weight:700">High</td></tr>
+        <tr><td>9</td><td>IR 전체</td><td>Q1 YoY +27.1% (성장 → 모멘텀 유지)</td><td>18K Inverter 시장점유율 확대 / On/Off 신모델 공급 확대</td><td style="color:#27ae60;font-weight:700">지속</td></tr>
       </tbody>
     </table>
   </div>
@@ -850,13 +850,13 @@ tr:hover td{background:#fafbff}
 
 
 <div style="background:#f8f9fa;border-radius:8px;padding:16px 20px;margin-bottom:24px;font-size:11px;color:#888;">
-  <strong>Data Sources (v15):</strong>
+  <strong>데이터 소스 (v15):</strong>
   Sell-Through: SAP Sell-Through Raw 2026 (data.json) |
-  Sell-Out OR: Individual Channel Raw Dashboards (extra-sellout / or-al-manea / or-sws / or-black-box / or-al-khunizan) |
-  Sell-Out IR: Individual IR Channel Dashboards |
-  ASP Comparison (4-1/4-2): eXtra MS Value Dashboard — Actual Sales ASP (Val/Qty, excl. VAT) |
-  ASP Internal Trend: SAP Raw Data 2025 / 2026 Q1 |
-  <strong>v15 Update:</strong> ASP grade-level separation (Entry/Mid/High) — direct use of dashboard JSON. Stock section added (OR 5 channels / IR total). Generated: 2026-04-20
+  Sell-Out OR: 채널별 개별 대시보드 (extra-sellout / or-al-manea / or-sws / or-black-box / or-al-khunizan) |
+  Sell-Out IR: IR 채널별 개별 대시보드 |
+  ASP 비교 (4-1/4-2): eXtra MS Value 대시보드 — 실판매 ASP (금액/수량, VAT 제외) |
+  ASP 내부 추세: SAP Raw Data 2025 / 2026 Q1 |
+  <strong>v15 업데이트:</strong> ASP 등급별 세분화(Entry/Mid/High) — 대시보드 JSON 직접 사용. 재고 섹션 추가 (OR 5채널 / IR 합산). 생성일: 2026-04-20
 </div>
 
 </div><!-- /container -->
@@ -907,16 +907,16 @@ function setStMode(mode) {
   document.getElementById('toggleQty').style.color      = mode==='qty'   ? '#fff'    : '#1565c0';
   const isQty = mode === 'qty';
   document.getElementById('st11Title').textContent = isQty
-    ? '1-1. Sell-Through by Channel × Month (Quantity)' : '1-1. Sell-Through by Channel × Month (Value, excl. VAT)';
+    ? '1-1. 채널별 × 월별 Sell-Through (수량)' : '1-1. 채널별 × 월별 Sell-Through (금액, VAT 제외)';
   document.getElementById('st11Sub').textContent   = isQty
-    ? 'Unit: Units | YoY: vs 2025 Jan–Apr' : 'Unit: SAR | YoY: vs 2025 Jan–Apr';
+    ? '단위: 대(Units) | YoY: 2025년 1~4월 대비' : '단위: SAR | YoY: 2025년 1~4월 대비';
   document.getElementById('st11Note').textContent  = isQty
-    ? '* Quantity basis: SAP shipment Qty. Net incl. returns (ZCD/ZDRO/ZRE).'
-    : '* Value basis: excl. VAT 15%. Net incl. returns (ZCD/ZDRO/ZRE). | * Negative values indicate returns exceed shipments in that month.';
-  document.getElementById('st12Title').textContent = '1-2. Jan–Apr Sell-Through by Category';
-  document.getElementById('st12Sub').textContent   = isQty ? 'Unit: Units' : 'Unit: SAR';
-  document.getElementById('catCol26').textContent  = isQty ? '2026 Jan–Apr Units' : '2026 Jan–Apr Value';
-  document.getElementById('catCol25').textContent  = isQty ? '2025 Jan–Apr Units' : '2025 Jan–Apr Value';
+    ? '* 수량 기준: SAP 출하 수량. 반품(ZCD/ZDRO/ZRE) 포함 순액.'
+    : '* 금액 기준: VAT 15% 제외. 반품(ZCD/ZDRO/ZRE) 포함 순액. | * 음수는 해당 월 반품이 출하를 초과함을 의미.';
+  document.getElementById('st12Title').textContent = '1-2. 1~4월 카테고리별 Sell-Through';
+  document.getElementById('st12Sub').textContent   = isQty ? '단위: 대(Units)' : '단위: SAR';
+  document.getElementById('catCol26').textContent  = isQty ? '2026년 1~4월 수량' : '2026년 1~4월 금액';
+  document.getElementById('catCol25').textContent  = isQty ? '2025년 1~4월 수량' : '2025년 1~4월 금액';
   const cats = getCats();
   renderKPI(cats);
   renderST(cats);
