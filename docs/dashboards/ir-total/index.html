@@ -1680,6 +1680,8 @@ function renderTab5() {
    TAB 6 - DATA VALIDATION
    ========================================================= */
 function buildTab6() {
+    const C6 = mCL();
+    const P6 = mPL() || 'Jan';
     document.getElementById('tab6').innerHTML = `
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">DEALER-CATEGORIES</div><div class="kpi-value" id="k6-totalDC">-</div><div class="kpi-change" id="k6-totalDC-m"></div></div>
@@ -1688,8 +1690,8 @@ function buildTab6() {
       <div class="kpi-card" id="kc6-purity"><div class="kpi-label">DATA PURITY SCORE</div><div class="kpi-value" id="k6-purityScore">-</div><div class="kpi-change" id="k6-purityScore-m"></div></div>
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">DROPPED DEALERS</div><div class="kpi-value" id="k6-droppedDealers">-</div><div class="kpi-change">Jan active, Feb zero</div></div>
-      <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">NEW DEALERS</div><div class="kpi-value" id="k6-newDealers">-</div><div class="kpi-change">Jan zero, Feb active</div></div>
+      <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">DROPPED DEALERS</div><div class="kpi-value" id="k6-droppedDealers">-</div><div class="kpi-change">${P6} active, ${C6} zero</div></div>
+      <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">NEW DEALERS</div><div class="kpi-value" id="k6-newDealers">-</div><div class="kpi-change">${P6} zero, ${C6} active</div></div>
       <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">DROPPED CHANNELS</div><div class="kpi-value" id="k6-droppedDC">-</div><div class="kpi-change">Dealer-Category level</div></div>
       <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">NEW CHANNELS</div><div class="kpi-value" id="k6-newDC">-</div><div class="kpi-change">Dealer-Category level</div></div>
     </div>
@@ -1706,11 +1708,11 @@ function buildTab6() {
           <th class="sortable" data-col="category">Category</th>
           <th class="sortable" data-col="region">Region</th>
           <th class="sortable" data-col="salesman">Salesman</th>
-          <th class="sortable" data-col="jan_stk">Jan Stock</th>
-          <th class="sortable" data-col="feb_st">+ Feb ST</th>
-          <th class="sortable" data-col="feb_so">- Feb SO</th>
+          <th class="sortable" data-col="jan_stk">${P6} Stock</th>
+          <th class="sortable" data-col="feb_st">+ ${C6} ST</th>
+          <th class="sortable" data-col="feb_so">- ${C6} SO</th>
           <th class="sortable" data-col="expected">= Expected</th>
-          <th class="sortable" data-col="actual">Actual Feb Stk</th>
+          <th class="sortable" data-col="actual">Actual ${C6} Stk</th>
           <th class="sortable" data-col="disc">Discrepancy</th>
           <th class="sortable" data-col="disc_pct">Disc %</th>
           <th>Signal</th>
@@ -1718,12 +1720,12 @@ function buildTab6() {
       </table></div>
     </div>
     <div class="table-grid">
-      <div class="table-box"><h3>Dropped Channels (Jan &#8594; Feb)</h3><div class="dealer-count" id="droppedCount"></div><div class="table-scroll" style="max-height:350px;"><table>
-        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>Jan ST</th><th>Jan SO</th><th>Jan Stock</th></tr></thead>
+      <div class="table-box"><h3>Dropped Channels (${P6} &#8594; ${C6})</h3><div class="dealer-count" id="droppedCount"></div><div class="table-scroll" style="max-height:350px;"><table>
+        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>${P6} ST</th><th>${P6} SO</th><th>${P6} Stock</th></tr></thead>
         <tbody id="tbl6dropped"></tbody>
       </table></div></div>
-      <div class="table-box"><h3>New Channels (Feb)</h3><div class="dealer-count" id="newCount"></div><div class="table-scroll" style="max-height:350px;"><table>
-        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>Feb ST</th><th>Feb SO</th><th>Feb Stock</th></tr></thead>
+      <div class="table-box"><h3>New Channels (${C6})</h3><div class="dealer-count" id="newCount"></div><div class="table-scroll" style="max-height:350px;"><table>
+        <thead><tr><th>Dealer</th><th>Category</th><th>Region</th><th>Salesman</th><th>${C6} ST</th><th>${C6} SO</th><th>${C6} Stock</th></tr></thead>
         <tbody id="tbl6new"></tbody>
       </table></div></div>
     </div>
