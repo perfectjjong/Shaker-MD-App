@@ -601,7 +601,7 @@ function buildGlobalFilters() {
     document.getElementById('globalFilterReset').addEventListener('click', resetAllFilters);
     const oudBtn = document.getElementById('oudToggleBtn');
     if (oudBtn) oudBtn.addEventListener('click', toggleOudMode);
-    msMonth.setOptions(['Jan', 'Feb', 'Mar']);
+    msMonth.setOptions(['Jan', 'Feb', 'Mar', 'Apr']);
     populateFilterOptions();
 }
 
@@ -2016,7 +2016,7 @@ function buildTab7() {
           <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
           ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
           <th class="sortable" data-col="adj">Adjusted Stock</th>
-          <th class="sortable" data-col="so">Feb SO</th>
+          <th class="sortable" data-col="so">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
           <th>Signal Change</th>
@@ -2036,7 +2036,7 @@ function buildTab7() {
           <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
           ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
           <th class="sortable" data-col="adjV">Adjusted Stock</th>
-          <th class="sortable" data-col="soV">Feb SO</th>
+          <th class="sortable" data-col="soV">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
           <th>Signal Change</th>
@@ -2056,7 +2056,7 @@ function buildTab7() {
           <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
           ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
           <th class="sortable" data-col="adj">Adjusted Stock</th>
-          <th class="sortable" data-col="so">Feb SO</th>
+          <th class="sortable" data-col="so">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
           <th>Signal Change</th>
@@ -2076,7 +2076,7 @@ function buildTab7() {
           <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
           ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
           <th class="sortable" data-col="adjV">Adjusted Stock</th>
-          <th class="sortable" data-col="soV">Feb SO</th>
+          <th class="sortable" data-col="soV">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
           <th>Signal Change</th>
