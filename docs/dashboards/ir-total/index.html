@@ -1367,9 +1367,9 @@ let dealerSortCol = null;
 let dealerSortAsc = true;
 let tab6BalSortCol = 'disc', tab6BalSortAsc = false;
 let tab6SumSortCol = 'purity', tab6SumSortAsc = true;
-let tab7DealerSortCol = 'oudF', tab7DealerSortAsc = false;
+let tab7DealerSortCol = 'oudL', tab7DealerSortAsc = false;
 let tab7ValSortCol = 'oudFV', tab7ValSortAsc = false;
-let tab7SkuSortCol = 'oudF', tab7SkuSortAsc = false;
+let tab7SkuSortCol = 'oudL', tab7SkuSortAsc = false;
 let tab7SkuValSortCol = 'oudFV', tab7SkuValSortAsc = false;
 const OUD_LOCAL = { region:[], salesman:[], dealer:[], category:[], signal:[] };
 let oudMsRegion, oudMsSalesman, oudMsDealer, oudMsCategory, oudMsSignal;
@@ -1977,16 +1977,16 @@ function buildTab7() {
 
     document.getElementById('tab7').innerHTML = `
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (${curDate7})</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Monthly stock as of ${curDate7}</div></div>
-      <div class="kpi-card"><div class="kpi-label">UPDATED ON-HAND (${latest.label})</div><div class="kpi-value" id="k7-updatedOnhand">-</div><div class="kpi-change" id="k7-updatedOnhandSub"></div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">ADJUSTED STOCK (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#2E75B6">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
-      <div class="kpi-card"><div class="kpi-label">LATEST OUD QTY (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
+      <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (${curDate7})</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Dealer stock as of ${curDate7}</div></div>
+      <div class="kpi-card"><div class="kpi-label">OUD REMAINING (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
+      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">TOTAL CHANNEL (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#2E75B6">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
+      <div class="kpi-card"><div class="kpi-label">${C7} SELL-OUT</div><div class="kpi-value" id="k7-so">-</div><div class="kpi-change">MOS denominator</div></div>
     </div>
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">MOS (ON-HAND / ${curDate7})</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">Based on ${C7} Sellout</div></div>
-      <div class="kpi-card"><div class="kpi-label">MOS (UPDATED ON-HAND)</div><div class="kpi-value" id="k7-mosUpdated">-</div><div class="kpi-change">On-Hand + delivered OUD</div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">MOS (ON-HAND + OUD)</div><div class="kpi-value" id="k7-mosAdj" style="color:#2E75B6">-</div><div class="kpi-change">Including pending deliveries</div></div>
-      <div class="kpi-card"><div class="kpi-label">DELIVERED QTY</div><div class="kpi-value" id="k7-delivered" style="color:var(--opportunity)">-</div><div class="kpi-change" id="k7-deliveredSub"></div></div>
+      <div class="kpi-card"><div class="kpi-label">MOS — ON-HAND (${curDate7})</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">On-Hand ÷ ${C7} Sell-Out</div></div>
+      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">MOS — TOTAL CHANNEL</div><div class="kpi-value" id="k7-mosAdj" style="color:#2E75B6">-</div><div class="kpi-change">Total Channel ÷ ${C7} Sell-Out</div></div>
+      <div class="kpi-card"><div class="kpi-label">OUD DEALERS</div><div class="kpi-value" id="k7-oudDealers">-</div><div class="kpi-change" id="k7-oudDealersSub"></div></div>
+      <div class="kpi-card"><div class="kpi-label">OUD TREND</div><div class="kpi-value" id="k7-oudTrend">-</div><div class="kpi-change" id="k7-oudTrendSub"></div></div>
     </div>
     <div class="chart-grid">
       <div class="chart-box"><h3>OUD Weekly Trend (QTY)</h3><div class="chart-container"><canvas id="chart7a"></canvas></div></div>
@@ -2016,8 +2016,7 @@ function buildTab7() {
           <th class="sortable" data-col="stk">On-Hand Stock</th>
           ${prev ? '<th class="sortable" data-col="oudP">OUD '+prev.label+'</th>' : ''}
           <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
-          <th class="sortable" data-col="adj">Adjusted Stock</th>
+          <th class="sortable" data-col="adj">Total Channel</th>
           <th class="sortable" data-col="so">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
@@ -2036,8 +2035,7 @@ function buildTab7() {
           <th class="sortable" data-col="stkV">On-Hand Stock</th>
           ${prev ? '<th class="sortable" data-col="oudPV">OUD '+prev.label+'</th>' : ''}
           <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
-          <th class="sortable" data-col="adjV">Adjusted Stock</th>
+          <th class="sortable" data-col="adjV">Total Channel</th>
           <th class="sortable" data-col="soV">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
@@ -2056,8 +2054,7 @@ function buildTab7() {
           <th class="sortable" data-col="stk">On-Hand Stock</th>
           ${prev ? '<th class="sortable" data-col="oudP">OUD '+prev.label+'</th>' : ''}
           <th class="sortable" data-col="oudL">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="del">Delivered</th>' : ''}
-          <th class="sortable" data-col="adj">Adjusted Stock</th>
+          <th class="sortable" data-col="adj">Total Channel</th>
           <th class="sortable" data-col="so">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
@@ -2076,8 +2073,7 @@ function buildTab7() {
           <th class="sortable" data-col="stkV">On-Hand Stock</th>
           ${prev ? '<th class="sortable" data-col="oudPV">OUD '+prev.label+'</th>' : ''}
           <th class="sortable" data-col="oudLV">OUD ${latest.label}</th>
-          ${prev ? '<th class="sortable" data-col="delV">Delivered</th>' : ''}
-          <th class="sortable" data-col="adjV">Adjusted Stock</th>
+          <th class="sortable" data-col="adjV">Total Channel</th>
           <th class="sortable" data-col="soV">${C7} SO</th>
           <th class="sortable" data-col="mosOH">MOS (On-Hand)</th>
           <th class="sortable" data-col="mosA">MOS (Adjusted)</th>
@@ -2168,11 +2164,11 @@ function populateOudLocalOptions() {
     const byRSDC = OUD_LOCAL.category.length === 0 ? byRSD : byRSD.filter(d => OUD_LOCAL.category.includes(d.category));
     const dcLookup = {};
     DATA.dealerCategory.forEach(d => { dcLookup[d.dealer + '||' + d.category] = d; });
-    const fk = (DATA.oudMeta || [])[0]?.key;
+    const lkLocal = (DATA.oudMeta || []).slice(-1)[0]?.key;
     const signals = [...new Set(byRSDC.map(d => {
         const dc = dcLookup[d.dealer + '||' + d.category];
         const cp = dc ? (dc[ck] || {}) : {};
-        const adj = (cp.stkQty||0) + (d[fk]?.qty||0);
+        const adj = (cp.stkQty||0) + (d[lkLocal]?.qty||0);
         return calcSignal({soQty: cp.soQty||0, stkQty: adj});
     }))].filter(Boolean).sort();
     oudMsSignal.setOptions(signals);
@@ -2209,41 +2205,47 @@ function renderTab7() {
         (FILTERS.category.length === 0 || FILTERS.category.includes(d.category))
     );
 
-    // Aggregate KPIs — On-Hand from ALL dealerCategory (개선방안 1번: Executive Summary와 동일 범위)
-    const fk = weeks[0].key;  // first week key (initial OUD = total pipeline)
-    let totalOnHand = 0, totalSO = 0, totalOudFirst = 0, totalOudLatest = 0, totalOudPrev = 0;
+    // Aggregate KPIs
+    let totalOnHand = 0, totalSO = 0, totalOudLatest = 0, totalOudPrev = 0;
     rawDC.forEach(d => {
         const cp = d[ck] || {};
         totalOnHand += (cp.stkQty || 0);
         totalSO += (cp.soQty || 0);
     });
     filteredOudDC.forEach(d => {
-        totalOudFirst += (d[fk]?.qty || 0);
         totalOudLatest += (d[lk]?.qty || 0);
         if (pk) totalOudPrev += (d[pk]?.qty || 0);
     });
 
-    const totalDelivered = totalOudFirst - totalOudLatest;  // 최초 OUD 대비 전체 배송량
-    const weekDelivered = pk ? totalOudPrev - totalOudLatest : 0;  // 직전 주 대비 배송량
-    const adjStock = totalOnHand + totalOudFirst;  // 총 파이프라인 = On-Hand + 최초 OUD
-    const updatedOnHand = totalOnHand + totalDelivered;  // 현재 On-Hand = Feb + 전체 배송량
+    const totalChannel = totalOnHand + totalOudLatest;  // Total Channel = On-Hand + Latest OUD
     const mosOnHand = totalSO > 0 ? totalOnHand / totalSO : null;
-    const mosAdj = totalSO > 0 ? adjStock / totalSO : null;
-    const mosUpdated = totalSO > 0 ? updatedOnHand / totalSO : null;
+    const mosChannel = totalSO > 0 ? totalChannel / totalSO : null;
+
+    // OUD dealer count & trend
+    const oudDealerCount = filteredOudDC.filter(d => (d[lk]?.qty || 0) > 0).length;
+    const weekChange = pk ? totalOudLatest - totalOudPrev : null;
 
     const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
     set('k7-onhand', fmtNum(totalOnHand));
     set('k7-oudLatest', fmtNum(totalOudLatest));
-    set('k7-oudChg', `Initial (${weeks[0].label}): ${fmtNum(totalOudFirst)}`);
-    set('k7-adjStock', fmtNum(adjStock));
-    set('k7-adjStockSub', `On-Hand ${fmtNum(totalOnHand)} + Initial OUD ${fmtNum(totalOudFirst)}`);
-    set('k7-delivered', fmtNum(totalDelivered));
-    set('k7-deliveredSub', `Initial OUD ${fmtNum(totalOudFirst)} → Latest ${fmtNum(totalOudLatest)}${pk ? ' (This week: '+fmtNum(weekDelivered)+')' : ''}`);
+    set('k7-oudChg', pk ? `Prev (${prev.label}): ${fmtNum(totalOudPrev)}` : `Tracking since ${weeks[0].label}`);
+    set('k7-adjStock', fmtNum(totalChannel));
+    set('k7-adjStockSub', `On-Hand ${fmtNum(totalOnHand)} + OUD ${fmtNum(totalOudLatest)}`);
+    set('k7-so', fmtNum(totalSO));
     set('k7-mosOnhand', fmtRatio(mosOnHand));
-    set('k7-mosAdj', fmtRatio(mosAdj));
-    set('k7-updatedOnhand', fmtNum(updatedOnHand));
-    set('k7-updatedOnhandSub', `${mCL()} Stock + ${fmtNum(totalDelivered)} delivered`);
-    set('k7-mosUpdated', fmtRatio(mosUpdated));
+    set('k7-mosAdj', fmtRatio(mosChannel));
+    set('k7-oudDealers', fmtNum(oudDealerCount));
+    set('k7-oudDealersSub', `Dealers with OUD as of ${latest.label}`);
+    if (weekChange !== null) {
+        const sign = weekChange > 0 ? '+' : '';
+        set('k7-oudTrend', `${sign}${fmtNum(weekChange)}`);
+        set('k7-oudTrendSub', `${prev.label} → ${latest.label}`);
+        const el = document.getElementById('k7-oudTrend');
+        if (el) el.style.color = weekChange > 0 ? 'var(--overstock)' : 'var(--opportunity)';
+    } else {
+        set('k7-oudTrend', '-');
+        set('k7-oudTrendSub', 'No prior week data');
+    }
 
     // Datalabel options for stacked bars (show value inside segment if > 0)
     const dlOpts = { plugins:{ datalabels:{ color:'#fff', font:{size:10, weight:'bold'},
@@ -2275,20 +2277,17 @@ function renderTab7() {
         const dc = dcLookup[d.dealer + '||' + d.category];
         const cp = dc ? (dc[ck] || {}) : {};
         const stk = cp.stkQty || 0; const stkV = cp.stkVal || 0;
-        const oudF = d[fk]?.qty || 0; const oudFV = d[fk]?.val || 0;
         const oudL = d[lk]?.qty || 0; const oudLV = d[lk]?.val || 0;
-        if (!catStockMap[d.category]) catStockMap[d.category] = {onhand:0,onhandV:0,remainingOud:0,remainingOudV:0,delivered:0,deliveredV:0};
+        if (!catStockMap[d.category]) catStockMap[d.category] = {onhand:0,onhandV:0,remainingOud:0,remainingOudV:0};
         catStockMap[d.category].onhand += stk; catStockMap[d.category].onhandV += stkV;
         catStockMap[d.category].remainingOud += oudL; catStockMap[d.category].remainingOudV += oudLV;
-        catStockMap[d.category].delivered += (oudF - oudL); catStockMap[d.category].deliveredV += (oudFV - oudLV);
     });
     const cats7 = Object.keys(catStockMap).sort();
     destroyChart('c7b');
     window.charts.c7b = new Chart(document.getElementById('chart7b'), {
         type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
             { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhand), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'Remaining OUD', data: cats7.map(c=>catStockMap[c].remainingOud), backgroundColor:'#2E75B6', borderRadius:4 },
-            { label:'Delivered', data: cats7.map(c=>catStockMap[c].delivered), backgroundColor:'#5B9BD5', borderRadius:4 },
+            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOud), backgroundColor:'#2E75B6', borderRadius:4 },
         ] },
         options:{ responsive:true, maintainAspectRatio:false, ...dlOpts,
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} },
@@ -2312,8 +2311,7 @@ function renderTab7() {
     window.charts.c7d = new Chart(document.getElementById('chart7d'), {
         type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
             { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhandV), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'Remaining OUD', data: cats7.map(c=>catStockMap[c].remainingOudV), backgroundColor:'#2E75B6', borderRadius:4 },
-            { label:'Delivered', data: cats7.map(c=>catStockMap[c].deliveredV), backgroundColor:'#5B9BD5', borderRadius:4 },
+            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOudV), backgroundColor:'#2E75B6', borderRadius:4 },
         ] },
         options:{ responsive:true, maintainAspectRatio:false, ...dlOptsVal,
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtVal(v)}} },
@@ -2326,11 +2324,9 @@ function renderTab7() {
         const cp = dc ? (dc[ck] || {}) : {};
         const stk = cp.stkQty || 0;
         const so = cp.soQty || 0;
-        const oudF = d[fk]?.qty || 0;
         const oudL = d[lk]?.qty || 0;
         const oudP = pk ? (d[pk]?.qty || 0) : 0;
-        const del = oudF - oudL;
-        const adj = stk + oudF;
+        const adj = stk + oudL;
         const mosOH = so > 0 ? stk / so : null;
         const mosA = so > 0 ? adj / so : null;
         const sigOH = calcSignal({soQty:so, stkQty:stk});
@@ -2339,14 +2335,12 @@ function renderTab7() {
         // Value fields
         const stkV = cp.stkVal || 0;
         const soV = cp.soVal || 0;
-        const oudFV = d[fk]?.val || 0;
         const oudLV = d[lk]?.val || 0;
         const oudPV = pk ? (d[pk]?.val || 0) : 0;
-        const delV = oudFV - oudLV;
-        const adjV = stkV + oudFV;
-        return {d, stk, oudF, oudP, oudL, del, adj, so, mosOH, mosA, sigChange, sigOH, sigA,
-                stkV, soV, oudFV, oudLV, oudPV, delV, adjV};
-    }).filter(r => r.oudF > 0 || r.oudL > 0);
+        const adjV = stkV + oudLV;
+        return {d, stk, oudP, oudL, adj, so, mosOH, mosA, sigChange, sigOH, sigA,
+                stkV, soV, oudLV, oudPV, adjV};
+    }).filter(r => r.oudL > 0);
 
     // Apply local OUD filters (multi-select + dealer search)
     const lfSearch = (document.getElementById('oud-f-dealer')?.value || '').toLowerCase();
@@ -2379,7 +2373,6 @@ function renderTab7() {
             <td class="num">${fmtNum(r.stk)}</td>
             ${pk ? '<td class="num">'+fmtNum(r.oudP)+'</td>' : ''}
             <td class="num">${fmtNum(r.oudL)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtNum(r.del)+'</td>' : ''}
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
@@ -2388,9 +2381,9 @@ function renderTab7() {
     }).join('');
 
     // QTY totals row
-    const tStk = dealerRows.reduce((s,r)=>s+r.stk,0), tOudF = dealerRows.reduce((s,r)=>s+r.oudF,0);
+    const tStk = dealerRows.reduce((s,r)=>s+r.stk,0);
     const tOudP = dealerRows.reduce((s,r)=>s+r.oudP,0), tOudL = dealerRows.reduce((s,r)=>s+r.oudL,0);
-    const tDel = dealerRows.reduce((s,r)=>s+r.del,0), tAdj = dealerRows.reduce((s,r)=>s+r.adj,0);
+    const tAdj = dealerRows.reduce((s,r)=>s+r.adj,0);
     const tSo = dealerRows.reduce((s,r)=>s+r.so,0);
     const tMosOH = tSo > 0 ? tStk/tSo : null, tMosA = tSo > 0 ? tAdj/tSo : null;
     const totStyle = 'style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy)"';
@@ -2399,7 +2392,6 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tStk)}</td>
         ${pk ? '<td class="num" '+totStyle+'>'+fmtNum(tOudP)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtNum(tOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tDel)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtNum(tAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tMosOH)}</td>
@@ -2427,7 +2419,6 @@ function renderTab7() {
             <td class="num">${fmtVal(r.stkV)}</td>
             ${pk ? '<td class="num">'+fmtVal(r.oudPV)+'</td>' : ''}
             <td class="num">${fmtVal(r.oudLV)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtVal(r.delV)+'</td>' : ''}
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
@@ -2436,9 +2427,9 @@ function renderTab7() {
     }).join('');
 
     // VALUE totals row
-    const tvStk = valRows.reduce((s,r)=>s+r.stkV,0), tvOudF = valRows.reduce((s,r)=>s+r.oudFV,0);
+    const tvStk = valRows.reduce((s,r)=>s+r.stkV,0);
     const tvOudP = valRows.reduce((s,r)=>s+r.oudPV,0), tvOudL = valRows.reduce((s,r)=>s+r.oudLV,0);
-    const tvDel = valRows.reduce((s,r)=>s+r.delV,0), tvAdj = valRows.reduce((s,r)=>s+r.adjV,0);
+    const tvAdj = valRows.reduce((s,r)=>s+r.adjV,0);
     const tvSo = valRows.reduce((s,r)=>s+r.soV,0);
     const tvMosOH = tSo > 0 ? tStk/tSo : null, tvMosA = tSo > 0 ? tAdj/tSo : null;
     document.getElementById('tbl7oudVal').innerHTML += `<tr>
@@ -2446,7 +2437,6 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tvStk)}</td>
         ${pk ? '<td class="num" '+totStyle+'>'+fmtVal(tvOudP)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtVal(tvOudL)}</td>
-        ${pk ? '<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tvDel)+'</td>' : ''}
         <td class="num" ${totStyle}>${fmtVal(tvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tvMosOH)}</td>
@@ -2506,10 +2496,9 @@ function renderTab7() {
         const d = skuOudMap[sku] || { sku, className:'', category:'', region:'', salesman:'' };
         const ss = skuStockMap[sku] || {stk:0,stkV:0,so:0,soV:0,className:'',category:''};
         if (!d.className && ss.className) { d.className = ss.className; d.category = ss.category; }
-        const oudF = d[fk]?.qty || 0, oudL = d[lk]?.qty || 0, oudP = pk ? (d[pk]?.qty || 0) : 0;
-        const oudFV = d[fk]?.val || 0, oudLV = d[lk]?.val || 0, oudPV = pk ? (d[pk]?.val || 0) : 0;
-        const del = oudF - oudL, delV = oudFV - oudLV;
-        const adj = ss.stk + oudF, adjV = ss.stkV + oudFV;
+        const oudL = d[lk]?.qty || 0, oudP = pk ? (d[pk]?.qty || 0) : 0;
+        const oudLV = d[lk]?.val || 0, oudPV = pk ? (d[pk]?.val || 0) : 0;
+        const adj = ss.stk + oudL, adjV = ss.stkV + oudLV;
         const mosOH = ss.so > 0 ? ss.stk / ss.so : null;
         const mosA = ss.so > 0 ? adj / ss.so : null;
         const sigOH = calcSignal({soQty:ss.so, stkQty:ss.stk});
@@ -2517,8 +2506,8 @@ function renderTab7() {
         const sigChange = sigOH !== sigA ? `${sigOH} → ${sigA}` : '-';
         return { d, sku:d.sku||sku, className:d.className||ss.className||'', category:d.category||ss.category||'',
                  stk:ss.stk, stkV:ss.stkV, so:ss.so, soV:ss.soV,
-                 oudF, oudL, oudP, del, adj, oudFV, oudLV, oudPV, delV, adjV, mosOH, mosA, sigOH, sigA, sigChange };
-    }).filter(r => r.oudF > 0 || r.oudL > 0);
+                 oudL, oudP, adj, oudLV, oudPV, adjV, mosOH, mosA, sigOH, sigA, sigChange };
+    }).filter(r => r.oudL > 0);
 
     // Apply signal filter only (other filters already applied above)
     const skuRows = allSkuRows.filter(r =>
@@ -2545,7 +2534,6 @@ function renderTab7() {
             <td class="num">${fmtNum(r.stk)}</td>
             ${pk ? '<td class="num">'+fmtNum(r.oudP)+'</td>' : ''}
             <td class="num">${fmtNum(r.oudL)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtNum(r.del)+'</td>' : ''}
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
@@ -2555,7 +2543,7 @@ function renderTab7() {
 
     // SKU QTY totals
     const tsStk=skuRows.reduce((s,r)=>s+r.stk,0), tsOudP=skuRows.reduce((s,r)=>s+r.oudP,0);
-    const tsOudL=skuRows.reduce((s,r)=>s+r.oudL,0), tsDel=skuRows.reduce((s,r)=>s+r.del,0);
+    const tsOudL=skuRows.reduce((s,r)=>s+r.oudL,0);
     const tsAdj=skuRows.reduce((s,r)=>s+r.adj,0), tsSo=skuRows.reduce((s,r)=>s+r.so,0);
     const tsMosOH=tsSo>0?tsStk/tsSo:null, tsMosA=tsSo>0?tsAdj/tsSo:null;
     document.getElementById('tbl7sku').innerHTML += `<tr>
@@ -2563,7 +2551,6 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tsStk)}</td>
         ${pk?'<td class="num" '+totStyle+'>'+fmtNum(tsOudP)+'</td>':''}
         <td class="num" ${totStyle}>${fmtNum(tsOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtNum(tsDel)+'</td>':''}
         <td class="num" ${totStyle}>${fmtNum(tsAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tsSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsMosOH)}</td>
@@ -2591,7 +2578,6 @@ function renderTab7() {
             <td class="num">${fmtVal(r.stkV)}</td>
             ${pk ? '<td class="num">'+fmtVal(r.oudPV)+'</td>' : ''}
             <td class="num">${fmtVal(r.oudLV)}</td>
-            ${pk ? '<td class="num" style="color:var(--opportunity);font-weight:600">'+fmtVal(r.delV)+'</td>' : ''}
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
@@ -2601,7 +2587,7 @@ function renderTab7() {
 
     // SKU VALUE totals
     const tsvStk=skuValRows.reduce((s,r)=>s+r.stkV,0), tsvOudP=skuValRows.reduce((s,r)=>s+r.oudPV,0);
-    const tsvOudL=skuValRows.reduce((s,r)=>s+r.oudLV,0), tsvDel=skuValRows.reduce((s,r)=>s+r.delV,0);
+    const tsvOudL=skuValRows.reduce((s,r)=>s+r.oudLV,0);
     const tsvAdj=skuValRows.reduce((s,r)=>s+r.adjV,0), tsvSo=skuValRows.reduce((s,r)=>s+r.soV,0);
     const tsvMosOH=tsSo>0?tsStk/tsSo:null, tsvMosA=tsSo>0?tsAdj/tsSo:null;
     document.getElementById('tbl7skuVal').innerHTML += `<tr>
@@ -2609,7 +2595,6 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tsvStk)}</td>
         ${pk?'<td class="num" '+totStyle+'>'+fmtVal(tsvOudP)+'</td>':''}
         <td class="num" ${totStyle}>${fmtVal(tsvOudL)}</td>
-        ${pk?'<td class="num" '+totStyle+' style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:var(--opportunity)">'+fmtVal(tsvDel)+'</td>':''}
         <td class="num" ${totStyle}>${fmtVal(tsvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tsvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsvMosOH)}</td>
