@@ -27,44 +27,59 @@ OUTPUT_FILE     = os.path.join(CURRENT_DIR, "alkhater_ac_prices.xlsx")
 
 # ─── 브랜드 매핑 (모델 prefix → 브랜드명) ───────────────────────────────
 MODEL_BRAND_MAP = [
-    (r'^(NS|ND|NT|AM|AF|NW|NF|LA|LB|LH|LK|LO|LT|LS)',         'LG'),
-    (r'^KSGA',                                                    'Super General'),
-    (r'^GWC|^GMV|^GWH',                                          'Gree'),
-    (r'^HSU|^HAS|^HEU',                                          'Haier'),
-    (r'^WDV|^MSTL|^MSKMP|^MSM',                                  'Midea'),
-    (r'^WWS|^WWA',                                                'Westinghouse'),
-    (r'^DW\d|^DT\d',                                              'Crafft'),
-    (r'^DSA',                                                     'Dansat'),
-    (r'^HW\d|^AS\d',                                              'Hisense'),
-    (r'^UW',                                                      'Ruud'),
-    (r'^HQAS',                                                    'Home Queen'),
-    (r'^MPC|^MMPC|^MANDO',                                        'Mando'),
-    (r'^SAC|^SAS',                                                'Samsung'),
-    (r'^TCL',                                                     'TCL'),
-    (r'^AUX',                                                     'AUX'),
+    (r'^(NS|ND|NT|AM|AF|NW|NF|LA|LB|LH|LK|LO|LT|LS|APNQ|APUW|APW)',  'LG'),
+    (r'^KSGA',                                                            'Super General'),
+    (r'^GWC|^GMV|^GWH',                                                  'Gree'),
+    (r'^HSU|^HAS|^HEU',                                                  'Haier'),
+    (r'^WDV|^MSTL|^MSKMP|^MSM|^MSTE',                                   'Midea'),
+    (r'^WWS|^WWA',                                                        'Westinghouse'),
+    (r'^DW\d|^DT\d',                                                      'Crafft'),
+    (r'^DSA',                                                             'Dansat'),
+    (r'^HW\d|^AS\d',                                                      'Hisense'),
+    (r'^UW',                                                              'Ruud'),
+    (r'^HQAS',                                                            'Home Queen'),
+    (r'^MPC|^MMPC|^MANDO',                                               'Mando'),
+    (r'^SAC|^SAS',                                                        'Samsung'),
+    (r'^(TAC|CW-T|CWT)',                                                  'TCL'),
+    (r'^AUX',                                                             'AUX'),
+    (r'^(FT|FW|FM)',                                                      'Frigidaire'),
+    (r'^TH-C|^TU-C',                                                      'Tornado'),
+    (r'^ZCP|^ZCH',                                                        'Zamil'),
+    (r'^GD\d',                                                            'General Dan'),
+    (r'^GJC|^GLW',                                                        'General'),
 ]
 
 # 아랍어 브랜드명 → 영문
 ARABIC_BRAND_MAP = {
-    'سوبر جنرال': 'Super General',
-    'جري':        'Gree',
-    'هاير':       'Haier',
-    'ميديا':      'Midea',
-    'وستنجهاوس':  'Westinghouse',
-    'كرفت':       'Crafft',
-    'دانسات':     'Dansat',
-    'دان سات':    'Dansat',
-    'هايسنس':     'Hisense',
-    'ال جي':      'LG',
-    'الجي':       'LG',
-    'سامسونج':    'Samsung',
-    'شارب':       'Sharp',
-    'اس كي ام':   'SKM',
-    'هوم كوين':   'Home Queen',
-    'ماندو':      'Mando',
-    'روود':       'Ruud',
-    'كولن':       'Kolin',
+    'سوبر جنرال':  'Super General',
+    'جري':         'Gree',
+    'هاير':        'Haier',
+    'ميديا':       'Midea',
+    'وستنجهاوس':   'Westinghouse',
+    'كرفت':        'Crafft',
+    'دانسات':      'Dansat',
+    'دان سات':     'Dansat',
+    'هايسنس':      'Hisense',
+    'ال جي':       'LG',
+    'الجي':        'LG',
+    'سامسونج':     'Samsung',
+    'شارب':        'Sharp',
+    'اس كي ام':    'SKM',
+    'هوم كوين':    'Home Queen',
+    'ماندو':       'Mando',
+    'روود':        'Ruud',
+    'كولن':        'Kolin',
+    'فريجو':       'Frigidaire',
+    'تي سي ال':   'TCL',
+    'تورنيدو':     'Tornado',
+    'الزامل':      'Zamil',
+    'جنرال دان':   'General Dan',
+    'ز.ترست':      'Z.Trust',
+    'زامل':        'Zamil',
 }
+
+# AC 아닌 제품 필터링 키워드 (아랍어)
+NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', 'ريبون مروحة', 'مكيف مكتب مقاس']
 
 # 표준 톤 단계 (대시보드 TON_ORDER 기준)
 TON_ORDER = [0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
@@ -143,26 +158,34 @@ def parse_arabic_name(name: str) -> dict:
 
 def fetch_page(page_num: int) -> str | None:
     url = BASE_URL if page_num == 1 else f"{BASE_URL}/page/{page_num}/"
-    try:
-        resp = requests.get(
-            "https://api.scrape.do",
-            params={"token": SCRAPE_DO_TOKEN, "url": url,
-                    "super": "true", "render": "true", "geoCode": "sa"},
-            timeout=120,
-        )
-    except Exception as e:
-        print(f"  ⚠️  요청 오류: {e}")
-        return None
+    for attempt in range(3):
+        try:
+            resp = requests.get(
+                "https://api.scrape.do",
+                params={"token": SCRAPE_DO_TOKEN, "url": url,
+                        "super": "true", "render": "true", "geoCode": "sa"},
+                timeout=120,
+            )
+        except Exception as e:
+            print(f"  ⚠️  요청 오류 (시도 {attempt+1}): {e}")
+            time.sleep(5)
+            continue
 
-    if resp.status_code == 404:
-        return None
-    if resp.status_code != 200:
-        print(f"  ⚠️  HTTP {resp.status_code}")
-        return None
-    if "Just a moment" in resp.text:
-        print("  ❌ Cloudflare 차단")
-        return None
-    return resp.text
+        if resp.status_code == 404:
+            return None
+        if resp.status_code == 502:
+            print(f"  ⚠️  502 재시도 ({attempt+1}/3)...")
+            time.sleep(8)
+            continue
+        if resp.status_code != 200:
+            print(f"  ⚠️  HTTP {resp.status_code}")
+            return None
+        if "Just a moment" in resp.text:
+            print("  ❌ Cloudflare 차단")
+            return None
+        return resp.text
+    print(f"  ❌ Page {page_num} 3회 실패, 건너뜀")
+    return None
 
 
 def parse_products(html: str, page_num: int) -> list[dict]:
@@ -188,6 +211,10 @@ def parse_products(html: str, page_num: int) -> list[dict]:
     for i, (pid, sku, label) in enumerate(items):
         name = html_lib.unescape(label)
         name = re.sub(r'^إضافة إلى عربة التسوق:\s*"', '', name).rstrip('"')
+
+        # AC 아닌 제품 제외 (선풍기, 에어커튼, 브라켓 서비스 등)
+        if any(kw in name for kw in NON_AC_ARABIC):
+            continue
 
         specs = parse_arabic_name(name)
 

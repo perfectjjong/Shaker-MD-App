@@ -148,6 +148,18 @@ CHANNELS = {
         "dashboard_html": "technobest_ac_dashboard.html",
         "dashboard_dest": "technobest-price",
     },
+    "alkhater": {
+        "dir": "alkhater",
+        "master_data": "alkhater_master.xlsx",
+        "master_local": "alkhater_ac_prices.xlsx",
+        "steps": [
+            ("alkhater_playwright_scraper.py", "Scraping (Playwright)"),
+            ("alkhater_ac_dashboard.py", "HTML Dashboard"),
+        ],
+        "dashboard_html": "alkhater_ac_dashboard.html",
+        "dashboard_dest": "alkhater-price",
+        "no_master_copy": True,  # 마스터 파일 없이 직접 스크래핑
+    },
 }
 
 
