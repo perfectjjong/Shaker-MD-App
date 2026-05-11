@@ -66,10 +66,10 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # Stage Excel Masters (Git LFS) and dashboard HTMLs
-          git add price-tracking/data/
+          git add price-tracking/data/ 2>/dev/null || true
           git add docs/dashboards/
           # alkhater: 채널 디렉토리에 직접 저장 (no_master_copy 구조)
-          git add price-tracking/channels/alkhater/alkhater_ac_prices.xlsx
+          git add price-tracking/channels/alkhater/alkhater_ac_prices.xlsx 2>/dev/null || true
 
           # Only commit if there are changes
           if git diff --staged --quiet; then
