@@ -66,17 +66,20 @@ ARABIC_BRAND_MAP = {
     'كولن':       'Kolin',
 }
 
-# BTU → Ton 변환
-BTU_TON = {
-    9000:  0.75, 9200:  0.75,
-    12000: 1.0,  12500: 1.0,
-    18000: 1.5,  18500: 1.5,
-    23000: 2.0,  23200: 2.0, 24000: 2.0,
-    27000: 2.25, 28000: 2.25,
-    30000: 2.5,
-    36000: 3.0,  31400: 3.0, 31500: 3.0,
-    48000: 4.0,  60000: 5.0,
-}
+# 표준 톤 단계 (대시보드 TON_ORDER 기준)
+TON_ORDER = [0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
+
+
+def snap_ton(btu: int | None, ton_direct: float | None) -> float | None:
+    """BTU 또는 직접 표기 ton을 표준 단계로 스냅"""
+    if ton_direct is not None:
+        val = ton_direct
+    elif btu is not None:
+        val = btu / 12000
+    else:
+        return None
+    # 가장 가까운 표준 단계로 스냅
+    return min(TON_ORDER, key=lambda t: abs(t - val))
 
 
 def parse_arabic_name(name: str) -> dict:
@@ -108,16 +111,16 @@ def parse_arabic_name(name: str) -> dict:
                 result['brand'] = eng
                 break
 
-    # Ton: "طن" 키워드 직접 표기 우선
+    # Ton: "طن" 직접 표기 우선, 없으면 BTU에서 스냅
+    ton_direct = None
+    btu_val = None
     ton_match = re.search(r'(\d+(?:\.\d+)?)\s*طن', name)
     if ton_match:
-        result['ton'] = float(ton_match.group(1))
-    else:
-        # BTU 숫자에서 변환
-        btu_match = re.search(r'\b(\d{4,6})\s*(?:وحدة|BTU|btu)', name)
-        if btu_match:
-            btu = int(btu_match.group(1))
-            result['ton'] = BTU_TON.get(btu) or round(btu / 12000, 2)
+        ton_direct = float(ton_match.group(1))
+    btu_match = re.search(r'\b(\d{4,6})\s*(?:وحدة|BTU|btu)', name)
+    if btu_match:
+        btu_val = int(btu_match.group(1))
+    result['ton'] = snap_ton(btu_val, ton_direct)
 
     # Compressor
     if 'انفيرتر' in name or 'انفيرتير' in name or 'inverter' in name.lower():
