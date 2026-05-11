@@ -306,12 +306,37 @@ def load_star() -> pd.DataFrame:
     )
 
 
+def load_alkhater() -> pd.DataFrame:
+    import glob
+    chan_dir = PT_ROOT / 'channels' / 'alkhater'
+    path = chan_dir / 'alkhater_ac_prices.xlsx'
+    if not path.exists():
+        return None
+    xl = pd.ExcelFile(path)
+    # 가장 최근 날짜 시트 로드
+    date_sheets = sorted([s for s in xl.sheet_names if re.match(r'\d{4}-\d{2}-\d{2}', s)])
+    if not date_sheets:
+        return None
+    df = xl.parse(date_sheets[-1])
+    # Split AC만 (Window/Free Standing 제외)
+    df = df[df['AC_Type'] == 'Split'].copy()
+    df['brand']      = df['Brand'].apply(norm_brand)
+    df['model']      = df['Model'].fillna('')
+    df['ton']        = pd.to_numeric(df['Ton'], errors='coerce')
+    df['compressor'] = df['Compressor'].apply(norm_compressor)
+    df['cold_hc']    = df['Cold_HC'].apply(norm_cold_hc)
+    df['price']      = pd.to_numeric(df['Price_SAR'], errors='coerce')
+    df['url']        = df['URL'].fillna('')
+    return df[['brand', 'model', 'ton', 'compressor', 'cold_hc', 'price', 'url']].dropna(subset=['price', 'ton'])
+
+
 CHANNELS = [
     # (tab_name, or_ir, loader_fn)
     ('eXtra',        'OR', load_extra),
     ('SWS',          'OR', load_sws),
     ('Al Manea',     'OR', load_almanea),
     ('AlKhunaizan',  'OR', load_alkhunaizan),
+    ('Al Khater',    'OR', load_alkhater),
     ('BH',           'IR', load_bh),
     ('Bin Momen',    'IR', load_binmomen),
     ('Black Box',    'IR', load_blackbox),
