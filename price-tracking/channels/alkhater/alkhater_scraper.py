@@ -28,12 +28,12 @@ OUTPUT_FILE     = os.path.join(CURRENT_DIR, "alkhater_ac_prices.xlsx")
 # ─── 브랜드 매핑 (모델 prefix → 브랜드명) ───────────────────────────────
 MODEL_BRAND_MAP = [
     (r'^(NS|ND|NT|AM|AF|NW|NF|LA|LB|LH|LK|LO|LT|LS|APNQ|APUW|APW)',  'LG'),
-    (r'^KSGA',                                                            'Super General'),
+    (r'^(KSGA|KSGS)',                                                     'Super General'),
     (r'^GWC|^GMV|^GWH',                                                  'Gree'),
     (r'^HSU|^HAS|^HEU',                                                  'Haier'),
     (r'^WDV|^MSTL|^MSKMP|^MSM|^MSTE',                                   'Midea'),
     (r'^WWS|^WWA',                                                        'Westinghouse'),
-    (r'^DW\d|^DT\d',                                                      'Crafft'),
+    (r'^(DW\d|DT\d|CWACH)',                                               'Crafft'),
     (r'^DSA',                                                             'Dansat'),
     (r'^HW\d|^AS\d',                                                      'Hisense'),
     (r'^UW',                                                              'Ruud'),
@@ -42,25 +42,32 @@ MODEL_BRAND_MAP = [
     (r'^SAC|^SAS',                                                        'Samsung'),
     (r'^(TAC|CW-T|CWT)',                                                  'TCL'),
     (r'^AUX',                                                             'AUX'),
-    (r'^(FT|FW|FM)',                                                      'Frigidaire'),
-    (r'^TH-C|^TU-C',                                                      'Tornado'),
+    (r'^(FT|FW|FM)\d',                                                   'Frigidaire'),
+    (r'^(TH-C|TH-X|TU-C)',                                               'Tornado'),
     (r'^ZCP|^ZCH',                                                        'Zamil'),
     (r'^GD\d',                                                            'General Dan'),
-    (r'^GJC|^GLW',                                                        'General'),
+    (r'^(GJC|GLW|ASSA)',                                                  'General'),
+    (r'^(BSACCA|BSAC)',                                                   'Basic'),
+    (r'^YORX',                                                            'Yorksa'),
+    (r'^IM\d',                                                            'Impax'),
+    (r'^UNST',                                                            'Unistar'),
 ]
 
 # 아랍어 브랜드명 → 영문
 ARABIC_BRAND_MAP = {
     'سوبر جنرال':  'Super General',
+    'سوبر جينرال': 'Super General',
     'جري':         'Gree',
     'هاير':        'Haier',
     'ميديا':       'Midea',
     'وستنجهاوس':   'Westinghouse',
     'كرفت':        'Crafft',
+    'كرافت':       'Crafft',
     'دانسات':      'Dansat',
     'دان سات':     'Dansat',
     'هايسنس':      'Hisense',
     'ال جي':       'LG',
+    'إل جي':       'LG',
     'الجي':        'LG',
     'سامسونج':     'Samsung',
     'شارب':        'Sharp',
@@ -72,14 +79,23 @@ ARABIC_BRAND_MAP = {
     'فريجو':       'Frigidaire',
     'تي سي ال':   'TCL',
     'تورنيدو':     'Tornado',
+    'توريندو':     'Tornado',
     'الزامل':      'Zamil',
     'جنرال دان':   'General Dan',
+    'جنرال':       'General',
     'ز.ترست':      'Z.Trust',
     'زامل':        'Zamil',
+    'بيسك':        'Basic',
+    'يونيستار':    'Unistar',
+    'امبكس':       'Impax',
+    'امبيكس':      'Impax',
+    'يوركس':       'Yorksa',
 }
 
 # AC 아닌 제품 필터링 키워드 (아랍어)
-NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', 'ريبون مروحة', 'مكيف مكتب مقاس']
+NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', 'ريبون مروحة',
+                 'خدمة تركيب', 'خدمة فك', 'مبرد هواء', 'مكيف صحراوي',
+                 'removal service', 'installation service']
 
 # 표준 톤 단계 (대시보드 TON_ORDER 기준)
 TON_ORDER = [0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
@@ -210,9 +226,12 @@ def parse_products(html: str, page_num: int) -> list[dict]:
     results = []
     for i, (pid, sku, label) in enumerate(items):
         name = html_lib.unescape(label)
+        # "장바구니에 추가: " 접두사 제거
         name = re.sub(r'^إضافة إلى عربة التسوق:\s*"', '', name).rstrip('"')
+        # "더보기: " 접두사 제거 (إقرأ المزيد عن "상품명")
+        name = re.sub(r'^إقرأ المزيد عن\s*"?', '', name).rstrip('"')
 
-        # AC 아닌 제품 제외 (선풍기, 에어커튼, 브라켓 서비스 등)
+        # AC 아닌 제품 제외 (서비스, 에바포레이터 쿨러, 선풍기 등)
         if any(kw in name for kw in NON_AC_ARABIC):
             continue
 
