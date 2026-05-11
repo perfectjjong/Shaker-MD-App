@@ -98,7 +98,7 @@ NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', '
                  'removal service', 'installation service']
 
 # 표준 톤 단계 (대시보드 TON_ORDER 기준)
-TON_ORDER = [0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
+TON_ORDER = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]  # 0.75T 제외 (사우디 비표준)
 
 
 def snap_ton(btu: int | None, ton_direct: float | None) -> float | None:
@@ -120,8 +120,8 @@ def parse_arabic_name(name: str) -> dict:
         'model':      '',
         'ton':        None,
         'compressor': 'Rotary',
-        'ac_type':    'Split',   # Split / Window / Free Standing
-        'cold_hc':    'Cold',
+        'ac_type':    'Split',   # Split / Window / Portable / Free Standing
+        'cold_hc':    'Cooling Only',
     }
 
     # 모델번호 추출 (대문자+숫자 패턴, 최소 5자)
@@ -148,9 +148,10 @@ def parse_arabic_name(name: str) -> dict:
     ton_match = re.search(r'(\d+(?:\.\d+)?)\s*طن', name)
     if ton_match:
         ton_direct = float(ton_match.group(1))
-    btu_match = re.search(r'\b(\d{4,6})\s*(?:وحدة|BTU|btu)', name)
+    # وحدة / وحده (철자 변형) + 쉼표 포함(22,000) + الف(천 단위 표기 12600 الف وحدة) 처리
+    btu_match = re.search(r'\b(\d{1,2},\d{3}|\d{4,6})\s*(?:الف\s*)?(?:وحدة|وحده|BTU|btu)', name)
     if btu_match:
-        btu_val = int(btu_match.group(1))
+        btu_val = int(btu_match.group(1).replace(',', ''))
     result['ton'] = snap_ton(btu_val, ton_direct)
 
     # Compressor
@@ -158,16 +159,20 @@ def parse_arabic_name(name: str) -> dict:
         result['compressor'] = 'Inverter'
 
     # AC Type
-    if 'شباك' in name or 'window' in name.lower():
+    if any(w in name for w in ['متنقل', 'Portable', 'portable']):
+        result['ac_type'] = 'Portable'
+    elif 'شباك' in name or 'window' in name.lower():
         result['ac_type'] = 'Window'
-    elif any(w in name for w in ['ستاند', 'أرضي', 'floor', 'standing']):
+    elif any(w in name for w in ['ستاند', 'أرضي', 'دولابي', 'floor', 'standing']):
         result['ac_type'] = 'Free Standing'
     else:
         result['ac_type'] = 'Split'
 
-    # Cold / H&C
-    if 'تدفئة' in name or 'تبريد وتدفئة' in name or 'h&c' in name.lower():
-        result['cold_hc'] = 'Hot and Cold'
+    # Cold / H&C (다른 채널 표준값으로 정규화)
+    if any(w in name for w in ['تدفئة', 'حار', 'h&c']):
+        result['cold_hc'] = 'Heat & Cool'
+    else:
+        result['cold_hc'] = 'Cooling Only'
 
     return result
 
