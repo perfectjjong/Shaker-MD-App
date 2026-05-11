@@ -158,7 +158,8 @@ CHANNELS = {
         ],
         "dashboard_html": "alkhater_ac_dashboard.html",
         "dashboard_dest": "alkhater-price",
-        "no_master_copy": True,  # 마스터 파일 없이 직접 스크래핑
+        "no_master_copy": True,       # data/ 복사 스킵 — 채널 디렉토리에 직접 저장
+        "skip_dashboard_copy": True,  # alkhater_ac_dashboard.py가 docs/에 직접 씀
     },
 }
 
@@ -223,8 +224,9 @@ def run_channel(channel_name: str, config: dict, dashboard_only: bool = False) -
     log(f"  Channel: {channel_name.upper()}")
     log(f"{'='*60}")
 
-    # Step 0: Copy master from data/ to channel directory
-    copy_master_to_channel(channel_name, config)
+    # Step 0: Copy master from data/ to channel directory (no_master_copy 채널은 스킵)
+    if not config.get("no_master_copy"):
+        copy_master_to_channel(channel_name, config)
 
     steps = config["steps"]
     if dashboard_only:
@@ -282,12 +284,13 @@ def run_channel(channel_name: str, config: dict, dashboard_only: bool = False) -
             results["success"] = False
             break
 
-    # Step N+1: Copy updated master back to data/
-    if not dashboard_only:
+    # Step N+1: Copy updated master back to data/ (no_master_copy 채널은 스킵)
+    if not dashboard_only and not config.get("no_master_copy"):
         copy_master_from_channel(channel_name, config)
 
-    # Step N+2: Copy dashboard HTML to docs/
-    copy_dashboard(channel_name, config)
+    # Step N+2: Copy dashboard HTML to docs/ (skip_dashboard_copy 채널은 generator가 직접 씀)
+    if not config.get("skip_dashboard_copy"):
+        copy_dashboard(channel_name, config)
 
     return results
 

@@ -49,8 +49,10 @@ ARABIC_BRAND_MAP = {
     'تي سي ال': 'TCL', 'تورنيدو': 'Tornado', 'الزامل': 'Zamil',
     'جنرال دان': 'General Dan', 'ز.ترست': 'Z.Trust',
 }
-NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', 'ريبون']
-TON_ORDER     = [0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
+NON_AC_ARABIC = ['مروحة', 'ستارة هوائية', 'خدمة حامل', 'ريبون مروحة',
+                 'خدمة تركيب', 'خدمة فك', 'مبرد هواء', 'مكيف صحراوي',
+                 'removal service', 'installation service']
+TON_ORDER     = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0]
 
 
 def snap_ton(btu, ton_direct):
@@ -81,32 +83,79 @@ def parse_name(name: str) -> dict:
     return r
 
 
-def parse_html(html: str, page_num: int) -> list[dict]:
+def _extract_price(bdi_html: str) -> float | None:
+    """bdi 태그에서 가격 숫자 추출 (SVG 등 비숫자 제거)"""
+    text = re.sub(r'<svg[^>]*>.*?</svg>', '', bdi_html, flags=re.DOTALL)
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
+    text = re.sub(r'<[^>]+>', '', text)
+    nums = re.findall(r'[\d,]+', text)
+    for n in nums:
+        v = float(n.replace(',', ''))
+        if v >= 100:
+            return v
+    return None
+
+
+def parse_products(html: str, page_num: int) -> list[dict]:
+    """post-{pid} 기준 카드 경계로 정확히 가격/재고/URL 추출 (N-1 오프셋 버그 방지)"""
     items = re.findall(
         r'data-product_id="(\d+)"\s+data-product_sku="([^"]+)"\s+aria-label="([^"]+)"', html)
-    prices = re.findall(r'<span class="price">(.*?)</span>', html, re.DOTALL)
-    urls   = list({u.rstrip('/').split('/')[-1]: u
-                   for u in re.findall(r'href="(https://alkhaterstore\.com/product/[^"]+)"', html)
-                   }.values())
     results = []
-    for i, (pid, sku, label) in enumerate(items):
+    for pid, sku, label in items:
         name = html_lib.unescape(label)
         name = re.sub(r'^إضافة إلى عربة التسوق:\s*"', '', name).rstrip('"')
-        if any(kw in name for kw in NON_AC_ARABIC): continue
+        name = re.sub(r'^إقرأ المزيد عن\s*"?', '', name).rstrip('"')
+        if any(kw in name for kw in NON_AC_ARABIC):
+            continue
         specs = parse_name(name)
-        p_sale = p_reg = None
-        if i < len(prices):
-            nums = [float(n.replace(',','')) for n in re.findall(r'[\d,]+', re.sub(r'<[^>]+>',' ',prices[i])) if len(n)>=3]
-            if len(nums)>=2: p_reg, p_sale = max(nums), min(nums)
-            elif nums: p_reg = p_sale = nums[0]
+
+        sku_pos  = html.find(f'data-product_sku="{sku}"')
+        post_pos = html.rfind(f'post-{pid}', 0, sku_pos)
+        if post_pos > 0:
+            card = html[post_pos: sku_pos + len(sku) + 100]
+        else:
+            card = html[max(0, sku_pos - 5000): sku_pos + 100]
+
+        in_stock = (bool(re.search(r'\binstock\b', card[:400])) and
+                    not bool(re.search(r'\boutofstock\b', card[:400])))
+
+        del_m = re.search(r'<del[^>]*>.*?<bdi>(.*?)</bdi>', card, re.DOTALL)
+        ins_m = re.search(r'<ins[^>]*>.*?<bdi>(.*?)</bdi>', card, re.DOTALL)
+        bdi_m = re.search(r'<bdi>(.*?)</bdi>', card, re.DOTALL)
+
+        price_reg  = _extract_price(del_m.group(1)) if del_m else None
+        price_sale = _extract_price(ins_m.group(1)) if ins_m else None
+        if price_reg is None and price_sale is None and bdi_m:
+            p = _extract_price(bdi_m.group(1))
+            price_reg = price_sale = p
+        if price_sale is None and price_reg is not None:
+            price_sale = price_reg
+
+        disc_m = re.search(r'onsale[^>]*>\s*(-\d+)%', card)
+        if disc_m and price_sale and price_reg is None:
+            pct = abs(int(disc_m.group(1)))
+            price_reg = round(price_sale / (1 - pct / 100))
+
+        discount_pct = None
+        if price_reg and price_sale and price_reg > price_sale:
+            discount_pct = round((1 - price_sale / price_reg) * 100, 1)
+
+        url_m = re.search(r'href="(https://alkhaterstore\.com/product/[^"]+)"', card)
+        prod_url = url_m.group(1) if url_m else ''
+        if prod_url and any(kw in prod_url for kw in ('removal-service', 'installation-service')):
+            continue
+
         results.append({
             'SKU': sku, 'Product_Name': name,
             'Brand': specs['brand'], 'Model': specs['model'], 'Ton': specs['ton'],
             'Compressor': specs['compressor'], 'AC_Type': specs['ac_type'],
             'Cold_HC': specs['cold_hc'],
-            'Price_SAR': p_sale, 'Original_Price_SAR': p_reg,
-            'Is_On_Sale': p_sale != p_reg if p_sale else False,
-            'URL': urls[i] if i < len(urls) else '',
+            'Price_SAR': price_sale, 'Original_Price_SAR': price_reg,
+            'Discount_Pct': discount_pct,
+            'Is_On_Sale': discount_pct is not None and discount_pct > 0,
+            'In_Stock': in_stock,
+            'URL': prod_url,
+            'Page': page_num,
             'Scraped_At': datetime.now().strftime('%Y-%m-%d %H:%M'),
         })
     return results
@@ -148,7 +197,7 @@ def scrape_all() -> list[dict]:
                     break
 
             html = page.content()
-            products = parse_html(html, page_num)
+            products = parse_products(html, page_num)
             if not products:
                 print(f"    ✅ 마지막 페이지 (page {page_num})")
                 break
