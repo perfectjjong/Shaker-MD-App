@@ -27,6 +27,7 @@ table{width:100%;border-collapse:collapse;font-size:12px}
 th{background:#f5f7fa;color:#555;font-weight:600;padding:8px 10px;text-align:center;border-bottom:2px solid #e0e6ef;white-space:nowrap}
 td{padding:7px 10px;border-bottom:1px solid #f0f0f0}
 tr:hover td{background:#fafbff}
+tr.gt-row:hover td{background:#1565c0}
 .sep-row td{background:#e8f0fe;font-weight:700;color:#1a237e;padding:6px 10px;font-size:12px}
 .total-row td{background:#f0f4ff;font-weight:700;color:#1a237e;border-top:2px solid #1565c0}
 .cat-bar{height:8px;border-radius:4px;background:#1565c0;display:inline-block;min-width:2px}
@@ -1125,7 +1126,7 @@ function renderST(cats) {
     mo => ALL_CHS.reduce((s,ch)=>s+stVal(ch,2025,mo,cats),0),
     fmtSt
   );
-  html += `<tr style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>${gtCells}</tr>`;
+  html += `<tr class="gt-row" style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>${gtCells}</tr>`;
 
   document.getElementById('stBody').innerHTML = html;
 }
@@ -1199,7 +1200,7 @@ function renderSO(cats) {
     mo => ALL_CHS.reduce((s,ch)=>s+(OR_CHS.includes(ch)?soOR(ch,2025,mo,cats):soIR(ch,2025,mo,cats)),0),
     fmtQ
   );
-  html += `<tr style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>${gtCells}</tr>`;
+  html += `<tr class="gt-row" style="background:#1565c0;color:#fff;font-weight:700;"><td>Grand Total</td>${gtCells}</tr>`;
 
   document.getElementById('soBody').innerHTML = html;
 }
