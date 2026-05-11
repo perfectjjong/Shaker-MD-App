@@ -223,8 +223,10 @@ def parse_products(html: str, page_num: int) -> list[dict]:
     return results
 
 
-def has_next_page(html: str) -> bool:
-    return bool(re.search(r'class="[^"]*next[^"]*page-numbers', html))
+def has_next_page(html: str, page_num: int) -> bool:
+    # 다음 페이지 URL이 존재하면 다음 페이지 있음
+    next_url = f'air-conditioning/page/{page_num + 1}/'
+    return next_url in html
 
 
 def scrape_all() -> list[dict]:
@@ -243,7 +245,7 @@ def scrape_all() -> list[dict]:
         all_products.extend(products)
         print(f"     → {len(products)}개 수집 (누계 {len(all_products)}개)")
 
-        if not has_next_page(html):
+        if not has_next_page(html, page_num):
             print(f"  ✅ 마지막 페이지 (page {page_num})")
             break
         time.sleep(2)
