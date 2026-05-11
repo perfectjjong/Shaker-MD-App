@@ -209,67 +209,110 @@ def fetch_page(page_num: int) -> str | None:
     return None
 
 
-def parse_products(html: str, page_num: int) -> list[dict]:
-    items = re.findall(
-        r'data-product_id="(\d+)"\s+data-product_sku="([^"]+)"\s+aria-label="([^"]+)"',
-        html,
-    )
-    price_spans = re.findall(r'<span class="price">(.*?)</span>', html, re.DOTALL)
+def _extract_price(bdi_html: str) -> float | None:
+    """bdi 태그에서 가격 숫자 추출 (SVG 등 비숫자 제거)"""
+    text = re.sub(r'<svg[^>]*>.*?</svg>', '', bdi_html, flags=re.DOTALL)
+    text = re.sub(r'<!--.*?-->', '', text, flags=re.DOTALL)
+    text = re.sub(r'<[^>]+>', '', text)
+    nums = re.findall(r'[\d,]+', text)
+    for n in nums:
+        v = float(n.replace(',', ''))
+        if v >= 100:  # 가격은 최소 100 SAR 이상
+            return v
+    return None
 
-    # 상품 URL 추출 (slug 기반)
-    prod_urls = re.findall(
-        r'href="(https://alkhaterstore\.com/product/[^"]+)"', html
-    )
-    # 중복 제거 (카드당 2개씩 나올 수 있음)
-    seen_urls = {}
-    for u in prod_urls:
-        slug = u.rstrip('/').split('/')[-1]
-        if slug not in seen_urls:
-            seen_urls[slug] = u
-    url_list = list(seen_urls.values())
+
+def parse_products(html: str, page_num: int) -> list[dict]:
+    # data-product_id 기준으로 블록 분리 (add-to-cart 버튼 위치)
+    # 각 블록 = 해당 SKU의 카드 하단부 + 이전 카드 정보
+    # → SKU와 같은 블록 내에서 역방향으로 가격/재고 탐색
+    blocks = re.split(r'(?=data-product_id="\d+")', html)
 
     results = []
-    for i, (pid, sku, label) in enumerate(items):
+    for block in blocks[1:]:  # 첫 블록은 헤더
+        sku_m = re.search(
+            r'data-product_id="(\d+)"\s+data-product_sku="([^"]+)"\s+aria-label="([^"]+)"',
+            block)
+        if not sku_m:
+            continue
+
+        pid, sku, label = sku_m.group(1), sku_m.group(2), sku_m.group(3)
+
+        # 이름 정리
         name = html_lib.unescape(label)
-        # "장바구니에 추가: " 접두사 제거
         name = re.sub(r'^إضافة إلى عربة التسوق:\s*"', '', name).rstrip('"')
-        # "더보기: " 접두사 제거 (إقرأ المزيد عن "상품명")
         name = re.sub(r'^إقرأ المزيد عن\s*"?', '', name).rstrip('"')
 
-        # AC 아닌 제품 제외 (서비스, 에바포레이터 쿨러, 선풍기 등)
         if any(kw in name for kw in NON_AC_ARABIC):
             continue
 
         specs = parse_arabic_name(name)
 
-        # 가격
-        price_sale = price_reg = None
-        if i < len(price_spans):
-            raw = price_spans[i]
-            nums = re.findall(r'[\d,]+', re.sub(r'<[^>]+>', ' ', raw))
-            nums_f = [float(n.replace(',', '')) for n in nums if len(n) >= 3]
-            if len(nums_f) >= 2:
-                price_reg, price_sale = max(nums_f), min(nums_f)
-            elif len(nums_f) == 1:
-                price_reg = price_sale = nums_f[0]
+        # post-{pid} ~ add-to-cart 버튼 사이로 카드 범위 정확히 제한
+        # (이전 rfind('instock') 방식은 다음 카드까지 포함해 가격/재고 오파싱)
+        sku_pos  = html.find(f'data-product_sku="{sku}"')
+        post_pos = html.rfind(f'post-{pid}', 0, sku_pos)
+        if post_pos > 0:
+            card = html[post_pos: sku_pos + len(sku) + 100]
+        else:
+            card = html[max(0, sku_pos - 5000): sku_pos + 100]
+        # 재고 상태: 카드 시작 class 속성에서만 확인 (단어 경계로 substring 오매칭 방지)
+        in_stock = bool(re.search(r'\binstock\b', card[:400])) and not bool(re.search(r'\boutofstock\b', card[:400]))
 
-        prod_url = url_list[i] if i < len(url_list) else ''
+        # 정가 (del 태그 내 bdi)
+        del_m = re.search(r'<del[^>]*>.*?<bdi>(.*?)</bdi>', card, re.DOTALL)
+        # 할인가 (ins 태그 내 bdi)
+        ins_m = re.search(r'<ins[^>]*>.*?<bdi>(.*?)</bdi>', card, re.DOTALL)
+        # 단일 가격 (del/ins 없는 경우 - 첫 번째 bdi)
+        bdi_m = re.search(r'<bdi>(.*?)</bdi>', card, re.DOTALL)
+
+        price_reg  = _extract_price(del_m.group(1)) if del_m else None
+        price_sale = _extract_price(ins_m.group(1)) if ins_m else None
+
+        # del/ins 없으면 단일 가격
+        if price_reg is None and price_sale is None and bdi_m:
+            p = _extract_price(bdi_m.group(1))
+            price_reg = price_sale = p
+
+        # ins 없이 del만 있는 경우 (정가 = 판매가)
+        if price_sale is None and price_reg is not None:
+            price_sale = price_reg
+
+        # 할인율 배지로 정가 역산 (del 없고 ins만 있는 경우)
+        disc_m = re.search(r'onsale[^>]*>\s*(-\d+)%', card)
+        if disc_m and price_sale and price_reg is None:
+            pct = abs(int(disc_m.group(1)))
+            price_reg = round(price_sale / (1 - pct / 100))
+
+        discount_pct = None
+        if price_reg and price_sale and price_reg > price_sale:
+            discount_pct = round((1 - price_sale / price_reg) * 100, 1)
+
+        # URL
+        url_m = re.search(r'href="(https://alkhaterstore\.com/product/[^"]+)"', card)
+        prod_url = url_m.group(1) if url_m else ''
+
+        # removal-service 등 비AC 서비스 제품 URL 필터
+        if prod_url and any(kw in prod_url for kw in ('removal-service', 'installation-service')):
+            continue
 
         results.append({
-            'SKU':               sku,
-            'Product_Name':      name,
-            'Brand':             specs['brand'],
-            'Model':             specs['model'],
-            'Ton':               specs['ton'],
-            'Compressor':        specs['compressor'],
-            'AC_Type':           specs['ac_type'],
-            'Cold_HC':           specs['cold_hc'],
-            'Price_SAR':         price_sale,
+            'SKU':                sku,
+            'Product_Name':       name,
+            'Brand':              specs['brand'],
+            'Model':              specs['model'],
+            'Ton':                specs['ton'],
+            'Compressor':         specs['compressor'],
+            'AC_Type':            specs['ac_type'],
+            'Cold_HC':            specs['cold_hc'],
+            'Price_SAR':          price_sale,
             'Original_Price_SAR': price_reg,
-            'Is_On_Sale':        price_sale != price_reg if price_sale else False,
-            'URL':               prod_url,
-            'Page':              page_num,
-            'Scraped_At':        datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'Discount_Pct':       discount_pct,
+            'Is_On_Sale':         discount_pct is not None and discount_pct > 0,
+            'In_Stock':           in_stock,
+            'URL':                prod_url,
+            'Page':               page_num,
+            'Scraped_At':         datetime.now().strftime('%Y-%m-%d %H:%M'),
         })
     return results
 
