@@ -261,6 +261,9 @@ def run_channel(channel_name: str, config: dict, dashboard_only: bool = False) -
 
             if result.returncode == 0:
                 log(f"    OK ({elapsed:.0f}s)")
+                if result.stdout:
+                    for line in result.stdout.strip().split('\n'):
+                        log(f"      {line}")
                 results["steps"].append({"script": script, "status": "ok", "elapsed": elapsed})
             else:
                 log(f"    FAILED (exit={result.returncode}, {elapsed:.0f}s)")
