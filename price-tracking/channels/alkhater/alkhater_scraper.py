@@ -19,8 +19,8 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install requests pandas openpyxl")
     sys.exit(1)
 
-SCRAPE_DO_TOKEN = "c343dc73d57240478ef683487eff358e31c3ca43f43"
-BASE_URL        = "https://alkhaterstore.com/product-category/air-conditioning"
+ZENROWS_KEY = "6cbc4ab3bdafd8be19ef27c3c0e4604ea18fa796"
+BASE_URL    = "https://alkhaterstore.com/product-category/air-conditioning"
 MAX_PAGES       = 15
 CURRENT_DIR     = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FILE     = os.path.join(CURRENT_DIR, "alkhater_ac_prices.xlsx")
@@ -161,9 +161,9 @@ def fetch_page(page_num: int) -> str | None:
     for attempt in range(3):
         try:
             resp = requests.get(
-                "https://api.scrape.do",
-                params={"token": SCRAPE_DO_TOKEN, "url": url,
-                        "super": "true", "render": "true", "geoCode": "sa"},
+                "https://api.zenrows.com/v1/",
+                params={"apikey": ZENROWS_KEY, "url": url,
+                        "js_render": "true", "premium_proxy": "true", "wait": "5000"},
                 timeout=120,
             )
         except Exception as e:
@@ -173,12 +173,12 @@ def fetch_page(page_num: int) -> str | None:
 
         if resp.status_code == 404:
             return None
-        if resp.status_code == 502:
-            print(f"  ⚠️  502 재시도 ({attempt+1}/3)...")
-            time.sleep(8)
+        if resp.status_code in (422, 429, 502, 503):
+            print(f"  ⚠️  {resp.status_code} 재시도 ({attempt+1}/3)...")
+            time.sleep(10)
             continue
         if resp.status_code != 200:
-            print(f"  ⚠️  HTTP {resp.status_code}")
+            print(f"  ⚠️  HTTP {resp.status_code}: {resp.text[:100]}")
             return None
         if "Just a moment" in resp.text:
             print("  ❌ Cloudflare 차단")
