@@ -959,6 +959,21 @@ function renderTab0() {
 
     const cur = agg(fDealers, ck);
     const prev = pk ? agg(fDealers, pk) : null;
+    // OUD_MODE: dealerCategory 미등록 dealer+category OUD 보정 (ex. 신규 딜러 신규 카테고리)
+    if (OUD_MODE && DATA.oudMeta && DATA.oudMeta.length > 0) {
+        const _lk = DATA.oudMeta[DATA.oudMeta.length - 1].key;
+        const _dcKeys = new Set(DATA.dealerCategory.map(d => d.dealer + '||' + d.category));
+        (DATA.oudDealerCategory || []).forEach(d => {
+            if (_dcKeys.has(d.dealer + '||' + d.category)) return;
+            if (FILTERS.region.length > 0   && !FILTERS.region.includes(d.region))     return;
+            if (FILTERS.salesman.length > 0  && !FILTERS.salesman.includes(d.salesman)) return;
+            if (FILTERS.dealer.length > 0    && !FILTERS.dealer.includes(d.dealer))     return;
+            if (FILTERS.category.length > 0  && !FILTERS.category.includes(d.category))return;
+            const q = d[_lk] || {};
+            cur.stkQty += q.qty || 0;
+            cur.stkVal += q.val || 0;
+        });
+    }
     cur.soRatio = cur.soQty > 0 ? cur.stkQty / cur.soQty : null;
     if (prev) prev.soRatio = prev.soQty > 0 ? prev.stkQty / prev.soQty : null;
     cur.activeDealers = fDealers.filter(d => ((d[ck]||{}).stkQty || 0) > 0).length;
