@@ -1126,7 +1126,7 @@ function buildTab1() {
     const C = mCL();
     document.getElementById('tab1').innerHTML = `
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">SELL-THRU EFFICIENCY</div><div class="kpi-value" id="k1-eff">-</div><div class="kpi-change">Sellout / Sell-thru</div></div>
+      <div class="kpi-card"><div class="kpi-label">SELL-THRU EFFICIENCY</div><div class="kpi-value" id="k1-eff">-</div><div class="kpi-change" id="k1-eff-sub" style="font-size:0.78em;line-height:1.6"></div></div>
       <div class="kpi-card" style="border-left-color:var(--opportunity)"><div class="kpi-label">OPPORTUNITY DEALERS</div><div class="kpi-value" id="k1-opp">-</div></div>
       <div class="kpi-card" style="border-left-color:var(--overstock)"><div class="kpi-label">OVERSTOCK DEALERS</div><div class="kpi-value" id="k1-over">-</div></div>
       <div class="kpi-card" style="border-left-color:var(--healthy)"><div class="kpi-label">HEALTHY DEALERS</div><div class="kpi-value" id="k1-healthy">-</div></div>
@@ -1151,13 +1151,23 @@ function renderTab1() {
     const ck = mCur(), C = mCL();
 
     const cur = agg(fDealers, ck);
-    const efficiency = cur.stQty > 0 ? (cur.soQty / cur.stQty * 100).toFixed(1) : '0.0';
+    // 누적: 선택된 모든 월 합산
+    const allSelMonths = mAllSel();
+    let cumST = 0, cumSO = 0;
+    allSelMonths.forEach(mk => { const a = agg(fDealers, mk); cumST += a.stQty; cumSO += a.soQty; });
+    const effCum = cumST > 0 ? (cumSO / cumST * 100).toFixed(1) : '0.0';
+    const effCur = cur.stQty > 0 ? (cur.soQty / cur.stQty * 100).toFixed(1) : '0.0';
     const oppCount = fDealers.filter(d=>d.signal==='OPPORTUNITY').length;
     const overCount = fDealers.filter(d=>d.signal==='OVERSTOCK').length;
     const healthyCount = fDealers.filter(d=>d.signal==='HEALTHY').length;
 
     const set = (id, v) => { const e = document.getElementById(id); if (e) e.innerHTML = v; };
-    set('k1-eff', efficiency + '%');
+    // 누적이 메인, 최신월이 서브 — 단일 월 선택 시에는 같으므로 서브 생략
+    set('k1-eff', effCum + '%');
+    const subLabel = allSelMonths.length > 1
+        ? `누적 (${allSelMonths.map(m=>m.charAt(0).toUpperCase()+m.slice(1)).join('+')})<br>${mCL()}: ${effCur}%`
+        : `Sellout / Sell-thru`;
+    set('k1-eff-sub', subLabel);
     set('k1-opp', oppCount);
     set('k1-over', overCount);
     set('k1-healthy', healthyCount);
