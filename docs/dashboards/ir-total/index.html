@@ -543,14 +543,14 @@ let msMonth, msRegion, msSalesman, msDealer, msCategory, msSignal;
 let filterDebounce = null;
 let OUD_MODE = false;  // true = Stock includes OUD
 
-/* OUD lookup: dealer||category → FIRST week OUD qty/val (total pipeline) */
+/* OUD lookup: dealer||category → LATEST week OUD qty/val */
 function buildOudLookup() {
     const lk = {};
     const meta = DATA.oudMeta;
     if (!meta || meta.length === 0) return lk;
-    const firstKey = meta[0].key;  // 최초 주차 = 총 파이프라인 재고
+    const latestKey = meta[meta.length - 1].key;
     (DATA.oudDealerCategory || []).forEach(d => {
-        lk[d.dealer + '||' + d.category] = d[firstKey] || {qty:0, val:0};
+        lk[d.dealer + '||' + d.category] = d[latestKey] || {qty:0, val:0};
     });
     return lk;
 }
@@ -558,9 +558,9 @@ function buildOudSkuLookup() {
     const lk = {};
     const meta = DATA.oudMeta;
     if (!meta || meta.length === 0) return lk;
-    const firstKey = meta[0].key;  // 최초 주차
+    const latestKey = meta[meta.length - 1].key;
     (DATA.oudSku || []).forEach(d => {
-        lk[d.dealer + '||' + d.sku] = d[firstKey] || {qty:0, val:0};
+        lk[d.dealer + '||' + d.sku] = d[latestKey] || {qty:0, val:0};
     });
     return lk;
 }
