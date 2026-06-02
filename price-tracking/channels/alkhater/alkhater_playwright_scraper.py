@@ -162,10 +162,15 @@ def parse_products(html: str, page_num: int) -> list[dict]:
 
 
 def scrape_all() -> list[dict]:
+    # CI(GitHub Actions)에서는 headless=True, 로컬에서는 headless=False(Cloudflare 통과율↑)
+    is_ci = bool(os.environ.get('CI') or os.environ.get('GITHUB_ACTIONS'))
+    headless = is_ci
+    print(f"  모드: {'CI headless' if headless else '로컬 visible 브라우저'}")
+
     all_products = []
     with sync_playwright() as p:
         browser = p.chromium.launch(
-            headless=True,
+            headless=headless,
             args=['--no-sandbox', '--disable-dev-shm-usage',
                   '--disable-blink-features=AutomationControlled'])
         ctx = browser.new_context(
