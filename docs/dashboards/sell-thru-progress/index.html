@@ -414,9 +414,20 @@ var _RSM_KEYS={value:'stp_rsm_fcst_val_v1',qty:'stp_rsm_fcst_qty_v1'};
 var _RSM_LOCAL_TS_KEY='stp_rsm_local_ts_v1';
 var _rsmStore={
   value:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_val_v1')||'{}');}catch(e){return{};}})(),
-  qty:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_qty_v1')||'{}');}catch(e){return{};}})()
+  qty:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_qty_v1')||'{}');}catch(e){return{};}})(),
+  by_cat:{}
 };
-function _rsmGet(id){return (_rsmStore[mode]||_rsmStore.value)[String(id)]||0;}
+function _rsmGet(id){
+  var sid=String(id);
+  if(isCatFiltered&&isCatFiltered()){
+    var bc=_rsmStore.by_cat[sid];
+    if(!bc) return 0;
+    var total=0;
+    SEL.cat.forEach(function(cat){var cd=bc[cat];if(cd)total+=mode==='qty'?(cd.q||0):(cd.v||0);});
+    return total;
+  }
+  return (_rsmStore[mode]||_rsmStore.value)[sid]||0;
+}
 function _rsmSet(id,val){var s=_rsmStore[mode]||_rsmStore.value;s[String(id)]=val;try{localStorage.setItem(_RSM_KEYS[mode]||_RSM_KEYS.value,JSON.stringify(s));localStorage.setItem(_RSM_LOCAL_TS_KEY,Date.now().toString());}catch(e){}}
 // ======== RSM FCST Cloud Sync (GitHub API — cross-device auto-sync) ========
 var _RSM_REPO='perfectjjong/Sell-Thru-Progress-Dashboard';
@@ -1825,6 +1836,7 @@ function renderAll(){
       if(d.rsm_fcst&&d.rsm_fcst.value){
         _rsmStore.value=d.rsm_fcst.value;
         _rsmStore.qty=d.rsm_fcst.qty||{};
+        _rsmStore.by_cat=d.rsm_fcst.by_cat||{};
         try{localStorage.setItem(_RSM_KEYS.value,JSON.stringify(_rsmStore.value));}catch(e){}
         try{localStorage.setItem(_RSM_KEYS.qty,JSON.stringify(_rsmStore.qty));}catch(e){}
         try{localStorage.setItem(_RSM_LOCAL_TS_KEY,'0');}catch(e){}
@@ -1840,7 +1852,7 @@ function renderAll(){
         .then(function(r){return r.ok?r.json():null;})
         .then(function(dd){
           if(!dd||!dd.value) return;
-          _rsmStore.value=dd.value; _rsmStore.qty=dd.qty||{};
+          _rsmStore.value=dd.value; _rsmStore.qty=dd.qty||{}; _rsmStore.by_cat=dd.by_cat||{};
           try{localStorage.setItem(_RSM_KEYS.value,JSON.stringify(_rsmStore.value));}catch(e){}
           try{localStorage.setItem(_RSM_KEYS.qty,JSON.stringify(_rsmStore.qty));}catch(e){}
           try{localStorage.setItem(_RSM_LOCAL_TS_KEY,'0');}catch(e){}
