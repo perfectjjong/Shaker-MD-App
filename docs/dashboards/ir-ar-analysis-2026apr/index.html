@@ -283,6 +283,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
     <div class="ach-filter">
       <div class="group"><label>Grade:</label><span id="achGradeChips"></span></div>
       <div class="group"><label>패턴:</label><span id="achPatternChips"></span></div>
+      <div class="group"><label>Account Class:</label><span id="achAccChips"></span></div>
       <input class="search" id="achSearch" placeholder="Account 검색...">
       <span class="count" id="achCount"></span>
       <button class="xls-btn" id="dlXls2" title="현재 필터링된 행을 Excel로 다운로드">📥 Excel 다운로드</button>
@@ -292,7 +293,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <table id="achTbl">
         <thead>
           <tr class="group-row">
-            <th colspan="3" style="text-align:left;padding-left:14px">계정 정보</th>
+            <th colspan="4" style="text-align:left;padding-left:14px">계정 정보</th>
             <th colspan="6" class="ac-grp divider">🟧 AC Dealer (Cop 1000)</th>
             <th colspan="6" class="ha-grp divider">🟩 HA Dealer (Cop 2000+4000)</th>
             <th colspan="2" class="gap-grp divider">📐 비교</th>
@@ -300,6 +301,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
           <tr class="col-row">
             <th class="l" data-k="name">Account</th>
             <th class="l" data-k="grade">Grade</th>
+            <th class="l" data-k="acc_class">Account Class</th>
             <th class="l" data-k="region">Region</th>
             <th class="divider" data-k="ac_s25">매출 25<br>(Jan-Dec)</th>
             <th data-k="ac_s26">매출 26<br>(Jan-Apr)</th>
@@ -517,7 +519,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => btn.onclick = () => {
 });
 
 let ACH_DATA = null;
-const ACH_STATE = {grades:new Set(), patterns:new Set(), search:'', sortKey:'ac_odp26', sortDir:'desc'};
+const ACH_STATE = {grades:new Set(), patterns:new Set(), accs:new Set(), search:'', sortKey:'ac_odp26', sortDir:'desc'};
 
 function classifyPattern(r){
   const ac = r.ac_odp26, ha = r.ha_odp26;
@@ -540,6 +542,32 @@ function computeOdpHa(r){ return r.ha_b26 > 0 ? (r.ha_od26 / r.ha_b26 * 100) : n
 function computeDsoAc(r){ return r.ac_s26 > 0 ? (r.ac_b26 / r.ac_s26 * 120) : null; }
 function computeDsoHa(r){ return r.ha_s26 > 0 ? (r.ha_b26 / r.ha_s26 * 120) : null; }
 
+function lookupAccClass(name){
+  if (typeof DATA === 'undefined' || !Array.isArray(DATA)) return 'Unknown';
+  const exact = DATA.find(c => c.name === name);
+  if (exact) return exact.acc_class || 'Unknown';
+  const p = name.substring(0, 24);
+  const pre = DATA.find(c => c.name === p || c.name.substring(0,24) === p);
+  if (pre) return pre.acc_class || 'Unknown';
+  const aliases = {
+    'Star Appliances':'Najm/Star',
+    'Bin Momen Trading Co.':'Bin Momen',
+    'Box Appliances Trading Est.':'Box Appliances',
+    'Cold World Est.':'Cold World',
+    'Tamkeen International Co.':'Tamkeen',
+    'Air Care Co.':'Air Care',
+    'Abdulaziz Al-Shathery':'Al Shathri',
+    'Abdullah Ali Al-Dhamin & Sons Co.':'Al Dhamin',
+    'Alghanim Trading Company':'Al Ghanem',
+    'Al-Zaqzouq Home Appliances Co., Ltd':'Zagzoog'
+  };
+  if (aliases[name]) {
+    const a = DATA.find(c => c.name === aliases[name]);
+    if (a) return a.acc_class || 'Unknown';
+  }
+  return 'Unknown';
+}
+
 function enrichData(){
   ACH_DATA.forEach(r => {
     r.ac_odp26 = computeOdpAc(r);
@@ -550,6 +578,7 @@ function enrichData(){
     r.region = (r.regions||[]).join(', ');
     r.pattern_obj = classifyPattern(r);
     r.pattern = r.pattern_obj.label;
+    r.acc_class = lookupAccClass(r.name);
   });
 }
 
@@ -570,6 +599,16 @@ function buildAchChips(){
     el.classList.toggle('on');
     renderAch();
   });
+  const accSet = new Set(ACH_DATA.map(r => r.acc_class).filter(Boolean));
+  const accOrder = ['Active','New_2026','New_2025','Re-active_2025','Re-active from 2024','Need to re-active','Unknown'];
+  const accs = accOrder.filter(a => accSet.has(a)).concat([...accSet].filter(a => !accOrder.includes(a)));
+  document.getElementById('achAccChips').innerHTML = accs.map(a => `<span class="chip" data-a="${a}">${a}</span>`).join('');
+  document.querySelectorAll('#achAccChips .chip').forEach(el => el.onclick = () => {
+    const a = el.dataset.a;
+    if (ACH_STATE.accs.has(a)) ACH_STATE.accs.delete(a); else ACH_STATE.accs.add(a);
+    el.classList.toggle('on');
+    renderAch();
+  });
 }
 
 function fmtMa(v){ if(v==null) return '<span class="neu">-</span>'; if (Math.abs(v) < 1000) return '<span class="neu">'+(v/1e6).toFixed(2)+'M</span>'; return (v/1e6).toFixed(2)+'M'; }
@@ -583,6 +622,7 @@ function renderAch(){
   let arr = ACH_DATA.filter(r =>
     (ACH_STATE.grades.size === 0 || ACH_STATE.grades.has(r.grade)) &&
     (ACH_STATE.patterns.size === 0 || ACH_STATE.patterns.has(r.pattern)) &&
+    (ACH_STATE.accs.size === 0 || ACH_STATE.accs.has(r.acc_class)) &&
     (!ACH_STATE.search || r.name.toLowerCase().includes(ACH_STATE.search.toLowerCase()))
   );
   arr.sort((a,b) => {
@@ -615,6 +655,7 @@ function renderAch(){
     return `<tr>
       <td class="l name" title="${r.name}">${r.name}</td>
       <td class="l">${r.grade ? `<span class="gr gr-${r.grade.replace('+','\\+')}">${r.grade}</span>` : '-'}</td>
+      <td class="l" style="font-size:10px;color:var(--muted)">${r.acc_class||'-'}</td>
       <td class="l" style="font-size:10px;color:var(--muted)">${r.region||'-'}</td>
       <td class="ac-cell divider">${fmtMa(r.ac_s25)}</td>
       <td class="ac-cell">${fmtMa(r.ac_s26)}</td>
@@ -633,7 +674,7 @@ function renderAch(){
     </tr>`;
   }).join('') + (arr.length ? `<tr class="total-row">
     <td class="l">Σ 합계 (${arr.length}개)</td>
-    <td>—</td><td>—</td>
+    <td>—</td><td>—</td><td>—</td>
     <td class="divider">${fmtMa(ac_s25)}</td>
     <td>${fmtMa(ac_s)}</td>
     <td>${fmtMa(ac_b)}</td>
@@ -747,6 +788,7 @@ function downloadXlsxTab2(){
   let arr = ACH_DATA.filter(r =>
     (ACH_STATE.grades.size === 0 || ACH_STATE.grades.has(r.grade)) &&
     (ACH_STATE.patterns.size === 0 || ACH_STATE.patterns.has(r.pattern)) &&
+    (ACH_STATE.accs.size === 0 || ACH_STATE.accs.has(r.acc_class)) &&
     (!ACH_STATE.search || r.name.toLowerCase().includes(ACH_STATE.search.toLowerCase()))
   );
   arr.sort((a,b) => {
@@ -757,7 +799,7 @@ function downloadXlsxTab2(){
     return ACH_STATE.sortDir==='asc' ? va-vb : vb-va;
   });
   const rows = arr.map(r => ({
-    'Account': r.name, 'Grade': r.grade, 'Region': r.region,
+    'Account': r.name, 'Grade': r.grade, 'Account Class': r.acc_class, 'Region': r.region,
     'AC Sales 25 (Jan-Dec)': r.ac_s25, 'AC Sales 26 (Jan-Apr)': r.ac_s26,
     'AC AR': r.ac_b26, 'AC OD': r.ac_od26, 'AC OD%': r.ac_odp26, 'AC DSO (d)': r.ac_dso26,
     'HA Sales 25 (Jan-Dec)': r.ha_s25, 'HA Sales 26 (Jan-Apr)': r.ha_s26,
@@ -766,7 +808,7 @@ function downloadXlsxTab2(){
   }));
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{wch:34},{wch:7},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:12},{wch:18}];
+  ws['!cols'] = [{wch:34},{wch:7},{wch:18},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:12},{wch:18}];
   XLSX.utils.book_append_sheet(wb, ws, 'AC vs HA');
   const d = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `IR_AR_AC_vs_HA_2026Apr_${d}.xlsx`);
