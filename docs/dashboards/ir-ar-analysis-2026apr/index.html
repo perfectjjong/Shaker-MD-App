@@ -75,6 +75,11 @@ th.sort-asc::after{content:" ▲";color:var(--c-blue)}
 th.sort-desc::after{content:" ▼";color:var(--c-blue)}
 tbody tr{border-bottom:1px solid #2d3748}
 tbody tr:hover{background:var(--card2)}
+tr.total-row{position:sticky;bottom:0;background:#1e3a8a;font-weight:600;border-top:2px solid #60a5fa;z-index:1}
+tr.total-row:hover{background:#1e3a8a}
+tr.total-row td{padding:8px 6px;color:#fde68a;border-bottom:none}
+tr.total-row td.l{color:#fff}
+tr.total-row td.note{text-align:left;color:#cbd5e1;font-size:10px;font-weight:400;white-space:normal;line-height:1.3}
 td{padding:6px 6px;text-align:right;white-space:nowrap}
 td.l{text-align:left}
 td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
@@ -280,6 +285,18 @@ function render(){
   });
   const totAr = arr.reduce((s,c)=>s+c.ar,0), totOd = arr.reduce((s,c)=>s+c.od,0);
   document.getElementById('rowCount').textContent = `${arr.length}개 채널 · AR ${(totAr/1e6).toFixed(1)}M · OD ${(totOd/1e6).toFixed(1)}M`;
+  // 합계 행 (sticky bottom) 집계
+  const sumK = (k) => arr.reduce((s,c) => s + (c[k] || 0), 0);
+  const wAvg = (k) => {
+    let num = 0, den = 0;
+    for (const c of arr) { if (c[k] != null && c.ar) { num += c[k] * c.ar; den += c.ar; } }
+    return den > 0 ? num / den : null;
+  };
+  const totS25 = sumK('s25q1'), totS26 = sumK('s26q1');
+  const totSo  = sumK('so_ttl'), totStk = sumK('stk_apr'), totOud = sumK('oud');
+  const odPctTot = totAr > 0 ? (totOd / totAr) * 100 : null;
+  const yoyTot   = totS25 > 0 ? (totS26 / totS25 - 1) * 100 : null;
+  const dsoW = wAvg('dso'), dsoDw = wAvg('dso_d'), odDppW = wAvg('od_dpp'), wosW = wAvg('wos');
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = arr.map(c => {
     const urgent = c.status.includes('🚨') || c.status.includes('🔴');
@@ -303,7 +320,24 @@ function render(){
       <td>${fmtN(c.oud)}</td>
       <td class="diag ${urgent?'urgent':''}">${c.diag}</td>
     </tr>`;
-  }).join('');
+  }).join('') + (arr.length ? `<tr class="total-row">
+    <td class="l">Σ 합계 (${arr.length}개)</td>
+    <td>—</td><td>—</td><td>—</td>
+    <td>${fmtM(totAr)}</td>
+    <td>${fmtMOd(totOd)}</td>
+    <td>${odPctTot==null?'-':odPctTot.toFixed(1)+'%'}</td>
+    <td>${odDppW==null?'-':fmtPp(odDppW)}</td>
+    <td>${dsoW==null?'-':dsoW.toFixed(0)+'d'}</td>
+    <td>${dsoDw==null?'-':fmtD(dsoDw,true)}</td>
+    <td>${fmtM(totS25)}</td>
+    <td>${fmtM(totS26)}</td>
+    <td>${yoyTot==null?'-':fmtPct(yoyTot,true)}</td>
+    <td>${fmtN(totSo)}</td>
+    <td>${fmtN(totStk)}</td>
+    <td>${wosW==null?'-':fmtW(wosW)}</td>
+    <td>${fmtN(totOud)}</td>
+    <td class="note">합계: AR/OD/매출/SO/Stk/OUD · 재계산: OD%=ΣOD/ΣAR, YoY=ΣS26/ΣS25 · AR 가중평균: DSO/ΔOD/ΔDSO/WOS</td>
+  </tr>` : '');
   // Update sort indicators
   document.querySelectorAll('th').forEach(th => {
     th.classList.remove('sort-asc','sort-desc');
