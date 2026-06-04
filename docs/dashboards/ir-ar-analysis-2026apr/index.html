@@ -254,19 +254,19 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
   <div id="tab2" class="tab-panel">
     <div class="criteria" style="border-left-color:#a78bfa">
-      <b>⚖️ IR Others Account별 AC Dealer vs HA Dealer 채권 비교</b> · 데이터: AR-HVAC vs HA 2026 Apr.xlsx · 범위: 82 IR Others 계정 (B/H 제외) · 핵심 인사이트: <b style="color:#fda4af">AC OD% 46.4%</b> vs <b style="color:#86efac">HA OD% 17.4%</b> — 동일 계정도 사업부별 회수 양상 상이. AC Dealer는 미수가 누적되는데 HA Dealer는 정상 결제되는 패턴이 다수 발견됨 (구조 시그널).
+      <b>⚖️ IR Others Account별 AC Dealer vs HA Dealer 채권 비교</b> · 데이터: AR-HVAC vs HA 2026 Apr.xlsx · 범위: 82 IR Others 계정 (B/H 제외) · 매출 기간: <b>25 = Jan-Dec 풀이어</b> / <b>26 = Jan-Apr YTD</b> (HA 2025 Jan-Apr 분리 데이터 없음 → Apple-to-Apple YoY 불가) · 핵심 인사이트: <b style="color:#fda4af">AC OD% 46.4%</b> vs <b style="color:#86efac">HA OD% 17.4%</b> — 동일 계정도 사업부별 회수 양상 상이.
     </div>
 
     <div class="summary-mini" id="achKpiCards">
       <div class="card ac">
         <div class="lbl" id="acKpiLbl">🟧 AC Dealers (IR Others Apr-26)</div>
         <div class="val" id="acKpiVal">AR 64.2M / OD 29.8M</div>
-        <div class="sub" id="acKpiSub">OD% <b style="color:#fda4af">46.4%</b> · DSO 204d</div>
+        <div class="sub" id="acKpiSub">OD% <b style="color:#fda4af">46.4%</b> · DSO 204d · 매출 25 (Jan-Dec) 93.5M → 26 (Jan-Apr) 37.7M</div>
       </div>
       <div class="card ha">
         <div class="lbl" id="haKpiLbl">🟩 HA Dealers (IR Others Apr-26)</div>
         <div class="val" id="haKpiVal">AR 52.6M / OD 9.1M</div>
-        <div class="sub" id="haKpiSub">OD% <b style="color:#86efac">17.4%</b> · DSO 122d</div>
+        <div class="sub" id="haKpiSub">OD% <b style="color:#86efac">17.4%</b> · DSO 122d · 매출 25 (Jan-Dec) 103.4M → 26 (Jan-Apr) 51.5M</div>
       </div>
       <div class="card gap">
         <div class="lbl" id="gapKpiLbl">📐 사업부 간 격차</div>
@@ -293,20 +293,22 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
         <thead>
           <tr class="group-row">
             <th colspan="3" style="text-align:left;padding-left:14px">계정 정보</th>
-            <th colspan="5" class="ac-grp divider">🟧 AC Dealer (Cop 1000)</th>
-            <th colspan="5" class="ha-grp divider">🟩 HA Dealer (Cop 2000+4000)</th>
+            <th colspan="6" class="ac-grp divider">🟧 AC Dealer (Cop 1000)</th>
+            <th colspan="6" class="ha-grp divider">🟩 HA Dealer (Cop 2000+4000)</th>
             <th colspan="2" class="gap-grp divider">📐 비교</th>
           </tr>
           <tr class="col-row">
             <th class="l" data-k="name">Account</th>
             <th class="l" data-k="grade">Grade</th>
             <th class="l" data-k="region">Region</th>
-            <th class="divider" data-k="ac_s26">Sales (YTD)</th>
+            <th class="divider" data-k="ac_s25">매출 25<br>(Jan-Dec)</th>
+            <th data-k="ac_s26">매출 26<br>(Jan-Apr)</th>
             <th data-k="ac_b26">AR</th>
             <th data-k="ac_od26">OD</th>
             <th data-k="ac_odp26" class="sort-desc">OD%</th>
             <th data-k="ac_dso26">DSO</th>
-            <th class="divider" data-k="ha_s26">Sales (YTD)</th>
+            <th class="divider" data-k="ha_s25">매출 25<br>(Jan-Dec)</th>
+            <th data-k="ha_s26">매출 26<br>(Jan-Apr)</th>
             <th data-k="ha_b26">AR</th>
             <th data-k="ha_od26">OD</th>
             <th data-k="ha_odp26">OD%</th>
@@ -593,8 +595,8 @@ function renderAch(){
 
   // Totals
   const sum = (k) => arr.reduce((s,r) => s + (r[k]||0), 0);
-  const ac_b = sum('ac_b26'), ac_o = sum('ac_od26'), ac_s = sum('ac_s26');
-  const ha_b = sum('ha_b26'), ha_o = sum('ha_od26'), ha_s = sum('ha_s26');
+  const ac_b = sum('ac_b26'), ac_o = sum('ac_od26'), ac_s25 = sum('ac_s25'), ac_s = sum('ac_s26');
+  const ha_b = sum('ha_b26'), ha_o = sum('ha_od26'), ha_s25 = sum('ha_s25'), ha_s = sum('ha_s26');
   const ac_odp = ac_b > 0 ? (ac_o/ac_b*100) : null;
   const ha_odp = ha_b > 0 ? (ha_o/ha_b*100) : null;
   const ac_dso = ac_s > 0 ? (ac_b/ac_s*120) : null;
@@ -604,7 +606,7 @@ function renderAch(){
   document.getElementById('achCount').textContent = `${arr.length}개 계정 · AC AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M (OD% ${ac_odp?ac_odp.toFixed(1):'-'}%) · HA AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M (OD% ${ha_odp?ha_odp.toFixed(1):'-'}%)`;
 
   // Update top KPI cards (반영: 필터링된 arr 기준)
-  updateAchKpi(arr, ac_b, ac_o, ac_s, ha_b, ha_o, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t);
+  updateAchKpi(arr, ac_b, ac_o, ac_s25, ac_s, ha_b, ha_o, ha_s25, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t);
 
   const tbody = document.getElementById('achTbody');
   tbody.innerHTML = arr.map(r => {
@@ -614,12 +616,14 @@ function renderAch(){
       <td class="l name" title="${r.name}">${r.name}</td>
       <td class="l">${r.grade ? `<span class="gr gr-${r.grade.replace('+','\\+')}">${r.grade}</span>` : '-'}</td>
       <td class="l" style="font-size:10px;color:var(--muted)">${r.region||'-'}</td>
-      <td class="ac-cell divider">${fmtMa(r.ac_s26)}</td>
+      <td class="ac-cell divider">${fmtMa(r.ac_s25)}</td>
+      <td class="ac-cell">${fmtMa(r.ac_s26)}</td>
       <td class="ac-cell">${fmtMa(r.ac_b26)}</td>
       <td class="ac-cell">${fmtMa(r.ac_od26)}</td>
       <td class="ac-cell ${odpCls(r.ac_odp26)}">${fmtPctA(r.ac_odp26)}</td>
       <td class="ac-cell">${fmtDsoA(r.ac_dso26)}</td>
-      <td class="ha-cell divider">${fmtMa(r.ha_s26)}</td>
+      <td class="ha-cell divider">${fmtMa(r.ha_s25)}</td>
+      <td class="ha-cell">${fmtMa(r.ha_s26)}</td>
       <td class="ha-cell">${fmtMa(r.ha_b26)}</td>
       <td class="ha-cell">${fmtMa(r.ha_od26)}</td>
       <td class="ha-cell ${odpCls(r.ha_odp26)}">${fmtPctA(r.ha_odp26)}</td>
@@ -630,18 +634,20 @@ function renderAch(){
   }).join('') + (arr.length ? `<tr class="total-row">
     <td class="l">Σ 합계 (${arr.length}개)</td>
     <td>—</td><td>—</td>
-    <td class="divider">${fmtMa(ac_s)}</td>
+    <td class="divider">${fmtMa(ac_s25)}</td>
+    <td>${fmtMa(ac_s)}</td>
     <td>${fmtMa(ac_b)}</td>
     <td>${fmtMa(ac_o)}</td>
     <td>${fmtPctA(ac_odp)}</td>
     <td>${fmtDsoA(ac_dso)}</td>
-    <td class="divider">${fmtMa(ha_s)}</td>
+    <td class="divider">${fmtMa(ha_s25)}</td>
+    <td>${fmtMa(ha_s)}</td>
     <td>${fmtMa(ha_b)}</td>
     <td>${fmtMa(ha_o)}</td>
     <td>${fmtPctA(ha_odp)}</td>
     <td>${fmtDsoA(ha_dso)}</td>
     <td class="divider ${gapClass(gap_t)}">${fmtGap(gap_t)}</td>
-    <td class="l" style="font-size:10px;color:#cbd5e1">합계: Sales/AR/OD · 재계산: OD%=ΣOD/ΣAR · DSO=ΣAR/ΣSales×120</td>
+    <td class="l" style="font-size:10px;color:#cbd5e1">합계: 매출/AR/OD · 재계산: OD%=ΣOD/ΣAR · DSO=ΣAR/Σ매출26×120 (YTD 기준)</td>
   </tr>` : '');
 
   // Update sort indicators
@@ -673,7 +679,7 @@ const ACH_DATA_RAW = [{"name":"AHMED IBRAHIM SHAIBA EST.","grade":"D","regions":
 ACH_DATA = ACH_DATA_RAW;
 
 // === Tab2 KPI 카드 동적 업데이트 ===
-function updateAchKpi(arr, ac_b, ac_o, ac_s, ha_b, ha_o, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t){
+function updateAchKpi(arr, ac_b, ac_o, ac_s25, ac_s, ha_b, ha_o, ha_s25, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t){
   const extreme = arr.filter(r => r.ac_odp26 != null && r.ha_odp26 != null && r.ac_odp26 >= 95 && r.ha_odp26 <= 10).length;
   const acColor = ac_odp == null ? '#cbd5e1' : (ac_odp >= 30 ? '#fda4af' : '#86efac');
   const haColor = ha_odp == null ? '#cbd5e1' : (ha_odp >= 30 ? '#fda4af' : '#86efac');
@@ -685,11 +691,11 @@ function updateAchKpi(arr, ac_b, ac_o, ac_s, ha_b, ha_o, ha_s, ac_odp, ha_odp, a
 
   document.getElementById('acKpiLbl').textContent = `🟧 AC Dealers (필터 ${arr.length}개)`;
   document.getElementById('acKpiVal').innerHTML = `AR ${fmtM1(ac_b)} / OD ${fmtM1(ac_o)}`;
-  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:${acColor}">${fmtP1(ac_odp)}</b> · DSO ${fmtD0(ac_dso)} · Sales(YTD) ${fmtM1(ac_s)}`;
+  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:${acColor}">${fmtP1(ac_odp)}</b> · DSO ${fmtD0(ac_dso)} · 매출 25 (Jan-Dec) ${fmtM1(ac_s25)} → 26 (Jan-Apr) ${fmtM1(ac_s)}`;
 
   document.getElementById('haKpiLbl').textContent = `🟩 HA Dealers (필터 ${arr.length}개)`;
   document.getElementById('haKpiVal').innerHTML = `AR ${fmtM1(ha_b)} / OD ${fmtM1(ha_o)}`;
-  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:${haColor}">${fmtP1(ha_odp)}</b> · DSO ${fmtD0(ha_dso)} · Sales(YTD) ${fmtM1(ha_s)}`;
+  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:${haColor}">${fmtP1(ha_odp)}</b> · DSO ${fmtD0(ha_dso)} · 매출 25 (Jan-Dec) ${fmtM1(ha_s25)} → 26 (Jan-Apr) ${fmtM1(ha_s)}`;
 
   document.getElementById('gapKpiLbl').textContent = `📐 사업부 간 격차 (Apr-26)`;
   document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:${gapColor}">${fmtPp(gap_t)}</b>`;
@@ -752,9 +758,9 @@ function downloadXlsxTab2(){
   });
   const rows = arr.map(r => ({
     'Account': r.name, 'Grade': r.grade, 'Region': r.region,
-    'AC Sales 25 (Jan-Apr)': r.ac_s25, 'AC Sales 26 (Jan-Apr)': r.ac_s26,
+    'AC Sales 25 (Jan-Dec)': r.ac_s25, 'AC Sales 26 (Jan-Apr)': r.ac_s26,
     'AC AR': r.ac_b26, 'AC OD': r.ac_od26, 'AC OD%': r.ac_odp26, 'AC DSO (d)': r.ac_dso26,
-    'HA Sales 25 (Jan-Apr)': r.ha_s25, 'HA Sales 26 (Jan-Apr)': r.ha_s26,
+    'HA Sales 25 (Jan-Dec)': r.ha_s25, 'HA Sales 26 (Jan-Apr)': r.ha_s26,
     'HA AR': r.ha_b26, 'HA OD': r.ha_od26, 'HA OD%': r.ha_odp26, 'HA DSO (d)': r.ha_dso26,
     'ΔOD% (AC-HA)': r.gap_odp26, '패턴': r.pattern
   }));
