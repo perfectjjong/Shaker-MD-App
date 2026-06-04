@@ -148,7 +148,11 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .summary-mini .card .val{font-size:18px;font-weight:600}
 .summary-mini .card .sub{font-size:10px;color:var(--muted);margin-top:2px}
 .ach-filter{background:var(--card);padding:10px 14px;border-radius:6px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.xls-btn{padding:5px 12px;border:1px solid #22c55e;background:#14532d;color:#bbf7d0;border-radius:14px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .15s}
+.xls-btn:hover{background:#22c55e;color:#fff}
+.xls-btn:active{transform:translateY(1px)}
 </style>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -192,6 +196,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
     <div class="group"><label>Account Class:</label><span id="accChips"></span></div>
     <input class="search" id="searchInput" placeholder="Search channel...">
     <span class="count" id="rowCount"></span>
+    <button class="xls-btn" id="dlXls1" title="Download filtered rows as Excel">📥 Excel Export</button>
   </div>
 
   <div class="tbl-wrap">
@@ -252,26 +257,26 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <b>⚖️ IR Others Account-by-Account: AC Dealer vs HA Dealer AR Comparison</b> · Source: AR-HVAC vs HA 2026 Apr.xlsx · Scope: 82 IR Others accounts (B/H excluded) · Key insight: <b style="color:#fda4af">AC OD% 46.4%</b> vs <b style="color:#86efac">HA OD% 17.4%</b> — same accounts show very different collection behavior by business unit. AC Dealer overdue accumulates while HA Dealer is paid on time — a structural pattern.
     </div>
 
-    <div class="summary-mini">
+    <div class="summary-mini" id="achKpiCards">
       <div class="card ac">
-        <div class="lbl">🟧 AC Dealers (IR Others Apr-26)</div>
-        <div class="val">AR 64.2M / OD 29.8M</div>
-        <div class="sub">OD% <b style="color:#fda4af">46.4%</b> · DSO 204d (Dec-25: 196.9d, +7d)</div>
+        <div class="lbl" id="acKpiLbl">🟧 AC Dealers (IR Others Apr-26)</div>
+        <div class="val" id="acKpiVal">AR 64.2M / OD 29.8M</div>
+        <div class="sub" id="acKpiSub">OD% <b style="color:#fda4af">46.4%</b> · DSO 204d</div>
       </div>
       <div class="card ha">
-        <div class="lbl">🟩 HA Dealers (IR Others Apr-26)</div>
-        <div class="val">AR 52.6M / OD 9.1M</div>
-        <div class="sub">OD% <b style="color:#86efac">17.4%</b> · DSO 122d (Dec-25: 138.6d, -16d)</div>
+        <div class="lbl" id="haKpiLbl">🟩 HA Dealers (IR Others Apr-26)</div>
+        <div class="val" id="haKpiVal">AR 52.6M / OD 9.1M</div>
+        <div class="sub" id="haKpiSub">OD% <b style="color:#86efac">17.4%</b> · DSO 122d</div>
       </div>
       <div class="card gap">
-        <div class="lbl">📐 Cross-BU Gap (Apr-26)</div>
-        <div class="val">ΔOD% <b style="color:#c4b5fd">+29.0pp</b></div>
-        <div class="sub">AC is 29pp worse than HA · Same dealer, different payment priority by BU</div>
+        <div class="lbl" id="gapKpiLbl">📐 Cross-BU Gap (Apr-26)</div>
+        <div class="val" id="gapKpiVal">ΔOD% <b style="color:#c4b5fd">+29.0pp</b></div>
+        <div class="sub" id="gapKpiSub">AC is 29pp worse than HA · Same dealer, different payment priority by BU</div>
       </div>
       <div class="card">
         <div class="lbl">🔥 Extreme Gap Accounts (AC≥95% · HA≤10%)</div>
         <div class="val" id="extremeGapCount">—</div>
-        <div class="sub">AC nearly fully overdue, HA paid normally → RSM immediate review</div>
+        <div class="sub" id="extremeGapSub">AC nearly fully overdue, HA paid normally → RSM immediate review</div>
       </div>
     </div>
 
@@ -280,6 +285,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <div class="group"><label>Pattern:</label><span id="achPatternChips"></span></div>
       <input class="search" id="achSearch" placeholder="Search account...">
       <span class="count" id="achCount"></span>
+      <button class="xls-btn" id="dlXls2" title="Download filtered rows as Excel">📥 Excel Export</button>
     </div>
 
     <div class="ach-tbl-wrap">
@@ -347,11 +353,16 @@ const STATUS_CLASS = {'🚨 회수의지':'s-emer','📦 판매부진':'s-sales'
 const STATUS_LABEL = {'🚨 회수의지':'🚨 Collection Issue','📦 판매부진':'📦 Slow Sales','🔴 위험':'🔴 Risk','⚫ Bad Debt':'⚫ Bad Debt','🟡 주의':'🟡 Watch','🟢 정상':'🟢 Normal','🚫 SO 미입수':'🚫 SO Missing','⚪ 분석보류':'⚪ N/A'};
 const STATE = {statuses:new Set(STATUSES), grades:new Set(), accs:new Set(), search:'', sortKey:'ar', sortDir:'desc'};
 
-// Build KPI cards
+// Build KPI cards (Tab1) — reflects Grade/Acc/Search filters (Status filter excluded as it is self-referential)
 function renderKpi(){
   const agg = {};
   STATUSES.forEach(s => agg[s] = {n:0, ar:0, od:0});
-  DATA.forEach(c => { agg[c.status].n++; agg[c.status].ar += c.ar; agg[c.status].od += c.od; });
+  const baseFiltered = DATA.filter(c =>
+    (STATE.grades.size === 0 || STATE.grades.has(c.grade)) &&
+    (STATE.accs.size === 0 || STATE.accs.has(c.acc_class)) &&
+    (!STATE.search || c.name.toLowerCase().includes(STATE.search.toLowerCase()) || c.sap.includes(STATE.search))
+  );
+  baseFiltered.forEach(c => { agg[c.status].n++; agg[c.status].ar += c.ar; agg[c.status].od += c.od; });
   const row = document.getElementById('kpiRow');
   row.innerHTML = STATUSES.map(s => {
     const a = agg[s];
@@ -384,13 +395,13 @@ function buildChips(){
     const g = el.dataset.g;
     if (STATE.grades.has(g)) STATE.grades.delete(g); else STATE.grades.add(g);
     el.classList.toggle('on');
-    render();
+    renderKpi(); render();
   });
   document.querySelectorAll('#accChips .chip').forEach(el => el.onclick = () => {
     const a = el.dataset.a;
     if (STATE.accs.has(a)) STATE.accs.delete(a); else STATE.accs.add(a);
     el.classList.toggle('on');
-    render();
+    renderKpi(); render();
   });
 }
 
@@ -487,7 +498,7 @@ document.querySelectorAll('th[data-k]').forEach(th => th.onclick = () => {
   else { STATE.sortKey = k; STATE.sortDir = 'desc'; }
   render();
 });
-document.getElementById('searchInput').oninput = (e) => { STATE.search = e.target.value; render(); };
+document.getElementById('searchInput').oninput = (e) => { STATE.search = e.target.value; renderKpi(); render(); };
 
 renderKpi();
 buildChips();
@@ -588,6 +599,9 @@ function renderAch(){
 
   document.getElementById('achCount').textContent = `${arr.length} accounts · AC AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M (OD% ${ac_odp?ac_odp.toFixed(1):'-'}%) · HA AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M (OD% ${ha_odp?ha_odp.toFixed(1):'-'}%)`;
 
+  // Update top KPI cards (reflects filtered arr)
+  updateAchKpi(arr, ac_b, ac_o, ac_s, ha_b, ha_o, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t);
+
   const tbody = document.getElementById('achTbody');
   tbody.innerHTML = arr.map(r => {
     const patternCls = 'p-' + r.pattern_obj.key;
@@ -637,8 +651,6 @@ function initTab2(){
   TAB2_INITED = true;
   enrichData();
   buildAchChips();
-  const extreme = ACH_DATA.filter(r => r.ac_odp26 != null && r.ha_odp26 != null && r.ac_odp26 >= 95 && r.ha_odp26 <= 10).length;
-  document.getElementById('extremeGapCount').textContent = `${extreme}`;
   document.querySelectorAll('#achTbl thead tr.col-row th[data-k]').forEach(th => th.onclick = () => {
     const k = th.dataset.k;
     if (ACH_STATE.sortKey === k) ACH_STATE.sortDir = ACH_STATE.sortDir==='asc'?'desc':'asc';
@@ -651,6 +663,103 @@ function initTab2(){
 
 const ACH_DATA_RAW = [{"name":"AHMED IBRAHIM SHAIBA EST.","grade":"D","regions":["South"],"ac_s25":-2602.0,"ac_s26":0,"ac_b25":0.0,"ac_b26":0,"ac_od25":0.0,"ac_od26":0,"ha_s25":194166.0,"ha_s26":10442.0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"AL MUTTMAKEN TREDING EST","grade":"D","regions":["East"],"ac_s25":17933.0,"ac_s26":7076.0,"ac_b25":6393.0,"ac_b26":0,"ac_od25":0,"ac_od26":0,"ha_s25":151304.0,"ha_s26":54967.0,"ha_b25":38576.0,"ha_b26":63197.0,"ha_od25":22745.0,"ha_od26":0},{"name":"AL SAFWA PLUS COMPANY","grade":"C","regions":["West"],"ac_s25":617786.0,"ac_s26":0,"ac_b25":497317.0,"ac_b26":297017.0,"ac_od25":497317.0,"ac_od26":297017.0,"ha_s25":774326.0,"ha_s26":0,"ha_b25":299449.0,"ha_b26":185452.0,"ha_od25":77353.0,"ha_od26":185452.0},{"name":"ALhawwaa AL Bard   Est.","grade":"D","regions":["East"],"ac_s25":83880.0,"ac_s26":-71361.0,"ac_b25":96462.0,"ac_b26":-6.0,"ac_od25":96462.0,"ac_od26":0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Abdul Ahad Mohammed","grade":"C","regions":["West"],"ac_s25":816832.0,"ac_s26":147786.0,"ac_b25":724093.0,"ac_b26":624093.0,"ac_od25":562595.0,"ac_od26":624093.0,"ha_s25":1082609.0,"ha_s26":225937.0,"ha_b25":454116.0,"ha_b26":478225.0,"ha_od25":189348.0,"ha_od26":218522.0},{"name":"Abdul Karim Al-Dahi Est.","grade":"D","regions":["East"],"ac_s25":39536.0,"ac_s26":25792.0,"ac_b25":15281.0,"ac_b26":13946.0,"ac_od25":5935.0,"ac_od26":0,"ha_s25":521432.0,"ha_s26":291732.0,"ha_b25":235064.0,"ha_b26":286026.0,"ha_od25":152550.0,"ha_od26":45391.0},{"name":"Abdulaziz Al-Shathery","grade":"A+","regions":["Central"],"ac_s25":7423873.0,"ac_s26":3387637.0,"ac_b25":2916063.0,"ac_b26":4267463.0,"ac_od25":488051.0,"ac_od26":1353412.0,"ha_s25":162193.0,"ha_s26":364146.0,"ha_b25":0,"ha_b26":358408.0,"ha_od25":0,"ha_od26":0},{"name":"Abdullah Ali Al-Dhamin & Sons Co.","grade":"B","regions":["East"],"ac_s25":3958085.0,"ac_s26":154588.0,"ac_b25":1711854.0,"ac_b26":1349993.0,"ac_od25":766785.0,"ac_od26":1285539.0,"ha_s25":20327909.0,"ha_s26":8653436.0,"ha_b25":7169357.0,"ha_b26":7369984.0,"ha_od25":1341976.0,"ha_od26":426253.0},{"name":"Abdullah Saleh Al-Sultan and Sons C","grade":"D","regions":["North"],"ac_s25":12300.0,"ac_s26":89575.0,"ac_b25":26799.0,"ac_b26":116126.0,"ac_od25":12654.0,"ac_od26":13114.0,"ha_s25":59141.0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Abu Yaser Trading Company","grade":"C","regions":["West"],"ac_s25":956423.0,"ac_s26":0,"ac_b25":957710.0,"ac_b26":827710.0,"ac_od25":957710.0,"ac_od26":827710.0,"ha_s25":1033677.0,"ha_s26":732062.0,"ha_b25":402836.0,"ha_b26":543508.0,"ha_od25":402836.0,"ha_od26":15510.0},{"name":"Adel Mohammed Alwadhakhi Trading Es","grade":"D","regions":["North"],"ac_s25":179091.0,"ac_s26":105464.0,"ac_b25":60671.0,"ac_b26":30671.0,"ac_od25":29603.0,"ac_od26":30671.0,"ha_s25":321840.0,"ha_s26":204971.0,"ha_b25":11326.0,"ha_b26":127576.0,"ha_od25":11326.0,"ha_od26":0},{"name":"Adel Sulaiman Abdulaziz comp","grade":"B","regions":["Central"],"ac_s25":9927029.0,"ac_s26":3670671.0,"ac_b25":2915774.0,"ac_b26":3418457.0,"ac_od25":0,"ac_od26":0,"ha_s25":920814.0,"ha_s26":784819.0,"ha_b25":410916.0,"ha_b26":741649.0,"ha_od25":0,"ha_od26":0},{"name":"Ahmed Shar Hafeez","grade":"C","regions":["West"],"ac_s25":355350.0,"ac_s26":258838.0,"ac_b25":176483.0,"ac_b26":193791.0,"ac_od25":174816.0,"ac_od26":0,"ha_s25":592394.0,"ha_s26":184127.0,"ha_b25":95252.0,"ha_b26":187794.0,"ha_od25":95252.0,"ha_od26":138181.0},{"name":"Air Care Co.","grade":"B","regions":["East"],"ac_s25":2878023.0,"ac_s26":166129.0,"ac_b25":2021480.0,"ac_b26":1535443.0,"ac_od25":1886060.0,"ac_od26":1344395.0,"ha_s25":2660107.0,"ha_s26":298983.0,"ha_b25":1798584.0,"ha_b26":1551766.0,"ha_od25":1047294.0,"ha_od26":1207935.0},{"name":"Air Conditioning Pioneers for Tradi","grade":"D","regions":["West"],"ac_s25":0,"ac_s26":0,"ac_b25":94995.0,"ac_b26":0,"ac_od25":94995.0,"ac_od26":0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Air conditioning land","grade":"C","regions":["West"],"ac_s25":2229841.0,"ac_s26":545201.0,"ac_b25":1631208.0,"ac_b26":1893924.0,"ac_od25":304263.0,"ac_od26":1266942.0,"ha_s25":4855753.0,"ha_s26":2353789.0,"ha_b25":1796960.0,"ha_b26":2913243.0,"ha_od25":346050.0,"ha_od26":770483.0},{"name":"Ajwaa Al Yamama Est.","grade":"D","regions":["East"],"ac_s25":165534.0,"ac_s26":116160.0,"ac_b25":123734.0,"ac_b26":123734.0,"ac_od25":123734.0,"ac_od26":123734.0,"ha_s25":244599.0,"ha_s26":90471.0,"ha_b25":53340.0,"ha_b26":103528.0,"ha_od25":43422.0,"ha_od26":3844.0},{"name":"Al - Asma Trading Co.","grade":"C","regions":["East"],"ac_s25":819758.0,"ac_s26":339855.0,"ac_b25":152192.0,"ac_b26":271030.0,"ac_od25":0,"ac_od26":67194.0,"ha_s25":3680.0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Al Mojel Co.","grade":"C","regions":["Central"],"ac_s25":923830.0,"ac_s26":123442.0,"ac_b25":1115990.0,"ac_b26":959379.0,"ac_od25":499376.0,"ac_od26":915990.0,"ha_s25":88004.0,"ha_s26":3325,"ha_b25":0,"ha_b26":485.0,"ha_od25":0,"ha_od26":0},{"name":"Al Motawa Trading Co.","grade":"C","regions":["East"],"ac_s25":95213.0,"ac_s26":-1799.0,"ac_b25":131112.0,"ac_b26":129043.0,"ac_od25":131112.0,"ac_od26":129043.0,"ha_s25":649444.0,"ha_s26":803648.0,"ha_b25":480576.0,"ha_b26":1068887.0,"ha_od25":348924.0,"ha_od26":133574.0},{"name":"Al Othman Commercial Co.","grade":"D","regions":["East"],"ac_s25":329870.0,"ac_s26":0,"ac_b25":410590.0,"ac_b26":410590.0,"ac_od25":410590.0,"ac_od26":410590.0,"ha_s25":2013685.0,"ha_s26":235921.0,"ha_b25":1215230.0,"ha_b26":1108004.0,"ha_od25":207223.0,"ha_od26":836695.0},{"name":"Al Rowad Electronics Company","grade":"C","regions":["Central"],"ac_s25":1437755.0,"ac_s26":318854.0,"ac_b25":101878.0,"ac_b26":248837.0,"ac_od25":52524.0,"ac_od26":1878.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Al Saha Alalamiyah Co.","grade":"B","regions":["West"],"ac_s25":1562664.0,"ac_s26":1689898.0,"ac_b25":829884.0,"ac_b26":1318821.0,"ac_od25":494659.0,"ac_od26":0,"ha_s25":3185829.0,"ha_s26":1900654.0,"ha_b25":1082519.0,"ha_b26":1410466.0,"ha_od25":0,"ha_od26":0},{"name":"Al Wefaq Platinum Ltd. Co.","grade":"D","regions":["South"],"ac_s25":163728.0,"ac_s26":0,"ac_b25":78684.0,"ac_b26":78684.0,"ac_od25":78684.0,"ac_od26":78684.0,"ha_s25":166176.0,"ha_s26":0,"ha_b25":106651.0,"ha_b26":70140.0,"ha_od25":106651.0,"ha_od26":70140.0},{"name":"Al-Shuwaird Air Conditioning","grade":"C","regions":["Central"],"ac_s25":4413.0,"ac_s26":0,"ac_b25":0.0,"ac_b26":0,"ac_od25":0.0,"ac_od26":0,"ha_s25":1149069.0,"ha_s26":556686.0,"ha_b25":339331.0,"ha_b26":426587.0,"ha_od25":46001.0,"ha_od26":0},{"name":"Al-Zaqzouq Home Appliances Co., Ltd","grade":"B","regions":["West"],"ac_s25":2847585.0,"ac_s26":0,"ac_b25":1871142.0,"ac_b26":1720372.0,"ac_od25":1871142.0,"ac_od26":1720372.0,"ha_s25":0,"ha_s26":2575199.0,"ha_b25":0,"ha_b26":2961479.0,"ha_od25":0,"ha_od26":0},{"name":"Alaa Abdulwahed Al Ghamdi","grade":"D","regions":["South"],"ac_s25":0,"ac_s26":0,"ac_b25":19846.0,"ac_b26":19846.0,"ac_od25":19846.0,"ac_od26":19846.0,"ha_s25":198487.0,"ha_s26":0,"ha_b25":108904,"ha_b26":46180.0,"ha_od25":108904,"ha_od26":46180.0},{"name":"Alam Alfahad Trading Est","grade":"IR-X","regions":["North"],"ac_s25":0,"ac_s26":0,"ac_b25":0,"ac_b26":0,"ac_od25":0,"ac_od26":0,"ha_s25":273709.0,"ha_s26":138792.0,"ha_b25":91209.0,"ha_b26":42647.0,"ha_od25":0,"ha_od26":0},{"name":"Alghanim Trading Company","grade":"A+","regions":["Central"],"ac_s25":2793711.0,"ac_s26":1617272.0,"ac_b25":1315614.0,"ac_b26":1088156.0,"ac_od25":1303572.0,"ac_od26":922360.0,"ha_s25":0,"ha_s26":4284214.0,"ha_b25":0,"ha_b26":2634967.0,"ha_od25":0,"ha_od26":0},{"name":"Alharkan Est.","grade":"D","regions":["North"],"ac_s25":268116.0,"ac_s26":52517.0,"ac_b25":158567.0,"ac_b26":40758.0,"ac_od25":138695.0,"ac_od26":19869.0,"ha_s25":282719.0,"ha_s26":167639.0,"ha_b25":0,"ha_b26":54869.0,"ha_od25":0,"ha_od26":0},{"name":"Ali M.Al-Haiky Shop","grade":"D","regions":["East"],"ac_s25":56319.0,"ac_s26":0,"ac_b25":47032.0,"ac_b26":17032.0,"ac_od25":0,"ac_od26":17032.0,"ha_s25":586108.0,"ha_s26":158659.0,"ha_b25":235107.0,"ha_b26":216424.0,"ha_od25":110727.0,"ha_od26":59036.0},{"name":"Aljawharah Ibrahim Almuqbil Est.","grade":"C","regions":["North"],"ac_s25":2788139.0,"ac_s26":428563.0,"ac_b25":458200.0,"ac_b26":0,"ac_od25":0,"ac_od26":0,"ha_s25":2376308.0,"ha_s26":1408492.0,"ha_b25":520720.0,"ha_b26":761813.0,"ha_od25":0,"ha_od26":0},{"name":"Alsabah Housing Co.","grade":"C","regions":["West"],"ac_s25":0,"ac_s26":0,"ac_b25":1356409.0,"ac_b26":1356409.0,"ac_od25":1356409.0,"ac_od26":1356409.0,"ha_s25":12851332.0,"ha_s26":4668761.0,"ha_b25":5024751.0,"ha_b26":4238489.0,"ha_od25":2689174.0,"ha_od26":1140695.0},{"name":"Artal Arabia Ltd Co.","grade":"D","regions":["South"],"ac_s25":207607.0,"ac_s26":29820.0,"ac_b25":140742.0,"ac_b26":138373.0,"ac_od25":35188.0,"ac_od26":104080.0,"ha_s25":517769.0,"ha_s26":196969.0,"ha_b25":318708.0,"ha_b26":243594.0,"ha_od25":12217.0,"ha_od26":105044.0},{"name":"Asemat Aljaled","grade":"C","regions":["Central"],"ac_s25":965594.0,"ac_s26":592296.0,"ac_b25":606512.0,"ac_b26":998148.0,"ac_od25":606512.0,"ac_od26":306512.0,"ha_s25":261618.0,"ha_s26":354205.0,"ha_b25":11631.0,"ha_b26":310269.0,"ha_od25":2721.0,"ha_od26":0},{"name":"Asr AlTakyif For Household Applianc","grade":"C","regions":["Central"],"ac_s25":630854.0,"ac_s26":633433,"ac_b25":550017.0,"ac_b26":400017.0,"ac_od25":550017.0,"ac_od26":400017.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Assaf A.Al-Odail Est.","grade":"C","regions":["East"],"ac_s25":1451562.0,"ac_s26":315309.0,"ac_b25":869575.0,"ac_b26":570086.0,"ac_od25":685346.0,"ac_od26":570086.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Bahjat  al Surur  Trading EST.","grade":"C","regions":["East"],"ac_s25":953245.0,"ac_s26":0,"ac_b25":710357.0,"ac_b26":710357.0,"ac_od25":710357.0,"ac_od26":710357.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Basel Fahd Almazyad Trade Est.","grade":"C","regions":["North"],"ac_s25":2087991.0,"ac_s26":121524.0,"ac_b25":50853.0,"ac_b26":132389.0,"ac_od25":50853.0,"ac_od26":0,"ha_s25":603667.0,"ha_s26":381643.0,"ha_b25":90835.0,"ha_b26":101275.0,"ha_od25":0,"ha_od26":0},{"name":"Bin Momen Trading Co.","grade":"A","regions":["West"],"ac_s25":6653184.0,"ac_s26":4512589.0,"ac_b25":3147504.0,"ac_b26":5075968.0,"ac_od25":1987093.0,"ac_od26":819270.0,"ha_s25":19648296.0,"ha_s26":11411640.0,"ha_b25":7720460.0,"ha_b26":12333320.0,"ha_od25":4199366.0,"ha_od26":619132.0},{"name":"Box Appliances Trading Est.","grade":"A+","regions":["Central"],"ac_s25":3986734.0,"ac_s26":2045887.0,"ac_b25":3227739.0,"ac_b26":5136508.0,"ac_od25":1304460.0,"ac_od26":2783737.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Citywork Home Appliances Company","grade":"D","regions":["West"],"ac_s25":317552.0,"ac_s26":136300.0,"ac_b25":357423.0,"ac_b26":424168.0,"ac_od25":0,"ac_od26":267423.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Cold World Est.","grade":"B","regions":["East"],"ac_s25":461572.0,"ac_s26":1369739.0,"ac_b25":517870.0,"ac_b26":2061594.0,"ac_od25":0,"ac_od26":486394.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Dyar Al-Fares Co.","grade":"C","regions":["South"],"ac_s25":287534.0,"ac_s26":0,"ac_b25":172486.0,"ac_b26":140017.0,"ac_od25":172486.0,"ac_od26":140017.0,"ha_s25":644723.0,"ha_s26":113879.0,"ha_b25":306505.0,"ha_b26":221929.0,"ha_od25":222329.0,"ha_od26":90969.0},{"name":"Eid Ali Al Khatir","grade":"C","regions":["East"],"ac_s25":1144775.0,"ac_s26":276230.0,"ac_b25":940653.0,"ac_b26":958317.0,"ac_od25":940653.0,"ac_od26":640653.0,"ha_s25":302743.0,"ha_s26":875532.0,"ha_b25":265875.0,"ha_b26":975388.0,"ha_od25":239456.0,"ha_od26":0},{"name":"Electronics House For Tra","grade":"D","regions":["North"],"ac_s25":117545.0,"ac_s26":11830,"ac_b25":58135.0,"ac_b26":38135.0,"ac_od25":58135.0,"ac_od26":38135.0,"ha_s25":277967.0,"ha_s26":46359.0,"ha_b25":133404.0,"ha_b26":11460.0,"ha_od25":0,"ha_od26":0},{"name":"Establishment Ice cape star","grade":"D","regions":["South"],"ac_s25":135846.0,"ac_s26":0,"ac_b25":138391.0,"ac_b26":95391.0,"ac_od25":0,"ac_od26":95391.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Fakhamah Air Conditioning Est.","grade":"C","regions":["South"],"ac_s25":569226.0,"ac_s26":0,"ac_b25":629054.0,"ac_b26":579054.0,"ac_od25":0,"ac_od26":579054.0,"ha_s25":530867.0,"ha_s26":10229.0,"ha_b25":307272.0,"ha_b26":208093.0,"ha_od25":53637.0,"ha_od26":192460.0},{"name":"Future Of Electrical Devi","grade":"C","regions":["East"],"ac_s25":193117.0,"ac_s26":-9086.0,"ac_b25":160130.0,"ac_b26":149681.0,"ac_od25":153490.0,"ac_od26":149681.0,"ha_s25":228741.0,"ha_s26":0,"ha_b25":159000.0,"ha_b26":119100.0,"ha_od25":157329.0,"ha_od26":119100.0},{"name":"Gebal Asir Est","grade":"C","regions":["Central"],"ac_s25":298664.0,"ac_s26":206846.0,"ac_b25":85410.0,"ac_b26":46634.0,"ac_od25":85410.0,"ac_od26":30000.0,"ha_s25":34445.0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Ghassan Trading Est.","grade":"C","regions":["West"],"ac_s25":355481.0,"ac_s26":229936.0,"ac_b25":331310.0,"ac_b26":259854.0,"ac_od25":319622.0,"ac_od26":0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"HUSAIN SULIMAN","grade":"C","regions":["Central"],"ac_s25":946106.0,"ac_s26":148335.0,"ac_b25":-3810.0,"ac_b26":0,"ac_od25":-3810.0,"ac_od26":0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Kaya Alawala Trading Co","grade":"IR-X","regions":["West"],"ac_s25":77800.0,"ac_s26":0,"ac_b25":43768.0,"ac_b26":25768.0,"ac_od25":43768.0,"ac_od26":25768.0,"ha_s25":694259.0,"ha_s26":0,"ha_b25":301921.0,"ha_b26":106645.0,"ha_od25":170132.0,"ha_od26":118418.0},{"name":"Khaled AL Moubayed Trading Co.","grade":"C","regions":["East"],"ac_s25":82067.0,"ac_s26":120835.0,"ac_b25":56844.0,"ac_b26":137805.0,"ac_od25":56844.0,"ac_od26":0,"ha_s25":552325.0,"ha_s26":124802.0,"ha_b25":258146,"ha_b26":213221.0,"ha_od25":127217.0,"ha_od26":145042.0},{"name":"Khodeer A.Alrahman Trading","grade":"D","regions":["South"],"ac_s25":208710.0,"ac_s26":139690.0,"ac_b25":16736.0,"ac_b26":64552.0,"ac_od25":16736.0,"ac_od26":0,"ha_s25":381763.0,"ha_s26":259922.0,"ha_b25":83681.0,"ha_b26":151040.0,"ha_od25":5117.0,"ha_od26":0},{"name":"Laith Alarab Trad Est.","grade":"C","regions":["East"],"ac_s25":273526.0,"ac_s26":70068.0,"ac_b25":254882.0,"ac_b26":134052.0,"ac_od25":254882.0,"ac_od26":53473.0,"ha_s25":1644549.0,"ha_s26":295642.0,"ha_b25":243565.0,"ha_b26":428455.0,"ha_od25":179.0,"ha_od26":210599.0},{"name":"Lion Technology Est","grade":"D","regions":["East"],"ac_s25":454247.0,"ac_s26":-110759.0,"ac_b25":297146.0,"ac_b26":169773.0,"ac_od25":297146.0,"ac_od26":169773.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Mahdi Hadi  Al-Yami Trade Est","grade":"C","regions":["South"],"ac_s25":845393.0,"ac_s26":48744.0,"ac_b25":576954.0,"ac_b26":536208.0,"ac_od25":493231.0,"ac_od26":480152.0,"ha_s25":655694.0,"ha_s26":215750.0,"ha_b25":444358.0,"ha_b26":396188.0,"ha_od25":213590.0,"ha_od26":148076.0},{"name":"Majid Golden Trading Co.","grade":"C","regions":["West"],"ac_s25":131288.0,"ac_s26":427477.0,"ac_b25":108471.0,"ac_b26":252462.0,"ac_od25":108471.0,"ac_od26":3338.0,"ha_s25":1474334.0,"ha_s26":811389.0,"ha_b25":360148.0,"ha_b26":497504.0,"ha_od25":0,"ha_od26":0},{"name":"Maqam Alreem Trading Co.","grade":"C","regions":["West"],"ac_s25":269292.0,"ac_s26":0,"ac_b25":234380.0,"ac_b26":234380.0,"ac_od25":234380.0,"ac_od26":234380.0,"ha_s25":3229758.0,"ha_s26":257207.0,"ha_b25":1287035.0,"ha_b26":859172.0,"ha_od25":534206.0,"ha_od26":563384.0},{"name":"Milestones Trust Foundation","grade":"D","regions":["East"],"ac_s25":27371.0,"ac_s26":67949.0,"ac_b25":-8336.0,"ac_b26":32256.0,"ac_od25":0,"ac_od26":0,"ha_s25":216369.0,"ha_s26":98591.0,"ha_b25":67586.0,"ha_b26":51635.0,"ha_od25":7619.0,"ha_od26":0},{"name":"Mohammed Hassan Omar comp.","grade":"D","regions":["South"],"ac_s25":287628.0,"ac_s26":306818.0,"ac_b25":133530.0,"ac_b26":329094.0,"ac_od25":133530.0,"ac_od26":0,"ha_s25":2129670.0,"ha_s26":910902.0,"ha_b25":786018.0,"ha_b26":780261.0,"ha_od25":786018.0,"ha_od26":0},{"name":"Mohammed Mossfer H.","grade":"D","regions":["West"],"ac_s25":32820.0,"ac_s26":0,"ac_b25":34270.0,"ac_b26":4270.0,"ac_od25":34270.0,"ac_od26":4270.0,"ha_s25":187377.0,"ha_s26":0,"ha_b25":488.0,"ha_b26":0,"ha_od25":488.0,"ha_od26":0},{"name":"Mohammed Mubarak Al Masoudi Contrac  Est","grade":"A+","regions":["Central"],"ac_s25":1079625.0,"ac_s26":3779410.0,"ac_b25":682037.0,"ac_b26":4398701.0,"ac_od25":618579.0,"ac_od26":51590.0,"ha_s25":980289.0,"ha_s26":785875.0,"ha_b25":-193.0,"ha_b26":808346.0,"ha_od25":0,"ha_od26":0},{"name":"Mohammed Rashed Al Rasheed","grade":"D","regions":["South"],"ac_s25":237751.0,"ac_s26":0,"ac_b25":217092.0,"ac_b26":162092.0,"ac_od25":217092.0,"ac_od26":162092.0,"ha_s25":150027.0,"ha_s26":35434.0,"ha_b25":55287.0,"ha_b26":50624.0,"ha_od25":55287.0,"ha_od26":9875.0},{"name":"Muthaleth Al-Rwad House Est","grade":"C","regions":["South"],"ac_s25":149385.0,"ac_s26":0,"ac_b25":93739.0,"ac_b26":73739.0,"ac_od25":93739.0,"ac_od26":73739.0,"ha_s25":1208082.0,"ha_s26":348539.0,"ha_b25":509528.0,"ha_b26":383205.0,"ha_od25":179338.0,"ha_od26":40120.0},{"name":"Najd Electronic Devices Foundation","grade":"D","regions":["Central"],"ac_s25":347195.0,"ac_s26":0,"ac_b25":121278.0,"ac_b26":71278.0,"ac_od25":121278.0,"ac_od26":71278.0,"ha_s25":0,"ha_s26":130429.0,"ha_b25":0,"ha_b26":100927.0,"ha_od25":0,"ha_od26":0},{"name":"OCean Air Condition COMP. For home Appliances .","grade":"D","regions":["East"],"ac_s25":607056.0,"ac_s26":262274.0,"ac_b25":635176.0,"ac_b26":684894.0,"ac_od25":214786.0,"ac_od26":413883.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Saad Hamddan Est .","grade":"D","regions":["South"],"ac_s25":82664.0,"ac_s26":0,"ac_b25":92554.0,"ac_b26":42554.0,"ac_od25":91435.0,"ac_od26":42554.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Spring and winter company","grade":"D","regions":["Central"],"ac_s25":118041.0,"ac_s26":0,"ac_b25":91889.0,"ac_b26":87889.0,"ac_od25":91889.0,"ac_od26":87889.0,"ha_s25":52351.0,"ha_s26":37129.0,"ha_b25":-1710.0,"ha_b26":35355.0,"ha_od25":0,"ha_od26":0},{"name":"Star Appliances","grade":"A+","regions":["Central"],"ac_s25":8168930.0,"ac_s26":3522270.0,"ac_b25":3600761.0,"ac_b26":6083359.0,"ac_od25":2896167.0,"ac_od26":1844995.0,"ha_s25":-29963.0,"ha_s26":14035.0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"Sultan Salem Bawahab Est","grade":"D","regions":["West"],"ac_s25":0,"ac_s26":0,"ac_b25":60000,"ac_b26":0,"ac_od25":60000,"ac_od26":0,"ha_s25":1079243.0,"ha_s26":154720.0,"ha_b25":464521.0,"ha_b26":360856.0,"ha_od25":1143.0,"ha_od26":264181.0},{"name":"Tafrood Al Roya For Inves","grade":"D","regions":["South"],"ac_s25":164106.0,"ac_s26":0,"ac_b25":188726.0,"ac_b26":188726.0,"ac_od25":4.0,"ac_od26":188726.0,"ha_s25":127976.0,"ha_s26":49972.0,"ha_b25":13205.0,"ha_b26":43473.0,"ha_od25":13205.0,"ha_od26":3402.0},{"name":"Tafrood Al Roya For Investment Bran","grade":"D","regions":["South"],"ac_s25":766519,"ac_s26":0,"ac_b25":517838.0,"ac_b26":463956,"ac_od25":244320.0,"ac_od26":463956,"ha_s25":194262.0,"ha_s26":0,"ha_b25":80549.0,"ha_b26":80549.0,"ha_od25":80549.0,"ha_od26":80549.0},{"name":"Tamameem Trading Est","grade":"C","regions":["East"],"ac_s25":201469.0,"ac_s26":28570.0,"ac_b25":147142.0,"ac_b26":147142.0,"ac_od25":147142.0,"ac_od26":147142.0,"ha_s25":256055.0,"ha_s26":0,"ha_b25":140892.0,"ha_b26":112334.0,"ha_od25":133912.0,"ha_od26":112334.0},{"name":"Tamkeen International Co.","grade":"B","regions":["West"],"ac_s25":8026150.0,"ac_s26":4160619.0,"ac_b25":3636676.0,"ac_b26":6095974.0,"ac_od25":2082242.0,"ac_od26":1311262.0,"ha_s25":849294.0,"ha_s26":0,"ha_b25":494075.0,"ha_b26":499530.0,"ha_od25":459957.0,"ha_od26":499530.0},{"name":"United Vision Trading Co.","grade":"C","regions":["West"],"ac_s25":1412698.0,"ac_s26":552482.0,"ac_b25":1086617.0,"ac_b26":988637.0,"ac_od25":412638.0,"ac_od26":609838.0,"ha_s25":5257576.0,"ha_s26":1521187.0,"ha_b25":2079143.0,"ha_b26":1711028.0,"ha_od25":695401.0,"ha_od26":508381.0},{"name":"Wahaj AL Aseel    comp.","grade":"D","regions":["East"],"ac_s25":47157.0,"ac_s26":0,"ac_b25":24231.0,"ac_b26":14231.0,"ac_od25":15146.0,"ac_od26":14231.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"White Snow for AC Co.","grade":"C","regions":["Central"],"ac_s25":1205326.0,"ac_s26":0,"ac_b25":760229.0,"ac_b26":717004.0,"ac_od25":0,"ac_od26":717004.0,"ha_s25":120840.0,"ha_s26":0,"ha_b25":-2477.0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"شركه بيوتكم  الراقيه للاجهزه المنزل","grade":"C","regions":["Central"],"ac_s25":922152.0,"ac_s26":3404.0,"ac_b25":431759.0,"ac_b26":389464.0,"ac_od25":431759.0,"ac_od26":381759.0,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0},{"name":"شركه نجوم العمران للمقاولات","grade":"C","regions":["West"],"ac_s25":1472012.0,"ac_s26":566638.0,"ac_b25":1366710.0,"ac_b26":1140257.0,"ac_od25":994741.0,"ac_od26":1060788.0,"ha_s25":1203843.0,"ha_s26":937282.0,"ha_b25":308517.0,"ha_b26":418643.0,"ha_od25":0,"ha_od26":0},{"name":"مؤسسة بيت الخرج  للاجهزة المنزليه","grade":"D","regions":["Central"],"ac_s25":304166.0,"ac_s26":0,"ac_b25":221360,"ac_b26":221360,"ac_od25":221360,"ac_od26":221360,"ha_s25":0,"ha_s26":0,"ha_b25":0,"ha_b26":0,"ha_od25":0,"ha_od26":0}];
 ACH_DATA = ACH_DATA_RAW;
+
+// === Tab2 KPI Card Dynamic Update ===
+function updateAchKpi(arr, ac_b, ac_o, ac_s, ha_b, ha_o, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t){
+  const extreme = arr.filter(r => r.ac_odp26 != null && r.ha_odp26 != null && r.ac_odp26 >= 95 && r.ha_odp26 <= 10).length;
+  const acColor = ac_odp == null ? '#cbd5e1' : (ac_odp >= 30 ? '#fda4af' : '#86efac');
+  const haColor = ha_odp == null ? '#cbd5e1' : (ha_odp >= 30 ? '#fda4af' : '#86efac');
+  const gapColor = gap_t == null ? '#cbd5e1' : (Math.abs(gap_t) >= 20 ? '#c4b5fd' : '#a5f3fc');
+  const fmtM1 = (v) => (v/1e6).toFixed(1) + 'M';
+  const fmtP1 = (v) => v == null ? '-' : v.toFixed(1) + '%';
+  const fmtD0 = (v) => v == null ? '-' : v.toFixed(0) + 'd';
+  const fmtPp = (v) => v == null ? '-' : (v>=0?'+':'') + v.toFixed(1) + 'pp';
+
+  document.getElementById('acKpiLbl').textContent = `🟧 AC Dealers (filtered ${arr.length})`;
+  document.getElementById('acKpiVal').innerHTML = `AR ${fmtM1(ac_b)} / OD ${fmtM1(ac_o)}`;
+  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:${acColor}">${fmtP1(ac_odp)}</b> · DSO ${fmtD0(ac_dso)} · Sales(YTD) ${fmtM1(ac_s)}`;
+
+  document.getElementById('haKpiLbl').textContent = `🟩 HA Dealers (filtered ${arr.length})`;
+  document.getElementById('haKpiVal').innerHTML = `AR ${fmtM1(ha_b)} / OD ${fmtM1(ha_o)}`;
+  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:${haColor}">${fmtP1(ha_odp)}</b> · DSO ${fmtD0(ha_dso)} · Sales(YTD) ${fmtM1(ha_s)}`;
+
+  document.getElementById('gapKpiLbl').textContent = `📐 Cross-BU Gap (Apr-26)`;
+  document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:${gapColor}">${fmtPp(gap_t)}</b>`;
+  document.getElementById('gapKpiSub').textContent = gap_t == null ? 'No data'
+    : gap_t >= 0 ? `AC is ${gap_t.toFixed(0)}pp worse than HA · Different payment priority by BU`
+    : `HA is ${(-gap_t).toFixed(0)}pp worse than AC · Reverse pattern`;
+
+  document.getElementById('extremeGapCount').textContent = `${extreme}`;
+  document.getElementById('extremeGapSub').textContent = arr.length > 0
+    ? `${arr.length} filtered accounts → AC≥95% · HA≤10% → RSM immediate review`
+    : `No data after filter`;
+}
+
+// === Excel Export ===
+function downloadXlsxTab1(){
+  if (typeof XLSX === 'undefined') { alert('Excel library still loading. Please retry.'); return; }
+  let arr = DATA.filter(c =>
+    STATE.statuses.has(c.status) &&
+    (STATE.grades.size === 0 || STATE.grades.has(c.grade)) &&
+    (STATE.accs.size === 0 || STATE.accs.has(c.acc_class)) &&
+    (!STATE.search || c.name.toLowerCase().includes(STATE.search.toLowerCase()) || c.sap.includes(STATE.search))
+  );
+  arr.sort((a,b) => {
+    let va=a[STATE.sortKey], vb=b[STATE.sortKey];
+    if(va==null) va = STATE.sortDir==='asc' ? Infinity : -Infinity;
+    if(vb==null) vb = STATE.sortDir==='asc' ? Infinity : -Infinity;
+    if(typeof va==='string') return STATE.sortDir==='asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return STATE.sortDir==='asc' ? va-vb : vb-va;
+  });
+  const rows = arr.map(c => ({
+    'SAP': c.sap, 'Channel': c.name, 'Grade': c.grade, 'Account Class': c.acc_class, 'Status': STATUS_LABEL[c.status] || c.status,
+    'AR': c.ar, 'OD': c.od, 'OD%': c.od_pct, 'ΔOD (pp)': c.od_dpp,
+    'DSO (d)': c.dso, 'ΔDSO (d)': c.dso_d,
+    '25 Jan-Apr Sales': c.s25q1, '26 Jan-Apr Sales': c.s26q1, 'YoY%': c.yoy,
+    'SO Jan~Apr': c.so_ttl, 'Stock Apr': c.stk_apr, 'WOS (w)': c.wos, 'OUD': c.oud,
+    'Diagnosis': c.diag
+  }));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:12},{wch:30},{wch:7},{wch:18},{wch:18},{wch:12},{wch:12},{wch:8},{wch:10},{wch:10},{wch:10},{wch:14},{wch:14},{wch:10},{wch:10},{wch:10},{wch:8},{wch:8},{wch:48}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Channel Analysis');
+  const d = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `IR_AR_Channel_Analysis_2026Apr_${d}.xlsx`);
+}
+
+function downloadXlsxTab2(){
+  if (typeof XLSX === 'undefined') { alert('Excel library still loading. Please retry.'); return; }
+  if (ACH_DATA == null || !ACH_DATA[0] || ACH_DATA[0].pattern == null) enrichData();
+  let arr = ACH_DATA.filter(r =>
+    (ACH_STATE.grades.size === 0 || ACH_STATE.grades.has(r.grade)) &&
+    (ACH_STATE.patterns.size === 0 || ACH_STATE.patterns.has(r.pattern)) &&
+    (!ACH_STATE.search || r.name.toLowerCase().includes(ACH_STATE.search.toLowerCase()))
+  );
+  arr.sort((a,b) => {
+    let va=a[ACH_STATE.sortKey], vb=b[ACH_STATE.sortKey];
+    if(va==null) va = ACH_STATE.sortDir==='asc' ? Infinity : -Infinity;
+    if(vb==null) vb = ACH_STATE.sortDir==='asc' ? Infinity : -Infinity;
+    if(typeof va==='string') return ACH_STATE.sortDir==='asc' ? va.localeCompare(vb) : vb.localeCompare(va);
+    return ACH_STATE.sortDir==='asc' ? va-vb : vb-va;
+  });
+  const rows = arr.map(r => ({
+    'Account': r.name, 'Grade': r.grade, 'Region': r.region,
+    'AC Sales 25 (Jan-Apr)': r.ac_s25, 'AC Sales 26 (Jan-Apr)': r.ac_s26,
+    'AC AR': r.ac_b26, 'AC OD': r.ac_od26, 'AC OD%': r.ac_odp26, 'AC DSO (d)': r.ac_dso26,
+    'HA Sales 25 (Jan-Apr)': r.ha_s25, 'HA Sales 26 (Jan-Apr)': r.ha_s26,
+    'HA AR': r.ha_b26, 'HA OD': r.ha_od26, 'HA OD%': r.ha_odp26, 'HA DSO (d)': r.ha_dso26,
+    'ΔOD% (AC-HA)': r.gap_odp26, 'Pattern': r.pattern
+  }));
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{wch:34},{wch:7},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:16},{wch:16},{wch:12},{wch:12},{wch:8},{wch:10},{wch:12},{wch:18}];
+  XLSX.utils.book_append_sheet(wb, ws, 'AC vs HA');
+  const d = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `IR_AR_AC_vs_HA_2026Apr_${d}.xlsx`);
+}
+
+document.getElementById('dlXls1').onclick = downloadXlsxTab1;
+document.getElementById('dlXls2').onclick = downloadXlsxTab2;
 </script>
 </body>
 </html>
