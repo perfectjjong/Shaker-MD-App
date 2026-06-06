@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
-<title>미장 15종 AI 분석 | 2026-06-06 10:53 KSA</title>
+<title>미장 15종 AI 분석 | 2026-06-06 11:38 KSA</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   body{margin:0;background:#0e0e0e;color:#eee;font-family:-apple-system,'Segoe UI','Noto Sans KR',sans-serif;padding:20px}
@@ -17,6 +17,7 @@
   .pick-empty{color:#666;font-size:12px}
   .alert{background:#2a1a1a;border-left:4px solid #ef5350;padding:8px 12px;margin:6px 0;font-size:13px;border-radius:4px}
   .section-title{font-size:16px;color:#bbb;border-bottom:1px solid #333;padding-bottom:6px;margin:24px 0 12px 0}
+  .section-title.lev{color:#ef5350;border-bottom-color:#ef535055}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:10px}
   .card-link{text-decoration:none;color:inherit}
   .card{background:#1c1c1c;border:1px solid #333;border-radius:10px;padding:12px;transition:transform .1s,border-color .15s}
@@ -40,11 +41,11 @@
   .footer{text-align:center;color:#666;font-size:11px;margin-top:24px}
 </style></head><body>
 <h1>미장 15종 AI 분석 대시보드</h1>
-<div class="meta">생성: 2026-06-06 10:53 KSA · 데이터: yfinance(15분 지연) · 개인 투자 참고용</div>
-<div class="macro">🌐 <b>⚠️ 위험회피 (VIX 21.5, +39.7%)</b> · DXY 100.07 (+0.66%) · 10Y 4.54% · WTI $90.54 · 금 $4337.1 · BTC $61,001</div>
+<div class="meta">생성: 2026-06-06 11:38 KSA · 데이터: yfinance(15분 지연) · 개인 투자 참고용</div>
+<div class="macro">🌐 <b>⚠️ 위험회피 (VIX 21.5, +39.7%)</b> · DXY 100.07 (+0.66%) · 10Y 4.54% · WTI $90.54 · 금 $4337.1 · BTC $61,294</div>
 <div class="summary">
-  <div class="stat"><div class="lbl">평균 변동</div><div class="val" style="color:#ef5350">-5.61%</div></div>
-  <div class="stat"><div class="lbl">분석 대상</div><div class="val">25/25</div></div>
+  <div class="stat"><div class="lbl">평균 변동</div><div class="val" style="color:#ef5350">-6.50%</div></div>
+  <div class="stat"><div class="lbl">분석 대상</div><div class="val">32/32</div></div>
   <div class="stat"><div class="lbl">매수 후보 / 회피</div><div class="val">2 / 5</div></div>
 </div>
 <div class="picks">
@@ -251,7 +252,7 @@
 </div>
 </a>
 </div>
-<h2 class="section-title">📊 ETF (10종)</h2><div class="grid">
+<h2 class="section-title">📊 일반 ETF (10종)</h2><div class="grid">
 <a href="SPY/" class="card-link">
 <div class="card">
   <div class="row1">
@@ -379,6 +380,97 @@
   <div class="badges"><span class="badge warn">⚠️ 인버스</span></div>
   <div class="metrics">RSI 41.5 · 중립 · Trading--Miscellaneous · AUM $0.23B · β57.89</div>
   
+</div>
+</a></div>
+<h2 class="section-title lev">⚠️ 레버리지/인버스 ETF (7종) — 고위험</h2><div class="grid">
+<a href="SOXL/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">SOXL</div>
+    <div class="price" style="color:#ef5350">$182.54 <span class="chg">(-30.51%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ef535022;color:#ef5350">🔴 회피 <span class="score">(-5)</span></div>
+  <div class="badges"><span class="badge warn">⚠️ 3배 레버리지</span></div>
+  <div class="metrics">RSI 48.6 · put 우세 (하락 베팅) · Trading--Leveraged Equity · AUM $25.98B · β7.5</div>
+  
+</div>
+</a>
+
+<a href="TQQQ/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">TQQQ</div>
+    <div class="price" style="color:#ef5350">$73.05 <span class="chg">(-14.28%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ef535022;color:#ef5350">🔴 회피 <span class="score">(-3)</span></div>
+  <div class="badges"><span class="badge warn">⚠️ 3배 레버리지</span></div>
+  <div class="metrics">RSI 45.8 · 중립 · Trading--Leveraged Equity · AUM $39.77B · β3.91</div>
+  
+</div>
+</a>
+
+<a href="SQQQ/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">SQQQ</div>
+    <div class="price" style="color:#26a69a">$43.19 <span class="chg">(+14.38%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ff980022;color:#ff9800">🟠 관망 (방어) <span class="score">(+0)</span></div>
+  <div class="badges"><span class="badge mid">📰 뉴스 부정</span><span class="badge warn">⚠️ 3배 레버리지</span></div>
+  <div class="metrics">RSI 47.3 · call 우세 (상승 베팅) · Trading--Inverse Equity · AUM $2.23B · β-3.2</div>
+  <div class='levels'>진입 $43.19 · 익절 $45.53 · 손절 $41.03 <span class='rr'>(R:R 1.08)</span></div>
+</div>
+</a>
+
+<a href="NVDL/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">NVDL</div>
+    <div class="price" style="color:#ef5350">$95.91 <span class="chg">(-12.37%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ef535022;color:#ef5350">🔴 회피 <span class="score">(-5)</span></div>
+  <div class="badges"><span class="badge warn">⚠️ 고변동성 (β=3.67)</span></div>
+  <div class="metrics">RSI 42.7 · put 우세 (하락 베팅) · Trading--Leveraged Equity · AUM $4.45B · β3.67</div>
+  
+</div>
+</a>
+
+<a href="TSLL/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">TSLL</div>
+    <div class="price" style="color:#ef5350">$12.72 <span class="chg">(-13.11%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ff980022;color:#ff9800">🟠 관망 (방어) <span class="score">(-1)</span></div>
+  <div class="badges"><span class="badge warn">⚠️ 고변동성 (β=3.4)</span></div>
+  <div class="metrics">RSI 39.3 · call 우세 (상승 베팅) · Trading--Leveraged Equity · AUM $5.43B · β3.4</div>
+  <div class='levels'>진입 $12.72 · 익절 $14.43 · 손절 $12.08 <span class='rr'>(R:R 2.69)</span></div>
+</div>
+</a>
+
+<a href="TMF/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">TMF</div>
+    <div class="price" style="color:#ef5350">$34.47 <span class="chg">(-1.57%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ffeb3b22;color:#ffeb3b">🟡 관망 (대기) <span class="score">(+1)</span></div>
+  <div class="badges"><span class="badge warn">⚠️ 3배 레버리지</span></div>
+  <div class="metrics">RSI 48.2 · call 우세 (상승 베팅) · Trading--Leveraged Debt · AUM $2.61B · β7.17</div>
+  <div class='levels'>진입 $34.47 · 익절 $35.93 · 손절 $34.11 <span class='rr'>(R:R 4.06)</span></div>
+</div>
+</a>
+
+<a href="BITX/" class="card-link">
+<div class="card">
+  <div class="row1">
+    <div class="sym">BITX</div>
+    <div class="price" style="color:#ef5350">$11.14 <span class="chg">(-10.38%)</span></div>
+  </div>
+  <div class="action-pill" style="background:#ff980022;color:#ff9800">🟠 관망 (방어) <span class="score">(-2)</span></div>
+  <div class="badges"></div>
+  <div class="metrics">RSI 19.4 · call 우세 (상승 베팅) · Digital Assets · AUM $1.03B · β0.0</div>
+  <div class='levels'>진입 $11.14 · 익절 $17.98 · 손절 $10.58 <span class='rr'>(R:R 12.28)</span></div>
 </div>
 </a></div>
 <div class="footer">미장 AI Analyzer · yfinance + 룰 기반 액션 · 매일 KSA 자정 자동 갱신 · 투자 책임은 본인</div>
