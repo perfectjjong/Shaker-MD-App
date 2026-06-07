@@ -682,12 +682,12 @@ function render(){
   const dsoW = wAvg('dso'), dsoDw = wAvg('dso_d'), odDppW = wAvg('od_dpp'), wosW = wAvg('wos');
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = arr.map(c => {
-    const urgent = c.status.includes('🚨') || c.status.includes('🔴');
+    const urgent = (c._v2_status||'').includes('🔴') || c._v2_overlay;
     return `<tr>
       <td class="l name" title="${c.name} (${c.sap})">${c.name}</td>
       <td class="l"><span class="gr gr-${c.grade.replace('+','\\+').replace('-','-')}">${c.grade}</span></td>
       <td class="l" style="font-size:10px;color:var(--muted)">${c.acc_class}</td>
-      <td class="l ${STATUS_CLASS[c.status].replace('s-','st-')}">${c.status}</td>
+      <td class="l ${STATUS_CLASS[c._v2_status]?STATUS_CLASS[c._v2_status].replace('s-','st-'):'st-na'}">${c._v2_overlay?'🚨 ':''}${c._v2_status}</td>
       <td>${fmtM(c.ar)}</td>
       <td class="${cls(c.od_pct,99,30)}">${fmtMOd(c.od)}</td>
       <td class="${cls(c.od_pct,99,30)}">${c.od_pct==null?'-':c.od_pct.toFixed(0)+'%'}</td>

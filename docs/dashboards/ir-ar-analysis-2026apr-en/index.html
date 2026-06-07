@@ -682,7 +682,7 @@ function render(){
   const dsoW = wAvg('dso'), dsoDw = wAvg('dso_d'), odDppW = wAvg('od_dpp'), wosW = wAvg('wos');
   const tbody = document.getElementById('tbody');
   tbody.innerHTML = arr.map(c => {
-    const urgent = c.status.includes('🚨') || c.status.includes('🔴');
+    const urgent = (c._v2_status||'').includes('🔴') || c._v2_overlay;
     return `<tr>
       <td class="l name" title="${c.name} (${c.sap})">${c.name}</td>
       <td class="l"><span class="gr gr-${c.grade.replace('+','\\+').replace('-','-')}">${c.grade}</span></td>
