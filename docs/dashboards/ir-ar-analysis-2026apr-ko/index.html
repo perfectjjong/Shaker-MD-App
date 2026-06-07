@@ -587,7 +587,12 @@ function renderFhMatrix(baseFiltered, avgOd){
       maintainAspectRatio: false,
       animation: { duration: 400 },
       plugins: {
-        legend: { position: 'top', labels: { color:'#cbd5e1', font:{size:11}, padding:10, usePointStyle:true } },
+        legend: { position: 'top', labels: { color:'#cbd5e1', font:{size:11}, padding:10, usePointStyle:true,
+          generateLabels: function(chart){
+            const def = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+            def.forEach(item => { if(item.text) item.text = item.text.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]\s*/u,''); });
+            return def;
+          } } },
         datalabels: {
           display: function(ctx){
             const a = ctx.dataset.data[ctx.dataIndex]._a;
@@ -906,7 +911,7 @@ function render(){
     <td>${wosW==null?'-':fmtW(wosW)}</td>
     <td>${fmtN(totOud)}</td>
     <td>${(wosW==null||!totStk)?'-':fmtW(wosW * (totStk + (totOud||0)) / totStk)}</td>
-    <td class="note">합계: AR/OD/매출/SO/Stk/OUD · 재계산: OD%=ΣOD/ΣAR, YoY=ΣS26/ΣS25 · AR 가중평균: DSO/ΔOD/ΔDSO/WOS</td>
+    <td class="note"></td>
   </tr>` : '');
   // Update sort indicators
   document.querySelectorAll('th').forEach(th => {
