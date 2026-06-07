@@ -238,7 +238,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
         <th data-k="stk_apr">Stk</th>
         <th data-k="wos">WOS</th>
         <th data-k="oud">OUD</th>
-        <th data-k="oud_wos" style="width:48px;white-space:nowrap">OUD<br>WOS</th>
+        <th data-k="oud_wos" style="white-space:nowrap">OUD<br>WOS</th>
         <th class="l" data-k="diag">진단</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
@@ -905,6 +905,7 @@ function render(){
     <td>${fmtN(totStk)}</td>
     <td>${wosW==null?'-':fmtW(wosW)}</td>
     <td>${fmtN(totOud)}</td>
+    <td>${(wosW==null||!totStk)?'-':fmtW(wosW * (totStk + (totOud||0)) / totStk)}</td>
     <td class="note">합계: AR/OD/매출/SO/Stk/OUD · 재계산: OD%=ΣOD/ΣAR, YoY=ΣS26/ΣS25 · AR 가중평균: DSO/ΔOD/ΔDSO/WOS</td>
   </tr>` : '');
   // Update sort indicators
