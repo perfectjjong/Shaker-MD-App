@@ -441,7 +441,7 @@ function v2Reclassify(baseFiltered) {
 const STATUSES = ['🚨 회수의지','📦 판매부진','🔴 위험','⚫ Bad Debt','🟡 주의','🟢 정상','🚫 SO 미입수','⚪ 분석보류'];
 const STATUS_CLASS = {'🚨 회수의지':'s-emer','📦 판매부진':'s-sales','🔴 위험':'s-risk','⚫ Bad Debt':'s-bad','🟡 주의':'s-watch','🟢 정상':'s-norm','🚫 SO 미입수':'s-noso','⚪ 분석보류':'s-na'};
 const STATUS_LABEL = {'🚨 회수의지':'🚨 회수의지','📦 판매부진':'📦 판매부진','🔴 위험':'🔴 위험','⚫ Bad Debt':'⚫ Bad Debt','🟡 주의':'🟡 주의','🟢 정상':'🟢 정상','🚫 SO 미입수':'🚫 SO 미입수','⚪ 분석보류':'⚪ 분석보류'};
-const STATE = {statuses:new Set(V2_STATUSES), grades:new Set(), accs:new Set(), search:'', sortKey:'ar', sortDir:'desc'};
+const STATE = {statuses:new Set(V2_STATUSES), groups:new Set(), grades:new Set(), accs:new Set(), search:'', sortKey:'ar', sortDir:'desc'};
 
 // Build KPI cards (Tab1) — Grade/Acc/Search 필터 반영 (Status 필터는 자기참조이므로 제외)
 function renderKpi(){
