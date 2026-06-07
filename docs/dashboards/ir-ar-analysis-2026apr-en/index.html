@@ -212,9 +212,9 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
   
   <!-- Financial Health Matrix (4분면 시각화) -->
-  <div style="margin-bottom:14px;">
-    <div id="fhMatrixHeader" style="font-size:11px;color:#94a3b8;margin-bottom:6px;padding:0 4px"></div>
-    <div id="fhMatrix" style="background:var(--card);border-radius:6px;padding:8px"></div>
+  <div style="margin-bottom:16px;background:var(--card);border-radius:10px;padding:14px 18px;border:1px solid rgba(148,163,184,0.08)">
+    <div id="fhMatrixHeader" style="margin-bottom:10px"></div>
+    <div id="fhMatrix"></div>
   </div>
 <div class="tbl-wrap">
     <table id="tbl">
@@ -373,17 +373,19 @@ const DATA = [{"sap": "1110000010", "name": "Tamkeen", "grade": "B", "acc_class"
 
 // v2 매트릭스 정책 동적 분류 (필터 적용 시 Avg OD% 재계산)
 
-// Financial Health Matrix — SVG 4분면 scatter (Avg 동적, WOS=원크기, 회수의지 강조)
+// Financial Health Matrix — Stripe/Linear 스타일 modern minimal
 function renderFhMatrix(baseFiltered, avgOd){
   const c = document.getElementById('fhMatrix');
   if(!c) return;
-  const W=900, H=460, PL=58, PR=50, PT=30, PB=40;
+  const W=960, H=440, PL=64, PR=200, PT=24, PB=44;
   const xMax=400, yMax=100;
   const xT=180, yT=(avgOd!=null?avgOd:50);
   const fx=v=>PL+Math.min(Math.max(v||0,0),xMax)/xMax*(W-PL-PR);
   const fy=v=>PT+(1-Math.min(Math.max(v||0,0),yMax)/yMax)*(H-PT-PB);
   const PRE=['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수'];
-  const COL={'🟢 Safe':'#22c55e','🟡 Watch':'#eab308','🔵 Potential':'#3b82f6','🔴 Critical':'#ef4444'};
+  // 절제된 채도 (Tailwind 400~500 톤)
+  const COL={'🟢 Safe':'#34d399','🟡 Watch':'#fbbf24','🔵 Potential':'#60a5fa','🔴 Critical':'#f87171'};
+  const COL_BG={'🟢 Safe':'rgba(52,211,153,0.04)','🟡 Watch':'rgba(251,191,36,0.04)','🔵 Potential':'rgba(96,165,250,0.04)','🔴 Critical':'rgba(248,113,113,0.05)'};
   const quads={Safe:{n:0,ar:0},Watch:{n:0,ar:0},Potential:{n:0,ar:0},Critical:{n:0,ar:0}};
   baseFiltered.forEach(r=>{
     if(r._v2_status==='🟢 Safe'){quads.Safe.n++;quads.Safe.ar+=r.ar||0;}
@@ -391,117 +393,121 @@ function renderFhMatrix(baseFiltered, avgOd){
     else if(r._v2_status==='🔵 Potential'){quads.Potential.n++;quads.Potential.ar+=r.ar||0;}
     else if(r._v2_status==='🔴 Critical'){quads.Critical.n++;quads.Critical.ar+=r.ar||0;}
   });
-  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#0f172a;border-radius:6px">`;
-  // 4분면 배경
-  s+=`<rect x="${PL}" y="${PT}" width="${fx(xT)-PL}" height="${fy(yT)-PT}" fill="rgba(234,179,8,0.06)"/>`;
-  s+=`<rect x="${PL}" y="${fy(yT)}" width="${fx(xT)-PL}" height="${H-PB-fy(yT)}" fill="rgba(34,197,94,0.06)"/>`;
-  s+=`<rect x="${fx(xT)}" y="${PT}" width="${W-PR-fx(xT)}" height="${fy(yT)-PT}" fill="rgba(239,68,68,0.08)"/>`;
-  s+=`<rect x="${fx(xT)}" y="${fy(yT)}" width="${W-PR-fx(xT)}" height="${H-PB-fy(yT)}" fill="rgba(59,130,246,0.06)"/>`;
-  // 기준선 (DSO 120d / OD% 20%) — 붉은색 점선
-  const fmDso=120, fmOd=20;
-  s+=`<line x1="${fx(fmDso)}" y1="${PT}" x2="${fx(fmDso)}" y2="${H-PB}" stroke="#ef4444" stroke-dasharray="4,3" stroke-width="1.2"/>`;
-  s+=`<line x1="${PL}" y1="${fy(fmOd)}" x2="${W-PR}" y2="${fy(fmOd)}" stroke="#ef4444" stroke-dasharray="4,3" stroke-width="1.2"/>`;
-  // 임계선 (v2 정책: DSO 180 + Avg OD%)
-  s+=`<line x1="${fx(xT)}" y1="${PT}" x2="${fx(xT)}" y2="${H-PB}" stroke="#64748b" stroke-dasharray="5,4" stroke-width="1.2"/>`;
-  s+=`<line x1="${PL}" y1="${fy(yT)}" x2="${W-PR}" y2="${fy(yT)}" stroke="#a78bfa" stroke-dasharray="5,4" stroke-width="1.2"/>`;
-  // 축
-  s+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="#475569"/>`;
-  s+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}" stroke="#475569"/>`;
-  // 눈금
-  [0,90,180,270,360].forEach(d=>{
-    s+=`<line x1="${fx(d)}" y1="${H-PB}" x2="${fx(d)}" y2="${H-PB+4}" stroke="#475569"/>`;
-    s+=`<text x="${fx(d)}" y="${H-PB+18}" fill="#94a3b8" font-size="10" text-anchor="middle">${d}d</text>`;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:#0b1220;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">`;
+  // 4분면 배경 (절제)
+  s+=`<rect x="${PL}" y="${PT}" width="${fx(xT)-PL}" height="${fy(yT)-PT}" fill="${COL_BG['🟡 Watch']}"/>`;
+  s+=`<rect x="${PL}" y="${fy(yT)}" width="${fx(xT)-PL}" height="${H-PB-fy(yT)}" fill="${COL_BG['🟢 Safe']}"/>`;
+  s+=`<rect x="${fx(xT)}" y="${PT}" width="${W-PR-fx(xT)}" height="${fy(yT)-PT}" fill="${COL_BG['🔴 Critical']}"/>`;
+  s+=`<rect x="${fx(xT)}" y="${fy(yT)}" width="${W-PR-fx(xT)}" height="${H-PB-fy(yT)}" fill="${COL_BG['🔵 Potential']}"/>`;
+  // 옅은 grid 가로 50%/100% only
+  [50,100].forEach(o=>{
+    s+=`<line x1="${PL}" y1="${fy(o)}" x2="${W-PR}" y2="${fy(o)}" stroke="#1e293b" stroke-width="1"/>`;
   });
-  [0,50,80,100].forEach(o=>{
-    s+=`<line x1="${PL-4}" y1="${fy(o)}" x2="${PL}" y2="${fy(o)}" stroke="#475569"/>`;
-    s+=`<text x="${PL-8}" y="${fy(o)+4}" fill="#94a3b8" font-size="10" text-anchor="end">${o}%</text>`;
+  // 기준선 — Target (DSO 120d / OD% 20%, 옅은 회색 점선)
+  s+=`<line x1="${fx(120)}" y1="${PT}" x2="${fx(120)}" y2="${H-PB}" stroke="#fb7185" stroke-dasharray="3,3" stroke-width="1" opacity="0.7"/>`;
+  s+=`<line x1="${PL}" y1="${fy(20)}" x2="${W-PR}" y2="${fy(20)}" stroke="#fb7185" stroke-dasharray="3,3" stroke-width="1" opacity="0.7"/>`;
+  // v2 임계선 (DSO 180 + Avg OD%) — 차분한 톤
+  s+=`<line x1="${fx(xT)}" y1="${PT}" x2="${fx(xT)}" y2="${H-PB}" stroke="#475569" stroke-dasharray="6,4" stroke-width="1"/>`;
+  s+=`<line x1="${PL}" y1="${fy(yT)}" x2="${W-PR}" y2="${fy(yT)}" stroke="#8b5cf6" stroke-dasharray="6,4" stroke-width="1" opacity="0.85"/>`;
+  // 축 (얇게)
+  s+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="#334155" stroke-width="1"/>`;
+  s+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}" stroke="#334155" stroke-width="1"/>`;
+  // 눈금 (절제: 0/180/360 + 120 강조)
+  [0,180,360].forEach(d=>{
+    s+=`<text x="${fx(d)}" y="${H-PB+18}" fill="#64748b" font-size="11" text-anchor="middle">${d}</text>`;
   });
-  // 붉은 기준선 라벨 — 상단 배치 (사분면 안 점선 시작점) 박스 형태
-  // DSO 120d: 점선 상단
-  s+=`<g>`;
-  s+=`<rect x="${fx(120)-30}" y="${PT-1}" width="60" height="17" fill="#7f1d1d" stroke="#ef4444" stroke-width="1" rx="3"/>`;
-  s+=`<text x="${fx(120)}" y="${PT+11}" fill="#fecaca" font-size="10.5" text-anchor="middle" font-weight="700">DSO 120d</text>`;
-  s+=`</g>`;
-  // OD 20%: 가로 점선 우측 끝
-  s+=`<g>`;
-  s+=`<rect x="${W-PR-58}" y="${fy(20)-9}" width="56" height="17" fill="#7f1d1d" stroke="#ef4444" stroke-width="1" rx="3"/>`;
-  s+=`<text x="${W-PR-30}" y="${fy(20)+3}" fill="#fecaca" font-size="10.5" text-anchor="middle" font-weight="700">OD 20%</text>`;
-  s+=`</g>`;
-  // 축 제목
-  s+=`<text x="${(PL+W-PR)/2}" y="${H-6}" fill="#cbd5e1" font-size="11" text-anchor="middle" font-weight="600">DSO (days)</text>`;
-  s+=`<text transform="rotate(-90 14 ${H/2})" x="14" y="${H/2}" fill="#cbd5e1" font-size="11" text-anchor="middle" font-weight="600">OD%</text>`;
-  // 4분면 라벨
-  s+=`<text x="${PL+10}" y="${fy(yT)+18}" fill="#86efac" font-size="11" font-weight="700">🟢 Safe · ${quads.Safe.n} · AR ${(quads.Safe.ar/1e6).toFixed(1)}M</text>`;
-  s+=`<text x="${PL+10}" y="${PT+16}" fill="#fde047" font-size="11" font-weight="700">🟡 Watch · ${quads.Watch.n} · AR ${(quads.Watch.ar/1e6).toFixed(1)}M</text>`;
-  s+=`<text x="${W-PR-10}" y="${fy(yT)+18}" fill="#93c5fd" font-size="11" font-weight="700" text-anchor="end">🔵 Potential · ${quads.Potential.n} · AR ${(quads.Potential.ar/1e6).toFixed(1)}M</text>`;
-  s+=`<text x="${W-PR-10}" y="${PT+16}" fill="#fda4af" font-size="11" font-weight="700" text-anchor="end">🔴 Critical · ${quads.Critical.n} · AR ${(quads.Critical.ar/1e6).toFixed(1)}M</text>`;
-  // 동적 임계 라벨
-  s+=`<text x="${W-PR-5}" y="${fy(yT)-5}" fill="#a78bfa" font-size="10" text-anchor="end" font-weight="600">Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%</text>`;
-  s+=`<text x="${fx(xT)+5}" y="${PT+12}" fill="#94a3b8" font-size="10">DSO 180d</text>`;
+  [0,50,100].forEach(o=>{
+    s+=`<text x="${PL-10}" y="${fy(o)+4}" fill="#64748b" font-size="11" text-anchor="end">${o}</text>`;
+  });
+  // 강조 눈금 (120d / 20%)
+  s+=`<text x="${fx(120)}" y="${H-PB+18}" fill="#fb7185" font-size="11" text-anchor="middle" font-weight="600">120</text>`;
+  s+=`<text x="${PL-10}" y="${fy(20)+4}" fill="#fb7185" font-size="11" text-anchor="end" font-weight="600">20</text>`;
+  // 축 제목 (모던, 작게)
+  s+=`<text x="${W-PR}" y="${H-PB+18}" fill="#475569" font-size="10" text-anchor="end" letter-spacing="1">DSO (days) →</text>`;
+  s+=`<text x="${PL-10}" y="${PT-8}" fill="#475569" font-size="10" text-anchor="end" letter-spacing="1">↑ OD %</text>`;
+  // 동적 임계 라벨 (마젠타) — 옅게
+  s+=`<text x="${W-PR-6}" y="${fy(yT)-5}" fill="#a78bfa" font-size="10" text-anchor="end" font-weight="500">Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%</text>`;
+  s+=`<text x="${fx(xT)-5}" y="${PT+10}" fill="#64748b" font-size="10" text-anchor="end" font-weight="500">DSO 180</text>`;
+  // Target 라벨 (작게, 옅게)
+  s+=`<text x="${fx(120)+4}" y="${PT+10}" fill="#fb7185" font-size="9" font-weight="600" letter-spacing="0.5">TARGET 120d</text>`;
+  s+=`<text x="${W-PR-6}" y="${fy(20)+12}" fill="#fb7185" font-size="9" text-anchor="end" font-weight="600" letter-spacing="0.5">TARGET 20%</text>`;
 
-  // 점 — 사전 분류 먼저 (배경 레이어)
+  // 점 — 모던 미니멀 (부드러운 fill + 흰 stroke)
   const drawPoint=(r)=>{
     if(r.dso==null || r.od_pct==null) return '';
     const x=fx(r.dso), y=fy(r.od_pct);
-    const r0=r.wos!=null ? Math.max(4, Math.min(40, 4+r.wos*0.6)) : 4;
+    const r0=r.wos!=null ? Math.max(4, Math.min(38, 4+r.wos*0.55)) : 4;
     const isPre = PRE.includes(r._v2_status);
-    const fill = isPre ? '#6b7280' : (COL[r._v2_status]||'#6b7280');
-    const op = isPre ? 0.3 : 0.85;
-    const stroke = r._v2_overlay ? '#a855f7' : 'none';
-    const sw = r._v2_overlay ? 3 : 0;
-    const title = `${r.name} (${r.sap})\n${r._v2_status}${r._v2_overlay?' 🚨 회수의지':''}\nAR: ${(r.ar/1e6).toFixed(2)}M / OD: ${(r.od/1e6).toFixed(2)}M\nOD%: ${r.od_pct!=null?r.od_pct.toFixed(1)+'%':'-'} / DSO: ${r.dso!=null?r.dso.toFixed(0)+'d':'-'}\nWOS: ${r.wos!=null?r.wos.toFixed(1)+'w':'-'}`;
-    return `<circle cx="${x}" cy="${y}" r="${r0}" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="${sw}"><title>${title}</title></circle>`;
+    const fill = isPre ? '#475569' : (COL[r._v2_status]||'#475569');
+    const op = isPre ? 0.35 : 0.65;
+    const strokeW = isPre ? 0 : 1.5;
+    const strokeColor = r._v2_overlay ? '#c084fc' : '#0b1220';
+    const overlaySw = r._v2_overlay ? 2.5 : strokeW;
+    const title = `${r.name} (${r.sap})\n${r._v2_status}${r._v2_overlay?' · 🚨 회수의지':''}\nAR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M (${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'})\nDSO ${r.dso!=null?r.dso.toFixed(0)+'d':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}`;
+    return `<circle cx="${x}" cy="${y}" r="${r0}" fill="${fill}" fill-opacity="${op}" stroke="${strokeColor}" stroke-width="${overlaySw}"><title>${title}</title></circle>`;
   };
   // 레이어: 사전 분류 → 일반 → 회수의지 (위로 올라옴)
   baseFiltered.filter(r=>PRE.includes(r._v2_status)).forEach(r=>{ s+=drawPoint(r); });
   baseFiltered.filter(r=>!PRE.includes(r._v2_status) && !r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
   baseFiltered.filter(r=>r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
-  // Account명 라벨 (사전 분류 제외 — 매트릭스 대상만)
-  baseFiltered.forEach(r=>{
-    if(r.dso==null || r.od_pct==null) return;
-    if(PRE.includes(r._v2_status)) return;
-    const x=fx(r.dso);
-    const r0=r.wos!=null ? Math.max(4, Math.min(40, 4+r.wos*0.6)) : 4;
-    const y=fy(r.od_pct) + r0 + 9;
-    const short = (r.name||'').replace(/\s*(Co\.|Trade Co\.|Trading Co\.|Est\.|Comp\.|Company|Trading|Inc|Ltd|LLC).*/i,'').trim().slice(0,18);
-    s+=`<text x="${x}" y="${y}" fill="#cbd5e1" font-size="9" text-anchor="middle" opacity="0.85" style="pointer-events:none">${short}</text>`;
-  });
-  // 회수의지 🚨 라벨 (점 위)
+  // 회수의지 🚨 마커만 (Account명 라벨은 호버로 — 클러터 제거)
   baseFiltered.forEach(r=>{
     if(!r._v2_overlay || r.dso==null || r.od_pct==null) return;
     const x=fx(r.dso);
-    const r0=r.wos!=null ? Math.max(4, Math.min(40, 4+r.wos*0.6)) : 4;
-    const y=fy(r.od_pct) - r0 - 4;
-    s+=`<text x="${x}" y="${y}" fill="#c4b5fd" font-size="11" text-anchor="middle" font-weight="700">🚨</text>`;
+    const r0=r.wos!=null ? Math.max(4, Math.min(38, 4+r.wos*0.55)) : 4;
+    const y=fy(r.od_pct) - r0 - 5;
+    s+=`<text x="${x}" y="${y}" fill="#c084fc" font-size="11" text-anchor="middle" style="pointer-events:none">🚨</text>`;
   });
+  // 우측 사이드 패널 — 4분면 summary + 음수 매출
+  const sidX = W-PR+16, sidW = PR-24;
+  const sideRow = (color, label, n, ar, y) =>
+    `<g><circle cx="${sidX+6}" cy="${y-4}" r="4" fill="${color}"/>` +
+    `<text x="${sidX+18}" y="${y}" fill="#e2e8f0" font-size="11" font-weight="600">${label}</text>` +
+    `<text x="${sidX+sidW-8}" y="${y}" fill="#94a3b8" font-size="10" text-anchor="end">${n}</text>` +
+    `<text x="${sidX+sidW-8}" y="${y+13}" fill="#64748b" font-size="9" text-anchor="end">AR ${(ar/1e6).toFixed(1)}M</text></g>`;
+  s+=`<text x="${sidX}" y="${PT+10}" fill="#64748b" font-size="9" font-weight="600" letter-spacing="1">QUADRANTS</text>`;
+  s+=sideRow(COL['🟢 Safe'], 'Safe', quads.Safe.n, quads.Safe.ar, PT+34);
+  s+=sideRow(COL['🟡 Watch'], 'Watch', quads.Watch.n, quads.Watch.ar, PT+72);
+  s+=sideRow(COL['🔵 Potential'], 'Potential', quads.Potential.n, quads.Potential.ar, PT+110);
+  s+=sideRow(COL['🔴 Critical'], 'Critical', quads.Critical.n, quads.Critical.ar, PT+148);
+  // 회수의지 / 사전분류 카운트
+  const overlayN_inner = baseFiltered.filter(r=>r._v2_overlay).length;
+  const preN_inner = baseFiltered.filter(r=>PRE.includes(r._v2_status)).length;
+  s+=`<line x1="${sidX}" y1="${PT+178}" x2="${sidX+sidW-12}" y2="${PT+178}" stroke="#1e293b"/>`;
+  s+=`<g><text x="${sidX}" y="${PT+196}" fill="#c084fc" font-size="11" font-weight="600">🚨 회수의지</text>`;
+  s+=`<text x="${sidX+sidW-8}" y="${PT+196}" fill="#c084fc" font-size="11" text-anchor="end" font-weight="700">${overlayN_inner}</text></g>`;
+  s+=`<g><text x="${sidX}" y="${PT+216}" fill="#64748b" font-size="11">사전 분류</text>`;
+  s+=`<text x="${sidX+sidW-8}" y="${PT+216}" fill="#94a3b8" font-size="11" text-anchor="end">${preN_inner}</text></g>`;
   s+=`</svg>`;
 
-  // 26 매출 음수 채널 별도 표시 (DSO 산출 불가)
+  // 26 매출 음수 — 차분한 인라인 칩 (마젠타 dashed 박스 제거)
   const negSales = baseFiltered.filter(r => r.dso==null && (r.s26q1||0) < 0);
   let negHtml = '';
   if(negSales.length > 0){
-    negHtml = `<div style="margin-top:8px;padding:8px 12px;background:rgba(168,85,247,0.1);border:1px dashed #a855f7;border-radius:4px;font-size:11px;color:#c4b5fd;display:flex;flex-wrap:wrap;gap:8px;align-items:center;line-height:1.6">` +
-      `<b style="margin-right:4px">⚠️ 26 매출 음수 — DSO 산출 불가 (${negSales.length}):</b>` +
+    negHtml = `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#94a3b8">` +
+      `<span style="color:#fb7185;font-weight:600;letter-spacing:0.3px;margin-right:4px">26 매출 음수 · DSO 산출 불가</span>` +
       negSales.map(r => {
-        const r0 = r.wos!=null ? Math.max(6, Math.min(14, 4+r.wos*0.2)) : 6;
-        const title = `${r.name} (${r.sap})\n26 (Jan-Apr) 매출: ${(r.s26q1/1e6).toFixed(2)}M (음수=반품>판매)\nAR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M · OD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'}\nWOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}\n분류: ${r._v2_status}`;
-        return `<span title="${title}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(168,85,247,0.18);padding:3px 10px;border-radius:12px;color:#e9d5ff;cursor:help">` +
-               `<span style="display:inline-block;width:${r0*2}px;height:${r0*2}px;border-radius:50%;background:#a855f7;border:1.5px solid #fff"></span>` +
-               `<b>${r.name}</b> · ${(r.s26q1/1e6).toFixed(2)}M` +
+        const title = `${r.name} (${r.sap})\n26 매출 ${(r.s26q1/1e6).toFixed(2)}M · AR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M\nOD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}`;
+        return `<span title="${title}" style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,113,133,0.08);padding:3px 9px;border-radius:11px;color:#e2e8f0;cursor:help;border:1px solid rgba(251,113,133,0.2)">` +
+               `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fb7185"></span>` +
+               `${r.name} · ${(r.s26q1/1e6).toFixed(2)}M` +
                `</span>`;
       }).join('') +
     `</div>`;
   }
   c.innerHTML = s + negHtml;
 
-  // 헤더 + 범례
+  // 헤더 — 깔끔한 위계 (제목 + meta)
   const overlayN = baseFiltered.filter(r=>r._v2_overlay).length;
   document.getElementById('fhMatrixHeader').innerHTML =
-    `<b>📐 Financial Health Matrix</b> · ${baseFiltered.length}채널 · ` +
-    `🚨 회수의지 ${overlayN}건 강조 · ` +
-    (negSales.length > 0 ? `<span style="color:#a855f7">⚠️ 26 매출 음수 ${negSales.length}건 (하단 별도 표시)</span> · ` : '') +
-    `<span style="color:#a78bfa">임계 (DSO 180d × Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%) 동적</span> · ` +
-    `<span style="color:#94a3b8">원 크기 = WOS · 회색 점 = 사전 분류 (Bad Debt / SO 미입수 / 분석보류)</span>`;
+    `<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">` +
+    `<span style="font-size:13px;font-weight:600;color:#e2e8f0;letter-spacing:0.2px">Financial Health Matrix</span>` +
+    `<span style="font-size:10.5px;color:#64748b">${baseFiltered.length} channels</span>` +
+    `<span style="font-size:10.5px;color:#94a3b8">•</span>` +
+    `<span style="font-size:10.5px;color:#94a3b8">Avg OD% <span style="color:#a78bfa;font-weight:600">${avgOd!=null?avgOd.toFixed(1):'-'}%</span> (weighted, dynamic)</span>` +
+    (overlayN > 0 ? `<span style="font-size:10.5px;color:#c084fc;font-weight:600">🚨 ${overlayN} active collection</span>` : '') +
+    `<span style="font-size:10.5px;color:#94a3b8;margin-left:auto">size = WOS</span>` +
+    `</div>`;
 }
 
 
