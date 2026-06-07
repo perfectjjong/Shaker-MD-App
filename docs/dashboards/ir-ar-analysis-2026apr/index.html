@@ -175,7 +175,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <summary>📋 <b>v2 매트릭스 분류 기준</b> · 사전 분류(3) + 매트릭스 4사분면 + Overlay 회수의지 · 클릭하여 접기</summary>
       <div class="hdr">v2 분류 룰 (Avg OD% 가중평균 동적 재계산)</div>
       <table>
-        <thead><tr><th>#</th><th>분류</th><th style="width:36%">정의 (도메인 의미)</th><th>조건</th></tr></thead>
+        <thead><tr><th style="text-align:center;width:5%">#</th><th style="text-align:left;width:30%">분류</th><th style="text-align:left;width:36%">정의 (도메인 의미)</th><th style="text-align:left">조건</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>⚪ 분석보류</td><td>잔액 없음 dormant 채널</td><td>AR ≤ 0</td></tr>
           <tr><td>2</td><td>⚫ Bad Debt</td><td>회생 불가 채권 (사실상 손상)</td><td>OD% ≥ 99%</td></tr>
@@ -189,11 +189,11 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       </table>
       <div class="hdr">재고 매트릭스 (OR/IR 차별 임계 — MT 빠른 회전 vs B2B 딜러 느린 회전)</div>
       <table>
-        <thead><tr><th>분류</th><th>OR WOS</th><th>IR WOS</th></tr></thead>
+        <thead><tr><th style="text-align:left;width:30%">분류</th><th style="text-align:center;width:36%">OR WOS</th><th style="text-align:center;width:36%">IR WOS</th></tr></thead>
         <tbody>
-          <tr><td>📦 판매부진</td><td>≥ 12w</td><td>≥ 20w</td></tr>
-          <tr><td>⚖️ 적정</td><td>8 ≤ WOS &lt; 12</td><td>16 ≤ WOS &lt; 20</td></tr>
-          <tr><td>⚠️ 재고부족</td><td>&lt; 8w</td><td>&lt; 16w</td></tr>
+          <tr><td style="text-align:left">📦 판매부진</td><td style="text-align:center;font-variant-numeric:tabular-nums">≥ 12w</td><td style="text-align:center;font-variant-numeric:tabular-nums">≥ 20w</td></tr>
+          <tr><td style="text-align:left">⚖️ 적정</td><td style="text-align:center;font-variant-numeric:tabular-nums">8 ≤ WOS &lt; 12</td><td style="text-align:center;font-variant-numeric:tabular-nums">16 ≤ WOS &lt; 20</td></tr>
+          <tr><td style="text-align:left">⚠️ 재고부족</td><td style="text-align:center;font-variant-numeric:tabular-nums">&lt; 8w</td><td style="text-align:center;font-variant-numeric:tabular-nums">&lt; 16w</td></tr>
         </tbody>
       </table>
     </details>

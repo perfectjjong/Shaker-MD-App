@@ -175,7 +175,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <summary>📋 <b>v2 Matrix Classification</b> · Pre-filter(3) + Matrix 4-quadrant + Active Collection Overlay · Click to collapse</summary>
       <div class="hdr">v2 Rules (weighted Avg OD% recalculates on filter)</div>
       <table>
-        <thead><tr><th>#</th><th>Class</th><th style="width:36%">Meaning</th><th>Condition</th></tr></thead>
+        <thead><tr><th style="text-align:center;width:5%">#</th><th style="text-align:left;width:30%">Class</th><th style="text-align:left;width:36%">Meaning</th><th style="text-align:left">Condition</th></tr></thead>
         <tbody>
           <tr><td>1</td><td>⚪ Pending</td><td>No balance / dormant</td><td>AR ≤ 0</td></tr>
           <tr><td>2</td><td>⚫ Bad Debt</td><td>Unrecoverable receivable</td><td>OD% ≥ 99%</td></tr>
@@ -189,11 +189,11 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       </table>
       <div class="hdr">Stock Matrix (OR/IR differentiated)</div>
       <table>
-        <thead><tr><th>Class</th><th>OR WOS</th><th>IR WOS</th></tr></thead>
+        <thead><tr><th style="text-align:left;width:30%">Class</th><th style="text-align:center;width:36%">OR WOS</th><th style="text-align:center;width:36%">IR WOS</th></tr></thead>
         <tbody>
-          <tr><td>📦 Overstock</td><td>≥ 12w</td><td>≥ 20w</td></tr>
-          <tr><td>⚖️ Healthy</td><td>8 ≤ WOS &lt; 12</td><td>16 ≤ WOS &lt; 20</td></tr>
-          <tr><td>⚠️ Low Stock</td><td>&lt; 8w</td><td>&lt; 16w</td></tr>
+          <tr><td style="text-align:left">📦 Overstock</td><td style="text-align:center;font-variant-numeric:tabular-nums">≥ 12w</td><td style="text-align:center;font-variant-numeric:tabular-nums">≥ 20w</td></tr>
+          <tr><td style="text-align:left">⚖️ Healthy</td><td style="text-align:center;font-variant-numeric:tabular-nums">8 ≤ WOS &lt; 12</td><td style="text-align:center;font-variant-numeric:tabular-nums">16 ≤ WOS &lt; 20</td></tr>
+          <tr><td style="text-align:left">⚠️ Low Stock</td><td style="text-align:center;font-variant-numeric:tabular-nums">&lt; 8w</td><td style="text-align:center;font-variant-numeric:tabular-nums">&lt; 16w</td></tr>
         </tbody>
       </table>
     </details>
