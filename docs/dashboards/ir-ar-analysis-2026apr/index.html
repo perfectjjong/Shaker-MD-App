@@ -633,6 +633,7 @@ function cls(v,bad,good){ if(v==null)return ''; if(v>=bad)return 'bad'; if(v<=go
 
 function render(){
   let arr = DATA.filter(c => 
+    (STATE.groups.size === 0 || STATE.groups.has(c.group)) &&
     (STATE.statuses.has(c._v2_status) || (c._v2_overlay && STATE.statuses.has('🚨 회수의지'))) &&
     (STATE.grades.size === 0 || STATE.grades.has(c.grade)) &&
     (STATE.accs.size === 0 || STATE.accs.has(c.acc_class)) &&
@@ -991,7 +992,6 @@ function updateAchKpi(arr, ac_b, ac_o, ac_s25, ac_s, ha_b, ha_o, ha_s25, ha_s, a
 function downloadXlsxTab1(){
   if (typeof XLSX === 'undefined') { alert('Excel 라이브러리 로딩 중입니다. 잠시 후 다시 시도하세요.'); return; }
   let arr = DATA.filter(c =>
-    (STATE.groups.size === 0 || STATE.groups.has(c.group)) &&
     STATE.statuses.has(c.status) &&
     (STATE.grades.size === 0 || STATE.grades.has(c.grade)) &&
     (STATE.accs.size === 0 || STATE.accs.has(c.acc_class)) &&
