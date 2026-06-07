@@ -172,19 +172,28 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   <div id="tab1" class="tab-panel active">
   <div class="rules-tbl">
     <details open>
-      <summary>📋 <b>분류 기준</b> — 표시 순: 정상→판매부진→회수의지→주의→위험→Bad Debt→SO 미입수→분석보류 (액션 우선도 흐름) · 클릭하여 접기</summary>
-      <div class="hdr">분류 룰 매트릭스 <span class="hdr-sub">· 조건: <span style="color:#fde047">+</span> = AND, <span style="color:#fde047">OR</span> = OR · 변수: AR/OD/DSO/WOS/YoY/ΔOD/ΔDSO/SO/Stock</span></div>
+      <summary>📋 <b>v2 매트릭스 분류 기준</b> · 사전 분류(3) + 매트릭스 4사분면 + Overlay 회수의지 · 클릭하여 접기</summary>
+      <div class="hdr">v2 분류 룰 (Avg OD% 가중평균 동적 재계산)</div>
       <table>
-        <thead><tr><th>#</th><th>분류</th><th style="width:38%">정의 (도메인 의미)</th><th>조건</th></tr></thead>
+        <thead><tr><th>#</th><th>분류</th><th style="width:36%">정의 (도메인 의미)</th><th>조건</th></tr></thead>
         <tbody>
-          <tr class="r-norm"><td class="prio">1</td><td class="cat">🟢 정상</td><td style="color:#86efac">모든 지표 양호 — <b>건강한 거래 채널</b> (벤치마크 후보)</td><td class="cond"><code>OD% &lt; 20%</code> <span class="op">+</span> <code>DSO &lt; 90d</code> <span class="op">+</span> <code>YoY &gt; +10%</code> <span class="op">+</span> <span style="color:var(--muted)">모든 변동 양호</span></td></tr>
-          <tr class="r-sales"><td class="prio">2</td><td class="cat">📦 판매부진</td><td style="color:#c4b5fd">재고 과적(32w+) + 회수 신호 동반 — <b>"안 팔려서 돈 못 줌" = 판매 활동 지원</b></td><td class="cond"><code>WOS ≥ 32w</code> <span class="op">+</span> (<code>OD% &gt; 50%</code> <span class="op">OR</span> <code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code>)</td></tr>
-          <tr class="r-emer"><td class="prio">3</td><td class="cat">🚨 회수의지</td><td style="color:#fda4af">재고 적정 + 매출↑ but 회수 악화 — <b>"팔리는데 돈 안 줌" = 의도적 지연 의심</b></td><td class="cond"><code>WOS &lt; 24w</code> <span class="op">+</span> <code>YoY &gt; +10%</code> <span class="op">+</span> (<code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code>)</td></tr>
-          <tr class="r-watch"><td class="prio">4</td><td class="cat">🟡 주의</td><td style="color:#fde047">위험 미만 + 정상 초과의 <b>회색지대</b> — 약한 적신호 7개 중 1개 이상, 모니터링 강화</td><td class="cond"><code>OD% 20~50%</code> <span class="op">OR</span> <code>DSO 90~150d</code> <span class="op">OR</span> (<code>DSO ≥ 150d</code> <span class="op">+</span> <code>WOS &lt; 24w</code>) <span class="op">OR</span> <code>WOS 24~32w</code> <span class="op">OR</span> <code>YoY -30~+10%</code> <span class="op">OR</span> <code>ΔOD 5~10pp</code> <span class="op">OR</span> <code>ΔDSO 10~30d</code></td></tr>
-          <tr class="r-risk"><td class="prio">5</td><td class="cat">🔴 위험</td><td style="color:#fdba74">OD·DSO·매출·변동 중 <b>하나라도 위험 임계 돌파</b> — 즉시 회수/출하 점검</td><td class="cond"><code>OD% ≥ 50%</code> <span class="op">OR</span> (<code>DSO ≥ 150d</code> <span class="op">+</span> <code>WOS ≥ 24w</code>) <span class="op">OR</span> <code>YoY &lt; -30%</code> <span class="op">OR</span> <code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code></td></tr>
-          <tr class="r-bad"><td class="prio">6</td><td class="cat">⚫ Bad Debt</td><td style="color:#9ca3af">채권 거의 전액이 연체 — <b>대손/충당금 검토</b></td><td class="cond"><code>OD% ≥ 99%</code></td></tr>
-          <tr class="r-noso"><td class="prio">7</td><td class="cat">🚫 SO 미입수</td><td style="color:#67e8f9">SO/Stock 데이터 결손 — <b>분류 불가, 영업팀 자료 우선</b></td><td class="cond"><code>AR &gt; 0</code> <span class="op">+</span> (<code>SO = 0</code> <span class="op">OR</span> <code>Stock = 0</code>)</td></tr>
-          <tr class="r-na"><td class="prio">8</td><td class="cat">⚪ 분석보류</td><td style="color:#cbd5e1">거래 정지/마감 채널 — <b>분석 대상 외</b></td><td class="cond"><code>AR = 0</code></td></tr>
+          <tr><td>1</td><td>⚪ 분석보류</td><td>잔액 없음 dormant 채널</td><td>AR ≤ 0</td></tr>
+          <tr><td>2</td><td>⚫ Bad Debt</td><td>회생 불가 채권 (사실상 손상)</td><td>OD% ≥ 99%</td></tr>
+          <tr><td>3</td><td>🚫 SO 미입수</td><td>거래 정지 dormant 딜러</td><td>AR&gt;0 + (SO 수량=0 OR Stock=0)</td></tr>
+          <tr><td>4</td><td>🟢 Safe</td><td>결제·회수 모두 정상</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>5</td><td>🟡 Watch</td><td>결제는 양호하나 평균 대비 연체 비중 큼</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>6</td><td>🔵 Potential</td><td>결제 느리지만 연체 작음 (장기 신뢰 거래)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>7</td><td>🔴 Critical</td><td>결제·연체 둘 다 평균 대비 악화</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr style="background:rgba(168,85,247,.1)"><td>+</td><td>🚨 회수의지</td><td>팔리고 있는데 돈은 안 들어옴 (회수 책임)</td><td>(Watch 또는 Critical) AND (재고 적정 또는 부족)</td></tr>
+        </tbody>
+      </table>
+      <div class="hdr">재고 매트릭스 (OR/IR 차별 임계 — MT 빠른 회전 vs B2B 딜러 느린 회전)</div>
+      <table>
+        <thead><tr><th>분류</th><th>OR WOS</th><th>IR WOS</th></tr></thead>
+        <tbody>
+          <tr><td>📦 판매부진</td><td>≥ 12w</td><td>≥ 20w</td></tr>
+          <tr><td>⚖️ 적정</td><td>8 ≤ WOS &lt; 12</td><td>16 ≤ WOS &lt; 20</td></tr>
+          <tr><td>⚠️ 재고부족</td><td>&lt; 8w</td><td>&lt; 16w</td></tr>
         </tbody>
       </table>
     </details>
@@ -256,7 +265,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
   <div id="tab2" class="tab-panel">
     <div class="criteria" style="border-left-color:#a78bfa">
-      <b>⚖️ IR Others Account별 AC Dealer vs HA Dealer 채권 비교</b> · 데이터: AR-HVAC vs HA 2026 Apr.xlsx · 범위: 87 계정 (IR_Others + BH + OR) · 매출 기간: <b>25 = Jan-Dec 풀이어</b> / <b>26 = Jan-Apr YTD</b> (HA 2025 Jan-Apr 분리 데이터 없음 → Apple-to-Apple YoY 불가) · 핵심 인사이트: <b style="color:#fda4af">AC OD% 46.4%</b> vs <b style="color:#86efac">HA OD% 17.4%</b> — 동일 계정도 사업부별 회수 양상 상이.
+      <b>⚖️ Account별 AC Dealer vs HA Dealer 채권 비교</b> · 범위: 87 계정 (IR_Others + BH + OR) · 데이터: AR-HVAC vs HA 2026 Apr.xlsx · 매출 기간: <b>25 = Jan-Dec 풀이어</b> / <b>26 = Jan-Apr YTD</b> · <b style="color:#a78bfa">OD% 가중평균 — 필터 적용 시 동적 재계산</b>
     </div>
 
     <div class="summary-mini" id="achKpiCards">
@@ -751,6 +760,21 @@ function renderAch(){
   const gap_t = (ac_odp != null && ha_odp != null) ? (ac_odp - ha_odp) : null;
 
   document.getElementById('achCount').textContent = `${arr.length}개 계정 · AC AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M (OD% ${ac_odp?ac_odp.toFixed(1):'-'}%) · HA AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M (OD% ${ha_odp?ha_odp.toFixed(1):'-'}%)`;
+  // v2: Tab2 KPI 카드 동적 갱신 (필터 적용 시 가중평균 재계산)
+  document.getElementById('acKpiLbl').textContent = `🟧 AC Dealers (${arr.length}계정)`;
+  document.getElementById('acKpiVal').textContent = `AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M`;
+  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:#fda4af">${ac_odp!=null?ac_odp.toFixed(1):'-'}%</b> · DSO ${ac_dso!=null?ac_dso.toFixed(0):'-'}d · 매출 25 (Jan-Dec) ${(ac_s25/1e6).toFixed(1)}M → 26 (Jan-Apr) ${(ac_s/1e6).toFixed(1)}M <!-- acKpiVal_DYNAMIC_MARK -->`;
+  document.getElementById('haKpiLbl').textContent = `🟩 HA Dealers (${arr.length}계정)`;
+  document.getElementById('haKpiVal').textContent = `AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M`;
+  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:#86efac">${ha_odp!=null?ha_odp.toFixed(1):'-'}%</b> · DSO ${ha_dso!=null?ha_dso.toFixed(0):'-'}d · 매출 25 (Jan-Dec) ${(ha_s25/1e6).toFixed(1)}M → 26 (Jan-Apr) ${(ha_s/1e6).toFixed(1)}M`;
+  if (gap_t != null) {
+    document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:#c4b5fd">${gap_t>=0?'+':''}${gap_t.toFixed(1)}pp</b>`;
+    document.getElementById('gapKpiSub').textContent = gap_t > 0 ? `AC가 HA 대비 OD% ${gap_t.toFixed(0)}pp 더 악화` : `HA가 AC 대비 OD% ${(-gap_t).toFixed(0)}pp 더 악화`;
+  }
+  // 극단 갭 계정 수
+  const extremeN = arr.filter(r => (r.ac_odp26||0) >= 95 && (r.ha_odp26||0) <= 10).length;
+  document.getElementById('extremeGapCount').textContent = extremeN;
+
 
   // Update top KPI cards (반영: 필터링된 arr 기준)
   updateAchKpi(arr, ac_b, ac_o, ac_s25, ac_s, ha_b, ha_o, ha_s25, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t);

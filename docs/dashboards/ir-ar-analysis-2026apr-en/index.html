@@ -172,19 +172,28 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   <div id="tab1" class="tab-panel active">
   <div class="rules-tbl">
     <details open>
-      <summary>📋 <b>Classification Rules</b> — Display order: Normal→Slow Sales→Collection Issue→Watch→Risk→Bad Debt→SO Missing→N/A (action priority flow) · click to collapse</summary>
-      <div class="hdr">Rule Matrix <span class="hdr-sub">· Operators: <span style="color:#fde047">+</span> = AND, <span style="color:#fde047">OR</span> = OR · Variables: AR/OD/DSO/WOS/YoY/ΔOD/ΔDSO/SO/Stock</span></div>
+      <summary>📋 <b>v2 Matrix Classification</b> · Pre-filter(3) + Matrix 4-quadrant + Active Collection Overlay · Click to collapse</summary>
+      <div class="hdr">v2 Rules (weighted Avg OD% recalculates on filter)</div>
       <table>
-        <thead><tr><th>#</th><th>Category</th><th style="width:38%">Definition (Domain Meaning)</th><th>Conditions</th></tr></thead>
+        <thead><tr><th>#</th><th>Class</th><th style="width:36%">Meaning</th><th>Condition</th></tr></thead>
         <tbody>
-          <tr class="r-norm"><td class="prio">1</td><td class="cat">🟢 Normal</td><td style="color:#86efac">All indicators healthy — <b>sound channel</b> (benchmark candidate)</td><td class="cond"><code>OD% &lt; 20%</code> <span class="op">+</span> <code>DSO &lt; 90d</code> <span class="op">+</span> <code>YoY &gt; +10%</code> <span class="op">+</span> <span style="color:var(--muted)">all deltas healthy</span></td></tr>
-          <tr class="r-sales"><td class="prio">2</td><td class="cat">📦 Slow Sales</td><td style="color:#c4b5fd">Overstock (32w+) + collection signal — <b>"can't pay because not selling" = sales support</b></td><td class="cond"><code>WOS ≥ 32w</code> <span class="op">+</span> (<code>OD% &gt; 50%</code> <span class="op">OR</span> <code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code>)</td></tr>
-          <tr class="r-emer"><td class="prio">3</td><td class="cat">🚨 Collection Issue</td><td style="color:#fda4af">Stock OK + sales↑ but collection deteriorating — <b>"selling but not paying" = intentional delay suspected</b></td><td class="cond"><code>WOS &lt; 24w</code> <span class="op">+</span> <code>YoY &gt; +10%</code> <span class="op">+</span> (<code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code>)</td></tr>
-          <tr class="r-watch"><td class="prio">4</td><td class="cat">🟡 Watch</td><td style="color:#fde047"><b>Grey zone</b> (sub-risk, above-normal) — 1+ of 7 weak warning signals, enhanced monitoring</td><td class="cond"><code>OD% 20~50%</code> <span class="op">OR</span> <code>DSO 90~150d</code> <span class="op">OR</span> (<code>DSO ≥ 150d</code> <span class="op">+</span> <code>WOS &lt; 24w</code>) <span class="op">OR</span> <code>WOS 24~32w</code> <span class="op">OR</span> <code>YoY -30~+10%</code> <span class="op">OR</span> <code>ΔOD 5~10pp</code> <span class="op">OR</span> <code>ΔDSO 10~30d</code></td></tr>
-          <tr class="r-risk"><td class="prio">5</td><td class="cat">🔴 Risk</td><td style="color:#fdba74"><b>Any single indicator breaches risk threshold</b> (OD/DSO/Sales/Δ) — immediate collection or shipment review</td><td class="cond"><code>OD% ≥ 50%</code> <span class="op">OR</span> (<code>DSO ≥ 150d</code> <span class="op">+</span> <code>WOS ≥ 24w</code>) <span class="op">OR</span> <code>YoY &lt; -30%</code> <span class="op">OR</span> <code>ΔOD &gt; +10pp</code> <span class="op">OR</span> <code>ΔDSO &gt; +30d</code></td></tr>
-          <tr class="r-bad"><td class="prio">6</td><td class="cat">⚫ Bad Debt</td><td style="color:#9ca3af">Nearly full AR overdue — <b>provisioning/write-off review</b></td><td class="cond"><code>OD% ≥ 99%</code></td></tr>
-          <tr class="r-noso"><td class="prio">7</td><td class="cat">🚫 SO Missing</td><td style="color:#67e8f9">SO/Stock data missing — <b>cannot classify, sales-team data first</b></td><td class="cond"><code>AR &gt; 0</code> <span class="op">+</span> (<code>SO = 0</code> <span class="op">OR</span> <code>Stock = 0</code>)</td></tr>
-          <tr class="r-na"><td class="prio">8</td><td class="cat">⚪ N/A</td><td style="color:#cbd5e1">Inactive/closed channel — <b>out of scope</b></td><td class="cond"><code>AR = 0</code></td></tr>
+          <tr><td>1</td><td>⚪ Pending</td><td>No balance / dormant</td><td>AR ≤ 0</td></tr>
+          <tr><td>2</td><td>⚫ Bad Debt</td><td>Unrecoverable receivable</td><td>OD% ≥ 99%</td></tr>
+          <tr><td>3</td><td>🚫 No Sales</td><td>Inactive dealer</td><td>AR&gt;0 + (SO qty=0 OR Stock=0)</td></tr>
+          <tr><td>4</td><td>🟢 Safe</td><td>Payment & collection healthy</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>5</td><td>🟡 Watch</td><td>Payment OK but overdue ratio high vs avg</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>6</td><td>🔵 Potential</td><td>Slow but low overdue (long-trust relation)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>7</td><td>🔴 Critical</td><td>Slow + high overdue both</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr style="background:rgba(168,85,247,.1)"><td>+</td><td>🚨 Active Collection</td><td>Sell-out OK but collection X</td><td>(Watch OR Critical) AND (Stock Healthy OR Low)</td></tr>
+        </tbody>
+      </table>
+      <div class="hdr">Stock Matrix (OR/IR differentiated)</div>
+      <table>
+        <thead><tr><th>Class</th><th>OR WOS</th><th>IR WOS</th></tr></thead>
+        <tbody>
+          <tr><td>📦 Overstock</td><td>≥ 12w</td><td>≥ 20w</td></tr>
+          <tr><td>⚖️ Healthy</td><td>8 ≤ WOS &lt; 12</td><td>16 ≤ WOS &lt; 20</td></tr>
+          <tr><td>⚠️ Low Stock</td><td>&lt; 8w</td><td>&lt; 16w</td></tr>
         </tbody>
       </table>
     </details>
@@ -256,7 +265,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
   <div id="tab2" class="tab-panel">
     <div class="criteria" style="border-left-color:#a78bfa">
-      <b>⚖️ IR Others Account-by-Account: AC Dealer vs HA Dealer AR Comparison</b> · Source: AR-HVAC vs HA 2026 Apr.xlsx · Scope: 82 IR Others accounts (B/H excluded) · Sales period: <b>25 = Jan-Dec full year</b> / <b>26 = Jan-Apr YTD</b> (HA 2025 Jan-Apr split unavailable → no Apple-to-Apple YoY) · Key insight: <b style="color:#fda4af">AC OD% 46.4%</b> vs <b style="color:#86efac">HA OD% 17.4%</b> — same accounts show very different collection behavior by business unit.
+      <b>⚖️ AC Dealer vs HA Dealer Comparison</b> · Scope: 87 accounts (IR_Others + BH + OR) · Data: AR-HVAC vs HA 2026 Apr.xlsx · Period: <b>25 = Jan-Dec full year</b> / <b>26 = Jan-Apr YTD</b> · <b style="color:#a78bfa">Weighted Avg OD% recalculates dynamically on filter change</b>
     </div>
 
     <div class="summary-mini" id="achKpiCards">
@@ -748,6 +757,21 @@ function renderAch(){
   const gap_t = (ac_odp != null && ha_odp != null) ? (ac_odp - ha_odp) : null;
 
   document.getElementById('achCount').textContent = `${arr.length} accounts · AC AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M (OD% ${ac_odp?ac_odp.toFixed(1):'-'}%) · HA AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M (OD% ${ha_odp?ha_odp.toFixed(1):'-'}%)`;
+  // v2: Tab2 KPI 카드 동적 갱신 (필터 적용 시 가중평균 재계산)
+  document.getElementById('acKpiLbl').textContent = `🟧 AC Dealers (${arr.length} accounts)`;
+  document.getElementById('acKpiVal').textContent = `AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M`;
+  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:#fda4af">${ac_odp!=null?ac_odp.toFixed(1):'-'}%</b> · DSO ${ac_dso!=null?ac_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ac_s25/1e6).toFixed(1)}M → 26 (Jan-Apr) ${(ac_s/1e6).toFixed(1)}M <!-- acKpiVal_DYNAMIC_MARK -->`;
+  document.getElementById('haKpiLbl').textContent = `🟩 HA Dealers (${arr.length} accounts)`;
+  document.getElementById('haKpiVal').textContent = `AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M`;
+  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:#86efac">${ha_odp!=null?ha_odp.toFixed(1):'-'}%</b> · DSO ${ha_dso!=null?ha_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ha_s25/1e6).toFixed(1)}M → 26 (Jan-Apr) ${(ha_s/1e6).toFixed(1)}M`;
+  if (gap_t != null) {
+    document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:#c4b5fd">${gap_t>=0?'+':''}${gap_t.toFixed(1)}pp</b>`;
+    document.getElementById('gapKpiSub').textContent = gap_t > 0 ? `AC OD% ${gap_t.toFixed(0)}pp higher than HA` : `HA OD% ${(-gap_t).toFixed(0)}pp higher than AC`;
+  }
+  // Extreme gap count
+  const extremeN = arr.filter(r => (r.ac_odp26||0) >= 95 && (r.ha_odp26||0) <= 10).length;
+  document.getElementById('extremeGapCount').textContent = extremeN;
+
 
   // Update top KPI cards (reflects filtered arr)
   updateAchKpi(arr, ac_b, ac_o, ac_s25, ac_s, ha_b, ha_o, ha_s25, ha_s, ac_odp, ha_odp, ac_dso, ha_dso, gap_t);
