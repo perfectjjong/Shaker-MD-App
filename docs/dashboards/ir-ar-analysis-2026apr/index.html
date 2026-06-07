@@ -399,17 +399,24 @@ function renderFhMatrix(baseFiltered, avgOd){
   wrap.innerHTML = '<canvas style="width:100%;height:100%"></canvas>';
   const ctx = wrap.querySelector('canvas').getContext('2d');
 
-  // 데이터 분류 — 5 dataset (Safe/Watch/Potential/Critical/사전)
+  // 데이터 분류 — 5 dataset + 음수 매출 별도
   const STATUS_ORDER = ['🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical'];
   const groups = {};
   STATUS_ORDER.forEach(s => groups[s] = []);
   groups['사전 분류'] = [];
+  const negSalesGroup = [];
   baseFiltered.forEach(r => {
-    if(r.dso==null || r.od_pct==null) return;
-    const key = V2_PRE.includes(r._v2_status) ? '사전 분류' : r._v2_status;
-    if(!groups[key]) return;
+    if(r.od_pct == null) return;
     const wos = r.wos != null ? r.wos : 0;
     const r0 = Math.max(5, Math.min(28, 5 + wos * 0.55));
+    // 음수 매출 (DSO 산출 불가) — 별도 dataset, x=0 위치
+    if(r.dso == null && (r.s26q1||0) < 0){
+      negSalesGroup.push({x: 0, y: r.od_pct, r: r0, _a: r});
+      return;
+    }
+    if(r.dso == null) return;
+    const key = V2_PRE.includes(r._v2_status) ? '사전 분류' : r._v2_status;
+    if(!groups[key]) return;
     groups[key].push({x: r.dso, y: r.od_pct, r: r0, _a: r});
   });
   const datasets = STATUS_ORDER.filter(s => groups[s].length).map(s => ({
@@ -427,6 +434,17 @@ function renderFhMatrix(baseFiltered, avgOd){
       backgroundColor: V2_COLORS.PRE.bg,
       borderColor: V2_COLORS.PRE.bd,
       borderWidth: 1,
+      clip: false,
+    });
+  }
+  if(negSalesGroup.length){
+    datasets.push({
+      label: '🚩 26 매출 음수 (' + negSalesGroup.length + ')',
+      data: negSalesGroup,
+      backgroundColor: 'rgba(251,113,133,0.55)',
+      borderColor: '#fb7185',
+      borderWidth: 2,
+      pointStyle: 'rectRot',
       clip: false,
     });
   }
@@ -514,8 +532,12 @@ function renderFhMatrix(baseFiltered, avgOd){
         datalabels: {
           display: function(ctx){
             const a = ctx.dataset.data[ctx.dataIndex]._a;
-            // 사전 분류는 제외 (클러터), 매트릭스 대상 모두 표시
-            return a && !V2_PRE.includes(a._v2_status);
+            if(!a) return false;
+            const lbl = ctx.dataset.label || '';
+            // 음수 매출 dataset 모두 표시
+            if(lbl.indexOf('매출 음수') !== -1) return true;
+            // 사전 분류는 제외 (클러터)
+            return !V2_PRE.includes(a._v2_status);
           },
           formatter: function(val){
             const name = (val._a.name||'').replace(/\s*(Co\.|Trade Co\.|Trading Co\.|Est\.|Comp\.|Company|Trading|Inc|Ltd|LLC).*/i,'').trim();
@@ -573,19 +595,10 @@ function renderFhMatrix(baseFiltered, avgOd){
     plugins: [qPlugin, overlayPlugin]
   });
 
-  // 음수 매출 인라인 chip (차트 아래)
-  const negSales = baseFiltered.filter(r => r.dso==null && (r.s26q1||0) < 0);
-  // 헤더 갱신
+  // 음수 매출은 사분면 안에 별도 dataset으로 표시 — 외부 chip 제거 (중복 방지)
   const overlayN = baseFiltered.filter(r => r._v2_overlay).length;
-  const negNoteHtml = negSales.length ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#94a3b8"><span style="color:#fb7185;font-weight:600;letter-spacing:0.3px;margin-right:4px">26 매출 음수 · DSO 산출 불가</span>${negSales.map(r => `<span title="${r.name} (${r.sap})\n26 매출 ${(r.s26q1/1e6).toFixed(2)}M · AR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M\nOD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}" style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,113,133,0.08);padding:3px 9px;border-radius:11px;color:#e2e8f0;cursor:help;border:1px solid rgba(251,113,133,0.2)"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fb7185"></span>${r.name} · ${(r.s26q1/1e6).toFixed(2)}M</span>`).join('')}</div>` : '';
-  // canvas 옆이 아닌 컨테이너 외부에 신규 div 추가 — 컨테이너에 chip 영역
   let negBox = document.getElementById('fhMatrixNegSales');
-  if(!negBox){
-    negBox = document.createElement('div');
-    negBox.id = 'fhMatrixNegSales';
-    wrap.parentElement.appendChild(negBox);
-  }
-  negBox.innerHTML = negNoteHtml;
+  if(negBox) negBox.remove();
 
   document.getElementById('fhMatrixHeader').innerHTML =
     `<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">` +
