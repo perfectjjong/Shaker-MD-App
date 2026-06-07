@@ -459,12 +459,31 @@ function renderFhMatrix(baseFiltered, avgOd){
     s+=`<text x="${x}" y="${y}" fill="#c4b5fd" font-size="11" text-anchor="middle" font-weight="700">🚨</text>`;
   });
   s+=`</svg>`;
-  c.innerHTML = s;
+
+  // 26 매출 음수 채널 별도 표시 (DSO 산출 불가)
+  const negSales = baseFiltered.filter(r => r.dso==null && (r.s26q1||0) < 0);
+  let negHtml = '';
+  if(negSales.length > 0){
+    negHtml = `<div style="margin-top:8px;padding:8px 12px;background:rgba(168,85,247,0.1);border:1px dashed #a855f7;border-radius:4px;font-size:11px;color:#c4b5fd;display:flex;flex-wrap:wrap;gap:8px;align-items:center;line-height:1.6">` +
+      `<b style="margin-right:4px">⚠️ 26 매출 음수 — DSO 산출 불가 (${negSales.length}):</b>` +
+      negSales.map(r => {
+        const r0 = r.wos!=null ? Math.max(6, Math.min(14, 4+r.wos*0.2)) : 6;
+        const title = `${r.name} (${r.sap})\n26 (Jan-Apr) 매출: ${(r.s26q1/1e6).toFixed(2)}M (음수=반품>판매)\nAR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M · OD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'}\nWOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}\n분류: ${r._v2_status}`;
+        return `<span title="${title}" style="display:inline-flex;align-items:center;gap:6px;background:rgba(168,85,247,0.18);padding:3px 10px;border-radius:12px;color:#e9d5ff;cursor:help">` +
+               `<span style="display:inline-block;width:${r0*2}px;height:${r0*2}px;border-radius:50%;background:#a855f7;border:1.5px solid #fff"></span>` +
+               `<b>${r.name}</b> · ${(r.s26q1/1e6).toFixed(2)}M` +
+               `</span>`;
+      }).join('') +
+    `</div>`;
+  }
+  c.innerHTML = s + negHtml;
+
   // 헤더 + 범례
   const overlayN = baseFiltered.filter(r=>r._v2_overlay).length;
   document.getElementById('fhMatrixHeader').innerHTML =
     `<b>📐 Financial Health Matrix</b> · ${baseFiltered.length}채널 · ` +
     `🚨 회수의지 ${overlayN}건 강조 · ` +
+    (negSales.length > 0 ? `<span style="color:#a855f7">⚠️ 26 매출 음수 ${negSales.length}건 (하단 별도 표시)</span> · ` : '') +
     `<span style="color:#a78bfa">임계 (DSO 180d × Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%) 동적</span> · ` +
     `<span style="color:#94a3b8">원 크기 = WOS · 회색 점 = 사전 분류 (Bad Debt / SO 미입수 / 분석보류)</span>`;
 }
