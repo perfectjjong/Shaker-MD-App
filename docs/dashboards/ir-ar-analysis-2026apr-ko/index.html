@@ -473,21 +473,26 @@ function renderFhMatrix(baseFiltered, avgOd){
       c.strokeStyle='#a78bfa';
       c.beginPath(); c.moveTo(l,y0); c.lineTo(r,y0); c.stroke();
     }
-    // Target 기준선 (DSO 120 / OD% 20 — 옅은 코랄)
-    c.setLineDash([3,3]); c.globalAlpha=0.7; c.strokeStyle='#fb7185';
+    // Target 기준선 (DSO 120 / OD% 20 — 진한 코랄, 강조)
+    c.setLineDash([4,3]); c.globalAlpha=1; c.lineWidth=1.8; c.strokeStyle='#f43f5e';
     c.beginPath(); c.moveTo(xFm,t); c.lineTo(xFm,b); c.stroke();
     c.beginPath(); c.moveTo(l,yFm); c.lineTo(r,yFm); c.stroke();
-    c.setLineDash([]); c.globalAlpha=1;
-    // 임계선 라벨
+    c.setLineDash([]); c.lineWidth=1;
+    // 임계선 라벨 (v2)
     c.font='600 10px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
     c.fillStyle='#94a3b8';  c.fillText('DSO 180', x180+4, t+12);
     if(y0 != null){
       c.fillStyle='#a78bfa';
       c.fillText('Avg ' + avgOd.toFixed(1) + '%', r-60, y0-5);
     }
-    c.fillStyle='#fb7185'; c.font='700 10px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
-    c.fillText('DSO 120', xFm-50, t+12);
-    c.fillText('OD 20%', l+6, yFm-4);
+    // Target 라벨 (진한 코랄 + 배경 박스로 가독성 보강)
+    c.font='700 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+    c.fillStyle='rgba(11,18,32,0.85)';
+    c.fillRect(xFm+3, t+1, 56, 16);
+    c.fillRect(l+3, yFm-13, 60, 16);
+    c.fillStyle='#fda4af';
+    c.fillText('DSO 120', xFm+8, t+13);
+    c.fillText('OD 20%', l+8, yFm-1);
     // 4분면 모서리 라벨 + 그 아래 재고 분포 카운트
     c.font='700 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.85;
     c.fillStyle='#34d399'; c.fillText('🟢 Safe',       l+8,    b-26);
