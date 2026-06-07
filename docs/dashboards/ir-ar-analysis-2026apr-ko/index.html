@@ -239,7 +239,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
         <th data-k="wos">WOS</th>
         <th data-k="oud">OUD</th>
         <th data-k="oud_wos" style="white-space:nowrap">OUD<br>WOS</th>
-        <th class="l" data-k="diag">진단</th>
+        <th data-k="wos_status" class="l">WOS Status</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -657,7 +657,7 @@ function renderFhMatrix(baseFiltered, avgOd){
         }
       }
     },
-    plugins: [qPlugin, stockIconPlugin, overlayPlugin]
+    plugins: [qPlugin, overlayPlugin]
   });
 
   // 음수 매출은 사분면 안에 별도 dataset으로 표시 — 외부 chip 제거 (중복 방지)
@@ -892,7 +892,7 @@ function render(){
       <td class="${c.wos==null?'':(c.wos>50?'neg':'')}">${fmtW(c.wos)}</td>
       <td>${fmtN(c.oud)}</td>
       <td class=\"${c.oud_wos==null?'':(c.oud_wos>50?'neg':'')}\">${fmtW(c.oud_wos)}</td>
-      <td class="diag ${urgent?'urgent':''}">${c.diag}</td>
+      <td class="l" style="font-size:10.5px;line-height:1.4">${(c.so_ttl==null||c.so_ttl===0)?'<span style=\"color:#94a3b8\">Data 미입수</span>':((v2ClassifyStock(c.wos,c.group)||'-')+(c.oud_wos!=null?'<br>OUD: '+(v2ClassifyStock(c.oud_wos,c.group)||'-'):''))}</td>
     </tr>`;
   }).join('') + (arr.length ? `<tr class="total-row">
     <td class="l">Σ 합계 (${arr.length}개)</td>
@@ -911,7 +911,7 @@ function render(){
     <td>${wosW==null?'-':fmtW(wosW)}</td>
     <td>${fmtN(totOud)}</td>
     <td>${(wosW==null||!totStk)?'-':fmtW(wosW * (totStk + (totOud||0)) / totStk)}</td>
-    <td class="note"></td>
+    <td class="note">합계: AR/OD/매출/SO/Stk/OUD · 재계산: OD%=ΣOD/ΣAR, YoY=ΣS26/ΣS25 · AR 가중평균: DSO/ΔOD/ΔDSO/WOS</td>
   </tr>` : '');
   // Update sort indicators
   document.querySelectorAll('th').forEach(th => {
