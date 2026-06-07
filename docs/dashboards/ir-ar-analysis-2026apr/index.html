@@ -154,6 +154,8 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .xls-btn:active{transform:translateY(1px)}
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -211,10 +213,10 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   </div>
 
   
-  <!-- Financial Health Matrix (4분면 시각화) -->
+  <!-- Financial Health Matrix (Chart.js bubble) -->
   <div style="margin-bottom:16px;background:var(--card);border-radius:10px;padding:14px 18px;border:1px solid rgba(148,163,184,0.08)">
     <div id="fhMatrixHeader" style="margin-bottom:10px"></div>
-    <div id="fhMatrix"></div>
+    <div id="fhMatrix" style="position:relative;height:460px"></div>
   </div>
 <div class="tbl-wrap">
     <table id="tbl">
@@ -373,122 +375,207 @@ const DATA = [{"sap": "1110000010", "name": "Tamkeen", "grade": "B", "acc_class"
 
 // v2 매트릭스 정책 동적 분류 (필터 적용 시 Avg OD% 재계산)
 
-// Financial Health Matrix — Stripe/Linear 스타일 modern minimal
+// Financial Health Matrix — Chart.js bubble (sell-thru FH 탭 스타일)
+let _fhChartV2 = null;
+const V2_COLORS = {
+  '🟢 Safe':       {bg:'rgba(52,211,153,0.55)',  bd:'#34d399'},
+  '🟡 Watch':      {bg:'rgba(251,191,36,0.55)',  bd:'#fbbf24'},
+  '🔵 Potential':  {bg:'rgba(96,165,250,0.55)',  bd:'#60a5fa'},
+  '🔴 Critical':   {bg:'rgba(248,113,113,0.6)',  bd:'#f87171'},
+  'PRE':           {bg:'rgba(100,116,139,0.35)', bd:'#64748b'},
+};
+const V2_PRE = ['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수'];
+
 function renderFhMatrix(baseFiltered, avgOd){
-  const c = document.getElementById('fhMatrix');
-  if(!c) return;
-  const W=960, H=440, PL=64, PR=40, PT=24, PB=44;
-  const xMax=400, yMax=100;
-  const xT=180, yT=(avgOd!=null?avgOd:50);
-  const fx=v=>PL+Math.min(Math.max(v||0,0),xMax)/xMax*(W-PL-PR);
-  const fy=v=>PT+(1-Math.min(Math.max(v||0,0),yMax)/yMax)*(H-PT-PB);
-  const PRE=['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수'];
-  // 절제된 채도 (Tailwind 400~500 톤)
-  const COL={'🟢 Safe':'#34d399','🟡 Watch':'#fbbf24','🔵 Potential':'#60a5fa','🔴 Critical':'#f87171'};
-  const COL_BG={'🟢 Safe':'rgba(52,211,153,0.04)','🟡 Watch':'rgba(251,191,36,0.04)','🔵 Potential':'rgba(96,165,250,0.04)','🔴 Critical':'rgba(248,113,113,0.05)'};
-  const quads={Safe:{n:0,ar:0},Watch:{n:0,ar:0},Potential:{n:0,ar:0},Critical:{n:0,ar:0}};
-  baseFiltered.forEach(r=>{
-    if(r._v2_status==='🟢 Safe'){quads.Safe.n++;quads.Safe.ar+=r.ar||0;}
-    else if(r._v2_status==='🟡 Watch'){quads.Watch.n++;quads.Watch.ar+=r.ar||0;}
-    else if(r._v2_status==='🔵 Potential'){quads.Potential.n++;quads.Potential.ar+=r.ar||0;}
-    else if(r._v2_status==='🔴 Critical'){quads.Critical.n++;quads.Critical.ar+=r.ar||0;}
-  });
-  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;display:block;background:#0b1220;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">`;
-  // 4분면 배경 (절제)
-  s+=`<rect x="${PL}" y="${PT}" width="${fx(xT)-PL}" height="${fy(yT)-PT}" fill="${COL_BG['🟡 Watch']}"/>`;
-  s+=`<rect x="${PL}" y="${fy(yT)}" width="${fx(xT)-PL}" height="${H-PB-fy(yT)}" fill="${COL_BG['🟢 Safe']}"/>`;
-  s+=`<rect x="${fx(xT)}" y="${PT}" width="${W-PR-fx(xT)}" height="${fy(yT)-PT}" fill="${COL_BG['🔴 Critical']}"/>`;
-  s+=`<rect x="${fx(xT)}" y="${fy(yT)}" width="${W-PR-fx(xT)}" height="${H-PB-fy(yT)}" fill="${COL_BG['🔵 Potential']}"/>`;
-  // 옅은 grid 가로 50%/100% only
-  [50,100].forEach(o=>{
-    s+=`<line x1="${PL}" y1="${fy(o)}" x2="${W-PR}" y2="${fy(o)}" stroke="#1e293b" stroke-width="1"/>`;
-  });
-  // 기준선 — Target (DSO 120d / OD% 20%, 옅은 회색 점선)
-  s+=`<line x1="${fx(120)}" y1="${PT}" x2="${fx(120)}" y2="${H-PB}" stroke="#fb7185" stroke-dasharray="3,3" stroke-width="1" opacity="0.7"/>`;
-  s+=`<line x1="${PL}" y1="${fy(20)}" x2="${W-PR}" y2="${fy(20)}" stroke="#fb7185" stroke-dasharray="3,3" stroke-width="1" opacity="0.7"/>`;
-  // v2 임계선 (DSO 180 + Avg OD%) — 차분한 톤
-  s+=`<line x1="${fx(xT)}" y1="${PT}" x2="${fx(xT)}" y2="${H-PB}" stroke="#475569" stroke-dasharray="6,4" stroke-width="1"/>`;
-  s+=`<line x1="${PL}" y1="${fy(yT)}" x2="${W-PR}" y2="${fy(yT)}" stroke="#8b5cf6" stroke-dasharray="6,4" stroke-width="1" opacity="0.85"/>`;
-  // 축 (얇게)
-  s+=`<line x1="${PL}" y1="${H-PB}" x2="${W-PR}" y2="${H-PB}" stroke="#334155" stroke-width="1"/>`;
-  s+=`<line x1="${PL}" y1="${PT}" x2="${PL}" y2="${H-PB}" stroke="#334155" stroke-width="1"/>`;
-  // 눈금 (절제: 0/180/360 + 120 강조)
-  [0,180,360].forEach(d=>{
-    s+=`<text x="${fx(d)}" y="${H-PB+18}" fill="#64748b" font-size="11" text-anchor="middle">${d}</text>`;
-  });
-  [0,50,100].forEach(o=>{
-    s+=`<text x="${PL-10}" y="${fy(o)+4}" fill="#64748b" font-size="11" text-anchor="end">${o}</text>`;
-  });
-  // 강조 눈금 (120d / 20%)
-  s+=`<text x="${fx(120)}" y="${H-PB+18}" fill="#fb7185" font-size="11" text-anchor="middle" font-weight="600">120</text>`;
-  s+=`<text x="${PL-10}" y="${fy(20)+4}" fill="#fb7185" font-size="11" text-anchor="end" font-weight="600">20</text>`;
-  // 축 제목 (모던, 작게)
-  s+=`<text x="${W-PR}" y="${H-PB+18}" fill="#475569" font-size="10" text-anchor="end" letter-spacing="1">DSO (days) →</text>`;
-  s+=`<text x="${PL-10}" y="${PT-8}" fill="#475569" font-size="10" text-anchor="end" letter-spacing="1">↑ OD %</text>`;
-  // 동적 임계 라벨 (마젠타) — 옅게
-  s+=`<text x="${W-PR-6}" y="${fy(yT)-5}" fill="#a78bfa" font-size="10" text-anchor="end" font-weight="500">Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%</text>`;
-  s+=`<text x="${fx(xT)-5}" y="${PT+10}" fill="#64748b" font-size="10" text-anchor="end" font-weight="500">DSO 180</text>`;
-  // Target 라벨 (작게, 옅게)
-  s+=`<text x="${fx(120)+4}" y="${PT+10}" fill="#fb7185" font-size="9" font-weight="600" letter-spacing="0.5">TARGET 120d</text>`;
-  s+=`<text x="${W-PR-6}" y="${fy(20)+12}" fill="#fb7185" font-size="9" text-anchor="end" font-weight="600" letter-spacing="0.5">TARGET 20%</text>`;
+  if(typeof Chart === 'undefined') return;
+  const wrap = document.getElementById('fhMatrix');
+  if(!wrap) return;
+  if(_fhChartV2){ _fhChartV2.destroy(); _fhChartV2 = null; }
+  wrap.innerHTML = '<canvas style="width:100%;height:100%"></canvas>';
+  const ctx = wrap.querySelector('canvas').getContext('2d');
 
-  // 점 — 모던 미니멀 (부드러운 fill + 흰 stroke)
-  const drawPoint=(r)=>{
-    if(r.dso==null || r.od_pct==null) return '';
-    const x=fx(r.dso), y=fy(r.od_pct);
-    const r0=r.wos!=null ? Math.max(4, Math.min(38, 4+r.wos*0.55)) : 4;
-    const isPre = PRE.includes(r._v2_status);
-    const fill = isPre ? '#475569' : (COL[r._v2_status]||'#475569');
-    const op = isPre ? 0.35 : 0.65;
-    const strokeW = isPre ? 0 : 1.5;
-    const strokeColor = r._v2_overlay ? '#c084fc' : '#0b1220';
-    const overlaySw = r._v2_overlay ? 2.5 : strokeW;
-    const title = `${r.name} (${r.sap})\n${r._v2_status}${r._v2_overlay?' · 🚨 회수의지':''}\nAR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M (${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'})\nDSO ${r.dso!=null?r.dso.toFixed(0)+'d':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}`;
-    return `<circle cx="${x}" cy="${y}" r="${r0}" fill="${fill}" fill-opacity="${op}" stroke="${strokeColor}" stroke-width="${overlaySw}"><title>${title}</title></circle>`;
-  };
-  // 레이어: 사전 분류 → 일반 → 회수의지 (위로 올라옴)
-  baseFiltered.filter(r=>PRE.includes(r._v2_status)).forEach(r=>{ s+=drawPoint(r); });
-  baseFiltered.filter(r=>!PRE.includes(r._v2_status) && !r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
-  baseFiltered.filter(r=>r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
-  // 회수의지 🚨 마커만 (Account명 라벨은 호버로 — 클러터 제거)
-  baseFiltered.forEach(r=>{
-    if(!r._v2_overlay || r.dso==null || r.od_pct==null) return;
-    const x=fx(r.dso);
-    const r0=r.wos!=null ? Math.max(4, Math.min(38, 4+r.wos*0.55)) : 4;
-    const y=fy(r.od_pct) - r0 - 5;
-    s+=`<text x="${x}" y="${y}" fill="#c084fc" font-size="11" text-anchor="middle" style="pointer-events:none">🚨</text>`;
+  // 데이터 분류 — 5 dataset (Safe/Watch/Potential/Critical/사전)
+  const STATUS_ORDER = ['🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical'];
+  const groups = {};
+  STATUS_ORDER.forEach(s => groups[s] = []);
+  groups['사전 분류'] = [];
+  baseFiltered.forEach(r => {
+    if(r.dso==null || r.od_pct==null) return;
+    const key = V2_PRE.includes(r._v2_status) ? '사전 분류' : r._v2_status;
+    if(!groups[key]) return;
+    const wos = r.wos != null ? r.wos : 0;
+    const r0 = Math.max(5, Math.min(28, 5 + wos * 0.55));
+    groups[key].push({x: r.dso, y: r.od_pct, r: r0, _a: r});
   });
-  s+=`</svg>`;
-
-  // 26 매출 음수 — 차분한 인라인 칩 (마젠타 dashed 박스 제거)
-  const negSales = baseFiltered.filter(r => r.dso==null && (r.s26q1||0) < 0);
-  let negHtml = '';
-  if(negSales.length > 0){
-    negHtml = `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#94a3b8">` +
-      `<span style="color:#fb7185;font-weight:600;letter-spacing:0.3px;margin-right:4px">26 매출 음수 · DSO 산출 불가</span>` +
-      negSales.map(r => {
-        const title = `${r.name} (${r.sap})\n26 매출 ${(r.s26q1/1e6).toFixed(2)}M · AR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M\nOD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}`;
-        return `<span title="${title}" style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,113,133,0.08);padding:3px 9px;border-radius:11px;color:#e2e8f0;cursor:help;border:1px solid rgba(251,113,133,0.2)">` +
-               `<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fb7185"></span>` +
-               `${r.name} · ${(r.s26q1/1e6).toFixed(2)}M` +
-               `</span>`;
-      }).join('') +
-    `</div>`;
+  const datasets = STATUS_ORDER.filter(s => groups[s].length).map(s => ({
+    label: s,
+    data: groups[s],
+    backgroundColor: V2_COLORS[s].bg,
+    borderColor: V2_COLORS[s].bd,
+    borderWidth: 1.5,
+  }));
+  if(groups['사전 분류'].length){
+    datasets.push({
+      label: '사전 분류 (' + groups['사전 분류'].length + ')',
+      data: groups['사전 분류'],
+      backgroundColor: V2_COLORS.PRE.bg,
+      borderColor: V2_COLORS.PRE.bd,
+      borderWidth: 1,
+    });
   }
-  c.innerHTML = s + negHtml;
 
-  // 헤더 — 깔끔한 위계 (제목 + meta)
-  const overlayN = baseFiltered.filter(r=>r._v2_overlay).length;
+  // quadrantPlugin — 사분면 배경 + 임계선 + 라벨
+  const qPlugin = {id:'fhV2Quadrant', beforeDraw: function(chart){
+    const c = chart.ctx, xa = chart.scales.x, ya = chart.scales.y;
+    const x180 = xa.getPixelForValue(180);
+    const y0 = avgOd != null ? ya.getPixelForValue(avgOd) : null;
+    const xFm = xa.getPixelForValue(120);
+    const yFm = ya.getPixelForValue(20);
+    const l = xa.left, r = xa.right, t = ya.top, b = ya.bottom;
+    c.save();
+    // 4분면 배경 (파스텔 톤)
+    if(y0 != null){
+      c.fillStyle='rgba(52,211,153,0.06)';  c.fillRect(l, y0, x180-l, b-y0);
+      c.fillStyle='rgba(251,191,36,0.06)';  c.fillRect(l, t, x180-l, y0-t);
+      c.fillStyle='rgba(96,165,250,0.06)';  c.fillRect(x180, y0, r-x180, b-y0);
+      c.fillStyle='rgba(248,113,113,0.08)'; c.fillRect(x180, t, r-x180, y0-t);
+    }
+    // v2 임계선 (DSO 180 회색 / Avg OD% 마젠타)
+    c.setLineDash([6,4]); c.lineWidth=1; c.globalAlpha=0.85;
+    c.strokeStyle='#64748b';
+    c.beginPath(); c.moveTo(x180,t); c.lineTo(x180,b); c.stroke();
+    if(y0 != null){
+      c.strokeStyle='#a78bfa';
+      c.beginPath(); c.moveTo(l,y0); c.lineTo(r,y0); c.stroke();
+    }
+    // Target 기준선 (DSO 120 / OD% 20 — 옅은 코랄)
+    c.setLineDash([3,3]); c.globalAlpha=0.7; c.strokeStyle='#fb7185';
+    c.beginPath(); c.moveTo(xFm,t); c.lineTo(xFm,b); c.stroke();
+    c.beginPath(); c.moveTo(l,yFm); c.lineTo(r,yFm); c.stroke();
+    c.setLineDash([]); c.globalAlpha=1;
+    // 임계선 라벨
+    c.font='600 10px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+    c.fillStyle='#94a3b8';  c.fillText('DSO 180', x180+4, t+12);
+    if(y0 != null){
+      c.fillStyle='#a78bfa';
+      c.fillText('Avg ' + avgOd.toFixed(1) + '%', r-60, y0-5);
+    }
+    c.fillStyle='#fb7185'; c.font='700 10px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+    c.fillText('DSO 120', xFm-50, t+12);
+    c.fillText('OD 20%', l+6, yFm-4);
+    // 4분면 모서리 라벨 (절제)
+    c.font='700 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.85;
+    c.fillStyle='#34d399'; c.fillText('🟢 Safe',       l+8,    b-8);
+    c.fillStyle='#fbbf24'; c.fillText('🟡 Watch',      l+8,    t+24);
+    c.fillStyle='#60a5fa'; c.fillText('🔵 Potential',  r-86,   b-8);
+    c.fillStyle='#f87171'; c.fillText('🔴 Critical',   r-78,   t+24);
+    c.restore();
+  }};
+
+  // 회수의지 강조 plugin
+  const overlayPlugin = {id:'fhV2Overlay', afterDatasetsDraw: function(chart){
+    const c = chart.ctx;
+    chart.data.datasets.forEach((ds, di) => {
+      ds.data.forEach((pt, i) => {
+        if(!pt._a || !pt._a._v2_overlay) return;
+        const meta = chart.getDatasetMeta(di);
+        const el = meta.data[i];
+        if(!el) return;
+        const x = el.x, y = el.y, r = el.options.radius || pt.r;
+        c.save();
+        c.strokeStyle = '#c084fc';
+        c.lineWidth = 2.5;
+        c.beginPath(); c.arc(x, y, r + 1.5, 0, Math.PI*2); c.stroke();
+        c.font = '11px sans-serif';
+        c.fillStyle = '#c084fc';
+        c.textAlign = 'center';
+        c.fillText('🚨', x, y - r - 4);
+        c.restore();
+      });
+    });
+  }};
+
+  _fhChartV2 = new Chart(ctx, {
+    type: 'bubble',
+    data: { datasets: datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 400 },
+      plugins: {
+        legend: { position: 'top', labels: { color:'#cbd5e1', font:{size:11}, padding:10, usePointStyle:true } },
+        datalabels: { display: false },
+        tooltip: {
+          backgroundColor: '#1e293b',
+          borderColor: '#475569',
+          borderWidth: 1,
+          titleColor: '#f1f5f9',
+          bodyColor: '#cbd5e1',
+          padding: 10,
+          callbacks: {
+            title: function(ctx){
+              const a = ctx[0].raw._a;
+              return a.name + (a._v2_overlay ? ' 🚨' : '');
+            },
+            label: function(ctx){
+              const a = ctx.raw._a;
+              const dso_s = a.dso != null ? a.dso.toFixed(0) + 'd' : '-';
+              const od_s = a.od_pct != null ? a.od_pct.toFixed(0) + '%' : '-';
+              const wos_s = a.wos != null ? a.wos.toFixed(0) + 'w' : '-';
+              return [
+                a._v2_status + (a._v2_overlay ? ' (회수의지)' : ''),
+                'DSO ' + dso_s + '  ·  OD% ' + od_s,
+                'AR ' + (a.ar/1e6).toFixed(2) + 'M  ·  OD ' + (a.od/1e6).toFixed(2) + 'M',
+                'WOS ' + wos_s,
+              ];
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          min: 0, max: 400,
+          title: { display: true, text: 'DSO (days)', color:'#94a3b8', font:{size:11,weight:'600'} },
+          ticks: { color:'#94a3b8', font:{size:10}, callback:function(v){return v+'d';} },
+          grid: { color:'#1e293b' },
+        },
+        y: {
+          min: 0, max: 100,
+          title: { display: true, text: 'OD %', color:'#94a3b8', font:{size:11,weight:'600'} },
+          ticks: { color:'#94a3b8', font:{size:10}, callback:function(v){return v+'%';} },
+          grid: { color:'#1e293b' },
+        }
+      }
+    },
+    plugins: [qPlugin, overlayPlugin]
+  });
+
+  // 음수 매출 인라인 chip (차트 아래)
+  const negSales = baseFiltered.filter(r => r.dso==null && (r.s26q1||0) < 0);
+  // 헤더 갱신
+  const overlayN = baseFiltered.filter(r => r._v2_overlay).length;
+  const negNoteHtml = negSales.length ? `<div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11px;color:#94a3b8"><span style="color:#fb7185;font-weight:600;letter-spacing:0.3px;margin-right:4px">26 매출 음수 · DSO 산출 불가</span>${negSales.map(r => `<span title="${r.name} (${r.sap})\n26 매출 ${(r.s26q1/1e6).toFixed(2)}M · AR ${(r.ar/1e6).toFixed(2)}M · OD ${(r.od/1e6).toFixed(2)}M\nOD% ${r.od_pct!=null?r.od_pct.toFixed(0)+'%':'-'} · WOS ${r.wos!=null?r.wos.toFixed(0)+'w':'-'}" style="display:inline-flex;align-items:center;gap:5px;background:rgba(251,113,133,0.08);padding:3px 9px;border-radius:11px;color:#e2e8f0;cursor:help;border:1px solid rgba(251,113,133,0.2)"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#fb7185"></span>${r.name} · ${(r.s26q1/1e6).toFixed(2)}M</span>`).join('')}</div>` : '';
+  // canvas 옆이 아닌 컨테이너 외부에 신규 div 추가 — 컨테이너에 chip 영역
+  let negBox = document.getElementById('fhMatrixNegSales');
+  if(!negBox){
+    negBox = document.createElement('div');
+    negBox.id = 'fhMatrixNegSales';
+    wrap.parentElement.appendChild(negBox);
+  }
+  negBox.innerHTML = negNoteHtml;
+
   document.getElementById('fhMatrixHeader').innerHTML =
     `<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">` +
     `<span style="font-size:13px;font-weight:600;color:#e2e8f0;letter-spacing:0.2px">Financial Health Matrix</span>` +
     `<span style="font-size:10.5px;color:#64748b">${baseFiltered.length} channels</span>` +
     `<span style="font-size:10.5px;color:#94a3b8">•</span>` +
     `<span style="font-size:10.5px;color:#94a3b8">Avg OD% <span style="color:#a78bfa;font-weight:600">${avgOd!=null?avgOd.toFixed(1):'-'}%</span> (weighted, dynamic)</span>` +
-    (overlayN > 0 ? `<span style="font-size:10.5px;color:#c084fc;font-weight:600">🚨 ${overlayN} active collection</span>` : '') +
+    (overlayN > 0 ? `<span style="font-size:10.5px;color:#c084fc;font-weight:600">🚨 ${overlayN} 회수의지</span>` : '') +
     `<span style="font-size:10.5px;color:#94a3b8;margin-left:auto">size = WOS</span>` +
     `</div>`;
 }
+
+// 옛 SVG renderFhMatrix는 Chart.js 버전이 대체
 
 
 const V2_STATUSES = ['🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical','⚫ Bad Debt','🚨 회수의지','🚫 SO 미입수','⚪ 분석보류'];
