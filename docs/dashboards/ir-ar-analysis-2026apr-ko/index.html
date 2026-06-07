@@ -493,23 +493,6 @@ function renderFhMatrix(baseFiltered, avgOd){
     c.fillStyle='#fda4af';
     c.fillText('DSO 120', xFm+8, t+13);
     c.fillText('OD 20%', l+8, yFm-1);
-    // 4분면 안 재고 분포 카운트만 (분류명은 Legend와 중복이라 제거)
-    c.font='600 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.95;
-    c.fillStyle='#e2e8f0';
-    const sSafe = stockLineStr('Safe');
-    const sWatch = stockLineStr('Watch');
-    const sPot = stockLineStr('Potential');
-    const sCrit = stockLineStr('Critical');
-    if(sSafe)  c.fillText(sSafe,  l+10,  b-12);
-    if(sWatch) c.fillText(sWatch, l+10,  t+18);
-    if(sPot){
-      const w = c.measureText(sPot).width;
-      c.fillText(sPot, r-10-w, b-12);
-    }
-    if(sCrit){
-      const w = c.measureText(sCrit).width;
-      c.fillText(sCrit, r-10-w, t+18);
-    }
     c.restore();
   }};
 
@@ -539,6 +522,38 @@ function renderFhMatrix(baseFiltered, avgOd){
     ['📦','⚖️','⚠️'].forEach(k => { if(m[k]) parts.push(k+' '+m[k]); });
     return parts.join('  ');
   }
+
+  // 재고 상태 이모지 plugin — 각 account 점에 📦/⚖️/⚠️ 표시
+  const stockIconPlugin = {id:'fhV2StockIcon', afterDatasetsDraw: function(chart){
+    const c = chart.ctx;
+    chart.data.datasets.forEach((ds, di) => {
+      ds.data.forEach((pt, i) => {
+        const a = pt._a;
+        if(!a) return;
+        const stockField = a._v2_stock || a.stock_status;
+        if(!stockField) return;
+        const icon = stockField.split(' ')[0];
+        if(!icon) return;
+        const meta = chart.getDatasetMeta(di);
+        const el = meta.data[i];
+        if(!el) return;
+        const r0 = el.options && el.options.radius ? el.options.radius : pt.r;
+        // 큰 점은 중앙에 이모지, 작은 점은 점 우측에 표시
+        c.save();
+        c.textBaseline = 'middle';
+        if(r0 >= 11){
+          c.font = Math.min(r0*0.95, 18) + 'px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+          c.textAlign = 'center';
+          c.fillText(icon, el.x, el.y);
+        } else {
+          c.font = '11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif';
+          c.textAlign = 'left';
+          c.fillText(icon, el.x + r0 + 2, el.y);
+        }
+        c.restore();
+      });
+    });
+  }};
 
   // 회수의지 강조 plugin
   const overlayPlugin = {id:'fhV2Overlay', afterDatasetsDraw: function(chart){
@@ -636,7 +651,7 @@ function renderFhMatrix(baseFiltered, avgOd){
         }
       }
     },
-    plugins: [qPlugin, overlayPlugin]
+    plugins: [qPlugin, stockIconPlugin, overlayPlugin]
   });
 
   // 음수 매출은 사분면 안에 별도 dataset으로 표시 — 외부 chip 제거 (중복 방지)
