@@ -493,19 +493,23 @@ function renderFhMatrix(baseFiltered, avgOd){
     c.fillStyle='#fda4af';
     c.fillText('DSO 120', xFm+8, t+13);
     c.fillText('OD 20%', l+8, yFm-1);
-    // 4분면 모서리 라벨 + 그 아래 재고 분포 카운트
-    c.font='700 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.85;
-    c.fillStyle='#34d399'; c.fillText('🟢 Safe',       l+8,    b-26);
-    c.fillStyle='#fbbf24'; c.fillText('🟡 Watch',      l+8,    t+24);
-    c.fillStyle='#60a5fa'; c.fillText('🔵 Potential',  r-86,   b-26);
-    c.fillStyle='#f87171'; c.fillText('🔴 Critical',   r-78,   t+24);
-    // 재고 분포 (Stock distribution within each quadrant)
-    c.font='600 10px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.9;
-    c.fillStyle='#cbd5e1';
-    c.fillText(stockLineStr('Safe'),      l+8,    b-10);
-    c.fillText(stockLineStr('Watch'),     l+8,    t+40);
-    c.fillText(stockLineStr('Potential'), r-86,   b-10);
-    c.fillText(stockLineStr('Critical'),  r-78,   t+40);
+    // 4분면 안 재고 분포 카운트만 (분류명은 Legend와 중복이라 제거)
+    c.font='600 11px -apple-system,BlinkMacSystemFont,Segoe UI,sans-serif'; c.globalAlpha=0.95;
+    c.fillStyle='#e2e8f0';
+    const sSafe = stockLineStr('Safe');
+    const sWatch = stockLineStr('Watch');
+    const sPot = stockLineStr('Potential');
+    const sCrit = stockLineStr('Critical');
+    if(sSafe)  c.fillText(sSafe,  l+10,  b-12);
+    if(sWatch) c.fillText(sWatch, l+10,  t+18);
+    if(sPot){
+      const w = c.measureText(sPot).width;
+      c.fillText(sPot, r-10-w, b-12);
+    }
+    if(sCrit){
+      const w = c.measureText(sCrit).width;
+      c.fillText(sCrit, r-10-w, t+18);
+    }
     c.restore();
   }};
 
