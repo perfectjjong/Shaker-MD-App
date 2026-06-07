@@ -177,14 +177,14 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <table>
         <thead><tr><th style="text-align:center;width:5%">#</th><th style="text-align:left;width:30%">분류</th><th style="text-align:left;width:36%">정의 (도메인 의미)</th><th style="text-align:left">조건</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>⚪ 분석보류</td><td>잔액 없음 dormant 채널</td><td>AR ≤ 0</td></tr>
-          <tr><td>2</td><td>⚫ Bad Debt</td><td>회생 불가 채권 (사실상 손상)</td><td>OD% ≥ 99%</td></tr>
-          <tr><td>3</td><td>🚫 SO 미입수</td><td>거래 정지 dormant 딜러</td><td>AR&gt;0 + (SO 수량=0 OR Stock=0)</td></tr>
-          <tr><td>4</td><td>🟢 Safe</td><td>결제·회수 모두 정상</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
-          <tr><td>5</td><td>🟡 Watch</td><td>결제는 양호하나 평균 대비 연체 비중 큼</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
-          <tr><td>6</td><td>🔵 Potential</td><td>결제 느리지만 연체 작음 (장기 신뢰 거래)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
-          <tr><td>7</td><td>🔴 Critical</td><td>결제·연체 둘 다 평균 대비 악화</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
-          <tr style="background:rgba(168,85,247,.1)"><td>+</td><td>🚨 회수의지</td><td>팔리고 있는데 돈은 안 들어옴 (회수 책임)</td><td>(Watch 또는 Critical) AND (재고 적정 또는 부족)</td></tr>
+          <tr><td>1</td><td>🟢 Safe</td><td>결제·회수 모두 정상</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>2</td><td>🟡 Watch</td><td>결제는 양호하나 평균 대비 연체 비중 큼</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>3</td><td>🔵 Potential</td><td>결제 느리지만 연체 작음 (장기 신뢰 거래)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>4</td><td>🔴 Critical</td><td>결제·연체 둘 다 평균 대비 악화</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>5</td><td>⚫ Bad Debt</td><td>회생 불가 채권 (사실상 손상)</td><td>OD% ≥ 99%</td></tr>
+          <tr style="background:rgba(168,85,247,.1)"><td>6</td><td>🚨 회수의지</td><td>팔리고 있는데 돈은 안 들어옴 (overlay 액션)</td><td>(Watch 또는 Critical) AND (재고 적정 또는 부족)</td></tr>
+          <tr><td>7</td><td>🚫 SO 미입수</td><td>거래 정지 dormant 딜러</td><td>AR&gt;0 + (SO 수량=0 OR Stock=0)</td></tr>
+          <tr><td>8</td><td>⚪ 분석보류</td><td>잔액 없음 dormant 채널</td><td>AR ≤ 0</td></tr>
         </tbody>
       </table>
       <div class="hdr">재고 매트릭스 (OR/IR 차별 임계 — MT 빠른 회전 vs B2B 딜러 느린 회전)</div>
@@ -366,7 +366,7 @@ const DATA = [{"sap": "1110000010", "name": "Tamkeen", "grade": "B", "acc_class"
 
 
 // v2 매트릭스 정책 동적 분류 (필터 적용 시 Avg OD% 재계산)
-const V2_STATUSES = ['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수','🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical','🚨 회수의지'];
+const V2_STATUSES = ['🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical','⚫ Bad Debt','🚨 회수의지','🚫 SO 미입수','⚪ 분석보류'];
 const V2_STATUS_CLASS = {
   '⚪ 분석보류':'s-na', '⚫ Bad Debt':'s-bad', '🚫 SO 미입수':'s-noso',
   '🟢 Safe':'s-norm', '🟡 Watch':'s-watch', '🔵 Potential':'s-potential',

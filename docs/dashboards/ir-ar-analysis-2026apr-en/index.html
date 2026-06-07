@@ -177,14 +177,14 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <table>
         <thead><tr><th style="text-align:center;width:5%">#</th><th style="text-align:left;width:30%">Class</th><th style="text-align:left;width:36%">Meaning</th><th style="text-align:left">Condition</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>⚪ Pending</td><td>No balance / dormant</td><td>AR ≤ 0</td></tr>
-          <tr><td>2</td><td>⚫ Bad Debt</td><td>Unrecoverable receivable</td><td>OD% ≥ 99%</td></tr>
-          <tr><td>3</td><td>🚫 No Sales</td><td>Inactive dealer</td><td>AR&gt;0 + (SO qty=0 OR Stock=0)</td></tr>
-          <tr><td>4</td><td>🟢 Safe</td><td>Payment & collection healthy</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
-          <tr><td>5</td><td>🟡 Watch</td><td>Payment OK but overdue ratio high vs avg</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
-          <tr><td>6</td><td>🔵 Potential</td><td>Slow but low overdue (long-trust relation)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
-          <tr><td>7</td><td>🔴 Critical</td><td>Slow + high overdue both</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
-          <tr style="background:rgba(168,85,247,.1)"><td>+</td><td>🚨 Active Collection</td><td>Sell-out OK but collection X</td><td>(Watch OR Critical) AND (Stock Healthy OR Low)</td></tr>
+          <tr><td>1</td><td>🟢 Safe</td><td>Payment & collection healthy</td><td>DSO≤180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>2</td><td>🟡 Watch</td><td>Payment OK but overdue ratio high vs avg</td><td>DSO≤180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>3</td><td>🔵 Potential</td><td>Slow but low overdue (long-trust relation)</td><td>DSO&gt;180 + (OD%≤Avg OR OD%&lt;15%)</td></tr>
+          <tr><td>4</td><td>🔴 Critical</td><td>Slow + high overdue both</td><td>DSO&gt;180 + OD%&gt;Avg + OD%≥15%</td></tr>
+          <tr><td>5</td><td>⚫ Bad Debt</td><td>Unrecoverable receivable</td><td>OD% ≥ 99%</td></tr>
+          <tr style="background:rgba(168,85,247,.1)"><td>6</td><td>🚨 Active Collection</td><td>Sell-out OK but collection X (overlay)</td><td>(Watch OR Critical) AND (Stock Healthy OR Low)</td></tr>
+          <tr><td>7</td><td>🚫 No Sales</td><td>Inactive dealer</td><td>AR&gt;0 + (SO qty=0 OR Stock=0)</td></tr>
+          <tr><td>8</td><td>⚪ Pending</td><td>No balance / dormant</td><td>AR ≤ 0</td></tr>
         </tbody>
       </table>
       <div class="hdr">Stock Matrix (OR/IR differentiated)</div>
@@ -366,7 +366,7 @@ const DATA = [{"sap": "1110000010", "name": "Tamkeen", "grade": "B", "acc_class"
 
 
 // v2 매트릭스 정책 동적 분류 (필터 적용 시 Avg OD% 재계산)
-const V2_STATUSES = ['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수','🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical','🚨 회수의지'];
+const V2_STATUSES = ['🟢 Safe','🟡 Watch','🔵 Potential','🔴 Critical','⚫ Bad Debt','🚨 회수의지','🚫 SO 미입수','⚪ 분석보류'];
 const V2_STATUS_CLASS = {
   '⚪ 분석보류':'s-na', '⚫ Bad Debt':'s-bad', '🚫 SO 미입수':'s-noso',
   '🟢 Safe':'s-norm', '🟡 Watch':'s-watch', '🔵 Potential':'s-potential',
