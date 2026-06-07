@@ -397,12 +397,12 @@ function renderFhMatrix(baseFiltered, avgOd){
   s+=`<rect x="${PL}" y="${fy(yT)}" width="${fx(xT)-PL}" height="${H-PB-fy(yT)}" fill="rgba(34,197,94,0.06)"/>`;
   s+=`<rect x="${fx(xT)}" y="${PT}" width="${W-PR-fx(xT)}" height="${fy(yT)-PT}" fill="rgba(239,68,68,0.08)"/>`;
   s+=`<rect x="${fx(xT)}" y="${fy(yT)}" width="${W-PR-fx(xT)}" height="${H-PB-fy(yT)}" fill="rgba(59,130,246,0.06)"/>`;
-  // FM 기준선 (Finance Manager Target: DSO 120d / OD% 20%) — 청록 점선
+  // 기준선 (DSO 120d / OD% 20%) — 붉은색 점선
   const fmDso=120, fmOd=20;
-  s+=`<line x1="${fx(fmDso)}" y1="${PT}" x2="${fx(fmDso)}" y2="${H-PB}" stroke="#06b6d4" stroke-dasharray="2,3" stroke-width="1" opacity="0.8"/>`;
-  s+=`<line x1="${PL}" y1="${fy(fmOd)}" x2="${W-PR}" y2="${fy(fmOd)}" stroke="#06b6d4" stroke-dasharray="2,3" stroke-width="1" opacity="0.8"/>`;
-  s+=`<text x="${fx(fmDso)+3}" y="${H-PB-5}" fill="#67e8f9" font-size="9" font-weight="600">FM 120d</text>`;
-  s+=`<text x="${PL+3}" y="${fy(fmOd)-4}" fill="#67e8f9" font-size="9" font-weight="600">FM OD% 20%</text>`;
+  s+=`<line x1="${fx(fmDso)}" y1="${PT}" x2="${fx(fmDso)}" y2="${H-PB}" stroke="#ef4444" stroke-dasharray="4,3" stroke-width="1.2"/>`;
+  s+=`<line x1="${PL}" y1="${fy(fmOd)}" x2="${W-PR}" y2="${fy(fmOd)}" stroke="#ef4444" stroke-dasharray="4,3" stroke-width="1.2"/>`;
+  s+=`<text x="${fx(fmDso)+3}" y="${H-PB-5}" fill="#fca5a5" font-size="10" font-weight="700">DSO 120d</text>`;
+  s+=`<text x="${PL+3}" y="${fy(fmOd)-4}" fill="#fca5a5" font-size="10" font-weight="700">OD 20%</text>`;
   // 임계선 (v2 정책: DSO 180 + Avg OD%)
   s+=`<line x1="${fx(xT)}" y1="${PT}" x2="${fx(xT)}" y2="${H-PB}" stroke="#64748b" stroke-dasharray="5,4" stroke-width="1.2"/>`;
   s+=`<line x1="${PL}" y1="${fy(yT)}" x2="${W-PR}" y2="${fy(yT)}" stroke="#a78bfa" stroke-dasharray="5,4" stroke-width="1.2"/>`;
@@ -430,25 +430,6 @@ function renderFhMatrix(baseFiltered, avgOd){
   s+=`<text x="${W-PR-5}" y="${fy(yT)-5}" fill="#a78bfa" font-size="10" text-anchor="end" font-weight="600">Avg ${avgOd!=null?avgOd.toFixed(1):'-'}%</text>`;
   s+=`<text x="${fx(xT)+5}" y="${PT+12}" fill="#94a3b8" font-size="10">DSO 180d</text>`;
 
-  // WOS 크기 범례 (좌하단 빈 영역 — Safe 사분면 아래)
-  // OR 임계: 8/12w · IR 임계: 16/20w
-  const legX = PL + 4, legY = H - PB - 84;
-  s+=`<g opacity="0.92">`;
-  s+=`<rect x="${legX}" y="${legY}" width="252" height="80" fill="rgba(15,23,42,0.85)" stroke="#334155" stroke-width="1" rx="4"/>`;
-  s+=`<text x="${legX+8}" y="${legY+13}" fill="#cbd5e1" font-size="10" font-weight="700">원 크기 = WOS</text>`;
-  // OR 행
-  s+=`<text x="${legX+8}" y="${legY+30}" fill="#86efac" font-size="9" font-weight="600">OR:</text>`;
-  s+=`<circle cx="${legX+38}" cy="${legY+28}" r="3.4" fill="#94a3b8"/><text x="${legX+45}" y="${legY+31}" fill="#94a3b8" font-size="8">⚠️&lt;8w</text>`;
-  s+=`<circle cx="${legX+97}" cy="${legY+28}" r="7" fill="#94a3b8"/><text x="${legX+108}" y="${legY+31}" fill="#94a3b8" font-size="8">⚖️8~12w</text>`;
-  s+=`<circle cx="${legX+167}" cy="${legY+28}" r="11.2" fill="#94a3b8"/><text x="${legX+183}" y="${legY+31}" fill="#94a3b8" font-size="8">📦≥12w</text>`;
-  // IR 행
-  s+=`<text x="${legX+8}" y="${legY+50}" fill="#a5f3fc" font-size="9" font-weight="600">IR:</text>`;
-  s+=`<circle cx="${legX+38}" cy="${legY+48}" r="5.8" fill="#94a3b8"/><text x="${legX+47}" y="${legY+51}" fill="#94a3b8" font-size="8">⚠️&lt;16w</text>`;
-  s+=`<circle cx="${legX+97}" cy="${legY+48}" r="9.7" fill="#94a3b8"/><text x="${legX+111}" y="${legY+51}" fill="#94a3b8" font-size="8">⚖️16~20w</text>`;
-  s+=`<circle cx="${legX+167}" cy="${legY+48}" r="13.4" fill="#94a3b8"/><text x="${legX+185}" y="${legY+51}" fill="#94a3b8" font-size="8">📦≥20w</text>`;
-  // 기준선 안내
-  s+=`<text x="${legX+8}" y="${legY+71}" fill="#67e8f9" font-size="8">━ ━ FM Target (DSO 120 / OD% 20)</text>`;
-  s+=`</g>`;
   // 점 — 사전 분류 먼저 (배경 레이어)
   const drawPoint=(r)=>{
     if(r.dso==null || r.od_pct==null) return '';
