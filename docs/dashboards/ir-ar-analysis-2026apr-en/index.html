@@ -388,6 +388,11 @@ const V2_PRE = ['⚪ 분석보류','⚫ Bad Debt','🚫 SO 미입수'];
 
 function renderFhMatrix(baseFiltered, avgOd){
   if(typeof Chart === 'undefined') return;
+  // datalabels plugin 등록 (Chart.js v3+ 필수)
+  if(typeof ChartDataLabels !== 'undefined' && !Chart._fhV2_dlRegistered){
+    Chart.register(ChartDataLabels);
+    Chart._fhV2_dlRegistered = true;
+  }
   const wrap = document.getElementById('fhMatrix');
   if(!wrap) return;
   if(_fhChartV2){ _fhChartV2.destroy(); _fhChartV2 = null; }
@@ -413,6 +418,7 @@ function renderFhMatrix(baseFiltered, avgOd){
     backgroundColor: V2_COLORS[s].bg,
     borderColor: V2_COLORS[s].bd,
     borderWidth: 1.5,
+    clip: false,
   }));
   if(groups['사전 분류'].length){
     datasets.push({
@@ -421,6 +427,7 @@ function renderFhMatrix(baseFiltered, avgOd){
       backgroundColor: V2_COLORS.PRE.bg,
       borderColor: V2_COLORS.PRE.bd,
       borderWidth: 1,
+      clip: false,
     });
   }
 
