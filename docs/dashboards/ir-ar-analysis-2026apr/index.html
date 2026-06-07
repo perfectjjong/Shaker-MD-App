@@ -504,7 +504,23 @@ function renderFhMatrix(baseFiltered, avgOd){
       animation: { duration: 400 },
       plugins: {
         legend: { position: 'top', labels: { color:'#cbd5e1', font:{size:11}, padding:10, usePointStyle:true } },
-        datalabels: { display: false },
+        datalabels: {
+          display: function(ctx){
+            const a = ctx.dataset.data[ctx.dataIndex]._a;
+            // 사전 분류는 제외 (클러터), 매트릭스 대상 모두 표시
+            return a && !V2_PRE.includes(a._v2_status);
+          },
+          formatter: function(val){
+            const name = (val._a.name||'').replace(/\s*(Co\.|Trade Co\.|Trading Co\.|Est\.|Comp\.|Company|Trading|Inc|Ltd|LLC).*/i,'').trim();
+            return name.length > 16 ? name.slice(0,16)+'…' : name;
+          },
+          color: '#e2e8f0',
+          font: { size: 9, weight: '500' },
+          align: 'top',
+          offset: 4,
+          textStrokeColor: '#0b1220',
+          textStrokeWidth: 2,
+        },
         tooltip: {
           backgroundColor: '#1e293b',
           borderColor: '#475569',
