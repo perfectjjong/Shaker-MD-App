@@ -433,18 +433,24 @@ function renderFhMatrix(baseFiltered, avgOd){
     const op = isPre ? 0.3 : 0.85;
     const stroke = r._v2_overlay ? '#a855f7' : 'none';
     const sw = r._v2_overlay ? 3 : 0;
-    const title = `${r.name} (${r.sap})
-${r._v2_status}${r._v2_overlay?' 🚨 회수의지':''}
-AR: ${(r.ar/1e6).toFixed(2)}M / OD: ${(r.od/1e6).toFixed(2)}M
-OD%: ${r.od_pct!=null?r.od_pct.toFixed(1)+'%':'-'} / DSO: ${r.dso!=null?r.dso.toFixed(0)+'d':'-'}
-WOS: ${r.wos!=null?r.wos.toFixed(1)+'w':'-'}`;
+    const title = `${r.name} (${r.sap})\n${r._v2_status}${r._v2_overlay?' 🚨 회수의지':''}\nAR: ${(r.ar/1e6).toFixed(2)}M / OD: ${(r.od/1e6).toFixed(2)}M\nOD%: ${r.od_pct!=null?r.od_pct.toFixed(1)+'%':'-'} / DSO: ${r.dso!=null?r.dso.toFixed(0)+'d':'-'}\nWOS: ${r.wos!=null?r.wos.toFixed(1)+'w':'-'}`;
     return `<circle cx="${x}" cy="${y}" r="${r0}" fill="${fill}" fill-opacity="${op}" stroke="${stroke}" stroke-width="${sw}"><title>${title}</title></circle>`;
   };
   // 레이어: 사전 분류 → 일반 → 회수의지 (위로 올라옴)
   baseFiltered.filter(r=>PRE.includes(r._v2_status)).forEach(r=>{ s+=drawPoint(r); });
   baseFiltered.filter(r=>!PRE.includes(r._v2_status) && !r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
   baseFiltered.filter(r=>r._v2_overlay).forEach(r=>{ s+=drawPoint(r); });
-  // 회수의지 🚨 라벨
+  // Account명 라벨 (사전 분류 제외 — 매트릭스 대상만)
+  baseFiltered.forEach(r=>{
+    if(r.dso==null || r.od_pct==null) return;
+    if(PRE.includes(r._v2_status)) return;
+    const x=fx(r.dso);
+    const r0=r.wos!=null ? Math.max(4, Math.min(40, 4+r.wos*0.6)) : 4;
+    const y=fy(r.od_pct) + r0 + 9;
+    const short = (r.name||'').replace(/\s*(Co\.|Trade Co\.|Trading Co\.|Est\.|Comp\.|Company|Trading|Inc|Ltd|LLC).*/i,'').trim().slice(0,18);
+    s+=`<text x="${x}" y="${y}" fill="#cbd5e1" font-size="9" text-anchor="middle" opacity="0.85" style="pointer-events:none">${short}</text>`;
+  });
+  // 회수의지 🚨 라벨 (점 위)
   baseFiltered.forEach(r=>{
     if(!r._v2_overlay || r.dso==null || r.od_pct==null) return;
     const x=fx(r.dso);
