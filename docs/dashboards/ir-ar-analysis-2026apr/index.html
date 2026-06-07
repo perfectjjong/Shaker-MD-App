@@ -377,7 +377,7 @@ const DATA = [{"sap": "1110000010", "name": "Tamkeen", "grade": "B", "acc_class"
 function renderFhMatrix(baseFiltered, avgOd){
   const c = document.getElementById('fhMatrix');
   if(!c) return;
-  const W=960, H=440, PL=64, PR=200, PT=24, PB=44;
+  const W=960, H=440, PL=64, PR=40, PT=24, PB=44;
   const xMax=400, yMax=100;
   const xT=180, yT=(avgOd!=null?avgOd:50);
   const fx=v=>PL+Math.min(Math.max(v||0,0),xMax)/xMax*(W-PL-PR);
@@ -458,26 +458,6 @@ function renderFhMatrix(baseFiltered, avgOd){
     const y=fy(r.od_pct) - r0 - 5;
     s+=`<text x="${x}" y="${y}" fill="#c084fc" font-size="11" text-anchor="middle" style="pointer-events:none">🚨</text>`;
   });
-  // 우측 사이드 패널 — 4분면 summary + 음수 매출
-  const sidX = W-PR+16, sidW = PR-24;
-  const sideRow = (color, label, n, ar, y) =>
-    `<g><circle cx="${sidX+6}" cy="${y-4}" r="4" fill="${color}"/>` +
-    `<text x="${sidX+18}" y="${y}" fill="#e2e8f0" font-size="11" font-weight="600">${label}</text>` +
-    `<text x="${sidX+sidW-8}" y="${y}" fill="#94a3b8" font-size="10" text-anchor="end">${n}</text>` +
-    `<text x="${sidX+sidW-8}" y="${y+13}" fill="#64748b" font-size="9" text-anchor="end">AR ${(ar/1e6).toFixed(1)}M</text></g>`;
-  s+=`<text x="${sidX}" y="${PT+10}" fill="#64748b" font-size="9" font-weight="600" letter-spacing="1">QUADRANTS</text>`;
-  s+=sideRow(COL['🟢 Safe'], 'Safe', quads.Safe.n, quads.Safe.ar, PT+34);
-  s+=sideRow(COL['🟡 Watch'], 'Watch', quads.Watch.n, quads.Watch.ar, PT+72);
-  s+=sideRow(COL['🔵 Potential'], 'Potential', quads.Potential.n, quads.Potential.ar, PT+110);
-  s+=sideRow(COL['🔴 Critical'], 'Critical', quads.Critical.n, quads.Critical.ar, PT+148);
-  // 회수의지 / 사전분류 카운트
-  const overlayN_inner = baseFiltered.filter(r=>r._v2_overlay).length;
-  const preN_inner = baseFiltered.filter(r=>PRE.includes(r._v2_status)).length;
-  s+=`<line x1="${sidX}" y1="${PT+178}" x2="${sidX+sidW-12}" y2="${PT+178}" stroke="#1e293b"/>`;
-  s+=`<g><text x="${sidX}" y="${PT+196}" fill="#c084fc" font-size="11" font-weight="600">🚨 회수의지</text>`;
-  s+=`<text x="${sidX+sidW-8}" y="${PT+196}" fill="#c084fc" font-size="11" text-anchor="end" font-weight="700">${overlayN_inner}</text></g>`;
-  s+=`<g><text x="${sidX}" y="${PT+216}" fill="#64748b" font-size="11">사전 분류</text>`;
-  s+=`<text x="${sidX+sidW-8}" y="${PT+216}" fill="#94a3b8" font-size="11" text-anchor="end">${preN_inner}</text></g>`;
   s+=`</svg>`;
 
   // 26 매출 음수 — 차분한 인라인 칩 (마젠타 dashed 박스 제거)
