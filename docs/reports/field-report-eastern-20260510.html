@@ -300,6 +300,28 @@
 </head>
 <body>
 
+<!-- ── Language Toggle ── -->
+<div id="lang-toggle" role="navigation" aria-label="Language switcher" style="position:fixed;top:14px;right:14px;z-index:9999;background:rgba(26,26,46,0.92);border-radius:999px;padding:4px;display:inline-flex;gap:2px;box-shadow:0 6px 18px rgba(0,0,0,0.22);font-family:'Segoe UI',Arial,sans-serif;font-size:12.5px;backdrop-filter:saturate(140%) blur(6px);-webkit-backdrop-filter:saturate(140%) blur(6px);">
+  <a href="field-report-eastern-20260510.html" data-lang="en" style="padding:6px 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:600;letter-spacing:.02em;">EN</a>
+  <a href="field-report-eastern-20260510-ko.html" data-lang="ko" style="padding:6px 14px;border-radius:999px;color:#fff;text-decoration:none;font-weight:600;letter-spacing:.02em;">한국어</a>
+</div>
+<script>
+(function(){
+  var cur = (document.documentElement.getAttribute('lang') || 'en').toLowerCase().slice(0,2);
+  var btns = document.querySelectorAll('#lang-toggle a');
+  btns.forEach(function(b){
+    if (b.getAttribute('data-lang') === cur) {
+      b.style.background = '#A50034';
+      b.setAttribute('aria-current','page');
+    }
+    b.addEventListener('click', function(){
+      try { localStorage.setItem('field-report-eastern-lang', b.getAttribute('data-lang')); } catch(e){}
+    });
+  });
+  try { localStorage.setItem('field-report-eastern-lang', cur); } catch(e){}
+})();
+</script>
+
 <!-- ── Header ── -->
 <div class="report-header">
   <div class="badge">Internal Report · Confidential</div>
