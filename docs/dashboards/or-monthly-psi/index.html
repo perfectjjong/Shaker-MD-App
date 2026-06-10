@@ -836,6 +836,8 @@ function renderChTable() {
 
 // ── Coverage Table ────────────────────────────────────────────────────────
 function renderCoverage() {
+  const mos = RANGE_MONTHS[curRange];
+  const total = mos.length;
   const keys = [
     {key:'so', label:'★ Sell-Out'},
     {key:'st', label:'Sell-Thru'},
@@ -843,8 +845,7 @@ function renderCoverage() {
   ];
   const rows = keys.map(k => {
     const tds = YEARS.map(yr => {
-      const available = MONTHS.filter(mo => getVal(yr, mo, k.key) !== null).length;
-      const total = yr === '2026' ? 5 : 12;
+      const available = mos.filter(mo => getVal(yr, mo, k.key) !== null).length;
       const ok = available >= total;
       return `<td style="text-align:center">
         <span style="background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
@@ -863,7 +864,7 @@ function renderCoverage() {
 
 // ── Full PSI Table ────────────────────────────────────────────────────────
 function renderFullTable() {
-  const mos = MONTHS;
+  const mos = RANGE_MONTHS[curRange];
   const rows = [];
   for (const yr of YEARS) {
     for (const [key, label, cls] of [['so','S','so-row'],['st','P',''],['stk','I','']]) {
