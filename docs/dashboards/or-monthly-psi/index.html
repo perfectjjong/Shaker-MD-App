@@ -220,7 +220,7 @@ tr:hover td{background:#f8fafc}
       <div class="tbl" id="qtrTable"></div>
     </div>
     <div class="cc" style="margin-bottom:0">
-      <div class="ct">Jan–May YTD 비교</div>
+      <div class="ct" id="ytd-title">YTD 비교</div>
       <canvas id="ytdChart" height="180"></canvas>
     </div>
   </div>
@@ -538,7 +538,9 @@ function renderYoyChart() {
 }
 
 function renderYtdChart() {
-  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out 비교`;
   const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so', curCh));
   const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
 
@@ -547,7 +549,7 @@ function renderYtdChart() {
     data: {
       labels: YEARS,
       datasets: [{
-        label: 'Jan–May Sell-Out',
+        label: `${rangeLabel} Sell-Out`,
         data: so_yr,
         backgroundColor: colors,
         borderRadius: 4,
