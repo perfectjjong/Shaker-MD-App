@@ -1130,31 +1130,11 @@ function renderMosChart() {
       maintainAspectRatio: false,
       interaction: {mode:'index', intersect:false},
       plugins: {
-        legend: {
-          position: 'top',
-          labels: {
-            boxWidth: 10,
-            font: {size: 10},
-            generateLabels: chart => chart.data.datasets.map((ds, i) => ({
-              text: ds.label,
-              fillStyle: ds.borderColor,
-              strokeStyle: ds.borderColor,
-              fontColor: ds.borderColor,
-              lineWidth: 1.5,
-              lineDash: ds.borderDash || [],
-              hidden: !chart.isDatasetVisible(i),
-              datasetIndex: i,
-            })),
-          },
-        },
+        legend: {position:'top', labels:{boxWidth:10, font:{size:10}}},
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(1) : '—'}`,
-            labelColor: ctx => ({
-              borderColor: ctx.dataset.borderColor,
-              backgroundColor: ctx.dataset.borderColor,
-            }),
-          },
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(1) : '—'}`
+          }
         },
       },
       scales: {
