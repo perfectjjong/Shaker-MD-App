@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OR Monthly PSI 2023–2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="psi_data.js"></script>
+<style>
+:root{
+  --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --so:#10b981;--so-bg:#f0fdf4;--so-dk:#065f46;
+  --st:#2563eb;--stk:#f59e0b;--red:#ef4444;--amber:#f59e0b;
+  --c23:#94a3b8;--c24:#60a5fa;--c25:#f59e0b;--c26:#10b981;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100}
+.header h1{font-size:14px;font-weight:700}
+.badge{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap}
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;position:sticky;top:46px;z-index:99;overflow-x:auto}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{color:var(--so);border-bottom-color:var(--so)}
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:7px 24px;display:flex;gap:10px;align-items:center;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
+.fl{font-size:11px;font-weight:600;color:var(--muted)}
+.fb{border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;background:#fff;cursor:pointer;color:var(--text)}
+.fb.on{background:var(--so);color:#fff;border-color:var(--so)}
+.fb.yr23.on{background:var(--c23);border-color:var(--c23)}
+.fb.yr24.on{background:var(--c24);border-color:var(--c24)}
+.fb.yr25.on{background:var(--c25);border-color:var(--c25)}
+.fb.yr26.on{background:var(--c26);border-color:var(--c26)}
+.sep{width:1px;height:20px;background:var(--border)}
+.content{padding:16px 24px;max-width:1400px;margin:0 auto}
+.stitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.kpi-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border-radius:8px;padding:13px 15px;border:1px solid var(--border)}
+.kpi.hero{border-left:4px solid var(--so);background:var(--so-bg)}
+.kl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.kv{font-size:20px;font-weight:700;line-height:1}
+.kpi.hero .kv{font-size:26px;color:var(--so)}
+.ks{font-size:11px;margin-top:5px;color:var(--muted)}
+.yoy-up{color:var(--so);font-weight:700}
+.yoy-dn{color:var(--red);font-weight:700}
+.kmini{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.kmini span{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bg);color:var(--muted)}
+.cc{background:var(--card);border-radius:8px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
+.ct{font-size:12px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.cd{font-size:11px;color:var(--muted);margin-bottom:10px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.ld{width:10px;height:10px;border-radius:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid32{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+.tbl{overflow-x:auto;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{background:var(--navy);color:#fff;padding:6px 8px;text-align:center;font-weight:600;font-size:11px;white-space:nowrap}
+th.l{text-align:left}
+td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+td.l{text-align:left;font-weight:600;background:#fafafa}
+tr.so-row td{background:var(--so-bg)}
+tr.so-row td.l{background:#d1fae5;color:var(--so-dk)}
+tr:hover td{background:#f8fafc}
+.null{color:#cbd5e1;font-style:italic}
+.up{color:var(--so);font-weight:700}
+.dn{color:var(--red);font-weight:700}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.note{font-size:11px;color:var(--muted);padding:7px 10px;background:#f8fafc;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
+.metric-toggle{display:flex;gap:4px;margin-bottom:10px;align-items:center}
+.mt{border:2px solid var(--border);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted)}
+.mt.so{border-color:var(--so);background:var(--so-bg);color:var(--so)}
+.mt.st{border-color:var(--st);background:#eff6ff;color:var(--st)}
+.mt.stk{border-color:var(--stk);background:#fffbeb;color:var(--stk)}
+.yr-legend{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.yt{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>OR Monthly PSI</h1>
+  <span style="font-size:11px;color:#94a3b8">5 Channels · 2023–2026</span>
+  <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
+  <span class="badge" style="background:#1e40af;color:#bfdbfe">P = Sell-Thru</span>
+  <span class="badge" style="background:#92400e;color:#fde68a">I = Stock</span>
+  <span id="hdr-info" style="margin-left:auto;font-size:11px;color:#94a3b8"></span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="0">Sell-Out 현황</div>
+  <div class="tab" data-tab="1">YoY 동기 비교</div>
+  <div class="tab" data-tab="2">채널 분석</div>
+  <div class="tab" data-tab="3">데이터 현황</div>
+</div>
+
+<div class="filters">
+  <span class="fl">기간</span>
+  <button class="fb" data-range="Q1">Q1</button>
+  <button class="fb" data-range="Q2">Q2</button>
+  <button class="fb on" data-range="Jan-May">Jan–May</button>
+  <button class="fb" data-range="H1">H1</button>
+  <button class="fb" data-range="Full">Full Year</button>
+  <div class="sep"></div>
+  <span class="fl">채널</span>
+  <button class="fb on" data-ch="ALL">전체</button>
+  <button class="fb" data-ch="eXtra">eXtra</button>
+  <button class="fb" data-ch="Al Manea">Al Manea</button>
+  <button class="fb" data-ch="SWS">SWS</button>
+  <button class="fb" data-ch="Black Box">Black Box</button>
+  <button class="fb" data-ch="Al Khunizan">Al Khunizan</button>
+</div>
+
+<!-- ═══════ TAB 0: Sell-Out 현황 ═══════ -->
+<div class="tab-content active" id="t0">
+<div class="content">
+  <div class="stitle">주요 지표 <span id="kpi-range-label" style="font-weight:400;text-transform:none"></span></div>
+  <div class="kpi-row">
+    <div class="kpi hero">
+      <div class="kl">★ Sell-Out (S) — 실판매</div>
+      <div class="kv" id="kv-so">—</div>
+      <div class="ks"><span id="kv-so-yoy" class="yoy-up"></span> <span id="kv-so-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-so-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #bfdbfe">
+      <div class="kl">Sell-Thru (P) — 공급</div>
+      <div class="kv" id="kv-st" style="font-size:18px;color:var(--st)">—</div>
+      <div class="ks"><span id="kv-st-yoy"></span> <span id="kv-st-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-st-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #fde68a">
+      <div class="kl">Stock (I) — 월말 재고</div>
+      <div class="kv" id="kv-stk" style="font-size:18px;color:var(--stk)">—</div>
+      <div class="ks"><span id="kv-stk-yoy"></span> <span id="kv-stk-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-stk-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #fca5a5">
+      <div class="kl">Sell-Out 소진율 (S÷P)</div>
+      <div class="kv" id="kv-ratio" style="font-size:18px;color:var(--amber)">—</div>
+      <div class="ks" id="kv-ratio-sub"></div>
+      <div class="kmini" id="kv-ratio-mini"></div>
+    </div>
+  </div>
+
+  <!-- Main PSI Chart -->
+  <div class="cc">
+    <div class="ct">
+      월별 PSI 추이
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="mt so" onclick="setMainMetric('so',this)">S 막대</button>
+        <button class="mt" onclick="setMainMetric('st',this)" style="opacity:.7">P 선</button>
+        <button class="mt" onclick="setMainMetric('stk',this)" style="opacity:.6">I 표시</button>
+      </span>
+    </div>
+    <div class="cd">
+      <strong style="color:var(--so)">초록 막대 = Sell-Out (주지표)</strong>
+      &nbsp;·&nbsp; 파란 점선 = Sell-Thru (공급)
+      &nbsp;·&nbsp; 회색 점선 = Stock (월말)
+      &nbsp;·&nbsp; 🏖 5~9월 피크
+    </div>
+    <div class="legend">
+      <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
+      <span class="li"><span class="ld" style="background:var(--st);opacity:.6"></span>Sell-Thru (P)</span>
+      <span class="li"><span class="ld" style="background:#94a3b8"></span>Stock (I)</span>
+      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 피크 시즌</span>
+    </div>
+    <canvas id="mainChart" height="200"></canvas>
+  </div>
+
+  <!-- Matrix Table -->
+  <div class="cc">
+    <div class="ct">
+      월별 × 연도 매트릭스
+      <span style="font-size:11px;font-weight:400;color:var(--muted);margin-left:6px">
+        ※ <span style="background:var(--so-bg);padding:1px 6px;border-radius:3px;color:var(--so);font-weight:700">초록 = Sell-Out</span>
+      </span>
+    </div>
+    <div class="tbl" id="matrixTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: YoY 동기 비교 ═══════ -->
+<div class="tab-content" id="t1">
+<div class="content">
+  <div class="stitle">4개년 동기 비교</div>
+  <div class="metric-toggle">
+    <span class="fl" style="margin-right:4px">메트릭:</span>
+    <button class="mt so" onclick="setYoyMetric('so',this)">★ Sell-Out</button>
+    <button class="mt" onclick="setYoyMetric('st',this)">Sell-Thru</button>
+    <button class="mt" onclick="setYoyMetric('stk',this)">Stock</button>
+  </div>
+  <div class="yr-legend">
+    <span class="yt" style="background:#f1f5f9;color:var(--c23)">━ 2023</span>
+    <span class="yt" style="background:#eff6ff;color:var(--c24)">━ 2024</span>
+    <span class="yt" style="background:#fffbeb;color:var(--c25)">━ 2025</span>
+    <span class="yt" style="background:var(--so-bg);color:var(--c26)">━━ 2026</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:4px">· 2026은 May까지</span>
+  </div>
+  <div class="cc">
+    <div class="ct" id="yoy-title">Sell-Out 4개년 동기 비교</div>
+    <div class="cd">x축 = Jan~Dec · 2026은 May까지 · 피크 시즌 배경 음영</div>
+    <canvas id="yoyChart" height="220"></canvas>
+  </div>
+  <div class="grid2">
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">분기별 집계</div>
+      <div class="tbl" id="qtrTable"></div>
+    </div>
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">Jan–May YTD 비교</div>
+      <canvas id="ytdChart" height="180"></canvas>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 2: 채널 분석 ═══════ -->
+<div class="tab-content" id="t2">
+<div class="content">
+  <div class="stitle">채널별 Sell-Out Mix 및 추이</div>
+  <div class="cc">
+    <div class="ct">연도별 채널 Sell-Out Mix (Jan–May)</div>
+    <div class="cd">기준: <strong style="color:var(--so)">Sell-Out</strong></div>
+    <canvas id="mixChart" height="160"></canvas>
+  </div>
+  <div class="grid2">
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">채널별 Jan–May Sell-Out</div>
+      <canvas id="chBarChart" height="200"></canvas>
+    </div>
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">채널 연도별 테이블</div>
+      <div class="tbl" id="chTable"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 3: 데이터 현황 ═══════ -->
+<div class="tab-content" id="t3">
+<div class="content">
+  <div class="stitle">데이터 커버리지</div>
+  <div class="cc">
+    <div class="ct">연도 × 지표 가용성</div>
+    <div id="coverageTable"></div>
+    <div class="note">
+      소스: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2025/2026 OR Weekly _ALL JSON<br>
+      2023 S = SWS→S&amp;S 매핑, 2023 Stock = Ch.Stock(월말) 기준
+    </div>
+  </div>
+  <div class="cc" style="margin-top:0">
+    <div class="ct">연도별 Full PSI 테이블</div>
+    <div class="tbl" id="fullTable"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── 상수 ──────────────────────────────────────────────────────────────────
+const MONTHS = PSI_DATA.months;
+const YEARS  = PSI_DATA.years;
+const CHS    = PSI_DATA.channels;
+const RANGE_MONTHS = {
+  'Q1':      ['Jan','Feb','Mar'],
+  'Q2':      ['Apr','May','Jun'],
+  'Jan-May': ['Jan','Feb','Mar','Apr','May'],
+  'H1':      ['Jan','Feb','Mar','Apr','May','Jun'],
+  'Full':    MONTHS,
+};
+const PEAK = ['May','Jun','Jul','Aug','Sep'];
+
+// 현재 필터 상태
+let curRange = 'Jan-May';
+let curCh    = 'ALL';
+let mainMetric = 'so';
+let yoyMetric  = 'so';
+
+// ── 데이터 헬퍼 ──────────────────────────────────────────────────────────
+function getVal(yr, mo, key, ch='ALL') {
+  const d = PSI_DATA.data;
+  if (!d[yr]) return null;
+  if (ch === 'ALL') {
+    const v = (PSI_DATA.totals[yr] || {})[mo];
+    return v ? (v[key] ?? null) : null;
+  }
+  const v = (d[yr][ch] || {})[mo];
+  return v ? (v[key] ?? null) : null;
+}
+
+function sumRange(yr, months, key, ch='ALL') {
+  let tot = 0, hasData = false;
+  for (const mo of months) {
+    const v = getVal(yr, mo, key, ch);
+    if (v !== null && v !== undefined) { tot += v; hasData = true; }
+  }
+  return hasData ? tot : null;
+}
+
+function fmtN(v, dec=0) {
+  if (v === null || v === undefined) return '—';
+  return Number(v).toLocaleString('en', {maximumFractionDigits: dec});
+}
+function fmtYoy(cur, prev) {
+  if (!cur || !prev) return {txt:'—', cls:''};
+  const p = ((cur - prev) / Math.abs(prev) * 100).toFixed(1);
+  const cls = p > 0 ? 'yoy-up' : 'dn';
+  const pfx = p > 0 ? '+' : '';
+  return {txt: pfx + p + '%', cls};
+}
+
+// ── 필터 이벤트 ──────────────────────────────────────────────────────────
+document.querySelectorAll('[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    curRange = btn.dataset.range;
+    render();
+  });
+});
+document.querySelectorAll('[data-ch]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-ch]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    curCh = btn.dataset.ch;
+    render();
+  });
+});
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    document.getElementById('t' + t.dataset.tab).classList.add('active');
+    renderCharts(); // re-render charts when tab shown
+  });
+});
+
+// ── Main Metric 토글 ──────────────────────────────────────────────────────
+function setMainMetric(key, btn) {
+  mainMetric = key;
+  document.querySelectorAll('.cc .mt').forEach(b => {
+    b.className = 'mt'; b.style.opacity = '.6';
+  });
+  btn.className = 'mt ' + key; btn.style.opacity = '1';
+  renderMainChart();
+}
+function setYoyMetric(key, btn) {
+  yoyMetric = key;
+  document.querySelectorAll('#t1 .mt').forEach(b => {
+    b.className = 'mt'; b.style.opacity = '.7';
+  });
+  btn.className = 'mt ' + key; btn.style.opacity = '1';
+  const labels = {so:'Sell-Out', st:'Sell-Thru', stk:'Stock'};
+  document.getElementById('yoy-title').textContent = labels[key] + ' 4개년 동기 비교';
+  renderYoyChart();
+  renderQtrTable();
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────
+const charts = {};
+
+function peakBg(chart) {
+  const ctx = chart.ctx;
+  const {chartArea: ca, scales: {x}} = chart;
+  if (!ca) return;
+  ctx.save();
+  ctx.fillStyle = 'rgba(254,249,195,0.55)';
+  MONTHS.forEach((mo, i) => {
+    if (!PEAK.includes(mo)) return;
+    const x0 = x.getPixelForValue(i - 0.5);
+    const x1 = x.getPixelForValue(i + 0.5);
+    ctx.fillRect(x0, ca.top, x1 - x0, ca.height);
+  });
+  ctx.restore();
+}
+
+const PEAK_PLUGIN = {
+  id:'peak',
+  beforeDatasetsDraw: peakBg,
+};
+
+function mkChart(id, cfg) {
+  if (charts[id]) { charts[id].destroy(); }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, cfg);
+}
+
+function renderMainChart() {
+  const mos = RANGE_MONTHS[curRange] || MONTHS;
+  const labels = mos;
+
+  // 2026 SO bars
+  const so26 = mos.map(mo => getVal('2026', mo, 'so', curCh));
+  const st26 = mos.map(mo => getVal('2026', mo, 'st', curCh));
+  const stk26 = mos.map(mo => getVal('2026', mo, 'stk', curCh));
+
+  mkChart('mainChart', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Sell-Out 2026',
+          data: so26,
+          backgroundColor: 'rgba(16,185,129,0.82)',
+          borderColor: '#059669',
+          borderWidth: 1,
+          order: 3,
+        },
+        {
+          type: 'line',
+          label: 'Sell-Thru 2026',
+          data: st26,
+          borderColor: 'rgba(37,99,235,0.7)',
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          borderDash: [6,3],
+          pointRadius: 3,
+          tension: .3,
+          order: 2,
+        },
+        {
+          type: 'line',
+          label: 'Stock 2026',
+          data: stk26,
+          borderColor: 'rgba(148,163,184,0.8)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4,4],
+          pointRadius: 2,
+          tension: .3,
+          yAxisID: 'ystk',
+          order: 1,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:12, font:{size:11}}},
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
+          }
+        },
+      },
+      scales: {
+        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        y: {
+          grid:{color:'#f1f5f9'},
+          ticks:{font:{size:11}, callback: v => fmtN(v)},
+          title:{display:true, text:'수량 (EA)', font:{size:10}, color:'var(--muted)'},
+        },
+        ystk: {
+          position:'right',
+          grid:{display:false},
+          ticks:{font:{size:10}, color:'#94a3b8', callback: v => fmtN(v)},
+          title:{display:true, text:'Stock', font:{size:10}, color:'#94a3b8'},
+        },
+      },
+    },
+    plugins: [PEAK_PLUGIN],
+  });
+}
+
+function renderYoyChart() {
+  const key = yoyMetric;
+  const colors = {
+    '2023': {border:'#94a3b8', bg:'rgba(148,163,184,.12)', width:1.8, dash:[]},
+    '2024': {border:'#60a5fa', bg:'rgba(96,165,250,.12)', width:1.8, dash:[]},
+    '2025': {border:'#f59e0b', bg:'rgba(245,158,11,.1)', width:2.5, dash:[]},
+    '2026': {border:'#10b981', bg:'rgba(16,185,129,.15)', width:3.5, dash:[]},
+  };
+  const datasets = YEARS.map(yr => {
+    const data = MONTHS.map(mo => getVal(yr, mo, key, curCh));
+    const c = colors[yr];
+    return {
+      label: yr,
+      data,
+      borderColor: c.border,
+      backgroundColor: c.bg,
+      borderWidth: c.width,
+      borderDash: c.dash,
+      pointRadius: yr === '2026' ? 5 : 3,
+      pointBackgroundColor: c.border,
+      tension: .3,
+      spanGaps: false,
+    };
+  });
+
+  mkChart('yoyChart', {
+    type: 'line',
+    data: {labels: MONTHS, datasets},
+    options: {
+      responsive: true,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:12, font:{size:11}}},
+        tooltip: {callbacks: {label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`}},
+      },
+      scales: {
+        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}, callback: v => fmtN(v)}},
+      },
+    },
+    plugins: [PEAK_PLUGIN],
+  });
+}
+
+function renderYtdChart() {
+  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so', curCh));
+  const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
+
+  mkChart('ytdChart', {
+    type: 'bar',
+    data: {
+      labels: YEARS,
+      datasets: [{
+        label: 'Jan–May Sell-Out',
+        data: so_yr,
+        backgroundColor: colors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {display:false},
+        tooltip: {callbacks: {label: ctx => ` ${fmtN(ctx.raw)}`}},
+      },
+      scales: {
+        x: {grid:{display:false}, ticks:{font:{size:11}}},
+        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v => fmtN(v)}},
+      },
+    },
+  });
+}
+
+function renderMixChart() {
+  const mos = ['Jan','Feb','Mar','Apr','May'];
+  // 연도별 채널 mix
+  const datasets = CHS.map((ch, ci) => {
+    const colors = ['#2563eb','#0ea5e9','#8b5cf6','#f59e0b','#10b981'];
+    return {
+      label: ch,
+      data: YEARS.map(yr => sumRange(yr, mos, 'so', ch) || 0),
+      backgroundColor: colors[ci],
+      stack: 'mix',
+      borderRadius: 2,
+    };
+  });
+  mkChart('mixChart', {
+    type: 'bar',
+    data: {labels: YEARS, datasets},
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {position:'bottom', labels:{boxWidth:10, font:{size:10}}},
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
+          }
+        },
+      },
+      scales: {
+        x: {grid:{display:false}, stacked:true, ticks:{font:{size:11}}},
+        y: {stacked:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+      },
+    },
+  });
+}
+
+function renderChBarChart() {
+  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const data26 = CHS.map(ch => sumRange('2026', mos, 'so', ch) || 0);
+  const data25 = CHS.map(ch => sumRange('2025', mos, 'so', ch) || 0);
+
+  mkChart('chBarChart', {
+    type: 'bar',
+    data: {
+      labels: CHS,
+      datasets: [
+        {label:'2026', data:data26, backgroundColor:'#10b981', borderRadius:3},
+        {label:'2025', data:data25, backgroundColor:'rgba(245,158,11,.5)', borderRadius:3},
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:10, font:{size:11}}},
+        tooltip: {callbacks: {label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`}},
+      },
+      scales: {
+        x: {grid:{display:false}, ticks:{font:{size:10}, maxRotation:25}},
+        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+      },
+    },
+  });
+}
+
+// ── KPI 업데이트 ──────────────────────────────────────────────────────────
+function renderKpi() {
+  const mos = RANGE_MONTHS[curRange];
+  const label = `(${mos[0]}–${mos[mos.length-1]} 2026)`;
+  document.getElementById('kpi-range-label').textContent = label;
+
+  const so26  = sumRange('2026', mos, 'so', curCh);
+  const so25  = sumRange('2025', mos, 'so', curCh);
+  const so24  = sumRange('2024', mos, 'so', curCh);
+  const so23  = sumRange('2023', mos, 'so', curCh);
+  const st26  = sumRange('2026', mos, 'st', curCh);
+  const st25  = sumRange('2025', mos, 'st', curCh);
+  // Stock: 마지막 월 값
+  const lastMo = mos[mos.length-1];
+  const stk26  = getVal('2026', lastMo, 'stk', curCh);
+  const stk25  = getVal('2025', lastMo, 'stk', curCh);
+
+  document.getElementById('kv-so').textContent = fmtN(so26);
+  const yoySo = fmtYoy(so26, so25);
+  document.getElementById('kv-so-yoy').textContent = yoySo.txt;
+  document.getElementById('kv-so-yoy').className = yoySo.cls;
+  document.getElementById('kv-so-base').textContent = so25 ? 'vs 2025 ' + fmtN(so25) : '';
+  document.getElementById('kv-so-mini').innerHTML =
+    `<span>2023: ${fmtN(so23)}</span><span>2024: ${fmtN(so24)}</span><span>2025: ${fmtN(so25)}</span>`;
+
+  document.getElementById('kv-st').textContent = fmtN(st26);
+  const yoySt = fmtYoy(st26, st25);
+  document.getElementById('kv-st-yoy').innerHTML = `<span class="${yoySt.cls}">${yoySt.txt}</span>`;
+  document.getElementById('kv-st-base').textContent = st25 ? 'vs 2025 ' + fmtN(st25) : '';
+  document.getElementById('kv-st-mini').innerHTML =
+    `<span>2025: ${fmtN(st25)}</span>`;
+
+  document.getElementById('kv-stk').textContent = fmtN(stk26);
+  const yoyStk = fmtYoy(stk26, stk25);
+  document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말';
+  document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
+
+  if (so26 && st26) {
+    const ratio = (so26 / st26 * 100).toFixed(1);
+    document.getElementById('kv-ratio').textContent = ratio + '%';
+    const msg = ratio < 80 ? '⚠ 채널 재고 적체 주의' :
+                ratio < 95 ? '채널 소화 양호' : '✓ 공급=소화 균형';
+    const col = ratio < 80 ? '#ef4444' : ratio < 95 ? '#f59e0b' : '#10b981';
+    document.getElementById('kv-ratio-sub').innerHTML = `<span style="color:${col}">${msg}</span>`;
+    document.getElementById('kv-ratio-mini').innerHTML =
+      `<span>2023: ${so23 && st26 ? (sumRange('2023',mos,'so',curCh)/sumRange('2023',mos,'st',curCh)*100).toFixed(0)+'%' : '—'}</span>
+       <span>2024: ${sumRange('2024',mos,'so',curCh) && sumRange('2024',mos,'st',curCh) ? (sumRange('2024',mos,'so',curCh)/sumRange('2024',mos,'st',curCh)*100).toFixed(0)+'%' : '—'}</span>
+       <span>2025: ${so25 && st25 ? (so25/st25*100).toFixed(0)+'%' : '—'}</span>`;
+  } else {
+    document.getElementById('kv-ratio').textContent = '—';
+  }
+}
+
+// ── Matrix Table ──────────────────────────────────────────────────────────
+function renderMatrixTable() {
+  const mos = RANGE_MONTHS[curRange];
+  const rows = [];
+  // S 행 (Sell-Out) 먼저
+  for (const yr of YEARS) {
+    const isSo = true;
+    const soClass = 'so-row';
+    let tds = `<td class="l" style="${yr==='2026'?'color:var(--so-dk)':''}">${yr}</td>`;
+    let ytd = 0;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'so', curCh);
+      const isNull = v === null;
+      if (!isNull) ytd += v;
+      tds += `<td${isNull?` class="null"`:yr==='2026'?' style="color:var(--so-dk);font-weight:700"':''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
+    rows.push(`<tr class="${soClass}">${tds}</tr>`);
+  }
+  // YoY% 행
+  const yoyTds = ['<td class="l" style="color:var(--so);background:#d1fae5">YoY%</td>'];
+  for (const mo of mos) {
+    const v26 = getVal('2026', mo, 'so', curCh);
+    const v25 = getVal('2025', mo, 'so', curCh);
+    if (!v26 || !v25) { yoyTds.push('<td class="null">—</td>'); continue; }
+    const p = ((v26-v25)/Math.abs(v25)*100).toFixed(1);
+    yoyTds.push(`<td class="${p>0?'up':'dn'}">${p>0?'+':''}${p}%</td>`);
+  }
+  yoyTds.push('<td></td>');
+  rows.push(`<tr class="so-row">${yoyTds.join('')}</tr>`);
+
+  // P 행 (Sell-Thru)
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — 공급</td></tr>`);
+  for (const yr of YEARS) {
+    let tds = `<td class="l" style="color:var(--st)">${yr}</td>`;
+    let ytd = 0;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'st', curCh);
+      const isNull = v === null;
+      if (!isNull) ytd += v;
+      tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
+    rows.push(`<tr>${tds}</tr>`);
+  }
+
+  // I 행 (Stock 월말)
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — 월말 재고</td></tr>`);
+  for (const yr of YEARS) {
+    let tds = `<td class="l" style="color:var(--stk)">${yr}</td>`;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'stk', curCh);
+      const isNull = v === null;
+      tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td></td>`;
+    rows.push(`<tr>${tds}</tr>`);
+  }
+
+  const thMos = mos.map(m => `<th>${m}</th>`).join('');
+  document.getElementById('matrixTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">지표/연도</th>${thMos}<th>YTD</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Quarterly Table ───────────────────────────────────────────────────────
+function renderQtrTable() {
+  const key = yoyMetric;
+  const QTRS = [
+    {label:'Q1', mos:['Jan','Feb','Mar']},
+    {label:'Q2', mos:['Apr','May','Jun']},
+    {label:'Q3', mos:['Jul','Aug','Sep']},
+    {label:'Q4', mos:['Oct','Nov','Dec']},
+  ];
+  const rows = QTRS.map(q => {
+    let tds = `<td class="l">${q.label}</td>`;
+    YEARS.forEach((yr, i) => {
+      const v = sumRange(yr, q.mos, key, curCh);
+      const isNull = v === null;
+      const style = yr==='2026' ? ` class="${isNull?'null':''}";font-weight:700;color:var(--so)` : (isNull?` class="null"`:'');
+      tds += `<td${isNull?' class="null"':''}>${isNull?'—':fmtN(v)}</td>`;
+    });
+    // YoY
+    const v26 = sumRange('2026', q.mos, key, curCh);
+    const v25 = sumRange('2025', q.mos, key, curCh);
+    const yoy = v26 && v25 ? ((v26-v25)/Math.abs(v25)*100).toFixed(1) : null;
+    tds += `<td class="${yoy===null?'null':yoy>0?'up':'dn'}">${yoy===null?'—':(yoy>0?'+':'')+yoy+'%'}</td>`;
+    return `<tr>${tds}</tr>`;
+  });
+
+  document.getElementById('qtrTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">분기</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Channel Table ─────────────────────────────────────────────────────────
+function renderChTable() {
+  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const rows = CHS.map(ch => {
+    const v26 = sumRange('2026', mos, 'so', ch);
+    const v25 = sumRange('2025', mos, 'so', ch);
+    const yoy = fmtYoy(v26, v25);
+    return `<tr>
+      <td class="l">${ch}</td>
+      ${YEARS.map(yr=>`<td>${fmtN(sumRange(yr,mos,'so',ch))}</td>`).join('')}
+      <td class="${yoy.cls}">${yoy.txt}</td>
+    </tr>`;
+  });
+  document.getElementById('chTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">채널</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Coverage Table ────────────────────────────────────────────────────────
+function renderCoverage() {
+  const keys = [
+    {key:'so', label:'★ Sell-Out'},
+    {key:'st', label:'Sell-Thru'},
+    {key:'stk', label:'Stock'},
+  ];
+  const rows = keys.map(k => {
+    const tds = YEARS.map(yr => {
+      const available = MONTHS.filter(mo => getVal(yr, mo, k.key) !== null).length;
+      const total = yr === '2026' ? 5 : 12;
+      const ok = available >= total;
+      return `<td style="text-align:center">
+        <span style="background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
+          ${ok?'✓ 완전':'⚠ '+available+'/'+total}
+        </span>
+      </td>`;
+    }).join('');
+    return `<tr><td class="l">${k.label}</td>${tds}</tr>`;
+  });
+  document.getElementById('coverageTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">지표</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}</tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Full PSI Table ────────────────────────────────────────────────────────
+function renderFullTable() {
+  const mos = MONTHS;
+  const rows = [];
+  for (const yr of YEARS) {
+    for (const [key, label, cls] of [['so','S','so-row'],['st','P',''],['stk','I','']]) {
+      const tds = mos.map(mo => {
+        const v = getVal(yr, mo, key);
+        return v !== null ? `<td>${fmtN(v)}</td>` : `<td class="null">—</td>`;
+      }).join('');
+      rows.push(`<tr class="${cls}"><td class="l">${yr} ${label}</td>${tds}</tr>`);
+    }
+  }
+  const thMos = mos.map(m=>`<th>${m}</th>`).join('');
+  document.getElementById('fullTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">연도/지표</th>${thMos}</tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── 전체 렌더 ─────────────────────────────────────────────────────────────
+function renderCharts() {
+  renderMainChart();
+  renderYoyChart();
+  renderYtdChart();
+  renderMixChart();
+  renderChBarChart();
+}
+
+function render() {
+  renderKpi();
+  renderMatrixTable();
+  renderQtrTable();
+  renderChTable();
+  renderCharts();
+  renderCoverage();
+  renderFullTable();
+  // header info
+  document.getElementById('hdr-info').textContent = '기준: 2026-05 · ' + (curCh==='ALL'?'5채널 합산':curCh);
+}
+
+render();
+</script>
+</body>
+</html>
