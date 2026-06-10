@@ -232,13 +232,13 @@ tr:hover td{background:#f8fafc}
 <div class="content">
   <div class="stitle">채널별 Sell-Out Mix 및 추이</div>
   <div class="cc">
-    <div class="ct">연도별 채널 Sell-Out Mix (Jan–May)</div>
+    <div class="ct" id="mix-title">연도별 채널 Sell-Out Mix</div>
     <div class="cd">기준: <strong style="color:var(--so)">Sell-Out</strong></div>
     <canvas id="mixChart" height="160"></canvas>
   </div>
   <div class="grid2">
     <div class="cc" style="margin-bottom:0">
-      <div class="ct">채널별 Jan–May Sell-Out</div>
+      <div class="ct" id="chbar-title">채널별 Sell-Out</div>
       <canvas id="chBarChart" height="200"></canvas>
     </div>
     <div class="cc" style="margin-bottom:0">
@@ -570,8 +570,9 @@ function renderYtdChart() {
 }
 
 function renderMixChart() {
-  const mos = ['Jan','Feb','Mar','Apr','May'];
-  // 연도별 채널 mix
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('mix-title').textContent = `연도별 채널 Sell-Out Mix (${rangeLabel})`;
   const datasets = CHS.map((ch, ci) => {
     const colors = ['#2563eb','#0ea5e9','#8b5cf6','#f59e0b','#10b981'];
     return {
@@ -604,7 +605,9 @@ function renderMixChart() {
 }
 
 function renderChBarChart() {
-  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('chbar-title').textContent = `채널별 ${rangeLabel} Sell-Out`;
   const data26 = CHS.map(ch => sumRange('2026', mos, 'so', ch) || 0);
   const data25 = CHS.map(ch => sumRange('2025', mos, 'so', ch) || 0);
 
@@ -813,7 +816,7 @@ function renderQtrTable() {
 
 // ── Channel Table ─────────────────────────────────────────────────────────
 function renderChTable() {
-  const mos = ['Jan','Feb','Mar','Apr','May'];
+  const mos = RANGE_MONTHS[curRange];
   const rows = CHS.map(ch => {
     const v26 = sumRange('2026', mos, 'so', ch);
     const v25 = sumRange('2025', mos, 'so', ch);
