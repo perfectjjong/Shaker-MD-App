@@ -379,11 +379,11 @@ const charts = {};
 
 function peakBg(chart) {
   const ctx = chart.ctx;
-  const {chartArea: ca, scales: {x}} = chart;
-  if (!ca) return;
+  const {chartArea: ca, scales: {x}, data: {labels}} = chart;
+  if (!ca || !labels) return;
   ctx.save();
   ctx.fillStyle = 'rgba(254,249,195,0.55)';
-  MONTHS.forEach((mo, i) => {
+  labels.forEach((mo, i) => {
     if (!PEAK.includes(mo)) return;
     const x0 = x.getPixelForValue(i - 0.5);
     const x1 = x.getPixelForValue(i + 0.5);
