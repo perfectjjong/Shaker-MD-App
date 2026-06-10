@@ -773,24 +773,31 @@ function renderMatrixTable() {
 // ── Quarterly Table ───────────────────────────────────────────────────────
 function renderQtrTable() {
   const key = yoyMetric;
-  const QTRS = [
+  const filterSet = new Set(RANGE_MONTHS[curRange]);
+  const QTR_DEF = [
     {label:'Q1', mos:['Jan','Feb','Mar']},
     {label:'Q2', mos:['Apr','May','Jun']},
     {label:'Q3', mos:['Jul','Aug','Sep']},
     {label:'Q4', mos:['Oct','Nov','Dec']},
   ];
+  // 기간 필터와 교집합 — 빈 분기는 제외, 부분 분기는 라벨에 범위 표시
+  const QTRS = QTR_DEF.map(q => {
+    const mos = q.mos.filter(m => filterSet.has(m));
+    if (!mos.length) return null;
+    const partial = mos.length < q.mos.length;
+    const label = partial ? `${q.label} (${mos[0]}–${mos[mos.length-1]})` : q.label;
+    return {label, mos};
+  }).filter(Boolean);
+
   const rows = QTRS.map(q => {
     let tds = `<td class="l">${q.label}</td>`;
-    YEARS.forEach((yr, i) => {
+    YEARS.forEach(yr => {
       const v = sumRange(yr, q.mos, key, curCh);
-      const isNull = v === null;
-      const style = yr==='2026' ? ` class="${isNull?'null':''}";font-weight:700;color:var(--so)` : (isNull?` class="null"`:'');
-      tds += `<td${isNull?' class="null"':''}>${isNull?'—':fmtN(v)}</td>`;
+      tds += `<td${v===null?' class="null"':yr==='2026'?' style="font-weight:700;color:var(--so)"':''}>${v===null?'—':fmtN(v)}</td>`;
     });
-    // YoY
     const v26 = sumRange('2026', q.mos, key, curCh);
     const v25 = sumRange('2025', q.mos, key, curCh);
-    const yoy = v26 && v25 ? ((v26-v25)/Math.abs(v25)*100).toFixed(1) : null;
+    const yoy = v26 !== null && v25 ? ((v26-v25)/Math.abs(v25)*100).toFixed(1) : null;
     tds += `<td class="${yoy===null?'null':yoy>0?'up':'dn'}">${yoy===null?'—':(yoy>0?'+':'')+yoy+'%'}</td>`;
     return `<tr>${tds}</tr>`;
   });
