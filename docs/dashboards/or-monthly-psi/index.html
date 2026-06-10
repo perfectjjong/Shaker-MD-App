@@ -362,7 +362,8 @@ document.querySelectorAll('.tab').forEach(t => {
 
 // ── Main Metric 토글 ──────────────────────────────────────────────────────
 const mainVisible = {so: true, st: true, stk: true};
-const MAIN_DS_IDX = {so: 0, st: 1, stk: 2};
+// 각 key → [2026 idx, 2025 idx]
+const MAIN_DS_IDX = {so: [0, 3], st: [1, 4], stk: [2, 5]};
 
 function toggleMainMetric(key, btn) {
   mainVisible[key] = !mainVisible[key];
@@ -370,15 +371,15 @@ function toggleMainMetric(key, btn) {
   btn.style.opacity = mainVisible[key] ? '1' : '0.35';
   const ch = charts['mainChart'];
   if (!ch) return;
-  ch.setDatasetVisibility(MAIN_DS_IDX[key], mainVisible[key]);
+  MAIN_DS_IDX[key].forEach(idx => ch.setDatasetVisibility(idx, mainVisible[key]));
   ch.update();
 }
 
 function applyMainVisibility() {
   const ch = charts['mainChart'];
   if (!ch) return;
-  Object.entries(MAIN_DS_IDX).forEach(([key, idx]) => {
-    ch.setDatasetVisibility(idx, mainVisible[key]);
+  Object.entries(MAIN_DS_IDX).forEach(([key, idxArr]) => {
+    idxArr.forEach(idx => ch.setDatasetVisibility(idx, mainVisible[key]));
     const btn = document.getElementById('mtbtn-' + key);
     if (btn) {
       btn.className = mainVisible[key] ? 'mt ' + key : 'mt';
@@ -426,10 +427,12 @@ function renderMainChart() {
   const mos = RANGE_MONTHS[curRange] || MONTHS;
   const labels = mos;
 
-  // 2026 SO bars
-  const so26 = mos.map(mo => getVal('2026', mo, 'so', curCh));
-  const st26 = mos.map(mo => getVal('2026', mo, 'st', curCh));
+  const so26  = mos.map(mo => getVal('2026', mo, 'so',  curCh));
+  const st26  = mos.map(mo => getVal('2026', mo, 'st',  curCh));
   const stk26 = mos.map(mo => getVal('2026', mo, 'stk', curCh));
+  const so25  = mos.map(mo => getVal('2025', mo, 'so',  curCh));
+  const st25  = mos.map(mo => getVal('2025', mo, 'st',  curCh));
+  const stk25 = mos.map(mo => getVal('2025', mo, 'stk', curCh));
 
   mkChart('mainChart', {
     type: 'bar',
@@ -469,6 +472,43 @@ function renderMainChart() {
           tension: .3,
           yAxisID: 'ystk',
           order: 1,
+        },
+        {
+          type: 'line',
+          label: 'Sell-Out 2025',
+          data: so25,
+          borderColor: 'rgba(245,158,11,0.75)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.8,
+          borderDash: [5,3],
+          pointRadius: 2,
+          tension: .3,
+          order: 6,
+        },
+        {
+          type: 'line',
+          label: 'Sell-Thru 2025',
+          data: st25,
+          borderColor: 'rgba(37,99,235,0.35)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4,4],
+          pointRadius: 2,
+          tension: .3,
+          order: 5,
+        },
+        {
+          type: 'line',
+          label: 'Stock 2025',
+          data: stk25,
+          borderColor: 'rgba(148,163,184,0.4)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.2,
+          borderDash: [3,4],
+          pointRadius: 1,
+          tension: .3,
+          yAxisID: 'ystk',
+          order: 4,
         },
       ]
     },
