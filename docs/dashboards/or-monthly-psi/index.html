@@ -88,10 +88,10 @@ tr:hover td{background:#f8fafc}
 
 <div class="tabs">
   <div class="tab active" data-tab="0">Sell-Out 현황</div>
-  <div class="tab" data-tab="1">YoY 동기 비교</div>
-  <div class="tab" data-tab="2">채널 분석</div>
-  <div class="tab" data-tab="3">데이터 현황</div>
-  <div class="tab" data-tab="4">MOS 분석</div>
+  <div class="tab" data-tab="1">MOS 분석</div>
+  <div class="tab" data-tab="2">YoY 동기 비교</div>
+  <div class="tab" data-tab="3">채널 분석</div>
+  <div class="tab" data-tab="4">데이터 현황</div>
 </div>
 
 <div class="filters">
@@ -188,7 +188,7 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <!-- ═══════ TAB 1: YoY 동기 비교 ═══════ -->
-<div class="tab-content" id="t1">
+<div class="tab-content" id="t2">
 <div class="content">
   <div class="stitle">4개년 동기 비교</div>
   <div class="yr-legend">
@@ -229,7 +229,7 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <!-- ═══════ TAB 2: 채널 분석 ═══════ -->
-<div class="tab-content" id="t2">
+<div class="tab-content" id="t3">
 <div class="content">
   <div class="stitle">채널별 Sell-Out Mix 및 추이</div>
   <div class="cc">
@@ -251,7 +251,7 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <!-- ═══════ TAB 3: 데이터 현황 ═══════ -->
-<div class="tab-content" id="t3">
+<div class="tab-content" id="t4">
 <div class="content">
   <div class="stitle">데이터 커버리지</div>
   <div class="cc">
@@ -270,7 +270,7 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <!-- ═══════ TAB 4: MOS 분석 ═══════ -->
-<div class="tab-content" id="t4">
+<div class="tab-content" id="t1">
 <div class="content">
   <div class="stitle">MOS 분석 <span style="font-weight:400;font-size:12px;color:var(--muted)">(Month of Stock)</span></div>
   <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
@@ -1130,11 +1130,31 @@ function renderMosChart() {
       maintainAspectRatio: false,
       interaction: {mode:'index', intersect:false},
       plugins: {
-        legend: {position:'top', labels:{boxWidth:10, font:{size:10}}},
+        legend: {
+          position: 'top',
+          labels: {
+            boxWidth: 10,
+            font: {size: 10},
+            generateLabels: chart => chart.data.datasets.map((ds, i) => ({
+              text: ds.label,
+              fillStyle: ds.borderColor,
+              strokeStyle: ds.borderColor,
+              fontColor: ds.borderColor,
+              lineWidth: 1.5,
+              lineDash: ds.borderDash || [],
+              hidden: !chart.isDatasetVisible(i),
+              datasetIndex: i,
+            })),
+          },
+        },
         tooltip: {
           callbacks: {
-            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(2) : '—'}`
-          }
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(1) : '—'}`,
+            labelColor: ctx => ({
+              borderColor: ctx.dataset.borderColor,
+              backgroundColor: ctx.dataset.borderColor,
+            }),
+          },
         },
       },
       scales: {
