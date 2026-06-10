@@ -703,17 +703,31 @@ function renderMatrixTable() {
     tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
     rows.push(`<tr class="${soClass}">${tds}</tr>`);
   }
-  // YoY% 행
-  const yoyTds = ['<td class="l" style="color:var(--so);background:#d1fae5">YoY%</td>'];
-  for (const mo of mos) {
-    const v26 = getVal('2026', mo, 'so', curCh);
-    const v25 = getVal('2025', mo, 'so', curCh);
-    if (!v26 || !v25) { yoyTds.push('<td class="null">—</td>'); continue; }
-    const p = ((v26-v25)/Math.abs(v25)*100).toFixed(1);
-    yoyTds.push(`<td class="${p>0?'up':'dn'}">${p>0?'+':''}${p}%</td>`);
+
+  // YoY% 행 생성 헬퍼 (SO 섹션 끝에서 호출하기 전에 먼저 정의)
+  function yoyRow(key, color, bgColor, hasYtd) {
+    const tds = [`<td class="l" style="color:${color};background:${bgColor}">YoY%</td>`];
+    let ytd26 = 0, ytd25 = 0, hasYtdData = false;
+    for (const mo of mos) {
+      const v26 = getVal('2026', mo, key, curCh);
+      const v25 = getVal('2025', mo, key, curCh);
+      if (v26 !== null) ytd26 += v26;
+      if (v25 !== null) ytd25 += v25;
+      if (!v26 || !v25) { tds.push('<td class="null">—</td>'); continue; }
+      hasYtdData = true;
+      const p = ((v26-v25)/Math.abs(v25)*100).toFixed(1);
+      tds.push(`<td class="${p>0?'up':'dn'}">${p>0?'+':''}${p}%</td>`);
+    }
+    if (hasYtd && hasYtdData) {
+      const p = ((ytd26-ytd25)/Math.abs(ytd25)*100).toFixed(1);
+      tds.push(`<td class="${p>0?'up':'dn'}" style="font-weight:700">${p>0?'+':''}${p}%</td>`);
+    } else {
+      tds.push('<td></td>');
+    }
+    return `<tr style="background:${bgColor}">${tds.join('')}</tr>`;
   }
-  yoyTds.push('<td></td>');
-  rows.push(`<tr class="so-row">${yoyTds.join('')}</tr>`);
+
+  rows.push(yoyRow('so', 'var(--so-dk)', '#d1fae5', true));
 
   // P 행 (Sell-Thru)
   rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — 공급</td></tr>`);
@@ -729,6 +743,7 @@ function renderMatrixTable() {
     tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
     rows.push(`<tr>${tds}</tr>`);
   }
+  rows.push(yoyRow('st', 'var(--st)', '#dbeafe', true));
 
   // I 행 (Stock 월말)
   rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — 월말 재고</td></tr>`);
@@ -742,6 +757,7 @@ function renderMatrixTable() {
     tds += `<td></td>`;
     rows.push(`<tr>${tds}</tr>`);
   }
+  rows.push(yoyRow('stk', 'var(--stk)', '#fef3c7', false));
 
   const thMos = mos.map(m => `<th>${m}</th>`).join('');
   document.getElementById('matrixTable').innerHTML = `
