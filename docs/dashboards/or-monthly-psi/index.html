@@ -1130,7 +1130,7 @@ function renderMosChart() {
       maintainAspectRatio: false,
       interaction: {mode:'index', intersect:false},
       plugins: {
-        legend: {position:'top', labels:{boxWidth:10, font:{size:10}}},
+        legend: {position:'top', labels:{boxWidth:10, font:{size:10}, filter: item => !['재고부족 (1.5)','적정 (2.0)','재고주의 (2.5)'].includes(item.text)}},
         tooltip: {
           callbacks: {
             label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(1) : '—'}`
