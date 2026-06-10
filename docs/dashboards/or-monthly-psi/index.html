@@ -153,9 +153,9 @@ tr:hover td{background:#f8fafc}
     <div class="ct">
       월별 PSI 추이
       <span style="margin-left:auto;display:flex;gap:4px">
-        <button class="mt so" onclick="setMainMetric('so',this)">S 막대</button>
-        <button class="mt" onclick="setMainMetric('st',this)" style="opacity:.7">P 선</button>
-        <button class="mt" onclick="setMainMetric('stk',this)" style="opacity:.6">I 표시</button>
+        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">S 막대</button>
+        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">P 선</button>
+        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">I 표시</button>
       </span>
     </div>
     <div class="cd">
@@ -361,13 +361,31 @@ document.querySelectorAll('.tab').forEach(t => {
 });
 
 // ── Main Metric 토글 ──────────────────────────────────────────────────────
-function setMainMetric(key, btn) {
-  mainMetric = key;
-  document.querySelectorAll('.cc .mt').forEach(b => {
-    b.className = 'mt'; b.style.opacity = '.6';
+const mainVisible = {so: true, st: true, stk: true};
+const MAIN_DS_IDX = {so: 0, st: 1, stk: 2};
+
+function toggleMainMetric(key, btn) {
+  mainVisible[key] = !mainVisible[key];
+  btn.className = mainVisible[key] ? 'mt ' + key : 'mt';
+  btn.style.opacity = mainVisible[key] ? '1' : '0.35';
+  const ch = charts['mainChart'];
+  if (!ch) return;
+  ch.setDatasetVisibility(MAIN_DS_IDX[key], mainVisible[key]);
+  ch.update();
+}
+
+function applyMainVisibility() {
+  const ch = charts['mainChart'];
+  if (!ch) return;
+  Object.entries(MAIN_DS_IDX).forEach(([key, idx]) => {
+    ch.setDatasetVisibility(idx, mainVisible[key]);
+    const btn = document.getElementById('mtbtn-' + key);
+    if (btn) {
+      btn.className = mainVisible[key] ? 'mt ' + key : 'mt';
+      btn.style.opacity = mainVisible[key] ? '1' : '0.35';
+    }
   });
-  btn.className = 'mt ' + key; btn.style.opacity = '1';
-  renderMainChart();
+  ch.update();
 }
 function setYoyMetric(key, btn) {
   yoyMetric = key;
@@ -482,6 +500,7 @@ function renderMainChart() {
     },
     plugins: [PEAK_PLUGIN],
   });
+  applyMainVisibility();
 }
 
 function _yoyLineDatasets(key) {
