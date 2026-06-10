@@ -284,24 +284,59 @@ const PEAK = ['May','Jun','Jul','Aug','Sep'];
 
 // 현재 필터 상태
 let curRange = 'Jan-May';
-let curCh    = 'ALL';
-let curCat   = 'ALL';
+let curChs   = new Set(['ALL']);  // multi-select: 'ALL' or specific channels
+let curCats  = new Set(['ALL']); // multi-select: 'ALL' or specific categories
 let mainMetric = 'so';
 let yoyMetric  = 'so';
 
 // ── 데이터 헬퍼 ──────────────────────────────────────────────────────────
-function getVal(yr, mo, key, ch='ALL') {
+// ch: undefined → use curChs filter state (default)
+//     'ALL'     → use PSI_DATA.totals (explicit total)
+//     'eXtra'   → use specific channel (channel analysis table)
+function getVal(yr, mo, key, ch) {
   const d = PSI_DATA.data;
   if (!d[yr]) return null;
-  const base = ch === 'ALL'
-    ? (PSI_DATA.totals[yr] || {})[mo]
-    : (d[yr][ch] || {})[mo];
-  if (!base) return null;
-  // 카테고리 필터: SO/ST만 by_cat 사용 (Stock은 채널 합계 유지)
-  if (curCat !== 'ALL' && (key === 'so' || key === 'st')) {
-    return base.by_cat?.[curCat]?.[key] ?? null;
+  const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st');
+
+  function fromBase(base) {
+    if (!base) return null;
+    if (useCat) {
+      let s = 0;
+      for (const c of curCats) s += base.by_cat?.[c]?.[key] ?? 0;
+      return s;
+    }
+    const v = base[key];
+    return (v !== null && v !== undefined) ? v : null;
   }
-  return base[key] ?? null;
+
+  // Explicit channel passed → direct lookup (no curChs aggregation)
+  if (ch !== undefined) {
+    const base = ch === 'ALL'
+      ? (PSI_DATA.totals[yr] || {})[mo]
+      : (d[yr][ch] || {})[mo];
+    return fromBase(base);
+  }
+
+  // Use curChs filter
+  if (curChs.has('ALL')) {
+    return fromBase((PSI_DATA.totals[yr] || {})[mo]);
+  }
+
+  // Aggregate multiple channels
+  if (key === 'stk') {
+    let sum = null;
+    for (const chn of curChs) {
+      const v = (d[yr][chn] || {})[mo]?.stk;
+      if (v !== null && v !== undefined) sum = (sum ?? 0) + v;
+    }
+    return sum;
+  }
+  let tot = 0, has = false;
+  for (const chn of curChs) {
+    const v = fromBase((d[yr][chn] || {})[mo]);
+    if (v !== null && v !== undefined) { tot += v; has = true; }
+  }
+  return has ? tot : null;
 }
 
 function sumRange(yr, months, key, ch='ALL') {
@@ -326,27 +361,54 @@ function fmtYoy(cur, prev) {
 }
 
 // ── 필터 이벤트 ──────────────────────────────────────────────────────────
+// 기간: 단일 선택. 활성 버튼 재클릭 → Full Year로 해제
 document.querySelectorAll('[data-range]').forEach(btn => {
   btn.addEventListener('click', () => {
+    const isActive = btn.classList.contains('on');
+    const target = isActive ? 'Full' : btn.dataset.range;
     document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    curRange = btn.dataset.range;
+    (isActive ? document.querySelector('[data-range="Full"]') : btn).classList.add('on');
+    curRange = target;
     render();
   });
 });
+
+// 채널: 다중 선택 + 토글 해제. ALL은 단독 선택
 document.querySelectorAll('[data-ch]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-ch]').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    curCh = btn.dataset.ch;
+    const v = btn.dataset.ch;
+    if (v === 'ALL') {
+      curChs = new Set(['ALL']);
+    } else if (curChs.has(v)) {
+      curChs.delete(v);
+      if (curChs.size === 0) curChs.add('ALL');
+    } else {
+      curChs.delete('ALL');
+      curChs.add(v);
+    }
+    document.querySelectorAll('[data-ch]').forEach(b => {
+      b.classList.toggle('on', curChs.has(b.dataset.ch));
+    });
     render();
   });
 });
+
+// 카테고리: 다중 선택 + 토글 해제. ALL은 단독 선택
 document.querySelectorAll('[data-cat]').forEach(btn => {
   btn.addEventListener('click', () => {
-    document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('on'));
-    btn.classList.add('on');
-    curCat = btn.dataset.cat;
+    const v = btn.dataset.cat;
+    if (v === 'ALL') {
+      curCats = new Set(['ALL']);
+    } else if (curCats.has(v)) {
+      curCats.delete(v);
+      if (curCats.size === 0) curCats.add('ALL');
+    } else {
+      curCats.delete('ALL');
+      curCats.add(v);
+    }
+    document.querySelectorAll('[data-cat]').forEach(b => {
+      b.classList.toggle('on', curCats.has(b.dataset.cat));
+    });
     render();
   });
 });
@@ -427,12 +489,12 @@ function renderMainChart() {
   const mos = RANGE_MONTHS[curRange] || MONTHS;
   const labels = mos;
 
-  const so26  = mos.map(mo => getVal('2026', mo, 'so',  curCh));
-  const st26  = mos.map(mo => getVal('2026', mo, 'st',  curCh));
-  const stk26 = mos.map(mo => getVal('2026', mo, 'stk', curCh));
-  const so25  = mos.map(mo => getVal('2025', mo, 'so',  curCh));
-  const st25  = mos.map(mo => getVal('2025', mo, 'st',  curCh));
-  const stk25 = mos.map(mo => getVal('2025', mo, 'stk', curCh));
+  const so26  = mos.map(mo => getVal('2026', mo, 'so'));
+  const st26  = mos.map(mo => getVal('2026', mo, 'st'));
+  const stk26 = mos.map(mo => getVal('2026', mo, 'stk'));
+  const so25  = mos.map(mo => getVal('2025', mo, 'so'));
+  const st25  = mos.map(mo => getVal('2025', mo, 'st'));
+  const stk25 = mos.map(mo => getVal('2025', mo, 'stk'));
 
   mkChart('mainChart', {
     type: 'bar',
@@ -554,7 +616,7 @@ function _yoyLineDatasets(key) {
     const s = styles[yr];
     return {
       label: yr,
-      data: MONTHS.map(mo => getVal(yr, mo, key, curCh)),
+      data: MONTHS.map(mo => getVal(yr, mo, key)),
       borderColor: s.border,
       backgroundColor: s.border.replace(')', ',.08)').replace('rgb','rgba'),
       borderWidth: s.width,
@@ -600,7 +662,7 @@ function renderYtdChart() {
   const mos = RANGE_MONTHS[curRange];
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
   document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out 비교`;
-  const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so', curCh));
+  const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so'));
   const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
 
   mkChart('ytdChart', {
@@ -696,20 +758,20 @@ function renderChBarChart() {
 // ── KPI 업데이트 ──────────────────────────────────────────────────────────
 function renderKpi() {
   const mos = RANGE_MONTHS[curRange];
-  const catSuffix = curCat !== 'ALL' ? ` · ${curCat}` : '';
+  const catSuffix = !curCats.has('ALL') ? ` · ${[...curCats].join('+')}` : '';
   const label = `(${mos[0]}–${mos[mos.length-1]} 2026${catSuffix})`;
   document.getElementById('kpi-range-label').textContent = label;
 
-  const so26  = sumRange('2026', mos, 'so', curCh);
-  const so25  = sumRange('2025', mos, 'so', curCh);
-  const so24  = sumRange('2024', mos, 'so', curCh);
-  const so23  = sumRange('2023', mos, 'so', curCh);
-  const st26  = sumRange('2026', mos, 'st', curCh);
-  const st25  = sumRange('2025', mos, 'st', curCh);
+  const so26  = sumRange('2026', mos, 'so');
+  const so25  = sumRange('2025', mos, 'so');
+  const so24  = sumRange('2024', mos, 'so');
+  const so23  = sumRange('2023', mos, 'so');
+  const st26  = sumRange('2026', mos, 'st');
+  const st25  = sumRange('2025', mos, 'st');
   // Stock: 마지막 월 값
   const lastMo = mos[mos.length-1];
-  const stk26  = getVal('2026', lastMo, 'stk', curCh);
-  const stk25  = getVal('2025', lastMo, 'stk', curCh);
+  const stk26  = getVal('2026', lastMo, 'stk');
+  const stk25  = getVal('2025', lastMo, 'stk');
 
   document.getElementById('kv-so').textContent = fmtN(so26);
   const yoySo = fmtYoy(so26, so25);
@@ -729,7 +791,7 @@ function renderKpi() {
   document.getElementById('kv-stk').textContent = fmtN(stk26);
   const yoyStk = fmtYoy(stk26, stk25);
   document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
-  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말' + (curCat !== 'ALL' ? ' · 채널 합계' : '');
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말' + (!curCats.has('ALL') ? ' · 채널 합계' : '');
   document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
 
   if (so26 && st26) {
@@ -740,8 +802,8 @@ function renderKpi() {
     const col = ratio < 80 ? '#ef4444' : ratio < 95 ? '#f59e0b' : '#10b981';
     document.getElementById('kv-ratio-sub').innerHTML = `<span style="color:${col}">${msg}</span>`;
     document.getElementById('kv-ratio-mini').innerHTML =
-      `<span>2023: ${so23 && st26 ? (sumRange('2023',mos,'so',curCh)/sumRange('2023',mos,'st',curCh)*100).toFixed(0)+'%' : '—'}</span>
-       <span>2024: ${sumRange('2024',mos,'so',curCh) && sumRange('2024',mos,'st',curCh) ? (sumRange('2024',mos,'so',curCh)/sumRange('2024',mos,'st',curCh)*100).toFixed(0)+'%' : '—'}</span>
+      `<span>2023: ${so23 && st26 ? (sumRange('2023',mos,'so')/sumRange('2023',mos,'st')*100).toFixed(0)+'%' : '—'}</span>
+       <span>2024: ${sumRange('2024',mos,'so') && sumRange('2024',mos,'st') ? (sumRange('2024',mos,'so')/sumRange('2024',mos,'st')*100).toFixed(0)+'%' : '—'}</span>
        <span>2025: ${so25 && st25 ? (so25/st25*100).toFixed(0)+'%' : '—'}</span>`;
   } else {
     document.getElementById('kv-ratio').textContent = '—';
@@ -759,7 +821,7 @@ function renderMatrixTable() {
     let tds = `<td class="l" style="${yr==='2026'?'color:var(--so-dk)':''}">${yr}</td>`;
     let ytd = 0;
     for (const mo of mos) {
-      const v = getVal(yr, mo, 'so', curCh);
+      const v = getVal(yr, mo, 'so');
       const isNull = v === null;
       if (!isNull) ytd += v;
       tds += `<td${isNull?` class="null"`:yr==='2026'?' style="color:var(--so-dk);font-weight:700"':''}>${isNull?'—':fmtN(v)}</td>`;
@@ -774,8 +836,8 @@ function renderMatrixTable() {
     const tds = [`<td class="l" style="color:${color};background:${bgColor}">YoY%</td>`];
     let ytd26 = 0, ytd25 = 0, lastP = null;
     for (const mo of mos) {
-      const v26 = getVal('2026', mo, key, curCh);
-      const v25 = getVal('2025', mo, key, curCh);
+      const v26 = getVal('2026', mo, key);
+      const v25 = getVal('2025', mo, key);
       if (v26 !== null) ytd26 += v26;
       if (v25 !== null) ytd25 += v25;
       if (v26 === null || v25 === null || v25 === 0) { tds.push('<td class="null">—</td>'); continue; }
@@ -802,7 +864,7 @@ function renderMatrixTable() {
     let tds = `<td class="l" style="color:var(--st)">${yr}</td>`;
     let ytd = 0;
     for (const mo of mos) {
-      const v = getVal(yr, mo, 'st', curCh);
+      const v = getVal(yr, mo, 'st');
       const isNull = v === null;
       if (!isNull) ytd += v;
       tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
@@ -817,7 +879,7 @@ function renderMatrixTable() {
   for (const yr of YEARS) {
     let tds = `<td class="l" style="color:var(--stk)">${yr}</td>`;
     for (const mo of mos) {
-      const v = getVal(yr, mo, 'stk', curCh);
+      const v = getVal(yr, mo, 'stk');
       const isNull = v === null;
       tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
     }
@@ -856,11 +918,11 @@ function renderQtrTable() {
   const rows = QTRS.map(q => {
     let tds = `<td class="l">${q.label}</td>`;
     YEARS.forEach(yr => {
-      const v = sumRange(yr, q.mos, key, curCh);
+      const v = sumRange(yr, q.mos, key);
       tds += `<td${v===null?' class="null"':yr==='2026'?' style="font-weight:700;color:var(--so)"':''}>${v===null?'—':fmtN(v)}</td>`;
     });
-    const v26 = sumRange('2026', q.mos, key, curCh);
-    const v25 = sumRange('2025', q.mos, key, curCh);
+    const v26 = sumRange('2026', q.mos, key);
+    const v25 = sumRange('2025', q.mos, key);
     const yoy = v26 !== null && v25 ? ((v26-v25)/Math.abs(v25)*100).toFixed(1) : null;
     tds += `<td class="${yoy===null?'null':yoy>0?'up':'dn'}">${yoy===null?'—':(yoy>0?'+':'')+yoy+'%'}</td>`;
     return `<tr>${tds}</tr>`;
@@ -960,7 +1022,8 @@ function render() {
   renderCoverage();
   renderFullTable();
   // header info
-  document.getElementById('hdr-info').textContent = '기준: 2026-05 · ' + (curCh==='ALL'?'5채널 합산':curCh);
+  const chLabel = curChs.has('ALL') ? '5채널 합산' : [...curChs].join(' + ');
+  document.getElementById('hdr-info').textContent = '기준: 2026-05 · ' + chLabel;
 }
 
 render();
