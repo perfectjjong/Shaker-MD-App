@@ -1069,9 +1069,8 @@ function calcMOS(yr, mo, fwd) {
     so1 = getVal(yr, MONTHS[moIdx - 1], 'so');
     so2 = getVal(yr, mo, 'so');
   }
-  if (so1 === null || so2 === null) return null;
+  if (so1 === null || so2 === null || so1 === 0 || so2 === 0) return null;
   const avg = (so1 + so2) / 2;
-  if (avg === 0) return null;
   return +(stk / avg).toFixed(2);
 }
 
