@@ -91,6 +91,7 @@ tr:hover td{background:#f8fafc}
   <div class="tab" data-tab="1">YoY 동기 비교</div>
   <div class="tab" data-tab="2">채널 분석</div>
   <div class="tab" data-tab="3">데이터 현황</div>
+  <div class="tab" data-tab="4">MOS 분석</div>
 </div>
 
 <div class="filters">
@@ -264,6 +265,36 @@ tr:hover td{background:#f8fafc}
   <div class="cc" style="margin-top:0">
     <div class="ct">연도별 Full PSI 테이블</div>
     <div class="tbl" id="fullTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 4: MOS 분석 ═══════ -->
+<div class="tab-content" id="t4">
+<div class="content">
+  <div class="stitle">MOS 분석 <span style="font-weight:400;font-size:12px;color:var(--muted)">(Month of Stock)</span></div>
+  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <button class="fb on" id="mos-fwd-btn" onclick="setMosMode('fwd',this)">MOS+2 (Forward)</button>
+    <button class="fb" id="mos-bwd-btn" onclick="setMosMode('bwd',this)">MOS-2 (Backward)</button>
+    <span style="font-size:11px;color:var(--muted)">
+      MOS+2 = 월말재고 ÷ avg(다음 2개월 SO) &nbsp;|&nbsp; MOS-2 = 월말재고 ÷ avg(이번+직전 월 SO)
+    </span>
+  </div>
+  <div class="cc">
+    <div class="ct" id="mos-chart-title">MOS+2 추이 — 월말재고 ÷ avg(다음 2개월 SO)</div>
+    <div style="position:relative;height:320px"><canvas id="mosChart"></canvas></div>
+    <div class="note" style="margin-top:6px">
+      기준선: <span style="color:#ef4444;font-weight:700">─ ─ 1.5 재고부족</span> &nbsp;
+      <span style="color:#059669;font-weight:700">─ ─ 2.0 적정</span> &nbsp;
+      <span style="color:#d97706;font-weight:700">─ ─ 2.5 재고주의</span> &nbsp;|&nbsp;
+      2026 MOS+2는 Jun/Jul 실적 미확보 시 null (역산 패널 참고)
+    </div>
+  </div>
+  <div class="cc" style="margin-top:0">
+    <div class="ct">📐 2026 Jun/Jul Sell-Out 목표 역산
+      <span style="font-weight:400;font-size:11px;color:var(--muted)">— May-26 월말재고 기준 MOS+2 달성 시나리오</span>
+    </div>
+    <div id="mosPanel"></div>
   </div>
 </div>
 </div>
@@ -1013,6 +1044,187 @@ function renderCharts() {
   renderChBarChart();
 }
 
+// ── MOS Analysis ─────────────────────────────────────────────────────────
+let mosMode = 'fwd';
+
+function setMosMode(mode) {
+  mosMode = mode;
+  document.getElementById('mos-fwd-btn').classList.toggle('on', mode === 'fwd');
+  document.getElementById('mos-bwd-btn').classList.toggle('on', mode === 'bwd');
+  renderMosChart();
+}
+
+function calcMOS(yr, mo, fwd) {
+  const moIdx = MONTHS.indexOf(mo);
+  if (moIdx < 0) return null;
+  const stk = getVal(yr, mo, 'stk');
+  if (stk === null) return null;
+  let so1, so2;
+  if (fwd) {
+    if (moIdx + 2 > 11) return null; // Nov/Dec: 다음해 데이터 없음
+    so1 = getVal(yr, MONTHS[moIdx + 1], 'so');
+    so2 = getVal(yr, MONTHS[moIdx + 2], 'so');
+  } else {
+    if (moIdx < 1) return null; // Jan: 전월 없음
+    so1 = getVal(yr, MONTHS[moIdx - 1], 'so');
+    so2 = getVal(yr, mo, 'so');
+  }
+  if (so1 === null || so2 === null) return null;
+  const avg = (so1 + so2) / 2;
+  if (avg === 0) return null;
+  return +(stk / avg).toFixed(2);
+}
+
+function renderMosChart() {
+  const fwd = mosMode === 'fwd';
+  document.getElementById('mos-chart-title').textContent = fwd
+    ? 'MOS+2 추이 — 월말재고 ÷ avg(다음 2개월 SO)'
+    : 'MOS-2 추이 — 월말재고 ÷ avg(이번+직전 월 SO)';
+
+  const yrStyles = {
+    '2023': {color:'#94a3b8', w:1.5, r:2},
+    '2024': {color:'#60a5fa', w:1.8, r:2},
+    '2025': {color:'#f59e0b', w:2.2, r:3},
+    '2026': {color:'#10b981', w:3.0, r:4},
+  };
+
+  const datasets = [
+    ...YEARS.map(yr => {
+      const s = yrStyles[yr];
+      return {
+        label: yr,
+        data: MONTHS.map(mo => calcMOS(yr, mo, fwd)),
+        borderColor: s.color,
+        backgroundColor: 'transparent',
+        borderWidth: s.w,
+        pointRadius: s.r,
+        tension: 0.3,
+        spanGaps: false,
+      };
+    }),
+    {
+      label: '재고부족 (1.5)',
+      data: MONTHS.map(() => 1.5),
+      borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+    },
+    {
+      label: '적정 (2.0)',
+      data: MONTHS.map(() => 2.0),
+      borderColor: '#059669', borderWidth: 1.8, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+    },
+    {
+      label: '재고주의 (2.5)',
+      data: MONTHS.map(() => 2.5),
+      borderColor: '#d97706', borderWidth: 1.5, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+    },
+  ];
+
+  mkChart('mosChart', {
+    type: 'line',
+    data: {labels: MONTHS, datasets},
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:10, font:{size:10}}},
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(2) : '—'}`
+          }
+        },
+      },
+      scales: {
+        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        y: {
+          min: 0,
+          grid: {color:'#f1f5f9'},
+          ticks: {font:{size:11}, callback: v => v.toFixed(1)},
+          title: {display:true, text:'MOS (개월)', font:{size:10}, color:'var(--muted)'},
+        },
+      },
+    },
+    plugins: [PEAK_PLUGIN],
+  });
+}
+
+function renderMosPanel() {
+  const stk26 = getVal('2026', 'May', 'stk');
+  const so25Jun = getVal('2025', 'Jun', 'so');
+  const so25Jul = getVal('2025', 'Jul', 'so');
+  const chLabel = curChs.has('ALL') ? '5채널 합산' : [...curChs].join(' + ');
+
+  if (stk26 === null) {
+    document.getElementById('mosPanel').innerHTML =
+      `<p style="color:var(--muted);padding:12px">May-26 재고 데이터 없음 (${chLabel})</p>`;
+    return;
+  }
+
+  const totalSo25 = (so25Jun !== null && so25Jul !== null) ? so25Jun + so25Jul : null;
+  const ratioJun = totalSo25 ? so25Jun / totalSo25 : 0.5;
+  const ratioJul = totalSo25 ? so25Jul / totalSo25 : 0.5;
+
+  const fmtBadge = (v, base) => {
+    if (!v || !base) return '';
+    const p = ((v - base) / base * 100).toFixed(1);
+    return ` <span class="${p > 0 ? 'up' : 'dn'}" style="font-size:10px">${p > 0 ? '+' : ''}${p}%</span>`;
+  };
+
+  const targets = [
+    {mos:1.5, label:'1.5 — 재고부족 경계', color:'#ef4444', bg:'#fef2f2'},
+    {mos:2.0, label:'2.0 — 적정',          color:'#059669', bg:'#f0fdf4'},
+    {mos:2.5, label:'2.5 — 재고주의 상한',  color:'#d97706', bg:'#fffbeb'},
+  ];
+
+  const rows = targets.map(t => {
+    const avgNeeded = stk26 / t.mos;
+    const junT = Math.round(avgNeeded * 2 * ratioJun);
+    const julT = Math.round(avgNeeded * 2 * ratioJul);
+    return `<tr style="background:${t.bg}">
+      <td style="font-weight:700;color:${t.color}">${t.label}</td>
+      <td style="text-align:right;font-weight:700">${fmtN(Math.round(avgNeeded))}</td>
+      <td style="text-align:right">${fmtN(junT)}${fmtBadge(junT, so25Jun)}</td>
+      <td style="text-align:right">${fmtN(julT)}${fmtBadge(julT, so25Jul)}</td>
+    </tr>`;
+  });
+
+  const ratioNote = totalSo25
+    ? `2025 Jun:Jul = ${(ratioJun*100).toFixed(0)}%:${(ratioJul*100).toFixed(0)}% · Jun ${fmtN(so25Jun)}, Jul ${fmtN(so25Jul)}`
+    : '2025 Jun/Jul 실적 없음 — 50:50 균등 배분';
+
+  document.getElementById('mosPanel').innerHTML = `
+    <div style="margin-bottom:10px">
+      <span style="font-weight:700;font-size:14px">May-26 재고: ${fmtN(stk26)} EA</span>
+      <span style="color:var(--muted);font-size:12px;margin-left:8px">${chLabel}</span>
+      <span style="color:var(--muted);font-size:11px;margin-left:12px">· ${ratioNote}</span>
+    </div>
+    <div class="tbl">
+    <table>
+      <thead>
+        <tr>
+          <th class="l">MOS 목표</th>
+          <th style="text-align:right">필요 월평균 SO</th>
+          <th style="text-align:right">Jun-26 목표</th>
+          <th style="text-align:right">Jul-26 목표</th>
+        </tr>
+      </thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:8px">
+      공식: 필요 월평균 SO = May재고 ÷ MOS목표 &nbsp;|&nbsp; Jun/Jul 배분: 2025 실적 비율 적용<br>
+      MOS+2(May-26) = May-26 재고 ÷ avg(Jun-26 SO, Jul-26 SO)
+    </div>`;
+}
+
+function renderMosTab() {
+  renderMosChart();
+  renderMosPanel();
+}
+
 function render() {
   renderKpi();
   renderMatrixTable();
@@ -1021,6 +1233,7 @@ function render() {
   renderCharts();
   renderCoverage();
   renderFullTable();
+  renderMosTab();
   // header info
   const chLabel = curChs.has('ALL') ? '5채널 합산' : [...curChs].join(' + ');
   document.getElementById('hdr-info').textContent = '기준: 2026-05 · ' + chLabel;
