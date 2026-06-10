@@ -108,6 +108,13 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-ch="SWS">SWS</button>
   <button class="fb" data-ch="Black Box">Black Box</button>
   <button class="fb" data-ch="Al Khunizan">Al Khunizan</button>
+  <div class="sep"></div>
+  <span class="fl">카테고리</span>
+  <button class="fb on" data-cat="ALL">전체</button>
+  <button class="fb" data-cat="Split AC">Split AC</button>
+  <button class="fb" data-cat="Window AC">Window AC</button>
+  <button class="fb" data-cat="Floor Standing AC">Floor Standing</button>
+  <button class="fb" data-cat="Others">Others</button>
 </div>
 
 <!-- ═══════ TAB 0: Sell-Out 현황 ═══════ -->
@@ -272,6 +279,7 @@ const PEAK = ['May','Jun','Jul','Aug','Sep'];
 // 현재 필터 상태
 let curRange = 'Jan-May';
 let curCh    = 'ALL';
+let curCat   = 'ALL';
 let mainMetric = 'so';
 let yoyMetric  = 'so';
 
@@ -279,12 +287,15 @@ let yoyMetric  = 'so';
 function getVal(yr, mo, key, ch='ALL') {
   const d = PSI_DATA.data;
   if (!d[yr]) return null;
-  if (ch === 'ALL') {
-    const v = (PSI_DATA.totals[yr] || {})[mo];
-    return v ? (v[key] ?? null) : null;
+  const base = ch === 'ALL'
+    ? (PSI_DATA.totals[yr] || {})[mo]
+    : (d[yr][ch] || {})[mo];
+  if (!base) return null;
+  // 카테고리 필터: SO/ST만 by_cat 사용 (Stock은 채널 합계 유지)
+  if (curCat !== 'ALL' && (key === 'so' || key === 'st')) {
+    return base.by_cat?.[curCat]?.[key] ?? null;
   }
-  const v = (d[yr][ch] || {})[mo];
-  return v ? (v[key] ?? null) : null;
+  return base[key] ?? null;
 }
 
 function sumRange(yr, months, key, ch='ALL') {
@@ -322,6 +333,14 @@ document.querySelectorAll('[data-ch]').forEach(btn => {
     document.querySelectorAll('[data-ch]').forEach(b => b.classList.remove('on'));
     btn.classList.add('on');
     curCh = btn.dataset.ch;
+    render();
+  });
+});
+document.querySelectorAll('[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('[data-cat]').forEach(b => b.classList.remove('on'));
+    btn.classList.add('on');
+    curCat = btn.dataset.cat;
     render();
   });
 });
@@ -605,7 +624,8 @@ function renderChBarChart() {
 // ── KPI 업데이트 ──────────────────────────────────────────────────────────
 function renderKpi() {
   const mos = RANGE_MONTHS[curRange];
-  const label = `(${mos[0]}–${mos[mos.length-1]} 2026)`;
+  const catSuffix = curCat !== 'ALL' ? ` · ${curCat}` : '';
+  const label = `(${mos[0]}–${mos[mos.length-1]} 2026${catSuffix})`;
   document.getElementById('kpi-range-label').textContent = label;
 
   const so26  = sumRange('2026', mos, 'so', curCh);
@@ -637,7 +657,7 @@ function renderKpi() {
   document.getElementById('kv-stk').textContent = fmtN(stk26);
   const yoyStk = fmtYoy(stk26, stk25);
   document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
-  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말';
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말' + (curCat !== 'ALL' ? ' · 채널 합계' : '');
   document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
 
   if (so26 && st26) {
