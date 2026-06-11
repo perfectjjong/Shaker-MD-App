@@ -88,62 +88,62 @@ tr:hover td{background:#f8fafc}
 </div>
 
 <div class="tabs">
-  <div class="tab active" data-tab="0">Sell-Out 현황</div>
-  <div class="tab" data-tab="1">MOS 분석</div>
-  <div class="tab" data-tab="2">YoY 동기 비교</div>
-  <div class="tab" data-tab="3">채널 분석</div>
-  <div class="tab" data-tab="4">데이터 현황</div>
+  <div class="tab active" data-tab="0">Overview</div>
+  <div class="tab" data-tab="1">MOS Analysis</div>
+  <div class="tab" data-tab="2">YoY Comparison</div>
+  <div class="tab" data-tab="3">Channel Analysis</div>
+  <div class="tab" data-tab="4">Data</div>
 </div>
 
 <div class="filters">
-  <span class="fl">기간</span>
+  <span class="fl">Period</span>
   <button class="fb" data-range="Q1">Q1</button>
   <button class="fb" data-range="Q2">Q2</button>
   <button class="fb on" data-range="Jan-May">Jan–May</button>
   <button class="fb" data-range="H1">H1</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
-  <span class="fl">채널</span>
-  <button class="fb on" data-ch="ALL">전체</button>
+  <span class="fl">Channel</span>
+  <button class="fb on" data-ch="ALL">All</button>
   <button class="fb" data-ch="eXtra">eXtra</button>
   <button class="fb" data-ch="Al Manea">Al Manea</button>
   <button class="fb" data-ch="SWS">SWS</button>
   <button class="fb" data-ch="Black Box">Black Box</button>
   <button class="fb" data-ch="Al Khunizan">Al Khunizan</button>
   <div class="sep"></div>
-  <span class="fl">카테고리</span>
-  <button class="fb on" data-cat="ALL">전체</button>
+  <span class="fl">Category</span>
+  <button class="fb on" data-cat="ALL">All</button>
   <button class="fb" data-cat="Split AC">Split AC</button>
   <button class="fb" data-cat="Window AC">Window AC</button>
   <button class="fb" data-cat="Floor Standing AC">Floor Standing</button>
   <button class="fb" data-cat="Others">Others</button>
 </div>
 
-<!-- ═══════ TAB 0: Sell-Out 현황 ═══════ -->
+<!-- ═══════ TAB 0: Overview ═══════ -->
 <div class="tab-content active" id="t0">
 <div class="content">
-  <div class="stitle">주요 지표 <span id="kpi-range-label" style="font-weight:400;text-transform:none"></span></div>
+  <div class="stitle">Key Metrics <span id="kpi-range-label" style="font-weight:400;text-transform:none"></span></div>
   <div class="kpi-row">
     <div class="kpi hero">
-      <div class="kl">★ Sell-Out (S) — 실판매</div>
+      <div class="kl">★ Sell-Out (S) — Channel Sales</div>
       <div class="kv" id="kv-so">—</div>
       <div class="ks"><span id="kv-so-yoy" class="yoy-up"></span> <span id="kv-so-base" style="color:var(--muted)"></span></div>
       <div class="kmini" id="kv-so-mini"></div>
     </div>
     <div class="kpi" style="border-left:3px solid #bfdbfe">
-      <div class="kl">Sell-Thru (P) — 공급</div>
+      <div class="kl">Sell-Thru (P) — Supply</div>
       <div class="kv" id="kv-st" style="font-size:18px;color:var(--st)">—</div>
       <div class="ks"><span id="kv-st-yoy"></span> <span id="kv-st-base" style="color:var(--muted)"></span></div>
       <div class="kmini" id="kv-st-mini"></div>
     </div>
     <div class="kpi" style="border-left:3px solid #fde68a">
-      <div class="kl">Stock (I) — 월말 재고</div>
+      <div class="kl">Stock (I) — Month-End Inv.</div>
       <div class="kv" id="kv-stk" style="font-size:18px;color:var(--stk)">—</div>
       <div class="ks"><span id="kv-stk-yoy"></span> <span id="kv-stk-base" style="color:var(--muted)"></span></div>
       <div class="kmini" id="kv-stk-mini"></div>
     </div>
     <div class="kpi" style="border-left:3px solid #fca5a5">
-      <div class="kl">Sell-Out 소진율 (S÷P)</div>
+      <div class="kl">Sell-Thru Rate (S÷P)</div>
       <div class="kv" id="kv-ratio" style="font-size:18px;color:var(--amber)">—</div>
       <div class="ks" id="kv-ratio-sub"></div>
       <div class="kmini" id="kv-ratio-mini"></div>
@@ -153,24 +153,24 @@ tr:hover td{background:#f8fafc}
   <!-- Main PSI Chart -->
   <div class="cc">
     <div class="ct">
-      월별 PSI 추이
+      Monthly PSI Trend
       <span style="margin-left:auto;display:flex;gap:4px">
-        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">S 막대</button>
-        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">P 선</button>
-        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">I 표시</button>
+        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">S Bar</button>
+        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">P Line</button>
+        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">I Marker</button>
       </span>
     </div>
     <div class="cd">
-      <strong style="color:var(--so)">초록 막대 = Sell-Out (주지표)</strong>
-      &nbsp;·&nbsp; 파란 점선 = Sell-Thru (공급)
-      &nbsp;·&nbsp; 회색 점선 = Stock (월말)
-      &nbsp;·&nbsp; 🏖 5~9월 피크
+      <strong style="color:var(--so)">Green bar = Sell-Out (primary)</strong>
+      &nbsp;·&nbsp; Blue dashed = Sell-Thru (supply)
+      &nbsp;·&nbsp; Gray dashed = Stock (month-end)
+      &nbsp;·&nbsp; 🏖 May~Sep Peak
     </div>
     <div class="legend">
       <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
       <span class="li"><span class="ld" style="background:var(--st);opacity:.6"></span>Sell-Thru (P)</span>
       <span class="li"><span class="ld" style="background:#94a3b8"></span>Stock (I)</span>
-      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 피크 시즌</span>
+      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 Peak Season</span>
     </div>
     <canvas id="mainChart" height="200"></canvas>
   </div>
@@ -178,9 +178,9 @@ tr:hover td{background:#f8fafc}
   <!-- Matrix Table -->
   <div class="cc">
     <div class="ct">
-      월별 × 연도 매트릭스
+      Monthly × Year Matrix
       <span style="font-size:11px;font-weight:400;color:var(--muted);margin-left:6px">
-        ※ <span style="background:var(--so-bg);padding:1px 6px;border-radius:3px;color:var(--so);font-weight:700">초록 = Sell-Out</span>
+        ※ <span style="background:var(--so-bg);padding:1px 6px;border-radius:3px;color:var(--so);font-weight:700">Green = Sell-Out</span>
       </span>
     </div>
     <div class="tbl" id="matrixTable"></div>
@@ -188,112 +188,112 @@ tr:hover td{background:#f8fafc}
 </div>
 </div>
 
-<!-- ═══════ TAB 1: YoY 동기 비교 ═══════ -->
+<!-- ═══════ TAB 1: YoY Comparison ═══════ -->
 <div class="tab-content" id="t2">
 <div class="content">
-  <div class="stitle">4개년 동기 비교</div>
+  <div class="stitle">4-Year YoY Comparison</div>
   <div class="yr-legend">
     <span class="yt" style="background:#f1f5f9;color:var(--c23)">-- 2023</span>
     <span class="yt" style="background:#eff6ff;color:var(--c24)">━ 2024</span>
     <span class="yt" style="background:#fffbeb;color:var(--c25)">━ 2025</span>
     <span class="yt" style="background:var(--so-bg);color:var(--c26)">━━ 2026</span>
-    <span style="font-size:11px;color:var(--muted);margin-left:4px">· 2026은 May까지 · 피크 시즌 음영</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:4px">· 2026 through May · Peak season shaded</span>
   </div>
   <div class="cc">
-    <div class="ct"><span style="color:var(--so)">★ Sell-Out</span> 4개년 동기 비교</div>
-    <div class="cd">채널 실판매 수량 · 2023 2024 = 점선</div>
+    <div class="ct"><span style="color:var(--so)">★ Sell-Out</span> 4-Year Comparison</div>
+    <div class="cd">Channel sales qty · 2023/2024 = dashed</div>
     <canvas id="yoyChartSO" height="200"></canvas>
   </div>
   <div class="grid2" style="margin-bottom:12px">
     <div class="cc" style="margin-bottom:0">
-      <div class="ct" style="color:var(--st)">Sell-Thru 4개년 비교</div>
-      <div class="cd" style="font-size:10px">SAP 출하 수량</div>
+      <div class="ct" style="color:var(--st)">Sell-Thru 4-Year Comparison</div>
+      <div class="cd" style="font-size:10px">SAP shipment qty</div>
       <canvas id="yoyChartST" height="180"></canvas>
     </div>
     <div class="cc" style="margin-bottom:0">
-      <div class="ct" style="color:var(--stk)">Stock 4개년 비교</div>
-      <div class="cd" style="font-size:10px">월말 채널 재고</div>
+      <div class="ct" style="color:var(--stk)">Stock 4-Year Comparison</div>
+      <div class="cd" style="font-size:10px">Month-end channel stock</div>
       <canvas id="yoyChartStk" height="180"></canvas>
     </div>
   </div>
   <div class="grid2">
     <div class="cc" style="margin-bottom:0">
-      <div class="ct">분기별 집계 (Sell-Out)</div>
+      <div class="ct">Quarterly Summary (Sell-Out)</div>
       <div class="tbl" id="qtrTable"></div>
     </div>
     <div class="cc" style="margin-bottom:0">
-      <div class="ct" id="ytd-title">YTD 비교</div>
+      <div class="ct" id="ytd-title">YTD Comparison</div>
       <canvas id="ytdChart" height="180"></canvas>
     </div>
   </div>
 </div>
 </div>
 
-<!-- ═══════ TAB 2: 채널 분석 ═══════ -->
+<!-- ═══════ TAB 2: Channel Analysis ═══════ -->
 <div class="tab-content" id="t3">
 <div class="content">
-  <div class="stitle">채널별 Sell-Out Mix 및 추이</div>
+  <div class="stitle">Channel Sell-Out Mix &amp; Trend</div>
   <div class="cc">
-    <div class="ct" id="mix-title">연도별 채널 Sell-Out Mix</div>
-    <div class="cd">기준: <strong style="color:var(--so)">Sell-Out</strong></div>
+    <div class="ct" id="mix-title">Annual Channel Sell-Out Mix</div>
+    <div class="cd">Basis: <strong style="color:var(--so)">Sell-Out</strong></div>
     <canvas id="mixChart" height="160"></canvas>
   </div>
   <div class="grid2">
     <div class="cc" style="margin-bottom:0">
-      <div class="ct" id="chbar-title">채널별 Sell-Out</div>
+      <div class="ct" id="chbar-title">Channel Sell-Out</div>
       <canvas id="chBarChart" height="200"></canvas>
     </div>
     <div class="cc" style="margin-bottom:0">
-      <div class="ct">채널 연도별 테이블</div>
+      <div class="ct">Channel Annual Table</div>
       <div class="tbl" id="chTable"></div>
     </div>
   </div>
 </div>
 </div>
 
-<!-- ═══════ TAB 3: 데이터 현황 ═══════ -->
+<!-- ═══════ TAB 3: Data ═══════ -->
 <div class="tab-content" id="t4">
 <div class="content">
-  <div class="stitle">데이터 커버리지</div>
+  <div class="stitle">Data Coverage</div>
   <div class="cc">
-    <div class="ct">연도 × 지표 가용성</div>
+    <div class="ct">Year × Metric Availability</div>
     <div id="coverageTable"></div>
     <div class="note">
-      소스: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2025/2026 OR Weekly _ALL JSON<br>
-      2023 S = SWS→S&amp;S 매핑, 2023 Stock = Ch.Stock(월말) 기준
+      Source: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2025/2026 OR Weekly _ALL JSON<br>
+      2023 S = SWS→S&amp;S mapping, 2023 Stock = Ch.Stock (month-end)
     </div>
   </div>
   <div class="cc" style="margin-top:0">
-    <div class="ct">연도별 Full PSI 테이블</div>
+    <div class="ct">Annual Full PSI Table</div>
     <div class="tbl" id="fullTable"></div>
   </div>
 </div>
 </div>
 
-<!-- ═══════ TAB 4: MOS 분석 ═══════ -->
+<!-- ═══════ TAB 4: MOS Analysis ═══════ -->
 <div class="tab-content" id="t1">
 <div class="content">
-  <div class="stitle">MOS 분석 <span style="font-weight:400;font-size:12px;color:var(--muted)">(Month of Stock)</span></div>
+  <div class="stitle">MOS Analysis <span style="font-weight:400;font-size:12px;color:var(--muted)">(Month of Stock)</span></div>
   <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
     <button class="fb on" id="mos-fwd-btn" onclick="setMosMode('fwd',this)">MOS+2 (Forward)</button>
     <button class="fb" id="mos-bwd-btn" onclick="setMosMode('bwd',this)">MOS-2 (Backward)</button>
     <span style="font-size:11px;color:var(--muted)">
-      MOS+2 = 월말재고 ÷ avg(다음 2개월 SO) &nbsp;|&nbsp; MOS-2 = 월말재고 ÷ avg(이번+직전 월 SO)
+      MOS+2 = Month-end stock ÷ avg(next 2mo SO) &nbsp;|&nbsp; MOS-2 = Month-end stock ÷ avg(current+prior mo SO)
     </span>
   </div>
   <div class="cc">
-    <div class="ct" id="mos-chart-title">MOS+2 추이 — 월말재고 ÷ avg(다음 2개월 SO)</div>
+    <div class="ct" id="mos-chart-title">MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)</div>
     <div style="position:relative;height:320px"><canvas id="mosChart"></canvas></div>
     <div class="note" style="margin-top:6px">
-      기준선: <span style="color:#ef4444;font-weight:700">─ ─ 1.5 재고부족</span> &nbsp;
-      <span style="color:#059669;font-weight:700">─ ─ 2.0 적정</span> &nbsp;
-      <span style="color:#d97706;font-weight:700">─ ─ 2.5 재고주의</span> &nbsp;|&nbsp;
-      2026 MOS+2는 Jun/Jul 실적 미확보 시 null (역산 패널 참고)
+      Reference: <span style="color:#ef4444;font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
+      <span style="color:#059669;font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
+      <span style="color:#d97706;font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
+      2026 MOS+2 is null if Jun/Jul actuals unavailable (see back-calc panel)
     </div>
   </div>
   <div class="cc" style="margin-top:0">
-    <div class="ct">📐 2026 Jun/Jul Sell-Out 목표 역산
-      <span style="font-weight:400;font-size:11px;color:var(--muted)">— May-26 월말재고 기준 MOS+2 달성 시나리오</span>
+    <div class="ct">📐 2026 Jun/Jul Sell-Out Back-Calculation
+      <span style="font-weight:400;font-size:11px;color:var(--muted)">— MOS+2 target scenarios based on May-26 stock</span>
     </div>
     <div id="mosPanel"></div>
   </div>
@@ -634,7 +634,7 @@ function renderMainChart() {
         y: {
           grid:{color:'#f1f5f9'},
           ticks:{font:{size:11}, callback: v => fmtN(v)},
-          title:{display:true, text:'수량 (EA)', font:{size:10}, color:'var(--muted)'},
+          title:{display:true, text:'Qty (EA)', font:{size:10}, color:'var(--muted)'},
         },
         ystk: {
           position:'right',
@@ -707,7 +707,7 @@ function renderYoyChart() {
 function renderYtdChart() {
   const mos = RANGE_MONTHS[curRange];
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
-  document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out 비교`;
+  document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out Comparison`;
   const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so'));
   const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
 
@@ -739,7 +739,7 @@ function renderYtdChart() {
 function renderMixChart() {
   const mos = RANGE_MONTHS[curRange];
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
-  document.getElementById('mix-title').textContent = `연도별 채널 Sell-Out Mix (${rangeLabel})`;
+  document.getElementById('mix-title').textContent = `Annual Channel Sell-Out Mix (${rangeLabel})`;
   const datasets = CHS.map((ch, ci) => {
     const colors = ['#2563eb','#0ea5e9','#8b5cf6','#f59e0b','#10b981'];
     return {
@@ -774,7 +774,7 @@ function renderMixChart() {
 function renderChBarChart() {
   const mos = RANGE_MONTHS[curRange];
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
-  document.getElementById('chbar-title').textContent = `채널별 ${rangeLabel} Sell-Out`;
+  document.getElementById('chbar-title').textContent = `Channel ${rangeLabel} Sell-Out`;
   const data26 = CHS.map(ch => sumRange('2026', mos, 'so', ch) || 0);
   const data25 = CHS.map(ch => sumRange('2025', mos, 'so', ch) || 0);
 
@@ -837,14 +837,14 @@ function renderKpi() {
   document.getElementById('kv-stk').textContent = fmtN(stk26);
   const yoyStk = fmtYoy(stk26, stk25);
   document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
-  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 월말' + (!curCats.has('ALL') ? ' · 채널 합계' : '');
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM' + (!curCats.has('ALL') ? ' · channel total' : '');
   document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
 
   if (so26 && st26) {
     const ratio = (so26 / st26 * 100).toFixed(1);
     document.getElementById('kv-ratio').textContent = ratio + '%';
-    const msg = ratio < 80 ? '⚠ 채널 재고 적체 주의' :
-                ratio < 95 ? '채널 소화 양호' : '✓ 공급=소화 균형';
+    const msg = ratio < 80 ? '⚠ Channel overstock warning' :
+                ratio < 95 ? 'Channel absorption healthy' : '✓ Supply=absorption balanced';
     const col = ratio < 80 ? '#ef4444' : ratio < 95 ? '#f59e0b' : '#10b981';
     document.getElementById('kv-ratio-sub').innerHTML = `<span style="color:${col}">${msg}</span>`;
     document.getElementById('kv-ratio-mini').innerHTML =
@@ -905,7 +905,7 @@ function renderMatrixTable() {
   rows.push(yoyRow('so', 'var(--so-dk)', '#d1fae5', 'sum'));
 
   // P 행 (Sell-Thru)
-  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — 공급</td></tr>`);
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — Supply</td></tr>`);
   for (const yr of YEARS) {
     let tds = `<td class="l" style="color:var(--st)">${yr}</td>`;
     let ytd = 0;
@@ -921,7 +921,7 @@ function renderMatrixTable() {
   rows.push(yoyRow('st', 'var(--st)', '#dbeafe', 'sum'));
 
   // I 행 (Stock 월말)
-  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — 월말 재고</td></tr>`);
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — Month-End Inv.</td></tr>`);
   for (const yr of YEARS) {
     let tds = `<td class="l" style="color:var(--stk)">${yr}</td>`;
     for (const mo of mos) {
@@ -937,7 +937,7 @@ function renderMatrixTable() {
   const thMos = mos.map(m => `<th>${m}</th>`).join('');
   document.getElementById('matrixTable').innerHTML = `
     <table>
-      <thead><tr><th class="l">지표/연도</th>${thMos}<th>YTD</th></tr></thead>
+      <thead><tr><th class="l">Metric/Year</th>${thMos}<th>YTD</th></tr></thead>
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
@@ -976,7 +976,7 @@ function renderQtrTable() {
 
   document.getElementById('qtrTable').innerHTML = `
     <table>
-      <thead><tr><th class="l">분기</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <thead><tr><th class="l">Quarter</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
@@ -996,7 +996,7 @@ function renderChTable() {
   });
   document.getElementById('chTable').innerHTML = `
     <table>
-      <thead><tr><th class="l">채널</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <thead><tr><th class="l">Channel</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
@@ -1016,7 +1016,7 @@ function renderCoverage() {
       const ok = available >= total;
       return `<td style="text-align:center">
         <span style="background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
-          ${ok?'✓ 완전':'⚠ '+available+'/'+total}
+          ${ok?'✓ Complete':'⚠ '+available+'/'+total}
         </span>
       </td>`;
     }).join('');
@@ -1024,7 +1024,7 @@ function renderCoverage() {
   });
   document.getElementById('coverageTable').innerHTML = `
     <table>
-      <thead><tr><th class="l">지표</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}</tr></thead>
+      <thead><tr><th class="l">Metric</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}</tr></thead>
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
@@ -1045,7 +1045,7 @@ function renderFullTable() {
   const thMos = mos.map(m=>`<th>${m}</th>`).join('');
   document.getElementById('fullTable').innerHTML = `
     <table>
-      <thead><tr><th class="l">연도/지표</th>${thMos}</tr></thead>
+      <thead><tr><th class="l">Year/Metric</th>${thMos}</tr></thead>
       <tbody>${rows.join('')}</tbody>
     </table>`;
 }
@@ -1092,8 +1092,8 @@ function calcMOS(yr, mo, fwd) {
 function renderMosChart() {
   const fwd = mosMode === 'fwd';
   document.getElementById('mos-chart-title').textContent = fwd
-    ? 'MOS+2 추이 — 월말재고 ÷ avg(다음 2개월 SO)'
-    : 'MOS-2 추이 — 월말재고 ÷ avg(이번+직전 월 SO)';
+    ? 'MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)'
+    : 'MOS-2 Trend — Month-end stock ÷ avg(current+prior mo SO)';
 
   const yrStyles = {
     '2023': {color:'#94a3b8', w:1.5, r:2},
@@ -1125,21 +1125,21 @@ function renderMosChart() {
       };
     }),
     {
-      label: '재고부족 (1.5)',
+      label: 'Low Stock (1.5)',
       data: MONTHS.map(() => 1.5),
       borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
       datalabels: {display: false},
     },
     {
-      label: '적정 (2.0)',
+      label: 'Optimal (2.0)',
       data: MONTHS.map(() => 2.0),
       borderColor: '#059669', borderWidth: 1.8, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
       datalabels: {display: false},
     },
     {
-      label: '재고주의 (2.5)',
+      label: 'Overstock (2.5)',
       data: MONTHS.map(() => 2.5),
       borderColor: '#d97706', borderWidth: 1.5, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
@@ -1169,7 +1169,7 @@ function renderMosChart() {
           min: 0,
           grid: {color:'#f1f5f9'},
           ticks: {font:{size:11}, callback: v => v.toFixed(1)},
-          title: {display:true, text:'MOS (개월)', font:{size:10}, color:'var(--muted)'},
+          title: {display:true, text:'MOS (months)', font:{size:10}, color:'var(--muted)'},
         },
       },
     },
@@ -1181,11 +1181,11 @@ function renderMosPanel() {
   const stk26 = getVal('2026', 'May', 'stk');
   const so25Jun = getVal('2025', 'Jun', 'so');
   const so25Jul = getVal('2025', 'Jul', 'so');
-  const chLabel = curChs.has('ALL') ? '5채널 합산' : [...curChs].join(' + ');
+  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
 
   if (stk26 === null) {
     document.getElementById('mosPanel').innerHTML =
-      `<p style="color:var(--muted);padding:12px">May-26 재고 데이터 없음 (${chLabel})</p>`;
+      `<p style="color:var(--muted);padding:12px">May-26 stock data unavailable (${chLabel})</p>`;
     return;
   }
 
@@ -1200,9 +1200,9 @@ function renderMosPanel() {
   };
 
   const targets = [
-    {mos:1.5, label:'1.5 — 재고부족 경계', color:'#ef4444', bg:'#fef2f2'},
-    {mos:2.0, label:'2.0 — 적정',          color:'#059669', bg:'#f0fdf4'},
-    {mos:2.5, label:'2.5 — 재고주의 상한',  color:'#d97706', bg:'#fffbeb'},
+    {mos:1.5, label:'1.5 — Low stock threshold', color:'#ef4444', bg:'#fef2f2'},
+    {mos:2.0, label:'2.0 — Optimal',             color:'#059669', bg:'#f0fdf4'},
+    {mos:2.5, label:'2.5 — Overstock threshold', color:'#d97706', bg:'#fffbeb'},
   ];
 
   const rows = targets.map(t => {
@@ -1219,11 +1219,11 @@ function renderMosPanel() {
 
   const ratioNote = totalSo25
     ? `2025 Jun:Jul = ${(ratioJun*100).toFixed(0)}%:${(ratioJul*100).toFixed(0)}% · Jun ${fmtN(so25Jun)}, Jul ${fmtN(so25Jul)}`
-    : '2025 Jun/Jul 실적 없음 — 50:50 균등 배분';
+    : 'No 2025 Jun/Jul actuals — 50:50 equal split';
 
   document.getElementById('mosPanel').innerHTML = `
     <div style="margin-bottom:10px">
-      <span style="font-weight:700;font-size:14px">May-26 재고: ${fmtN(stk26)} EA</span>
+      <span style="font-weight:700;font-size:14px">May-26 Stock: ${fmtN(stk26)} EA</span>
       <span style="color:var(--muted);font-size:12px;margin-left:8px">${chLabel}</span>
       <span style="color:var(--muted);font-size:11px;margin-left:12px">· ${ratioNote}</span>
     </div>
@@ -1231,18 +1231,18 @@ function renderMosPanel() {
     <table>
       <thead>
         <tr>
-          <th class="l">MOS 목표</th>
-          <th style="text-align:right">필요 월평균 SO</th>
-          <th style="text-align:right">Jun-26 목표</th>
-          <th style="text-align:right">Jul-26 목표</th>
+          <th class="l">MOS Target</th>
+          <th style="text-align:right">Req. Monthly SO</th>
+          <th style="text-align:right">Jun-26 Target</th>
+          <th style="text-align:right">Jul-26 Target</th>
         </tr>
       </thead>
       <tbody>${rows.join('')}</tbody>
     </table>
     </div>
     <div class="note" style="margin-top:8px">
-      공식: 필요 월평균 SO = May재고 ÷ MOS목표 &nbsp;|&nbsp; Jun/Jul 배분: 2025 실적 비율 적용<br>
-      MOS+2(May-26) = May-26 재고 ÷ avg(Jun-26 SO, Jul-26 SO)
+      Formula: Req. monthly SO = May stock ÷ MOS target &nbsp;|&nbsp; Jun/Jul split: based on 2025 actuals ratio<br>
+      MOS+2(May-26) = May-26 stock ÷ avg(Jun-26 SO, Jul-26 SO)
     </div>`;
 }
 
@@ -1261,8 +1261,8 @@ function render() {
   renderFullTable();
   renderMosTab();
   // header info
-  const chLabel = curChs.has('ALL') ? '5채널 합산' : [...curChs].join(' + ');
-  document.getElementById('hdr-info').textContent = '기준: 2026-05 · ' + chLabel;
+  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
+  document.getElementById('hdr-info').textContent = 'As of 2026-05 · ' + chLabel;
 }
 
 render();
