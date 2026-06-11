@@ -649,7 +649,8 @@ function renderMainChart() {
   applyMainVisibility();
 }
 
-function _yoyLineDatasets(key) {
+function _yoyLineDatasets(key, mos) {
+  mos = mos || MONTHS;
   const styles = {
     '2023': {border:'#94a3b8', width:1.8, dash:[5,3], r:3},
     '2024': {border:'#60a5fa', width:2.2, dash:[6,2], r:3},
@@ -660,7 +661,7 @@ function _yoyLineDatasets(key) {
     const s = styles[yr];
     return {
       label: yr,
-      data: MONTHS.map(mo => getVal(yr, mo, key)),
+      data: mos.map(mo => getVal(yr, mo, key)),
       borderColor: s.border,
       backgroundColor: s.border.replace(')', ',.08)').replace('rgb','rgba'),
       borderWidth: s.width,
@@ -674,6 +675,7 @@ function _yoyLineDatasets(key) {
 }
 
 function renderYoyChart() {
+  const mos = RANGE_MONTHS[curRange];
   const baseOpts = {
     responsive: true,
     interaction: {mode:'index', intersect:false},
@@ -688,16 +690,16 @@ function renderYoyChart() {
   };
 
   mkChart('yoyChartSO', {
-    type:'line', data:{labels:MONTHS, datasets:_yoyLineDatasets('so')},
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('so', mos)},
     options: baseOpts, plugins:[PEAK_PLUGIN],
   });
   mkChart('yoyChartST', {
-    type:'line', data:{labels:MONTHS, datasets:_yoyLineDatasets('st')},
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('st', mos)},
     options: {...baseOpts, plugins:{...baseOpts.plugins, legend:{...baseOpts.plugins.legend, labels:{...baseOpts.plugins.legend.labels, color:'#2563eb'}}}},
     plugins:[PEAK_PLUGIN],
   });
   mkChart('yoyChartStk', {
-    type:'line', data:{labels:MONTHS, datasets:_yoyLineDatasets('stk')},
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('stk', mos)},
     options: baseOpts, plugins:[PEAK_PLUGIN],
   });
 }
