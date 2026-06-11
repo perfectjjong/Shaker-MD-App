@@ -328,7 +328,7 @@ let yoyMetric  = 'so';
 function getVal(yr, mo, key, ch) {
   const d = PSI_DATA.data;
   if (!d[yr]) return null;
-  const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st');
+  const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st' || key === 'stk');
 
   function fromBase(base) {
     if (!base) return null;
@@ -358,7 +358,18 @@ function getVal(yr, mo, key, ch) {
   if (key === 'stk') {
     let sum = null;
     for (const chn of curChs) {
-      const v = (d[yr][chn] || {})[mo]?.stk;
+      const base = (d[yr][chn] || {})[mo];
+      let v;
+      if (useCat) {
+        let catSum = null;
+        for (const c of curCats) {
+          const cv = base?.by_cat?.[c]?.stk;
+          if (cv !== null && cv !== undefined) catSum = (catSum ?? 0) + cv;
+        }
+        v = catSum;
+      } else {
+        v = base?.stk;
+      }
       if (v !== null && v !== undefined) sum = (sum ?? 0) + v;
     }
     return sum;
