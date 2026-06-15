@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="psi_data.js"></script>
+<script src="psi_model_table.js"></script>
 <style>
 :root{
   --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
@@ -93,6 +94,7 @@ tr:hover td{background:#f8fafc}
   <div class="tab" data-tab="2">YoY Comparison</div>
   <div class="tab" data-tab="3">Channel Analysis</div>
   <div class="tab" data-tab="4">Data</div>
+  <div class="tab" data-tab="5">Model Table</div>
 </div>
 
 <div class="filters">
@@ -266,6 +268,42 @@ tr:hover td{background:#f8fafc}
   <div class="cc" style="margin-top:0">
     <div class="ct">Annual Full PSI Table</div>
     <div class="tbl" id="fullTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 5: Model Table (May 2026 P/S/I 모델별 채널별) ═══════ -->
+<div class="tab-content" id="t5">
+<div class="content">
+  <div class="stitle" id="mtTitle">Model × Channel — P/S/I Matrix</div>
+  <div class="cc">
+    <div class="ct" id="mtSubtitle">May 2026 — 5채널 모델별 통합 시트</div>
+    <div class="cd" id="mtSources"></div>
+    <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
+      <span class="fl">Category:</span>
+      <button class="fb on" data-cat="ALL">ALL</button>
+      <button class="fb" data-cat="Split AC">Split AC</button>
+      <button class="fb" data-cat="Window">Window</button>
+      <button class="fb" data-cat="Free Standing">Floor Standing</button>
+      <button class="fb" data-cat="Concealed">Concealed</button>
+      <button class="fb" data-cat="Cassette">Cassette</button>
+      <span class="sep"></span>
+      <span class="fl">Sort:</span>
+      <select id="mtSort" class="fb" style="cursor:pointer">
+        <option value="cat">Category 순</option>
+        <option value="so">S(Sell-Out) ↓</option>
+        <option value="st">P(Sell-Thru) ↓</option>
+        <option value="stk">I(Stock) ↓</option>
+      </select>
+      <input id="mtSearch" class="fb" placeholder="모델 검색…" style="cursor:text;width:160px">
+    </div>
+    <div class="tbl" id="modelTable"></div>
+    <div class="note" id="mtFooter"></div>
+  </div>
+  <div class="cc" id="unmappedCard" style="margin-top:12px;display:none">
+    <div class="ct">⚠️ 미매핑 모델 (v6 마스터 등재 필요)</div>
+    <div class="cd">자동 매핑 fallback 거친 후에도 매핑 안 된 raw 코드. ODU는 IDU only 정책으로 자동 제외(미매핑 아님).</div>
+    <div class="tbl" id="unmappedTable"></div>
   </div>
 </div>
 </div>
@@ -1266,6 +1304,149 @@ function render() {
 }
 
 render();
+
+// ═══════ TAB 5: Model Table (May 2026 P/S/I 매트릭스) ═══════
+(function() {
+  if (typeof PSI_MODEL_TABLE === 'undefined') return;
+  const D = PSI_MODEL_TABLE;
+  const CHS = D.channels;
+  const CH_SHORT = {'eXtra':'eXtra','Al Manea':'AM','SWS':'SWS','Black Box':'BB','Al Khunizan':'AK'};
+
+  // subtitle + sources
+  document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5채널 모델별 P/S/I 통합 시트 (생성: ' + D.generated + ')';
+  document.getElementById('mtSources').innerHTML =
+    '<b>P</b>(Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
+    '<b>S</b>(Sell-Out): ' + (D.sources?.SO || '') + '<br>' +
+    '<b>I</b>(Stock): ' + (D.sources?.STK || '');
+
+  let curCat = 'ALL';
+  let curSort = 'cat';
+  let curSearch = '';
+
+  function fmt(n) { return n === 0 ? '<span class="null">·</span>' : n.toLocaleString(); }
+
+  function filterRows() {
+    let rows = D.rows.slice();
+    if (curCat !== 'ALL') rows = rows.filter(r => r.category === curCat);
+    if (curSearch) {
+      const q = curSearch.toUpperCase();
+      rows = rows.filter(r => (r.std + ' ' + r.unified).toUpperCase().includes(q));
+    }
+    if (curSort === 'so') rows.sort((a,b) => b.so_total - a.so_total);
+    else if (curSort === 'st') rows.sort((a,b) => b.st_total - a.st_total);
+    else if (curSort === 'stk') rows.sort((a,b) => b.stk_total - a.stk_total);
+    return rows;
+  }
+
+  function renderTable() {
+    const rows = filterRows();
+    let html = '<table>';
+    // Header row 1: 채널 그룹
+    html += '<tr><th rowspan="2" class="l">Model</th><th rowspan="2">Category</th><th rowspan="2">BTU</th><th rowspan="2">H/C</th>';
+    CHS.forEach(ch => {
+      html += '<th colspan="3" style="background:#334155">' + CH_SHORT[ch] + '</th>';
+    });
+    html += '<th colspan="3" style="background:var(--so);color:#fff">TOTAL</th></tr>';
+    // Header row 2: P/S/I
+    html += '<tr>';
+    for (let i = 0; i < CHS.length + 1; i++) {
+      html += '<th style="background:#1e40af;font-size:10px">P</th>';
+      html += '<th style="background:var(--so-dk);font-size:10px">S</th>';
+      html += '<th style="background:#92400e;font-size:10px">I</th>';
+    }
+    html += '</tr>';
+
+    if (rows.length === 0) {
+      html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="padding:20px;color:var(--muted)">필터 결과 없음</td></tr>';
+    } else {
+      let lastCat = '';
+      rows.forEach(r => {
+        if (curSort === 'cat' && r.category !== lastCat) {
+          lastCat = r.category;
+          html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="background:#e2e8f0;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
+        }
+        html += '<tr>';
+        html += '<td class="l">' + r.std + (r.unified !== r.std ? ' <span style="color:var(--muted);font-weight:400">→ ' + r.unified + '</span>' : '') + '</td>';
+        html += '<td>' + (r.category || '') + '</td><td>' + (r.btu || '') + '</td><td style="font-size:10px">' + (r.hc || '') + '</td>';
+        CHS.forEach(ch => {
+          html += '<td>' + fmt(r.st[ch] || 0) + '</td>';
+          html += '<td style="background:var(--so-bg)">' + fmt(r.so[ch] || 0) + '</td>';
+          html += '<td>' + fmt(r.stk[ch] || 0) + '</td>';
+        });
+        html += '<td style="font-weight:700;color:#1e40af">' + fmt(r.st_total) + '</td>';
+        html += '<td style="font-weight:700;color:var(--so-dk);background:var(--so-bg)">' + fmt(r.so_total) + '</td>';
+        html += '<td style="font-weight:700;color:#92400e">' + fmt(r.stk_total) + '</td>';
+        html += '</tr>';
+      });
+      // 합계 row
+      const t = D.totals;
+      html += '<tr style="background:#1a1f36;color:#fff;font-weight:700">';
+      html += '<td class="l" style="background:#1a1f36;color:#fff" colspan="4">합계 (' + rows.length + '/' + D.totals.models + ' 모델)</td>';
+      CHS.forEach(ch => {
+        html += '<td>' + (t.st_by_ch[ch]||0).toLocaleString() + '</td>';
+        html += '<td>' + (t.so_by_ch[ch]||0).toLocaleString() + '</td>';
+        html += '<td>' + (t.stk_by_ch[ch]||0).toLocaleString() + '</td>';
+      });
+      html += '<td>' + t.st_grand.toLocaleString() + '</td>';
+      html += '<td>' + t.so_grand.toLocaleString() + '</td>';
+      html += '<td>' + t.stk_grand.toLocaleString() + '</td>';
+      html += '</tr>';
+    }
+    html += '</table>';
+    document.getElementById('modelTable').innerHTML = html;
+
+    document.getElementById('mtFooter').innerHTML =
+      'P=Sell-Thru(SAP raw IDU) · S=Sell-Out(채널 raw) · I=Stock(월말). ' +
+      '필터: ' + rows.length + '개 행 표시 (전체 ' + D.totals.models + '모델)';
+  }
+
+  function renderUnmapped() {
+    const um = D.unmapped || {};
+    const sections = [];
+    ['st','so','stk'].forEach(k => {
+      const data = um[k];
+      if (!data || Object.keys(data).length === 0) return;
+      const label = {st:'ST 미매핑 (SAP raw)', so:'SO 미매핑 (채널 raw)', stk:'Stock 미매핑 (채널 raw)'}[k];
+      let inner = '<div class="ct" style="font-size:12px;margin-top:8px">' + label + '</div>';
+      inner += '<table><tr><th class="l">Channel</th><th class="l">Raw Code</th><th>Qty</th></tr>';
+      Object.entries(data).forEach(([ch, items]) => {
+        const arr = Array.isArray(items) ? items : Object.entries(items);
+        arr.forEach(([code, qty]) => {
+          inner += '<tr><td class="l">' + ch + '</td><td class="l">' + code + '</td><td>' + qty + '</td></tr>';
+        });
+      });
+      inner += '</table>';
+      sections.push(inner);
+    });
+    if (sections.length === 0) {
+      document.getElementById('unmappedCard').style.display = 'none';
+    } else {
+      document.getElementById('unmappedCard').style.display = '';
+      document.getElementById('unmappedTable').innerHTML = sections.join('');
+    }
+  }
+
+  // 이벤트 바인딩
+  document.querySelectorAll('#t5 [data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#t5 [data-cat]').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      curCat = btn.dataset.cat;
+      renderTable();
+    });
+  });
+  document.getElementById('mtSort').addEventListener('change', e => {
+    curSort = e.target.value;
+    renderTable();
+  });
+  document.getElementById('mtSearch').addEventListener('input', e => {
+    curSearch = e.target.value.trim();
+    renderTable();
+  });
+
+  renderTable();
+  renderUnmapped();
+})();
 </script>
 </body>
 </html>
