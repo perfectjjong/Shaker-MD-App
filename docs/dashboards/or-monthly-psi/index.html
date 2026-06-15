@@ -273,12 +273,12 @@ tr:hover td{background:#f8fafc}
 </div>
 </div>
 
-<!-- ═══════ TAB 5: Model Table (May 2026 P/S/I 모델별 채널별) ═══════ -->
+<!-- ═══════ TAB 5: Model Table (May 2026 P/S/I model × channel) ═══════ -->
 <div class="tab-content" id="t5">
 <div class="content">
   <div class="stitle" id="mtTitle">Model × Channel — P/S/I Matrix</div>
   <div class="cc">
-    <div class="ct" id="mtSubtitle">May 2026 — 5채널 모델별 통합 시트</div>
+    <div class="ct" id="mtSubtitle">May 2026 — 5-Channel Model-Level Unified Sheet</div>
     <div class="cd" id="mtSources"></div>
     <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Category:</span>
@@ -291,30 +291,30 @@ tr:hover td{background:#f8fafc}
       <span class="sep"></span>
       <span class="fl">Sort:</span>
       <select id="mtSort" class="fb" style="cursor:pointer">
-        <option value="cat">Category 순</option>
-        <option value="so">S(Sell-Out) ↓</option>
-        <option value="st">P(Sell-Thru) ↓</option>
-        <option value="stk">I(Stock) ↓</option>
+        <option value="cat">By Category</option>
+        <option value="so">S (Sell-Out) ↓</option>
+        <option value="st">P (Sell-Thru) ↓</option>
+        <option value="stk">I (Stock) ↓</option>
       </select>
-      <input id="mtSearch" class="fb" placeholder="모델 검색…" style="cursor:text;width:160px">
+      <input id="mtSearch" class="fb" placeholder="Search model…" style="cursor:text;width:160px">
     </div>
     <div class="tbl" id="modelTable"></div>
     <div class="note" id="mtFooter"></div>
   </div>
   <div class="cc" id="unmappedCard" style="margin-top:12px;display:none">
-    <div class="ct">⚠️ 미매핑 모델 (v6 마스터 등재 필요)</div>
-    <div class="cd">자동 매핑 fallback 거친 후에도 매핑 안 된 raw 코드. ODU는 IDU only 정책으로 자동 제외(미매핑 아님).</div>
+    <div class="ct">⚠️ Unmapped Models (v6 Master Registration Required)</div>
+    <div class="cd">Raw codes that remain unmapped after the automatic fallback chain. ODU is auto-excluded under the IDU-only policy (not counted as unmapped).</div>
     <div class="tbl" id="unmappedTable"></div>
   </div>
 </div>
 </div>
 
-<!-- ═══════ TAB 6: MOS-2 Action (Low/Over Stock 액션 분석) ═══════ -->
+<!-- ═══════ TAB 6: MOS-2 Action Plan ═══════ -->
 <div class="tab-content" id="t6">
 <div class="content">
-  <div class="stitle">MOS-2 Action Plan — 5월말 기준 채널별 모델 분류</div>
+  <div class="stitle">MOS-2 Action Plan — Channel-by-Model Classification (May Month-End)</div>
   <div class="cc">
-    <div class="ct">목적: 공급/프로모션 의사결정 (모델 단위)</div>
+    <div class="ct">Purpose: Supply &amp; Promotion Decisions (Model-Level)</div>
     <div class="cd" id="m2Meta"></div>
     <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Channel:</span>
@@ -327,25 +327,25 @@ tr:hover td{background:#f8fafc}
     <div id="m2Summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
     <div class="grid2" style="gap:14px">
       <div>
-        <div class="ct" style="color:#dc2626">🔴 LOW STOCK — 공급 증대 필요 <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">MOS-2 &lt; 1.0 (1개월 미만 재고). 시즌 본격 진입 — 즉시 공급 보충 권고</div>
+        <div class="ct" style="color:#dc2626">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">MOS-2 &lt; 1.0 (less than 1 month of cover). Peak season — immediate replenishment recommended.</div>
         <div class="tbl" id="lowTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#d97706">🟡 OVER STOCK — 프로모션 권고 <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">MOS-2 &gt; 3.0 (3개월 초과). 회전 둔화 — 가격 인하/번들/캠페인 검토</div>
+        <div class="ct" style="color:#d97706">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">MOS-2 &gt; 3.0 (over 3 months of cover). Slow rotation — review price-cut / bundle / campaign.</div>
         <div class="tbl" id="overTable"></div>
       </div>
     </div>
     <div class="grid2" style="gap:14px;margin-top:14px">
       <div>
-        <div class="ct" style="color:#7c2d12">⚠️ OUT OF STOCK — 즉시 보충 <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">Stock 0 + SO &gt; 0 (5월 판매 있는데 재고 없음). 가장 높은 우선순위 공급 대상</div>
+        <div class="ct" style="color:#7c2d12">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">Stock = 0 with May SO &gt; 0 (selling but no stock). Highest-priority supply target.</div>
         <div class="tbl" id="oosTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#475569">🐌 SLOW MOVER — Dead Stock 검토 <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">SO 4월+5월 = 0 + Stock &gt; 0. 판매 없는 재고 — 단종/할인/반품 검토</div>
+        <div class="ct" style="color:#475569">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">Apr + May SO = 0 with Stock &gt; 0. No recent sales — review discontinue / discount / return.</div>
         <div class="tbl" id="slowTable"></div>
       </div>
     </div>
@@ -1358,11 +1358,11 @@ render();
   const CH_SHORT = {'eXtra':'eXtra','Al Manea':'AM','SWS':'SWS','Black Box':'BB','Al Khunizan':'AK'};
 
   // subtitle + sources
-  document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5채널 모델별 P/S/I 통합 시트 (생성: ' + D.generated + ')';
+  document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5-Channel Model-Level P/S/I Matrix (generated: ' + D.generated + ')';
   document.getElementById('mtSources').innerHTML =
-    '<b>P</b>(Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
-    '<b>S</b>(Sell-Out): ' + (D.sources?.SO || '') + '<br>' +
-    '<b>I</b>(Stock): ' + (D.sources?.STK || '');
+    '<b>P</b> (Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
+    '<b>S</b> (Sell-Out): ' + (D.sources?.SO || '') + '<br>' +
+    '<b>I</b> (Stock): ' + (D.sources?.STK || '');
 
   let curCat = 'ALL';
   let curSort = 'cat';
@@ -1402,7 +1402,7 @@ render();
     html += '</tr>';
 
     if (rows.length === 0) {
-      html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="padding:20px;color:var(--muted)">필터 결과 없음</td></tr>';
+      html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="padding:20px;color:var(--muted)">No models match the current filter</td></tr>';
     } else {
       let lastCat = '';
       rows.forEach(r => {
@@ -1426,7 +1426,7 @@ render();
       // 합계 row
       const t = D.totals;
       html += '<tr style="background:#1a1f36;color:#fff;font-weight:700">';
-      html += '<td class="l" style="background:#1a1f36;color:#fff" colspan="4">합계 (' + rows.length + '/' + D.totals.models + ' 모델)</td>';
+      html += '<td class="l" style="background:#1a1f36;color:#fff" colspan="4">Total (' + rows.length + '/' + D.totals.models + ' models)</td>';
       CHS.forEach(ch => {
         html += '<td>' + (t.st_by_ch[ch]||0).toLocaleString() + '</td>';
         html += '<td>' + (t.so_by_ch[ch]||0).toLocaleString() + '</td>';
@@ -1441,8 +1441,8 @@ render();
     document.getElementById('modelTable').innerHTML = html;
 
     document.getElementById('mtFooter').innerHTML =
-      'P=Sell-Thru(SAP raw IDU) · S=Sell-Out(채널 raw) · I=Stock(월말). ' +
-      '필터: ' + rows.length + '개 행 표시 (전체 ' + D.totals.models + '모델)';
+      'P=Sell-Thru (SAP raw IDU) · S=Sell-Out (channel raw) · I=Stock (month-end). ' +
+      'Filter: ' + rows.length + ' rows shown (total ' + D.totals.models + ' models)';
   }
 
   function renderUnmapped() {
@@ -1451,7 +1451,7 @@ render();
     ['st','so','stk'].forEach(k => {
       const data = um[k];
       if (!data || Object.keys(data).length === 0) return;
-      const label = {st:'ST 미매핑 (SAP raw)', so:'SO 미매핑 (채널 raw)', stk:'Stock 미매핑 (채널 raw)'}[k];
+      const label = {st:'ST Unmapped (SAP raw)', so:'SO Unmapped (channel raw)', stk:'Stock Unmapped (channel raw)'}[k];
       let inner = '<div class="ct" style="font-size:12px;margin-top:8px">' + label + '</div>';
       inner += '<table><tr><th class="l">Channel</th><th class="l">Raw Code</th><th>Qty</th></tr>';
       Object.entries(data).forEach(([ch, items]) => {
@@ -1499,8 +1499,8 @@ render();
   const D = PSI_MODEL_TABLE;
   const TH = D.mos_thresholds;
   document.getElementById('m2Meta').innerHTML =
-    `기준일: 2026-05-31 (월말) · 분류 임계값: LOW &lt; ${TH.low} / OVER &gt; ${TH.over} · ` +
-    `MOS-2 = (5월말 Stock) ÷ ((4월 SO + 5월 SO)/2)`;
+    `As of: 2026-05-31 (month-end) · Thresholds: LOW &lt; ${TH.low} / OVER &gt; ${TH.over} · ` +
+    `MOS-2 = (May-end Stock) ÷ ((Apr SO + May SO) / 2)`;
 
   let curCh = 'eXtra';
 
@@ -1513,15 +1513,15 @@ render();
 
   function renderTable(items, kind) {
     if (!items.length) {
-      return '<div class="note" style="border-left-color:#cbd5e1">해당 모델 없음</div>';
+      return '<div class="note" style="border-left-color:#cbd5e1">No models in this category</div>';
     }
-    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>BTU</th><th>4월 SO</th><th>5월 SO</th><th>Avg SO</th><th>Stock</th><th>MOS-2</th><th>액션</th></tr>';
+    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>BTU</th><th>Apr SO</th><th>May SO</th><th>Avg SO</th><th>Stock</th><th>MOS-2</th><th>Action</th></tr>';
     items.forEach(it => {
       let action = '';
-      if (kind === 'low') action = `+${Math.ceil(it.avg_so*2 - it.stk)} 추가 발주`;
-      else if (kind === 'over') action = `-${Math.ceil(it.stk - it.avg_so*1.5)} 소진 권고`;
-      else if (kind === 'oos') action = `+${Math.ceil(it.so_may)} 즉시 보충`;
-      else if (kind === 'slow') action = `${it.stk} 단종 검토`;
+      if (kind === 'low') action = `+${Math.ceil(it.avg_so*2 - it.stk)} reorder`;
+      else if (kind === 'over') action = `-${Math.ceil(it.stk - it.avg_so*1.5)} clear`;
+      else if (kind === 'oos') action = `+${Math.ceil(it.so_may)} restock now`;
+      else if (kind === 'slow') action = `${it.stk} discontinue?`;
       html += `<tr>
         <td class="l">${it.std}${it.unified !== it.std ? ' <span style="color:var(--muted);font-size:10px">→' + it.unified + '</span>' : ''}</td>
         <td style="font-size:10px">${it.category||''}</td>
@@ -1542,10 +1542,10 @@ render();
     const a = D.mos_analysis[curCh];
     if (!a) return;
     document.getElementById('m2Summary').innerHTML = `
-      <div class="kpi" style="border-left:4px solid #dc2626"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#dc2626">${a.low_count}</div><div class="ks">총 stock ${a.low_stk_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #d97706"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#d97706">${a.over_count}</div><div class="ks">총 stock ${a.over_stk_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${a.oos_count}</div><div class="ks">5월 SO ${a.oos_so_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #475569"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#475569">${a.slow_count}</div><div class="ks">총 stock ${a.slow_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #dc2626"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#dc2626">${a.low_count}</div><div class="ks">Total stock ${a.low_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #d97706"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#d97706">${a.over_count}</div><div class="ks">Total stock ${a.over_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${a.oos_count}</div><div class="ks">May SO ${a.oos_so_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #475569"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#475569">${a.slow_count}</div><div class="ks">Total stock ${a.slow_stk_total.toLocaleString()}</div></div>
     `;
     document.getElementById('lowCount').textContent  = `(${a.low_count})`;
     document.getElementById('overCount').textContent = `(${a.over_count})`;
