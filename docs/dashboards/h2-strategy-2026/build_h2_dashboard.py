@@ -132,6 +132,105 @@ PAYLOAD['plan'] = {
     'IR_4Q': attribute('IR', 'q4', summary['IR']['gap4']),
 }
 
+# ===== eXtra 8~9월 입고계획 (OR 3Q gap의 핵심 레버) =====
+# 수량축: 매출(금액) 목표 → AC 본품 ASP로 수량 환산 → 카테고리·SKU 배분.
+# ⚠️ 악세사리(Accessories) 제외 — OR 수량 2배 부풀림 함정 차단.
+import re as _re
+DATA = json.load(open(os.path.join(HERE, '..', 'sell-thru-progress', 'data.json')))
+TXN = DATA['txn']
+EX = 1120000000
+AC_CATS = {'Split Inverter', 'Split on/off', 'Free Standing', 'Cassette', 'Concealed', 'Window AC'}
+
+
+def _aid(t):
+    try:
+        return int(float(t[3]))
+    except Exception:
+        return None
+
+
+from collections import defaultdict as _dd
+ex_c15 = _dd(lambda: [0.0, 0.0])    # 2026 1-5 카테고리 [val,qty]
+ex_s = _dd(lambda: [0.0, 0.0])      # 2024+2025 8~9월 시즌 카테고리 [val,qty]
+for t in TXN:
+    if _aid(t) != EX or t[7] not in AC_CATS:
+        continue
+    y, m = t[0], int(t[1])
+    if y == 2026 and 1 <= m <= 5:
+        ex_c15[t[7]][0] += t[8] or 0; ex_c15[t[7]][1] += t[9] or 0
+    if y in (2024, 2025) and m in (8, 9):
+        ex_s[t[7]][0] += t[8] or 0; ex_s[t[7]][1] += t[9] or 0
+
+ex_avg_val = sum(v[0] for v in ex_c15.values()) / 5.0 / 1e6        # 월평균 매출(M, AC)
+seas_OR = PAYLOAD['season'].get('OR', {})
+s8, s9 = seas_OR.get('8', 1.06), seas_OR.get('9', 1.42)
+nat8, nat9 = ex_avg_val * s8, ex_avg_val * s9                       # 8/9월 자연전망(M)
+# OR 3Q gap의 eXtra 귀속(자연전망 기여도) → 8~9월에 시즌비례 집중 배분
+ex_q3 = next((r['q3'] for r in rows if r['name'] == 'eXtra'), 0)
+ex_share = ex_q3 / summary['OR']['q3'] if summary['OR']['q3'] else 0
+ex_add = max(0.0, summary['OR']['gap3']) * ex_share                 # eXtra 추가 필요(M)
+add8 = ex_add * s8 / (s8 + s9); add9 = ex_add * s9 / (s8 + s9)
+tgt8, tgt9 = nat8 + add8, nat9 + add9
+
+# 8~9월 시즌 카테고리 금액믹스 + 카테고리 ASP
+seas_tot = sum(v[0] for v in ex_s.values()) or 1
+cat_mix = {}
+for c, (v, q) in ex_s.items():
+    cat_mix[c] = {'mix': v / seas_tot, 'asp': (v / q if q else 0), 'qty_share': q}
+season_asp = seas_tot / sum(v[1] for v in ex_s.values())            # 8~9월 통합 ASP
+
+
+def split_cat(tgt_m):
+    out = []
+    for c, info in sorted(cat_mix.items(), key=lambda x: -x[1]['mix']):
+        val = tgt_m * info['mix']
+        qty = val * 1e6 / info['asp'] if info['asp'] else 0
+        out.append({'cat': c, 'val': round(val, 2), 'qty': round(qty, 0),
+                    'asp': round(info['asp'], 0), 'mix': round(info['mix'] * 100, 1)})
+    return out
+
+
+# SKU 우선순위: psi_model_table.js (결품임박 LOW/OOS = 입고1순위, OVER = 회피)
+sku_in, sku_avoid = [], []
+try:
+    mt = open(os.path.join(HERE, '..', 'or-monthly-psi', 'psi_model_table.js')).read()
+    mm = _re.search(r'const PSI_MODEL_TABLE\s*=\s*(\{.*?\});', mt, _re.S)
+    T = json.loads(mm.group(1))
+    exa = T['mos_analysis']['eXtra']
+    seen = {}
+    for fl in ('low', 'oos', 'over', 'slow', 'normal', 'healthy'):
+        for r in exa.get(fl, []):
+            seen[r['std']] = r
+
+    def _so(r):
+        return r.get('avg_so') or r.get('so_may') or 0
+    allm = list(seen.values())
+    for r in sorted([x for x in allm if (x.get('mos') if x.get('mos') is not None else 99) < 1.5 and _so(x) > 0],
+                    key=lambda x: -_so(x))[:8]:
+        sku_in.append({'std': r['std'], 'btu': r.get('btu', ''), 'hc': r.get('hc', ''),
+                       'stk': r.get('stk', 0), 'so': round(_so(r), 0),
+                       'mos': r.get('mos', 0), 'flag': r.get('flag', '')})
+    for r in sorted([x for x in allm if (x.get('mos') or 0) >= 3 and _so(x) > 0],
+                    key=lambda x: -_so(x))[:6]:
+        sku_avoid.append({'std': r['std'], 'btu': r.get('btu', ''), 'so': round(_so(r), 0),
+                          'mos': r.get('mos', 0)})
+    sku_month = T.get('month_label', '')
+except Exception as _e:
+    sku_month = f'(모델표 로드 실패: {_e})'
+
+BUF = 0.15  # 피크 결품 방지 안전버퍼
+PAYLOAD['extra'] = {
+    'avg_val': round(ex_avg_val, 2), 's8': round(s8, 2), 's9': round(s9, 2),
+    'nat8': round(nat8, 1), 'nat9': round(nat9, 1),
+    'add8': round(add8, 1), 'add9': round(add9, 1),
+    'tgt8': round(tgt8, 1), 'tgt9': round(tgt9, 1),
+    'ex_share': round(ex_share * 100, 0), 'ex_add': round(ex_add, 1),
+    'or_gap3': summary['OR']['gap3'], 'season_asp': round(season_asp, 0),
+    'cat8': split_cat(tgt8), 'cat9': split_cat(tgt9),
+    'qty8': round(tgt8 * 1e6 / season_asp, 0), 'qty9': round(tgt9 * 1e6 / season_asp, 0),
+    'buf': int(BUF * 100), 'sku_in': sku_in, 'sku_avoid': sku_avoid, 'sku_month': sku_month,
+}
+
 HTML = """<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -189,12 +288,14 @@ HTML = """<!DOCTYPE html>
     <div class="tab" data-p="psi">② 채널 PSI</div>
     <div class="tab" data-p="dual">③ 이중축 추이</div>
     <div class="tab" data-p="plan">④ Action Plan</div>
+    <div class="tab" data-p="extra">⑤ eXtra 입고계획</div>
   </div>
 
   <div class="panel active" id="overview"></div>
   <div class="panel" id="psi"></div>
   <div class="panel" id="dual"></div>
   <div class="panel" id="plan"></div>
+  <div class="panel" id="extra"></div>
 
   <div class="footnote" id="foot"></div>
 </div>
@@ -358,8 +459,64 @@ function renderPlan(){
     </div>`;
 }
 
+// ---------- ⑤ eXtra 입고계획 ----------
+function renderExtra(){
+  const e=D.extra, el=document.getElementById('extra');
+  const catRow=(arr)=>arr.map(c=>`<tr><td class="l">${c.cat}</td><td>${c.mix}%</td><td>${c.val.toFixed(1)}M</td><td>${c.asp.toFixed(0)}</td><td><b>${c.qty.toLocaleString()}대</b></td></tr>`).join('');
+  const buf=(q)=>Math.round(q*(1+e.buf/100));
+  el.innerHTML=`
+    <div class="grid kpis" style="margin-bottom:14px">
+      <div class="card"><div class="lbl">8~9월 입고 매출목표 (=Sell-in)</div><div class="val">${(e.tgt8+e.tgt9).toFixed(1)}M</div><div class="note" style="color:var(--mut)">자연 ${(e.nat8+e.nat9).toFixed(1)} + 추가 ${e.ex_add.toFixed(1)}M</div></div>
+      <div class="card"><div class="lbl">8월 입고 (목표 / 권장+${e.buf}%버퍼)</div><div class="val">${e.tgt8.toFixed(1)}M</div><div class="note">${e.qty8.toLocaleString()}대 → 권장 <b>${buf(e.qty8).toLocaleString()}대</b></div></div>
+      <div class="card"><div class="lbl">9월 입고 (목표 / 권장+${e.buf}%버퍼)</div><div class="val">${e.tgt9.toFixed(1)}M</div><div class="note">${e.qty9.toLocaleString()}대 → 권장 <b>${buf(e.qty9).toLocaleString()}대</b></div></div>
+      <div class="card"><div class="lbl">8~9월 실효 ASP (AC본품)</div><div class="val">${e.season_asp.toLocaleString()}</div><div class="note" style="color:var(--mut)">SAR · 인버터 집중 ↑</div></div>
+    </div>
+
+    <div class="chartbox">
+      <h3>산출 근거 (금액→수량 역산) <span class="axis-tag ax-qty">수량축</span></h3>
+      <div style="color:#cbd5e1;font-size:13px;line-height:1.8">
+        · eXtra 1~5월 AC 월평균 매출 <b>${e.avg_val.toFixed(1)}M</b> × OR 시즌계수(8월 ${e.s8}, 9월 ${e.s9}) = 자연전망 8월 ${e.nat8.toFixed(1)}M / 9월 ${e.nat9.toFixed(1)}M<br>
+        · OR 3Q Gap +${e.or_gap3.toFixed(1)}M 중 eXtra 귀속 <b>${e.ex_share.toFixed(0)}%</b>(자연전망 비중) = 추가 <b>+${e.ex_add.toFixed(1)}M</b> → 8~9월 시즌비례 배분(8월 +${e.add8.toFixed(1)} / 9월 +${e.add9.toFixed(1)})<br>
+        · ⚠️ <b>악세사리 제외</b> AC 본품만. 8~9월 시즌믹스(인버터 집중)·카테고리 ASP로 수량 환산.
+      </div>
+    </div>
+
+    <div class="grid plan-grid" style="margin-top:14px">
+      <div class="card"><div class="lbl">8월 카테고리 배분 (시즌믹스)</div>
+        <table style="margin-top:6px"><tr><th class="l">카테고리</th><th>믹스</th><th>금액</th><th>ASP</th><th>입고수량</th></tr>${catRow(e.cat8)}</table></div>
+      <div class="card"><div class="lbl">9월 카테고리 배분 (시즌믹스)</div>
+        <table style="margin-top:6px"><tr><th class="l">카테고리</th><th>믹스</th><th>금액</th><th>ASP</th><th>입고수량</th></tr>${catRow(e.cat9)}</table></div>
+    </div>
+
+    <div class="chartbox" style="margin-top:14px">
+      <h3>입고 1순위 SKU — 결품임박 (high Sell-out · MOS&lt;1.5) <span style="font-size:11px;color:var(--mut)">${e.sku_month} 기준</span></h3>
+      <div style="overflow-x:auto"><table>
+        <tr><th class="l">모델</th><th>BTU</th><th class="l">타입</th><th>현재고</th><th>월 Sell-out</th><th>MOS</th><th class="l">판정</th></tr>
+        ${e.sku_in.map(s=>`<tr><td class="l"><b>${s.std}</b></td><td>${s.btu}</td><td class="l">${s.hc}</td><td>${s.stk.toLocaleString()}</td><td>${s.so.toLocaleString()}</td><td>${mosChip(s.mos)}</td><td class="l"><span class="chip c-bad">${s.flag}</span></td></tr>`).join('')}
+      </table></div>
+      <div style="color:var(--mut);font-size:12px;margin-top:8px">→ 이 SKU들은 현재 sell-out 대비 재고 1.5개월 미만(LA242H·AM242C는 사실상 결품). 8~9월 피크 전 <b>최우선 입고</b>.</div>
+    </div>
+
+    <div class="chartbox" style="margin-top:14px">
+      <h3>입고 회피 SKU — 과재고 (MOS≥3)</h3>
+      <table><tr><th class="l">모델</th><th>BTU</th><th>월 Sell-out</th><th>MOS</th></tr>
+        ${e.sku_avoid.map(s=>`<tr><td class="l">${s.std}</td><td>${s.btu}</td><td>${s.so.toLocaleString()}</td><td>${mosChip(s.mos)}</td></tr>`).join('')}
+      </table>
+      <div style="color:var(--mut);font-size:12px;margin-top:8px">→ 이미 재고 과다. 8~9월 추가 입고 대신 기존 재고 소진(프로모) 우선.</div>
+    </div>
+
+    <div class="chartbox" style="margin-top:14px"><h3>입고 타이밍 · 실행 (참모 권고)</h3>
+      <ul style="margin-left:18px;line-height:1.9;font-size:14px">
+        <li><b>8월 판매분</b>(권장 ${buf(e.qty8).toLocaleString()}대) → <b>7월 1~2주 입고</b> 완료 (매대 사전 확보)</li>
+        <li><b>9월 판매분</b>(권장 ${buf(e.qty9).toLocaleString()}대) → <b>8월 1~2주 입고</b> 완료 (9월 피크 계수 ${e.s9} 대비)</li>
+        <li><b>안전버퍼 +${e.buf}%</b> — 8~9월은 결품 1건 = 판매 직결 손실. 결품임박 SKU(LA182C·NS242C·LA242H 등) 집중 배치.</li>
+        <li><b>소화가능성</b> — eXtra 8~9월 인버터는 과거에도 채널 최대 흡수처(2024·2025 8~9월 인버터 16,328대). 목표 ${(e.qty8+e.qty9).toLocaleString()}대는 도전적이나 시즌피크+gap푸시로 달성권. 단 <b>매주 sell-out 모니터링</b>으로 과재고(ND182C·ND242C) 전이 차단.</li>
+      </ul>
+    </div>`;
+}
+
 // ---------- 탭 전환 (숨겨진 탭 차트 재렌더 — 0x0 버그 방지) ----------
-const renderers={overview:renderOverview,psi:renderPSI,dual:renderDual,plan:renderPlan};
+const renderers={overview:renderOverview,psi:renderPSI,dual:renderDual,plan:renderPlan,extra:renderExtra};
 function activate(p){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.p===p));
   document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===p));
