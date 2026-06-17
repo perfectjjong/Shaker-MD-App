@@ -1,0 +1,1695 @@
+{
+ "_meta": {
+  "src": "data.json+psi_data.js+data_ir.js",
+  "built": "2026-06-17",
+  "version": "v1(dual-axis)",
+  "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
+  "fcst_method": "1-5월 실적 + 6월 RSM + 7-12월(1-5평균×OR/IR 분리 시즌계수, 2024·2025 2개년평균). 2026-06-17",
+  "season_index": {
+   "OR": {
+    "1": 1.005,
+    "2": 1.24,
+    "3": 1.025,
+    "4": 0.748,
+    "5": 0.983,
+    "6": 0.585,
+    "7": 0.532,
+    "8": 1.061,
+    "9": 1.419,
+    "10": 0.722,
+    "11": 0.209,
+    "12": 0.227
+   },
+   "IR": {
+    "1": 0.606,
+    "2": 0.854,
+    "3": 1.344,
+    "4": 0.982,
+    "5": 1.213,
+    "6": 1.429,
+    "7": 0.827,
+    "8": 1.388,
+    "9": 1.348,
+    "10": 1.193,
+    "11": 0.694,
+    "12": 0.513
+   }
+  },
+  "target_2026": {
+   "OR": {
+    "3Q": 70,
+    "4Q": 25,
+    "H2": 95
+   },
+   "IR": {
+    "3Q": 60,
+    "4Q": 35,
+    "H2": 95
+   }
+  }
+ },
+ "channels": {
+  "eXtra": {
+   "group": "OR",
+   "value": {
+    "01": {
+     "st_val": 12063753.0
+    },
+    "02": {
+     "st_val": 5555053.0
+    },
+    "03": {
+     "st_val": 29059858.0
+    },
+    "04": {
+     "st_val": 17892372.0
+    },
+    "05": {
+     "st_val": 2508755.0
+    },
+    "06": {
+     "st_val": 4478251.0
+    },
+    "ar_bal": 68549174,
+    "ovd": 844932,
+    "07": {
+     "st_val": 7134037.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 14229332.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 19040119.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 9685848.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 2808357.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 3049316.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 8586.0,
+     "so_qty": 1291,
+     "stk_qty": 2918
+    },
+    "02": {
+     "st_qty": 4440.0,
+     "so_qty": 3176,
+     "stk_qty": 3947
+    },
+    "03": {
+     "st_qty": 18206.0,
+     "so_qty": 1790,
+     "stk_qty": 5187
+    },
+    "04": {
+     "st_qty": 12068.0,
+     "so_qty": 3723,
+     "stk_qty": 15033
+    },
+    "05": {
+     "st_qty": 1820.0,
+     "so_qty": 6010,
+     "stk_qty": 10801
+    },
+    "06": {
+     "st_qty": 1700.0,
+     "so_qty": 0,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 4799.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 9571.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 12807.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 6515.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 1889.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 2051.0,
+     "fcst": true
+    }
+   }
+  },
+  "Al Manea": {
+   "group": "OR",
+   "value": {
+    "01": {
+     "st_val": 387348.0
+    },
+    "02": {
+     "st_val": 9351545.0
+    },
+    "03": {
+     "st_val": -84026.0
+    },
+    "04": {
+     "st_val": 1749723.0
+    },
+    "05": {
+     "st_val": 4719305.0
+    },
+    "06": {
+     "st_val": 7491647.0
+    },
+    "ar_bal": 16139920,
+    "ovd": 4138394,
+    "07": {
+     "st_val": 1714800.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 3420289.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 4576652.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 2328176.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 675042.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 732961.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 196.0,
+     "so_qty": 447,
+     "stk_qty": 1438
+    },
+    "02": {
+     "st_qty": 6157.0,
+     "so_qty": 1582,
+     "stk_qty": 1076
+    },
+    "03": {
+     "st_qty": -21.0,
+     "so_qty": 706,
+     "stk_qty": 2107
+    },
+    "04": {
+     "st_qty": 1212.0,
+     "so_qty": 1254,
+     "stk_qty": 1201
+    },
+    "05": {
+     "st_qty": 2984.0,
+     "so_qty": 1861,
+     "stk_qty": 1201
+    },
+    "06": {
+     "st_qty": 2815.0,
+     "so_qty": 0,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 1120.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 2233.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 2988.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 1520.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 441.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 479.0,
+     "fcst": true
+    }
+   }
+  },
+  "SWS": {
+   "group": "OR",
+   "value": {
+    "01": {
+     "st_val": 230466.0
+    },
+    "02": {
+     "st_val": 3391121.0
+    },
+    "03": {
+     "st_val": 295567.0
+    },
+    "04": {
+     "st_val": 3170059.0
+    },
+    "05": {
+     "st_val": 1698955.0
+    },
+    "06": {
+     "st_val": 1781494.0
+    },
+    "ar_bal": 9035023,
+    "ovd": 3067083,
+    "07": {
+     "st_val": 934422.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 1863770.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 2493891.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 1268661.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 367841.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 399402.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 110.0,
+     "so_qty": 147,
+     "stk_qty": 517
+    },
+    "02": {
+     "st_qty": 2552.0,
+     "so_qty": 769,
+     "stk_qty": 330
+    },
+    "03": {
+     "st_qty": 161.0,
+     "so_qty": 331,
+     "stk_qty": 434
+    },
+    "04": {
+     "st_qty": 2228.0,
+     "so_qty": 493,
+     "stk_qty": 358
+    },
+    "05": {
+     "st_qty": 925.0,
+     "so_qty": 852,
+     "stk_qty": 222
+    },
+    "06": {
+     "st_qty": 705.0,
+     "so_qty": 0,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 636.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 1268.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 1696.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 863.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 250.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 272.0,
+     "fcst": true
+    }
+   }
+  },
+  "Black Box": {
+   "group": "OR",
+   "value": {
+    "01": {
+     "st_val": 219086.0
+    },
+    "02": {
+     "st_val": 3386735.0
+    },
+    "03": {
+     "st_val": -297970.0
+    },
+    "04": {
+     "st_val": 2783438.0
+    },
+    "05": {
+     "st_val": 1603760.0
+    },
+    "06": {
+     "st_val": 1554699.0
+    },
+    "ar_bal": 8205557,
+    "ovd": 2873214,
+    "07": {
+     "st_val": 818380.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 1632316.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 2184185.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 1111111.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 322160.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 349802.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 149.0,
+     "so_qty": 131,
+     "stk_qty": 690
+    },
+    "02": {
+     "st_qty": 2509.0,
+     "so_qty": 553,
+     "stk_qty": 634
+    },
+    "03": {
+     "st_qty": -71.0,
+     "so_qty": 294,
+     "stk_qty": 578
+    },
+    "04": {
+     "st_qty": 1891.0,
+     "so_qty": 393,
+     "stk_qty": 592
+    },
+    "05": {
+     "st_qty": 1071.0,
+     "so_qty": 876,
+     "stk_qty": 523
+    },
+    "06": {
+     "st_qty": 615.0,
+     "so_qty": 0,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 590.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 1177.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 1575.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 801.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 232.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 252.0,
+     "fcst": true
+    }
+   }
+  },
+  "Al Khunizan": {
+   "group": "OR",
+   "value": {
+    "01": {
+     "st_val": 8122.0
+    },
+    "02": {
+     "st_val": 10874.0
+    },
+    "03": {
+     "st_val": -193637.0
+    },
+    "04": {
+     "st_val": -18850.0
+    },
+    "05": {
+     "st_val": 1339512.0
+    },
+    "06": {
+     "st_val": 480341.0
+    },
+    "ar_bal": 2466969,
+    "ovd": 761185,
+    "07": {
+     "st_val": 121881.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 243100.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 325290.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 165477.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 47979.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 52096.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 11.0,
+     "so_qty": 71,
+     "stk_qty": 1160
+    },
+    "02": {
+     "st_qty": 10.0,
+     "so_qty": 75,
+     "stk_qty": 1086
+    },
+    "03": {
+     "st_qty": 191.0,
+     "so_qty": 227,
+     "stk_qty": 932
+    },
+    "04": {
+     "st_qty": 0.0,
+     "so_qty": 69,
+     "stk_qty": 843
+    },
+    "05": {
+     "st_qty": 343.0,
+     "so_qty": 245,
+     "stk_qty": 654
+    },
+    "06": {
+     "st_qty": 220.0,
+     "so_qty": 0,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 59.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 118.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 158.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 80.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 23.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 25.0,
+     "fcst": true
+    }
+   }
+  },
+  "BH": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 5160465.0
+    },
+    "02": {
+     "st_val": 4041556.0
+    },
+    "03": {
+     "st_val": 11240038.0
+    },
+    "04": {
+     "st_val": 5650089.0
+    },
+    "05": {
+     "st_val": 3056864.0
+    },
+    "06": {
+     "st_val": 6930935.0
+    },
+    "ar_bal": 57053130,
+    "ovd": 28897983,
+    "07": {
+     "st_val": 4823677.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 8093661.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 7859714.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 6953523.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 4045210.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 2989380.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 1921.0,
+     "so_qty": 834,
+     "stk_qty": 7813
+    },
+    "02": {
+     "st_qty": 1246.0,
+     "so_qty": 1488,
+     "stk_qty": 6953
+    },
+    "03": {
+     "st_qty": 3288.0,
+     "so_qty": 2557,
+     "stk_qty": 5910
+    },
+    "04": {
+     "st_qty": 4358.0,
+     "so_qty": 1645,
+     "stk_qty": 7018
+    },
+    "05": {
+     "st_qty": 2295.0,
+     "so_qty": 1577,
+     "stk_qty": 8837
+    },
+    "06": {
+     "st_qty": 2340.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 2169.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 3640.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 3534.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 3127.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 1819.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 1344.0,
+     "fcst": true
+    }
+   }
+  },
+  "BM": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 873194.0
+    },
+    "02": {
+     "st_val": 365640.0
+    },
+    "03": {
+     "st_val": 2462642.0
+    },
+    "04": {
+     "st_val": 811113.0
+    },
+    "05": {
+     "st_val": 828695.0
+    },
+    "06": {
+     "st_val": 881612.0
+    },
+    "ar_bal": 4600911,
+    "ovd": -1646,
+    "07": {
+     "st_val": 883894.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 1483088.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 1440219.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 1274168.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 741247.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 547776.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 635.0,
+     "so_qty": 244,
+     "stk_qty": 833
+    },
+    "02": {
+     "st_qty": 256.0,
+     "so_qty": 194,
+     "stk_qty": 664
+    },
+    "03": {
+     "st_qty": 854.0,
+     "so_qty": 111,
+     "stk_qty": 597
+    },
+    "04": {
+     "st_qty": 143.0,
+     "so_qty": 122,
+     "stk_qty": 1001
+    },
+    "05": {
+     "st_qty": 597.0,
+     "so_qty": 493,
+     "stk_qty": 919
+    },
+    "06": {
+     "st_qty": 415.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 411.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 690.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 670.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 593.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 345.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 255.0,
+     "fcst": true
+    }
+   }
+  },
+  "Tamkeen": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 272601.0
+    },
+    "02": {
+     "st_val": 1998922.0
+    },
+    "03": {
+     "st_val": 1889097.0
+    },
+    "04": {
+     "st_val": 0.0
+    },
+    "05": {
+     "st_val": 0.0
+    },
+    "06": {
+     "st_val": 292562.0
+    },
+    "ar_bal": 4828373,
+    "ovd": 1963667,
+    "07": {
+     "st_val": 688513.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 1155258.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 1121866.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 992519.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 577398.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 426693.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 200.0,
+     "so_qty": 136,
+     "stk_qty": 607
+    },
+    "02": {
+     "st_qty": 1325.0,
+     "so_qty": 170,
+     "stk_qty": 642
+    },
+    "03": {
+     "st_qty": 753.0,
+     "so_qty": 196,
+     "stk_qty": 895
+    },
+    "04": {
+     "st_qty": 0.0,
+     "so_qty": 256,
+     "stk_qty": 1141
+    },
+    "05": {
+     "st_qty": 0.0,
+     "so_qty": 401,
+     "stk_qty": 1148
+    },
+    "06": {
+     "st_qty": 200.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 377.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 633.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 614.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 543.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 316.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 234.0,
+     "fcst": true
+    }
+   }
+  },
+  "Zagzoog": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 0.0
+    },
+    "02": {
+     "st_val": 0.0
+    },
+    "03": {
+     "st_val": 0.0
+    },
+    "04": {
+     "st_val": 0.0
+    },
+    "05": {
+     "st_val": 0.0
+    },
+    "06": {
+     "st_val": 0.0
+    },
+    "ar_bal": 1589405,
+    "ovd": 1589405,
+    "07": {
+     "st_val": 0.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 0.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 0.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 0.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 0.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 0.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 0.0,
+     "so_qty": 40,
+     "stk_qty": 929
+    },
+    "02": {
+     "st_qty": 0.0,
+     "so_qty": 89,
+     "stk_qty": 840
+    },
+    "03": {
+     "st_qty": 0.0,
+     "so_qty": 76,
+     "stk_qty": 764
+    },
+    "04": {
+     "st_qty": 0.0,
+     "so_qty": 152,
+     "stk_qty": 612
+    },
+    "05": {
+     "st_qty": 0.0,
+     "so_qty": 156,
+     "stk_qty": 456
+    },
+    "06": {
+     "st_qty": 0.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 0.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 0.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 0.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 0.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 0.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 0.0,
+     "fcst": true
+    }
+   }
+  },
+  "Dhamin": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 21546.0
+    },
+    "02": {
+     "st_val": 13729.0
+    },
+    "03": {
+     "st_val": 20773.0
+    },
+    "04": {
+     "st_val": 98541.0
+    },
+    "05": {
+     "st_val": 4078.0
+    },
+    "06": {
+     "st_val": 0.0
+    },
+    "ar_bal": 1167376,
+    "ovd": 697736,
+    "07": {
+     "st_val": 26257.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 44056.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 42783.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 37850.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 22019.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 16272.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 6.0,
+     "so_qty": 59,
+     "stk_qty": 1140
+    },
+    "02": {
+     "st_qty": 3.0,
+     "so_qty": 110,
+     "stk_qty": 0
+    },
+    "03": {
+     "st_qty": 12.0,
+     "so_qty": 120,
+     "stk_qty": 925
+    },
+    "04": {
+     "st_qty": 54.0,
+     "so_qty": 101,
+     "stk_qty": 880
+    },
+    "05": {
+     "st_qty": 4.0,
+     "so_qty": 116,
+     "stk_qty": 735
+    },
+    "06": {
+     "st_qty": 0.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 13.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 22.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 21.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 19.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 11.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 8.0,
+     "fcst": true
+    }
+   }
+  },
+  "Star Appliance": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 313677.0
+    },
+    "02": {
+     "st_val": 1999489.0
+    },
+    "03": {
+     "st_val": 1306891.0
+    },
+    "04": {
+     "st_val": -97787.0
+    },
+    "05": {
+     "st_val": 1171.0
+    },
+    "06": {
+     "st_val": 2516764.0
+    },
+    "ar_bal": 4648631,
+    "ovd": 3109710,
+    "07": {
+     "st_val": 583071.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 978336.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 950057.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 840520.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 488972.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 361347.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 169.0,
+     "so_qty": 172,
+     "stk_qty": 734
+    },
+    "02": {
+     "st_qty": 814.0,
+     "so_qty": 137,
+     "stk_qty": 631
+    },
+    "03": {
+     "st_qty": 319.0,
+     "so_qty": 153,
+     "stk_qty": 718
+    },
+    "04": {
+     "st_qty": -78.0,
+     "so_qty": 148,
+     "stk_qty": 1253
+    },
+    "05": {
+     "st_qty": 1.0,
+     "so_qty": 163,
+     "stk_qty": 1090
+    },
+    "06": {
+     "st_qty": 1262.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 203.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 340.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 330.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 292.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 170.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 126.0,
+     "fcst": true
+    }
+   }
+  },
+  "Al Ghanem": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 0.0
+    },
+    "02": {
+     "st_val": 0.0
+    },
+    "03": {
+     "st_val": 144170.0
+    },
+    "04": {
+     "st_val": 1473102.0
+    },
+    "05": {
+     "st_val": 0.0
+    },
+    "06": {
+     "st_val": 1277612.0
+    },
+    "ar_bal": 2276778,
+    "ovd": 451288,
+    "07": {
+     "st_val": 267632.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 449060.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 436080.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 385802.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 224440.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 165860.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 0.0,
+     "so_qty": 21,
+     "stk_qty": 500
+    },
+    "02": {
+     "st_qty": 0.0,
+     "so_qty": 17,
+     "stk_qty": 428
+    },
+    "03": {
+     "st_qty": 33.0,
+     "so_qty": 45,
+     "stk_qty": 413
+    },
+    "04": {
+     "st_qty": 341.0,
+     "so_qty": 103,
+     "stk_qty": 328
+    },
+    "05": {
+     "st_qty": 0.0,
+     "so_qty": 139,
+     "stk_qty": 206
+    },
+    "06": {
+     "st_qty": 195.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 62.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 104.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 101.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 89.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 52.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 38.0,
+     "fcst": true
+    }
+   },
+   "_note": "SO/Stock 소스=byDealer \"Techno Best\"(=Al Ghanem 동일딜러). ST_qty는 data.json 권위 유지"
+  },
+  "Al Shathri": {
+   "group": "IR",
+   "value": {
+    "01": {
+     "st_val": 1165951.0
+    },
+    "02": {
+     "st_val": 745191.0
+    },
+    "03": {
+     "st_val": 622815.0
+    },
+    "04": {
+     "st_val": 853680.0
+    },
+    "05": {
+     "st_val": 11015.0
+    },
+    "06": {
+     "st_val": 2514752.0
+    },
+    "ar_bal": 3189783,
+    "ovd": 1625799,
+    "07": {
+     "st_val": 562420.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 943687.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 916409.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 810751.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 471654.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 348549.0,
+     "fcst": true
+    }
+   },
+   "qty": {
+    "01": {
+     "st_qty": 353.0,
+     "so_qty": 89,
+     "stk_qty": 250
+    },
+    "02": {
+     "st_qty": 319.0,
+     "so_qty": 84,
+     "stk_qty": 239
+    },
+    "03": {
+     "st_qty": 103.0,
+     "so_qty": 103,
+     "stk_qty": 224
+    },
+    "04": {
+     "st_qty": 264.0,
+     "so_qty": 95,
+     "stk_qty": 627
+    },
+    "05": {
+     "st_qty": 6.0,
+     "so_qty": 82,
+     "stk_qty": 564
+    },
+    "06": {
+     "st_qty": 936.0,
+     "so_qty": null,
+     "stk_qty": null
+    },
+    "07": {
+     "st_qty": 173.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 290.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 282.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 249.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 145.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 107.0,
+     "fcst": true
+    }
+   }
+  },
+  "OR_Others": {
+   "group": "OR",
+   "value": {
+    "06": {
+     "st_val": 527762.0
+    },
+    "07": {
+     "st_val": 149021.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 297233.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 397724.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 202325.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 58663.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 63696.0,
+     "fcst": true
+    },
+    "01": {
+     "st_val": 197146.0
+    },
+    "02": {
+     "st_val": 359473.0
+    },
+    "03": {
+     "st_val": 226445.0
+    },
+    "04": {
+     "st_val": 155454.0
+    },
+    "05": {
+     "st_val": 462693.0
+    }
+   },
+   "qty": {
+    "06": {
+     "st_qty": 265.0
+    },
+    "07": {
+     "st_qty": 96.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 192.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 257.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 131.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 38.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 41.0,
+     "fcst": true
+    },
+    "01": {
+     "st_qty": 83.0
+    },
+    "02": {
+     "st_qty": 215.0
+    },
+    "03": {
+     "st_qty": 151.0
+    },
+    "04": {
+     "st_qty": 76.0
+    },
+    "05": {
+     "st_qty": 380.0
+    }
+   },
+   "segment": true
+  },
+  "IR_Others": {
+   "group": "IR",
+   "value": {
+    "06": {
+     "st_val": 4803448.0
+    },
+    "07": {
+     "st_val": 3706813.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 6219671.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 6039892.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 5343519.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 3108590.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 2297226.0,
+     "fcst": true
+    },
+    "01": {
+     "st_val": 5368456.0
+    },
+    "02": {
+     "st_val": 7126334.0
+    },
+    "03": {
+     "st_val": 4279410.0
+    },
+    "04": {
+     "st_val": 4332926.0
+    },
+    "05": {
+     "st_val": 1292784.0
+    }
+   },
+   "qty": {
+    "06": {
+     "st_qty": 2436.0
+    },
+    "07": {
+     "st_qty": 1743.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 2925.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 2841.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 2513.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 1462.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 1080.0,
+     "fcst": true
+    },
+    "01": {
+     "st_qty": 2278.0
+    },
+    "02": {
+     "st_qty": 3673.0
+    },
+    "03": {
+     "st_qty": 1929.0
+    },
+    "04": {
+     "st_qty": 1912.0
+    },
+    "05": {
+     "st_qty": 743.0
+    }
+   },
+   "segment": true
+  },
+  "SME": {
+   "group": "IR",
+   "value": {
+    "06": {
+     "st_val": 0.0
+    },
+    "07": {
+     "st_val": 1350334.0,
+     "fcst": true
+    },
+    "08": {
+     "st_val": 2265729.0,
+     "fcst": true
+    },
+    "09": {
+     "st_val": 2200238.0,
+     "fcst": true
+    },
+    "10": {
+     "st_val": 1946560.0,
+     "fcst": true
+    },
+    "11": {
+     "st_val": 1132411.0,
+     "fcst": true
+    },
+    "12": {
+     "st_val": 836843.0,
+     "fcst": true
+    },
+    "01": {
+     "st_val": 2245212.0
+    },
+    "02": {
+     "st_val": 1923341.0
+    },
+    "03": {
+     "st_val": 1996425.0
+    },
+    "04": {
+     "st_val": 844935.0
+    },
+    "05": {
+     "st_val": 1150025.0
+    }
+   },
+   "qty": {
+    "06": {
+     "st_qty": 0.0
+    },
+    "07": {
+     "st_qty": 1224.0,
+     "fcst": true
+    },
+    "08": {
+     "st_qty": 2053.0,
+     "fcst": true
+    },
+    "09": {
+     "st_qty": 1994.0,
+     "fcst": true
+    },
+    "10": {
+     "st_qty": 1764.0,
+     "fcst": true
+    },
+    "11": {
+     "st_qty": 1026.0,
+     "fcst": true
+    },
+    "12": {
+     "st_qty": 758.0,
+     "fcst": true
+    },
+    "01": {
+     "st_qty": 747.0
+    },
+    "02": {
+     "st_qty": 5069.0
+    },
+    "03": {
+     "st_qty": 704.0
+    },
+    "04": {
+     "st_qty": 381.0
+    },
+    "05": {
+     "st_qty": 494.0
+    }
+   },
+   "segment": true
+  }
+ }
+}

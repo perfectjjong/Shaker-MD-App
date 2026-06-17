@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 하반기 전략 코크핏 | Saudi LG AC</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{--or:#2563eb;--ir:#dc2626;--bg:#0f172a;--card:#1e293b;--mut:#94a3b8;--line:#334155;--ok:#10b981;--warn:#f59e0b;--bad:#ef4444;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:#e2e8f0;line-height:1.5;padding:20px}
+  .wrap{max-width:1280px;margin:0 auto}
+  h1{font-size:24px;font-weight:800}
+  .sub{color:var(--mut);font-size:13px;margin-top:4px}
+  .tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+  .tab{padding:9px 16px;background:var(--card);border:1px solid var(--line);border-radius:8px;cursor:pointer;font-size:14px;font-weight:600}
+  .tab.active{background:var(--or);border-color:var(--or);color:#fff}
+  .panel{display:none}.panel.active{display:block}
+  .grid{display:grid;gap:14px}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .card .lbl{color:var(--mut);font-size:12px;font-weight:600}
+  .card .val{font-size:26px;font-weight:800;margin-top:6px}
+  .card .note{font-size:12px;margin-top:4px}
+  .pos{color:var(--bad)}.neg{color:var(--ok)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;position:sticky;top:0;background:var(--card)}
+  td.l,th.l{text-align:left}
+  tr.or-row td.l{color:#93c5fd}tr.ir-row td.l{color:#fca5a5}
+  tr.seg td.l{font-style:italic;color:var(--mut)}
+  tr.grp{background:#0b1220;font-weight:800}
+  .chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
+  .c-ok{background:rgba(16,185,129,.18);color:#34d399}
+  .c-warn{background:rgba(245,158,11,.18);color:#fbbf24}
+  .c-bad{background:rgba(239,68,68,.18);color:#f87171}
+  .chartbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
+  .chartbox h3{font-size:15px;margin-bottom:10px}
+  canvas{max-height:340px}
+  .secttitle{font-size:18px;font-weight:800;margin:22px 0 4px}
+  .axis-tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;margin-left:8px}
+  .ax-val{background:rgba(37,99,235,.2);color:#93c5fd}
+  .ax-qty{background:rgba(245,158,11,.2);color:#fbbf24}
+  .plan-grid{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .footnote{color:var(--mut);font-size:12px;margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>2026 하반기 전략 코크핏 <span style="font-size:13px;color:var(--mut);font-weight:600">OR + IR · 16 bucket · 이중축</span></h1>
+  <div class="sub" id="subline"></div>
+
+  <div class="tabs">
+    <div class="tab active" data-p="overview">① 종합 (목표·Gap)</div>
+    <div class="tab" data-p="psi">② 채널 PSI</div>
+    <div class="tab" data-p="dual">③ 이중축 추이</div>
+    <div class="tab" data-p="plan">④ Action Plan</div>
+  </div>
+
+  <div class="panel active" id="overview"></div>
+  <div class="panel" id="psi"></div>
+  <div class="panel" id="dual"></div>
+  <div class="panel" id="plan"></div>
+
+  <div class="footnote" id="foot"></div>
+</div>
+
+<script>
+const D = {"rows": [{"name": "eXtra", "ko": "eXtra", "group": "OR", "seg": false, "mval": [12063753.0, 5555053.0, 29059858.0, 17892372.0, 2508755.0, 4478251.0, 7134037.0, 14229332.0, 19040119.0, 9685848.0, 2808357.0, 3049316.0], "mqty": [8586.0, 4440.0, 18206.0, 12068.0, 1820.0, 1700.0, 4799.0, 9571.0, 12807.0, 6515.0, 1889.0, 2051.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 67.1, "jun": 4.5, "q3": 40.4, "q4": 15.5, "annual": 127.5, "ar": 68.5, "ovd": 0.8, "stk": 10801, "mos": 3.4, "h2qty": 37632.0}, {"name": "Al Manea", "ko": "Al Manea", "group": "OR", "seg": false, "mval": [387348.0, 9351545.0, -84026.0, 1749723.0, 4719305.0, 7491647.0, 1714800.0, 3420289.0, 4576652.0, 2328176.0, 675042.0, 732961.0], "mqty": [196.0, 6157.0, -21.0, 1212.0, 2984.0, 2815.0, 1120.0, 2233.0, 2988.0, 1520.0, 441.0, 479.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 16.1, "jun": 7.5, "q3": 9.7, "q4": 3.7, "annual": 37.1, "ar": 16.1, "ovd": 4.1, "stk": 1201, "mos": 1.0, "h2qty": 8781.0}, {"name": "SWS", "ko": "SWS", "group": "OR", "seg": false, "mval": [230466.0, 3391121.0, 295567.0, 3170059.0, 1698955.0, 1781494.0, 934422.0, 1863770.0, 2493891.0, 1268661.0, 367841.0, 399402.0], "mqty": [110.0, 2552.0, 161.0, 2228.0, 925.0, 705.0, 636.0, 1268.0, 1696.0, 863.0, 250.0, 272.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 8.8, "jun": 1.8, "q3": 5.3, "q4": 2.0, "annual": 17.9, "ar": 9.0, "ovd": 3.1, "stk": 222, "mos": 0.4, "h2qty": 4985.0}, {"name": "Black Box", "ko": "Black Box", "group": "OR", "seg": false, "mval": [219086.0, 3386735.0, -297970.0, 2783438.0, 1603760.0, 1554699.0, 818380.0, 1632316.0, 2184185.0, 1111111.0, 322160.0, 349802.0], "mqty": [149.0, 2509.0, -71.0, 1891.0, 1071.0, 615.0, 590.0, 1177.0, 1575.0, 801.0, 232.0, 252.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 7.7, "jun": 1.6, "q3": 4.6, "q4": 1.8, "annual": 15.7, "ar": 8.2, "ovd": 2.9, "stk": 523, "mos": 1.2, "h2qty": 4627.0}, {"name": "Al Khunizan", "ko": "Al Khunizan", "group": "OR", "seg": false, "mval": [8122.0, 10874.0, -193637.0, -18850.0, 1339512.0, 480341.0, 121881.0, 243100.0, 325290.0, 165477.0, 47979.0, 52096.0], "mqty": [11.0, 10.0, 191.0, 0.0, 343.0, 220.0, 59.0, 118.0, 158.0, 80.0, 23.0, 25.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 1.1, "jun": 0.5, "q3": 0.7, "q4": 0.3, "annual": 2.6, "ar": 2.5, "ovd": 0.8, "stk": 654, "mos": 4.8, "h2qty": 463.0}, {"name": "OR_Others", "ko": "OR 기타", "group": "OR", "seg": true, "mval": [197146.0, 359473.0, 226445.0, 155454.0, 462693.0, 527762.0, 149021.0, 297233.0, 397724.0, 202325.0, 58663.0, 63696.0], "mqty": [83.0, 215.0, 151.0, 76.0, 380.0, 265.0, 96.0, 192.0, 257.0, 131.0, 38.0, 41.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 1.4, "jun": 0.5, "q3": 0.8, "q4": 0.3, "annual": 3.1, "ar": 0.0, "ovd": 0.0, "stk": null, "mos": null, "h2qty": 755.0}, {"name": "BH", "ko": "BH", "group": "IR", "seg": false, "mval": [5160465.0, 4041556.0, 11240038.0, 5650089.0, 3056864.0, 6930935.0, 4823677.0, 8093661.0, 7859714.0, 6953523.0, 4045210.0, 2989380.0], "mqty": [1921.0, 1246.0, 3288.0, 4358.0, 2295.0, 2340.0, 2169.0, 3640.0, 3534.0, 3127.0, 1819.0, 1344.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 29.1, "jun": 6.9, "q3": 20.8, "q4": 14.0, "annual": 70.8, "ar": 57.1, "ovd": 28.9, "stk": 8837, "mos": 5.5, "h2qty": 15633.0}, {"name": "BM", "ko": "BM", "group": "IR", "seg": false, "mval": [873194.0, 365640.0, 2462642.0, 811113.0, 828695.0, 881612.0, 883894.0, 1483088.0, 1440219.0, 1274168.0, 741247.0, 547776.0], "mqty": [635.0, 256.0, 854.0, 143.0, 597.0, 415.0, 411.0, 690.0, 670.0, 593.0, 345.0, 255.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 5.3, "jun": 0.9, "q3": 3.8, "q4": 2.6, "annual": 12.6, "ar": 4.6, "ovd": -0.0, "stk": 919, "mos": 3.9, "h2qty": 2964.0}, {"name": "Tamkeen", "ko": "Tamkeen", "group": "IR", "seg": false, "mval": [272601.0, 1998922.0, 1889097.0, 0.0, 0.0, 292562.0, 688513.0, 1155258.0, 1121866.0, 992519.0, 577398.0, 426693.0], "mqty": [200.0, 1325.0, 753.0, 0.0, 0.0, 200.0, 377.0, 633.0, 614.0, 543.0, 316.0, 234.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 4.2, "jun": 0.3, "q3": 3.0, "q4": 2.0, "annual": 9.4, "ar": 4.8, "ovd": 2.0, "stk": 1148, "mos": 5.0, "h2qty": 2717.0}, {"name": "Zagzoog", "ko": "Zagzoog", "group": "IR", "seg": false, "mval": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "mqty": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 0.0, "jun": 0.0, "q3": 0.0, "q4": 0.0, "annual": 0.0, "ar": 1.6, "ovd": 1.6, "stk": 456, "mos": 4.4, "h2qty": 0.0}, {"name": "Dhamin", "ko": "Dhamin", "group": "IR", "seg": false, "mval": [21546.0, 13729.0, 20773.0, 98541.0, 4078.0, 0.0, 26257.0, 44056.0, 42783.0, 37850.0, 22019.0, 16272.0], "mqty": [6.0, 3.0, 12.0, 54.0, 4.0, 0.0, 13.0, 22.0, 21.0, 19.0, 11.0, 8.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 0.2, "jun": 0.0, "q3": 0.1, "q4": 0.1, "annual": 0.3, "ar": 1.2, "ovd": 0.7, "stk": 735, "mos": 7.3, "h2qty": 94.0}, {"name": "Star Appliance", "ko": "Star", "group": "IR", "seg": false, "mval": [313677.0, 1999489.0, 1306891.0, -97787.0, 1171.0, 2516764.0, 583071.0, 978336.0, 950057.0, 840520.0, 488972.0, 361347.0], "mqty": [169.0, 814.0, 319.0, -78.0, 1.0, 1262.0, 203.0, 340.0, 330.0, 292.0, 170.0, 126.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 3.5, "jun": 2.5, "q3": 2.5, "q4": 1.7, "annual": 10.2, "ar": 4.6, "ovd": 3.1, "stk": 1090, "mos": 7.1, "h2qty": 1461.0}, {"name": "Al Ghanem", "ko": "Al Ghanem", "group": "IR", "seg": false, "mval": [0.0, 0.0, 144170.0, 1473102.0, 0.0, 1277612.0, 267632.0, 449060.0, 436080.0, 385802.0, 224440.0, 165860.0], "mqty": [0.0, 0.0, 33.0, 341.0, 0.0, 195.0, 62.0, 104.0, 101.0, 89.0, 52.0, 38.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 1.6, "jun": 1.3, "q3": 1.2, "q4": 0.8, "annual": 4.8, "ar": 2.3, "ovd": 0.5, "stk": 206, "mos": 3.2, "h2qty": 446.0}, {"name": "Al Shathri", "ko": "Al Shathri", "group": "IR", "seg": false, "mval": [1165951.0, 745191.0, 622815.0, 853680.0, 11015.0, 2514752.0, 562420.0, 943687.0, 916409.0, 810751.0, 471654.0, 348549.0], "mqty": [353.0, 319.0, 103.0, 264.0, 6.0, 936.0, 173.0, 290.0, 282.0, 249.0, 145.0, 107.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 3.4, "jun": 2.5, "q3": 2.4, "q4": 1.6, "annual": 10.0, "ar": 3.2, "ovd": 1.6, "stk": 564, "mos": 6.2, "h2qty": 1246.0}, {"name": "IR_Others", "ko": "IR 기타", "group": "IR", "seg": true, "mval": [5368456.0, 7126334.0, 4279410.0, 4332926.0, 1292784.0, 4803448.0, 3706813.0, 6219671.0, 6039892.0, 5343519.0, 3108590.0, 2297226.0], "mqty": [2278.0, 3673.0, 1929.0, 1912.0, 743.0, 2436.0, 1743.0, 2925.0, 2841.0, 2513.0, 1462.0, 1080.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 22.4, "jun": 4.8, "q3": 16.0, "q4": 10.7, "annual": 53.9, "ar": 0.0, "ovd": 0.0, "stk": null, "mos": null, "h2qty": 12564.0}, {"name": "SME", "ko": "SME", "group": "IR", "seg": true, "mval": [2245212.0, 1923341.0, 1996425.0, 844935.0, 1150025.0, 0.0, 1350334.0, 2265729.0, 2200238.0, 1946560.0, 1132411.0, 836843.0], "mqty": [747.0, 5069.0, 704.0, 381.0, 494.0, 0.0, 1224.0, 2053.0, 1994.0, 1764.0, 1026.0, 758.0], "fcst": [false, false, false, false, false, false, true, true, true, true, true, true], "h1": 8.2, "jun": 0.0, "q3": 5.8, "q4": 3.9, "annual": 17.9, "ar": 0.0, "ovd": 0.0, "stk": null, "mos": null, "h2qty": 8819.0}], "summary": {"OR": {"h1": 102.2, "jun": 16.3, "q3": 61.6, "q4": 23.7, "h2": 85.3, "annual": 203.8, "t3": 70, "t4": 25, "th2": 95, "gap3": 8.4, "gap4": 1.3, "gaph2": 9.7}, "IR": {"h1": 77.9, "jun": 19.2, "q3": 55.5, "q4": 37.4, "h2": 92.9, "annual": 190.0, "t3": 60, "t4": 35, "th2": 95, "gap3": 4.5, "gap4": -2.4, "gaph2": 2.1}}, "grp_val": {"OR": [0.0, 13.105921, 22.054801000000005, 29.006237, 25.732196, 12.332980000000001, 16.314194, 10.872540999999998, 21.686039999999995, 29.017861, 14.761597999999998, 4.280042, 4.647273], "IR": [0.0, 15.421102, 18.214202, 23.962260999999994, 13.966598999999999, 6.344632, 19.217685, 12.892611, 21.632546, 21.007258, 18.585212000000002, 10.811941000000001, 7.9899460000000015]}, "grp_qty": {"OR": [0.0, 9135.0, 15883.0, 18617.0, 17475.0, 7523.0, 6320.0, 7300.0, 14559.0, 19481.0, 9910.0, 2873.0, 3120.0], "IR": [0.0, 6309.0, 12705.0, 7995.0, 7375.0, 4140.0, 7784.0, 6375.0, 10697.0, 10387.0, 9189.0, 5346.0, 3950.0]}, "tot_annual": 393.8, "tot_gap": 11.8, "season": {"OR": {"1": 1.005, "2": 1.24, "3": 1.025, "4": 0.748, "5": 0.983, "6": 0.585, "7": 0.532, "8": 1.061, "9": 1.419, "10": 0.722, "11": 0.209, "12": 0.227}, "IR": {"1": 0.606, "2": 0.854, "3": 1.344, "4": 0.982, "5": 1.213, "6": 1.429, "7": 0.827, "8": 1.388, "9": 1.348, "10": 1.193, "11": 0.694, "12": 0.513}}, "fcst_method": "1-5월 실적 + 6월 RSM + 7-12월(1-5평균×OR/IR 분리 시즌계수, 2024·2025 2개년평균). 2026-06-17", "plan": {"OR_3Q": [{"ko": "eXtra", "add": 5.5, "mos": 3.4, "ovd": 0.8, "q": "q3"}, {"ko": "Al Manea", "add": 1.3, "mos": 1.0, "ovd": 4.1, "q": "q3"}, {"ko": "SWS", "add": 0.7, "mos": 0.4, "ovd": 3.1, "q": "q3"}, {"ko": "Black Box", "add": 0.6, "mos": 1.2, "ovd": 2.9, "q": "q3"}, {"ko": "Al Khunizan", "add": 0.1, "mos": 4.8, "ovd": 0.8, "q": "q3"}, {"ko": "OR 기타", "add": 0.1, "mos": null, "ovd": 0.0, "q": "q3"}], "OR_4Q": [{"ko": "eXtra", "add": 0.9, "mos": 3.4, "ovd": 0.8, "q": "q4"}, {"ko": "Al Manea", "add": 0.2, "mos": 1.0, "ovd": 4.1, "q": "q4"}, {"ko": "SWS", "add": 0.1, "mos": 0.4, "ovd": 3.1, "q": "q4"}, {"ko": "Black Box", "add": 0.1, "mos": 1.2, "ovd": 2.9, "q": "q4"}, {"ko": "Al Khunizan", "add": 0.0, "mos": 4.8, "ovd": 0.8, "q": "q4"}, {"ko": "OR 기타", "add": 0.0, "mos": null, "ovd": 0.0, "q": "q4"}], "IR_3Q": [{"ko": "BH", "add": 1.7, "mos": 5.5, "ovd": 28.9, "q": "q3"}, {"ko": "IR 기타", "add": 1.3, "mos": null, "ovd": 0.0, "q": "q3"}, {"ko": "SME", "add": 0.5, "mos": null, "ovd": 0.0, "q": "q3"}, {"ko": "BM", "add": 0.3, "mos": 3.9, "ovd": -0.0, "q": "q3"}, {"ko": "Tamkeen", "add": 0.2, "mos": 5.0, "ovd": 2.0, "q": "q3"}, {"ko": "Star", "add": 0.2, "mos": 7.1, "ovd": 3.1, "q": "q3"}, {"ko": "Al Shathri", "add": 0.2, "mos": 6.2, "ovd": 1.6, "q": "q3"}, {"ko": "Al Ghanem", "add": 0.1, "mos": 3.2, "ovd": 0.5, "q": "q3"}, {"ko": "Dhamin", "add": 0.0, "mos": 7.3, "ovd": 0.7, "q": "q3"}], "IR_4Q": []}};
+const MN = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+const f1 = x => (x==null?'–':x.toFixed(1));
+const charts = {};
+
+function gapChip(g){ // 양수=미달(빨강), 음수=초과(녹색)
+  if(g==null) return '';
+  const cls = g>0.05?'c-bad':(g<-0.05?'c-ok':'c-warn');
+  const s = g>0?('+'+g.toFixed(1)):g.toFixed(1);
+  return `<span class="chip ${cls}">${s}M</span>`;
+}
+function mosChip(m){
+  if(m==null) return '<span style="color:#475569">–</span>';
+  const cls = m>=4?'c-bad':(m>=2.5?'c-warn':'c-ok');
+  return `<span class="chip ${cls}">${m.toFixed(1)}개월</span>`;
+}
+function ovdChip(o){
+  if(!o) return '<span style="color:#475569">0</span>';
+  const cls = o>=10?'c-bad':(o>=2.5?'c-warn':'c-ok');
+  return `<span class="chip ${cls}">${o.toFixed(1)}M</span>`;
+}
+
+// ---------- ① Overview ----------
+function renderOverview(){
+  const s=D.summary, el=document.getElementById('overview');
+  el.innerHTML = `
+    <div class="grid kpis">
+      <div class="card"><div class="lbl">연간 전망 (16 bucket)</div><div class="val">${D.tot_annual}M</div><div class="note" style="color:var(--mut)">목표 400M 권 · SAR</div></div>
+      <div class="card"><div class="lbl">OR 하반기 (3Q+4Q)</div><div class="val">${s.OR.h2}<span style="font-size:15px;color:var(--mut)"> / ${s.OR.th2}M</span></div><div class="note">Gap ${gapChip(s.OR.gaph2)}</div></div>
+      <div class="card"><div class="lbl">IR 하반기 (3Q+4Q)</div><div class="val">${s.IR.h2}<span style="font-size:15px;color:var(--mut)"> / ${s.IR.th2}M</span></div><div class="note">Gap ${gapChip(s.IR.gaph2)}</div></div>
+      <div class="card" style="border-color:var(--warn)"><div class="lbl">하반기 총 Gap</div><div class="val pos">+${D.tot_gap}M</div><div class="note" style="color:var(--mut)">Action Plan으로 메울 양</div></div>
+    </div>
+
+    <div class="chartbox" style="margin-top:18px">
+      <h3>분기 목표 vs 자연전망 <span class="axis-tag ax-val">금액축 · M SAR</span></h3>
+      <table>
+        <tr><th class="l">그룹 · 분기</th><th>자연전망</th><th>목표</th><th>Gap</th><th class="l">해석</th></tr>
+        ${[['OR','3Q','t3','q3','gap3'],['OR','4Q','t4','q4','gap4'],['IR','3Q','t3','q3','gap3'],['IR','4Q','t4','q4','gap4']].map(([g,q,tk,vk,gk])=>`
+          <tr class="${g.toLowerCase()}-row"><td class="l">${g} ${q}</td><td>${f1(s[g][vk])}</td><td>${s[g][tk]}</td><td>${gapChip(s[g][gk])}</td>
+          <td class="l" style="color:var(--mut);font-size:12px">${s[g][gk]>0.05?'추가 푸시 필요':(s[g][gk]<-0.05?'이미 초과 — 여유':'목표권 도달')}</td></tr>`).join('')}
+      </table>
+    </div>
+
+    <div class="chartbox"><h3>그룹 분기 자연전망 vs 목표</h3><canvas id="cQuarter"></canvas></div>
+  `;
+  drawQuarter();
+}
+function drawQuarter(){
+  const s=D.summary;
+  const ctx=document.getElementById('cQuarter');
+  if(charts.q) charts.q.destroy();
+  charts.q=new Chart(ctx,{type:'bar',data:{
+    labels:['OR 3Q','OR 4Q','IR 3Q','IR 4Q'],
+    datasets:[
+      {label:'자연전망',data:[s.OR.q3,s.OR.q4,s.IR.q3,s.IR.q4],backgroundColor:'#3b82f6'},
+      {label:'목표',data:[s.OR.t3,s.OR.t4,s.IR.t3,s.IR.t4],backgroundColor:'rgba(148,163,184,.45)'},
+    ]},options:{responsive:true,plugins:{legend:{labels:{color:'#e2e8f0'}}},
+      scales:{x:{ticks:{color:'#cbd5e1'}},y:{ticks:{color:'#cbd5e1'},title:{display:true,text:'M SAR',color:'#94a3b8'}}}}});
+}
+
+// ---------- ② 채널 PSI ----------
+function renderPSI(){
+  const el=document.getElementById('psi');
+  let body='';
+  ['OR','IR'].forEach(g=>{
+    const grp=D.rows.filter(r=>r.group===g);
+    const sub={h1:0,jun:0,q3:0,q4:0,annual:0,ar:0,ovd:0};
+    grp.forEach(r=>{['h1','jun','q3','q4','annual','ar','ovd'].forEach(k=>sub[k]+=r[k])});
+    body+=`<tr class="grp ${g.toLowerCase()}-row"><td class="l">${g}계</td>
+      <td>${sub.h1.toFixed(1)}</td><td>${sub.jun.toFixed(1)}</td><td>${sub.q3.toFixed(1)}</td><td>${sub.q4.toFixed(1)}</td>
+      <td>${sub.annual.toFixed(1)}</td><td>${sub.ar.toFixed(1)}</td><td>${ovdChip(sub.ovd)}</td><td>–</td></tr>`;
+    grp.forEach(r=>{
+      body+=`<tr class="${r.seg?'seg':g.toLowerCase()+'-row'}"><td class="l">${r.ko}</td>
+        <td>${r.h1.toFixed(1)}</td><td>${r.jun.toFixed(1)}</td><td>${r.q3.toFixed(1)}</td><td>${r.q4.toFixed(1)}</td>
+        <td><b>${r.annual.toFixed(1)}</b></td><td>${r.ar.toFixed(1)}</td><td>${ovdChip(r.ovd)}</td><td>${mosChip(r.mos)}</td></tr>`;
+    });
+  });
+  el.innerHTML=`
+    <div class="chartbox">
+      <h3>채널별 PSI <span class="axis-tag ax-val">금액축 ST·AR·OVD</span><span class="axis-tag ax-qty">수량축 MOS</span></h3>
+      <div style="overflow-x:auto"><table>
+        <tr><th class="l">채널 / 세그먼트</th><th>1-5실적</th><th>6월RSM</th><th>3Q FCST</th><th>4Q FCST</th><th>연간</th>
+        <th>AR</th><th>OVD</th><th>MOS</th></tr>
+        ${body}
+      </table></div>
+      <div style="color:var(--mut);font-size:12px;margin-top:10px">
+        · 금액=M SAR. 3Q/4Q는 7~12월 FCST(1-5평균×시즌계수).
+        · MOS=최근 재고÷1~5월 평균 Sell-out(수량축). <span class="chip c-ok">&lt;2.5</span> 정상 · <span class="chip c-warn">2.5~4</span> 주의 · <span class="chip c-bad">≥4</span> 과재고.
+        · OVD <span class="chip c-warn">2.5~10</span> 주의 · <span class="chip c-bad">≥10</span> 위험. 세그먼트(OR기타·IR기타·SME)는 SO/재고 데이터 없어 MOS 미산출.
+      </div>
+    </div>`;
+}
+
+// ---------- ③ 이중축 추이 ----------
+function renderDual(){
+  const el=document.getElementById('dual');
+  el.innerHTML=`
+    <div class="secttitle">금액축 <span class="axis-tag ax-val">ST_val (M SAR) · 6월 이후 FCST</span></div>
+    <div class="chartbox"><canvas id="cVal"></canvas></div>
+    <div class="secttitle">수량축 <span class="axis-tag ax-qty">ST_qty (대) · 6월 이후 FCST</span></div>
+    <div class="chartbox"><canvas id="cQty"></canvas></div>
+    <div style="color:var(--mut);font-size:12px;margin-top:10px">
+      ※ 두 축은 분리: 금액축은 AR·채권·회수와, 수량축은 Sell-out·재고와 연동. 1~5월 실선=실적, 6월 이후 점선=FCST.
+      OR 시즌피크 8~9월(계수 ${D.season.OR?D.season.OR['8']:'-'}/${D.season.OR?D.season.OR['9']:'-'}), IR은 6·8·9월에 분산.
+    </div>`;
+  drawLine('cVal','grp_val','M SAR');
+  drawLine('cQty','grp_qty','대');
+}
+function drawLine(id,key,unit){
+  const ctx=document.getElementById(id);
+  if(charts[id]) charts[id].destroy();
+  const orD=D[key].OR.slice(1), irD=D[key].IR.slice(1);
+  const seg=(arr,from)=>arr.map((v,i)=>i>=from?v:null);
+  charts[id]=new Chart(ctx,{type:'line',data:{labels:MN,datasets:[
+    {label:'OR 실적',data:orD.map((v,i)=>i<=4?v:null),borderColor:'#2563eb',backgroundColor:'#2563eb',tension:.3,spanGaps:false},
+    {label:'OR FCST',data:orD.map((v,i)=>i>=4?v:null),borderColor:'#2563eb',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
+    {label:'IR 실적',data:irD.map((v,i)=>i<=4?v:null),borderColor:'#dc2626',backgroundColor:'#dc2626',tension:.3,spanGaps:false},
+    {label:'IR FCST',data:irD.map((v,i)=>i>=4?v:null),borderColor:'#dc2626',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
+  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#e2e8f0'}}},
+    scales:{x:{ticks:{color:'#cbd5e1'}},y:{ticks:{color:'#cbd5e1'},title:{display:true,text:unit,color:'#94a3b8'}}}}});
+}
+
+// ---------- ④ Action Plan ----------
+function renderPlan(){
+  const el=document.getElementById('plan'), p=D.plan, s=D.summary;
+  function block(title,arr,gap){
+    if(gap<=0.05) return `<div class="card"><div class="lbl">${title}</div><div class="val neg">목표 초과</div>
+      <div class="note" style="color:var(--mut)">Gap ${gap.toFixed(1)}M — 추가 푸시 불필요(여유). 재고·채권 관리에 집중.</div></div>`;
+    const top=arr.slice(0,5);
+    return `<div class="card"><div class="lbl">${title} · 필요 추가 <span class="pos">+${gap.toFixed(1)}M</span></div>
+      <table style="margin-top:8px">
+        <tr><th class="l">채널</th><th>추가 목표</th><th>MOS</th><th>OVD</th></tr>
+        ${top.map(x=>`<tr><td class="l">${x.ko}</td><td class="pos">+${x.add.toFixed(1)}M</td><td>${mosChip(x.mos)}</td><td>${ovdChip(x.ovd)}</td></tr>`).join('')}
+      </table></div>`;
+  }
+  el.innerHTML=`
+    <div class="card" style="border-color:var(--warn);margin-bottom:14px">
+      <div class="lbl">하반기 총 Gap = <span class="pos">+${D.tot_gap}M</span> — 분기별 귀속(자연전망 기여도 비례 배분)</div>
+      <div class="note" style="color:var(--mut);margin-top:6px">
+        OR 3Q(+${s.OR.gap3.toFixed(1)}M)가 최대 과제 — eXtra 8~9월 시즌피크 극대화가 핵심 레버.
+        IR 4Q는 자연전망이 목표를 초과(여유) → 무리한 밀어내기 대신 BH 채권(OVD)·재고 정상화 우선.
+      </div>
+    </div>
+    <div class="grid plan-grid">
+      ${block('OR · 3Q',p.OR_3Q,s.OR.gap3)}
+      ${block('OR · 4Q',p.OR_4Q,s.OR.gap4)}
+      ${block('IR · 3Q',p.IR_3Q,s.IR.gap3)}
+      ${block('IR · 4Q',p.IR_4Q,s.IR.gap4)}
+    </div>
+    <div class="chartbox" style="margin-top:14px"><h3>핵심 리스크 / 레버 (참모 의견)</h3>
+      <ul style="margin-left:18px;line-height:1.9;font-size:14px">
+        <li><b style="color:#f87171">BH 이중 리스크</b> — OVD ${D.rows.find(r=>r.name==='BH').ovd}M(AR의 절반) + 재고 MOS ${f1(D.rows.find(r=>r.name==='BH').mos)}개월. 하반기 최대 IR 채널이나, 금액축(채권)·수량축(재고) 동시 경고 → 밀어내기보다 <b>회수·소진 정상화</b> 선행.</li>
+        <li><b style="color:#93c5fd">eXtra 구조적 의존</b> — 연간 ${D.rows.find(r=>r.name==='eXtra').annual}M(전체의 ~33%), OVD ${D.rows.find(r=>r.name==='eXtra').ovd}M로 채권 건전. OR 3Q gap의 대부분을 eXtra 8~9월 입고·프로모로 메우는 것이 현실적.</li>
+        <li><b style="color:#fbbf24">전제 리스크</b> — 본 전망은 "2024 수준 하반기 회복" 가정. 2025식 연말 부진(IR 11~12월 계수 0.69/0.51)이 재연되면 Gap이 30M+로 재확대 → 월별 실적 모니터링 필수.</li>
+      </ul>
+    </div>`;
+}
+
+// ---------- 탭 전환 (숨겨진 탭 차트 재렌더 — 0x0 버그 방지) ----------
+const renderers={overview:renderOverview,psi:renderPSI,dual:renderDual,plan:renderPlan};
+function activate(p){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.p===p));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===p));
+  renderers[p]();
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>activate(t.dataset.p)));
+
+document.getElementById('subline').textContent='목표(2026-06-17 형님 확정): OR(+OR기타) 3Q70·4Q25·H2 95M / IR(+IR기타+SME) 3Q60·4Q35·H2 95M · 단위 M SAR';
+document.getElementById('foot').textContent='데이터: unified_psi.json (단일 진실) · '+D.fcst_method+' · 이중축 분리(금액↔AR/OVD, 수량↔SO/재고). 재생성: build_h2_dashboard.py';
+renderOverview();
+</script>
+</body>
+</html>
