@@ -78,6 +78,7 @@ for grp in ('OR', 'IR'):
 AC_CATS = {'Split Inverter', 'Split on/off', 'Free Standing', 'Cassette', 'Concealed', 'Window'}  # 라벨='Window'(확인). Multi-V/Unitary/AHU=상업용 제외(리테일 SO 모집단 일치)
 buckets = {}
 ac_acc = {}   # bucket → [AC val, AC qty] (ST_qty↔SO_qty 모집단 일치용)
+cat_acc = {}  # bucket → {category: qty} (카테고리 믹스 — SO목표 카테고리 분해용)
 def ensure(b):
     if b not in buckets:
         buckets[b] = {'val': {m: 0.0 for m in range(1, 13)}, 'qty': {m: 0.0 for m in range(1, 13)}}
@@ -91,6 +92,7 @@ for t in txn:
     e = ensure(b); e['val'][int(t[1])] += (t[8] or 0); e['qty'][int(t[1])] += (t[9] or 0)
     if t[7] in AC_CATS:
         a = ac_acc.setdefault(b, [0.0, 0.0]); a[0] += (t[8] or 0); a[1] += (t[9] or 0)
+        cm = cat_acc.setdefault(b, {}); cm[t[7]] = cm.get(t[7], 0) + (t[9] or 0)
 
 # 13채널 0행 보장 (Zagzoog 등 ST=0 채널도 표시)
 for b in ('eXtra','Al Manea','SWS','Black Box','Al Khunizan','BH','BM','Tamkeen',
@@ -133,6 +135,8 @@ for b, e in buckets.items():
     node.setdefault('value', {}); node.setdefault('qty', {})
     _ac = ac_acc.get(b, [0.0, 0.0])
     node['ac_asp'] = round(_ac[0] / _ac[1], 0) if _ac[1] else 0   # AC본품 ASP (역산 정합용)
+    _cm = cat_acc.get(b, {}); _ct = sum(_cm.values())
+    node['cat_mix'] = {c: round(q / _ct, 3) for c, q in sorted(_cm.items(), key=lambda x: -x[1])} if _ct else {}
     for m in range(1, 13):   # 1~5 실적도 기록(세그먼트 누락 버그 수정) / 6 RSM / 7~12 FCST
         mm = f'{m:02d}'
         node['value'].setdefault(mm, {})['st_val'] = round(e['val'][m], 0)

@@ -223,7 +223,12 @@
      "fcst": true
     }
    },
-   "ac_asp": 2798.0
+   "ac_asp": 2798.0,
+   "cat_mix": {
+    "Split Inverter": 0.635,
+    "Split on/off": 0.338,
+    "Free Standing": 0.027
+   }
   },
   "Al Manea": {
    "group": "OR",
@@ -329,7 +334,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 2886.0
+   "ac_asp": 2886.0,
+   "cat_mix": {
+    "Split Inverter": 0.657,
+    "Split on/off": 0.299,
+    "Free Standing": 0.045,
+    "Concealed": 0.0,
+    "Window": -0.002
+   }
   },
   "SWS": {
    "group": "OR",
@@ -435,7 +447,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 2584.0
+   "ac_asp": 2584.0,
+   "cat_mix": {
+    "Split Inverter": 0.487,
+    "Split on/off": 0.381,
+    "Window": 0.114,
+    "Free Standing": 0.015,
+    "Concealed": 0.004
+   }
   },
   "Black Box": {
    "group": "OR",
@@ -541,7 +560,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 2412.0
+   "ac_asp": 2412.0,
+   "cat_mix": {
+    "Split on/off": 0.57,
+    "Split Inverter": 0.377,
+    "Window": 0.049,
+    "Free Standing": 0.004,
+    "Concealed": 0.001
+   }
   },
   "Al Khunizan": {
    "group": "OR",
@@ -647,7 +673,15 @@
      "fcst": true
     }
    },
-   "ac_asp": 3014.0
+   "ac_asp": 3014.0,
+   "cat_mix": {
+    "Free Standing": 0.52,
+    "Split Inverter": 0.441,
+    "Window": 0.262,
+    "Split on/off": 0.102,
+    "Cassette": 0.024,
+    "Concealed": -0.349
+   }
   },
   "BH": {
    "group": "IR",
@@ -753,7 +787,15 @@
      "fcst": true
     }
    },
-   "ac_asp": 2954.0
+   "ac_asp": 2954.0,
+   "cat_mix": {
+    "Split on/off": 0.45,
+    "Window": 0.219,
+    "Free Standing": 0.214,
+    "Concealed": 0.06,
+    "Split Inverter": 0.045,
+    "Cassette": 0.012
+   }
   },
   "BM": {
    "group": "IR",
@@ -859,7 +901,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 3507.0
+   "ac_asp": 3507.0,
+   "cat_mix": {
+    "Split Inverter": 0.534,
+    "Free Standing": 0.196,
+    "Split on/off": 0.164,
+    "Concealed": 0.083,
+    "Cassette": 0.023
+   }
   },
   "Tamkeen": {
    "group": "IR",
@@ -965,7 +1014,11 @@
      "fcst": true
     }
    },
-   "ac_asp": 2133.0
+   "ac_asp": 2133.0,
+   "cat_mix": {
+    "Split on/off": 0.536,
+    "Split Inverter": 0.464
+   }
   },
   "Zagzoog": {
    "group": "IR",
@@ -1071,7 +1124,8 @@
      "fcst": true
     }
    },
-   "ac_asp": 0
+   "ac_asp": 0,
+   "cat_mix": {}
   },
   "Dhamin": {
    "group": "IR",
@@ -1177,7 +1231,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 3430.0
+   "ac_asp": 3430.0,
+   "cat_mix": {
+    "Split Inverter": 0.87,
+    "Concealed": 0.043,
+    "Free Standing": 0.043,
+    "Cassette": 0.022,
+    "Split on/off": 0.022
+   }
   },
   "Star Appliance": {
    "group": "IR",
@@ -1283,7 +1344,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 4063.0
+   "ac_asp": 4063.0,
+   "cat_mix": {
+    "Split Inverter": 0.338,
+    "Free Standing": 0.298,
+    "Split on/off": 0.229,
+    "Concealed": 0.116,
+    "Cassette": 0.019
+   }
   },
   "Al Ghanem": {
    "group": "IR",
@@ -1390,7 +1458,12 @@
     }
    },
    "_note": "SO/Stock 소스=byDealer \"Techno Best\"(=Al Ghanem 동일딜러). ST_qty는 data.json 권위 유지",
-   "ac_asp": 6807.0
+   "ac_asp": 6807.0,
+   "cat_mix": {
+    "Concealed": 0.466,
+    "Free Standing": 0.461,
+    "Cassette": 0.073
+   }
   },
   "Al Shathri": {
    "group": "IR",
@@ -1496,7 +1569,14 @@
      "fcst": true
     }
    },
-   "ac_asp": 4488.0
+   "ac_asp": 4488.0,
+   "cat_mix": {
+    "Free Standing": 0.455,
+    "Split Inverter": 0.413,
+    "Concealed": 0.067,
+    "Split on/off": 0.052,
+    "Cassette": 0.012
+   }
   },
   "OR_Others": {
    "group": "OR",
@@ -1589,7 +1669,14 @@
     }
    },
    "segment": true,
-   "ac_asp": 3090.0
+   "ac_asp": 3090.0,
+   "cat_mix": {
+    "Split on/off": 0.687,
+    "Split Inverter": 0.121,
+    "Concealed": 0.087,
+    "Cassette": 0.072,
+    "Free Standing": 0.034
+   }
   },
   "IR_Others": {
    "group": "IR",
@@ -1682,7 +1769,15 @@
     }
    },
    "segment": true,
-   "ac_asp": 2756.0
+   "ac_asp": 2756.0,
+   "cat_mix": {
+    "Split on/off": 0.497,
+    "Split Inverter": 0.278,
+    "Free Standing": 0.123,
+    "Concealed": 0.061,
+    "Window": 0.029,
+    "Cassette": 0.012
+   }
   },
   "SME": {
    "group": "IR",
@@ -1775,7 +1870,14 @@
     }
    },
    "segment": true,
-   "ac_asp": 4755.0
+   "ac_asp": 4755.0,
+   "cat_mix": {
+    "Concealed": 0.553,
+    "Split on/off": 0.173,
+    "Split Inverter": 0.164,
+    "Cassette": 0.091,
+    "Free Standing": 0.019
+   }
   }
  }
 }

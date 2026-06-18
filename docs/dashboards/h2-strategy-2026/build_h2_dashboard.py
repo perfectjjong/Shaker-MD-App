@@ -144,6 +144,22 @@ PAYLOAD['plan'] = {
 # 출하가 지속되려면 채널이 소진해야 → 필요 SO = (기초재고+ST목표수량)에서 기말 정상재고(2개월) 남긴 소진량.
 # ⚠️정합성: ST_qty(악세사리 포함) ≠ SO_qty(AC본품). ST목표수량은 AC본품 ASP(unified의 ac_asp)로 환산해 모집단 일치(형님 강조).
 TARGET_MOS = 2.0   # 하반기말 목표 재고 (개월) — 정상 회전 수준
+SEASON = META.get('season_index', {})
+def monthly_sim(g, stk0, so_h2):
+    """월별 PSI 시뮬: SO를 시즌계수로 배분 + 재고방정식(Stock=전월+ST-SO)으로 정상화 궤적."""
+    seas = {int(k): v for k, v in SEASON.get(g, {}).items() if 7 <= int(k) <= 12}
+    ss = sum(seas.values()) or 1
+    end_stk = so_h2 / 6 * TARGET_MOS          # 목표 기말재고(2개월)
+    out, prev = [], stk0
+    for i, m in enumerate(range(7, 13)):
+        so = so_h2 * seas.get(m, 0) / ss
+        target = stk0 + (end_stk - stk0) * (i + 1) / 6   # 재고 선형 정상화 궤적
+        st = so + (target - prev)                         # 재고방정식 역산
+        mos = target / (so_h2 / 6) if so_h2 else 0
+        out.append({'m': m, 'so': round(so), 'st': round(max(st, 0)),
+                    'stk': round(target), 'mos': round(mos, 1)})
+        prev = target
+    return out
 def reverse_plan(g):
     grp_s1_h2 = summary[g]['h2'] or 1
     tgt_h2 = TGT[g]['H2']
@@ -160,9 +176,12 @@ def reverse_plan(g):
         so_need = (stk + st_qty) / (1 + TARGET_MOS / 6.0) if stk else st_qty
         so_cur = (r['so_avg'] or 0) * 6                          # 현 런레이트 H2 환산
         lift = round((so_need / so_cur - 1) * 100, 0) if so_cur else None
+        cm = CH[r['name']].get('cat_mix', {})
+        cats = [{'cat': c, 'qty': round(so_need * sh)} for c, sh in cm.items()]
         out.append({'ko': r['ko'], 'st_val': round(st_val, 1), 'st_qty': round(st_qty, 0),
                     'so_need': round(so_need, 0), 'so_cur': round(so_cur, 0),
-                    'lift': lift, 'mos': r['mos'], 'stk': stk})
+                    'lift': lift, 'mos': r['mos'], 'stk': stk,
+                    'monthly': monthly_sim(g, stk, so_need), 'cats': cats})
     out.sort(key=lambda x: -x['st_val'])
     return out
 PAYLOAD['reverse'] = {'OR': reverse_plan('OR'), 'IR': reverse_plan('IR')}
@@ -323,13 +342,15 @@ HTML = """<!DOCTYPE html>
     <div class="tab" data-p="psi">② 채널 PSI</div>
     <div class="tab" data-p="dual">③ 이중축 추이</div>
     <div class="tab" data-p="plan">④ Action Plan</div>
-    <div class="tab" data-p="extra">⑤ eXtra 입고계획</div>
+    <div class="tab" data-p="exec">⑤ 월별 실행플랜 (SO→재고정상화)</div>
+    <div class="tab" data-p="extra">⑥ eXtra 입고계획</div>
   </div>
 
   <div class="panel active" id="overview"></div>
   <div class="panel" id="psi"></div>
   <div class="panel" id="dual"></div>
   <div class="panel" id="plan"></div>
+  <div class="panel" id="exec"></div>
   <div class="panel" id="extra"></div>
 
   <div class="footnote" id="foot"></div>
@@ -535,7 +556,57 @@ function revTable(g){
   </div>`;
 }
 
-// ---------- ⑤ eXtra 입고계획 ----------
+// ---------- ⑤ 월별 실행플랜 (SO→재고 정상화) ----------
+function renderExec(){
+  const el=document.getElementById('exec');
+  const all=[...(D.reverse?D.reverse.OR:[]),...(D.reverse?D.reverse.IR:[])].filter(x=>x.monthly&&x.monthly.length);
+  all.sort((a,b)=>b.so_need-a.so_need);
+  window._execAll=all;
+  const opts=all.map((x,i)=>`<option value="${i}">${x.ko} — SO목표 ${x.so_need.toLocaleString()}대 (${x.lift>0?'+':''}${x.lift}%)</option>`).join('');
+  el.innerHTML=`
+    <div class="card" style="margin-bottom:14px">
+      <div class="lbl">채널별 월별 PSI 실행플랜 — Sell-out 목표 → 재고·MOS 정상화 궤적</div>
+      <div class="note" style="color:#cbd5e1;margin-top:6px;font-size:13px">Sell-thru 목표 달성의 조건은 <b>밀어내기가 아니라 Sell-out</b>입니다. SO목표를 시즌계수로 월배분 → 재고방정식(재고=전월+출하−소진)으로 <b>월별 재고·MOS 정상화 궤적</b>을 산출합니다. Sell-out이 되면 재고(MOS)와 채권(OD)이 동시에 정상화됩니다.</div>
+      <select id="execSel" style="margin-top:10px;padding:9px;background:var(--bg);color:#e2e8f0;border:1px solid var(--line);border-radius:8px;font-size:14px;width:100%;max-width:420px">${opts}</select>
+    </div>
+    <div id="execBody"></div>`;
+  document.getElementById('execSel').addEventListener('change',e=>drawExec(+e.target.value));
+  drawExec(0);
+}
+function drawExec(idx){
+  const x=window._execAll[idx]; const b=document.getElementById('execBody');
+  const rows=x.monthly.map(r=>`<tr><td class="l">${r.m}월</td><td>${r.so.toLocaleString()}</td><td>${r.st.toLocaleString()}</td><td>${r.stk.toLocaleString()}</td><td>${mosChip(r.mos)}</td></tr>`).join('');
+  const cats=(x.cats||[]).map(c=>`<tr><td class="l">${c.cat}</td><td><b>${c.qty.toLocaleString()}대</b></td></tr>`).join('');
+  b.innerHTML=`
+    <div class="grid kpis" style="margin-bottom:14px">
+      <div class="card"><div class="lbl">하반기 SO(소진) 목표</div><div class="val">${x.so_need.toLocaleString()}<span style="font-size:14px;color:var(--mut)">대</span></div><div class="note">현 런레이트比 <span class="${x.lift>30?'pos':''}">${x.lift>0?'+':''}${x.lift}%</span></div></div>
+      <div class="card"><div class="lbl">재고 정상화</div><div class="val">${mosChip(x.mos)}<span style="font-size:15px;color:var(--mut)"> → 2.0</span></div><div class="note" style="color:var(--mut)">현재고 ${x.stk?x.stk.toLocaleString():'–'}대 → 12월 목표</div></div>
+      <div class="card"><div class="lbl">ST(출하) 목표 H2</div><div class="val">${x.st_qty.toLocaleString()}<span style="font-size:13px;color:var(--mut)">대 / ${x.st_val}M</span></div></div>
+    </div>
+    <div class="chartbox"><h3>월별 재고·소진·MOS 정상화 궤적</h3><canvas id="cExec"></canvas></div>
+    <div class="grid plan-grid" style="margin-top:14px">
+      <div class="card"><div class="lbl">월별 PSI 시뮬</div>
+        <table style="margin-top:6px"><tr><th class="l">월</th><th>SO목표</th><th>ST출하</th><th>기말재고</th><th>MOS</th></tr>${rows}</table></div>
+      <div class="card"><div class="lbl">SO목표 카테고리 분해 — 무엇을 소진하나</div>
+        <table style="margin-top:6px"><tr><th class="l">카테고리</th><th>하반기 SO목표</th></tr>${cats||'<tr><td class="l" colspan=2 style="color:var(--mut)">세그먼트 — 카테고리 데이터 없음</td></tr>'}</table>
+        <div style="color:var(--mut);font-size:12px;margin-top:8px">→ 비중 큰 카테고리가 <b>프로모·영업 1순위</b>. 채널 제품 DNA에 맞춰 소진.</div></div>
+    </div>`;
+  drawExecChart(x);
+}
+function drawExecChart(x){
+  const ctx=document.getElementById('cExec'); if(charts.exec)charts.exec.destroy();
+  charts.exec=new Chart(ctx,{data:{labels:x.monthly.map(r=>r.m+'월'),datasets:[
+    {type:'bar',label:'기말재고(대)',data:x.monthly.map(r=>r.stk),backgroundColor:'rgba(59,130,246,.5)',yAxisID:'y'},
+    {type:'bar',label:'SO목표(대)',data:x.monthly.map(r=>r.so),backgroundColor:'rgba(16,185,129,.55)',yAxisID:'y'},
+    {type:'line',label:'MOS(개월)',data:x.monthly.map(r=>r.mos),borderColor:'#fbbf24',backgroundColor:'#fbbf24',yAxisID:'y1',tension:.3,pointRadius:4}
+  ]},options:{responsive:true,plugins:{legend:{labels:{color:'#e2e8f0'}}},scales:{
+    x:{ticks:{color:'#cbd5e1'}},
+    y:{position:'left',ticks:{color:'#cbd5e1'},title:{display:true,text:'대',color:'#94a3b8'}},
+    y1:{position:'right',min:0,ticks:{color:'#fbbf24'},grid:{drawOnChartArea:false},title:{display:true,text:'MOS(개월)',color:'#fbbf24'}}
+  }}});
+}
+
+// ---------- ⑥ eXtra 입고계획 ----------
 function renderExtra(){
   const e=D.extra, el=document.getElementById('extra');
   const catRow=(arr)=>arr.map(c=>`<tr><td class="l">${c.cat}</td><td>${c.mix}%</td><td>${c.val.toFixed(1)}M</td><td>${c.asp.toFixed(0)}</td><td><b>${c.qty.toLocaleString()}대</b></td></tr>`).join('');
@@ -592,7 +663,7 @@ function renderExtra(){
 }
 
 // ---------- 탭 전환 (숨겨진 탭 차트 재렌더 — 0x0 버그 방지) ----------
-const renderers={overview:renderOverview,psi:renderPSI,dual:renderDual,plan:renderPlan,extra:renderExtra};
+const renderers={overview:renderOverview,psi:renderPSI,dual:renderDual,plan:renderPlan,exec:renderExec,extra:renderExtra};
 function activate(p){
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.p===p));
   document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===p));
