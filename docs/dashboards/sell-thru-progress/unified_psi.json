@@ -4,35 +4,35 @@
   "built": "2026-06-17",
   "version": "v1(dual-axis)",
   "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
-  "fcst_method": "1-5월 실적 + 6월 RSM + 7-12월(1-5평균×OR/IR 분리 시즌계수, 2024·2025 2개년평균). 2026-06-17",
+  "fcst_method": "1-5월 실적 + 6월 RSM + 7-12월(1-5평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균). 2026-06-18",
   "season_index": {
    "OR": {
     "1": 1.005,
-    "2": 1.24,
-    "3": 1.025,
-    "4": 0.748,
-    "5": 0.983,
-    "6": 0.585,
+    "2": 1.281,
+    "3": 1.076,
+    "4": 0.785,
+    "5": 0.853,
+    "6": 0.571,
     "7": 0.532,
-    "8": 1.061,
-    "9": 1.419,
-    "10": 0.722,
-    "11": 0.209,
-    "12": 0.227
+    "8": 1.066,
+    "9": 1.387,
+    "10": 0.684,
+    "11": 0.181,
+    "12": 0.186
    },
    "IR": {
-    "1": 0.606,
-    "2": 0.854,
-    "3": 1.344,
-    "4": 0.982,
-    "5": 1.213,
-    "6": 1.429,
-    "7": 0.827,
-    "8": 1.388,
-    "9": 1.348,
-    "10": 1.193,
-    "11": 0.694,
-    "12": 0.513
+    "1": 0.56,
+    "2": 0.832,
+    "3": 1.353,
+    "4": 1.01,
+    "5": 1.246,
+    "6": 1.439,
+    "7": 0.85,
+    "8": 1.366,
+    "9": 1.255,
+    "10": 1.131,
+    "11": 0.627,
+    "12": 0.465
    }
   },
   "target_2026": {
@@ -46,7 +46,77 @@
     "4Q": 35,
     "H2": 95
    }
-  }
+  },
+  "recovery_factor": {
+   "OR": 1.252,
+   "IR": 1.232
+  },
+  "normal_base": {
+   "OR": 25.6,
+   "IR": 19.2
+  },
+  "scenarios": {
+   "OR": {
+    "S1": {
+     "3Q": 61.0,
+     "4Q": 21.5,
+     "H2": 82.5
+    },
+    "target": {
+     "3Q": 70,
+     "4Q": 25,
+     "H2": 95
+    },
+    "S2": {
+     "3Q": 76.4,
+     "4Q": 26.9,
+     "H2": 103.3
+    }
+   },
+   "IR": {
+    "S1": {
+     "3Q": 54.1,
+     "4Q": 34.6,
+     "H2": 88.7
+    },
+    "target": {
+     "3Q": 60,
+     "4Q": 35,
+     "H2": 95
+    },
+    "S2": {
+     "3Q": 66.6,
+     "4Q": 42.7,
+     "H2": 109.3
+    }
+   }
+  },
+  "macro_timeline": [
+   {
+    "m": "1월",
+    "event": "사우디제이션 본격 시행",
+    "impact": "OR −41% (vs 2개년 평균)",
+    "type": "shock"
+   },
+   {
+    "m": "3~4월",
+    "event": "이란–미국 군사긴장 고조",
+    "impact": "소비심리 위축 진입",
+    "type": "shock"
+   },
+   {
+    "m": "5월",
+    "event": "전쟁발 소비위축 정점",
+    "impact": "IR −69% · OR −48%",
+    "type": "shock"
+   },
+   {
+    "m": "6월~",
+    "event": "회복세 진입 (RSM 반등)",
+    "impact": "OR +32% · IR +203%",
+    "type": "recovery"
+   }
+  ]
  },
  "channels": {
   "eXtra": {
@@ -73,27 +143,27 @@
     "ar_bal": 68549174,
     "ovd": 844932,
     "07": {
-     "st_val": 7134037.0,
+     "st_val": 7138629.0,
      "fcst": true
     },
     "08": {
-     "st_val": 14229332.0,
+     "st_val": 14297187.0,
      "fcst": true
     },
     "09": {
-     "st_val": 19040119.0,
+     "st_val": 18606944.0,
      "fcst": true
     },
     "10": {
-     "st_val": 9685848.0,
+     "st_val": 9172828.0,
      "fcst": true
     },
     "11": {
-     "st_val": 2808357.0,
+     "st_val": 2429260.0,
      "fcst": true
     },
     "12": {
-     "st_val": 3049316.0,
+     "st_val": 2489025.0,
      "fcst": true
     }
    },
@@ -129,30 +199,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 4799.0,
+     "st_qty": 4802.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 9571.0,
+     "st_qty": 9617.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 12807.0,
+     "st_qty": 12516.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 6515.0,
+     "st_qty": 6170.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 1889.0,
+     "st_qty": 1634.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 2051.0,
+     "st_qty": 1674.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2798.0
   },
   "Al Manea": {
    "group": "OR",
@@ -178,27 +249,27 @@
     "ar_bal": 16139920,
     "ovd": 4138394,
     "07": {
-     "st_val": 1714800.0,
+     "st_val": 1715904.0,
      "fcst": true
     },
     "08": {
-     "st_val": 3420289.0,
+     "st_val": 3436599.0,
      "fcst": true
     },
     "09": {
-     "st_val": 4576652.0,
+     "st_val": 4472530.0,
      "fcst": true
     },
     "10": {
-     "st_val": 2328176.0,
+     "st_val": 2204862.0,
      "fcst": true
     },
     "11": {
-     "st_val": 675042.0,
+     "st_val": 583918.0,
      "fcst": true
     },
     "12": {
-     "st_val": 732961.0,
+     "st_val": 598284.0,
      "fcst": true
     }
    },
@@ -238,26 +309,27 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 2233.0,
+     "st_qty": 2244.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 2988.0,
+     "st_qty": 2920.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 1520.0,
+     "st_qty": 1440.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 441.0,
+     "st_qty": 381.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 479.0,
+     "st_qty": 391.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2886.0
   },
   "SWS": {
    "group": "OR",
@@ -283,27 +355,27 @@
     "ar_bal": 9035023,
     "ovd": 3067083,
     "07": {
-     "st_val": 934422.0,
+     "st_val": 935024.0,
      "fcst": true
     },
     "08": {
-     "st_val": 1863770.0,
+     "st_val": 1872658.0,
      "fcst": true
     },
     "09": {
-     "st_val": 2493891.0,
+     "st_val": 2437153.0,
      "fcst": true
     },
     "10": {
-     "st_val": 1268661.0,
+     "st_val": 1201465.0,
      "fcst": true
     },
     "11": {
-     "st_val": 367841.0,
+     "st_val": 318187.0,
      "fcst": true
     },
     "12": {
-     "st_val": 399402.0,
+     "st_val": 326015.0,
      "fcst": true
     }
    },
@@ -343,26 +415,27 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 1268.0,
+     "st_qty": 1274.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 1696.0,
+     "st_qty": 1658.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 863.0,
+     "st_qty": 817.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 250.0,
+     "st_qty": 216.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 272.0,
+     "st_qty": 222.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2584.0
   },
   "Black Box": {
    "group": "OR",
@@ -388,27 +461,27 @@
     "ar_bal": 8205557,
     "ovd": 2873214,
     "07": {
-     "st_val": 818380.0,
+     "st_val": 818907.0,
      "fcst": true
     },
     "08": {
-     "st_val": 1632316.0,
+     "st_val": 1640100.0,
      "fcst": true
     },
     "09": {
-     "st_val": 2184185.0,
+     "st_val": 2134493.0,
      "fcst": true
     },
     "10": {
-     "st_val": 1111111.0,
+     "st_val": 1052260.0,
      "fcst": true
     },
     "11": {
-     "st_val": 322160.0,
+     "st_val": 278672.0,
      "fcst": true
     },
     "12": {
-     "st_val": 349802.0,
+     "st_val": 285528.0,
      "fcst": true
     }
    },
@@ -444,30 +517,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 590.0,
+     "st_qty": 591.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 1177.0,
+     "st_qty": 1183.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 1575.0,
+     "st_qty": 1539.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 801.0,
+     "st_qty": 759.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 232.0,
+     "st_qty": 201.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 252.0,
+     "st_qty": 206.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2412.0
   },
   "Al Khunizan": {
    "group": "OR",
@@ -493,27 +567,27 @@
     "ar_bal": 2466969,
     "ovd": 761185,
     "07": {
-     "st_val": 121881.0,
+     "st_val": 121960.0,
      "fcst": true
     },
     "08": {
-     "st_val": 243100.0,
+     "st_val": 244260.0,
      "fcst": true
     },
     "09": {
-     "st_val": 325290.0,
+     "st_val": 317890.0,
      "fcst": true
     },
     "10": {
-     "st_val": 165477.0,
+     "st_val": 156713.0,
      "fcst": true
     },
     "11": {
-     "st_val": 47979.0,
+     "st_val": 41503.0,
      "fcst": true
     },
     "12": {
-     "st_val": 52096.0,
+     "st_val": 42524.0,
      "fcst": true
     }
    },
@@ -557,22 +631,23 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 158.0,
+     "st_qty": 154.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 80.0,
+     "st_qty": 76.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 23.0,
+     "st_qty": 20.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 25.0,
+     "st_qty": 21.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 3014.0
   },
   "BH": {
    "group": "IR",
@@ -598,27 +673,27 @@
     "ar_bal": 57053130,
     "ovd": 28897983,
     "07": {
-     "st_val": 4823677.0,
+     "st_val": 4954971.0,
      "fcst": true
     },
     "08": {
-     "st_val": 8093661.0,
+     "st_val": 7965083.0,
      "fcst": true
     },
     "09": {
-     "st_val": 7859714.0,
+     "st_val": 7318842.0,
      "fcst": true
     },
     "10": {
-     "st_val": 6953523.0,
+     "st_val": 6591924.0,
      "fcst": true
     },
     "11": {
-     "st_val": 4045210.0,
+     "st_val": 3655120.0,
      "fcst": true
     },
     "12": {
-     "st_val": 2989380.0,
+     "st_val": 2713029.0,
      "fcst": true
     }
    },
@@ -654,30 +729,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 2169.0,
+     "st_qty": 2228.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 3640.0,
+     "st_qty": 3582.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 3534.0,
+     "st_qty": 3291.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 3127.0,
+     "st_qty": 2964.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 1819.0,
+     "st_qty": 1644.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 1344.0,
+     "st_qty": 1220.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2954.0
   },
   "BM": {
    "group": "IR",
@@ -703,27 +779,27 @@
     "ar_bal": 4600911,
     "ovd": -1646,
     "07": {
-     "st_val": 883894.0,
+     "st_val": 907952.0,
      "fcst": true
     },
     "08": {
-     "st_val": 1483088.0,
+     "st_val": 1459527.0,
      "fcst": true
     },
     "09": {
-     "st_val": 1440219.0,
+     "st_val": 1341109.0,
      "fcst": true
     },
     "10": {
-     "st_val": 1274168.0,
+     "st_val": 1207909.0,
      "fcst": true
     },
     "11": {
-     "st_val": 741247.0,
+     "st_val": 669766.0,
      "fcst": true
     },
     "12": {
-     "st_val": 547776.0,
+     "st_val": 497137.0,
      "fcst": true
     }
    },
@@ -759,30 +835,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 411.0,
+     "st_qty": 422.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 690.0,
+     "st_qty": 679.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 670.0,
+     "st_qty": 624.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 593.0,
+     "st_qty": 562.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 345.0,
+     "st_qty": 312.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 255.0,
+     "st_qty": 231.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 3507.0
   },
   "Tamkeen": {
    "group": "IR",
@@ -808,27 +885,27 @@
     "ar_bal": 4828373,
     "ovd": 1963667,
     "07": {
-     "st_val": 688513.0,
+     "st_val": 707254.0,
      "fcst": true
     },
     "08": {
-     "st_val": 1155258.0,
+     "st_val": 1136906.0,
      "fcst": true
     },
     "09": {
-     "st_val": 1121866.0,
+     "st_val": 1044664.0,
      "fcst": true
     },
     "10": {
-     "st_val": 992519.0,
+     "st_val": 940906.0,
      "fcst": true
     },
     "11": {
-     "st_val": 577398.0,
+     "st_val": 521718.0,
      "fcst": true
     },
     "12": {
-     "st_val": 426693.0,
+     "st_val": 387247.0,
      "fcst": true
     }
    },
@@ -864,30 +941,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 377.0,
+     "st_qty": 387.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 633.0,
+     "st_qty": 622.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 614.0,
+     "st_qty": 572.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 543.0,
+     "st_qty": 515.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 316.0,
+     "st_qty": 286.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 234.0,
+     "st_qty": 212.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 2133.0
   },
   "Zagzoog": {
    "group": "IR",
@@ -992,7 +1070,8 @@
      "st_qty": 0.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 0
   },
   "Dhamin": {
    "group": "IR",
@@ -1018,27 +1097,27 @@
     "ar_bal": 1167376,
     "ovd": 697736,
     "07": {
-     "st_val": 26257.0,
+     "st_val": 26971.0,
      "fcst": true
     },
     "08": {
-     "st_val": 44056.0,
+     "st_val": 43356.0,
      "fcst": true
     },
     "09": {
-     "st_val": 42783.0,
+     "st_val": 39838.0,
      "fcst": true
     },
     "10": {
-     "st_val": 37850.0,
+     "st_val": 35882.0,
      "fcst": true
     },
     "11": {
-     "st_val": 22019.0,
+     "st_val": 19896.0,
      "fcst": true
     },
     "12": {
-     "st_val": 16272.0,
+     "st_val": 14768.0,
      "fcst": true
     }
    },
@@ -1082,22 +1161,23 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 21.0,
+     "st_qty": 20.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 19.0,
+     "st_qty": 18.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 11.0,
+     "st_qty": 10.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 8.0,
+     "st_qty": 7.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 3430.0
   },
   "Star Appliance": {
    "group": "IR",
@@ -1123,27 +1203,27 @@
     "ar_bal": 4648631,
     "ovd": 3109710,
     "07": {
-     "st_val": 583071.0,
+     "st_val": 598941.0,
      "fcst": true
     },
     "08": {
-     "st_val": 978336.0,
+     "st_val": 962794.0,
      "fcst": true
     },
     "09": {
-     "st_val": 950057.0,
+     "st_val": 884678.0,
      "fcst": true
     },
     "10": {
-     "st_val": 840520.0,
+     "st_val": 796811.0,
      "fcst": true
     },
     "11": {
-     "st_val": 488972.0,
+     "st_val": 441819.0,
      "fcst": true
     },
     "12": {
-     "st_val": 361347.0,
+     "st_val": 327942.0,
      "fcst": true
     }
    },
@@ -1179,30 +1259,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 203.0,
+     "st_qty": 208.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 340.0,
+     "st_qty": 335.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 330.0,
+     "st_qty": 308.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 292.0,
+     "st_qty": 277.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 170.0,
+     "st_qty": 154.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 126.0,
+     "st_qty": 114.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 4063.0
   },
   "Al Ghanem": {
    "group": "IR",
@@ -1228,27 +1309,27 @@
     "ar_bal": 2276778,
     "ovd": 451288,
     "07": {
-     "st_val": 267632.0,
+     "st_val": 274916.0,
      "fcst": true
     },
     "08": {
-     "st_val": 449060.0,
+     "st_val": 441926.0,
      "fcst": true
     },
     "09": {
-     "st_val": 436080.0,
+     "st_val": 406071.0,
      "fcst": true
     },
     "10": {
-     "st_val": 385802.0,
+     "st_val": 365739.0,
      "fcst": true
     },
     "11": {
-     "st_val": 224440.0,
+     "st_val": 202797.0,
      "fcst": true
     },
     "12": {
-     "st_val": 165860.0,
+     "st_val": 150527.0,
      "fcst": true
     }
    },
@@ -1284,31 +1365,32 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 62.0,
+     "st_qty": 64.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 104.0,
+     "st_qty": 102.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 101.0,
+     "st_qty": 94.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 89.0,
+     "st_qty": 85.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 52.0,
+     "st_qty": 47.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 38.0,
+     "st_qty": 35.0,
      "fcst": true
     }
    },
-   "_note": "SO/Stock 소스=byDealer \"Techno Best\"(=Al Ghanem 동일딜러). ST_qty는 data.json 권위 유지"
+   "_note": "SO/Stock 소스=byDealer \"Techno Best\"(=Al Ghanem 동일딜러). ST_qty는 data.json 권위 유지",
+   "ac_asp": 6807.0
   },
   "Al Shathri": {
    "group": "IR",
@@ -1334,27 +1416,27 @@
     "ar_bal": 3189783,
     "ovd": 1625799,
     "07": {
-     "st_val": 562420.0,
+     "st_val": 577729.0,
      "fcst": true
     },
     "08": {
-     "st_val": 943687.0,
+     "st_val": 928695.0,
      "fcst": true
     },
     "09": {
-     "st_val": 916409.0,
+     "st_val": 853346.0,
      "fcst": true
     },
     "10": {
-     "st_val": 810751.0,
+     "st_val": 768591.0,
      "fcst": true
     },
     "11": {
-     "st_val": 471654.0,
+     "st_val": 426171.0,
      "fcst": true
     },
     "12": {
-     "st_val": 348549.0,
+     "st_val": 316328.0,
      "fcst": true
     }
    },
@@ -1390,30 +1472,31 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 173.0,
+     "st_qty": 178.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 290.0,
+     "st_qty": 286.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 282.0,
+     "st_qty": 262.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 249.0,
+     "st_qty": 236.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 145.0,
+     "st_qty": 131.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 107.0,
+     "st_qty": 97.0,
      "fcst": true
     }
-   }
+   },
+   "ac_asp": 4488.0
   },
   "OR_Others": {
    "group": "OR",
@@ -1422,27 +1505,27 @@
      "st_val": 527762.0
     },
     "07": {
-     "st_val": 149021.0,
+     "st_val": 149117.0,
      "fcst": true
     },
     "08": {
-     "st_val": 297233.0,
+     "st_val": 298650.0,
      "fcst": true
     },
     "09": {
-     "st_val": 397724.0,
+     "st_val": 388675.0,
      "fcst": true
     },
     "10": {
-     "st_val": 202325.0,
+     "st_val": 191609.0,
      "fcst": true
     },
     "11": {
-     "st_val": 58663.0,
+     "st_val": 50744.0,
      "fcst": true
     },
     "12": {
-     "st_val": 63696.0,
+     "st_val": 51993.0,
      "fcst": true
     },
     "01": {
@@ -1470,23 +1553,23 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 192.0,
+     "st_qty": 193.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 257.0,
+     "st_qty": 251.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 131.0,
+     "st_qty": 124.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 38.0,
+     "st_qty": 33.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 41.0,
+     "st_qty": 34.0,
      "fcst": true
     },
     "01": {
@@ -1505,7 +1588,8 @@
      "st_qty": 380.0
     }
    },
-   "segment": true
+   "segment": true,
+   "ac_asp": 3090.0
   },
   "IR_Others": {
    "group": "IR",
@@ -1514,27 +1598,27 @@
      "st_val": 4803448.0
     },
     "07": {
-     "st_val": 3706813.0,
+     "st_val": 3807707.0,
      "fcst": true
     },
     "08": {
-     "st_val": 6219671.0,
+     "st_val": 6120864.0,
      "fcst": true
     },
     "09": {
-     "st_val": 6039892.0,
+     "st_val": 5624252.0,
      "fcst": true
     },
     "10": {
-     "st_val": 5343519.0,
+     "st_val": 5065644.0,
      "fcst": true
     },
     "11": {
-     "st_val": 3108590.0,
+     "st_val": 2808821.0,
      "fcst": true
     },
     "12": {
-     "st_val": 2297226.0,
+     "st_val": 2084860.0,
      "fcst": true
     },
     "01": {
@@ -1558,27 +1642,27 @@
      "st_qty": 2436.0
     },
     "07": {
-     "st_qty": 1743.0,
+     "st_qty": 1791.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 2925.0,
+     "st_qty": 2879.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 2841.0,
+     "st_qty": 2645.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 2513.0,
+     "st_qty": 2382.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 1462.0,
+     "st_qty": 1321.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 1080.0,
+     "st_qty": 981.0,
      "fcst": true
     },
     "01": {
@@ -1597,7 +1681,8 @@
      "st_qty": 743.0
     }
    },
-   "segment": true
+   "segment": true,
+   "ac_asp": 2756.0
   },
   "SME": {
    "group": "IR",
@@ -1606,27 +1691,27 @@
      "st_val": 0.0
     },
     "07": {
-     "st_val": 1350334.0,
+     "st_val": 1387088.0,
      "fcst": true
     },
     "08": {
-     "st_val": 2265729.0,
+     "st_val": 2229735.0,
      "fcst": true
     },
     "09": {
-     "st_val": 2200238.0,
+     "st_val": 2048827.0,
      "fcst": true
     },
     "10": {
-     "st_val": 1946560.0,
+     "st_val": 1845335.0,
      "fcst": true
     },
     "11": {
-     "st_val": 1132411.0,
+     "st_val": 1023210.0,
      "fcst": true
     },
     "12": {
-     "st_val": 836843.0,
+     "st_val": 759482.0,
      "fcst": true
     },
     "01": {
@@ -1650,27 +1735,27 @@
      "st_qty": 0.0
     },
     "07": {
-     "st_qty": 1224.0,
+     "st_qty": 1257.0,
      "fcst": true
     },
     "08": {
-     "st_qty": 2053.0,
+     "st_qty": 2021.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 1994.0,
+     "st_qty": 1857.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 1764.0,
+     "st_qty": 1672.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 1026.0,
+     "st_qty": 927.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 758.0,
+     "st_qty": 688.0,
      "fcst": true
     },
     "01": {
@@ -1689,7 +1774,8 @@
      "st_qty": 494.0
     }
    },
-   "segment": true
+   "segment": true,
+   "ac_asp": 4755.0
   }
  }
 }

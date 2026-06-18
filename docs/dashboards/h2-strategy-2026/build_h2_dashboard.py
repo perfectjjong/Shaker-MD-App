@@ -69,6 +69,7 @@ for c in ORDER:
                 break
         if stk and so_avg:
             mos = stk / so_avg
+    asp = (sum(mval[0:5]) / sum(mqty[0:5])) if sum(mqty[0:5]) else 0   # 1~5월 실효 ASP
     rows.append({
         'name': c, 'ko': KO.get(c, c), 'group': g, 'seg': seg,
         'mval': [round(x, 0) for x in mval], 'mqty': [round(x, 0) for x in mqty],
@@ -76,6 +77,8 @@ for c in ORDER:
         'q3': round(q3, 1), 'q4': round(q4, 1), 'annual': round(annual, 1),
         'ar': round(ar / 1e6, 1), 'ovd': round(ovd / 1e6, 1),
         'stk': stk, 'mos': round(mos, 1) if mos else None,
+        'asp': round(asp, 0), 'ac_asp': CH[c].get('ac_asp', 0),
+        'so_avg': round(so_avg, 0) if so_avg else None,
         'h2qty': round(sum(mqty[6:12]), 0),
     })
 
@@ -108,6 +111,10 @@ PAYLOAD = {
     'tot_annual': tot_annual, 'tot_gap': tot_gap,
     'season': META.get('season_index', {}),
     'fcst_method': META.get('fcst_method', ''),
+    'scenarios': META.get('scenarios', {}),
+    'recovery': META.get('recovery_factor', {}),
+    'normal_base': META.get('normal_base', {}),
+    'macro': META.get('macro_timeline', []),
 }
 
 # ---- Action Plan: gap을 채널 단위로 귀속 (자연전망 기여도 비례) ----
@@ -132,6 +139,34 @@ PAYLOAD['plan'] = {
     'IR_4Q': attribute('IR', 'q4', summary['IR']['gap4']),
 }
 
+# ---- 목표 역산: 채널별 ST(출하) 목표 → 필요 Sell-out(소진) — 형님 핵심 요구 ----
+# 공식 FCST=형님 목표. 채널 ST목표(금액) = 그룹목표H2 × 채널 자연전망 비중.
+# 출하가 지속되려면 채널이 소진해야 → 필요 SO = (기초재고+ST목표수량)에서 기말 정상재고(2개월) 남긴 소진량.
+# ⚠️정합성: ST_qty(악세사리 포함) ≠ SO_qty(AC본품). ST목표수량은 AC본품 ASP(unified의 ac_asp)로 환산해 모집단 일치(형님 강조).
+TARGET_MOS = 2.0   # 하반기말 목표 재고 (개월) — 정상 회전 수준
+def reverse_plan(g):
+    grp_s1_h2 = summary[g]['h2'] or 1
+    tgt_h2 = TGT[g]['H2']
+    out = []
+    for r in rows:
+        if r['group'] != g or r['seg']:
+            continue
+        share = (r['q3'] + r['q4']) / grp_s1_h2
+        st_val = tgt_h2 * share                                  # 채널 ST목표 금액(M)
+        asp = r['ac_asp'] or r['asp']                            # AC본품 ASP(unified) 우선
+        st_qty = st_val * 1e6 / asp if asp else 0                # → AC본품 수량 환산
+        stk = r['stk'] or 0
+        # SO_H2 + 기말재고 = 기초재고 + ST목표.  기말 = TARGET_MOS×(SO_H2/6)
+        so_need = (stk + st_qty) / (1 + TARGET_MOS / 6.0) if stk else st_qty
+        so_cur = (r['so_avg'] or 0) * 6                          # 현 런레이트 H2 환산
+        lift = round((so_need / so_cur - 1) * 100, 0) if so_cur else None
+        out.append({'ko': r['ko'], 'st_val': round(st_val, 1), 'st_qty': round(st_qty, 0),
+                    'so_need': round(so_need, 0), 'so_cur': round(so_cur, 0),
+                    'lift': lift, 'mos': r['mos'], 'stk': stk})
+    out.sort(key=lambda x: -x['st_val'])
+    return out
+PAYLOAD['reverse'] = {'OR': reverse_plan('OR'), 'IR': reverse_plan('IR')}
+
 # ===== eXtra 8~9월 입고계획 (OR 3Q gap의 핵심 레버) =====
 # 수량축: 매출(금액) 목표 → AC 본품 ASP로 수량 환산 → 카테고리·SKU 배분.
 # ⚠️ 악세사리(Accessories) 제외 — OR 수량 2배 부풀림 함정 차단.
@@ -139,7 +174,7 @@ import re as _re
 DATA = json.load(open(os.path.join(HERE, '..', 'sell-thru-progress', 'data.json')))
 TXN = DATA['txn']
 EX = 1120000000
-AC_CATS = {'Split Inverter', 'Split on/off', 'Free Standing', 'Cassette', 'Concealed', 'Window AC'}
+AC_CATS = {'Split Inverter', 'Split on/off', 'Free Standing', 'Cassette', 'Concealed', 'Window'}  # 라벨='Window'(확인)
 
 
 def _aid(t):
@@ -325,26 +360,50 @@ function ovdChip(o){
 
 // ---------- ① Overview ----------
 function renderOverview(){
-  const s=D.summary, el=document.getElementById('overview');
+  const s=D.summary, sc=D.scenarios, el=document.getElementById('overview');
+  const pct=(g)=>{const x=sc[g];return x&&(x.S2.H2-x.S1.H2)?Math.round((x.target.H2-x.S1.H2)/(x.S2.H2-x.S1.H2)*100):0;};
+  const scenCard=(g)=>{const x=sc[g];if(!x)return '';return `
+    <div class="card">
+      <div class="lbl">${g} 하반기 — 시나리오 밴드 (M SAR)</div>
+      <div style="display:flex;justify-content:space-between;margin-top:12px;gap:6px">
+        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S1 충격지속</div><div style="font-size:21px;font-weight:800;color:#f87171">${x.S1.H2}</div></div>
+        <div style="text-align:center;flex:1;border-left:1px solid var(--line);border-right:1px solid var(--line)"><div style="font-size:11px;color:#fbbf24">🎯 목표(공식)</div><div style="font-size:26px;font-weight:800;color:#fbbf24">${x.target.H2}</div></div>
+        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S2 정상회복</div><div style="font-size:21px;font-weight:800;color:#34d399">${x.S2.H2}</div></div>
+      </div>
+      <div class="note" style="color:var(--mut);margin-top:10px;text-align:center">목표는 충격지속·정상회복 사이 — <b style="color:#fbbf24">회복 ${pct(g)}% 실현</b> 지점 (달성 가능·보수적)</div>
+    </div>`;};
+  const macroRow=D.macro.map(e=>`<tr><td class="l" style="white-space:nowrap"><b>${e.m}</b></td>
+    <td class="l">${e.event}</td><td class="l" style="color:#cbd5e1">${e.impact}</td>
+    <td><span class="chip ${e.type==='shock'?'c-bad':'c-ok'}">${e.type==='shock'?'충격':'회복'}</span></td></tr>`).join('');
   el.innerHTML = `
-    <div class="grid kpis">
-      <div class="card"><div class="lbl">연간 전망 (16 bucket)</div><div class="val">${D.tot_annual}M</div><div class="note" style="color:var(--mut)">목표 400M 권 · SAR</div></div>
-      <div class="card"><div class="lbl">OR 하반기 (3Q+4Q)</div><div class="val">${s.OR.h2}<span style="font-size:15px;color:var(--mut)"> / ${s.OR.th2}M</span></div><div class="note">Gap ${gapChip(s.OR.gaph2)}</div></div>
-      <div class="card"><div class="lbl">IR 하반기 (3Q+4Q)</div><div class="val">${s.IR.h2}<span style="font-size:15px;color:var(--mut)"> / ${s.IR.th2}M</span></div><div class="note">Gap ${gapChip(s.IR.gaph2)}</div></div>
-      <div class="card" style="border-color:var(--warn)"><div class="lbl">하반기 총 Gap</div><div class="val pos">+${D.tot_gap}M</div><div class="note" style="color:var(--mut)">Action Plan으로 메울 양</div></div>
+    <div class="card" style="border-color:#fbbf24;margin-bottom:14px">
+      <div class="lbl">공식 FCST = 형님 목표 채택 · 거시 회복 반영 (2026-06-18)</div>
+      <div class="note" style="color:#cbd5e1;margin-top:6px;font-size:13px">1~5월은 <b>사우디제이션(1월)+이란·미국전 소비위축(4~5월)</b> 충격기. 그 바닥을 미래에 복사하면 과소추정 → 충격월 제외 <b>정상 런레이트</b>(OR ${D.normal_base.OR} / IR ${D.normal_base.IR}M·월)로 회복 시나리오 산출. 회복계수 OR ×${D.recovery.OR} / IR ×${D.recovery.IR}.</div>
+    </div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">${scenCard('OR')}${scenCard('IR')}</div>
+
+    <div class="chartbox" style="margin-top:14px"><h3>거시 타임라인 (2026) — 충격과 회복</h3>
+      <table><tr><th class="l">시기</th><th class="l">사건</th><th class="l">데이터 영향</th><th>국면</th></tr>${macroRow}</table>
+      <div style="color:var(--mut);font-size:12px;margin-top:8px">→ 6월 RSM 반등이 회복세 진입을 입증. 형님 목표는 <b>회복 ~60% 실현</b>을 가정한 달성권 목표. 회복 모멘텀 둔화 시 S1(충격지속)으로 회귀 리스크.</div>
     </div>
 
-    <div class="chartbox" style="margin-top:18px">
-      <h3>분기 목표 vs 자연전망 <span class="axis-tag ax-val">금액축 · M SAR</span></h3>
+    <div class="grid kpis" style="margin-top:14px">
+      <div class="card"><div class="lbl">연간 (S1 자연전망)</div><div class="val">${D.tot_annual}M</div><div class="note" style="color:var(--mut)">목표 환산 405.7M · SAR</div></div>
+      <div class="card"><div class="lbl">OR 하반기 목표</div><div class="val">${s.OR.th2}M</div><div class="note">S1 ${s.OR.h2} → 메울 양 ${gapChip(s.OR.gaph2)}</div></div>
+      <div class="card"><div class="lbl">IR 하반기 목표</div><div class="val">${s.IR.th2}M</div><div class="note">S1 ${s.IR.h2} → 메울 양 ${gapChip(s.IR.gaph2)}</div></div>
+      <div class="card" style="border-color:var(--warn)"><div class="lbl">목표까지 추가 필요(vs S1)</div><div class="val pos">+${D.tot_gap}M</div><div class="note" style="color:var(--mut)">회복 실현 + Action Plan</div></div>
+    </div>
+
+    <div class="chartbox" style="margin-top:14px">
+      <h3>분기 목표 vs 자연전망(S1) <span class="axis-tag ax-val">금액축 · M SAR</span></h3>
       <table>
-        <tr><th class="l">그룹 · 분기</th><th>자연전망</th><th>목표</th><th>Gap</th><th class="l">해석</th></tr>
+        <tr><th class="l">그룹 · 분기</th><th>S1 자연전망</th><th>목표</th><th>추가 필요</th><th class="l">해석</th></tr>
         ${[['OR','3Q','t3','q3','gap3'],['OR','4Q','t4','q4','gap4'],['IR','3Q','t3','q3','gap3'],['IR','4Q','t4','q4','gap4']].map(([g,q,tk,vk,gk])=>`
           <tr class="${g.toLowerCase()}-row"><td class="l">${g} ${q}</td><td>${f1(s[g][vk])}</td><td>${s[g][tk]}</td><td>${gapChip(s[g][gk])}</td>
-          <td class="l" style="color:var(--mut);font-size:12px">${s[g][gk]>0.05?'추가 푸시 필요':(s[g][gk]<-0.05?'이미 초과 — 여유':'목표권 도달')}</td></tr>`).join('')}
+          <td class="l" style="color:var(--mut);font-size:12px">${s[g][gk]>0.05?'회복 푸시 필요':(s[g][gk]<-0.05?'이미 초과 — 여유':'목표권 도달')}</td></tr>`).join('')}
       </table>
     </div>
-
-    <div class="chartbox"><h3>그룹 분기 자연전망 vs 목표</h3><canvas id="cQuarter"></canvas></div>
+    <div class="chartbox"><h3>그룹 분기: 자연전망(S1) vs 목표</h3><canvas id="cQuarter"></canvas></div>
   `;
   drawQuarter();
 }
@@ -450,13 +509,30 @@ function renderPlan(){
       ${block('IR · 3Q',p.IR_3Q,s.IR.gap3)}
       ${block('IR · 4Q',p.IR_4Q,s.IR.gap4)}
     </div>
+    ${revTable('OR')}
+    ${revTable('IR')}
     <div class="chartbox" style="margin-top:14px"><h3>핵심 리스크 / 레버 (참모 의견)</h3>
       <ul style="margin-left:18px;line-height:1.9;font-size:14px">
         <li><b style="color:#f87171">BH 이중 리스크</b> — OVD ${D.rows.find(r=>r.name==='BH').ovd}M(AR의 절반) + 재고 MOS ${f1(D.rows.find(r=>r.name==='BH').mos)}개월. 하반기 최대 IR 채널이나, 금액축(채권)·수량축(재고) 동시 경고 → 밀어내기보다 <b>회수·소진 정상화</b> 선행.</li>
         <li><b style="color:#93c5fd">eXtra 구조적 의존</b> — 연간 ${D.rows.find(r=>r.name==='eXtra').annual}M(전체의 ~33%), OVD ${D.rows.find(r=>r.name==='eXtra').ovd}M로 채권 건전. OR 3Q gap의 대부분을 eXtra 8~9월 입고·프로모로 메우는 것이 현실적.</li>
-        <li><b style="color:#fbbf24">전제 리스크</b> — 본 전망은 "2024 수준 하반기 회복" 가정. 2025식 연말 부진(IR 11~12월 계수 0.69/0.51)이 재연되면 Gap이 30M+로 재확대 → 월별 실적 모니터링 필수.</li>
+        <li><b style="color:#fbbf24">전제 리스크</b> — 본 전망은 "거시 회복 ~60% 실현" 가정. 2025식 연말 부진(IR 11~12월 계수 0.69/0.51)이 재연되면 S1(충격지속)으로 회귀, Gap이 30M+로 재확대 → 월별 실적 모니터링 필수.</li>
       </ul>
     </div>`;
+}
+function revTable(g){
+  const arr=D.reverse?D.reverse[g]:null; if(!arr||!arr.length) return '';
+  return `<div class="chartbox" style="margin-top:14px">
+    <h3>${g} 목표 역산 — ST(출하) 목표 → 필요 Sell-out(소진) <span class="axis-tag ax-qty">수량축</span></h3>
+    <div style="overflow-x:auto"><table>
+      <tr><th class="l">채널</th><th>ST목표(H2)</th><th>ST목표수량</th><th>현재고</th><th>현SO(H2환산)</th><th>필요SO(H2)</th><th>필요증감</th><th>MOS</th></tr>
+      ${arr.map(x=>`<tr><td class="l">${x.ko}</td><td><b>${x.st_val.toFixed(1)}M</b></td><td>${x.st_qty.toLocaleString()}</td>
+        <td>${x.stk?x.stk.toLocaleString():'–'}</td><td>${x.so_cur?x.so_cur.toLocaleString():'–'}</td>
+        <td><b style="color:#fbbf24">${x.so_need?x.so_need.toLocaleString():'–'}</b></td>
+        <td>${x.lift==null?'–':`<span class="chip ${x.lift>30?'c-bad':(x.lift>0?'c-warn':'c-ok')}">${x.lift>0?'+':''}${x.lift}%</span>`}</td>
+        <td>${mosChip(x.mos)}</td></tr>`).join('')}
+    </table></div>
+    <div style="color:var(--mut);font-size:12px;margin-top:8px">→ <b>출하(Sell-thru) 목표는 채널이 그만큼 소진(Sell-out)해 재고를 기말 2개월 수준으로 정상화</b>해야 지속 가능. <b>필요SO</b>=하반기 요구 소진량, <b>필요증감</b>=현 Sell-out 런레이트 대비 증가율. <span class="chip c-bad">+30%↑</span> 과부하(과재고 채널) · <span class="chip c-ok">음수</span> 여유. ASP 기반 환산이라 ±10% 오차 — 방향성 지표.</div>
+  </div>`;
 }
 
 // ---------- ⑤ eXtra 입고계획 ----------
@@ -524,7 +600,7 @@ function activate(p){
 }
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>activate(t.dataset.p)));
 
-document.getElementById('subline').textContent='목표(2026-06-17 형님 확정): OR(+OR기타) 3Q70·4Q25·H2 95M / IR(+IR기타+SME) 3Q60·4Q35·H2 95M · 단위 M SAR';
+document.getElementById('subline').textContent='공식 FCST=형님 목표(거시 회복 반영): OR 3Q70·4Q25·H2 95M / IR 3Q60·4Q35·H2 95M · 충격기(사우디제이션·이란미국전) 보정 · 단위 M SAR';
 document.getElementById('foot').textContent='데이터: unified_psi.json (단일 진실) · '+D.fcst_method+' · 이중축 분리(금액↔AR/OVD, 수량↔SO/재고). 재생성: build_h2_dashboard.py';
 renderOverview();
 </script>
