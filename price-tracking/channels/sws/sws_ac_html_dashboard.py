@@ -15,6 +15,12 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19): Category축 정본 5분류 통일
+import sys as _sys; _sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''): return label
 INPUT_FILE  = os.path.join(CURRENT_DIR, "SWS_AC_Price_Tracking_Master.xlsx")
 OUTPUT_FILE = os.path.join(CURRENT_DIR, "sws_ac_dashboard.html")
 
@@ -108,7 +114,7 @@ for _, r in df.iterrows():
         'n': str(r.get('Product Name',''))[:80] if pd.notna(r.get('Product Name')) else '',
         'm': str(r.get('Product ID','')) if pd.notna(r.get('Product ID')) else '',
         's': str(r.get('_sku','')),  # unique key
-        'c': safe(r.get('Type')),           # Category = Type
+        'c': _canon_cat(safe(r.get('Type'))), 'rawc': safe(r.get('Type')),           # Category = Type
         'sc': safe(r.get('Sub-Category')),  # Sub-Category
         'cp': safe(r.get('Compressor')),    # Compressor type
         'mode': safe(r.get('Mode')),        # CO / H&C
@@ -913,7 +919,7 @@ function initSkuTabs(){
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════
 const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Final',k:'avgP',f:fmtSAR},{l:'Avg Original',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'In Stock',k:'inStk'},{l:'Avg Cashback',k:'avgCB',f:fmtSAR},{l:'Free Install',k:'fiCount'}];
 const TYPE_BADGE={cat:'<span class="type-badge type-cat">Type</span>',comp:'<span class="type-badge type-comp">Compressor</span>',mode:'<span class="type-badge type-mode">Mode</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Split','Window','Freestanding'];
+const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Cassette AC','Concealed Set'];
 const COMP_ORDER=['On-Off','Inverter'];
 const MODE_ORDER=['CO','H&C'];
 

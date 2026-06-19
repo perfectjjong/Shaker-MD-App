@@ -16,6 +16,12 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19): Category축 정본 5분류 통일
+import sys as _sys; _sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''): return label
 DATA_DIR    = os.path.expanduser("~/2026/06. Price Tracking/06. Tamkeen")
 OUTPUT_FILE = os.path.join(CURRENT_DIR, "tamkeen_ac_dashboard.html")
 
@@ -115,7 +121,7 @@ for _, r in df.iterrows():
         'n': str(r.get('Name',''))[:80] if pd.notna(r.get('Name')) else '',
         'm': str(r.get('SKU','')) if pd.notna(r.get('SKU')) else '',
         's': str(r.get('_sku','')),  # unique key
-        'c': safe(r.get('Category')),
+        'c': _canon_cat(safe(r.get('Category'))), 'rawc': safe(r.get('Category')),
         'h': safe(r.get('Cooling Type')),
         'cp': safe(r.get('Compressor')),
         't': safe(r.get('Tonnage')),
@@ -942,7 +948,7 @@ function initSkuTabs(){
 // === SEC 4: CATEGORY KPI =====================================================
 const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Sale',k:'avgP',f:fmtSAR},{l:'Avg Original',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'In Stock',k:'inStk'},{l:'Express',k:'expCnt'},{l:'Avg Disc SR',k:'avgDSR',f:fmtSAR}];
 const TYPE_BADGE={cat:'<span class="type-badge type-cat">Category</span>',cool:'<span class="type-badge type-cool">Cooling</span>',cp:'<span class="type-badge type-cp">Compressor</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Split AC','Window AC','Standing AC','Floor Standing AC','Portable AC'];
+const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Cassette AC','Concealed Set'];
 const COOL_ORDER=['Cold Only','Heat & Cool','Hot & Cold'];
 const CP_ORDER=['Inverter','Rotary'];
 

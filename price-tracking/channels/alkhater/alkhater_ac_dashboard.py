@@ -16,6 +16,12 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19): Category축 정본 5분류 통일
+import sys as _sys; _sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''): return label
 INPUT_FILE  = os.path.join(CURRENT_DIR, "alkhater_ac_prices.xlsx")
 SHAKER_DIR  = os.path.join(os.path.expanduser("~"), "Shaker-MD-App")
 OUTPUT_FILE = os.path.join(SHAKER_DIR, "docs", "dashboards", "alkhater-price", "index.html")
@@ -89,7 +95,7 @@ for _, r in df.iterrows():
         'n':  str(r.get('Product_Name', ''))[:80] if pd.notna(r.get('Product_Name')) else '',
         'm':  str(r.get('Model', '')) if pd.notna(r.get('Model')) else '',
         's':  str(r['_sku']),               # unique key
-        'c':  safe(r.get('AC_Type')),        # category = AC_Type (Split/Window/etc)
+        'c': _canon_cat(safe(r.get('AC_Type'))), 'rawc': safe(r.get('AC_Type')),        # category = AC_Type (Split/Window/etc)
         'h':  safe(r.get('Cold_HC')),        # Heat & Cool / Cold
         'cp': safe(r.get('Compressor')),
         't':  safe(r.get('Ton')),

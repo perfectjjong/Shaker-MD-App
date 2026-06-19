@@ -15,6 +15,12 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19): Category축 정본 5분류 통일
+import sys as _sys; _sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''): return label
 INPUT_FILE  = os.path.join(CURRENT_DIR, "AlKhunaizan_AC_Prices Tracking_Master.xlsx")
 OUTPUT_FILE = os.path.join(CURRENT_DIR, "alkhunaizan_ac_dashboard_v2.html")
 
@@ -116,7 +122,7 @@ for _, r in df.iterrows():
         'b':   safe(r.get('Brand')),
         'n':   str(r.get('Product Name',''))[:70] if pd.notna(r.get('Product Name')) else '',
         's':   str(r.get('SKU','')),
-        'c':   safe(r.get('Category')),
+        'c': _canon_cat(safe(r.get('Category'))), 'rawc': safe(r.get('Category')),
         'h':   safe(r.get('Type')),
         't':   safe(r.get('Cooling_Capacity_Ton')),
         'cp':  str(r.get('Compressor Type','')) if pd.notna(r.get('Compressor Type')) else None,
@@ -872,7 +878,7 @@ function initSkuTabs(){
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════
 const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Price',k:'avgP',f:fmtSAR},{l:'Avg Std',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'Only Pay',k:'opCnt'},{l:'GREE Avg',k:'lgAvg',f:fmtSAR},{l:'GREE Gap',k:'lgGap',f:fmtChg},{l:'GREE Gap %',k:'lgGapPct',f:fmtPctR}];
 const TYPE_BADGE={cat:'<span class="type-badge type-cat">Category</span>',comp:'<span class="type-badge type-comp">Compressor</span>',hc:'<span class="type-badge type-hc">Type</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Window AC','Split AC','Concealed AC','Free Stand AC','Cassette AC'];
+const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Cassette AC','Concealed Set'];
 const COMP_ORDER=['Inverter','On/Off'];
 const HC_ORDER=['Cold Only','Hot & Cold'];
 

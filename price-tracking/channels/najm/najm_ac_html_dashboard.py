@@ -15,6 +15,13 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19): Category축을 정본 5분류로 통일 (AC Type/Compressor 부가축은 유지)
+sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''):  # SSOT 부재 시 원본 유지(안전)
+        return label
 INPUT_FILE  = os.path.join(CURRENT_DIR, "najm_ac_master.xlsx")
 OUTPUT_FILE = os.path.join(CURRENT_DIR, "najm_ac_dashboard.html")
 
@@ -82,7 +89,8 @@ for _, r in df.iterrows():
         'n': str(r.get('name_en',''))[:70] if pd.notna(r.get('name_en')) else '',
         'm': str(r.get('sku','')) if pd.notna(r.get('sku')) else '',
         's': str(r.get('_sku','')),  # unique key
-        'c': safe(r.get('category_en')),
+        'c': _canon_cat(safe(r.get('category_en'))),   # 정본 5분류
+        'rawc': safe(r.get('category_en')),    # 원본 카테고리 보존(추적용)
         'h': safe(r.get('ac_type')),           # Heat & Cool / Cooling Only
         'cp': safe(r.get('compressor')),        # Inverter / Rotary
         't': safe(r.get('ton')),
@@ -110,7 +118,7 @@ for d in all_dates:
 
 dates_list = [str(d) for d in all_dates]
 brands_list = sorted(df['brand_en'].dropna().unique().tolist())
-categories_list = sorted(df['category_en'].dropna().unique().tolist())
+categories_list = sorted(set(_canon_cat(c) for c in df['category_en'].dropna()))
 actype_list = sorted(df['ac_type'].dropna().unique().tolist())
 compressor_list = sorted(df['compressor'].dropna().unique().tolist())
 ton_list = sorted(df['ton'].dropna().unique().tolist())
@@ -916,7 +924,7 @@ function initSkuTabs(){
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════
 const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Sale',k:'avgP',f:fmtSAR},{l:'Avg Original',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'Available',k:'inStk'},{l:'Avg Reviews',k:'avgRc',f:v=>v!=null?v.toFixed(1):'-'}];
 const TYPE_BADGE={cat:'<span class="type-badge type-cat">Category</span>',actype:'<span class="type-badge type-actype">AC Type</span>',comp:'<span class="type-badge type-comp">Compressor</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Split AC','Window AC','Floor-standing AC','Cassette AC','Inverter AC','Concealed Central AC'];
+const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Cassette AC','Concealed Set'];
 const ACTYPE_ORDER=['Cooling Only','Heat & Cool','Unknown'];
 const COMP_ORDER=['Inverter','Rotary'];
 
