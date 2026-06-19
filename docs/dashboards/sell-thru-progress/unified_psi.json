@@ -116,7 +116,8 @@
     "impact": "OR +32% · IR +203%",
     "type": "recovery"
    }
-  ]
+  ],
+  "ir_others_fix": "2026-06-20: IR_Others SO/Stk = byDealer(channel_from_name 잔여) 집계 주입. IR 총 SO 정상화 12994→18091"
  },
  "channels": {
   "eXtra": {
@@ -1753,19 +1754,29 @@
      "fcst": true
     },
     "01": {
-     "st_qty": 2278.0
+     "st_qty": 2278.0,
+     "so_qty": 1217,
+     "stk_qty": 4198
     },
     "02": {
-     "st_qty": 3673.0
+     "st_qty": 3673.0,
+     "so_qty": 952,
+     "stk_qty": 7840
     },
     "03": {
-     "st_qty": 1929.0
+     "st_qty": 1929.0,
+     "so_qty": 569,
+     "stk_qty": 5293
     },
     "04": {
-     "st_qty": 1912.0
+     "st_qty": 1912.0,
+     "so_qty": 1215,
+     "stk_qty": 8789
     },
     "05": {
-     "st_qty": 743.0
+     "st_qty": 743.0,
+     "so_qty": 1144,
+     "stk_qty": 8599
     }
    },
    "segment": true,
