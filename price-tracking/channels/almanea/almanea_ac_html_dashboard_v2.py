@@ -14,6 +14,12 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install pandas openpyxl numpy"); sys.exit(1)
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+# 정본 카테고리 SSOT (2026-06-19)
+import sys as _sys; _sys.path.insert(0,"/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='',sku=''): return label
 INPUT_FILE  = os.path.join(CURRENT_DIR, "Almanea_AC_Price_Tracking_Master.xlsx")
 OUTPUT_FILE = os.path.join(CURRENT_DIR, "almanea_ac_dashboard_v2.html")
 
@@ -70,7 +76,7 @@ for _, r in df.iterrows():
         'd': str(r['date_only']) if pd.notna(r.get('Scraped_At')) else None,
         'b': safe(r.get('Brand')), 'n': str(r.get('Product_Name',''))[:70] if pd.notna(r.get('Product_Name')) else '',
         'm': str(r.get('Model','')) if pd.notna(r.get('Model')) else '',
-        's': str(r.get('SKU','')), 'c': safe(r.get('Category')),
+        's': str(r.get('SKU','')), 'c': _canon_cat(safe(r.get('Category'))), 'rawc': safe(r.get('Category')),
         'h': safe(r.get('Function')), 't': safe(r.get('Capacity_Ton')),
         'cp': safe(r.get('Compressor_Type')),
         'sp': safe(r.get('Original_Price')), 'sl': safe(r.get('Promo_Price')),
@@ -95,7 +101,7 @@ for d in all_dates:
 
 dates_list = [str(d) for d in all_dates]
 brands_list = sorted(df['Brand'].dropna().unique().tolist())
-categories_list = sorted(df['Category'].dropna().unique().tolist())
+categories_list = sorted(set(_canon_cat(c) for c in df['Category'].dropna()))
 compressors_list = sorted(df['Compressor_Type'].dropna().unique().tolist())
 cold_hc_list = sorted(df['Function'].dropna().unique().tolist())
 ton_list = sorted(df['Capacity_Ton'].dropna().unique().tolist())
@@ -878,7 +884,7 @@ function initSkuTabs(){
 // ═══ SEC 4: CATEGORY KPI ════════════════════════════════════════════════════
 const CK=[{l:'Type',k:'type'},{l:'Segment',k:'label'},{l:'SKUs',k:'cnt'},{l:'Avg Price',k:'avgP',f:fmtSAR},{l:'Avg Std',k:'avgStd',f:fmtSAR},{l:'Avg Disc %',k:'avgDisc',f:fmtPctR},{l:'Offers',k:'offerCnt'},{l:'LG Avg',k:'lgAvg',f:fmtSAR},{l:'LG Gap',k:'lgGap',f:fmtChg},{l:'LG Gap %',k:'lgGapPct',f:fmtPctR}];
 const TYPE_BADGE={cat:'<span class="type-badge type-cat">Category</span>',comp:'<span class="type-badge type-comp">Compressor</span>',hc:'<span class="type-badge type-hc">Function</span>',ton:'<span class="type-badge type-ton">Ton</span>'};
-const CAT_ORDER=['Split AC','Window AC','Floor Standing','Cassette & Ceiling','Portable','Other'];
+const CAT_ORDER=['Split AC','Window AC','Floor Standing AC','Cassette AC','Concealed Set'];
 const COMP_ORDER=['Dual Inverter','Inverter','Fixed Speed','Rotary'];
 const HC_ORDER=['Cold Only','Cold/Hot','Cold & Hot'];
 
