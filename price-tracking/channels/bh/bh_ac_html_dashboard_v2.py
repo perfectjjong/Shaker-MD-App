@@ -10,6 +10,12 @@ Output: bh_ac_dashboard_v2.html  (self-contained)
 
 import os, json, sys, shutil, subprocess
 from datetime import datetime
+# 정본 카테고리 SSOT (2026-06-19): 자체 dict + 정본 fallback 통일
+sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+try:
+    from shared_category import normalize_category as _canon_cat
+except Exception:
+    def _canon_cat(label='', sku=''): return label
 
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 sys.stderr.reconfigure(encoding='utf-8', errors='replace')
@@ -112,7 +118,7 @@ def norm_category(c):
     if not c:
         return c
     c = str(c).strip()
-    return CATEGORY_NORMALIZE.get(c, c)
+    return _canon_cat(CATEGORY_NORMALIZE.get(c, c))   # dict 매핑 후 정본 5분류로 통일
 
 def load_model_info(wb):
     """Load Total_Model Info sheet → dict keyed by Model Code."""
