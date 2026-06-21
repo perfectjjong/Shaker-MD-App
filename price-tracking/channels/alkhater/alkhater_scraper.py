@@ -19,11 +19,20 @@ except ImportError as e:
     print(f"Missing: {e}\nRun: pip install requests pandas openpyxl")
     sys.exit(1)
 
-ZENROWS_KEY = "6cbc4ab3bdafd8be19ef27c3c0e4604ea18fa796"
+# 키는 ENV(ZENROWS_KEY)로 교체 가능 — 새 무료 트라이얼 키 발급 시 코드 수정 없이 환경변수만 바꾸면 됨
+ZENROWS_KEY = os.environ.get("ZENROWS_KEY", "6cbc4ab3bdafd8be19ef27c3c0e4604ea18fa796")
 BASE_URL    = "https://alkhaterstore.com/product-category/air-conditioning"
 MAX_PAGES       = 15
 CURRENT_DIR     = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_FILE     = os.path.join(CURRENT_DIR, "alkhater_ac_prices.xlsx")
+
+# ─── 절약 정책 (2026-06-21: 유료 크레딧 낭비 재발 방지) ──────────────────────
+#  · 주간 스로틀: 마지막 성공 수집 후 MIN_DAYS_BETWEEN일 미만이면 API 호출 자체를 건너뜀
+#    (cron은 매일 돌지만 실제 유료 호출은 주 1회 → 약 7배 절감). --force 로 무시 가능.
+#  · js_render 기본 OFF: WooCommerce 카테고리는 서버사이드 렌더(제품이 정적 HTML에 포함)라
+#    js_render 불필요. 비싼 배수(×5)를 빼고, 정적으로 0건일 때만 폴백으로 1회 켠다.
+#  · 재시도 1회: 실패당 추가 유료 호출이므로 3→1.
+MIN_DAYS_BETWEEN = 6
 
 # ─── 브랜드 매핑 (모델 prefix → 브랜드명) ───────────────────────────────
 MODEL_BRAND_MAP = [
@@ -177,16 +186,17 @@ def parse_arabic_name(name: str) -> dict:
     return result
 
 
-def fetch_page(page_num: int) -> str | None:
+def fetch_page(page_num: int, js_render: bool = False) -> str | None:
+    """ZenRows로 1페이지 가져옴. js_render=False가 기본(저비용). premium_proxy는
+    데이터센터 IP가 Cloudflare 평판차단 대상이라 유지(신뢰 IP 필요)."""
     url = BASE_URL if page_num == 1 else f"{BASE_URL}/page/{page_num}/"
-    for attempt in range(3):
+    params = {"apikey": ZENROWS_KEY, "url": url, "premium_proxy": "true"}
+    if js_render:
+        params["js_render"] = "true"
+        params["wait"] = "5000"
+    for attempt in range(2):  # 1 재시도 (실패당 추가 유료 호출이므로 최소화)
         try:
-            resp = requests.get(
-                "https://api.zenrows.com/v1/",
-                params={"apikey": ZENROWS_KEY, "url": url,
-                        "js_render": "true", "premium_proxy": "true", "wait": "5000"},
-                timeout=120,
-            )
+            resp = requests.get("https://api.zenrows.com/v1/", params=params, timeout=120)
         except Exception as e:
             print(f"  ⚠️  요청 오류 (시도 {attempt+1}): {e}")
             time.sleep(5)
@@ -195,17 +205,17 @@ def fetch_page(page_num: int) -> str | None:
         if resp.status_code == 404:
             return None
         if resp.status_code in (422, 429, 502, 503):
-            print(f"  ⚠️  {resp.status_code} 재시도 ({attempt+1}/3)...")
+            print(f"  ⚠️  {resp.status_code} 재시도 ({attempt+1}/2)...")
             time.sleep(10)
             continue
         if resp.status_code != 200:
-            print(f"  ⚠️  HTTP {resp.status_code}: {resp.text[:100]}")
+            print(f"  ⚠️  HTTP {resp.status_code}: {resp.text[:120]}")
             return None
         if "Just a moment" in resp.text:
             print("  ❌ Cloudflare 차단")
             return None
         return resp.text
-    print(f"  ❌ Page {page_num} 3회 실패, 건너뜀")
+    print(f"  ❌ Page {page_num} 2회 실패, 건너뜀")
     return None
 
 
@@ -325,13 +335,21 @@ def has_next_page(html: str, page_num: int) -> bool:
 
 def scrape_all() -> list[dict]:
     all_products = []
+    use_js = False  # 저비용 정적 모드로 시작. page1이 0건이면 js_render 폴백으로 전환.
     for page_num in range(1, MAX_PAGES + 1):
-        print(f"  [Page {page_num}] 요청 중...")
-        html = fetch_page(page_num)
+        print(f"  [Page {page_num}] 요청 중...{' [js_render]' if use_js else ''}")
+        html = fetch_page(page_num, js_render=use_js)
         if html is None:
             break
 
         products = parse_products(html, page_num)
+        # page1이 정적으로 0건이면 = JS 렌더 필요. 1회만 js_render로 폴백 재시도.
+        if not products and page_num == 1 and not use_js:
+            print("  ↻ 정적 0건 → js_render 폴백 1회")
+            use_js = True
+            html = fetch_page(1, js_render=True)
+            if html:
+                products = parse_products(html, 1)
         if not products:
             print(f"  ✅ 마지막 페이지")
             break
@@ -363,8 +381,39 @@ def save(products: list[dict]):
     print(df[['SKU', 'Brand', 'Ton', 'Compressor', 'AC_Type', 'Price_SAR']].to_string(index=False))
 
 
+def _last_scrape_date():
+    """기존 xlsx의 최신 시트(YYYY-MM-DD)를 datetime으로 반환. 없으면 None."""
+    if not os.path.exists(OUTPUT_FILE):
+        return None
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(OUTPUT_FILE, read_only=True)
+        dates = []
+        for name in wb.sheetnames:
+            try:
+                dates.append(datetime.strptime(name.strip(), '%Y-%m-%d'))
+            except ValueError:
+                continue
+        wb.close()
+        return max(dates) if dates else None
+    except Exception:
+        return None
+
+
 if __name__ == '__main__':
+    force = '--force' in sys.argv
     print(f"=== Al Khater AC 스크래퍼 — {datetime.now().strftime('%Y-%m-%d %H:%M')} ===\n")
+
+    # 주간 스로틀: 최근 MIN_DAYS_BETWEEN일 내 성공 수집이 있으면 유료 호출 건너뜀
+    last = _last_scrape_date()
+    if last and not force:
+        age_days = (datetime.now() - last).days
+        if age_days < MIN_DAYS_BETWEEN:
+            print(f"⏭️  최근 수집 {age_days}일 전({last:%Y-%m-%d}) — {MIN_DAYS_BETWEEN}일 미만이라 "
+                  f"유료 호출 건너뜀 (강제 실행: --force)")
+            print('\n완료(스킵).')
+            sys.exit(0)
+
     products = scrape_all()
     save(products)
     print('\n완료.')
