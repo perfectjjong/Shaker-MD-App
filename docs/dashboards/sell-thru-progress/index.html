@@ -414,19 +414,9 @@ var _RSM_KEYS={value:'stp_rsm_fcst_val_v1',qty:'stp_rsm_fcst_qty_v1'};
 var _RSM_LOCAL_TS_KEY='stp_rsm_local_ts_v1';
 var _rsmStore={
   value:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_val_v1')||'{}');}catch(e){return{};}})(),
-  qty:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_qty_v1')||'{}');}catch(e){return{};}})(),
-  byCat:{}  // 2026-06-21 RSM 카테고리 필터 버그 수정: 계정별·카테고리별 분해 {id:{cat:{q,v}}}
+  qty:(function(){try{return JSON.parse(localStorage.getItem('stp_rsm_fcst_qty_v1')||'{}');}catch(e){return{};}})()
 };
-// RSM FCST 조회: 카테고리 필터 시 by_cat에서 선택 카테고리만 합산, 아니면 계정 총합
-function _rsmGet(id){
-  var sid=String(id);
-  if(typeof isCatFiltered==='function' && isCatFiltered() && _rsmStore.byCat[sid]){
-    var fld=(mode==='qty')?'q':'v', sum=0, bc=_rsmStore.byCat[sid];
-    Object.keys(bc).forEach(function(cat){ if(SEL.cat.has(cat)) sum+=(bc[cat][fld]||0); });
-    return sum;
-  }
-  return (_rsmStore[mode]||_rsmStore.value)[sid]||0;
-}
+function _rsmGet(id){return (_rsmStore[mode]||_rsmStore.value)[String(id)]||0;}
 function _rsmSet(id,val){var s=_rsmStore[mode]||_rsmStore.value;s[String(id)]=val;try{localStorage.setItem(_RSM_KEYS[mode]||_RSM_KEYS.value,JSON.stringify(s));localStorage.setItem(_RSM_LOCAL_TS_KEY,Date.now().toString());}catch(e){}}
 // ======== RSM FCST Cloud Sync (GitHub API — cross-device auto-sync) ========
 var _RSM_REPO='perfectjjong/Sell-Thru-Progress-Dashboard';
@@ -1835,7 +1825,6 @@ function renderAll(){
       if(d.rsm_fcst&&d.rsm_fcst.value){
         _rsmStore.value=d.rsm_fcst.value;
         _rsmStore.qty=d.rsm_fcst.qty||{};
-        _rsmStore.byCat=d.rsm_fcst.by_cat||{};  // 2026-06-21 카테고리별 RSM 로드
         try{localStorage.setItem(_RSM_KEYS.value,JSON.stringify(_rsmStore.value));}catch(e){}
         try{localStorage.setItem(_RSM_KEYS.qty,JSON.stringify(_rsmStore.qty));}catch(e){}
         try{localStorage.setItem(_RSM_LOCAL_TS_KEY,'0');}catch(e){}
@@ -1851,7 +1840,7 @@ function renderAll(){
         .then(function(r){return r.ok?r.json():null;})
         .then(function(dd){
           if(!dd||!dd.value) return;
-          _rsmStore.value=dd.value; _rsmStore.qty=dd.qty||{}; _rsmStore.byCat=dd.by_cat||_rsmStore.byCat||{};
+          _rsmStore.value=dd.value; _rsmStore.qty=dd.qty||{};
           try{localStorage.setItem(_RSM_KEYS.value,JSON.stringify(_rsmStore.value));}catch(e){}
           try{localStorage.setItem(_RSM_KEYS.qty,JSON.stringify(_rsmStore.qty));}catch(e){}
           try{localStorage.setItem(_RSM_LOCAL_TS_KEY,'0');}catch(e){}
