@@ -126,7 +126,7 @@ for d in all_dates:
 
 dates_list      = [str(d) for d in all_dates]
 brands_list     = sorted(df['Brand'].dropna().unique().tolist())
-categories_list = sorted(df['AC_Type'].dropna().unique().tolist())
+categories_list = sorted({rec['c'] for rec in records if rec['c'] is not None})  # 정본 c값과 일치 (필터 매칭 field:'c')
 actype_list     = sorted(df['Cold_HC'].dropna().unique().tolist())
 compressor_list = sorted(df['Compressor'].dropna().unique().tolist())
 ton_list        = sorted(df['Ton'].dropna().unique().tolist())
