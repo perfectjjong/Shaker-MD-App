@@ -1,0 +1,103 @@
+<title>LG Split 가격-셀아웃 의사결정 매트릭스</title>
+<style>
+  :root{
+    --bg:#0a0e14; --panel:#121822; --line:#1f2a37; --ink:#e6edf3; --mut:#8b9aab;
+    --red:#ff5d5d; --grn:#3fd68b; --ylw:#f5c451; --blu:#5aa9ff; --amb:#ff9f43;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace; --sans:"Pretendard","Apple SD Gothic Neo","Noto Sans KR",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:40px 24px 80px}
+  .ey{font-family:var(--mono);font-size:12px;letter-spacing:.25em;color:var(--blu);text-transform:uppercase}
+  h1{font-size:clamp(26px,5vw,40px);margin:10px 0 6px;font-weight:800;letter-spacing:-.02em}
+  .sub{color:var(--mut);font-size:15px;margin:0 0 8px}
+  .meta{font-family:var(--mono);font-size:12px;color:var(--mut);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px 0;margin:18px 0 28px}
+
+  /* 4분면 설명 */
+  .quad{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0 36px}
+  .q{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px 18px}
+  .q .t{font-weight:700;font-size:14px;margin-bottom:4px}
+  .q .d{font-size:12.5px;color:var(--mut)}
+  .q.r{border-left:3px solid var(--red)} .q.g{border-left:3px solid var(--grn)}
+  .q.b{border-left:3px solid var(--blu)} .q.a{border-left:3px solid var(--amb)}
+
+  h2{font-size:18px;margin:36px 0 14px;display:flex;align-items:baseline;gap:10px}
+  h2 .n{font-family:var(--mono);color:var(--blu);font-size:13px}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{padding:11px 10px;text-align:left;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--mut);text-transform:uppercase;font-weight:600}
+  td.num{font-family:var(--mono);text-align:right}
+  .gap-pos{color:var(--red)} .gap-neg{color:var(--blu)}
+  .tr-up{color:var(--grn)} .tr-dn{color:var(--red)} .tr-fl{color:var(--mut)}
+  .chip{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .c-red{background:#3a1518;color:var(--red)} .c-grn{background:#0f2e20;color:var(--grn)}
+  .c-blu{background:#10243a;color:var(--blu)} .c-amb{background:#3a2a10;color:var(--amb)} .c-mut{background:#1c2530;color:var(--mut)}
+  tr.hi td{background:#1a1012}
+
+  .act{margin-top:40px;background:linear-gradient(180deg,#1a1012,transparent);border:1px solid var(--red);border-radius:10px;padding:22px 24px}
+  .act h2{margin-top:0}
+  .act ol{margin:0;padding-left:0;list-style:none;counter-reset:a}
+  .act li{counter-increment:a;padding:12px 0;border-bottom:1px solid var(--line);font-size:14.5px;display:flex;gap:14px}
+  .act li:last-child{border-bottom:0}
+  .act li::before{content:counter(a);font-family:var(--mono);color:var(--red);font-weight:700;flex-shrink:0}
+  .act li b{color:var(--ink)}
+
+  .note{margin-top:32px;font-size:12.5px;color:var(--mut);font-family:var(--mono);line-height:1.8;border-top:1px solid var(--line);padding-top:16px}
+  @media(max-width:640px){.quad{grid-template-columns:1fr}}
+</style>
+<div class="wrap">
+  <p class="ey">Decision Matrix · 가격 ⨉ 셀아웃 ⨉ 추세</p>
+  <h1>LG Split 가격-셀아웃<br>의사결정 매트릭스</h1>
+  <p class="sub">"비싸다"가 아니라 — 비싼데 안 팔리는가, 비싼데 잘 팔리는가로 행동을 가른다.</p>
+  <div class="meta">기준: 가격 2026-06-21(어제자) Daily 7채널 · 셀아웃 2026 1~5월 · 같은 용량(Ton)·같은 컴프레서끼리 LG vs 경쟁사(Gree/Midea/Samsung/Hisense/Haier/TCL) 비교. 가격격차 (+)=LG 비쌈 / 셀아웃추세 4~5월 vs 2~3월.</div>
+
+  <div class="quad">
+    <div class="q r"><div class="t">🔴 비싸고 + 하락</div><div class="d">경쟁사로 이탈 중. 가격대응·프로모 시급.</div></div>
+    <div class="q g"><div class="t">🟢 비싸고 + 성장</div><div class="d">프리미엄이 먹힌다. 가격 유지(내리면 마진만 손해).</div></div>
+    <div class="q b"><div class="t">🔵 싸고 + 성장</div><div class="d">가격 인상 여력. 마진 회수 기회.</div></div>
+    <div class="q a"><div class="t">⚠️ 싼데 + 하락</div><div class="d">가격이 문제 아님. 진열·공급·딜러 이슈 의심.</div></div>
+  </div>
+
+  <h2><span class="n">01</span>채널 × 컴프레서 매트릭스</h2>
+  <table>
+    <thead><tr><th>채널</th><th>컴프레서</th><th class="num">가격격차</th><th class="num">셀아웃<br>(4~5월)</th><th class="num">추세</th><th>판정 → 액션</th></tr></thead>
+    <tbody>
+      <tr class="hi"><td>Al Khunizan</td><td>Inverter</td><td class="num gap-pos">+27%</td><td class="num">16</td><td class="num tr-dn">-92%</td><td><span class="chip c-red">🔴 비싸고 급락 → 가격대응 시급</span></td></tr>
+      <tr><td>Al Khunizan</td><td>ON-OFF</td><td class="num gap-neg">-14%</td><td class="num">109</td><td class="num tr-up">+160%</td><td><span class="chip c-blu">🔵 싸고 성장 → 인상 여력</span></td></tr>
+      <tr><td>Al Manea</td><td>Inverter</td><td class="num gap-pos">+20%</td><td class="num">1,790</td><td class="num tr-up">+54%</td><td><span class="chip c-grn">🟢 프리미엄 정상 → 유지</span></td></tr>
+      <tr><td>Al Manea</td><td>ON-OFF</td><td class="num gap-neg">-5%</td><td class="num">1,242</td><td class="num tr-fl">+6%</td><td><span class="chip c-blu">🔵 저가/보합 → 인상 검토</span></td></tr>
+      <tr class="hi"><td>BM (Bin Momen)</td><td>Inverter</td><td class="num gap-pos">+22%</td><td class="num">177</td><td class="num tr-fl">-9%</td><td><span class="chip c-amb">🟡 비쌈/정체 → 모니터(악화 시 대응)</span></td></tr>
+      <tr><td>BM (Bin Momen)</td><td>ON-OFF</td><td class="num gap-pos">+14%</td><td class="num">135</td><td class="num tr-up">+55%</td><td><span class="chip c-grn">🟢 프리미엄 정상 → 유지</span></td></tr>
+      <tr><td>Black Box</td><td>Inverter</td><td class="num gap-pos">+8%</td><td class="num">491</td><td class="num tr-up">+80%</td><td><span class="chip c-grn">🟢 프리미엄 정상 → 유지</span></td></tr>
+      <tr><td>Black Box</td><td>ON-OFF</td><td class="num gap-neg">-8%</td><td class="num">732</td><td class="num tr-up">+30%</td><td><span class="chip c-blu">🔵 싸고 성장 → 인상 여력</span></td></tr>
+      <tr><td>Star Appliance (Najm)</td><td>Inverter</td><td class="num">±0%</td><td class="num">94</td><td class="num tr-dn">-23%</td><td><span class="chip c-mut">→ 가격 적정·물량 약세(별도)</span></td></tr>
+      <tr><td>Star Appliance (Najm)</td><td>ON-OFF</td><td class="num gap-pos">+3%</td><td class="num">167</td><td class="num tr-up">+78%</td><td><span class="chip c-mut">→ 적정</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2><span class="n">02</span>읽어야 할 신호</h2>
+  <table>
+    <tbody>
+      <tr><td style="width:34%"><b>인버터 = 프리미엄, 정속 = 가격방어</b></td><td>LG는 인버터를 +8~27% 비싸게, 정속을 -5~14% 싸게 — 의도된 이중 전략. 데이터로 확인됨.</td></tr>
+      <tr><td><b>정속 인버터 비중 ≈ 49:51</b></td><td>물량은 정속이 근소 우위. 정속 가격경쟁력(싸고 성장)이 물량을 떠받침.</td></tr>
+      <tr><td><b>채널 거버넌스 부재</b></td><td>같은 LG 인버터인데 채널 따라 ±0%(Najm) ~ +27%(Al Khunizan). 27%p 편차 = 가격 일관성 관리 필요.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="act">
+    <h2 style="border:0;padding:0"><span class="n">★</span>실행 권고 (우선순위)</h2>
+    <ol>
+      <li><b>Al Khunizan 인버터 — 즉시.</b> +27% 비싼데 셀아웃 -92% 폭락. 명백히 가격 때문에 잃는 중. 시즌 피크(5~9월) 전 가격 조정 또는 집중 프로모. 가장 시급.</li>
+      <li><b>BM 인버터 — 감시.</b> +22% 비싸고 물량 정체(-9%). 아직 하락 아니나 격차가 커 악화 위험. 2주 추세 보고 하락 전환 시 즉시 대응.</li>
+      <li><b>인상 여력 3건 — 마진 회수.</b> Al Khunizan/Black Box 정속, Al Manea 정속이 싸면서 성장 중. 소폭 인상해도 물량 유지 가능 → 마진 개선 기회.</li>
+      <li><b>Najm 인버터 — 가격 아닌 문제.</b> 가격은 적정(±0%)인데 물량 -23%. 진열·딜러·재고 이슈 별도 점검.</li>
+      <li><b>채널 가격 가이드라인.</b> 인버터 채널편차 0~27%를 ±10% 내로 수렴시키는 거버넌스 수립.</li>
+    </ol>
+  </div>
+
+  <div class="note">
+    한계 (정직 고지): ① 용량별·등급별 세부는 가격 데이터의 Ton 필드 기준 — 셀아웃 모델코드 용량 추출은 신뢰도 낮아 컴프레서 단위까지만 확정. ② 마진/원가 데이터 부재 → "인상 여력"은 가격위치 기반 추정, 원가 확인 후 확정 필요. ③ 가격은 1일 스냅샷 → 추세는 셀아웃(5개월)으로 보완. ④ SWS(LG 미취급)·BH(데이터구조 상이) 제외.<br>
+    다음 심화: 등급(Low/Mid/High)·용량대별 hero SKU 단위 격차 → 모델별 가격대응. 마진 데이터 결합 시 "인상/인하 금액"까지 산출 가능.
+  </div>
+</div>
