@@ -93,6 +93,7 @@
   .kpi .bar-c{position:absolute;left:0;top:0;bottom:0;width:4px}
   .kpi .yr{font-size:12.5px;font-weight:700;color:var(--mut);display:flex;align-items:center;gap:7px}
   .kpi .big{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:8px 0 2px;line-height:1}
+  .kpi .big .unit{font-size:13px;font-weight:600;color:var(--mut);letter-spacing:0}
   .kpi .gmpct{font-size:13.5px;font-weight:700}
   .kpi .sub{font-size:12px;color:var(--mut);margin-top:7px;display:flex;gap:10px;flex-wrap:wrap}
   .kpi .sub span b{color:var(--ink2);font-weight:700}
@@ -144,7 +145,7 @@
     </div>
     <div class="meta">
       <div>대상 기간 <b>2024 – 2026</b> <span style="color:var(--lg)">(2026 = 1–5월 YTD)</span></div>
-      <div>금액 단위: <b id="unitLbl">원본 GPC 기준</b> · 비율은 가중 재계산</div>
+      <div>금액 단위: <b id="unitLbl">천 SAR</b> · 비율(%)은 가중 재계산</div>
     </div>
   </div>
 
@@ -182,7 +183,7 @@
   <!-- 탭1 -->
   <section data-pane="profit">
     <div class="card">
-      <div class="h"><div><h3>손익 요약표</h3><div class="hint">선택 기간 합산 · 카테고리 × 연도 · GM%는 가중 재계산</div></div></div>
+      <div class="h"><div><h3>손익 요약표</h3><div class="hint">선택 기간 합산 · 카테고리 × 연도 · 금액 천 SAR · GM%는 가중 재계산</div></div></div>
       <div class="tblwrap"><table class="tbl" id="tblProfit"></table></div>
     </div>
     <div class="card">
@@ -204,7 +205,7 @@
   <!-- 탭2 -->
   <section data-pane="erosion" class="hide">
     <div class="card">
-      <div class="h"><div><h3>할인 구조표</h3><div class="hint">선택 기간·카테고리 합산 · 연도별 할인 4종 금액과 Gross Sale 대비 비율</div></div></div>
+      <div class="h"><div><h3>할인 구조표</h3><div class="hint">선택 기간·카테고리 합산 · 연도별 할인 4종 금액과 Gross Sale 대비 비율 · 금액 천 SAR</div></div></div>
       <div class="tblwrap"><table class="tbl" id="tblErosion"></table></div>
     </div>
     <div class="card">
@@ -220,7 +221,7 @@
   <!-- 탭3 -->
   <section data-pane="category" class="hide">
     <div class="card">
-      <div class="h"><div><h3>카테고리 손익 상세표</h3><div class="hint">선택 기간 합산 · 카테고리 × 연도 · Gross / Net / GM / GM%</div></div></div>
+      <div class="h"><div><h3>카테고리 손익 상세표</h3><div class="hint">선택 기간 합산 · 카테고리 × 연도 · Gross / Net / GM / GM% · 금액 천 SAR</div></div></div>
       <div class="tblwrap"><table class="tbl" id="tblCat"></table></div>
     </div>
     <div class="grid g2">
@@ -363,7 +364,7 @@ function renderKpis(){
     const el=document.createElement('div');el.className='kpi';
     el.innerHTML=`<div class="bar-c" style="background:${YCOL[y]}"></div>
       <div class="yr">${y}${yearCoverLabel(y,months)}</div>
-      <div class="big">${fmt(t.gross_margin)}</div>
+      <div class="big">${fmt(t.gross_margin)}<span class="unit"> 천 SAR</span></div>
       <div class="gmpct" style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]}">GM ${pct(t.gm_pct)}</div>
       <div class="sub"><span>Net <b>${fmt(t.net_sales)}</b></span><span>Gross <b>${fmt(t.gross_sale)}</b></span><span>할인 <b>${pct(t.disc_rate)}</b></span></div>
       ${yoy}`;
@@ -379,7 +380,7 @@ function renderMain(){destroy('cMain');
   document.getElementById('mainHint').textContent=`${UNITS.find(u=>u[0]===S.unit)[1]} 단위 · ${METRICS.find(m=>m[0]===S.metric)[1]} · ${yrs.join(' / ')}`;
   charts.cMain=new Chart(cMain,{type:'bar',data:{labels,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',align:'end'},tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':fmt(c.parsed.y)}`}}},
+      plugins:{legend:{position:'top',align:'end'},tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':fmt(c.parsed.y)+' 천 SAR'}`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>isPct?v+'%':v.toLocaleString()}}}}});}
 
 function renderWaterfall(){destroy('cWaterfall');
@@ -392,7 +393,7 @@ function renderWaterfall(){destroy('cWaterfall');
     else{labels.push(lab);floats.push([0,run]);colors.push(lab==='Gross Margin'?'#A50034':'#3a4654');}}
   charts.cWaterfall=new Chart(cWaterfall,{type:'bar',data:{labels,datasets:[{data:floats,backgroundColor:colors,borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
-      tooltip:{callbacks:{label:c=>fmt(Math.abs(c.raw[1]-c.raw[0]))}}},
+      tooltip:{callbacks:{label:c=>fmt(Math.abs(c.raw[1]-c.raw[0]))+' 천 SAR'}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
 function renderErosion(){destroy('cErosion');
@@ -435,7 +436,7 @@ function renderMix(){destroy('cMix');
   charts.cMix=new Chart(cMix,{type:'doughnut',data:{labels:cats,datasets:[{data:vals,backgroundColor:pal,borderWidth:2,borderColor:'#fff'}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
       plugins:{legend:{position:'right',labels:{boxWidth:8,font:{size:11},padding:9}},
-        tooltip:{callbacks:{label:c=>`${c.label}  ${fmt(c.parsed)}`}}}}});}
+        tooltip:{callbacks:{label:c=>`${c.label}  ${fmt(c.parsed)} 천 SAR`}}}}});}
 function renderCatGmAmt(){destroy('cCatGmAmt');
   const yrs=selYears(),months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
   const cats=GPC_META.product_cats.filter(c=>S.cats.has(c));
@@ -443,7 +444,7 @@ function renderCatGmAmt(){destroy('cCatGmAmt');
     data:cats.map(c=>catAgg(y,months,c).gross_margin)}));
   charts.cCatGmAmt=new Chart(cCatGmAmt,{type:'bar',data:{labels:cats,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${fmt(c.parsed.y)}`}}},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${fmt(c.parsed.y)} 천 SAR`}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:10.5}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
 // ── 데이터 테이블 (주력) ──
