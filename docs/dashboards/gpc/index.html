@@ -369,6 +369,7 @@ document.querySelectorAll('.tabs button').forEach(t=>t.onclick=()=>{S.tab=t.data
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===t));
   document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==S.tab));
   void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth; // 강제 레이아웃 후 정상 폭으로 렌더
+  history.replaceState(null,'','#'+S.tab);
   render();});
 
 // ── KPI ──
@@ -575,7 +576,14 @@ function render(){renderKpis();
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
 S.periods=new Set(periodValues(S.unit));
-buildBar();render();
+// deep link: URL 해시(#erosion 등)로 탭 자동 선택
+(function(){const h=location.hash.replace('#','');
+  if(['profit','erosion','category'].includes(h)){S.tab=h;
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===h));
+    document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));}})();
+buildBar();
+void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth;
+render();
 </script>
 </body>
 </html>
