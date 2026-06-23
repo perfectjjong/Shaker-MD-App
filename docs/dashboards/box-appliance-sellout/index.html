@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekly IR Sell out - Box Appliance Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+
+:root{--primary:#2563eb;--navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;--shadow:0 1px 3px rgba(0,0,0,.08);--radius:8px;--green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;--teal:#14b8a6;--rose:#f43f5e;--sky:#0ea5e9}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:46px}
+.header h1{font-size:15px;font-weight:700}.header .sub{font-size:11px;color:#94a3b8}.header .badge{background:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;margin-left:auto}
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;gap:0;position:sticky;top:46px;z-index:99}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.2s}
+.tab:hover{color:var(--text)}.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
+.filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}
+.ms-wrap{position:relative;min-width:100px}
+.ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
+.ms-btn::after{content:'▾';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
+.ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
+.ms-drop{display:none;position:absolute;top:100%;left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12);z-index:200;min-width:160px;max-height:260px;overflow-y:auto;padding:4px 0;margin-top:2px}
+.ms-drop.open{display:block}
+.ms-drop label{display:flex;align-items:center;gap:6px;padding:5px 10px;font-size:12px;cursor:pointer;white-space:nowrap}
+.ms-drop label:hover{background:var(--bg)}
+.ms-drop input[type=checkbox]{accent-color:var(--primary);width:14px;height:14px}
+.ms-drop .ms-all{border-bottom:1px solid var(--border);font-weight:600;color:var(--primary)}
+.btn-reset{padding:4px 12px;border:1px solid var(--border);border-radius:4px;font-size:11px;cursor:pointer;background:#fff}.btn-reset:hover{background:var(--bg)}
+.btn-excel{padding:4px 12px;border:1px solid #10b981;border-radius:4px;font-size:11px;cursor:pointer;background:#ecfdf5;color:#065f46;font-weight:600}.btn-excel:hover{background:#d1fae5}
+#fYear button{transition:.2s}#fYear button:hover{opacity:.85}
+.filter-count{font-size:10px;color:var(--muted);margin-left:8px}
+.content{padding:20px 24px;max-width:1400px;margin:0 auto}
+.tab-pane{display:none}.tab-pane.active{display:block}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.kpi{background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);border-left:3px solid var(--primary)}
+.kpi-val{font-size:20px;font-weight:800}.kpi-label{font-size:9.5px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:2px}
+.kpi-sub{font-size:11px;margin-top:4px}.up{color:var(--green)}.down{color:var(--red)}
+.card{background:var(--card);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.card h3{font-size:12px;font-weight:700;margin-bottom:12px}
+.ch-300{height:300px;position:relative}.ch-250{height:250px;position:relative}.ch-400{height:400px;position:relative}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--bg);padding:8px 10px;text-align:left;font-weight:600;font-size:11px;border-bottom:1px solid var(--border);position:sticky;top:0}
+td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background:#f8fafc}
+.mono{font-family:monospace;font-size:11px}
+.pct-bar{display:inline-block;height:6px;border-radius:3px;background:var(--primary)}
+.footer{text-align:center;padding:16px;color:var(--muted);font-size:11px;border-top:1px solid var(--border);margin-top:24px}
+.ch-badge{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;background:#dbeafe;color:#1e40af;margin-right:4px}
+@media(max-width:900px){.grid-5{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}}
+
+</style>
+</head>
+<body>
+<div class="header">
+<h1>Weekly IR Sell out - Box Appliance Dashboard</h1>
+<span class="sub">LG AC · Box Appliance · Unified Model Mapping</span>
+<span class="badge" id="yearBadge">2026 · W25</span>
+</div>
+<div class="tabs" id="tabBar">
+<div class="tab active" data-tab="overview">Overview</div>
+<div class="tab" data-tab="channel">Channel Analysis</div>
+<div class="tab" data-tab="product">Product Analysis</div>
+<div class="tab" data-tab="supplydemand">Sell thru vs Sell out</div>
+<div class="tab" data-tab="wos">WOS (Stock)</div>
+<div class="tab" data-tab="price">Price Tracking</div>
+<div class="tab" data-tab="detail">Detail Table</div>
+</div>
+<div class="filters">
+<div class="filter-group"><div class="filter-label">Year</div><div class="ms-wrap" id="fYear"><select id="yearSelect" class="ms-btn" style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;background:var(--primary);color:#fff"></select></div></div>
+<div class="filter-group"><div class="filter-label">Month</div><div class="ms-wrap" id="fMonth"></div></div>
+<div class="filter-group"><div class="filter-label">Week</div><div class="ms-wrap" id="fWeek"></div></div>
+<div class="filter-group" style="display:none"><div class="filter-label">Channel</div><div class="ms-wrap" id="fChannel"></div></div>
+<div class="filter-group"><div class="filter-label">Category</div><div class="ms-wrap" id="fCat"></div></div>
+<div class="filter-group"><div class="filter-label">Compressor</div><div class="ms-wrap" id="fComp"></div></div>
+<div class="filter-group"><div class="filter-label">Type</div><div class="ms-wrap" id="fType"></div></div>
+<div class="filter-group"><div class="filter-label">BTU</div><div class="ms-wrap" id="fBtu"></div></div>
+<button class="btn-reset" onclick="resetFilters()">Reset</button>
+<button class="btn-excel" onclick="downloadExcel()">Excel Download</button>
+<span class="filter-count" id="filterCount"></span>
+</div>
+<div class="content">
+<!-- OVERVIEW -->
+<div class="tab-pane active" id="pane-overview">
+<div class="grid-5" id="kpiRow"></div>
+<div class="grid-2">
+<div class="card"><h3>Weekly Sales Trend</h3><div class="ch-300"><canvas id="cWeekly"></canvas></div></div>
+<div class="card"><h3>Monthly Sales</h3><div class="ch-300"><canvas id="cMonthly"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Sales by Category</h3><div class="ch-250"><canvas id="cCatPie"></canvas></div></div>
+<div class="card"><h3>Category Weekly Trend</h3><div class="ch-300"><canvas id="cCatWeek"></canvas></div></div>
+</div>
+</div>
+<!-- CHANNEL -->
+<div class="tab-pane" id="pane-channel">
+<div class="grid-2">
+<div class="card"><h3>Sales by Channel</h3><div class="ch-300"><canvas id="cChBar"></canvas></div></div>
+<div class="card"><h3>Channel Weekly Trend</h3><div class="ch-300"><canvas id="cChLine"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Channel x Category Heatmap</h3><div class="ch-400"><canvas id="cHeatmap"></canvas></div></div>
+<div class="card"><h3>Channel Share by Category</h3><div class="ch-400"><canvas id="cChCatStack"></canvas></div></div>
+</div>
+</div>
+<!-- PRODUCT -->
+<div class="tab-pane" id="pane-product">
+<div class="grid-3">
+<div class="card"><h3>CO vs HP</h3><div class="ch-250"><canvas id="cType"></canvas></div></div>
+<div class="card"><h3>Compressor Type</h3><div class="ch-250"><canvas id="cComp"></canvas></div></div>
+<div class="card"><h3>Category Breakdown</h3><div class="ch-250"><canvas id="cCatBar"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Top 20 Unified Models</h3>
+<table><thead><tr><th>#</th><th>Unified Model</th><th>Category</th><th>Type</th><th>Channels</th><th style="text-align:right">Qty</th><th style="text-align:right">Share</th><th>Bar</th></tr></thead><tbody id="tblTop20"></tbody></table>
+</div>
+</div>
+<!-- SUPPLY vs DEMAND -->
+<div class="tab-pane" id="pane-supplydemand">
+<div class="grid-5" id="sdKpi"></div>
+<div class="grid-2">
+<div class="card"><h3>Channel: Sell-thru vs Sell-out (QTY)</h3><div class="ch-400"><canvas id="cSdChannel"></canvas></div></div>
+<div class="card"><h3>Category: Sell-thru vs Sell-out (QTY)</h3><div class="ch-400"><canvas id="cSdCategory"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Monthly: Sell-thru vs Sell-out Trend</h3><div class="ch-300"><canvas id="cSdMonthly"></canvas></div></div>
+<div class="card"><h3>Weekly: Sell-thru vs Sell-out Trend</h3><div class="ch-300"><canvas id="cSdWeekly"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Channel x Category: Sell-thru vs Sell-out Comparison</h3>
+<div style="max-height:500px;overflow-y:auto"><table id="tblSdHeatmap"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Top 20 Models: Sell thru vs Sell out</h3>
+<table><thead><tr><th>#</th><th>Model</th><th>Category</th><th>Channels</th><th style="text-align:right">Sell-thru</th><th style="text-align:right">Sell-out</th><th style="text-align:right">Gap</th><th style="text-align:right">Sell-thru %</th><th>Status</th></tr></thead><tbody id="tblSdModel"></tbody></table>
+</div>
+</div>
+<!-- WOS (STOCK) -->
+<div class="tab-pane" id="pane-wos">
+<div class="grid-5" id="wosKpi"></div>
+<div class="grid-2">
+<div class="card"><h3>Stock by Channel (Latest Week)</h3><div class="ch-300"><canvas id="cWosChBar"></canvas></div></div>
+<div class="card"><h3>WOS Weekly Trend</h3><div class="ch-300"><canvas id="cWosTrend"></canvas></div></div>
+</div>
+<div class="grid-2">
+<div class="card"><h3>Stock by Category (Latest Week)</h3><div class="ch-300"><canvas id="cWosCatBar"></canvas></div></div>
+<div class="card"><h3>WOS Signal Distribution (Latest Week)</h3><div class="ch-250"><canvas id="cWosSignal"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Channel x Category Stock (Latest Week)</h3>
+<div style="max-height:500px;overflow-y:auto"><table id="tblWosHeatmap"></table></div></div>
+<div class="card" style="margin-bottom:16px"><h3>Model Detail - Stock & WOS <span id="wosDetailCount" style="font-weight:400;color:var(--muted)"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th>Type</th><th>Channel</th><th style="text-align:right">Stock</th><th style="text-align:right">WOS-8</th><th>Signal</th><th style="text-align:right">WOS+8</th><th>Signal</th></tr></thead><tbody id="tblWosDetail"></tbody></table>
+</div></div>
+</div>
+<!-- PRICE TRACKING -->
+<div class="tab-pane" id="pane-price">
+<div class="grid-5" id="ptKpi"></div>
+<div class="grid-2">
+<div class="card"><h3>Average Price by Channel (Latest Week)</h3><div class="ch-300"><canvas id="cPtChBar"></canvas></div></div>
+<div class="card"><h3>Weekly Average Price Trend</h3><div class="ch-300"><canvas id="cPtTrend"></canvas></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><h3>Model Price Comparison</h3>
+<div style="max-height:500px;overflow-y:auto">
+<table><thead><tr><th>Model</th><th>Category</th><th style="text-align:right">Price (SAR)</th><th style="text-align:right">Avg</th></tr></thead><tbody id="tblPtModel"></tbody></table>
+</div></div>
+</div>
+<!-- DETAIL -->
+<div class="tab-pane" id="pane-detail">
+<div class="card"><h3>All Data (filtered) <span id="detailCount" style="font-weight:400;color:var(--muted)"></span></h3>
+<div style="max-height:600px;overflow-y:auto">
+<table><thead><tr><th>Week</th><th>Channel</th><th>Unified Model</th><th>Category</th><th>Type</th><th>Comp.</th><th style="text-align:right">Qty</th></tr></thead><tbody id="tblDetail"></tbody></table>
+</div></div>
+</div>
+</div>
+<div class="footer">Generated: 2026-06-23 15:00 · Box Appliance · Unified Model Mapping</div>
+
+<script>
+const _ALL = {"years": ["2023", "2024", "2025", "2026"], "current": "2026", "data": {"2023": {"meta": {"generated": "2026-06-23 15:00", "weeks": [], "months": [], "week_dates": {}, "week_month": {}, "channel_stats": {"Box Appliance": 0}}, "kpi": {"lq": 5017, "wow": 0, "cm": 0, "mom": 0, "ytd": 39286}, "dims": {"categories": [], "channels": ["Box Appliance"], "compressors": [], "types": []}, "raw": [], "sellthru": [], "prices": {}, "price_cats": {}, "price_comps": {}}, "2024": {"meta": {"generated": "2026-06-23 15:00", "weeks": [], "months": [], "week_dates": {}, "week_month": {}, "channel_stats": {"Box Appliance": 0}}, "kpi": {"lq": 6455, "wow": 0, "cm": 0, "mom": 0, "ytd": 81778}, "dims": {"categories": [], "channels": ["Box Appliance"], "compressors": [], "types": []}, "raw": [], "sellthru": [], "prices": {}, "price_cats": {}, "price_comps": {}}, "2025": {"meta": {"generated": "2026-06-23 15:00", "weeks": [], "months": [], "week_dates": {}, "week_month": {}, "channel_stats": {"Box Appliance": 0}}, "kpi": {"lq": 273, "wow": -12.2, "cm": 0, "mom": 0, "ytd": 51142}, "dims": {"categories": [], "channels": ["Box Appliance"], "compressors": [], "types": []}, "raw": [], "sellthru": [], "prices": {}, "price_cats": {}, "price_comps": {}}, "2026": {"meta": {"generated": "2026-06-23 15:00", "weeks": ["W25"], "months": ["Jun"], "week_dates": {"W25": "06/14~06/20"}, "week_month": {"W25": "Jun"}, "channel_stats": {"Box Appliance": 13}}, "kpi": {"lq": 87, "wow": -93.4, "cm": 2692, "mom": -36.0, "ytd": 24769}, "dims": {"categories": ["Cassette AC", "Concealed Set", "Floor Standing AC", "Split AC"], "channels": ["Box Appliance"], "compressors": ["Inverter", "Rotary"], "types": ["CO", "HP"]}, "raw": [{"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "APNQ55GT3M", "c": "Floor Standing AC", "type": "CO", "comp": "Inverter", "btu": "48000", "q": 37, "code": "APNQ55GT3MA", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "LA242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 21, "code": "LA242CO", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "LO182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 16, "code": "LO182CO", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "LC242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 7, "code": "LC242CO", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "ND182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 5, "code": "ND182C0UK0", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "NS182C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "18000", "q": 5, "code": "NS182C2UK2", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "NS242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 4, "code": "NS242C3UK2", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "ATNW40GYLT6", "c": "Cassette AC", "type": "HP", "comp": "Inverter", "btu": "38000", "q": 3, "code": "ATNW40GYLTA", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "LO242C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "24000", "q": 2, "code": "LO242C0", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "LA182C", "c": "Split AC", "type": "CO", "comp": "Rotary", "btu": "18000", "q": 2, "code": "LA182CO", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "NS182H", "c": "Split AC", "type": "HP", "comp": "Inverter", "btu": "18000", "q": 1, "code": "NS182H2UK2", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "ABNQ60GM3TA", "c": "Concealed Set", "type": "CO", "comp": "Inverter", "btu": "48000", "q": 1, "code": "ABNQ60GM3TA", "name": ""}, {"w": "W25", "m": "Jun", "ch": "Box Appliance", "model": "ND242C", "c": "Split AC", "type": "CO", "comp": "Inverter", "btu": "24000", "q": 1, "code": "ND242C0UK0", "name": ""}], "sellthru": [], "prices": {}, "price_cats": {}, "price_comps": {}, "stock": {"wos_thresholds": {"OPPORTUNITY": {"min": 0, "max": 12, "color": "#1A7A3C", "label": "Need Supply"}, "HEALTHY": {"min": 12, "max": 24, "color": "#B8860B", "label": "Optimal"}, "OVERSTOCK": {"min": 24, "max": null, "color": "#9C0006", "label": "Excess"}, "INACTIVE": {"color": "#595959", "label": "No Sales"}}, "weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13", "W14", "W15", "W16", "W17", "W18", "W19", "W20", "W21", "W22", "W23", "W24", "W25"], "channels": {"Box Appliance": {"total_by_week": {"W25": 1059}, "by_category": {"Cassette AC": {"W25": 19}, "Concealed Set": {"W25": 117}, "Floor Standing AC": {"W25": 90}, "Split AC": {"W25": 833}}, "wos_by_week": {"W25": {"wos_m8": null, "wos_p8": null}}, "models": [{"model": "Cassette AC (Box)", "category": "Cassette AC", "type": "", "comp": "", "btu": "", "stock": {"W25": 19}, "wos": {"W25": {"m8": 20.8, "p8": 20.8, "sm8": "HEALTHY", "sp8": "HEALTHY"}}}, {"model": "Concealed Set (Box)", "category": "Concealed Set", "type": "", "comp": "", "btu": "", "stock": {"W25": 117}, "wos": {"W25": {"m8": 384.4, "p8": 384.4, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}, {"model": "Floor Standing AC (Box)", "category": "Floor Standing AC", "type": "", "comp": "", "btu": "", "stock": {"W25": 90}, "wos": {"W25": {"m8": 8.0, "p8": 8.0, "sm8": "OPPORTUNITY", "sp8": "OPPORTUNITY"}}}, {"model": "Split AC (Box)", "category": "Split AC", "type": "", "comp": "", "btu": "", "stock": {"W25": 833}, "wos": {"W25": {"m8": 42.8, "p8": 42.8, "sm8": "OVERSTOCK", "sp8": "OVERSTOCK"}}}]}}}}}};
+Chart.register(ChartDataLabels);
+const COLORS=['#2563eb','#f59e0b','#10b981','#8b5cf6','#f43f5e','#14b8a6','#0ea5e9','#6366f1','#ec4899','#84cc16','#ef4444','#06b6d4'];
+const CH_COLORS={'BH':'#2563eb','BM':'#f59e0b','Tamkeen':'#10b981','Zagzoog':'#8b5cf6','Dhamin':'#f43f5e','Star Appliance':'#14b8a6','Al Ghanem':'#0ea5e9','Al Shathri':'#6366f1','Box Appliance':'#ec4899'};
+
+// Year switching
+let currentYear = _ALL.current || '2026';
+let D = _ALL.data[currentYear];
+let WEEKS = D.meta.weeks, MONTHS = D.meta.months;
+
+// Build year selector
+(function(){
+  const sel=document.getElementById('yearSelect');
+  _ALL.years.forEach(yr=>{
+    const opt=document.createElement('option');
+    opt.value=yr;opt.textContent=yr;
+    if(yr===currentYear)opt.selected=true;
+    sel.appendChild(opt);
+  });
+  sel.addEventListener('change',()=>{
+    // Save SELECTED items for ALL filters (positive set)
+    const prevSelected={};
+    const prevAllSelected={};
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      const st=FILTER_STATE[cfg.key];
+      prevAllSelected[cfg.key]=(st.size===0);
+      prevSelected[cfg.key]=cfg.items.filter(item=>!st.has(item));
+    });
+    currentYear=sel.value;
+    D=_ALL.data[currentYear];
+    WEEKS=D.meta.weeks;MONTHS=D.meta.months;
+    // Rebuild FILTER_MAP with new year data
+    FILTER_MAP={
+      fMonth:{key:'m',items:MONTHS},
+      fWeek:{key:'w',items:WEEKS},
+      fChannel:{key:'ch',items:D.dims.channels},
+      fCat:{key:'c',items:D.dims.categories},
+      fComp:{key:'comp',items:D.dims.compressors},
+      fType:{key:'type',items:D.dims.types},
+      fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+    };
+    // Clear all filter states
+    Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+    // Restore ALL filters: keep only previously selected items that exist in new year
+    FILTER_ORDER.forEach(id=>{
+      const cfg=FILTER_MAP[id];
+      if(prevAllSelected[cfg.key])return;
+      const prev=new Set(prevSelected[cfg.key]||[]);
+      const overlap=cfg.items.filter(item=>prev.has(item));
+      if(overlap.length>0){
+        cfg.items.forEach(item=>{
+          if(!prev.has(item))FILTER_STATE[cfg.key].add(item);
+        });
+      }
+    });
+    // Rebuild DOM
+    FILTER_ORDER.forEach(id=>{
+      const el=document.getElementById(id);
+      if(el)el.innerHTML='';
+      buildMultiSelect(id);
+    });
+    cascadeAndUpdate();
+  });
+})();
+
+// ===== MULTI-SELECT FILTERS =====
+const FILTER_STATE={m:new Set(),w:new Set(),ch:new Set(),c:new Set(),comp:new Set(),type:new Set(),btu:new Set()};
+const FILTER_ORDER=['fMonth','fWeek','fChannel','fCat','fComp','fType','fBtu'];
+let FILTER_MAP={
+  fMonth:{key:'m',items:MONTHS},
+  fWeek:{key:'w',items:WEEKS},
+  fChannel:{key:'ch',items:D.dims.channels},
+  fCat:{key:'c',items:D.dims.categories},
+  fComp:{key:'comp',items:D.dims.compressors},
+  fType:{key:'type',items:D.dims.types},
+  fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+};
+
+// --- Cascading: compute available items for each filter ---
+function getAvailable(excludeKey, source){
+  const rows=(source||D.raw).filter(r=>{
+    for(const[fk,st]of Object.entries(FILTER_STATE)){
+      if(fk===excludeKey)continue;
+      if(st.size>0&&st.has(r[fk]))return false;
+    }
+    return true;
+  });
+  return rows;
+}
+
+function computeAvailableItems(){
+  const avail={};
+  FILTER_ORDER.forEach(id=>{
+    const cfg=FILTER_MAP[id];
+    const rows=getAvailable(cfg.key);
+    const vals=new Set(rows.map(r=>r[cfg.key]).filter(v=>v&&v!==''));
+    avail[id]=vals;
+  });
+  if(FILTER_STATE.m.size>0&&D.meta.week_month){
+    const activeMonths=MONTHS.filter(m=>!FILTER_STATE.m.has(m));
+    const validWeeks=new Set();
+    Object.entries(D.meta.week_month).forEach(([w,m])=>{
+      if(activeMonths.includes(m))validWeeks.add(w);
+    });
+    const dataWeeks=avail['fWeek'];
+    avail['fWeek']=new Set([...validWeeks].filter(w=>dataWeeks.has(w)));
+  }
+  return avail;
+}
+
+function rebuildFilters(){
+  FILTER_MAP={
+    fMonth:{key:'m',items:MONTHS},
+    fWeek:{key:'w',items:WEEKS},
+    fChannel:{key:'ch',items:D.dims.channels},
+    fCat:{key:'c',items:D.dims.categories},
+    fComp:{key:'comp',items:D.dims.compressors},
+    fType:{key:'type',items:D.dims.types},
+    fBtu:{key:'btu',items:[...new Set(D.raw.map(r=>r.btu).filter(b=>b))].sort((a,b)=>parseInt(a)-parseInt(b))}
+  };
+  Object.keys(FILTER_STATE).forEach(k=>FILTER_STATE[k].clear());
+  FILTER_ORDER.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML='';
+    buildMultiSelect(id);
+  });
+  cascadeAndUpdate();
+}
+
+function buildMultiSelect(wrapperId){
+  const wrap=document.getElementById(wrapperId);
+  if(!wrap)return;
+  const cfg=FILTER_MAP[wrapperId];
+  const state=FILTER_STATE[cfg.key];
+  const btn=document.createElement('button');
+  btn.className='ms-btn';btn.type='button';
+  const drop=document.createElement('div');
+  drop.className='ms-drop';
+  const allLabel=document.createElement('label');
+  allLabel.className='ms-all';
+  const allCb=document.createElement('input');
+  allCb.type='checkbox';allCb.checked=state.size===0;
+  allLabel.appendChild(allCb);allLabel.appendChild(document.createTextNode(' Select All'));
+  drop.appendChild(allLabel);
+  const cbs=[];
+  const labels=[];
+  cfg.items.forEach(item=>{
+    const label=document.createElement('label');
+    const cb=document.createElement('input');
+    cb.type='checkbox';cb.value=item;cb.checked=!state.has(item);
+    label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
+    drop.appendChild(label);
+    cbs.push(cb);
+    labels.push(label);
+    label.addEventListener('click',(e)=>{
+      e.preventDefault();e.stopPropagation();
+      if(label.classList.contains('ms-disabled'))return;
+      cb.checked=!cb.checked;
+      if(cb.checked)state.delete(item);else state.add(item);
+      allCb.checked=state.size===0;
+      updateBtnLabel();
+      cascadeAndUpdate();
+    });
+  });
+  allLabel.addEventListener('click',(e)=>{
+    e.preventDefault();e.stopPropagation();
+    const newState=!allCb.checked;
+    allCb.checked=newState;
+    cbs.forEach((cb,i)=>{
+      if(!labels[i].classList.contains('ms-disabled')){
+        cb.checked=newState;
+      }
+    });
+    state.clear();
+    if(!newState){
+      cfg.items.forEach((item,i)=>{
+        if(!labels[i].classList.contains('ms-disabled'))state.add(item);
+      });
+    }
+    updateBtnLabel();
+    cascadeAndUpdate();
+  });
+  function updateBtnLabel(){
+    const visibleItems=cfg.items.filter((_,i)=>!labels[i].classList.contains('ms-disabled'));
+    const totalAll=cfg.items.length;
+    const totalVisible=visibleItems.length;
+    const selected=visibleItems.filter(i=>!state.has(i)).length;
+    const cascaded=totalVisible<totalAll;
+    if(selected===0){btn.textContent='None';btn.classList.add('active-filter')}
+    else if(!cascaded&&state.size===0){btn.textContent='All ('+totalAll+')';btn.classList.remove('active-filter')}
+    else if(selected<=2&&!cascaded){btn.textContent=visibleItems.filter(i=>!state.has(i)).join(', ');btn.classList.add('active-filter')}
+    else{btn.textContent=selected+' of '+totalAll;btn.classList.add('active-filter')}
+  }
+  updateBtnLabel();
+  wrap.setAttribute('tabindex','-1');wrap.style.outline='none';
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.ms-drop.open').forEach(d=>{if(d!==drop)d.classList.remove('open')});
+    drop.classList.toggle('open');
+    if(drop.classList.contains('open'))wrap.focus();
+  });
+  wrap.addEventListener('focusout',(e)=>{
+    setTimeout(()=>{if(!wrap.contains(document.activeElement))drop.classList.remove('open')},150);
+  });
+  wrap.appendChild(btn);wrap.appendChild(drop);
+  wrap._reset=()=>{cbs.forEach(cb=>{cb.checked=true});labels.forEach(l=>l.classList.remove('ms-disabled'));allCb.checked=true;state.clear();updateBtnLabel()};
+  wrap._updateAvailable=(availSet)=>{
+    cbs.forEach((cb,i)=>{
+      const item=cfg.items[i];
+      const avail=availSet.has(item);
+      if(!avail){
+        labels[i].classList.add('ms-disabled');
+        labels[i].style.opacity='0.35';
+        labels[i].style.pointerEvents='none';
+      }else{
+        labels[i].classList.remove('ms-disabled');
+        labels[i].style.opacity='1';
+        labels[i].style.pointerEvents='auto';
+      }
+    });
+    updateBtnLabel();
+  };
+}
+
+// --- Cascade: update available options after any filter change ---
+function cascadeAndUpdate(){
+  const avail=computeAvailableItems();
+  FILTER_ORDER.forEach(id=>{
+    const wrap=document.getElementById(id);
+    if(wrap&&wrap._updateAvailable){
+      wrap._updateAvailable(avail[id]);
+    }
+  });
+  update();
+  if(typeof updateSD==='function')updateSD();
+  if(typeof updateWOS==='function')updateWOS();
+  if(typeof updatePT==='function')updatePT();
+}
+
+FILTER_ORDER.forEach(id=>buildMultiSelect(id));
+// Initial cascade
+setTimeout(()=>{const avail=computeAvailableItems();FILTER_ORDER.forEach(id=>{const w=document.getElementById(id);if(w&&w._updateAvailable)w._updateAvailable(avail[id])})},0);
+
+function filtered(){
+  return D.raw.filter(r=>{
+    if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
+    if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
+    if(FILTER_STATE.ch.size>0&&FILTER_STATE.ch.has(r.ch))return false;
+    if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
+    if(FILTER_STATE.comp.size>0&&FILTER_STATE.comp.has(r.comp))return false;
+    if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(r.type))return false;
+    if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(r.btu))return false;
+    return true;
+  });
+}
+function resetFilters(){FILTER_ORDER.forEach(id=>{const el=document.getElementById(id);if(el&&el._reset)el._reset()});cascadeAndUpdate()}
+
+// ===== TABS =====
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('pane-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ===== CHART HELPERS =====
+const charts={};
+const DL_BAR={display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:v=>v>0?v.toLocaleString():''};
+const DL_PIE={display:true,font:{size:10,weight:'bold'},color:'#fff',formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?Math.round(v/t*100)+'%':''}};
+const DL_NONE={display:false};
+const DL_LINE={display:true,anchor:'end',align:'top',font:{size:8},color:'#374151',formatter:v=>v>0?v.toLocaleString():'',offset:2};
+
+function mk(id,type,data,opts={}){
+  if(charts[id]){charts[id].destroy()}
+  const ctx=document.getElementById(id);
+  if(!ctx)return null;
+  const defaultOpts={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:opts.legend!==false,position:'top',labels:{font:{size:10}}},datalabels:opts.datalabels||DL_BAR}};
+  if(opts.scales)defaultOpts.scales=opts.scales;
+  if(opts.indexAxis)defaultOpts.indexAxis=opts.indexAxis;
+  if(opts.plugins)Object.assign(defaultOpts.plugins,opts.plugins);
+  if(type!=='doughnut'&&type!=='pie'){const axisKey=opts.indexAxis==='y'?'x':'y';if(!defaultOpts.scales)defaultOpts.scales={};if(!defaultOpts.scales[axisKey])defaultOpts.scales[axisKey]={};if(!defaultOpts.scales[axisKey].max)defaultOpts.scales[axisKey].grace='15%';}
+  charts[id]=new Chart(ctx,{type,data,options:defaultOpts});
+  return charts[id];
+}
+
+function sumBy(rows,key){const m={};rows.forEach(r=>{const k=r[key]||'(empty)';m[k]=(m[k]||0)+r.q});return m}
+function sumByTwo(rows,k1,k2){const m={};rows.forEach(r=>{const a=r[k1]||'',b=r[k2]||'';if(!m[a])m[a]={};m[a][b]=(m[a][b]||0)+r.q});return m}
+
+// ===== RENDER =====
+function update(){
+  const rows=filtered();
+  const total=rows.reduce((a,r)=>a+r.q,0);
+  document.getElementById('filterCount').textContent=currentYear+' · '+rows.length+' rows / '+total.toLocaleString()+' units';
+  document.getElementById('yearBadge').textContent=currentYear+' · '+(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+
+  // KPI - use filtered data's actual weeks/months
+  const wq=sumBy(rows,'w'),mq=sumBy(rows,'m');
+  const wm=D.meta.week_month||{};
+  let filteredWeeks=WEEKS;
+  if(FILTER_STATE.w.size>0){filteredWeeks=WEEKS.filter(w=>!FILTER_STATE.w.has(w))}
+  if(FILTER_STATE.m.size>0){filteredWeeks=filteredWeeks.filter(w=>{const m=wm[w];return !m||!FILTER_STATE.m.has(m)})}
+  const _fWeeks=WEEKS.filter(w=>wq[w]>0);
+  const _fMonths=MONTHS.filter(m=>mq[m]>0);
+  const _lw=_fWeeks.length?_fWeeks[_fWeeks.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+  const _pw=_fWeeks.length>1?_fWeeks[_fWeeks.length-2]:_lw;
+  const lq=wq[_lw]||0,pq=wq[_pw]||0,wow=pq?Math.round((lq-pq)/pq*100):0;
+  const _cm=_fMonths.length?_fMonths[_fMonths.length-1]:(MONTHS.length?MONTHS[MONTHS.length-1]:'');
+  const _pm=_fMonths.length>1?_fMonths[_fMonths.length-2]:_cm;
+  const cmq=mq[_cm]||0,pmq=mq[_pm]||0,mom=pmq?Math.round((cmq-pmq)/pmq*100):0;
+  const ytd=total;
+  const chCount=new Set(rows.map(r=>r.ch)).size;
+  const modelCount=new Set(rows.map(r=>r.model)).size;
+  const ar=(v)=>v>0?'&#9650;':v<0?'&#9660;':'&#9644;';
+  const cl=(v)=>v>0?'up':v<0?'down':'';
+  document.getElementById('kpiRow').innerHTML=[
+    {l:'Latest Week ('+_lw+')',v:lq.toLocaleString(),s:ar(wow)+' '+Math.abs(wow)+'% WoW',c:cl(wow),b:'var(--primary)'},
+    {l:'Month ('+_cm+')',v:cmq.toLocaleString(),s:ar(mom)+' '+Math.abs(mom)+'% MoM',c:cl(mom),b:'var(--teal)'},
+    {l:'Total (Filtered)',v:ytd.toLocaleString(),s:_fWeeks.length+' weeks · '+_fMonths.length+' months',c:'',b:'var(--green)'},
+    {l:'Active Channels',v:chCount+'/8',s:'Models: '+modelCount,c:'',b:'var(--purple)'},
+    {l:'Unified Models',v:modelCount,s:new Set(rows.map(r=>r.c)).size+' categories',c:'',b:'var(--amber)'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub ${k.c}">${k.s}</div></div>`).join('');
+
+  // Weekly bar (stacked by channel)
+  const cwk=sumByTwo(rows,'ch','w');
+  mk('cWeekly','bar',{
+    labels:filteredWeeks.map(w=>w+'\n'+(D.meta.week_dates[w]||'')),
+    datasets:D.dims.channels.map(ch=>({label:ch,data:filteredWeeks.map(w=>(cwk[ch]||{})[w]||0),backgroundColor:CH_COLORS[ch]||'#999'}))
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Monthly bar
+  mk('cMonthly','bar',{
+    labels:MONTHS,
+    datasets:[{label:'Qty',data:MONTHS.map(m=>mq[m]||0),backgroundColor:['#2563eb','#10b981','#f59e0b','#8b5cf6','#f43f5e','#14b8a6']}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // Category pie
+  const cq=sumBy(rows,'c');
+  const cats=D.dims.categories.filter(c=>cq[c]);
+  mk('cCatPie','doughnut',{
+    labels:cats,datasets:[{data:cats.map(c=>cq[c]||0),backgroundColor:COLORS}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  // Category weekly stacked
+  const catWk=sumByTwo(rows,'c','w');
+  mk('cCatWeek','bar',{
+    labels:filteredWeeks,
+    datasets:cats.map((c,i)=>({label:c,data:filteredWeeks.map(w=>(catWk[c]||{})[w]||0),backgroundColor:COLORS[i]}))
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}});
+
+  // === CHANNEL TAB ===
+  // Channel bar
+  const chq=sumBy(rows,'ch');
+  const chs=D.dims.channels.filter(c=>chq[c]);
+  mk('cChBar','bar',{
+    labels:chs,datasets:[{label:'Qty',data:chs.map(c=>chq[c]||0),backgroundColor:chs.map(c=>CH_COLORS[c]||'#999')}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // Channel line
+  mk('cChLine','line',{
+    labels:filteredWeeks,
+    datasets:chs.map(ch=>({label:ch,data:filteredWeeks.map(w=>(cwk[ch]||{})[w]||0),borderColor:CH_COLORS[ch]||'#999',backgroundColor:(CH_COLORS[ch]||'#999')+'22',tension:.3,fill:false,borderWidth:2,pointRadius:3}))
+  },{datalabels:DL_LINE});
+
+  // Heatmap (as a table - more readable)
+  const chCat=sumByTwo(rows,'ch','c');
+  const hmEl=document.getElementById('cHeatmap');
+  if(hmEl){
+    const parent=hmEl.parentElement;
+    const existingTable=parent.querySelector('.hm-table');
+    if(existingTable)existingTable.remove();
+    hmEl.style.display='none';
+    const maxVal=Math.max(...chs.flatMap(ch=>cats.map(c=>(chCat[ch]||{})[c]||0)),1);
+    let tbl='<table class="hm-table" style="width:100%"><thead><tr><th></th>'+cats.map(c=>'<th style="font-size:10px;text-align:center">'+c+'</th>').join('')+'<th style="text-align:right;font-weight:700">Total</th></tr></thead><tbody>';
+    chs.forEach(ch=>{
+      let chTotal=0;
+      tbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+      cats.forEach(c=>{
+        const v=(chCat[ch]||{})[c]||0;
+        chTotal+=v;
+        const intensity=v/maxVal;
+        const bg=v>0?`rgba(37,99,235,${0.1+intensity*0.6})`:'transparent';
+        const color=intensity>0.4?'#fff':'#1e293b';
+        tbl+=`<td style="text-align:center;background:${bg};color:${color};font-weight:${v>0?'600':'400'};font-size:12px">${v>0?v.toLocaleString():'-'}</td>`;
+      });
+      tbl+=`<td style="text-align:right;font-weight:700">${chTotal.toLocaleString()}</td></tr>`;
+    });
+    // Total row
+    tbl+='<tr style="border-top:2px solid var(--border)"><td style="font-weight:700">Total</td>';
+    let grandTotal=0;
+    cats.forEach(c=>{
+      const v=cq[c]||0;grandTotal+=v;
+      tbl+=`<td style="text-align:center;font-weight:700">${v.toLocaleString()}</td>`;
+    });
+    tbl+=`<td style="text-align:right;font-weight:800">${grandTotal.toLocaleString()}</td></tr></tbody></table>`;
+    parent.insertAdjacentHTML('beforeend',tbl);
+  }
+
+  // Channel×Category stacked bar
+  mk('cChCatStack','bar',{
+    labels:chs,
+    datasets:cats.map((c,i)=>({label:c,data:chs.map(ch=>(chCat[ch]||{})[c]||0),backgroundColor:COLORS[i]}))
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},color:'#374151',formatter:(v,ctx)=>{const ds=ctx.chart.data.datasets;const idx=ctx.dataIndex;if(ctx.datasetIndex===ds.length-1){let total=0;ds.forEach(d=>{total+=d.data[idx]||0});return total.toLocaleString()}return''}},scales:{x:{stacked:true},y:{stacked:true,beginAtZero:true}}});
+
+  // === PRODUCT TAB ===
+  const tyq=sumBy(rows,'type');
+  mk('cType','doughnut',{
+    labels:Object.keys(tyq),datasets:[{data:Object.values(tyq),backgroundColor:['#2563eb','#f59e0b','#ccc']}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  const compq=sumBy(rows,'comp');
+  mk('cComp','doughnut',{
+    labels:Object.keys(compq),datasets:[{data:Object.values(compq),backgroundColor:['#10b981','#8b5cf6','#ccc']}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  mk('cCatBar','bar',{
+    labels:cats,datasets:[{label:'Qty',data:cats.map(c=>cq[c]||0),backgroundColor:COLORS}]
+  },{indexAxis:'y',plugins:{legend:{display:false}}});
+
+  // Top 20 unified models table
+  const modelMap={};
+  rows.forEach(r=>{
+    if(!modelMap[r.model])modelMap[r.model]={cat:r.c,type:r.type,q:0,chs:new Set()};
+    modelMap[r.model].q+=r.q;
+    modelMap[r.model].chs.add(r.ch);
+  });
+  const top20=Object.entries(modelMap).sort((a,b)=>b[1].q-a[1].q).slice(0,20);
+  document.getElementById('tblTop20').innerHTML=top20.map(([model,v],i)=>{
+    const chBadges=[...v.chs].map(c=>`<span class="ch-badge" style="background:${(CH_COLORS[c]||'#ddd')}22;color:${CH_COLORS[c]||'#333'}">${c}</span>`).join('');
+    return `<tr><td>${i+1}</td><td class="mono" style="font-weight:600">${model}</td><td>${v.cat}</td><td>${v.type}</td><td>${chBadges}</td><td style="text-align:right;font-weight:700">${v.q.toLocaleString()}</td><td style="text-align:right">${total?Math.round(v.q/total*1000)/10:0}%</td><td><span class="pct-bar" style="width:${total?v.q/top20[0][1].q*150:0}px"></span></td></tr>`;
+  }).join('');
+
+  // === DETAIL TAB ===
+  // Aggregate by week+channel+model for detail table
+  const detailMap={};
+  rows.forEach(r=>{
+    const key=r.w+'|'+r.ch+'|'+r.model;
+    if(!detailMap[key])detailMap[key]={w:r.w,ch:r.ch,model:r.model,c:r.c,type:r.type,comp:r.comp,q:0};
+    detailMap[key].q+=r.q;
+  });
+  const detailRows=Object.values(detailMap).sort((a,b)=>{
+    const wA=parseInt(a.w.slice(1)),wB=parseInt(b.w.slice(1));
+    if(wA!==wB)return wB-wA;
+    return b.q-a.q;
+  });
+  document.getElementById('detailCount').textContent=`(${detailRows.length} aggregated rows)`;
+  document.getElementById('tblDetail').innerHTML=detailRows.slice(0,200).map(r=>
+    `<tr><td>${r.w}</td><td><span class="ch-badge" style="background:${(CH_COLORS[r.ch]||'#ddd')}22;color:${CH_COLORS[r.ch]||'#333'}">${r.ch}</span></td><td class="mono">${r.model}</td><td>${r.c}</td><td>${r.type}</td><td>${r.comp}</td><td style="text-align:right;font-weight:600">${r.q.toLocaleString()}</td></tr>`
+  ).join('');
+
+  // Update Supply vs Demand tab
+  if(typeof updateSD==='function')updateSD();
+  // Update WOS tab
+  if(typeof updateWOS==='function')updateWOS();
+  // Update Price Tracking tab
+  if(typeof updatePT==='function')updatePT();
+}
+
+// ===== EXCEL DOWNLOAD =====
+function downloadExcel(){
+  const rows=filtered();
+  // Aggregate by week+channel+model
+  const agg={};
+  rows.forEach(r=>{
+    const key=r.w+'|'+r.ch+'|'+r.model;
+    if(!agg[key])agg[key]={Week:r.w,Month:r.m,Channel:r.ch,'Unified Model':r.model,Category:r.c,Type:r.type,Compressor:r.comp,BTU:r.btu,'Original SKU':r.code,Qty:0};
+    agg[key].Qty+=r.q;
+  });
+  const data=Object.values(agg).sort((a,b)=>{
+    const wA=parseInt(a.Week.slice(1)),wB=parseInt(b.Week.slice(1));
+    if(wA!==wB)return wA-wB;
+    if(a.Channel!==b.Channel)return a.Channel.localeCompare(b.Channel);
+    return b.Qty-a.Qty;
+  });
+
+  // Raw detail sheet
+  const ws1=XLSX.utils.json_to_sheet(data);
+  // Set column widths
+  ws1['!cols']=[{wch:6},{wch:6},{wch:15},{wch:20},{wch:18},{wch:5},{wch:10},{wch:8},{wch:20},{wch:10}];
+
+  // Summary by Channel sheet
+  const chSum={};
+  rows.forEach(r=>{chSum[r.ch]=(chSum[r.ch]||0)+r.q});
+  const chData=Object.entries(chSum).sort((a,b)=>b[1]-a[1]).map(([ch,q])=>({Channel:ch,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const ws2=XLSX.utils.json_to_sheet(chData);
+  ws2['!cols']=[{wch:15},{wch:10},{wch:8}];
+
+  // Summary by Category sheet
+  const catSum={};
+  rows.forEach(r=>{catSum[r.c]=(catSum[r.c]||0)+r.q});
+  const catData=Object.entries(catSum).sort((a,b)=>b[1]-a[1]).map(([c,q])=>({Category:c,Qty:q,Share:(q/rows.reduce((a,r)=>a+r.q,0)*100).toFixed(0)+'%'}));
+  const ws3=XLSX.utils.json_to_sheet(catData);
+  ws3['!cols']=[{wch:20},{wch:10},{wch:8}];
+
+  // Weekly trend sheet
+  const wkCh={};
+  rows.forEach(r=>{
+    if(!wkCh[r.w])wkCh[r.w]={Week:r.w};
+    wkCh[r.w][r.ch]=(wkCh[r.w][r.ch]||0)+r.q;
+    wkCh[r.w]['Total']=(wkCh[r.w]['Total']||0)+r.q;
+  });
+  const wkData=Object.values(wkCh).sort((a,b)=>parseInt(a.Week.slice(1))-parseInt(b.Week.slice(1)));
+  const ws4=XLSX.utils.json_to_sheet(wkData);
+
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws1,'Raw Data');
+  XLSX.utils.book_append_sheet(wb,ws2,'By Channel');
+  XLSX.utils.book_append_sheet(wb,ws3,'By Category');
+  XLSX.utils.book_append_sheet(wb,ws4,'Weekly Trend');
+
+  // Supply vs Demand sheet
+  const siRows=filteredSellthru();
+  const modelSi={},modelSo={},modelCat={},modelChs={};
+  siRows.forEach(r=>{modelSi[r.model]=(modelSi[r.model]||0)+r.q;modelCat[r.model]=r.c;if(!modelChs[r.model])modelChs[r.model]=new Set();modelChs[r.model].add(r.ch)});
+  rows.forEach(r=>{modelSo[r.model]=(modelSo[r.model]||0)+r.q;modelCat[r.model]=r.c;if(!modelChs[r.model])modelChs[r.model]=new Set();modelChs[r.model].add(r.ch)});
+  const sdData=[...new Set([...Object.keys(modelSi),...Object.keys(modelSo)])].map(m=>{
+    const si=modelSi[m]||0,so=modelSo[m]||0;
+    return {Model:m,Category:modelCat[m]||'',Channels:[...(modelChs[m]||[])].join(', '),'Sell-thru':si,'Sell-out':so,Gap:si-so,'Sell-thru %':si>0?Math.round(so/si*100)+'%':'N/A'};
+  }).sort((a,b)=>(b['Sell-thru']+b['Sell-out'])-(a['Sell-thru']+a['Sell-out']));
+  const ws5=XLSX.utils.json_to_sheet(sdData);
+  ws5['!cols']=[{wch:20},{wch:18},{wch:30},{wch:10},{wch:10},{wch:10},{wch:12}];
+  XLSX.utils.book_append_sheet(wb,ws5,'Sell thru vs Sell out');
+
+  XLSX.writeFile(wb,'Unified_Sellout_8Ch_'+new Date().toISOString().slice(0,10)+'.xlsx');
+}
+
+// ===== SUPPLY vs DEMAND (Sell-thru) =====
+function filteredSellthru(){
+  return (D.sellthru||[]).filter(r=>{
+    if(FILTER_STATE.m.size>0&&FILTER_STATE.m.has(r.m))return false;
+    if(FILTER_STATE.w.size>0&&FILTER_STATE.w.has(r.w))return false;
+    if(FILTER_STATE.ch.size>0&&FILTER_STATE.ch.has(r.ch))return false;
+    if(FILTER_STATE.c.size>0&&FILTER_STATE.c.has(r.c))return false;
+    if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(r.type))return false;
+    if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(r.btu))return false;
+    return true;
+  });
+}
+
+function updateSD(){
+  const soRows=filtered();
+  const siRows=filteredSellthru();
+  const soTotal=soRows.reduce((a,r)=>a+r.q,0);
+  const siTotal=siRows.reduce((a,r)=>a+r.q,0);
+  const gap=siTotal-soTotal;
+  const sellThru=siTotal>0?Math.round(soTotal/siTotal*100):0;
+
+  // KPI
+  document.getElementById('sdKpi').innerHTML=[
+    {l:'Total Sell-thru',v:siTotal.toLocaleString(),s:'SAP '+currentYear+' YTD',b:'#2563eb'},
+    {l:'Total Sell-out',v:soTotal.toLocaleString(),s:'8 Ch. '+currentYear+' Data',b:'#10b981'},
+    {l:'Inventory Gap (Thru-Out)',v:(gap>=0?'+':'')+gap.toLocaleString(),s:gap>0?'Inventory buildup':'Shortage risk',b:gap>0?'#f59e0b':'#ef4444'},
+    {l:'Sell-through Rate',v:sellThru+'%',s:sellThru>=80?'Healthy':'Needs attention',b:sellThru>=80?'#10b981':'#f59e0b'},
+    {l:'Models Tracked',v:new Set([...soRows.map(r=>r.model),...siRows.map(r=>r.model)]).size,s:'Sell-thru: '+new Set(siRows.map(r=>r.model)).size+' / Out: '+new Set(soRows.map(r=>r.model)).size,b:'#8b5cf6'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  // Channel comparison bar
+  const siCh=sumBy(siRows,'ch'),soCh=sumBy(soRows,'ch');
+  const allChs=D.dims.channels;
+  mk('cSdChannel','bar',{
+    labels:allChs,
+    datasets:[
+      {label:'Sell-thru',data:allChs.map(c=>siCh[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
+      {label:'Sell-out',data:allChs.map(c=>soCh[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
+    ]
+  },{scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Category comparison bar
+  const siCat=sumBy(siRows,'c'),soCat=sumBy(soRows,'c');
+  const allCats=[...new Set([...Object.keys(siCat),...Object.keys(soCat)])].filter(c=>c).sort();
+  mk('cSdCategory','bar',{
+    labels:allCats,
+    datasets:[
+      {label:'Sell-thru',data:allCats.map(c=>siCat[c]||0),backgroundColor:'rgba(37,99,235,0.7)'},
+      {label:'Sell-out',data:allCats.map(c=>soCat[c]||0),backgroundColor:'rgba(16,185,129,0.7)'}
+    ]
+  },{indexAxis:'y',scales:{x:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Monthly trend
+  const siM=sumBy(siRows,'m'),soM=sumBy(soRows,'m');
+  mk('cSdMonthly','bar',{
+    labels:MONTHS,
+    datasets:[
+      {label:'Sell-thru',data:MONTHS.map(m=>siM[m]||0),backgroundColor:'rgba(37,99,235,0.6)',borderColor:'#2563eb',borderWidth:1},
+      {label:'Sell-out',data:MONTHS.map(m=>soM[m]||0),backgroundColor:'rgba(16,185,129,0.6)',borderColor:'#10b981',borderWidth:1}
+    ]
+  },{scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Weekly trend (line)
+  const siW=sumBy(siRows,'w'),soW=sumBy(soRows,'w');
+  const _sdWm=D.meta.week_month||{};
+  let _sdFiltW=WEEKS;
+  if(FILTER_STATE.w.size>0){_sdFiltW=WEEKS.filter(w=>!FILTER_STATE.w.has(w))}
+  if(FILTER_STATE.m.size>0){_sdFiltW=_sdFiltW.filter(w=>{const m=_sdWm[w];return !m||!FILTER_STATE.m.has(m)})}
+  mk('cSdWeekly','line',{
+    labels:_sdFiltW,
+    datasets:[
+      {label:'Sell-thru',data:_sdFiltW.map(w=>siW[w]||0),borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:3},
+      {label:'Sell-out',data:_sdFiltW.map(w=>soW[w]||0),borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:true,borderWidth:2,pointRadius:3}
+    ]
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:8},color:'#374151',formatter:v=>v>0?v.toLocaleString():''},scales:{y:{beginAtZero:true}},plugins:{legend:{position:'top'}}});
+
+  // Channel × Category heatmap table
+  const siChCat={},soChCat={};
+  siRows.forEach(r=>{if(!siChCat[r.ch])siChCat[r.ch]={};siChCat[r.ch][r.c]=(siChCat[r.ch][r.c]||0)+r.q});
+  soRows.forEach(r=>{if(!soChCat[r.ch])soChCat[r.ch]={};soChCat[r.ch][r.c]=(soChCat[r.ch][r.c]||0)+r.q});
+  let sdTbl='<thead><tr><th>Channel</th>';
+  allCats.forEach(c=>{sdTbl+='<th colspan="3" style="text-align:center;font-size:10px;border-left:2px solid var(--border)">'+c+'</th>'});
+  sdTbl+='<th colspan="3" style="text-align:center;font-weight:700;border-left:2px solid var(--border)">Total</th></tr>';
+  sdTbl+='<tr><th></th>';
+  allCats.forEach(()=>{sdTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Thru</th><th style="text-align:right;font-size:9px">Out</th><th style="text-align:right;font-size:9px">Gap</th>'});
+  sdTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Thru</th><th style="text-align:right;font-size:9px">Out</th><th style="text-align:right;font-size:9px">Gap</th>';
+  sdTbl+='</tr></thead><tbody>';
+  allChs.forEach(ch=>{
+    let chSiT=0,chSoT=0;
+    sdTbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+    allCats.forEach(c=>{
+      const si=(siChCat[ch]||{})[c]||0;
+      const so=(soChCat[ch]||{})[c]||0;
+      const g=si-so;
+      chSiT+=si;chSoT+=so;
+      const gc=g>0?'color:#f59e0b':g<0?'color:#ef4444':'color:var(--muted)';
+      sdTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(si>0?si.toLocaleString():'-')+'</td>';
+      sdTbl+='<td style="text-align:right">'+(so>0?so.toLocaleString():'-')+'</td>';
+      sdTbl+='<td style="text-align:right;font-weight:600;'+gc+'">'+(g!==0?(g>0?'+':'')+g.toLocaleString():'-')+'</td>';
+    });
+    const tg=chSiT-chSoT;
+    const tgc=tg>0?'color:#f59e0b':tg<0?'color:#ef4444':'color:var(--muted)';
+    sdTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chSiT.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700">'+chSoT.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700;'+tgc+'">'+(tg>0?'+':'')+tg.toLocaleString()+'</td>';
+    sdTbl+='</tr>';
+  });
+  // Total row
+  sdTbl+='<tr style="border-top:2px solid var(--text)"><td style="font-weight:800">Total</td>';
+  let gSi=0,gSo=0;
+  allCats.forEach(c=>{
+    let cSi=0,cSo=0;
+    allChs.forEach(ch=>{cSi+=(siChCat[ch]||{})[c]||0;cSo+=(soChCat[ch]||{})[c]||0});
+    gSi+=cSi;gSo+=cSo;
+    const cg=cSi-cSo;
+    const cgc=cg>0?'color:#f59e0b':cg<0?'color:#ef4444':'';
+    sdTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+cSi.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700">'+cSo.toLocaleString()+'</td>';
+    sdTbl+='<td style="text-align:right;font-weight:700;'+cgc+'">'+(cg>0?'+':'')+cg.toLocaleString()+'</td>';
+  });
+  const gg=gSi-gSo;
+  sdTbl+='<td style="text-align:right;font-weight:800;border-left:2px solid var(--border)">'+gSi.toLocaleString()+'</td>';
+  sdTbl+='<td style="text-align:right;font-weight:800">'+gSo.toLocaleString()+'</td>';
+  sdTbl+='<td style="text-align:right;font-weight:800;'+(gg>0?'color:#f59e0b':'color:#ef4444')+'">'+(gg>0?'+':'')+gg.toLocaleString()+'</td>';
+  sdTbl+='</tr></tbody>';
+  document.getElementById('tblSdHeatmap').innerHTML=sdTbl;
+
+  // Top 20 Models by Sell-thru+Sell-out combined
+  const modelSi={},modelSo={},modelMeta={};
+  siRows.forEach(r=>{modelSi[r.model]=(modelSi[r.model]||0)+r.q;if(!modelMeta[r.model])modelMeta[r.model]={c:r.c,chs:new Set()};modelMeta[r.model].chs.add(r.ch)});
+  soRows.forEach(r=>{modelSo[r.model]=(modelSo[r.model]||0)+r.q;if(!modelMeta[r.model])modelMeta[r.model]={c:r.c,chs:new Set()};modelMeta[r.model].chs.add(r.ch)});
+  const allModels=[...new Set([...Object.keys(modelSi),...Object.keys(modelSo)])];
+  const modelList=allModels.map(m=>({model:m,si:modelSi[m]||0,so:modelSo[m]||0,meta:modelMeta[m]})).sort((a,b)=>(b.si+b.so)-(a.si+a.so)).slice(0,20);
+  document.getElementById('tblSdModel').innerHTML=modelList.map((r,i)=>{
+    const gap=r.si-r.so;
+    const pct=r.si>0?Math.round(r.so/r.si*100):'-';
+    const status=typeof pct==='number'?(pct>=100?'<span style="color:#10b981;font-weight:700">✅ Sold Out</span>':pct>=70?'<span style="color:#2563eb;font-weight:600">🔵 Good</span>':pct>=40?'<span style="color:#f59e0b;font-weight:600">🟡 Moderate</span>':'<span style="color:#ef4444;font-weight:600">🔴 Slow</span>'):'<span style="color:#8b5cf6">📦 Out only</span>';
+    const chBadges=r.meta?[...r.meta.chs].map(c=>'<span class="ch-badge" style="background:'+(CH_COLORS[c]||'#ddd')+'22;color:'+(CH_COLORS[c]||'#333')+'">'+c+'</span>').join(''):'';
+    return '<tr><td>'+(i+1)+'</td><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+(r.meta?r.meta.c:'')+'</td><td>'+chBadges+'</td><td style="text-align:right">'+r.si.toLocaleString()+'</td><td style="text-align:right">'+r.so.toLocaleString()+'</td><td style="text-align:right;font-weight:600;'+(gap>0?'color:#f59e0b':gap<0?'color:#ef4444':'')+'">'+(gap>0?'+':'')+gap.toLocaleString()+'</td><td style="text-align:right;font-weight:600">'+(typeof pct==='number'?pct+'%':pct)+'</td><td>'+status+'</td></tr>';
+  }).join('');
+}
+
+// ===== WOS (STOCK) TAB =====
+const WOS_COLORS={OPPORTUNITY:'#1A7A3C',HEALTHY:'#B8860B',OVERSTOCK:'#9C0006',INACTIVE:'#595959'};
+const WOS_LABELS={OPPORTUNITY:'Need Supply',HEALTHY:'Optimal',OVERSTOCK:'Excess',INACTIVE:'No Sales'};
+
+function updateWOS(){
+  const sd=D.stock;
+  if(!sd||!sd.channels){
+    document.getElementById('wosKpi').innerHTML='<div class="kpi"><div class="kpi-val">N/A</div><div class="kpi-label">No stock data for '+currentYear+'</div></div>';
+    return;
+  }
+
+  // Get filtered channels
+  const activeChannels=Object.keys(sd.channels).filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
+  const activeCats=D.dims.categories.filter(c=>FILTER_STATE.c.size===0||!FILTER_STATE.c.has(c));
+  const allWeeks=sd.weeks||[];
+  // Apply week filter: use selected weeks, or all weeks if no filter
+  const wm=D.meta.week_month||{};
+  let filteredWeeks=allWeeks;
+  if(FILTER_STATE.w.size>0){filteredWeeks=allWeeks.filter(w=>!FILTER_STATE.w.has(w))}
+  if(FILTER_STATE.m.size>0){filteredWeeks=filteredWeeks.filter(w=>{const m=wm[w];return !m||!FILTER_STATE.m.has(m)})}
+  const latestW=filteredWeeks.length?filteredWeeks[filteredWeeks.length-1]:'';
+  const thresholds=sd.wos_thresholds||{};
+
+  // Model filter helper
+  function filterModels(models){
+    return models.filter(m=>{
+      if(activeCats.length>0&&!activeCats.includes(m.category))return false;
+      if(FILTER_STATE.comp.size>0&&FILTER_STATE.comp.has(m.comp||''))return false;
+      if(FILTER_STATE.type.size>0&&FILTER_STATE.type.has(m.type||''))return false;
+      if(FILTER_STATE.btu.size>0&&FILTER_STATE.btu.has(m.btu||''))return false;
+      return true;
+    });
+  }
+
+  // Aggregate stock by channel for latest week
+  let totalStock=0;
+  const stockByCh={};
+  const stockByCat={};
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    const models=filterModels(cd.models);
+    let chStock=0;
+    models.forEach(m=>{
+      const s=(m.stock||{})[latestW]||0;
+      chStock+=s;
+      const cat=m.category||'Other';
+      stockByCat[cat]=(stockByCat[cat]||0)+s;
+    });
+    stockByCh[ch]=chStock;
+    totalStock+=chStock;
+  });
+
+  // Compute WOS from filtered models (respects category/compressor/type/btu filters)
+  function calcFilteredWos(week,field){
+    let tStock=0,tSO=0;
+    activeChannels.forEach(ch=>{
+      const cd=sd.channels[ch];if(!cd)return;
+      filterModels(cd.models).forEach(m=>{
+        const s=(m.stock||{})[week]||0;
+        const w=(m.wos||{})[week];
+        if(s>0&&w&&w[field]!=null&&w[field]>0){tStock+=s;tSO+=s/w[field]}
+        else{tStock+=s}
+      });
+    });
+    if(tSO>0)return Math.round(tStock/tSO*10)/10;
+    // fallback: model-level wos_p8 all null (model_key mismatch) → use channel-level wos_by_week
+    let fbStk=0,fbSO=0;
+    activeChannels.forEach(ch=>{const cd=sd.channels[ch];if(!cd)return;
+      const wbw=(cd.wos_by_week||{})[week];if(!wbw)return;
+      const stk=(cd.total_by_week||{})[week]||0;
+      const v=wbw['wos_'+field];
+      if(stk>0&&v!=null&&v>0){fbStk+=stk;fbSO+=stk/v}
+    });
+    return fbSO>0?Math.round(fbStk/fbSO*10)/10:null;
+  }
+  let p8Week=latestW;
+  const signalCounts={OPPORTUNITY:0,HEALTHY:0,OVERSTOCK:0,INACTIVE:0};
+  // Find p8Week: latest week with WOS+8 data in filtered models
+  let foundP8=false;
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const w=(m.wos||{})[latestW];if(w&&w.p8!=null)foundP8=true;
+    });
+  });
+  if(!foundP8){
+    for(let i=allWeeks.length-2;i>=0;i--){
+      let has=false;
+      activeChannels.forEach(ch=>{
+        const cd=sd.channels[ch];if(!cd)return;
+        filterModels(cd.models).forEach(m=>{
+          const w=(m.wos||{})[allWeeks[i]];if(w&&w.p8!=null)has=true;
+        });
+      });
+      if(has){p8Week=allWeeks[i];break;}
+    }
+  }
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const wos=(m.wos||{})[latestW];
+      if(wos){
+        const sig=wos.sm8||wos.sp8||'INACTIVE';
+        signalCounts[sig]=(signalCounts[sig]||0)+1;
+      }else{
+        signalCounts.INACTIVE++;
+      }
+    });
+  });
+  const avgM8=calcFilteredWos(latestW,'m8');
+  const avgP8=calcFilteredWos(p8Week,'p8');
+  const totalModels=Object.values(signalCounts).reduce((a,b)=>a+b,0);
+
+  // KPI row
+  const sigM8=avgM8!==null?(avgM8<=12?'OPPORTUNITY':avgM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+  const sigP8=avgP8!==null?(avgP8<=12?'OPPORTUNITY':avgP8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+  document.getElementById('wosKpi').innerHTML=[
+    {l:'Total Stock ('+latestW+')',v:totalStock.toLocaleString(),s:activeChannels.length+' channels',b:'#2563eb'},
+    {l:'WOS-8 (Avg)',v:avgM8!==null?avgM8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigM8]||'',b:WOS_COLORS[sigM8]||'#999'},
+    {l:'WOS+8 (Avg'+(p8Week!==latestW?' @'+p8Week:'')+')' ,v:avgP8!==null?avgP8.toFixed(0)+' wks':'-',s:WOS_LABELS[sigP8]||'',b:WOS_COLORS[sigP8]||'#999'},
+    {l:'Signal Summary',v:signalCounts.OPPORTUNITY+' / '+signalCounts.HEALTHY+' / '+signalCounts.OVERSTOCK,s:'Need / Optimal / Excess',b:'#8b5cf6'},
+    {l:'Models Tracked',v:totalModels,s:'Inactive: '+signalCounts.INACTIVE,b:'#f59e0b'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  // Stock by Channel bar
+  const chLabels=activeChannels.filter(ch=>stockByCh[ch]>0);
+  mk('cWosChBar','bar',{
+    labels:chLabels,
+    datasets:[{label:'Stock',data:chLabels.map(ch=>stockByCh[ch]||0),backgroundColor:chLabels.map(ch=>CH_COLORS[ch]||'#999')}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // WOS Weekly Trend (line) — computed from filtered models
+  const trendWeeks=(filteredWeeks.length<=20?filteredWeeks:filteredWeeks.slice(-20));
+  const m8Data=[],p8Data=[];
+  trendWeeks.forEach(w=>{
+    m8Data.push(calcFilteredWos(w,'m8'));
+    p8Data.push(calcFilteredWos(w,'p8'));
+  });
+  mk('cWosTrend','line',{
+    labels:trendWeeks,
+    datasets:[
+      {label:'WOS-8 (Past 8wk avg)',data:m8Data,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'WOS+8 (Next 8wk avg)',data:p8Data,borderColor:'#10b981',backgroundColor:'rgba(16,185,129,0.1)',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true},
+      {label:'Healthy Zone (12-24)',data:trendWeeks.map(()=>12),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0,fill:'+1'},
+      {label:'',data:trendWeeks.map(()=>24),borderColor:'#B8860B44',borderDash:[5,5],borderWidth:1,pointRadius:0,backgroundColor:'rgba(184,134,11,0.05)',fill:false},
+    ]
+  },{datalabels:{display:true,anchor:'end',align:'top',font:{size:8},color:'#374151',formatter:(v,ctx)=>{if(ctx.datasetIndex>=2)return'';return v!==null?v.toFixed(0):''}},scales:{y:{beginAtZero:true,max:Math.max(60,...m8Data.filter(v=>v!==null),...p8Data.filter(v=>v!==null))+5}},plugins:{legend:{position:'top'}}});
+
+  // Stock by Category bar
+  const catLabels=activeCats.filter(c=>stockByCat[c]>0);
+  mk('cWosCatBar','bar',{
+    labels:catLabels,
+    datasets:[{label:'Stock',data:catLabels.map(c=>stockByCat[c]||0),backgroundColor:COLORS}]
+  },{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  // WOS Signal Distribution pie
+  const sigLabels=Object.keys(signalCounts).filter(k=>signalCounts[k]>0);
+  mk('cWosSignal','doughnut',{
+    labels:sigLabels.map(k=>WOS_LABELS[k]||k),
+    datasets:[{data:sigLabels.map(k=>signalCounts[k]),backgroundColor:sigLabels.map(k=>WOS_COLORS[k]||'#ccc')}]
+  },{datalabels:DL_PIE,plugins:{legend:{position:'right'}}});
+
+  // Channel × Category Stock Heatmap
+  const chCatStock={};
+  activeChannels.forEach(ch=>{
+    chCatStock[ch]={};
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const cat=m.category||'Other';
+      const s=(m.stock||{})[latestW]||0;
+      chCatStock[ch][cat]=(chCatStock[ch][cat]||0)+s;
+    });
+  });
+  const hmCats=activeCats.filter(c=>Object.values(chCatStock).some(cc=>cc[c]>0));
+  let wosTbl='<thead><tr><th>Channel</th>';
+  hmCats.forEach(c=>{wosTbl+='<th colspan="2" style="text-align:center;font-size:10px;border-left:2px solid var(--border)">'+c+'</th>'});
+  wosTbl+='<th colspan="2" style="text-align:center;font-weight:700;border-left:2px solid var(--border)">Total</th></tr>';
+  wosTbl+='<tr><th></th>';
+  hmCats.forEach(()=>{wosTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Stock</th><th style="text-align:right;font-size:9px">WOS-8</th>'});
+  wosTbl+='<th style="text-align:right;font-size:9px;border-left:2px solid var(--border)">Stock</th><th style="text-align:right;font-size:9px">WOS-8</th>';
+  wosTbl+='</tr></thead><tbody>';
+  activeChannels.forEach(ch=>{
+    let chTotS=0;
+    wosTbl+='<tr><td style="font-weight:600;white-space:nowrap"><span class="ch-badge" style="background:'+(CH_COLORS[ch]||'#ddd')+'33;color:'+(CH_COLORS[ch]||'#333')+'">'+ch+'</span></td>';
+    hmCats.forEach(c=>{
+      const s=(chCatStock[ch]||{})[c]||0;
+      chTotS+=s;
+      // Get WOS for this channel's category
+      const cd=sd.channels[ch];
+      let catWos=null;
+      if(cd){
+        let catSoSum=0,catModels=cd.models.filter(m=>m.category===c);
+        catModels.forEach(m=>{
+          const w=(m.wos||{})[latestW];
+          if(w&&w.m8!==null&&w.m8!==undefined){catWos=(catWos||0)+w.m8;catSoSum++}
+        });
+        if(catSoSum>0)catWos=Math.round(catWos/catSoSum*10)/10;
+      }
+      const sig=catWos!==null?(catWos<=12?'OPPORTUNITY':catWos<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+      const sc=WOS_COLORS[sig]||'#999';
+      wosTbl+='<td style="text-align:right;border-left:2px solid var(--border)">'+(s>0?s.toLocaleString():'-')+'</td>';
+      wosTbl+='<td style="text-align:right;color:'+sc+';font-weight:600">'+(catWos!==null?catWos.toFixed(0):'-')+'</td>';
+    });
+    // Total — compute from filtered models for this channel
+    let chTotSO=0,chTotStk=0;
+    filterModels((sd.channels[ch]||{}).models||[]).forEach(m=>{
+      const s=(m.stock||{})[latestW]||0;const w=(m.wos||{})[latestW];
+      if(s>0&&w&&w.m8!=null&&w.m8>0){chTotStk+=s;chTotSO+=s/w.m8}else{chTotStk+=s}
+    });
+    const chWosM8=chTotSO>0?Math.round(chTotStk/chTotSO*10)/10:null;
+    const chSig=chWosM8!==null?(chWosM8<=12?'OPPORTUNITY':chWosM8<=24?'HEALTHY':'OVERSTOCK'):'INACTIVE';
+    wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+chTotS.toLocaleString()+'</td>';
+    wosTbl+='<td style="text-align:right;font-weight:700;color:'+WOS_COLORS[chSig]+'">'+( chWosM8!==null?chWosM8.toFixed(0):'-')+'</td>';
+    wosTbl+='</tr>';
+  });
+  // Total row
+  wosTbl+='<tr style="border-top:2px solid var(--text)"><td style="font-weight:800">Total</td>';
+  let gTotS=0;
+  hmCats.forEach(c=>{
+    let cS=0;
+    activeChannels.forEach(ch=>{cS+=(chCatStock[ch]||{})[c]||0});
+    gTotS+=cS;
+    wosTbl+='<td style="text-align:right;font-weight:700;border-left:2px solid var(--border)">'+cS.toLocaleString()+'</td><td></td>';
+  });
+  wosTbl+='<td style="text-align:right;font-weight:800;border-left:2px solid var(--border)">'+gTotS.toLocaleString()+'</td><td></td>';
+  wosTbl+='</tr></tbody>';
+  document.getElementById('tblWosHeatmap').innerHTML=wosTbl;
+
+  // Model Detail Table
+  const modelRows=[];
+  activeChannels.forEach(ch=>{
+    const cd=sd.channels[ch];
+    if(!cd)return;
+    filterModels(cd.models).forEach(m=>{
+      const stk=(m.stock||{})[latestW]||0;
+      const wos=(m.wos||{})[latestW]||{};
+      modelRows.push({
+        model:m.model,cat:m.category,type:m.type,ch:ch,
+        stock:stk,m8:wos.m8,p8:wos.p8,sm8:wos.sm8||'INACTIVE',sp8:wos.sp8||'INACTIVE'
+      });
+    });
+  });
+  modelRows.sort((a,b)=>b.stock-a.stock);
+  document.getElementById('wosDetailCount').textContent='('+modelRows.length+' models, '+latestW+')';
+  document.getElementById('tblWosDetail').innerHTML=modelRows.slice(0,200).map(r=>{
+    const m8Str=r.m8!==null&&r.m8!==undefined?r.m8.toFixed(0):'-';
+    const p8Str=r.p8!==null&&r.p8!==undefined?r.p8.toFixed(0):'-';
+    const m8c=WOS_COLORS[r.sm8]||'#999';
+    const p8c=WOS_COLORS[r.sp8]||'#999';
+    return '<tr><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+r.cat+'</td><td>'+r.type+'</td><td><span class="ch-badge" style="background:'+(CH_COLORS[r.ch]||'#ddd')+'22;color:'+(CH_COLORS[r.ch]||'#333')+'">'+r.ch+'</span></td><td style="text-align:right;font-weight:700">'+r.stock.toLocaleString()+'</td><td style="text-align:right;color:'+m8c+';font-weight:600">'+m8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+m8c+'">'+(WOS_LABELS[r.sm8]||r.sm8)+'</span></td><td style="text-align:right;color:'+p8c+';font-weight:600">'+p8Str+'</td><td><span style="display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;color:#fff;background:'+p8c+'">'+(WOS_LABELS[r.sp8]||r.sp8)+'</span></td></tr>';
+  }).join('');
+}
+
+// ===== PRICE TRACKING TAB =====
+function updatePT(){
+  const pt=D.prices;
+  if(!pt||Object.keys(pt).length===0){
+    document.getElementById('ptKpi').innerHTML='<div class="kpi" style="grid-column:1/-1"><div class="kpi-val">N/A</div><div class="kpi-label">No price tracking data for '+currentYear+'</div><div class="kpi-sub">Price tracking available for 2026 only</div></div>';
+    if(charts['cPtChBar']){charts['cPtChBar'].destroy();delete charts['cPtChBar']}
+    if(charts['cPtTrend']){charts['cPtTrend'].destroy();delete charts['cPtTrend']}
+    document.getElementById('tblPtModel').innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">Price tracking data is only available for 2026.</td></tr>';
+    return;
+  }
+
+  const activeChs=D.dims.channels.filter(ch=>FILTER_STATE.ch.size===0||!FILTER_STATE.ch.has(ch));
+  let activeWs=FILTER_STATE.w.size===0?[...WEEKS]:WEEKS.filter(w=>!FILTER_STATE.w.has(w));
+  if(FILTER_STATE.m.size>0&&D.meta&&D.meta.week_month){activeWs=activeWs.filter(w=>D.meta.week_month[w]&&!FILTER_STATE.m.has(D.meta.week_month[w]))}
+  const selectedW=activeWs.length?activeWs[activeWs.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+
+  const ptModelCat=Object.assign({},D.price_cats||{});D.raw.forEach(r=>{if(r.c&&!ptModelCat[r.model])ptModelCat[r.model]=r.c});
+  const ptModelComp=Object.assign({},D.price_comps||{});D.raw.forEach(r=>{if(r.comp&&!ptModelComp[r.model])ptModelComp[r.model]=r.comp});
+  const ptModelType={};D.raw.forEach(r=>{if(r.type&&!ptModelType[r.model])ptModelType[r.model]=r.type});
+  const ptModelBtu={};D.raw.forEach(r=>{if(r.btu&&!ptModelBtu[r.model])ptModelBtu[r.model]=r.btu});
+  const activePTCats=FILTER_STATE.c.size===0?null:new Set(D.dims.categories.filter(c=>!FILTER_STATE.c.has(c)));
+  const activePTComps=FILTER_STATE.comp.size===0?null:new Set(D.dims.compressors.filter(c=>!FILTER_STATE.comp.has(c)));
+  const activePTTypes=FILTER_STATE.type.size===0?null:new Set(D.dims.types.filter(t=>!FILTER_STATE.type.has(t)));
+  const activePTBtus=FILTER_STATE.btu.size===0?null:new Set([...new Set(D.raw.map(r=>r.btu).filter(b=>b))].filter(b=>!FILTER_STATE.btu.has(b)));
+
+  const chAvg={};let totalPrices=0,totalModels=0;
+  activeChs.forEach(ch=>{
+    const chPt=pt[ch];if(!chPt)return;
+    let sum=0,cnt=0;
+    Object.entries(chPt).forEach(([model,weeks])=>{
+      if(activePTCats!==null&&!activePTCats.has(ptModelCat[model]||''))return;
+      if(activePTComps!==null&&!activePTComps.has(ptModelComp[model]||''))return;
+      if(activePTTypes!==null&&!activePTTypes.has(ptModelType[model]||''))return;
+      if(activePTBtus!==null&&!activePTBtus.has(ptModelBtu[model]||''))return;
+      const p=weeks[selectedW];if(p&&p>0){sum+=p;cnt++}
+    });
+    if(cnt>0){chAvg[ch]=Math.round(sum/cnt);totalPrices+=sum;totalModels+=cnt}
+  });
+  const overallAvg=totalModels>0?Math.round(totalPrices/totalModels):0;
+  const ptChCount=Object.keys(pt).length||5;
+
+  document.getElementById('ptKpi').innerHTML=[
+    {l:'Avg Price ('+selectedW+')',v:'SAR '+overallAvg.toLocaleString(),s:'All channels avg',b:'#2563eb'},
+    {l:'Tracked Models',v:totalModels,s:activeChs.length+' channels',b:'#10b981'},
+    {l:'Channels',v:Object.keys(chAvg).length+'/'+ptChCount,s:Object.keys(chAvg).join(', '),b:'#8b5cf6'},
+    {l:'Selected Week',v:selectedW,s:D.meta.week_dates[selectedW]||'',b:'#f59e0b'},
+    {l:'Price Range',v:Object.values(chAvg).length>0?'SAR '+Math.min(...Object.values(chAvg)).toLocaleString()+'-'+Math.max(...Object.values(chAvg)).toLocaleString():'-',s:'Channel avg range',b:'var(--teal)'},
+  ].map(k=>`<div class="kpi" style="border-left-color:${k.b}"><div class="kpi-val">${k.v}</div><div class="kpi-label">${k.l}</div><div class="kpi-sub">${k.s}</div></div>`).join('');
+
+  const ptChs=activeChs.filter(ch=>chAvg[ch]);
+  mk('cPtChBar','bar',{labels:ptChs,datasets:[{label:'Avg Price (SAR)',data:ptChs.map(ch=>chAvg[ch]||0),backgroundColor:ptChs.map(ch=>CH_COLORS[ch]||'#999')}]},{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}});
+
+  const trendWeeks=WEEKS.slice(-12);
+  const chTrendData=activeChs.filter(ch=>pt[ch]).map(ch=>{
+    const chPt=pt[ch];
+    return {label:ch,data:trendWeeks.map(w=>{let sum=0,cnt=0;Object.entries(chPt).forEach(([model,weeks])=>{if(activePTCats!==null&&!activePTCats.has(ptModelCat[model]||''))return;if(activePTComps!==null&&!activePTComps.has(ptModelComp[model]||''))return;if(activePTTypes!==null&&!activePTTypes.has(ptModelType[model]||''))return;if(activePTBtus!==null&&!activePTBtus.has(ptModelBtu[model]||''))return;const p=weeks[w];if(p&&p>0){sum+=p;cnt++}});return cnt>0?Math.round(sum/cnt):null}),borderColor:CH_COLORS[ch]||'#999',tension:.3,fill:false,borderWidth:2,pointRadius:3,spanGaps:true};
+  });
+  mk('cPtTrend','line',{labels:trendWeeks,datasets:chTrendData},{datalabels:DL_NONE,scales:{y:{beginAtZero:false}},plugins:{legend:{position:'top'}}});
+
+  const allPtModels=new Set();
+  activeChs.forEach(ch=>{if(pt[ch])Object.keys(pt[ch]).forEach(m=>allPtModels.add(m))});
+  const modelPrices=[...allPtModels].map(m=>{
+    const prices={};let sum=0,cnt=0;
+    activeChs.forEach(ch=>{
+      const p=(pt[ch]||{})[m]||{};
+      const lp=p[selectedW];
+      if(lp&&lp>0){prices[ch]=lp;sum+=lp;cnt++}
+    });
+    return {model:m,cat:ptModelCat[m]||'',comp:ptModelComp[m]||'',type:ptModelType[m]||'',btu:ptModelBtu[m]||'',prices:prices,avg:cnt>0?Math.round(sum/cnt):0};
+  }).filter(m=>m.avg>0&&(activePTCats===null||activePTCats.has(m.cat))&&(activePTComps===null||activePTComps.has(m.comp))&&(activePTTypes===null||activePTTypes.has(m.type))&&(activePTBtus===null||activePTBtus.has(m.btu))).sort((a,b)=>b.avg-a.avg);
+
+  document.getElementById('tblPtModel').innerHTML=modelPrices.slice(0,50).map(r=>{
+    const chCells=D.dims.channels.map(ch=>{
+      const p=r.prices[ch];
+      return '<td style="text-align:right">'+(p?'SAR '+p.toLocaleString():'-')+'</td>';
+    }).join('');
+    return '<tr><td class="mono" style="font-weight:600">'+r.model+'</td><td>'+r.cat+'</td>'+chCells+'<td style="text-align:right;font-weight:700">SAR '+r.avg.toLocaleString()+'</td></tr>';
+  }).join('');
+}
+
+// INIT
+update();
+
+</script>
+</body>
+</html>
