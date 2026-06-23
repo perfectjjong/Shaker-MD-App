@@ -280,6 +280,15 @@ function agg(year,months,cats){const mk=GPC_META.metric_keys;const o={};mk.forEa
 const fmt=v=>Math.round(v).toLocaleString();
 const pct=v=>(v*100).toFixed(1)+'%';
 const selYears=()=>[2024,2025,2026].filter(y=>S.years.has(y));
+// 선택 기간 중 해당 연도에 실제 데이터가 있는 범위 라벨 (2026 부분연도 정직 표기)
+function yearCoverLabel(year,months){
+  const avail=new Set(GPC_META.year_months[String(year)]||[]);
+  const cov=months.filter(m=>avail.has(m));
+  if(cov.length===0) return ' · 해당 없음';
+  if(cov.length===months.length) return '';
+  const mn=Math.min(...cov),mx=Math.max(...cov);
+  return mn===mx?` · ${mn}월`:` · ${mn}–${mx}월`;
+}
 const selPeriods=()=>periodValues(S.unit).filter(p=>S.periods.has(p));
 function destroy(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
 
@@ -353,7 +362,7 @@ function renderKpis(){
       yoy=`<div class="yoy ${d>=0?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}% <span style="font-weight:600;opacity:.7">vs ${yrs[i-1]}</span></div>`;}
     const el=document.createElement('div');el.className='kpi';
     el.innerHTML=`<div class="bar-c" style="background:${YCOL[y]}"></div>
-      <div class="yr">${y}${y===2026?' · 1–5월':''}</div>
+      <div class="yr">${y}${yearCoverLabel(y,months)}</div>
       <div class="big">${fmt(t.gross_margin)}</div>
       <div class="gmpct" style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]}">GM ${pct(t.gm_pct)}</div>
       <div class="sub"><span>Net <b>${fmt(t.net_sales)}</b></span><span>Gross <b>${fmt(t.gross_sale)}</b></span><span>할인 <b>${pct(t.disc_rate)}</b></span></div>
@@ -447,7 +456,7 @@ function catYearTable(tblId,cols){
   const cats=ALLCATS.filter(c=>S.cats.has(c));
   // 헤더 2단
   let grp='<tr class="grp"><th></th>';let sub='<tr class="sub"><th>카테고리</th>';
-  yrs.forEach((y,yi)=>{grp+=`<th colspan="${cols.length}" style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]}">${y}${y===2026?' (1–5월)':''}</th>`;
+  yrs.forEach((y,yi)=>{grp+=`<th colspan="${cols.length}" style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]}">${y}${yearCoverLabel(y,months)}</th>`;
     cols.forEach((c,ci)=>{sub+=`<th class="${ci===0&&yi>0?'ydiv':''}">${c.label}</th>`;});});
   grp+='</tr>';sub+='</tr>';
   // 바디
@@ -473,7 +482,7 @@ function erosionTable(){
   cols.forEach(c=>head+=`<th>${c[1]}</th>`);head+='<th>할인율</th></tr></thead>';
   let body='';
   yrs.forEach(y=>{const a=agg(y,months);
-    let tr=`<tr><td style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]};font-weight:800">${y}${y===2026?' (1–5월)':''}</td>`;
+    let tr=`<tr><td style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]};font-weight:800">${y}${yearCoverLabel(y,months)}</td>`;
     cols.forEach(c=>{const v=a[c[0]];const sub=c[2]&&a.gross_sale?` <span style="color:var(--mut);font-size:11px">${(v/a.gross_sale*100).toFixed(1)}%</span>`:'';
       tr+=`<td>${fmt(v)}${sub}</td>`;});
     tr+=`<td class="gmp">${pct(a.disc_rate)}</td>`;body+=tr+'</tr>';});
