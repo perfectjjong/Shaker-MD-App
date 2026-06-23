@@ -226,6 +226,10 @@
       <div class="h"><div><h3>지원금율(Support/Gross) 추이</h3><div class="hint">지원금이 줄면 Total COGS율↑(마진 악화) · 선택 기간 단위 · 3개년</div></div></div>
       <div class="cbox"><canvas id="cSupport"></canvas></div>
     </div>
+    <div class="card">
+      <div class="h"><div><h3>월별 지원금 추이 (시즌성)</h3><div class="hint">1~12월 고정 · 연도별 · 사우디 여름 피크(7~8월) 지원금 공백 확인 · 카테고리 필터 연동</div></div></div>
+      <div class="cbox"><canvas id="cSupportM"></canvas></div>
+    </div>
   </section>
 
   <!-- 탭3 -->
@@ -570,9 +574,22 @@ function renderSupportTrend(){destroy('cSupport');
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  지원금율 ${c.parsed.y.toFixed(2)}%`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
+// 월별 지원금 추이 (시즌성, 1-12월 고정, 카테고리 필터 연동)
+function renderSupportMonthly(){destroy('cSupportM');
+  const yrs=selYears();
+  const labels=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  const ds=yrs.map(y=>{const av=new Set(GPC_META.year_months[String(y)]||[]);const amts=[];
+    const data=Array.from({length:12},(_,i)=>{const m=i+1;if(!av.has(m)){amts.push(null);return null;}
+      const a=agg(y,[m]);amts.push(a.support);return a.gross_sale?a.support/a.gross_sale*100:0;});
+    return {label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointRadius:3,pointHoverRadius:5,tension:.3,borderWidth:2.5,fill:false,spanGaps:false,data,_amts:amts};});
+  charts.cSupportM=new Chart(cSupportM,{type:'line',data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(1)}%  (${fmt(c.dataset._amts[c.dataIndex])} 천 SAR)`}}},
+      scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
+
 function render(){renderKpis();
   if(S.tab==='profit'){catYearTable('tblProfit',[{key:'gross_sale',label:'Gross'},{key:'disc_total',label:'할인',rate:'gross_sale'},{key:'net_sales',label:'Net'},{key:'total_cogs',label:'COGS',rate:'gross_sale'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
-  else if(S.tab==='erosion'){erosionTable();supportTable();renderErosion();renderErosionTrend();renderSupportTrend();}
+  else if(S.tab==='erosion'){erosionTable();supportTable();renderErosion();renderErosionTrend();renderSupportTrend();renderSupportMonthly();}
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
 S.periods=new Set(periodValues(S.unit));
