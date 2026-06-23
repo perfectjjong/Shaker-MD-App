@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPC 손익 대시보드 | B2C 2024–2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<style>
+  :root{
+    --lg:#A50034; --lg2:#C00043; --ink:#1d1f23; --mut:#6b7280;
+    --line:#e5e7eb; --bg:#f5f6f8; --card:#ffffff;
+    --y24:#94a3b8; --y25:#3b82f6; --y26:#A50034;
+    --pos:#16a34a; --neg:#dc2626;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+  .wrap{max-width:1360px;margin:0 auto;padding:18px}
+  header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:4px}
+  header h1{font-size:22px;font-weight:800;color:var(--lg)}
+  header .sub{color:var(--mut);font-size:13px}
+  .note{font-size:12px;color:var(--mut);margin-bottom:14px}
+
+  /* 필터 바 */
+  .filters{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:16px;
+           box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .frow{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-start}
+  .fgrp{display:flex;flex-direction:column;gap:6px}
+  .fgrp>label{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;max-width:640px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font-size:12.5px;cursor:pointer;
+        user-select:none;transition:all .12s;white-space:nowrap}
+  .chip:hover{border-color:var(--lg)}
+  .chip.on{background:var(--lg);border-color:var(--lg);color:#fff;font-weight:600}
+  .chip.unit.on{background:var(--ink);border-color:var(--ink)}
+  .mini{font-size:11px;color:var(--lg);cursor:pointer;text-decoration:underline;margin-left:4px}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg .chip{border:0;border-radius:0;border-right:1px solid var(--line)}
+  .seg .chip:last-child{border-right:0}
+
+  /* 탭 */
+  .tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--line)}
+  .tab{padding:10px 18px;cursor:pointer;font-weight:600;color:var(--mut);border-bottom:3px solid transparent;margin-bottom:-2px}
+  .tab.on{color:var(--lg);border-bottom-color:var(--lg)}
+
+  /* KPI */
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .kpi .yr{font-size:12px;font-weight:700;color:var(--mut)}
+  .kpi .yr .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:middle}
+  .kpi .big{font-size:24px;font-weight:800;margin:6px 0 2px}
+  .kpi .gm{font-size:12.5px;color:var(--ink)}
+  .kpi .yoy{font-size:11.5px;margin-top:4px}
+  .up{color:var(--pos)} .down{color:var(--neg)}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  .panel h3{font-size:14px;margin-bottom:4px}
+  .panel .ph{font-size:12px;color:var(--mut);margin-bottom:12px}
+  .ph-row{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+  .chartbox{position:relative;height:340px}
+  .chartbox.tall{height:420px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:900px){.grid2{grid-template-columns:1fr}}
+  .hide{display:none!important}
+  footer{color:var(--mut);font-size:11px;text-align:center;padding:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>GPC 손익 대시보드</h1>
+    <span class="sub">B2C · 2024–2026 · 카테고리별 손익(Gross Profit Contribution)</span>
+  </header>
+  <div class="note" id="dataNote">단위: 원본 GPC 통합 엑셀 금액 그대로 · GM%·할인율은 선택 합산 후 가중 재계산 · 2026년은 1~5월(YTD)</div>
+
+  <!-- 필터 -->
+  <div class="filters">
+    <div class="frow">
+      <div class="fgrp">
+        <label>연도 <span class="mini" data-all="year">전체</span></label>
+        <div class="chips" id="fYear"></div>
+      </div>
+      <div class="fgrp">
+        <label>기간 단위</label>
+        <div class="seg" id="fUnit"></div>
+      </div>
+      <div class="fgrp">
+        <label>기간 <span class="mini" data-all="period">전체</span><span class="mini" data-none="period">해제</span></label>
+        <div class="chips" id="fPeriod"></div>
+      </div>
+      <div class="fgrp" style="flex:1;min-width:280px">
+        <label>카테고리 <span class="mini" data-all="cat">전체</span><span class="mini" data-none="cat">해제</span><span class="mini" data-prod="cat">제품만</span></label>
+        <div class="chips" id="fCat"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="tabs" id="tabs">
+    <div class="tab on" data-tab="profit">① 수익성</div>
+    <div class="tab" data-tab="erosion">② 마진 잠식</div>
+    <div class="tab" data-tab="category">③ 카테고리 기여</div>
+  </div>
+
+  <!-- KPI (연도별) -->
+  <div class="kpis" id="kpis"></div>
+
+  <!-- 탭1 수익성 -->
+  <section data-pane="profit">
+    <div class="panel">
+      <div class="ph-row">
+        <div><h3>3개년 비교</h3><div class="ph" id="mainPh">선택 기간 단위로 연도별 비교</div></div>
+        <div class="seg" id="metricSel"></div>
+      </div>
+      <div class="chartbox tall"><canvas id="cMain"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="ph-row">
+        <div><h3>손익 워터폴 (Gross Sale → Gross Margin)</h3><div class="ph">선택 기간·카테고리 합산</div></div>
+        <div class="seg" id="wfYear"></div>
+      </div>
+      <div class="chartbox"><canvas id="cWaterfall"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 탭2 마진잠식 -->
+  <section data-pane="erosion" class="hide">
+    <div class="panel">
+      <h3>할인 구조 (Gross Sale 대비 %)</h3>
+      <div class="ph">YED · Additional · VP · DSI 4종 할인이 매출을 갉아먹는 비중 (선택 연도별)</div>
+      <div class="chartbox tall"><canvas id="cErosion"></canvas></div>
+    </div>
+    <div class="panel">
+      <h3>총 할인율 추이 (3개년)</h3>
+      <div class="ph">총할인 ÷ Gross Sale, 선택 기간 단위</div>
+      <div class="chartbox"><canvas id="cErosionTrend"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 탭3 카테고리 -->
+  <section data-pane="category" class="hide">
+    <div class="grid2">
+      <div class="panel">
+        <h3>카테고리별 GM%</h3><div class="ph">선택 기간 합산, 연도별</div>
+        <div class="chartbox tall"><canvas id="cCatGm"></canvas></div>
+      </div>
+      <div class="panel">
+        <h3>매출 믹스 (Net Sales 비중)</h3><div class="ph" id="mixPh">선택 연도</div>
+        <div class="chartbox tall"><canvas id="cMix"></canvas></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h3>Gross Margin 기여액 (카테고리 분해)</h3><div class="ph">선택 기간 합산, 연도별 GM 금액</div>
+      <div class="chartbox"><canvas id="cCatGmAmt"></canvas></div>
+    </div>
+  </section>
+
+  <footer>GPC Dashboard · build_gpc_dashboard.py 자동생성 데이터 · 상세=월Total 정합 검증 완료</footer>
+</div>
+
+<script src="gpc_data.js"></script>
+<script>
+Chart.register(ChartDataLabels);
+Chart.defaults.font.family = "'Segoe UI','Malgun Gothic',sans-serif";
+Chart.defaults.plugins.datalabels.display = false;
+
+const YCOL = {2024:'#94a3b8',2025:'#3b82f6',2026:'#A50034'};
+const UNITS = [['month','월'],['quarter','분기'],['half','반기'],['year','연간']];
+const METRICS = [['gm_pct','GM%'],['gross_margin','Gross Margin'],['net_sales','Net Sales'],['gross_sale','Gross Sale']];
+
+// 상태
+const S = {
+  years:new Set([2024,2025,2026]),
+  unit:'month',
+  periods:new Set(),          // 선택된 기간 값 (unit에 따라 1..12 / Q1.. / H1.. / Y)
+  cats:new Set(GPC_META.product_cats.concat(GPC_META.adj_cats)),
+  metric:'gm_pct',
+  wfYear:2025,
+  tab:'profit',
+};
+const charts = {};
+
+// ── 기간 유틸 ──
+function periodValues(unit){
+  if(unit==='month') return [1,2,3,4,5,6,7,8,9,10,11,12];
+  if(unit==='quarter') return ['Q1','Q2','Q3','Q4'];
+  if(unit==='half') return ['H1','H2'];
+  return ['Y'];
+}
+function periodLabel(unit,p){
+  if(unit==='month') return p+'월';
+  return p;
+}
+function monthsOf(unit,p){
+  if(unit==='month') return [p];
+  if(unit==='quarter'){const q=+p[1];return [q*3-2,q*3-1,q*3];}
+  if(unit==='half') return p==='H1'?[1,2,3,4,5,6]:[7,8,9,10,11,12];
+  return [1,2,3,4,5,6,7,8,9,10,11,12];
+}
+
+// ── 집계: 주어진 year + months[] + 선택 카테고리 → 금액 합 ──
+function agg(year, months){
+  const o={}; GPC_META.metric_keys.forEach(k=>o[k]=0);
+  const mset=new Set(months);
+  for(const r of GPC_DATA){
+    if(r.year!==year) continue;
+    if(!mset.has(r.month)) continue;
+    if(!S.cats.has(r.category)) continue;
+    for(const k of GPC_META.metric_keys) o[k]+=r[k];
+  }
+  o.gm_pct = o.net_sales ? o.gross_margin/o.net_sales : 0;
+  o.disc_total = o.yed+o.add_disc+o.vp_disc+o.dsi;
+  o.disc_rate = o.gross_sale ? o.disc_total/o.gross_sale : 0;
+  return o;
+}
+function fmt(v){return Math.round(v).toLocaleString();}
+function pct(v){return (v*100).toFixed(1)+'%';}
+
+// ── 필터 UI 빌드 ──
+function buildFilters(){
+  const fy=document.getElementById('fYear'); fy.innerHTML='';
+  [2024,2025,2026].forEach(y=>{
+    const c=mkChip(y, S.years.has(y));
+    c.onclick=()=>{toggle(S.years,y,c); render();};
+    fy.appendChild(c);
+  });
+  const fu=document.getElementById('fUnit'); fu.innerHTML='';
+  UNITS.forEach(([v,lab])=>{
+    const c=mkChip(lab, S.unit===v); c.classList.add('unit');
+    c.onclick=()=>{S.unit=v; S.periods=new Set(periodValues(v)); buildPeriods(); fu.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); render();};
+    fu.appendChild(c);
+  });
+  buildPeriods();
+  const fc=document.getElementById('fCat'); fc.innerHTML='';
+  GPC_META.product_cats.concat(GPC_META.adj_cats).forEach(cat=>{
+    const c=mkChip(cat, S.cats.has(cat));
+    if(GPC_META.adj_cats.includes(cat)) c.style.opacity=.85;
+    c.onclick=()=>{toggle(S.cats,cat,c); render();};
+    fc.appendChild(c);
+  });
+  const mr=document.getElementById('metricSel'); mr.innerHTML='';
+  METRICS.forEach(([v,lab])=>{
+    const c=mkChip(lab, S.metric===v);
+    c.onclick=()=>{S.metric=v; mr.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); render();};
+    mr.appendChild(c);
+  });
+  const wy=document.getElementById('wfYear'); wy.innerHTML='';
+  [2024,2025,2026].forEach(y=>{
+    const c=mkChip(y, S.wfYear===y);
+    c.onclick=()=>{S.wfYear=y; wy.querySelectorAll('.chip').forEach(x=>x.classList.remove('on')); c.classList.add('on'); render();};
+    wy.appendChild(c);
+  });
+}
+function buildPeriods(){
+  const fp=document.getElementById('fPeriod'); fp.innerHTML='';
+  periodValues(S.unit).forEach(p=>{
+    const c=mkChip(periodLabel(S.unit,p), S.periods.has(p));
+    c.onclick=()=>{toggle(S.periods,p,c); render();};
+    fp.appendChild(c);
+  });
+}
+function mkChip(txt,on){const d=document.createElement('div');d.className='chip'+(on?' on':'');d.textContent=txt;return d;}
+function toggle(set,val,el){if(set.has(val)){set.delete(val);el.classList.remove('on');}else{set.add(val);el.classList.add('on');}}
+
+// 단축 버튼
+document.querySelectorAll('.mini').forEach(m=>{
+  m.onclick=()=>{
+    if(m.dataset.all==='year'){S.years=new Set([2024,2025,2026]);}
+    if(m.dataset.all==='period'){S.periods=new Set(periodValues(S.unit));}
+    if(m.dataset.none==='period'){S.periods=new Set();}
+    if(m.dataset.all==='cat'){S.cats=new Set(GPC_META.product_cats.concat(GPC_META.adj_cats));}
+    if(m.dataset.none==='cat'){S.cats=new Set();}
+    if(m.dataset.prod==='cat'){S.cats=new Set(GPC_META.product_cats);}
+    buildFilters(); render();
+  };
+});
+
+// 탭
+document.querySelectorAll('.tab').forEach(t=>{
+  t.onclick=()=>{
+    S.tab=t.dataset.tab;
+    document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===t));
+    document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==S.tab));
+    render(); // 숨김탭 차트 0x0 방지: 표시 후 재렌더
+  };
+});
+
+function destroy(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+function selYears(){return [2024,2025,2026].filter(y=>S.years.has(y));}
+function selPeriods(){return periodValues(S.unit).filter(p=>S.periods.has(p));}
+
+// ── KPI ──
+function renderKpis(){
+  const box=document.getElementById('kpis'); box.innerHTML='';
+  const yrs=selYears(), periods=selPeriods();
+  const allMonths=periods.flatMap(p=>monthsOf(S.unit,p));
+  const totals={};
+  yrs.forEach(y=>{ totals[y]=agg(y, allMonths); });
+  yrs.forEach((y,i)=>{
+    const t=totals[y]; const prev=yrs[i-1]?totals[yrs[i-1]]:null;
+    let yoy='';
+    if(prev && prev.gross_margin){
+      const d=(t.gross_margin-prev.gross_margin)/Math.abs(prev.gross_margin)*100;
+      yoy=`<div class="yoy ${d>=0?'up':'down'}">GM ${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}% vs ${yrs[i-1]}</div>`;
+    }
+    const el=document.createElement('div'); el.className='kpi';
+    el.innerHTML=`<div class="yr"><span class="dot" style="background:${YCOL[y]}"></span>${y}${y===2026?' (1~5월)':''}</div>
+      <div class="big">${fmt(t.gross_margin)}</div>
+      <div class="gm">GM% <b>${pct(t.gm_pct)}</b> · NS ${fmt(t.net_sales)}</div>
+      <div class="gm" style="color:var(--mut)">Gross ${fmt(t.gross_sale)} · 할인율 ${pct(t.disc_rate)}</div>
+      ${yoy}`;
+    box.appendChild(el);
+  });
+}
+
+// ── 탭1: 메인 비교차트 ──
+function renderMain(){
+  destroy('cMain');
+  const yrs=selYears(), periods=selPeriods();
+  const labels=periods.map(p=>periodLabel(S.unit,p));
+  const isPct = S.metric==='gm_pct';
+  const ds=yrs.map(y=>({
+    label:''+y,
+    data:periods.map(p=>{const a=agg(y,monthsOf(S.unit,p)); return isPct?a.gm_pct*100:a[S.metric];}),
+    backgroundColor:YCOL[y], borderColor:YCOL[y], borderWidth:0,
+  }));
+  document.getElementById('mainPh').textContent =
+    `${UNITS.find(u=>u[0]===S.unit)[1]} 단위 · ${METRICS.find(m=>m[0]===S.metric)[1]} · ${yrs.join('/')} 비교`;
+  charts.cMain=new Chart(document.getElementById('cMain'),{
+    type:'bar',
+    data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${isPct?c.parsed.y.toFixed(1)+'%':fmt(c.parsed.y)}`}}},
+      scales:{y:{ticks:{callback:v=>isPct?v+'%':v.toLocaleString()}}}}
+  });
+}
+
+// ── 탭1: 워터폴 ──
+function renderWaterfall(){
+  destroy('cWaterfall');
+  const periods=selPeriods(); const months=periods.flatMap(p=>monthsOf(S.unit,p));
+  const a=agg(S.wfYear,months);
+  const steps=[
+    ['Gross Sale',a.gross_sale,'base'],
+    ['YED',-a.yed,'cut'],['Additional',-a.add_disc,'cut'],['VP',-a.vp_disc,'cut'],['DSI',-a.dsi,'cut'],
+    ['Net Sales',null,'sub'],
+    ['Total COGS',-a.total_cogs,'cut'],
+    ['Gross Margin',null,'sub'],
+  ];
+  const labels=[],floats=[],colors=[]; let run=0;
+  for(const [lab,val,type] of steps){
+    if(type==='base'){labels.push(lab);floats.push([0,val]);colors.push('#64748b');run=val;}
+    else if(type==='cut'){labels.push(lab);floats.push([run+val,run]);colors.push('#dc2626');run+=val;}
+    else{labels.push(lab);floats.push([0,run]);colors.push(lab==='Gross Margin'?'#16a34a':'#0ea5e9');}
+  }
+  charts.cWaterfall=new Chart(document.getElementById('cWaterfall'),{
+    type:'bar',
+    data:{labels,datasets:[{data:floats,backgroundColor:colors}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{label:c=>{const v=c.raw;return fmt(Math.abs(v[1]-v[0]));}}}},
+      scales:{y:{ticks:{callback:v=>v.toLocaleString()}}}}
+  });
+}
+
+// ── 탭2: 할인 구조 stacked ──
+function renderErosion(){
+  destroy('cErosion');
+  const yrs=selYears(), periods=selPeriods();
+  const discKeys=[['yed','YED','#f97316'],['add_disc','Additional','#eab308'],['vp_disc','VP','#06b6d4'],['dsi','DSI','#8b5cf6']];
+  // X축 = 연도×기간 (그룹). 단순화: 연도별 stacked, 기간은 합산
+  const months=periods.flatMap(p=>monthsOf(S.unit,p));
+  const labels=yrs.map(y=>''+y);
+  const ds=discKeys.map(([k,lab,col])=>({
+    label:lab, backgroundColor:col,
+    data:yrs.map(y=>{const a=agg(y,months); return a.gross_sale? a[k]/a.gross_sale*100:0;}),
+  }));
+  charts.cErosion=new Chart(document.getElementById('cErosion'),{
+    type:'bar',
+    data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},
+      scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>v+'%'}}}}
+  });
+}
+function renderErosionTrend(){
+  destroy('cErosionTrend');
+  const yrs=selYears(), periods=selPeriods();
+  const labels=periods.map(p=>periodLabel(S.unit,p));
+  const ds=yrs.map(y=>({
+    label:''+y, borderColor:YCOL[y], backgroundColor:YCOL[y], tension:.3, fill:false,
+    data:periods.map(p=>{const a=agg(y,monthsOf(S.unit,p)); return a.disc_rate*100;}),
+  }));
+  charts.cErosionTrend=new Chart(document.getElementById('cErosionTrend'),{
+    type:'line', data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y.toFixed(2)}%`}}},
+      scales:{y:{ticks:{callback:v=>v+'%'}}}}
+  });
+}
+
+// ── 탭3: 카테고리 ──
+function catAgg(year, months, cat){
+  const o={}; GPC_META.metric_keys.forEach(k=>o[k]=0); const mset=new Set(months);
+  for(const r of GPC_DATA){if(r.year!==year||r.category!==cat||!mset.has(r.month))continue;
+    for(const k of GPC_META.metric_keys)o[k]+=r[k];}
+  return o;
+}
+function renderCatGm(){
+  destroy('cCatGm');
+  const yrs=selYears(), months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
+  const cats=GPC_META.product_cats.filter(c=>S.cats.has(c));
+  const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],
+    data:cats.map(c=>{const a=catAgg(y,months,c);return a.net_sales?a.gross_margin/a.net_sales*100:0;})}));
+  charts.cCatGm=new Chart(document.getElementById('cCatGm'),{
+    type:'bar', data:{labels:cats,datasets:ds},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.x.toFixed(1)}%`}}},
+      scales:{x:{ticks:{callback:v=>v+'%'}}}}
+  });
+}
+function renderMix(){
+  destroy('cMix');
+  const y=selYears().includes(S.wfYear)?S.wfYear:selYears()[selYears().length-1];
+  document.getElementById('mixPh').textContent=`${y}년 · Net Sales 비중`;
+  const months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
+  const cats=GPC_META.product_cats.filter(c=>S.cats.has(c));
+  const vals=cats.map(c=>{const a=catAgg(y,months,c);return Math.max(a.net_sales,0);});
+  const palette=['#A50034','#3b82f6','#16a34a','#f97316','#8b5cf6','#06b6d4','#eab308','#ec4899','#64748b','#14b8a6'];
+  charts.cMix=new Chart(document.getElementById('cMix'),{
+    type:'doughnut', data:{labels:cats,datasets:[{data:vals,backgroundColor:palette}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'right',labels:{boxWidth:12,font:{size:11}}},
+        tooltip:{callbacks:{label:c=>`${c.label}: ${fmt(c.parsed)}`}}}}
+  });
+}
+function renderCatGmAmt(){
+  destroy('cCatGmAmt');
+  const yrs=selYears(), months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
+  const cats=GPC_META.product_cats.filter(c=>S.cats.has(c));
+  const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],
+    data:cats.map(c=>catAgg(y,months,c).gross_margin)}));
+  charts.cCatGmAmt=new Chart(document.getElementById('cCatGmAmt'),{
+    type:'bar', data:{labels:cats,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${fmt(c.parsed.y)}`}}},
+      scales:{y:{ticks:{callback:v=>v.toLocaleString()}}}}
+  });
+}
+
+// ── 마스터 렌더 ──
+function render(){
+  renderKpis();
+  if(S.tab==='profit'){renderMain();renderWaterfall();}
+  else if(S.tab==='erosion'){renderErosion();renderErosionTrend();}
+  else if(S.tab==='category'){renderCatGm();renderMix();renderCatGmAmt();}
+}
+
+// init
+S.periods=new Set(periodValues(S.unit));
+buildFilters();
+render();
+</script>
+</body>
+</html>
