@@ -146,7 +146,7 @@
     </div>
     <div class="meta">
       <div>대상 기간 <b>2024 – 2026</b> <span style="color:var(--lg)">(2026 = 1–5월 YTD)</span></div>
-      <div>금액 단위: <b id="unitLbl">천 SAR</b> · 비율(%)은 가중 재계산</div>
+      <div>금액 단위: <b id="unitLbl">천 SAR</b> · 할인율·<b>COGS율 = Gross Sale 대비</b>, GM% = Net Sale 대비 · 가중 재계산</div>
     </div>
   </div>
 
@@ -285,7 +285,7 @@ function agg(year,months,cats){const mk=GPC_META.metric_keys;const o={};mk.forEa
   for(const r of GPC_DATA){if(r.year!==year||!ms.has(r.month)||!cs.has(r.category))continue;for(const k of mk)o[k]+=r[k];}
   o.gm_pct=o.net_sales?o.gross_margin/o.net_sales:0;
   o.disc_total=o.yed+o.add_disc+o.vp_disc+o.dsi;o.disc_rate=o.gross_sale?o.disc_total/o.gross_sale:0;
-  o.cogs_rate=o.net_sales?o.total_cogs/o.net_sales:0;return o;}
+  o.cogs_rate=o.gross_sale?o.total_cogs/o.gross_sale:0;return o;}
 const fmt=v=>Math.round(v).toLocaleString();
 const pct=v=>(v*100).toFixed(1)+'%';
 const selYears=()=>[2024,2025,2026].filter(y=>S.years.has(y));
@@ -514,7 +514,7 @@ function waterfallTable(){
   yrs.forEach(y=>{const a=agg(y,months);
     let tr=`<tr><td style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]};font-weight:800">${y}${yearCoverLabel(y,months)}</td>`;
     cols.forEach(c=>{let extra='';
-      if(c[0]==='total_cogs'&&a.net_sales)extra=`<span class="rt">${(a.total_cogs/a.net_sales*100).toFixed(1)}%</span>`;
+      if(c[0]==='total_cogs'&&a.gross_sale)extra=`<span class="rt">${(a.total_cogs/a.gross_sale*100).toFixed(1)}%</span>`;
       tr+=`<td class="${a[c[0]]<0?'neg':''}">${fmt(a[c[0]])}${extra}</td>`;});
     tr+=`<td class="gmp">${pct(a.gm_pct)}</td>`;body+=tr+'</tr>';});
   tbl.innerHTML=head+`<tbody>${body}</tbody>`;
@@ -536,7 +536,7 @@ function erosionTable(){
 }
 
 function render(){renderKpis();
-  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'gross_sale',label:'Gross'},{key:'disc_total',label:'할인',rate:'gross_sale'},{key:'net_sales',label:'Net'},{key:'total_cogs',label:'COGS',rate:'net_sales'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
+  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'gross_sale',label:'Gross'},{key:'disc_total',label:'할인',rate:'gross_sale'},{key:'net_sales',label:'Net'},{key:'total_cogs',label:'COGS',rate:'gross_sale'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
   else if(S.tab==='erosion'){erosionTable();renderErosion();renderErosionTrend();}
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
