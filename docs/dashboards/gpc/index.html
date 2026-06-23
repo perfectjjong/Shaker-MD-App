@@ -357,7 +357,9 @@ document.querySelectorAll('.bar .txtbtn[data-all],.bar .txtbtn[data-none]').forE
 // 탭
 document.querySelectorAll('.tabs button').forEach(t=>t.onclick=()=>{S.tab=t.dataset.tab;
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===t));
-  document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==S.tab));render();});
+  document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==S.tab));
+  void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth; // 강제 레이아웃 후 정상 폭으로 렌더
+  render();});
 
 // ── KPI ──
 function renderKpis(){
@@ -421,11 +423,12 @@ function renderErosion(){destroy('cErosion');
 
 function renderErosionTrend(){destroy('cErosionTrend');
   const yrs=selYears(),periods=selPeriods();
-  const ds=yrs.map(y=>({label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointRadius:3,pointHoverRadius:5,tension:.32,borderWidth:2.5,fill:false,
-    data:periods.map(p=>agg(y,monthsOf(S.unit,p)).disc_rate*100)}));
+  const ds=yrs.map(y=>({label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointRadius:3,pointHoverRadius:5,tension:.32,borderWidth:2.5,fill:false,spanGaps:false,
+    data:periods.map(p=>{const mm=monthsOf(S.unit,p);const av=new Set(GPC_META.year_months[String(y)]||[]);
+      return mm.some(m=>av.has(m))?agg(y,mm).disc_rate*100:null;})}));
   charts.cErosionTrend=new Chart(cErosionTrend,{type:'line',data:{labels:periods.map(p=>periodLabel(S.unit,p)),datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      datalabels:{display:true,anchor:'end',align:'top',offset:4,font:DLF,color:'#5b626e',formatter:v=>v?v.toFixed(1)+'%':''},
+      datalabels:{display:false},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(2)}%`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
@@ -438,7 +441,7 @@ function renderCatGm(){destroy('cCatGm');
     data:cats.map(c=>{const a=catAgg(y,months,c);return a.net_sales?a.gross_margin/a.net_sales*100:0;})}));
   charts.cCatGm=new Chart(cCatGm,{type:'bar',data:{labels:cats,datasets:ds},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      datalabels:dlPctH,
+      datalabels:{display:false},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.x.toFixed(1)}%`}}},
       scales:{x:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});}
 function renderMix(){destroy('cMix');
@@ -461,13 +464,15 @@ function renderCatGmAmt(){destroy('cCatGmAmt');
     data:cats.map(c=>catAgg(y,months,c).gross_margin)}));
   charts.cCatGmAmt=new Chart(cCatGmAmt,{type:'bar',data:{labels:cats,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      datalabels:{display:true,anchor:'end',align:'end',clamp:true,rotation:-90,font:{size:8,weight:'700'},color:'#5b626e',formatter:v=>v?Math.round(v).toLocaleString():''},
+      datalabels:{display:false},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${fmt(c.parsed.y)} 천 SAR`}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:10.5}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
 // ── 데이터 테이블 (주력) ──
 function catVal(y,months,cat,key){const a=catAgg(y,months,cat);
-  return key==='gm_pct'?(a.net_sales?a.gross_margin/a.net_sales:0):a[key];}
+  if(key==='gm_pct')return a.net_sales?a.gross_margin/a.net_sales:0;
+  if(key==='disc_total')return a.yed+a.add_disc+a.vp_disc+a.dsi;
+  return a[key];}
 function fmtCell(v,isPct){return isPct?(v*100).toFixed(1)+'%':fmt(v);}
 function catYearTable(tblId,cols){
   const tbl=document.getElementById(tblId);if(!tbl)return;
@@ -523,7 +528,7 @@ function erosionTable(){
 }
 
 function render(){renderKpis();
-  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'net_sales',label:'Net Sales'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
+  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'gross_sale',label:'Gross'},{key:'disc_total',label:'할인'},{key:'net_sales',label:'Net'},{key:'total_cogs',label:'COGS'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
   else if(S.tab==='erosion'){erosionTable();renderErosion();renderErosionTrend();}
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
