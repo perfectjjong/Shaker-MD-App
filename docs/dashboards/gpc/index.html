@@ -218,6 +218,14 @@
       <div class="h"><div><h3>총 할인율 추이</h3><div class="hint">총할인 ÷ Gross Sale · 선택 기간 단위 · 3개년</div></div></div>
       <div class="cbox"><canvas id="cErosionTrend"></canvas></div>
     </div>
+    <div class="card">
+      <div class="h"><div><h3>지원금(Support) & 원가 분해표</h3><div class="hint">LG 본사 지원금(원가 보전) · Total COGS = 순제품원가 − Support + 재고 · 금액 천 SAR · Gross 대비</div></div></div>
+      <div class="tblwrap"><table class="tbl" id="tblSupport"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><div><h3>지원금율(Support/Gross) 추이</h3><div class="hint">지원금이 줄면 Total COGS율↑(마진 악화) · 선택 기간 단위 · 3개년</div></div></div>
+      <div class="cbox"><canvas id="cSupport"></canvas></div>
+    </div>
   </section>
 
   <!-- 탭3 -->
@@ -535,9 +543,35 @@ function erosionTable(){
   tbl.innerHTML=head+`<tbody>${body}</tbody>`;
 }
 
+// 지원금(Support) & 원가 분해표
+function supportTable(){
+  const tbl=document.getElementById('tblSupport');if(!tbl)return;
+  const yrs=selYears(),months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
+  let head='<thead><tr class="sub"><th>연도</th><th>Support 금액</th><th>지원금율</th><th>순제품원가율</th><th>재고</th><th>Total COGS율</th></tr></thead>';
+  let body='';
+  yrs.forEach(y=>{const a=agg(y,months);const g=a.gross_sale||1;
+    let tr=`<tr><td style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]};font-weight:800">${y}${yearCoverLabel(y,months)}</td>`;
+    tr+=`<td>${fmt(a.support)}</td>`;
+    tr+=`<td class="gmp">${(a.support/g*100).toFixed(1)}%</td>`;
+    tr+=`<td>${(a.cogs/g*100).toFixed(1)}%</td>`;
+    tr+=`<td>${fmt(a.inventory)}</td>`;
+    tr+=`<td class="gmp">${(a.total_cogs/g*100).toFixed(1)}%</td>`;
+    body+=tr+'</tr>';});
+  tbl.innerHTML=head+`<tbody>${body}</tbody>`;
+}
+function renderSupportTrend(){destroy('cSupport');
+  const yrs=selYears(),periods=selPeriods();
+  const ds=yrs.map(y=>({label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointRadius:3,pointHoverRadius:5,tension:.32,borderWidth:2.5,fill:false,spanGaps:false,
+    data:periods.map(p=>{const mm=monthsOf(S.unit,p);const av=new Set(GPC_META.year_months[String(y)]||[]);
+      return mm.some(m=>av.has(m))?(()=>{const a=agg(y,mm);return a.gross_sale?a.support/a.gross_sale*100:0;})():null;})}));
+  charts.cSupport=new Chart(cSupport,{type:'line',data:{labels:periods.map(p=>periodLabel(S.unit,p)),datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  지원금율 ${c.parsed.y.toFixed(2)}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
+
 function render(){renderKpis();
   if(S.tab==='profit'){catYearTable('tblProfit',[{key:'gross_sale',label:'Gross'},{key:'disc_total',label:'할인',rate:'gross_sale'},{key:'net_sales',label:'Net'},{key:'total_cogs',label:'COGS',rate:'gross_sale'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
-  else if(S.tab==='erosion'){erosionTable();renderErosion();renderErosionTrend();}
+  else if(S.tab==='erosion'){erosionTable();supportTable();renderErosion();renderErosionTrend();renderSupportTrend();}
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
 S.periods=new Set(periodValues(S.unit));
