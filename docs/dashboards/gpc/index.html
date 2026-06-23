@@ -195,9 +195,10 @@
     </div>
     <div class="card">
       <div class="h">
-        <div><h3>손익 워터폴</h3><div class="hint">Gross Sale → 할인 → Net Sales → COGS → Gross Margin · 선택 기간·카테고리 합산</div></div>
+        <div><h3>손익 워터폴</h3><div class="hint">Gross Sale → 할인 4종 → Net Sales → COGS → Gross Margin · 선택 기간·카테고리 합산 · 금액 천 SAR<br>표 = 선택 연도 전체 비교 / 차트 = 단일 연도(우측 선택)</div></div>
         <div class="seg dark" id="wfYear"></div>
       </div>
+      <div class="tblwrap" style="margin-bottom:18px"><table class="tbl" id="tblWaterfall"></table></div>
       <div class="cbox"><canvas id="cWaterfall"></canvas></div>
     </div>
   </section>
@@ -259,6 +260,11 @@ const YCOL={2024:'#c3cad6',2025:'#3a4654',2026:'#A50034'};
 const UNITS=[['month','월'],['quarter','분기'],['half','반기'],['year','연간']];
 const METRICS=[['gm_pct','GM%'],['gross_margin','Gross Margin'],['net_sales','Net Sales'],['gross_sale','Gross Sale']];
 const GRID={color:'#f2f3f5'};
+const DLF={size:9,weight:'700'};
+// 수치 라벨 헬퍼
+const dlAmt={display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5b626e',formatter:v=>v?Math.round(v).toLocaleString():''};
+const dlAmtH={display:true,anchor:'end',align:'right',clamp:true,font:{size:8,weight:'700'},color:'#5b626e',formatter:v=>v?Math.round(v).toLocaleString():''};
+const dlPctH={display:true,anchor:'end',align:'right',clamp:true,font:DLF,color:'#5b626e',formatter:v=>v?v.toFixed(1)+'%':''};
 
 const ALLCATS=GPC_META.product_cats.concat(GPC_META.adj_cats);
 const S={years:new Set([2024,2025,2026]),unit:'quarter',periods:new Set(),
@@ -380,7 +386,10 @@ function renderMain(){destroy('cMain');
   document.getElementById('mainHint').textContent=`${UNITS.find(u=>u[0]===S.unit)[1]} 단위 · ${METRICS.find(m=>m[0]===S.metric)[1]} · ${yrs.join(' / ')}`;
   charts.cMain=new Chart(cMain,{type:'bar',data:{labels,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'top',align:'end'},tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':fmt(c.parsed.y)+' 천 SAR'}`}}},
+      plugins:{legend:{position:'top',align:'end'},
+        datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5b626e',
+          formatter:v=>!v?'':(isPct?v.toFixed(1)+'%':Math.round(v).toLocaleString())},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':fmt(c.parsed.y)+' 천 SAR'}`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>isPct?v+'%':v.toLocaleString()}}}}});}
 
 function renderWaterfall(){destroy('cWaterfall');
@@ -393,6 +402,8 @@ function renderWaterfall(){destroy('cWaterfall');
     else{labels.push(lab);floats.push([0,run]);colors.push(lab==='Gross Margin'?'#A50034':'#3a4654');}}
   charts.cWaterfall=new Chart(cWaterfall,{type:'bar',data:{labels,datasets:[{data:floats,backgroundColor:colors,borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+      datalabels:{display:true,anchor:'end',align:'top',clamp:true,font:DLF,color:'#5b626e',
+        formatter:v=>{const d=Math.abs(v[1]-v[0]);return d?Math.round(d).toLocaleString():'';}},
       tooltip:{callbacks:{label:c=>fmt(Math.abs(c.raw[1]-c.raw[0]))+' 천 SAR'}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
@@ -403,6 +414,8 @@ function renderErosion(){destroy('cErosion');
     data:yrs.map(y=>{const a=agg(y,months);return a.gross_sale?a[k]/a.gross_sale*100:0;})}));
   charts.cErosion=new Chart(cErosion,{type:'bar',data:{labels:yrs.map(y=>''+y),datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:true,anchor:'center',align:'center',font:DLF,color:'#fff',
+        formatter:v=>v>1.5?v.toFixed(1)+'%':''},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(2)}%`}}},
       scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
@@ -412,6 +425,7 @@ function renderErosionTrend(){destroy('cErosionTrend');
     data:periods.map(p=>agg(y,monthsOf(S.unit,p)).disc_rate*100)}));
   charts.cErosionTrend=new Chart(cErosionTrend,{type:'line',data:{labels:periods.map(p=>periodLabel(S.unit,p)),datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:true,anchor:'end',align:'top',offset:4,font:DLF,color:'#5b626e',formatter:v=>v?v.toFixed(1)+'%':''},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(2)}%`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
@@ -424,6 +438,7 @@ function renderCatGm(){destroy('cCatGm');
     data:cats.map(c=>{const a=catAgg(y,months,c);return a.net_sales?a.gross_margin/a.net_sales*100:0;})}));
   charts.cCatGm=new Chart(cCatGm,{type:'bar',data:{labels:cats,datasets:ds},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:dlPctH,
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.x.toFixed(1)}%`}}},
       scales:{x:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});}
 function renderMix(){destroy('cMix');
@@ -436,6 +451,8 @@ function renderMix(){destroy('cMix');
   charts.cMix=new Chart(cMix,{type:'doughnut',data:{labels:cats,datasets:[{data:vals,backgroundColor:pal,borderWidth:2,borderColor:'#fff'}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
       plugins:{legend:{position:'right',labels:{boxWidth:8,font:{size:11},padding:9}},
+        datalabels:{display:true,font:{size:10,weight:'700'},color:'#fff',
+          formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t&&v/t>0.04?(v/t*100).toFixed(0)+'%':'';}},
         tooltip:{callbacks:{label:c=>`${c.label}  ${fmt(c.parsed)} 천 SAR`}}}}});}
 function renderCatGmAmt(){destroy('cCatGmAmt');
   const yrs=selYears(),months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
@@ -444,6 +461,7 @@ function renderCatGmAmt(){destroy('cCatGmAmt');
     data:cats.map(c=>catAgg(y,months,c).gross_margin)}));
   charts.cCatGmAmt=new Chart(cCatGmAmt,{type:'bar',data:{labels:cats,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:true,anchor:'end',align:'end',clamp:true,rotation:-90,font:{size:8,weight:'700'},color:'#5b626e',formatter:v=>v?Math.round(v).toLocaleString():''},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${fmt(c.parsed.y)} 천 SAR`}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:10.5}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
@@ -474,6 +492,20 @@ function catYearTable(tblId,cols){
   body+=tr+'</tr>';
   tbl.innerHTML=`<thead>${grp}${sub}</thead><tbody>${body}</tbody>`;
 }
+function waterfallTable(){
+  const tbl=document.getElementById('tblWaterfall');if(!tbl)return;
+  const yrs=selYears(),months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
+  const cols=[['gross_sale','Gross Sale'],['yed','YED'],['add_disc','Additional'],['vp_disc','VP'],
+    ['dsi','DSI'],['net_sales','Net Sales'],['total_cogs','Total COGS'],['gross_margin','Gross Margin']];
+  let head='<thead><tr class="sub"><th>연도</th>';
+  cols.forEach(c=>head+=`<th>${c[1]}</th>`);head+='<th>GM%</th></tr></thead>';
+  let body='';
+  yrs.forEach(y=>{const a=agg(y,months);
+    let tr=`<tr><td style="color:${YCOL[y]==='#c3cad6'?'var(--ink2)':YCOL[y]};font-weight:800">${y}${yearCoverLabel(y,months)}</td>`;
+    cols.forEach(c=>tr+=`<td class="${a[c[0]]<0?'neg':''}">${fmt(a[c[0]])}</td>`);
+    tr+=`<td class="gmp">${pct(a.gm_pct)}</td>`;body+=tr+'</tr>';});
+  tbl.innerHTML=head+`<tbody>${body}</tbody>`;
+}
 function erosionTable(){
   const tbl=document.getElementById('tblErosion');if(!tbl)return;
   const yrs=selYears(),months=selPeriods().flatMap(p=>monthsOf(S.unit,p));
@@ -491,7 +523,7 @@ function erosionTable(){
 }
 
 function render(){renderKpis();
-  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'net_sales',label:'Net Sales'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderMain();renderWaterfall();}
+  if(S.tab==='profit'){catYearTable('tblProfit',[{key:'net_sales',label:'Net Sales'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);waterfallTable();renderMain();renderWaterfall();}
   else if(S.tab==='erosion'){erosionTable();renderErosion();renderErosionTrend();}
   else{catYearTable('tblCat',[{key:'gross_sale',label:'Gross'},{key:'net_sales',label:'Net'},{key:'gross_margin',label:'GM'},{key:'gm_pct',label:'GM%',isPct:1}]);renderCatGm();renderMix();renderCatGmAmt();}}
 
