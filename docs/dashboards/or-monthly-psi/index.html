@@ -102,8 +102,8 @@ tr:hover td{background:#f8fafc}
   <span class="fl">Period</span>
   <button class="fb" data-range="Q1">Q1</button>
   <button class="fb" data-range="Q2">Q2</button>
-  <button class="fb on" data-range="Jan-May">Jan–May</button>
-  <button class="fb" data-range="H1">H1</button>
+  <button class="fb" data-range="Jan-May">Jan–May</button>
+  <button class="fb on" data-range="H1">H1</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
@@ -265,8 +265,9 @@ tr:hover td{background:#f8fafc}
     <div class="ct">Year × Metric Availability</div>
     <div id="coverageTable"></div>
     <div class="note">
-      Source: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2025/2026 OR Weekly _ALL JSON<br>
-      2023 S = SWS→S&amp;S mapping, 2023 Stock = Ch.Stock (month-end)
+      Source: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2026 S/I = 5채널 Monthly Raw · P = SAP raw(data.json)<br>
+      2023 S = SWS→S&amp;S mapping, 2023 Stock = Ch.Stock (month-end)<br>
+      ⚠️ 2026-06 마감: <b>eXtra Sell-Out·재고</b> 및 <b>Al Khunizan 재고</b> 미입수(빈값 표기) — 6월 S/I 총계·YoY는 해당 채널 제외 부분값. Sell-Thru(P)는 전 채널 6월 마감 반영.
     </div>
   </div>
   <div class="cc" style="margin-top:0">
@@ -401,7 +402,7 @@ const RANGE_MONTHS = {
 const PEAK = ['May','Jun','Jul','Aug','Sep'];
 
 // 현재 필터 상태
-let curRange = 'Jan-May';
+let curRange = 'H1';  // 2026-07 Jun 마감 반영 — 기본 H1(Jan~Jun)
 let curChs   = new Set(['ALL']);  // multi-select: 'ALL' or specific channels
 let curCats  = new Set(['ALL']); // multi-select: 'ALL' or specific categories
 let mainMetric = 'so';
@@ -1348,7 +1349,7 @@ function render() {
   renderMosTab();
   // header info
   const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
-  document.getElementById('hdr-info').textContent = 'As of 2026-05 · ' + chLabel;
+  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model 2026-05 · ' + chLabel;
 }
 
 render();
