@@ -171,7 +171,7 @@ tr:hover td{background:#f8fafc}
       <span style="color:var(--st);font-weight:700">Sell-Thru (P·공급)</span> ·
       <span style="color:var(--so);font-weight:700">Sell-Out (S·실판매)</span> ·
       <span style="color:var(--stk);font-weight:700">Stock (I·월말재고)</span>
-      &nbsp;·&nbsp; <strong>2025 Jul~Dec</strong>(연한 막대) → <strong>2026 Jan~Jun</strong>(진한 막대) · 최근 12개월
+      &nbsp;·&nbsp; <span id="main-range-note"><strong>2025 Jul~Dec</strong>(연한 막대) → <strong>2026 Jan~Jun</strong>(진한 막대) · 최근 12개월</span>
       &nbsp;·&nbsp; 🏖 May~Sep Peak
     </div>
     <div class="legend">
@@ -611,13 +611,15 @@ const PEAK_PLUGIN = {
   beforeDatasetsDraw: peakBg,
 };
 
-// Dec(2025) | Jan(2026) 연도 경계 구분선 + 연도 라벨
+// 연도 경계 구분선 + 라벨 (renderMainChart가 mainSplit을 매 렌더 갱신)
+let mainSplit = {boundary: null, left: '', right: ''};
 const YEAR_SPLIT_PLUGIN = {
   id:'yearSplit',
   afterDatasetsDraw(chart) {
+    if (mainSplit.boundary == null) return;
     const {ctx, chartArea: ca, scales:{x}} = chart;
     if (!ca || !x) return;
-    const px = x.getPixelForValue(5.5); // Dec-2025(5)과 Jan-2026(6) 사이
+    const px = x.getPixelForValue(mainSplit.boundary);
     if (px == null) return;
     ctx.save();
     ctx.strokeStyle = 'rgba(100,116,139,0.55)';
@@ -632,10 +634,10 @@ const YEAR_SPLIT_PLUGIN = {
     ctx.textBaseline = 'top';
     ctx.fillStyle = '#94a3b8';
     ctx.textAlign = 'right';
-    ctx.fillText('◀ 2025', px - 6, ca.top + 3);
+    ctx.fillText('◀ ' + mainSplit.left, px - 6, ca.top + 3);
     ctx.fillStyle = '#059669';
     ctx.textAlign = 'left';
-    ctx.fillText('2026 ▶', px + 6, ca.top + 3);
+    ctx.fillText(mainSplit.right + ' ▶', px + 6, ca.top + 3);
     ctx.restore();
   }
 };
@@ -648,23 +650,64 @@ function mkChart(id, cfg) {
   charts[id] = new Chart(ctx, cfg);
 }
 
+// 최근 실적월 자동 감지 (당월 마감 시 stk 기록 or so/st>0). 최신 연도부터 역순 탐색.
+function latestActualMonth() {
+  const yrs = [...YEARS].sort(); // 오름차순
+  for (let y = yrs.length - 1; y >= 0; y--) {
+    const t = PSI_DATA.totals[yrs[y]] || {};
+    for (let i = MONTHS.length - 1; i >= 0; i--) {
+      const d = t[MONTHS[i]];
+      if (d && (d.stk != null || (d.so || 0) > 0 || (d.st || 0) > 0)) {
+        return {yr: parseInt(yrs[y], 10), mIdx: i};
+      }
+    }
+  }
+  return {yr: parseInt(yrs[yrs.length - 1], 10), mIdx: MONTHS.length - 1};
+}
+
+// 연도 경계선 위치·라벨 + 캡션 문구 동적 갱신
+function updateMainYearSplit(order) {
+  let splitIdx = -1;
+  for (let i = 1; i < order.length; i++) {
+    if (order[i].yr !== order[i - 1].yr) { splitIdx = i; break; }
+  }
+  mainSplit = splitIdx < 0
+    ? {boundary: null, left: '', right: ''}
+    : {boundary: splitIdx - 0.5, left: order[splitIdx - 1].yr, right: order[splitIdx].yr};
+
+  const note = document.getElementById('main-range-note');
+  if (note) {
+    const f = order[0], l = order[order.length - 1];
+    const early = order.filter(o => o.yr === f.yr);
+    const late  = order.filter(o => o.yr === l.yr);
+    note.innerHTML = (f.yr === l.yr)
+      ? `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong> · 최근 12개월`
+      : `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong>(연한 막대) → <strong>${l.yr} ${late[0].mo}~${late[late.length - 1].mo}</strong>(진한 막대) · 최근 12개월`;
+  }
+}
+
 function renderMainChart() {
   // 점선 전부 제거, 3지표(P·S·I) 모두 막대. 단일 Y축.
-  // 시계열 순서: 2025 Jul~Dec(과거·좌) → 2026 Jan~Jun(최근·우). 최근 12개월 롤링.
-  const ORDER = [
-    {mo:'Jul', yr:'2025'}, {mo:'Aug', yr:'2025'}, {mo:'Sep', yr:'2025'},
-    {mo:'Oct', yr:'2025'}, {mo:'Nov', yr:'2025'}, {mo:'Dec', yr:'2025'},
-    {mo:'Jan', yr:'2026'}, {mo:'Feb', yr:'2026'}, {mo:'Mar', yr:'2026'},
-    {mo:'Apr', yr:'2026'}, {mo:'May', yr:'2026'}, {mo:'Jun', yr:'2026'},
-  ];
+  // 시계열: 최근 실적월(anchor)에서 뒤로 12개월 롤링.
+  //   → 26년 7월 마감 반영 시 자동으로 25 Aug~Dec + 26 Jan~Jul 로 이동.
+  const A = latestActualMonth();
+  const ORDER = [];
+  for (let k = 11; k >= 0; k--) {
+    let m = A.mIdx - k, yr = A.yr;
+    while (m < 0) { m += 12; yr -= 1; }
+    ORDER.push({mo: MONTHS[m], yr: String(yr)});
+  }
+  const curYr = String(A.yr); // anchor 연도 = 당년(진한 막대)
   const labels = ORDER.map(o => o.mo);
   const pull = key => ORDER.map(o => getVal(o.yr, o.mo, key));
   const st  = pull('st');
   const so  = pull('so');
   const stk = pull('stk');
 
-  // 2026(진한 막대) vs 2025(연한 막대) — 연도를 농도로 구분
-  const shade = (solid, faded) => ORDER.map(o => o.yr === '2026' ? solid : faded);
+  // 당년(anchor 연도) = 진한 막대, 직전년 = 연한 막대
+  const shade = (solid, faded) => ORDER.map(o => o.yr === curYr ? solid : faded);
+
+  updateMainYearSplit(ORDER); // 경계선·캡션 동기화
 
   mkChart('mainChart', {
     type: 'bar',
