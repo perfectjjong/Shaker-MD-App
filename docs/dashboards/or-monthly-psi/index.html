@@ -171,14 +171,14 @@ tr:hover td{background:#f8fafc}
       <span style="color:var(--st);font-weight:700">Sell-Thru (P·공급)</span> ·
       <span style="color:var(--so);font-weight:700">Sell-Out (S·실판매)</span> ·
       <span style="color:var(--stk);font-weight:700">Stock (I·월말재고)</span>
-      &nbsp;·&nbsp; <strong>Jan~Jun = 2026 실적</strong>(진한 막대), <strong>Jul~Dec = 2025 참고</strong>(연한 막대)
+      &nbsp;·&nbsp; <strong>2025 Jul~Dec</strong>(연한 막대) → <strong>2026 Jan~Jun</strong>(진한 막대) · 최근 12개월
       &nbsp;·&nbsp; 🏖 May~Sep Peak
     </div>
     <div class="legend">
       <span class="li"><span class="ld" style="background:var(--st)"></span>Sell-Thru (P)</span>
       <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
       <span class="li"><span class="ld" style="background:var(--stk)"></span>Stock (I)</span>
-      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025 참고</span>
+      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025</span>
       <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 Peak Season</span>
     </div>
     <canvas id="mainChart" height="200"></canvas>
@@ -611,13 +611,13 @@ const PEAK_PLUGIN = {
   beforeDatasetsDraw: peakBg,
 };
 
-// Jun(2026) | Jul(2025) 경계 구분선 + 연도 출처 라벨
+// Dec(2025) | Jan(2026) 연도 경계 구분선 + 연도 라벨
 const YEAR_SPLIT_PLUGIN = {
   id:'yearSplit',
   afterDatasetsDraw(chart) {
     const {ctx, chartArea: ca, scales:{x}} = chart;
     if (!ca || !x) return;
-    const px = x.getPixelForValue(5.5); // Jun(5)과 Jul(6) 사이
+    const px = x.getPixelForValue(5.5); // Dec-2025(5)과 Jan-2026(6) 사이
     if (px == null) return;
     ctx.save();
     ctx.strokeStyle = 'rgba(100,116,139,0.55)';
@@ -630,12 +630,12 @@ const YEAR_SPLIT_PLUGIN = {
     ctx.setLineDash([]);
     ctx.font = '700 10px system-ui,sans-serif';
     ctx.textBaseline = 'top';
-    ctx.fillStyle = '#059669';
-    ctx.textAlign = 'right';
-    ctx.fillText('◀ 2026 실적', px - 6, ca.top + 3);
     ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'right';
+    ctx.fillText('◀ 2025', px - 6, ca.top + 3);
+    ctx.fillStyle = '#059669';
     ctx.textAlign = 'left';
-    ctx.fillText('2025 참고 ▶', px + 6, ca.top + 3);
+    ctx.fillText('2026 ▶', px + 6, ca.top + 3);
     ctx.restore();
   }
 };
@@ -650,16 +650,21 @@ function mkChart(id, cfg) {
 
 function renderMainChart() {
   // 점선 전부 제거, 3지표(P·S·I) 모두 막대. 단일 Y축.
-  // Jan~Jun(0~5) = 2026 실적, Jul~Dec(6~11) = 2025 참고(2026 미도래분).
-  const labels = MONTHS;
-  const CUR_N = 6;
-  const hybrid = key => MONTHS.map((mo, i) => getVal(i < CUR_N ? '2026' : '2025', mo, key));
-  const st  = hybrid('st');
-  const so  = hybrid('so');
-  const stk = hybrid('stk');
+  // 시계열 순서: 2025 Jul~Dec(과거·좌) → 2026 Jan~Jun(최근·우). 최근 12개월 롤링.
+  const ORDER = [
+    {mo:'Jul', yr:'2025'}, {mo:'Aug', yr:'2025'}, {mo:'Sep', yr:'2025'},
+    {mo:'Oct', yr:'2025'}, {mo:'Nov', yr:'2025'}, {mo:'Dec', yr:'2025'},
+    {mo:'Jan', yr:'2026'}, {mo:'Feb', yr:'2026'}, {mo:'Mar', yr:'2026'},
+    {mo:'Apr', yr:'2026'}, {mo:'May', yr:'2026'}, {mo:'Jun', yr:'2026'},
+  ];
+  const labels = ORDER.map(o => o.mo);
+  const pull = key => ORDER.map(o => getVal(o.yr, o.mo, key));
+  const st  = pull('st');
+  const so  = pull('so');
+  const stk = pull('stk');
 
-  // 2026 실적 = 진한 막대, 2025 참고 = 연한 막대 (연도 출처를 농도로 구분)
-  const shade = (solid, faded) => MONTHS.map((mo, i) => i < CUR_N ? solid : faded);
+  // 2026(진한 막대) vs 2025(연한 막대) — 연도를 농도로 구분
+  const shade = (solid, faded) => ORDER.map(o => o.yr === '2026' ? solid : faded);
 
   mkChart('mainChart', {
     type: 'bar',
@@ -701,8 +706,7 @@ function renderMainChart() {
           callbacks: {
             title: items => {
               const i = items[0].dataIndex;
-              const yr = i < CUR_N ? '2026' : '2025';
-              return `${MONTHS[i]} ${yr}${i < CUR_N ? '' : ' (참고)'}`;
+              return `${ORDER[i].mo} ${ORDER[i].yr}`;
             },
             label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
           }
