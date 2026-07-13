@@ -707,6 +707,12 @@ function renderMainChart() {
   // 당년(anchor 연도) = 진한 막대, 직전년 = 연한 막대
   const shade = (solid, faded) => ORDER.map(o => o.yr === curYr ? solid : faded);
 
+  // Y축 음수 바닥: 실제 최소값 바로 아래(100 단위)로 타이트하게. 음수 없으면 0.
+  // (반품 net 음수 한 점 때문에 -5,000까지 벌어지던 빈 공간 제거)
+  const _vals = [...so, ...st, ...stk].filter(v => v !== null && v !== undefined);
+  const _min = _vals.length ? Math.min(0, ..._vals) : 0;
+  const yMin = _min < 0 ? Math.floor(_min / 100) * 100 : 0;
+
   updateMainYearSplit(ORDER); // 경계선·캡션 동기화
 
   mkChart('mainChart', {
@@ -770,7 +776,7 @@ function renderMainChart() {
       scales: {
         x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
         y: {
-          beginAtZero: true,
+          min: yMin,
           grace: '8%',
           grid:{color:'#f1f5f9'},
           ticks:{font:{size:11}, callback: v => fmtN(v)},
