@@ -161,21 +161,24 @@ tr:hover td{background:#f8fafc}
     <div class="ct">
       Monthly PSI Trend
       <span style="margin-left:auto;display:flex;gap:4px">
-        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">S Bar</button>
-        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">P Line</button>
-        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">I Marker</button>
+        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">Sell-Thru (P)</button>
+        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">Sell-Out (S)</button>
+        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">Stock (I)</button>
       </span>
     </div>
     <div class="cd">
-      <strong style="color:var(--so)">Green bar = Sell-Out (primary)</strong>
-      &nbsp;·&nbsp; Blue dashed = Sell-Thru (supply)
-      &nbsp;·&nbsp; Gray dashed = Stock (month-end)
+      <strong>월별 막대</strong> —
+      <span style="color:var(--st);font-weight:700">Sell-Thru (P·공급)</span> ·
+      <span style="color:var(--so);font-weight:700">Sell-Out (S·실판매)</span> ·
+      <span style="color:var(--stk);font-weight:700">Stock (I·월말재고)</span>
+      &nbsp;·&nbsp; <strong>Jan~Jun = 2026 실적</strong>(진한 막대), <strong>Jul~Dec = 2025 참고</strong>(연한 막대)
       &nbsp;·&nbsp; 🏖 May~Sep Peak
     </div>
     <div class="legend">
+      <span class="li"><span class="ld" style="background:var(--st)"></span>Sell-Thru (P)</span>
       <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
-      <span class="li"><span class="ld" style="background:var(--st);opacity:.6"></span>Sell-Thru (P)</span>
-      <span class="li"><span class="ld" style="background:#94a3b8"></span>Stock (I)</span>
+      <span class="li"><span class="ld" style="background:var(--stk)"></span>Stock (I)</span>
+      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025 참고</span>
       <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 Peak Season</span>
     </div>
     <canvas id="mainChart" height="200"></canvas>
@@ -554,8 +557,8 @@ document.querySelectorAll('.tab').forEach(t => {
 
 // ── Main Metric 토글 ──────────────────────────────────────────────────────
 const mainVisible = {so: true, st: true, stk: true};
-// 각 key → [2026 idx, 2025 idx]
-const MAIN_DS_IDX = {so: [0, 3], st: [1, 4], stk: [2, 5]};
+// 각 key → dataset index (막대 3종: st=0, so=1, stk=2)
+const MAIN_DS_IDX = {st: [0], so: [1], stk: [2]};
 
 function toggleMainMetric(key, btn) {
   mainVisible[key] = !mainVisible[key];
@@ -608,6 +611,35 @@ const PEAK_PLUGIN = {
   beforeDatasetsDraw: peakBg,
 };
 
+// Jun(2026) | Jul(2025) 경계 구분선 + 연도 출처 라벨
+const YEAR_SPLIT_PLUGIN = {
+  id:'yearSplit',
+  afterDatasetsDraw(chart) {
+    const {ctx, chartArea: ca, scales:{x}} = chart;
+    if (!ca || !x) return;
+    const px = x.getPixelForValue(5.5); // Jun(5)과 Jul(6) 사이
+    if (px == null) return;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(100,116,139,0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    ctx.moveTo(px, ca.top);
+    ctx.lineTo(px, ca.bottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '700 10px system-ui,sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#059669';
+    ctx.textAlign = 'right';
+    ctx.fillText('◀ 2026 실적', px - 6, ca.top + 3);
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'left';
+    ctx.fillText('2025 참고 ▶', px + 6, ca.top + 3);
+    ctx.restore();
+  }
+};
+
 
 function mkChart(id, cfg) {
   if (charts[id]) { charts[id].destroy(); }
@@ -617,15 +649,17 @@ function mkChart(id, cfg) {
 }
 
 function renderMainChart() {
-  const mos = RANGE_MONTHS[curRange] || MONTHS;
-  const labels = mos;
+  // 점선 전부 제거, 3지표(P·S·I) 모두 막대. 단일 Y축.
+  // Jan~Jun(0~5) = 2026 실적, Jul~Dec(6~11) = 2025 참고(2026 미도래분).
+  const labels = MONTHS;
+  const CUR_N = 6;
+  const hybrid = key => MONTHS.map((mo, i) => getVal(i < CUR_N ? '2026' : '2025', mo, key));
+  const st  = hybrid('st');
+  const so  = hybrid('so');
+  const stk = hybrid('stk');
 
-  const so26  = mos.map(mo => getVal('2026', mo, 'so'));
-  const st26  = mos.map(mo => getVal('2026', mo, 'st'));
-  const stk26 = mos.map(mo => getVal('2026', mo, 'stk'));
-  const so25  = mos.map(mo => getVal('2025', mo, 'so'));
-  const st25  = mos.map(mo => getVal('2025', mo, 'st'));
-  const stk25 = mos.map(mo => getVal('2025', mo, 'stk'));
+  // 2026 실적 = 진한 막대, 2025 참고 = 연한 막대 (연도 출처를 농도로 구분)
+  const shade = (solid, faded) => MONTHS.map((mo, i) => i < CUR_N ? solid : faded);
 
   mkChart('mainChart', {
     type: 'bar',
@@ -633,75 +667,28 @@ function renderMainChart() {
       labels,
       datasets: [
         {
-          type: 'bar',
-          label: 'Sell-Out 2026',
-          data: so26,
-          backgroundColor: 'rgba(16,185,129,0.82)',
+          label: 'Sell-Thru (P)',
+          data: st,
+          backgroundColor: shade('rgba(37,99,235,0.85)', 'rgba(37,99,235,0.30)'),
+          borderColor: '#2563eb',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: 'Sell-Out (S)',
+          data: so,
+          backgroundColor: shade('rgba(16,185,129,0.90)', 'rgba(16,185,129,0.32)'),
           borderColor: '#059669',
           borderWidth: 1,
-          order: 3,
+          borderRadius: 3,
         },
         {
-          type: 'line',
-          label: 'Sell-Thru 2026',
-          data: st26,
-          borderColor: 'rgba(37,99,235,0.7)',
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          borderDash: [6,3],
-          pointRadius: 3,
-          tension: .3,
-          order: 2,
-        },
-        {
-          type: 'line',
-          label: 'Stock 2026',
-          data: stk26,
-          borderColor: 'rgba(148,163,184,0.8)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          borderDash: [4,4],
-          pointRadius: 2,
-          tension: .3,
-          yAxisID: 'ystk',
-          order: 1,
-        },
-        {
-          type: 'line',
-          label: 'Sell-Out 2025',
-          data: so25,
-          borderColor: 'rgba(245,158,11,0.75)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.8,
-          borderDash: [5,3],
-          pointRadius: 2,
-          tension: .3,
-          order: 6,
-        },
-        {
-          type: 'line',
-          label: 'Sell-Thru 2025',
-          data: st25,
-          borderColor: 'rgba(37,99,235,0.35)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          borderDash: [4,4],
-          pointRadius: 2,
-          tension: .3,
-          order: 5,
-        },
-        {
-          type: 'line',
-          label: 'Stock 2025',
-          data: stk25,
-          borderColor: 'rgba(148,163,184,0.4)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.2,
-          borderDash: [3,4],
-          pointRadius: 1,
-          tension: .3,
-          yAxisID: 'ystk',
-          order: 4,
+          label: 'Stock (I)',
+          data: stk,
+          backgroundColor: shade('rgba(245,158,11,0.85)', 'rgba(245,158,11,0.30)'),
+          borderColor: '#d97706',
+          borderWidth: 1,
+          borderRadius: 3,
         },
       ]
     },
@@ -712,6 +699,11 @@ function renderMainChart() {
         legend: {position:'top', labels:{boxWidth:12, font:{size:11}}},
         tooltip: {
           callbacks: {
+            title: items => {
+              const i = items[0].dataIndex;
+              const yr = i < CUR_N ? '2026' : '2025';
+              return `${MONTHS[i]} ${yr}${i < CUR_N ? '' : ' (참고)'}`;
+            },
             label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
           }
         },
@@ -719,19 +711,14 @@ function renderMainChart() {
       scales: {
         x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
         y: {
+          beginAtZero: true,
           grid:{color:'#f1f5f9'},
           ticks:{font:{size:11}, callback: v => fmtN(v)},
           title:{display:true, text:'Qty (EA)', font:{size:10}, color:'var(--muted)'},
         },
-        ystk: {
-          position:'right',
-          grid:{display:false},
-          ticks:{font:{size:10}, color:'#94a3b8', callback: v => fmtN(v)},
-          title:{display:true, text:'Stock', font:{size:10}, color:'#94a3b8'},
-        },
       },
     },
-    plugins: [PEAK_PLUGIN],
+    plugins: [PEAK_PLUGIN, YEAR_SPLIT_PLUGIN],
   });
   applyMainVisibility();
 }
