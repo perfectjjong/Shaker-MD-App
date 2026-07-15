@@ -93,10 +93,12 @@
 
   
 <div style="margin-top:32px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
-  <div style="background:#0f766e;color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
+  <details>
+  <summary onclick="var a=this.querySelector('.arr');a.textContent=this.parentElement.open?'▼ 펴기':'▲ 접기';"
+    style="list-style:none;cursor:pointer;user-select:none;background:#0f766e;color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
     <span style="font-size:14px;font-weight:700">📊 데이터 분석 센터 인사이트</span>
-    <span style="font-size:11px;opacity:.8">기준: 2026-06-16 | <span style="background:#c62828;padding:2px 8px;border-radius:8px">🚨 위험</span></span>
-  </div>
+    <span style="font-size:11px;opacity:.9">기준: 2026-06-16 | <span style="background:#c62828;padding:2px 8px;border-radius:8px">🚨 위험</span><span class="arr" style="margin-left:10px;font-weight:500;color:#e2e8f0">▼ 펴기</span></span>
+  </summary>
   <div style="padding:14px 20px;background:#fff">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div>
@@ -113,6 +115,7 @@
       <a href="https://shaker-dashboard.pages.dev/dashboards/analysis-center/" target="_blank" style="font-size:11px;color:#0f766e;text-decoration:none;font-weight:600">전체 분석 보기 →</a>
     </div>
   </div>
+  </details>
 </div>
 
   <div style="margin-top:40px;padding-top:24px;border-top:1px solid #e2e8f0;text-align:center;">
