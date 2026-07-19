@@ -24,6 +24,9 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 .pill.on{background:var(--green);border-color:var(--green);color:#fff}
 .pill.sm{padding:4px 9px;font-size:11.5px}
 .pill.yr.on{background:var(--blue);border-color:var(--blue)}
+.pill.scnW.on{background:var(--red-d);border-color:var(--red-d);color:#fff}
+.pill.scnM.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.pill.scnB.on{background:var(--green-d);border-color:var(--green-d);color:#fff}
 .divider-v{width:1px;height:20px;background:var(--line);margin:0 3px}
 .kpi-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
 @media(max-width:820px){.kpi-row{grid-template-columns:1fr 1fr}}
@@ -71,7 +74,7 @@ tr.tot td{font-weight:800;background:#f8fafc}tr.tot td.lab{background:#dcfce7}
     <div class="panel-h"><h3 id="chTitle"></h3><span class="sub" id="chSub"></span>
       <span class="legend" id="chLegend"></span></div>
     <div class="chart-box"><canvas id="cv"></canvas></div>
-    <div class="mini">※ 2026 하반기(예측) 막대는 반투명 + 위스커(Worst~Best 범위). 실선 막대=실적.</div>
+    <div class="mini">※ 2026 하반기 막대 = 선택한 <b>예측 시나리오</b>(필터에서 Worst/ML/Best 전환) · 위스커 = Worst~Best 전체 범위 · 실선 막대 = 실적(2023~26 상반기).</div>
   </div>
 
   <div class="panel">
@@ -104,7 +107,7 @@ const GRANS={month:{labels:MON,groups:MON.map((_,i)=>[i])},
   year:{labels:['연간'],groups:[[0,1,2,3,4,5,6,7,8,9,10,11]]}};
 
 let ST={groups:new Set(['OR','IR']),channels:new Set(),comps:new Set(['Inverter','OnOff']),
-        years:new Set(['2023','2024','2025','2026']),gran:'month'};
+        years:new Set(['2023','2024','2025','2026']),gran:'month',scn:'ML'};
 function allChannels(){let a=[];ST.groups.forEach(g=>a.push(...D.channels[g]));return a;}
 function resetChannels(){ST.channels=new Set(allChannels());}
 resetChannels();
@@ -115,7 +118,7 @@ function yearMonthly(y){
   ST.channels.forEach(ch=>{const d=D.data[ch];if(!d)return;
     ST.comps.forEach(c=>{
       if(y==='2026'){(d['2026act'][c]||[]).forEach((v,i)=>out[i]+=v);
-        (d['2026fc'][c]?d['2026fc'][c].ML:[]).forEach((v,i)=>out[6+i]+=v);}
+        (d['2026fc'][c]?d['2026fc'][c][ST.scn]:[]).forEach((v,i)=>out[6+i]+=v);}
       else {(d[y]&&d[y][c]||[]).forEach((v,i)=>out[i]+=v);}
     });});
   return out;
@@ -207,8 +210,8 @@ function renderKPI(A){
   const invM=[...Array(12)].reduce((a,_,i)=>a,0);
   let inv26=0,off26=0;
   ST.channels.forEach(ch=>{const d=D.data[ch];if(!d)return;
-    if(ST.comps.has('Inverter')){inv26+=d['2026act'].Inverter.reduce((a,b)=>a+b,0)+ (d['2026fc'].Inverter?d['2026fc'].Inverter.ML.reduce((a,b)=>a+b,0):0);}
-    if(ST.comps.has('OnOff')){off26+=d['2026act'].OnOff.reduce((a,b)=>a+b,0)+(d['2026fc'].OnOff?d['2026fc'].OnOff.ML.reduce((a,b)=>a+b,0):0);}});
+    if(ST.comps.has('Inverter')){inv26+=d['2026act'].Inverter.reduce((a,b)=>a+b,0)+ (d['2026fc'].Inverter?d['2026fc'].Inverter[ST.scn].reduce((a,b)=>a+b,0):0);}
+    if(ST.comps.has('OnOff')){off26+=d['2026act'].OnOff.reduce((a,b)=>a+b,0)+(d['2026fc'].OnOff?d['2026fc'].OnOff[ST.scn].reduce((a,b)=>a+b,0):0);}});
   // peak period 2026
   let pk='—';if(t26!=null){let mi=0;A.perYear['2026'].forEach((v,i)=>{if(v>A.perYear['2026'][mi])mi=i;});pk=A.labels[mi];}
   const scope=`${[...ST.groups].join('+')} · ${ST.channels.size}채널 · ${[...ST.comps].map(c=>c==='OnOff'?'On/Off':'Inv').join('+')}`;
@@ -228,7 +231,7 @@ function refresh(){
   const A=aggregate();
   const gtxt=[...ST.groups].join('+')||'—';
   document.getElementById('chTitle').textContent=`${gtxt} · Split 셀아웃 · ${({month:'월별',quarter:'분기별',half:'반기별',year:'연간'})[ST.gran]} 2023–2026`;
-  document.getElementById('chSub').textContent=`${ST.channels.size}개 채널 · ${[...ST.comps].map(c=>c==='OnOff'?'On/Off':'Inverter').join('+')}`;
+  document.getElementById('chSub').textContent=`${ST.channels.size}개 채널 · ${[...ST.comps].map(c=>c==='OnOff'?'On/Off':'Inverter').join('+')} · 예측 ${ST.scn}`;
   document.getElementById('chLegend').innerHTML=YEARS.filter(y=>ST.years.has(y)).map(y=>`<span class="k"><span class="d" style="background:${YCOL[y]}"></span>${y}</span>`).join('')+`<span class="k">└2026 반투명=예측</span>`;
   document.getElementById('tblSub').textContent=gtxt+' · '+[...ST.comps].map(c=>c==='OnOff'?'On/Off':'Inv').join('+');
   renderKPI(A);renderChart(A);renderTable(A);
@@ -248,6 +251,8 @@ function buildFilters(){
       ${[['month','월'],['quarter','분기'],['half','반기'],['year','연간']].map(([k,l])=>chip(l,ST.gran===k,'gran sm')).join('')}
       <span class="divider-v"></span><span class="flabel">연도</span>
       ${YEARS.map(y=>chip(y,ST.years.has(y),'yr sm')).join('')}
+      <span class="divider-v"></span><span class="flabel">예측<br>시나리오</span>
+      ${[['Worst','scnW'],['ML','scnM'],['Best','scnB']].map(([k,c])=>chip(k,ST.scn===k,'scn '+c+' sm')).join('')}
     </div>
     <div class="frow"><span class="flabel">채널</span>
       ${chip('전체',ST.channels.size===chans.length,'chAll sm')}
@@ -258,6 +263,7 @@ function buildFilters(){
   fb.querySelectorAll('.cmp').forEach((b,i)=>b.onclick=()=>{const c=['Inverter','OnOff'][i];toggle(ST.comps,c,true);buildFilters();refresh();});
   fb.querySelectorAll('.gran').forEach((b,i)=>b.onclick=()=>{ST.gran=['month','quarter','half','year'][i];buildFilters();refresh();});
   fb.querySelectorAll('.yr').forEach((b,i)=>b.onclick=()=>{toggle(ST.years,YEARS[i],true);buildFilters();refresh();});
+  fb.querySelectorAll('.scn').forEach((b,i)=>b.onclick=()=>{ST.scn=['Worst','ML','Best'][i];buildFilters();refresh();});
   fb.querySelector('.chAll').onclick=()=>{ST.channels.size===chans.length?ST.channels=new Set():ST.channels=new Set(chans);buildFilters();refresh();};
   fb.querySelectorAll('.ch').forEach((b,i)=>b.onclick=()=>{toggle(ST.channels,chans[i],false);buildFilters();refresh();});
 }
