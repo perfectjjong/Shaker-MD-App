@@ -82,7 +82,8 @@ tr.tot td{font-weight:800;background:#f8fafc}tr.tot td.lab{background:#dcfce7}
 </div>
 <div class="wrap">
   <div class="vtabs">
-    <button class="vtab active" data-v="dash">📊 분석 대시보드</button>
+    <button class="vtab active" data-v="dash">📊 셀아웃 분석</button>
+    <button class="vtab" data-v="psi">🔄 셀스루·재고 (PSI·MOS)</button>
     <button class="vtab" data-v="logic">💡 경영 인사이트 (임원보고용)</button>
   </div>
   <div id="dashView">
@@ -112,6 +113,38 @@ tr.tot td{font-weight:800;background:#f8fafc}tr.tot td.lab{background:#dcfce7}
   </div>
   <div class="method"><b>방법론.</b> <b>실적 소스(월마감 정본 우선)</b>: OR=<code>or-monthly-psi</code>(by_cat SO, 2023~26 월마감), IR 2026=<code>ir-total</code>(byCategory 월마감·월별 앵커), IR 2023~25=<code>b2c-unified</code>(채널×압축기 유일 다년소스, SSOT 재분류). 2026 하반기 예측=채널별 상반기 정본 실적 앵커 × <b>하이브리드 시즌비율</b>(이력 두꺼운 채널=자체값, 얇으면 그룹 수렴). ML=최근가중(25:0.5·24:0.3·23:0.2), <b>Best/Worst=이력 P75/P25 분위수</b>(단발 이상치 완충). 위스커=Worst~Best. 산식 상세는 <b>💡 경영 인사이트</b> 탭 부록. ⚠️ 2026 7월 실데이터 부분(7/19)이라 하반기는 예측이며 확정치 아님. IR 2023·2024는 <b>월별</b>(월당 1포인트=월마감급), 2025만 <b>주간</b>(월집계 시 월마감과 정합 — OR 대조 12개월 완전일치). IR 절대수준은 2026 정본(ir-total)/b2c 계수로 정합. ⚠️ 2025 12월은 3주만 집계(타 월 4~5주) — IR은 2025 월마감 정본 부재로 12월 완전성 미검증.</div>
   </div><!-- /dashView -->
+
+  <div id="psiView" style="display:none">
+    <div class="filterbar" style="flex-direction:row;align-items:center;gap:10px">
+      <span class="flabel">예측<br>시나리오</span>
+      <button class="pill psiscn scnW" data-s="Worst">Worst</button>
+      <button class="pill psiscn scnM on" data-s="ML">ML</button>
+      <button class="pill psiscn scnB" data-s="Best">Best</button>
+      <span class="hint" style="margin-left:8px;font-size:12px;color:var(--muted)">셀스루=Shaker→딜러 공급 · 재고=딜러 유통재고 · MOS=재고÷향후수요(개월). 연말 목표 <b>OR 2개월·IR 3개월</b>.</span>
+    </div>
+    <div class="kpi-row" id="psiKpi"></div>
+    <div class="panel">
+      <div class="panel-h"><h3>OR · PSI 흐름 (Sell-Out → Sell-Thru → 재고 → MOS)</h3>
+        <span class="sub">막대=셀아웃/셀스루 · 선=유통재고 · 점선=MOS(개월)</span>
+        <span class="legend"><span class="k"><span class="d" style="background:#10b981"></span>셀아웃</span>
+          <span class="k"><span class="d" style="background:#2563eb"></span>셀스루</span>
+          <span class="k"><span class="d" style="background:#f59e0b;border-radius:50%"></span>재고</span></span></div>
+      <div class="chart-box"><canvas id="cvOR"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-h"><h3>IR · PSI 흐름</h3>
+        <span class="sub">IR은 6월 재고 과잉(5.5개월) → 하반기 디스톡 필요</span>
+        <span class="legend"><span class="k"><span class="d" style="background:#10b981"></span>셀아웃</span>
+          <span class="k"><span class="d" style="background:#2563eb"></span>셀스루</span>
+          <span class="k"><span class="d" style="background:#f59e0b;border-radius:50%"></span>재고</span></span></div>
+      <div class="chart-box"><canvas id="cvIR"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-h"><h3>채널별 적정 셀스루 (하반기 합계)</h3><span class="sub">현재 시나리오 · 6월 재고·MOS·연말 목표재고 포함</span></div>
+      <div id="psiTables"></div>
+    </div>
+  </div>
+
   <div id="logicView" class="logic" style="display:none"><style>
 .exec{max-width:960px}
 .exec .hero{background:linear-gradient(135deg,#1a1f36,#243050);color:#fff;border-radius:14px;padding:22px 26px;margin-bottom:18px}
@@ -175,9 +208,15 @@ details.appx summary::before{content:'▸ '}details.appx[open] summary::before{c
         <div class="row"><span class="lbl">현상</span><span class="tx">전 채널 공통으로 9월이 하반기 최대 피크 — 9월 전망 <span class="metric">14,650대 = 하반기의 27%</span>. 10~12월은 급격히 비수기.</span></div>
         <div class="row"><span class="lbl why">해석</span><span class="tx">사우디 여름 성수기(5~9월)의 끝물이 9월. 이 시점 결품(OOS)은 대체 브랜드 구매로 직결되어 <b>매출뿐 아니라 매대·고객까지 이탈</b>.</span></div>
         <div class="row"><span class="lbl act">액션</span><span class="tx">9월 판매분은 리드타임상 <b>8월 말 발주가 마지노선</b> — 주력 채널(eXtra·BH·Al Manea) 9월 재고를 지금부터 역산해 확보. Best 시나리오 대비 안전재고 점검.</span></div>
+      </div></div><div class="ins" style="--ac:#059669"><div class="top"><div class="no">4</div>
+      <div><p class="h">IR 유통재고 과잉 — 하반기는 '디스톡'이 정답 (셀스루 &lt; 셀아웃)</p><p class="lead">팔리는 것보다 덜 넣어야 건강해집니다.</p></div></div>
+      <div class="body">
+        <div class="row"><span class="lbl">현상</span><span class="tx">6월말 유통재고 IR <span class="metric">16,526대 = MOS 5.5개월</span>(목표 3개월 대비 과잉). 반면 OR <span class="metric">11,002대 = 2.0개월</span>으로 적정. 적정 셀스루(딜러 공급)는 IR <span class="metric">16,165대</span>로 셀아웃(25,120)보다 <b>8,955대 적게</b> 넣어 재고를 3개월로 정상화.</span></div>
+        <div class="row"><span class="lbl why">해석</span><span class="tx">IR 채널이 상반기 성장에 맞춰 과다 입고된 상태. 여기서 셀아웃 수준으로 계속 공급하면 <b>연말 재고가 눈덩이</b>처럼 불어 자금·창고·노후재고 리스크. OR은 이미 2개월 적정이라 셀아웃 페이스 유지.</span></div>
+        <div class="row"><span class="lbl act">액션</span><span class="tx"><b>IR: 하반기 셀스루를 셀아웃 대비 축소</b>(디스톡)해 12월 MOS 3개월 착지. <b>OR: 셀아웃 페이스 유지</b>(2개월). 단 9월 피크 직전(7~8월)은 두 채널 모두 선행 빌드업 필요 — MOS는 향후 수요 기준이라 성수기 전 재고를 미리 채워야 함.</span></div>
       </div></div><h3 class="sec">주요 채널 브리핑 (하반기 ML 기준)</h3><div class="brief"><div class="bcard"><div class="nm">eXtra <span class="pin ok">신뢰 · 최대볼륨</span></div><div class="fig">하반기 <b>16,050대</b> · 상반기 19,046</div><div class="cmt">OR 최대 채널이자 전체 1위. 성숙 리테일이라 상반기 성수기 대비 하반기 소진 둔화는 정상. <b>9월 재고 방어</b>가 유일한 관건.</div></div><div class="bcard"><div class="nm">IR_Others <span class="pin risk">⚠ 관리 사각</span></div><div class="fig">하반기 <b>10,256대</b> · 상반기 6,015(+58%)</div><div class="cmt"><b>이름 없는 잔여버킷이 하반기 2위 채널</b>이 됐습니다. 최대 성장동력이 "기타"라는 건 관리 사각 — <b>구성 딜러를 규명</b>하고 명명 채널로 승격시켜야 예측·관리 가능.</div></div><div class="bcard"><div class="nm">BH <span class="pin ok">안정 앵커</span></div><div class="fig">하반기 <b>8,769대</b> · 상반기 6,950(+22%)</div><div class="cmt">IR의 실질 앵커. 성장률이 현실적(+22%)이라 IR 중 가장 신뢰 가능. IR 계획의 안정 기반으로 삼을 채널.</div></div><div class="bcard"><div class="nm">Al Manea <span class="pin ok">OR 2위 · 안정</span></div><div class="fig">하반기 <b>6,984대</b> · 상반기 7,940(+11%)</div><div class="cmt">OR 2위 안정 볼륨(상반기 거의 보합). eXtra와 함께 OR 재고 방어 우선순위.</div></div><div class="bcard"><div class="nm">소형 급등군 (BM·Star·Al&nbsp;Shathri) <span class="pin warn">지속성 미검증</span></div><div class="fig">상반기 급등 (near-zero 베이스)</div><div class="cmt">작은 베이스에서 폭발적 성장. 실수요 확대인지 일회성 딜러 온보딩인지 <b>모니터링</b> 필요 — 예측은 이미 그룹 쪽으로 보수화해 반영.</div></div><div class="bcard"><div class="nm">신규 채널 (Zagzoog·Al&nbsp;Ghanem·Box) <span class="pin warn">이력 부족</span></div><div class="fig">하반기 이력 없음 → 그룹 평균으로 추정</div><div class="cmt">2026 신규/소량이라 자체 시즌 이력이 없어 그룹 평균으로 전망. 하반기 실적이 쌓이면 개별 정확도 상승.</div></div></div><h3 class="sec">리스크 & 액션 플랜</h3><div class="action"><h4>⚑ 임원 의사결정 포인트</h4><div class="ag">
   <div class="item"><div class="t">소싱 / 상품</div><div class="c">정속형(On/Off) 비중 확대 — 하반기 55% 전망. 중국 브랜드에 보급형 볼륨 뺏기지 않도록 물량·가격 선제 대응.</div></div>
-  <div class="item"><div class="t">재고 / 공급</div><div class="c">9월 피크(하반기 27%) OOS 방어 — 8월 말 발주 마감. eXtra·BH·Al Manea 우선.</div></div>
+  <div class="item"><div class="t">재고 / 공급 (PSI·MOS)</div><div class="c">9월 피크(하반기 27%) OOS 방어 — 8월 말 발주 마감. <b>IR 디스톡</b>(6월 5.5→12월 3개월, 셀스루 16,165대) / OR 유지(2개월). 상세=🔄 셀스루·재고 탭.</div></div>
   <div class="item"><div class="t">채널 / 영업</div><div class="c">IR_Others 구성 딜러 규명(2위 채널이 "기타"), 소형 급등 채널 실수요/파이프라인 성격 검증.</div></div>
   <div class="item"><div class="t">예측 운용</div><div class="c">OR=중립(ML) 신뢰 / IR=중립~비관(ML~Worst) 보수 운용. 2026 절대수준은 월마감 정본(OR=psi·IR=ir-total) 기준.</div></div>
 </div></div><details class="appx"><summary>🧮 산출 방법 상세 (부록 — 실무자용)</summary><div class="box">간단 요약: <b>예측값 = 각 채널의 2026 상반기 실측 × 하반기/상반기 비율 × 월분포.</b> 비율은 그 채널의 과거 이력이 두꺼우면 자기값을, 얇으면 그룹 평균을 쓰는 "신뢰도 가중 혼합"으로 정합니다(이력 없으면 100% 그룹). <b>ML=최근가중 평균, Best/Worst=이력 비율의 P75/P25 분위수</b>(단발 이상치가 밴드를 부풀리지 않도록 최대/최소 대신 분위수 사용). 아래는 채널별 계산 상세입니다.</div><h4 style='font-size:13px;margin:14px 0 4px'>OR</h4><div class='matrix-cap' style='margin-top:10px'><span style='color:#2563eb'>●</span> OR · Split Inverter — 그룹앵커 W0.71/ML0.82/B0.89 (이력 23·24·25 = 0.84·0.59·0.95)</div><div class='scrollx'><table><thead><tr><th class='ch'>채널</th><th>H1'26</th><th>n</th><th>혼합</th><th>자체ML</th><th>Worst</th><th>ML</th><th>Best</th><th>H2 ML(대)</th></tr></thead><tbody><tr><td class='ch'>eXtra</td><td>11,481</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.79</td><td>0.70</td><td class='ok'>0.80</td><td style='color:#2563eb'>0.91</td><td class='ok'><b>9,162</b></td></tr><tr><td class='ch'>Al Manea</td><td>3,842</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.02</td><td>0.52</td><td class='ok'>0.96</td><td style='color:#2563eb'>1.01</td><td class='ok'><b>3,676</b></td></tr><tr><td class='ch'>SWS</td><td>1,588</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.06</td><td>0.72</td><td class='ok'>0.98</td><td style='color:#2563eb'>1.10</td><td class='ok'><b>1,558</b></td></tr><tr><td class='ch'>Black Box</td><td>1,289</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.73</td><td>0.65</td><td class='ok'>0.76</td><td style='color:#2563eb'>0.89</td><td class='ok'><b>976</b></td></tr><tr><td class='ch'>Al Khunizan</td><td>316</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.95</td><td>0.77</td><td class='ok'>0.91</td><td style='color:#2563eb'>0.97</td><td class='ok'><b>286</b></td></tr></tbody></table></div><div class='matrix-cap' style='margin-top:10px'><span style='color:#d97706'>●</span> OR · Split On/Off — 그룹앵커 W0.84/ML0.91/B1.02 (이력 23·24·25 = 1.10·0.73·0.94)</div><div class='scrollx'><table><thead><tr><th class='ch'>채널</th><th>H1'26</th><th>n</th><th>혼합</th><th>자체ML</th><th>Worst</th><th>ML</th><th>Best</th><th>H2 ML(대)</th></tr></thead><tbody><tr><td class='ch'>eXtra</td><td>7,565</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>0.84</td><td class='ok'>0.91</td><td style='color:#2563eb'>1.02</td><td class='ok'><b>6,887</b></td></tr><tr><td class='ch'>Al Manea</td><td>4,098</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.76</td><td>0.75</td><td class='ok'>0.81</td><td style='color:#2563eb'>0.95</td><td class='ok'><b>3,308</b></td></tr><tr><td class='ch'>SWS</td><td>1,573</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.99</td><td>0.65</td><td class='ok'>0.97</td><td style='color:#2563eb'>1.53</td><td class='ok'><b>1,520</b></td></tr><tr><td class='ch'>Black Box</td><td>1,740</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.57</td><td>0.62</td><td class='ok'>0.68</td><td style='color:#2563eb'>0.75</td><td class='ok'><b>1,185</b></td></tr><tr><td class='ch'>Al Khunizan</td><td>239</td><td>2</td><td class='calc'>w0.57</td><td class='calc'>0.33</td><td>0.55</td><td class='ok'>0.58</td><td style='color:#2563eb'>0.63</td><td class='ok'><b>139</b></td></tr></tbody></table></div><h4 style='font-size:13px;margin:14px 0 4px'>IR</h4><div class='matrix-cap' style='margin-top:10px'><span style='color:#2563eb'>●</span> IR · Split Inverter — 그룹앵커 W1.01/ML1.27/B1.46 (이력 23·24·25 = 1.32·0.69·1.60)</div><div class='scrollx'><table><thead><tr><th class='ch'>채널</th><th>H1'26</th><th>n</th><th>혼합</th><th>자체ML</th><th>Worst</th><th>ML</th><th>Best</th><th>H2 ML(대)</th></tr></thead><tbody><tr><td class='ch'>BH</td><td>2,646</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.34</td><td>1.05</td><td class='ok'>1.32</td><td style='color:#2563eb'>1.64</td><td class='ok'><b>3,482</b></td></tr><tr><td class='ch'>IR_Others</td><td>2,117</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.10</td><td>0.87</td><td class='ok'>1.16</td><td style='color:#2563eb'>1.23</td><td class='ok'><b>2,446</b></td></tr><tr><td class='ch'>Tamkeen</td><td>849</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.07</td><td>0.78</td><td class='ok'>1.14</td><td style='color:#2563eb'>1.22</td><td class='ok'><b>964</b></td></tr><tr><td class='ch'>BM</td><td>650</td><td>2</td><td class='calc'>w0.57</td><td class='calc'>0.76</td><td>0.86</td><td class='ok'>0.98</td><td style='color:#2563eb'>1.06</td><td class='ok'><b>638</b></td></tr><tr><td class='ch'>Star Appliance</td><td>388</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.01</td><td class='ok'>1.27</td><td style='color:#2563eb'>1.46</td><td class='ok'><b>493</b></td></tr><tr><td class='ch'>Al Shathri</td><td>212</td><td>1</td><td class='calc'>w0.40</td><td class='calc'>0.50</td><td>0.80</td><td class='ok'>0.96</td><td style='color:#2563eb'>1.08</td><td class='ok'><b>204</b></td></tr><tr><td class='ch'>Dhamin</td><td>180</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.72</td><td>0.75</td><td class='ok'>0.90</td><td style='color:#2563eb'>1.06</td><td class='ok'><b>163</b></td></tr><tr><td class='ch'>Zagzoog</td><td>38</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.01</td><td class='ok'>1.27</td><td style='color:#2563eb'>1.46</td><td class='ok'><b>48</b></td></tr><tr><td class='ch'>Al Ghanem</td><td>43</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.01</td><td class='ok'>1.27</td><td style='color:#2563eb'>1.46</td><td class='ok'><b>55</b></td></tr><tr><td class='ch'>Box Appliance</td><td>18</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.01</td><td class='ok'>1.27</td><td style='color:#2563eb'>1.46</td><td class='ok'><b>23</b></td></tr></tbody></table></div><div class='matrix-cap' style='margin-top:10px'><span style='color:#d97706'>●</span> IR · Split On/Off — 그룹앵커 W1.20/ML1.35/B1.45 (이력 23·24·25 = 0.99·1.50·1.41)</div><div class='scrollx'><table><thead><tr><th class='ch'>채널</th><th>H1'26</th><th>n</th><th>혼합</th><th>자체ML</th><th>Worst</th><th>ML</th><th>Best</th><th>H2 ML(대)</th></tr></thead><tbody><tr><td class='ch'>BH</td><td>4,305</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.17</td><td>0.89</td><td class='ok'>1.23</td><td style='color:#2563eb'>1.66</td><td class='ok'><b>5,287</b></td></tr><tr><td class='ch'>IR_Others</td><td>3,899</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>2.33</td><td>1.15</td><td class='ok'>2.00</td><td style='color:#2563eb'>2.12</td><td class='ok'><b>7,809</b></td></tr><tr><td class='ch'>Tamkeen</td><td>636</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>0.70</td><td>0.73</td><td class='ok'>0.92</td><td style='color:#2563eb'>1.15</td><td class='ok'><b>582</b></td></tr><tr><td class='ch'>BM</td><td>371</td><td>2</td><td class='calc'>w0.57</td><td class='calc'>1.77</td><td>1.47</td><td class='ok'>1.59</td><td style='color:#2563eb'>1.65</td><td class='ok'><b>589</b></td></tr><tr><td class='ch'>Star Appliance</td><td>394</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.20</td><td class='ok'>1.35</td><td style='color:#2563eb'>1.45</td><td class='ok'><b>532</b></td></tr><tr><td class='ch'>Al Shathri</td><td>134</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.20</td><td class='ok'>1.35</td><td style='color:#2563eb'>1.45</td><td class='ok'><b>181</b></td></tr><tr><td class='ch'>Dhamin</td><td>405</td><td>3</td><td class='calc'>w0.67</td><td class='calc'>1.10</td><td>0.79</td><td class='ok'>1.18</td><td style='color:#2563eb'>1.25</td><td class='ok'><b>480</b></td></tr><tr><td class='ch'>Zagzoog</td><td>578</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.20</td><td class='ok'>1.35</td><td style='color:#2563eb'>1.45</td><td class='ok'><b>781</b></td></tr><tr><td class='ch'>Al Ghanem</td><td>229</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.20</td><td class='ok'>1.35</td><td style='color:#2563eb'>1.45</td><td class='ok'><b>309</b></td></tr><tr><td class='ch'>Box Appliance</td><td>41</td><td>0</td><td class='calc'>그룹값</td><td class='calc'>—</td><td>1.20</td><td class='ok'>1.35</td><td style='color:#2563eb'>1.45</td><td class='ok'><b>55</b></td></tr></tbody></table></div></details></div></div>
@@ -190,6 +229,7 @@ const MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','De
 const YEARS=['2023','2024','2025','2026'];
 const YCOL={'2023':'#cbd5e1','2024':'#93c5fd','2025':'#3b82f6','2026':'#1e40af'};
 const fmt=n=>Math.round(n).toLocaleString('en-US');
+const PSI={"mos": {"OR": 2, "IR": 3}, "group": {"OR": {"so_h1": [2012, 5993, 3244, 5837, 9401, 7244], "st_h1": [4695, 7939, 9998, 8667, 3550, 5057], "stk_jun": 11002, "so_h2": {"Worst": [4272, 3993, 7126, 3059, 2897, 2569], "ML": [5133, 4814, 8537, 3674, 3459, 3079], "Best": [5905, 5533, 9836, 4226, 3993, 3546]}, "st": {"Worst": [5677, 2023, 2807, 2555, 2009, 5968], "ML": [7719, 3610, 3441, 3064, 2009, 5968], "Best": [10455, 4207, 3973, 3529, 2009, 5968]}, "stk": {"Worst": [12407, 10437, 6118, 5614, 4726, 8125], "ML": [13588, 12384, 7288, 6678, 5228, 8117], "Best": [15552, 14226, 8363, 7666, 5682, 8104]}, "mos": {"Worst": [2.2, 2.0, 2.1, 2.1, 2.1, 2.0], "ML": [2.0, 2.0, 2.0, 2.0, 2.1, 2.0], "Best": [2.0, 2.0, 2.0, 2.0, 2.0, 2.0]}}, "IR": {"so_h1": [1646, 2579, 3346, 3010, 3444, 4108], "st_h1": [2409, 4169, 2232, 4088, 561, 5584], "stk_jun": 16526, "so_h2": {"Worst": [3383, 3446, 4329, 2538, 2272, 2013], "ML": [4673, 4855, 6113, 3553, 3138, 2788], "Best": [5404, 5617, 7079, 4111, 3632, 3223]}, "st": {"Worst": [127, 749, 1090, 1310, 2413, 3337], "ML": [3241, 2692, 2664, 1643, 2579, 3346], "Best": [5895, 3422, 3223, 1646, 2579, 3346]}, "stk": {"Worst": [13270, 10573, 7334, 6106, 6247, 7571], "ML": [15094, 12931, 9482, 7572, 7013, 7571], "Best": [17017, 14822, 10966, 8501, 7448, 7571]}, "mos": {"Worst": [3.9, 3.5, 3.2, 3.1, 3.0, 3.0], "ML": [3.1, 3.0, 3.0, 3.0, 3.0, 3.0], "Best": [3.0, 3.0, 3.0, 3.0, 3.0, 3.0]}}}, "channels": {"OR": ["eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan"], "IR": ["BH", "IR_Others", "Tamkeen", "BM", "Star Appliance", "Al Shathri", "Dhamin", "Zagzoog", "Al Ghanem", "Box Appliance"]}, "chanFc": {"OR": {"eXtra": {"st": {"Worst": [2300, 1081, 1733, 1545, 1288, 3092], "ML": [2646, 2009, 1928, 1721, 1288, 3092], "Best": [3974, 2327, 2182, 1949, 1288, 3092]}, "stk_jun": 7746, "junmos": 2.4, "stk_dec": {"Worst": 4380, "ML": 4380, "Best": 4380}, "st_h1": 24371}, "Al Manea": {"st": {"Worst": [1252, 391, 553, 547, 413, 1548], "ML": [2164, 894, 844, 750, 413, 1548], "Best": [2683, 997, 946, 837, 413, 1548]}, "stk_jun": 2332, "junmos": 1.8, "stk_dec": {"Worst": 1961, "ML": 1961, "Best": 1961}, "st_h1": 8363}, "SWS": {"st": {"Worst": [1179, 276, 260, 232, 143, 756], "ML": [1772, 394, 373, 331, 143, 756], "Best": [2459, 530, 511, 447, 143, 756]}, "stk_jun": 208, "junmos": 0.4, "stk_dec": {"Worst": 899, "ML": 899, "Best": 899}, "st_h1": 3373}, "Black Box": {"st": {"Worst": [906, 244, 234, 205, 124, 552], "ML": [1070, 276, 264, 232, 124, 552], "Best": [1257, 313, 299, 263, 124, 552]}, "stk_jun": 318, "junmos": 0.6, "stk_dec": {"Worst": 676, "ML": 676, "Best": 676}, "st_h1": 3503}, "Al Khunizan": {"st": {"Worst": [40, 31, 27, 26, 41, 20], "ML": [67, 37, 32, 30, 41, 20], "Best": [82, 40, 35, 33, 41, 20]}, "stk_jun": 398, "junmos": 4.3, "stk_dec": {"Worst": 209, "ML": 201, "Best": 188}, "st_h1": 296}}, "IR": {"BH": {"st": {"Worst": [0, 40, 369, 257, 665, 1771], "ML": [325, 1117, 990, 340, 705, 1771], "Best": [2414, 1456, 1291, 340, 705, 1771]}, "stk_jun": 6337, "junmos": 5.5, "stk_dec": {"Worst": 2816, "ML": 2816, "Best": 2816}, "st_h1": 7313}, "IR_Others": {"st": {"Worst": [0, 466, 450, 701, 1363, 964], "ML": [2578, 1086, 1105, 750, 1363, 964], "Best": [2928, 1276, 1171, 750, 1363, 964]}, "stk_jun": 5487, "junmos": 5.5, "stk_dec": {"Worst": 3077, "ML": 3077, "Best": 3077}, "st_h1": 6351}, "Tamkeen": {"st": {"Worst": [0, 0, 0, 0, 29, 164], "ML": [0, 73, 128, 117, 121, 173], "Best": [0, 208, 210, 120, 121, 173]}, "stk_jun": 1348, "junmos": 5.4, "stk_dec": {"Worst": 414, "ML": 414, "Best": 414}, "st_h1": 1525}, "BM": {"st": {"Worst": [91, 61, 55, 163, 112, 80], "ML": [124, 65, 112, 185, 112, 80], "Best": [141, 84, 153, 185, 112, 80]}, "stk_jun": 925, "junmos": 5.4, "stk_dec": {"Worst": 377, "ML": 377, "Best": 377}, "st_h1": 1038}, "Star Appliance": {"st": {"Worst": [11, 52, 89, 117, 79, 117], "ML": [62, 134, 118, 117, 79, 117], "Best": [145, 149, 132, 117, 79, 117]}, "stk_jun": 711, "junmos": 5.5, "stk_dec": {"Worst": 313, "ML": 313, "Best": 313}, "st_h1": 810}, "Al Shathri": {"st": {"Worst": [4, 18, 16, 17, 38, 29], "ML": [20, 20, 31, 37, 38, 29], "Best": [31, 30, 49, 37, 38, 29]}, "stk_jun": 314, "junmos": 5.4, "stk_dec": {"Worst": 104, "ML": 104, "Best": 104}, "st_h1": 353}, "Dhamin": {"st": {"Worst": [0, 0, 0, 0, 60, 132], "ML": [7, 53, 49, 42, 94, 132], "Best": [27, 60, 76, 42, 94, 132]}, "stk_jun": 534, "junmos": 5.5, "stk_dec": {"Worst": 268, "ML": 268, "Best": 268}, "st_h1": 621}, "Zagzoog": {"st": {"Worst": [15, 77, 73, 39, 57, 60], "ML": [85, 94, 84, 39, 57, 60], "Best": [138, 101, 91, 39, 57, 60]}, "stk_jun": 566, "junmos": 5.5, "stk_dec": {"Worst": 156, "ML": 156, "Best": 156}, "st_h1": 675}, "Al Ghanem": {"st": {"Worst": [6, 30, 32, 16, 10, 20], "ML": [34, 41, 38, 16, 10, 20], "Best": [58, 47, 41, 16, 10, 20]}, "stk_jun": 250, "junmos": 5.5, "stk_dec": {"Worst": 46, "ML": 46, "Best": 46}, "st_h1": 294}, "Box Appliance": {"st": {"Worst": [0, 5, 6, 0, 0, 0], "ML": [6, 9, 9, 0, 0, 0], "Best": [13, 11, 9, 0, 0, 0]}, "stk_jun": 54, "junmos": 5.5, "stk_dec": {"Worst": 0, "ML": 0, "Best": 0}, "st_h1": 63}}}};
 const GRANS={month:{labels:MON,groups:MON.map((_,i)=>[i])},
   quarter:{labels:['Q1','Q2','Q3','Q4'],groups:[[0,1,2],[3,4,5],[6,7,8],[9,10,11]]},
   half:{labels:['H1 (1~6월)','H2 (7~12월)'],groups:[[0,1,2,3,4,5],[6,7,8,9,10,11]]},
@@ -358,11 +398,76 @@ function buildFilters(){
 }
 function toggle(set,v,keepOne){if(set.has(v)){if(keepOne&&set.size<=1)return;set.delete(v);}else set.add(v);}
 buildFilters();refresh();
+
+// ===== PSI (Sell-Thru / Stock / MOS) view =====
+let psiScn='ML',psiCharts={};
+const H2M=['Jul','Aug','Sep','Oct','Nov','Dec'];
+function psiKpiRender(){
+  const box=document.getElementById('psiKpi');let html='';
+  [['OR','Outside Retail'],['IR','Inside Retail']].forEach(([g,nm])=>{
+    const G=PSI.group[g];const st=G.st[psiScn].reduce((a,b)=>a+b,0);
+    const stW=G.st.Worst.reduce((a,b)=>a+b,0),stB=G.st.Best.reduce((a,b)=>a+b,0);
+    const junMos=(G.stk_jun/(G.so_h1.reduce((a,b)=>a+b,0)/6)).toFixed(1);
+    const decStk=G.stk[psiScn][5],decMos=G.mos[psiScn][5];
+    html+=`<div class="kpi ${g==='OR'?'b':'a'}"><div class="lab">${g} · 하반기 적정 셀스루 (${psiScn})</div>
+      <div class="big">${fmt(st)}</div><div class="delta" style="color:var(--muted)">밴드 ${fmt(stW)}~${fmt(stB)}</div>
+      <div class="cmp"><b>6월재고 ${fmt(G.stk_jun)} · MOS ${junMos}→${decMos}개월(목표 ${PSI.mos[g]})</b></div></div>`;
+  });
+  const orG=PSI.group.OR,irG=PSI.group.IR;
+  const totSt=orG.st[psiScn].reduce((a,b)=>a+b,0)+irG.st[psiScn].reduce((a,b)=>a+b,0);
+  const totSo=orG.so_h2[psiScn].reduce((a,b)=>a+b,0)+irG.so_h2[psiScn].reduce((a,b)=>a+b,0);
+  html+=`<div class="kpi g"><div class="lab">전체 하반기 셀스루 (${psiScn})</div><div class="big">${fmt(totSt)}</div>
+    <div class="delta" style="color:var(--muted)">vs 셀아웃 ${fmt(totSo)} → ${totSt<totSo?'순디스톡':'순빌드업'} ${fmt(Math.abs(totSo-totSt))}</div></div>`;
+  const decStkT=orG.stk[psiScn][5]+irG.stk[psiScn][5];
+  html+=`<div class="kpi r"><div class="lab">연말(12월) 유통재고</div><div class="big">${fmt(decStkT)}</div>
+    <div class="delta" style="color:var(--muted)">OR 2개월 · IR 3개월 MOS 도달</div></div>`;
+  box.innerHTML=html;
+}
+function psiChart(g,canvas){
+  const G=PSI.group[g];
+  const so=G.so_h2[psiScn],st=G.st[psiScn],stk=G.stk[psiScn],mos=G.mos[psiScn];
+  if(psiCharts[g])psiCharts[g].destroy();
+  psiCharts[g]=new Chart(canvas,{data:{labels:H2M,datasets:[
+    {type:'bar',label:'셀아웃',data:so,backgroundColor:'#10b981',borderRadius:3,order:3,yAxisID:'y'},
+    {type:'bar',label:'셀스루',data:st,backgroundColor:'#2563eb',borderRadius:3,order:3,yAxisID:'y'},
+    {type:'line',label:'유통재고',data:stk,borderColor:'#f59e0b',backgroundColor:'#f59e0b',borderWidth:2.5,tension:.3,pointRadius:4,pointBackgroundColor:'#f59e0b',order:1,yAxisID:'y',datalabels:{display:false}}
+  ]},options:{maintainAspectRatio:false,animation:{duration:400},layout:{padding:{top:20}},
+    scales:{x:{grid:{display:false},ticks:{font:{size:11,weight:'600'}}},
+      y:{beginAtZero:true,grid:{color:'#eef2f6'},ticks:{font:{size:10},color:'#94a3b8',callback:v=>fmt(v)}}},
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{afterBody:(items)=>{const k=items[0].dataIndex;return `MOS ${mos[k]}개월 (목표 ${PSI.mos[g]})`;}}},
+      datalabels:{anchor:'end',align:'end',font:{size:8.5,weight:'700'},rotation:-90,
+        color:(c)=>c.dataset.label==='셀아웃'?'#059669':'#1e40af',
+        formatter:(v,c)=>c.dataset.type==='bar'&&v>=200?fmt(v):''}}},
+    plugins:[ChartDataLabels]});
+}
+function psiTables(){
+  let html='';
+  [['OR','OR · Outside Retail'],['IR','IR · Inside Retail']].forEach(([g,nm])=>{
+    const chs=PSI.channels[g];
+    let rows='';let tot=[0,0,0,0,0,0],totH2=0,totJun=0,totDec=0;
+    chs.forEach(ch=>{const c=PSI.chanFc[g][ch];if(c.stk_jun<1&&c.st.ML.reduce((a,b)=>a+b,0)<1)return;
+      const st=c.st[psiScn];const h2=st.reduce((a,b)=>a+b,0);totH2+=h2;totJun+=c.stk_jun;totDec+=c.stk_dec[psiScn];
+      st.forEach((v,i)=>tot[i]+=v);
+      const flag=c.junmos>PSI.mos[g]*1.4?'<span style="color:var(--red-d);font-weight:700"> ⚠과잉</span>':(c.junmos<PSI.mos[g]*0.6?'<span style="color:var(--amber-d)"> 부족</span>':'');
+      rows+=`<tr><td class="lab">${ch}</td>${st.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tcol" style="font-weight:800;color:var(--blue)">${fmt(h2)}</td><td>${fmt(c.stk_jun)}</td><td>${c.junmos}${flag}</td><td>${fmt(c.stk_dec[psiScn])}</td></tr>`;});
+    rows+=`<tr class="tot"><td class="lab">합계</td>${tot.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tcol">${fmt(totH2)}</td><td>${fmt(totJun)}</td><td>—</td><td>${fmt(totDec)}</td></tr>`;
+    html+=`<div class="matrix-cap" style="margin-top:12px"><b>${nm}</b> · 연말 MOS 목표 ${PSI.mos[g]}개월</div>
+      <div class="scrollx"><table><thead><tr><th class="lab">채널</th>${H2M.map(m=>`<th>${m}</th>`).join('')}<th>H2 셀스루</th><th>6월재고</th><th>6월MOS</th><th>12월재고</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  });
+  document.getElementById('psiTables').innerHTML=html;
+}
+function psiRender(){psiKpiRender();psiChart('OR',document.getElementById('cvOR'));psiChart('IR',document.getElementById('cvIR'));psiTables();}
+document.querySelectorAll('.psiscn').forEach(b=>b.onclick=()=>{psiScn=b.dataset.s;
+  document.querySelectorAll('.psiscn').forEach(x=>x.classList.toggle('on',x===b));psiRender();});
+
 document.querySelectorAll('.vtab').forEach(t=>t.onclick=()=>{
   document.querySelectorAll('.vtab').forEach(x=>x.classList.toggle('active',x===t));
   const v=t.dataset.v;
   document.getElementById('dashView').style.display=v==='dash'?'':'none';
+  document.getElementById('psiView').style.display=v==='psi'?'':'none';
   document.getElementById('logicView').style.display=v==='logic'?'':'none';
+  if(v==='psi'&&!psiCharts.OR)psiRender();
 });
 </script>
 </body>
