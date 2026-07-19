@@ -110,7 +110,7 @@ tr.tot td{font-weight:800;background:#f8fafc}tr.tot td.lab{background:#dcfce7}
       <li><b>집중.</b> OR=eXtra, IR=BH·IR_Others. 채널 필터로 개별 추세·예측 점검.</li>
     </ul>
   </div>
-  <div class="method"><b>방법론.</b> <b>실적 소스(월마감 정본 우선)</b>: OR=<code>or-monthly-psi</code>(by_cat SO, 2023~26 월마감), IR 2026=<code>ir-total</code>(byCategory 월마감·월별 앵커), IR 2023~25=<code>b2c-unified</code>(채널×압축기 유일 다년소스, SSOT 재분류). 2026 하반기 예측=채널별 상반기 정본 실적 앵커 × <b>하이브리드 시즌비율</b>(이력 두꺼운 채널=자체값, 얇으면 그룹 수렴). ML=최근가중(25:0.5·24:0.3·23:0.2), <b>Best/Worst=이력 P75/P25 분위수</b>(단발 이상치 완충). 위스커=Worst~Best. 산식 상세는 <b>💡 경영 인사이트</b> 탭 부록. ⚠️ 2026 7월 실데이터 부분(7/19)이라 하반기는 예측이며 확정치 아님. IR 2023~25는 월마감 정본 부재로 b2c 기준(2025=주간, OR 대조 시 월마감과 정합 확인됨).</div>
+  <div class="method"><b>방법론.</b> <b>실적 소스(월마감 정본 우선)</b>: OR=<code>or-monthly-psi</code>(by_cat SO, 2023~26 월마감), IR 2026=<code>ir-total</code>(byCategory 월마감·월별 앵커), IR 2023~25=<code>b2c-unified</code>(채널×압축기 유일 다년소스, SSOT 재분류). 2026 하반기 예측=채널별 상반기 정본 실적 앵커 × <b>하이브리드 시즌비율</b>(이력 두꺼운 채널=자체값, 얇으면 그룹 수렴). ML=최근가중(25:0.5·24:0.3·23:0.2), <b>Best/Worst=이력 P75/P25 분위수</b>(단발 이상치 완충). 위스커=Worst~Best. 산식 상세는 <b>💡 경영 인사이트</b> 탭 부록. ⚠️ 2026 7월 실데이터 부분(7/19)이라 하반기는 예측이며 확정치 아님. IR 2023·2024는 <b>월별</b>(월당 1포인트=월마감급), 2025만 <b>주간</b>(월집계 시 월마감과 정합 — OR 대조 12개월 완전일치). IR 절대수준은 2026 정본(ir-total)/b2c 계수로 정합. ⚠️ 2025 12월은 3주만 집계(타 월 4~5주) — IR은 2025 월마감 정본 부재로 12월 완전성 미검증.</div>
   </div><!-- /dashView -->
   <div id="logicView" class="logic" style="display:none"><style>
 .exec{max-width:960px}
