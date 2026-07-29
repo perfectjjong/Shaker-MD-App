@@ -293,7 +293,7 @@ tr:hover td{background:#f8fafc}
   <div class="stitle" id="mtTitle">Model × Channel — Latest Week Snapshot</div>
   <div class="cc">
     <div class="ct" id="mtSubtitle">Model-Level Snapshot</div>
-    <div class="cd" id="mtSources">Stock + rolling 4-week Sell-Out per (model, channel) row. ⚠️ IR 데이터엔 OR처럼 모델별 채널×월 히스토리·BTU/H-C/압축기 메타가 없음(Task 1-5 산출물 스키마: model/category/channel/stk/so_recent_4w/mos/flag만 제공) — 아래 표는 그 실제 필드만 사용.</div>
+    <div class="cd" id="mtSources">Stock + rolling 4-week Sell-Out per (model, channel) row. ⚠️ 이 데이터는 모델별 채널×월 히스토리·BTU/H-C/압축기 정보를 포함하지 않습니다(제공 필드: model/category/channel/stk/so_recent_4w/mos/flag) — 아래 표는 그 실제 필드만 사용.</div>
     <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Category:</span>
       <button class="fb on" data-mtcat="ALL">ALL</button>
@@ -332,7 +332,7 @@ tr:hover td{background:#f8fafc}
   <div class="cc">
     <div class="ct">Purpose: Supply &amp; Promotion Decisions (Model-Level)</div>
     <div class="cd" id="m2Meta"></div>
-    <div class="cd" style="margin-top:-4px">⚠️ IR 산출물엔 OR의 월별 So Apr/May 히스토리·mos_thresholds 메타가 없음 — 각 행의 <code>flag</code>(빌더가 이미 LOW/OVER/OOS/SLOW/NORMAL로 분류, Task 1-5 산출)를 그대로 사용. Action 제안 수량은 <code>so_recent_4w÷4</code>(월평균 근사)로 파생 계산.</div>
+    <div class="cd" style="margin-top:-4px">⚠️ 이 데이터는 월별 SO Apr/May 히스토리·mos_thresholds 기준 정보를 포함하지 않습니다 — 각 행의 <code>flag</code>(빌더가 이미 LOW/OVER/OOS/SLOW/NORMAL로 분류)를 그대로 사용. Action 제안 수량은 <code>so_recent_4w÷4</code>(월평균 근사)로 파생 계산.</div>
     <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Channel:</span>
       <div id="m2ChBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -1395,7 +1395,10 @@ function render() {
   renderMosTab();
   // header info
   const chLabel = curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + ');
-  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model 2026-06 · ' + chLabel;
+  const mtAsOf = (typeof IR_PSI_MODEL_TABLE !== 'undefined')
+    ? (IR_PSI_MODEL_TABLE.as_of_year + ' ' + IR_PSI_MODEL_TABLE.as_of_week)
+    : '2026-06';
+  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model ' + mtAsOf + ' · ' + chLabel;
 }
 
 render();
