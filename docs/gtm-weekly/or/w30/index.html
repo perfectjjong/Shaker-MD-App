@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GTM W30 - OR 5-Channel Weekly Report</title>
+</head>
+<body style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f8fafc;color:#1e293b;min-height:100vh;">
+<div style="background:#1e40af;border-bottom:1px solid #1d4ed8;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;">
+  <a href="/" style="color:#ffffff;text-decoration:none;font-size:13px;">&#8592; Dashboard Home</a>
+  <span style="color:#bfdbfe;font-size:12px;">Generated: 2026-07-29 11:00</span>
+</div>
+<div style="max-width:1100px;margin:0 auto;padding:32px 24px;">
+  <div style="margin-bottom:32px;">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <span style="font-size:28px;">&#128203;</span>
+      <h1 style="margin:0;font-size:24px;font-weight:800;color:#1e293b;">GTM W30 &#8212; OR 5-Channel Weekly Report</h1>
+    </div>
+    <p style="margin:4px 0;color:#64748b;font-size:14px;">Reporting Period: W30 (2026-07-28 basis) &nbsp;|&nbsp; SO Avg: W27/W28/W29/W30 (4-Week)</p>
+    <p style="margin:4px 0;color:#94a3b8;font-size:12px;">Sets basis / Accessories excluded &nbsp;|&nbsp; WOS(Stock): channel stock only &nbsp;|&nbsp; WOS(+OUD): channel stock + LG warehouse</p>
+  </div>
+
+  <h2 style="font-size:16px;font-weight:700;color:#0f766e;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:12px;">SELL STATUS</h2>
+
+  <!-- Category Filter -->
+  <div id="catFilters" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;">
+    <button onclick="setFilter('All')" class="cat-btn active" data-cat="All"
+      style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#1e40af;color:#fff;font-size:12px;font-weight:600;cursor:pointer;">All</button>
+    <button onclick="setFilter('Split AC')" class="cat-btn" data-cat="Split AC" style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#fff;color:#1e40af;font-size:12px;font-weight:600;cursor:pointer;">Split AC</button> <button onclick="setFilter('Window AC')" class="cat-btn" data-cat="Window AC" style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#fff;color:#1e40af;font-size:12px;font-weight:600;cursor:pointer;">Window AC</button> <button onclick="setFilter('Floor Standing AC')" class="cat-btn" data-cat="Floor Standing AC" style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#fff;color:#1e40af;font-size:12px;font-weight:600;cursor:pointer;">Floor Standing AC</button> <button onclick="setFilter('Concealed Set')" class="cat-btn" data-cat="Concealed Set" style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#fff;color:#1e40af;font-size:12px;font-weight:600;cursor:pointer;">Concealed Set</button> <button onclick="setFilter('Cassette AC')" class="cat-btn" data-cat="Cassette AC" style="padding:6px 16px;border-radius:20px;border:1px solid #1e40af;background:#fff;color:#1e40af;font-size:12px;font-weight:600;cursor:pointer;">Cassette AC</button>
+  </div>
+
+  <div style="overflow-x:auto;margin-bottom:32px;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;" id="sellTable">
+    <thead>
+      <tr><th rowspan="2" style="text-align:left;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Channel</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Sell-Thru</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Sell-Out</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">ST%</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Ch. Stock</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">OUD</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">WOS (Stock)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">WOS (+OUD)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">4W Avg SO</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">W30 SO</th></tr>
+      <tr id="subheadRow"><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">(W1-W30)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">(W1-W30)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;"></th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">(W30)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">(Jul 25)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;"></th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;"></th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;"></th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;"></th></tr>
+    </thead>
+    <tbody id="sellBody"><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">eXtra</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">26,843</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">21,874</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">81.5%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">8,507</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#10b981;font-weight:700;">13.5w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">13.5w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">629</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">474</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Al Manea</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">10,031</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">10,351</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">103.2%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">2,267</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#f59e0b;font-weight:700;">4.5w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">4.5w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">502</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">333</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">SWS</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">4,033</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">3,957</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">98.1%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">472</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">396</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#ef4444;font-weight:700;">2.8w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">5.1w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">171</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">147</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Black Box</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">3,612</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">3,670</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">101.6%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">536</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">358</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#ef4444;font-weight:700;">4.0w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">6.6w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">135</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">185</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Al Khunizan</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">1,403</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">1,144</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">81.5%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">1,190</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">138</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#10b981;font-weight:700;">19.0w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">21.2w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">62</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">102</td></tr><tr style='background:#eff6ff;font-weight:700;color:#1e293b;'><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">OR Total</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">45,922</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">40,996</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">89.3%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">12,972</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">892</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">8.7w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">9.2w</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">1499</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#1e40af;font-weight:700;">1,241</td></tr></tbody>
+  </table></div>
+
+  <script>
+  const CAT_DATA = {"Split AC": [{"ch": "eXtra", "st_q": 25105, "so_q": 21335, "stk": 7170, "oud_q": 0, "avg4": 578, "so_last": 385, "st_pct": 84.98307110137424, "wos_stk": 12.394122731201383, "wos_tot": 12.394122731201383}, {"ch": "Al Manea", "st_q": 9791, "so_q": 10017, "stk": 1609, "oud_q": 0, "avg4": 494, "so_last": 322, "st_pct": 102.30824226330304, "wos_stk": 3.2587341772151897, "wos_tot": 3.2587341772151897}, {"ch": "SWS", "st_q": 3494, "so_q": 3639, "stk": 322, "oud_q": 311, "avg4": 152, "so_last": 113, "st_pct": 104.14997137950772, "wos_stk": 2.1254125412541254, "wos_tot": 4.178217821782178}, {"ch": "Black Box", "st_q": 3339, "so_q": 3485, "stk": 340, "oud_q": 298, "avg4": 124, "so_last": 169, "st_pct": 104.3725666367176, "wos_stk": 2.7419354838709675, "wos_tot": 5.145161290322581}, {"ch": "Al Khunizan", "st_q": 862, "so_q": 628, "stk": 758, "oud_q": 0, "avg4": 28, "so_last": 51, "st_pct": 72.8538283062645, "wos_stk": 27.071428571428573, "wos_tot": 27.071428571428573}], "Window AC": [{"ch": "eXtra", "st_q": 1364, "so_q": 200, "stk": 1186, "oud_q": 0, "avg4": 38, "so_last": 76, "st_pct": 14.66275659824047, "wos_stk": 31.00653594771242, "wos_tot": 31.00653594771242}, {"ch": "Al Manea", "st_q": -12, "so_q": -1, "stk": 9, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": null, "wos_stk": null, "wos_tot": null}, {"ch": "SWS", "st_q": 419, "so_q": 241, "stk": 72, "oud_q": 80, "avg4": 16, "so_last": 29, "st_pct": 57.51789976133651, "wos_stk": 4.430769230769231, "wos_tot": 9.353846153846154}, {"ch": "Black Box", "st_q": 231, "so_q": 114, "stk": 55, "oud_q": 60, "avg4": 7, "so_last": 8, "st_pct": 49.35064935064935, "wos_stk": 7.586206896551724, "wos_tot": 15.862068965517242}, {"ch": "Al Khunizan", "st_q": 290, "so_q": 191, "stk": 78, "oud_q": 0, "avg4": 18, "so_last": 22, "st_pct": 65.86206896551724, "wos_stk": 4.457142857142857, "wos_tot": 4.457142857142857}], "Floor Standing AC": [{"ch": "eXtra", "st_q": 374, "so_q": 339, "stk": 151, "oud_q": 0, "avg4": 12, "so_last": 13, "st_pct": 90.64171122994652, "wos_stk": 12.583333333333334, "wos_tot": 12.583333333333334}, {"ch": "Al Manea", "st_q": 252, "so_q": 322, "stk": 26, "oud_q": 0, "avg4": 8, "so_last": 11, "st_pct": 127.77777777777777, "wos_stk": 3.25, "wos_tot": 3.25}, {"ch": "SWS", "st_q": 84, "so_q": 65, "stk": 0, "oud_q": 0, "avg4": 4, "so_last": 5, "st_pct": 77.38095238095238, "wos_stk": null, "wos_tot": null}, {"ch": "Black Box", "st_q": 18, "so_q": 43, "stk": 1, "oud_q": 0, "avg4": 4, "so_last": 8, "st_pct": 238.88888888888889, "wos_stk": 0.26666666666666666, "wos_tot": 0.26666666666666666}, {"ch": "Al Khunizan", "st_q": 196, "so_q": 255, "stk": 57, "oud_q": 0, "avg4": 11, "so_last": 16, "st_pct": 130.10204081632654, "wos_stk": 5.181818181818182, "wos_tot": 5.181818181818182}], "Concealed Set": [{"ch": "eXtra", "st_q": 0, "so_q": 0, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": null, "wos_stk": null, "wos_tot": null}, {"ch": "Al Manea", "st_q": 0, "so_q": 13, "stk": 4, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": null, "wos_stk": 16.0, "wos_tot": 16.0}, {"ch": "SWS", "st_q": 22, "so_q": 12, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": 54.54545454545454, "wos_stk": null, "wos_tot": null}, {"ch": "Black Box", "st_q": 2, "so_q": 6, "stk": 2, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": 300.0, "wos_stk": null, "wos_tot": null}, {"ch": "Al Khunizan", "st_q": 26, "so_q": 61, "stk": 66, "oud_q": 0, "avg4": 6, "so_last": 13, "st_pct": 234.6153846153846, "wos_stk": 11.0, "wos_tot": 11.0}], "Cassette AC": [{"ch": "eXtra", "st_q": 0, "so_q": 0, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": null, "wos_stk": null, "wos_tot": null}, {"ch": "Al Manea", "st_q": 0, "so_q": 0, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": null, "wos_stk": null, "wos_tot": null}, {"ch": "SWS", "st_q": 14, "so_q": 0, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": 0.0, "wos_stk": null, "wos_tot": null}, {"ch": "Black Box", "st_q": 22, "so_q": 21, "stk": 0, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": 95.45454545454545, "wos_stk": null, "wos_tot": null}, {"ch": "Al Khunizan", "st_q": 28, "so_q": 9, "stk": 21, "oud_q": 0, "avg4": 0, "so_last": 0, "st_pct": 32.142857142857146, "wos_stk": null, "wos_tot": null}]};
+  const WOS_PERIOD = '(W30)';
+  const OUD_PERIOD = '(Jul 25)';
+
+  function wosColor(v) {
+    if (v === null || v === undefined) return '#64748b';
+    if (v < 4)  return '#ef4444';
+    if (v < 8)  return '#f59e0b';
+    return '#16a34a';
+  }
+
+  function fmtWos(v) {
+    return (v !== null && v !== undefined) ? v.toFixed(1) + 'w' : '-';
+  }
+
+  function buildRows(data) {
+    const TS = 'padding:8px 12px;border-bottom:1px solid #e2e8f0;';
+    let html = '';
+    let tSt=0, tSo=0, tStk=0, tOud=0, tA4=0, tSl=0;
+    data.forEach(r => {
+      const stP = r.st_pct !== null ? r.st_pct.toFixed(1) + '%' : 'N/A';
+      const wc  = wosColor(r.wos_stk);
+      tSt+=r.st_q; tSo+=r.so_q; tStk+=r.stk; tOud+=r.oud_q; tA4+=r.avg4; tSl+=(r.so_last||0);
+      html += `<tr>
+        <td style="${TS}text-align:left;font-weight:700;">${r.ch}</td>
+        <td style="${TS}text-align:right;">${r.st_q.toLocaleString()}</td>
+        <td style="${TS}text-align:right;">${r.so_q.toLocaleString()}</td>
+        <td style="${TS}text-align:right;">${stP}</td>
+        <td style="${TS}text-align:right;">${r.stk.toLocaleString()}</td>
+        <td style="${TS}text-align:right;">${r.oud_q.toLocaleString()}</td>
+        <td style="${TS}text-align:right;color:${wc};font-weight:700;">${fmtWos(r.wos_stk)}</td>
+        <td style="${TS}text-align:right;">${fmtWos(r.wos_tot)}</td>
+        <td style="${TS}text-align:right;">${r.avg4}</td>
+        <td style="${TS}text-align:right;color:#1e40af;font-weight:700;">${(r.so_last||0).toLocaleString()}</td>
+      </tr>`;
+    });
+    // Total row
+    const tPct = tSt > 0 ? (tSo/tSt*100).toFixed(1)+'%' : 'N/A';
+    const tWs  = tA4 > 0 && tStk > 0 ? fmtWos(tStk/tA4) : '-';
+    const tWt  = tA4 > 0 && (tStk+tOud) > 0 ? fmtWos((tStk+tOud)/tA4) : '-';
+    html += `<tr style="background:#eff6ff;font-weight:700;">
+      <td style="${TS}text-align:left;font-weight:700;">OR Total</td>
+      <td style="${TS}text-align:right;">${tSt.toLocaleString()}</td>
+      <td style="${TS}text-align:right;">${tSo.toLocaleString()}</td>
+      <td style="${TS}text-align:right;">${tPct}</td>
+      <td style="${TS}text-align:right;">${tStk.toLocaleString()}</td>
+      <td style="${TS}text-align:right;">${tOud.toLocaleString()}</td>
+      <td style="${TS}text-align:right;">${tWs}</td>
+      <td style="${TS}text-align:right;">${tWt}</td>
+      <td style="${TS}text-align:right;">${tA4}</td>
+      <td style="${TS}text-align:right;color:#1e40af;font-weight:700;">${tSl.toLocaleString()}</td>
+    </tr>`;
+    return html;
+  }
+
+  function setFilter(cat) {
+    // 버튼 스타일
+    document.querySelectorAll('.cat-btn').forEach(b => {
+      const active = b.dataset.cat === cat;
+      b.style.background = active ? '#1e40af' : '#fff';
+      b.style.color      = active ? '#fff'    : '#1e40af';
+    });
+    // 테이블 업데이트
+    const data = cat === 'All' ? [{"ch": "eXtra", "st_q": 26843, "so_q": 21874, "stk": 8507, "oud_q": 0, "avg4": 629, "st_pct": 81.48865626047758, "wos_stk": 13.530019880715706, "wos_tot": 13.530019880715706, "so_last": 474}, {"ch": "Al Manea", "st_q": 10031, "so_q": 10351, "stk": 2267, "oud_q": 0, "avg4": 502, "st_pct": 103.19011065696341, "wos_stk": 4.51593625498008, "wos_tot": 4.51593625498008, "so_last": 333}, {"ch": "SWS", "st_q": 4033, "so_q": 3957, "stk": 472, "oud_q": 396, "avg4": 171, "st_pct": 98.11554673939995, "wos_stk": 2.756204379562044, "wos_tot": 5.068613138686131, "so_last": 147}, {"ch": "Black Box", "st_q": 3612, "so_q": 3670, "stk": 536, "oud_q": 358, "avg4": 135, "st_pct": 101.60575858250276, "wos_stk": 3.9777365491651206, "wos_tot": 6.634508348794063, "so_last": 185}, {"ch": "Al Khunizan", "st_q": 1403, "so_q": 1144, "stk": 1190, "oud_q": 138, "avg4": 62, "st_pct": 81.53955808980756, "wos_stk": 19.04, "wos_tot": 21.248, "so_last": 102}] : CAT_DATA[cat];
+    document.getElementById('sellBody').innerHTML = buildRows(data);
+    // 서브헤더 기간 표시
+    const isAll = cat === 'All';
+    const subCells = document.getElementById('subheadRow').querySelectorAll('th');
+    subCells[0].textContent = isAll ? "W1-W30" : cat;
+    subCells[1].textContent = isAll ? "W1-W30" : '';
+  }
+  </script>
+
+  <h2 style="font-size:16px;font-weight:700;color:#0f766e;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:16px;">AR / DSO</h2>
+  <div style="overflow-x:auto;margin-bottom:32px;">
+  <table style="width:100%;border-collapse:collapse;font-size:13px;">
+    <thead><tr><th style="text-align:left;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Channel</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">CL (M)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">AR (M)</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">CL Util.</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">OVD%</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">OVD 60+%</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">Terms</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">DSO Simple</th><th style="text-align:center;padding:8px 12px;background:#1e40af;color:#ffffff;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #e2e8f0;">DSO Aged</th></tr></thead>
+    <tbody><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">eXtra</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">101.5</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">29.37</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">29%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">120d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">73.3d (+-47d)</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">15.0d</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Al Manea</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">19.1</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">19.96</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#ef4444;font-weight:700;">104%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">6.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">90d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">131.6d (+42d)</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">15.0d</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">SWS</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">12.2</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">8.34</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">68%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">42.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">90d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">139.2d (+49d)</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">15.0d</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Black Box</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">7.5</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">7.57</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#ef4444;font-weight:700;">101%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">38.4%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">5.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">90d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">147.7d (+58d)</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">19.9d</td></tr><tr><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">Al Khunizan</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">6.0</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">5.40</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;color:#f59e0b;font-weight:700;">90%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">0.0%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">90d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">214.9d (+125d)</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;">15.0d</td></tr><tr style='background:#eff6ff;font-weight:700;color:#1e293b;'><td style="text-align:left;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">OR Total</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">146.3</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">70.63</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">48%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">10.8%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">0.5%</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;"></td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">102.5d</td><td style="text-align:right;padding:8px 12px;border-bottom:1px solid #e2e8f0;font-weight:700;">15.5d</td></tr></tbody>
+  </table></div>
+
+  <h2 style="font-size:16px;font-weight:700;color:#0f766e;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin-bottom:16px;">Channel Commentary</h2>
+  <div style="background:#ffffff;border-radius:10px;border:1px solid #e2e8f0;border-left:4px solid #10b981;padding:20px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:18px;">&#x1F7E2;</span>
+    <strong style="color:#1e293b;font-size:16px;">eXtra</strong>
+    <span style="background:#10b98122;color:#10b981;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;">HEALTHY</span>
+  </div>
+  <ul style="margin:0;padding-left:18px;"><li style="margin:6px 0;color:#475569;">ST% 81.5% YTD. W30 Sell-Out reached 474 sets, lifting 4W avg to 629 sets/week.</li><li style="margin:6px 0;color:#475569;">Ch. Stock 8,507 sets | WOS(Stock) 13.5w. AR SAR 29.4M, zero overdue (DSO Aged 15.0d).</li></ul>
+  <div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #10b981;">
+    <span style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;">Action</span><br>
+    <span style="color:#1e293b;">Monitor W31 SO to confirm W30 spike is a sustained trend.</span>
+  </div>
+</div><div style="background:#ffffff;border-radius:10px;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;padding:20px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:18px;">&#x1F7E1;</span>
+    <strong style="color:#1e293b;font-size:16px;">Al Manea</strong>
+    <span style="background:#f59e0b22;color:#f59e0b;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;">WATCH</span>
+  </div>
+  <ul style="margin:0;padding-left:18px;"><li style="margin:6px 0;color:#475569;">ST% 103.2% YTD — only channel exceeding 100%, selling down prior-year stock.</li><li style="margin:6px 0;color:#475569;">Ch. Stock 2,267 sets | WOS(Stock) 4.5w — approaching shortage (&lt;4w threshold). OUD 0 sets (near zero).</li><li style="margin:6px 0;color:#475569;">CL headroom SAR -0.9M. DSO Aged 15.0d — AR quality healthy.</li></ul>
+  <div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #f59e0b;">
+    <span style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;">Action</span><br>
+    <span style="color:#1e293b;">Initiate replenishment discussion before stock falls below 4-week cover.</span>
+  </div>
+</div><div style="background:#ffffff;border-radius:10px;border:1px solid #e2e8f0;border-left:4px solid #f59e0b;padding:20px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:18px;">&#x1F7E1;</span>
+    <strong style="color:#1e293b;font-size:16px;">SWS</strong>
+    <span style="background:#f59e0b22;color:#f59e0b;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;">WATCH &#x2014; OUD Delivery Urgent</span>
+  </div>
+  <ul style="margin:0;padding-left:18px;"><li style="margin:6px 0;color:#475569;">Ch. Stock 472 sets | WOS(Stock) 2.8w — BELOW 4w threshold.</li><li style="margin:6px 0;color:#475569;">OUD 396 sets in LG warehouse | WOS(+OUD) 5.1w. Immediate delivery extends coverage substantially.</li><li style="margin:6px 0;color:#475569;">Zero OVD 60+. DSO Aged 15.0d — AR quality healthy.</li></ul>
+  <div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #f59e0b;">
+    <span style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;">Action</span><br>
+    <span style="color:#1e293b;">URGENT &#x2014; Push logistics to deliver OUD 396 sets immediately.</span>
+  </div>
+</div><div style="background:#ffffff;border-radius:10px;border:1px solid #e2e8f0;border-left:4px solid #f97316;padding:20px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:18px;">&#x1F7E0;</span>
+    <strong style="color:#1e293b;font-size:16px;">Black Box</strong>
+    <span style="background:#f9731622;color:#f97316;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;">CAUTION</span>
+  </div>
+  <ul style="margin:0;padding-left:18px;"><li style="margin:6px 0;color:#475569;">CL Util. 101% (SAR -0.1M headroom remaining).</li><li style="margin:6px 0;color:#475569;">At current SO pace (135 sets/week), total inventory (stock + OUD) clears in ~6.6w, exceeding 90d credit terms.</li><li style="margin:6px 0;color:#475569;">No overdue (DSO Aged 19.9d). DSO Simple 147.7d (+58d) reflects peak-season pre-loading.</li></ul>
+  <div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #f97316;">
+    <span style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;">Action</span><br>
+    <span style="color:#1e293b;">Hold new sell-thru. Escalate if SO &lt; 80 sets/week by W32.</span>
+  </div>
+</div><div style="background:#ffffff;border-radius:10px;border:1px solid #e2e8f0;border-left:4px solid #ef4444;padding:20px;margin-bottom:16px;">
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+    <span style="font-size:18px;">&#x1F534;</span>
+    <strong style="color:#1e293b;font-size:16px;">Al Khunizan</strong>
+    <span style="background:#ef444422;color:#ef4444;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700;">CRITICAL</span>
+  </div>
+  <ul style="margin:0;padding-left:18px;"><li style="margin:6px 0;color:#475569;">YTD Sell-Thru only 1403 sets (net negative from returns). 4W avg SO 62 sets/week &#x2014; effectively dormant.</li><li style="margin:6px 0;color:#475569;">Ch. Stock WOS 19.0w (~11 months at current pace). Zero OUD from LG.</li><li style="margin:6px 0;color:#475569;">OVD 0.0%, OVD 60+ SAR 0.00M (0.0% of AR). DSO Aged 15.0d &#x2014; worst in channel.</li></ul>
+  <div style="margin-top:12px;padding:10px 14px;background:#f8fafc;border-radius:6px;border-left:3px solid #ef4444;">
+    <span style="color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;">Action</span><br>
+    <span style="color:#1e293b;">Immediate AR recovery meeting. Secure written repayment for SAR 0.00M. Zero new sell-thru.</span>
+  </div>
+</div>
+
+  <h2 style="font-size:16px;font-weight:700;color:#0f766e;border-bottom:1px solid #e2e8f0;padding-bottom:8px;margin:32px 0 16px;">Key Priorities This Week</h2>
+  <div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;"><span style="background:#f59e0b;color:#fff;font-weight:800;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">1</span><div><span style="color:#f59e0b;font-weight:700;">[SWS]</span> <span style="color:#475569;">Deliver OUD 396 sets from LG warehouse &#x2014; WOS(Stock) at 2.8w</span></div></div><div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;"><span style="background:#f59e0b;color:#fff;font-weight:800;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">2</span><div><span style="color:#f59e0b;font-weight:700;">[Al Manea]</span> <span style="color:#475569;">Initiate replenishment &#x2014; WOS(Stock) 4.5w, nearing shortage</span></div></div><div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;"><span style="background:#f97316;color:#fff;font-weight:800;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">3</span><div><span style="color:#f97316;font-weight:700;">[Black Box]</span> <span style="color:#475569;">Hold new sell-thru &#x2014; CL Util. 101%, monitor SO pace vs. 90d terms</span></div></div><div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;"><span style="background:#ef4444;color:#fff;font-weight:800;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">4</span><div><span style="color:#ef4444;font-weight:700;">[Al Khunizan]</span> <span style="color:#475569;">Enforce AR recovery &#x2014; OVD 60+ SAR 0.00M, secure repayment plan</span></div></div><div style="display:flex;align-items:flex-start;gap:14px;padding:14px;background:#ffffff;border:1px solid #e2e8f0;border-radius:8px;margin-bottom:10px;"><span style="background:#10b981;color:#fff;font-weight:800;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">5</span><div><span style="color:#10b981;font-weight:700;">[eXtra]</span> <span style="color:#475569;">Confirm W31 SO sustains W30 momentum (474 sets spike)</span></div></div>
+
+  
+<div style="margin-top:32px;border:1px solid #e2e8f0;border-radius:10px;overflow:hidden">
+  <details>
+  <summary onclick="var a=this.querySelector('.arr');a.textContent=this.parentElement.open?'▼ 펴기':'▲ 접기';"
+    style="list-style:none;cursor:pointer;user-select:none;background:#0f766e;color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:space-between">
+    <span style="font-size:14px;font-weight:700">📊 데이터 분석 센터 인사이트</span>
+    <span style="font-size:11px;opacity:.9">기준: 2026-07-26 | <span style="background:#c62828;padding:2px 8px;border-radius:8px">🚨 위험</span><span class="arr" style="margin-left:10px;font-weight:500;color:#e2e8f0">▼ 펴기</span></span>
+  </summary>
+  <div style="padding:14px 20px;background:#fff">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase">Top 인사이트</div>
+        <div style="padding:6px 10px;background:#f0fdf4;border-radius:5px;margin:4px 0;font-size:11px;color:#1e293b"><strong style="color:#10b981">💰 기회</strong> OR Q2 Gap SAR 32.9M: SWS·Al Manea PGI 처리 시 SAR 19.7M 회수 가능</div><div style="padding:6px 10px;background:#f0fdf4;border-radius:5px;margin:4px 0;font-size:11px;color:#1e293b"><strong style="color:#10b981">💰 기회</strong> Al Khunizan 유휴재고 1,297대 → 고회전 채널 이동 시 추정 SAR 3.6M 회수</div><div style="padding:6px 10px;background:#f0fdf4;border-radius:5px;margin:4px 0;font-size:11px;color:#1e293b"><strong style="color:#10b981">📈 트렌드</strong> Jan→Jun ST 트렌드 ↗ 완만 상승 — 여름 피크(~9월) 진행 중 — Hajj 이후 SO 모멘텀 유지·재고 회전 관리가 관건.</div>
+      </div>
+      <div>
+        <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;text-transform:uppercase">우선순위 액션 (P0/P1)</div>
+        <div style="padding:5px 10px;border-left:3px solid #c62828;margin:4px 0;font-size:11px"><span style="color:#c62828;font-weight:700">P0</span> 채널 실적: Zagzoog — 급격 하락 이상치</div><div style="padding:5px 10px;border-left:3px solid #c62828;margin:4px 0;font-size:11px"><span style="color:#c62828;font-weight:700">P0</span> 채널 실적: Dhamin — 급격 하락 이상치</div><div style="padding:5px 10px;border-left:3px solid #e65100;margin:4px 0;font-size:11px"><span style="color:#e65100;font-weight:700">P1</span> 세그먼트: Window AC 급락</div>
+      </div>
+    </div>
+    <div style="margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:10px;color:#94a3b8">데이터 품질: <strong style="color:#10b981">100/100</strong></span>
+      <a href="https://shaker-dashboard.pages.dev/dashboards/analysis-center/" target="_blank" style="font-size:11px;color:#0f766e;text-decoration:none;font-weight:600">전체 분석 보기 →</a>
+    </div>
+  </div>
+  </details>
+</div>
+
+  <div style="margin-top:40px;padding-top:24px;border-top:1px solid #e2e8f0;text-align:center;">
+    <a href="/" style="color:#0f766e;text-decoration:none;font-size:13px;">&#8592; Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>
