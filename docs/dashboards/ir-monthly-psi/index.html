@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IR Monthly PSI 2023–2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script src="psi_data.js"></script>
+<script src="psi_model_table.js"></script>
+<style>
+:root{
+  --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --so:#10b981;--so-bg:#f0fdf4;--so-dk:#065f46;
+  --st:#2563eb;--stk:#f59e0b;--red:#ef4444;--amber:#f59e0b;
+  --c23:#94a3b8;--c24:#60a5fa;--c25:#f59e0b;--c26:#10b981;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100}
+.header h1{font-size:14px;font-weight:700}
+.badge{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap}
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;position:sticky;top:46px;z-index:99;overflow-x:auto}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:3px solid transparent;white-space:nowrap}
+.tab.active{color:var(--so);border-bottom-color:var(--so)}
+.filters{background:#fff;border-bottom:1px solid var(--border);padding:7px 24px;display:flex;gap:10px;align-items:center;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
+.fl{font-size:11px;font-weight:600;color:var(--muted)}
+.fb{border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;background:#fff;cursor:pointer;color:var(--text)}
+.fb.on{background:var(--so);color:#fff;border-color:var(--so)}
+.fb.yr23.on{background:var(--c23);border-color:var(--c23)}
+.fb.yr24.on{background:var(--c24);border-color:var(--c24)}
+.fb.yr25.on{background:var(--c25);border-color:var(--c25)}
+.fb.yr26.on{background:var(--c26);border-color:var(--c26)}
+.ms-item{border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;background:#fff;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;gap:4px}
+.ms-item input{cursor:pointer;margin:0}
+.sep{width:1px;height:20px;background:var(--border)}
+.content{padding:16px 24px;max-width:1400px;margin:0 auto}
+.stitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.kpi-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border-radius:8px;padding:13px 15px;border:1px solid var(--border)}
+.kpi.hero{border-left:4px solid var(--so);background:var(--so-bg)}
+.kl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.kv{font-size:20px;font-weight:700;line-height:1}
+.kpi.hero .kv{font-size:26px;color:var(--so)}
+.ks{font-size:11px;margin-top:5px;color:var(--muted)}
+.yoy-up{color:var(--so);font-weight:700}
+.yoy-dn{color:var(--red);font-weight:700}
+.kmini{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
+.kmini span{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bg);color:var(--muted)}
+.cc{background:var(--card);border-radius:8px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
+.ct{font-size:12px;font-weight:700;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+.cd{font-size:11px;color:var(--muted);margin-bottom:10px}
+.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.li{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.ld{width:10px;height:10px;border-radius:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.grid32{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-bottom:12px}
+.tbl{overflow-x:auto;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{background:var(--navy);color:#fff;padding:6px 8px;text-align:center;font-weight:600;font-size:11px;white-space:nowrap}
+th.l{text-align:left}
+td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+td.l{text-align:left;font-weight:600;background:#fafafa}
+tr.so-row td{background:var(--so-bg)}
+tr.so-row td.l{background:#d1fae5;color:var(--so-dk)}
+tr:hover td{background:#f8fafc}
+.null{color:#cbd5e1;font-style:italic}
+.up{color:var(--so);font-weight:700}
+.dn{color:var(--red);font-weight:700}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.note{font-size:11px;color:var(--muted);padding:7px 10px;background:#f8fafc;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
+.metric-toggle{display:flex;gap:4px;margin-bottom:10px;align-items:center}
+.mt{border:2px solid var(--border);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted)}
+.mt.so{border-color:var(--so);background:var(--so-bg);color:var(--so)}
+.mt.st{border-color:var(--st);background:#eff6ff;color:var(--st)}
+.mt.stk{border-color:var(--stk);background:#fffbeb;color:var(--stk)}
+.yr-legend{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.yt{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>IR Monthly PSI</h1>
+  <span style="font-size:11px;color:#94a3b8">5 Channels · 2023–2026</span>
+  <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
+  <span class="badge" style="background:#1e40af;color:#bfdbfe">P = Sell-Thru</span>
+  <span class="badge" style="background:#92400e;color:#fde68a">I = Stock</span>
+  <a href="OR_Monthly_PSI_RawData.xlsx" download
+     title="Raw(피벗용) 데이터 · 채널×월×카테고리(2023~26) + 채널×월×모델(2026) · Sell-Thru/Sell-Out/Stock"
+     style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#10b981;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel 다운로드</a>
+  <span id="hdr-info" style="margin-left:12px;font-size:11px;color:#94a3b8"></span>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-tab="0">Overview</div>
+  <div class="tab" data-tab="1">MOS Analysis</div>
+  <div class="tab" data-tab="6">MOS-2 Action</div>
+  <div class="tab" data-tab="2">YoY Comparison</div>
+  <div class="tab" data-tab="3">Channel Analysis</div>
+  <div class="tab" data-tab="4">Data</div>
+  <div class="tab" data-tab="5">Model Table</div>
+</div>
+
+<div class="filters">
+  <span class="fl">Period</span>
+  <button class="fb" data-range="Q1">Q1</button>
+  <button class="fb" data-range="Q2">Q2</button>
+  <button class="fb" data-range="Jan-May">Jan–May</button>
+  <button class="fb on" data-range="H1">H1</button>
+  <button class="fb" data-range="Full">Full Year</button>
+  <div class="sep"></div>
+  <span class="fl">Channel</span>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Ghanem" checked> Al Ghanem</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Shathri" checked> Al Shathri</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="BH" checked> BH</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="BM" checked> BM</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Dhamin" checked> Dhamin</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Star Appliance" checked> Star Appliance</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Tamkeen" checked> Tamkeen</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Zagzoog" checked> Zagzoog</label>
+  <label class="ms-item"><input type="checkbox" class="ch-cb" value="IR_Others" checked> IR_Others</label>
+  <div class="sep"></div>
+  <span class="fl">Category</span>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split Inverter" checked> Split Inv</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split On/Off" checked> Split On/Off</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Window AC" checked> Window</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Floor Standing AC" checked> FS</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Cassette" checked> Cassette</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Concealed" checked> Concealed</label>
+  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Others" checked> Others</label>
+</div>
+
+<!-- ═══════ TAB 0: Overview ═══════ -->
+<div class="tab-content active" id="t0">
+<div class="content">
+  <div class="stitle">Key Metrics <span id="kpi-range-label" style="font-weight:400;text-transform:none"></span></div>
+  <div class="kpi-row">
+    <div class="kpi hero">
+      <div class="kl">★ Sell-Out (S) — Channel Sales</div>
+      <div class="kv" id="kv-so">—</div>
+      <div class="ks"><span id="kv-so-yoy" class="yoy-up"></span> <span id="kv-so-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-so-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #bfdbfe">
+      <div class="kl">Sell-Thru (P) — Supply</div>
+      <div class="kv" id="kv-st" style="font-size:18px;color:var(--st)">—</div>
+      <div class="ks"><span id="kv-st-yoy"></span> <span id="kv-st-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-st-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #fde68a">
+      <div class="kl">Stock (I) — Month-End Inv.</div>
+      <div class="kv" id="kv-stk" style="font-size:18px;color:var(--stk)">—</div>
+      <div class="ks"><span id="kv-stk-yoy"></span> <span id="kv-stk-base" style="color:var(--muted)"></span></div>
+      <div class="kmini" id="kv-stk-mini"></div>
+    </div>
+    <div class="kpi" style="border-left:3px solid #fca5a5">
+      <div class="kl">Sell-Thru Rate (S÷P)</div>
+      <div class="kv" id="kv-ratio" style="font-size:18px;color:var(--amber)">—</div>
+      <div class="ks" id="kv-ratio-sub"></div>
+      <div class="kmini" id="kv-ratio-mini"></div>
+    </div>
+  </div>
+
+  <!-- Main PSI Chart -->
+  <div class="cc">
+    <div class="ct">
+      Monthly PSI Trend
+      <span style="margin-left:auto;display:flex;gap:4px">
+        <button class="mt st"  id="mtbtn-st"  onclick="toggleMainMetric('st',this)">Sell-Thru (P)</button>
+        <button class="mt so"  id="mtbtn-so"  onclick="toggleMainMetric('so',this)">Sell-Out (S)</button>
+        <button class="mt stk" id="mtbtn-stk" onclick="toggleMainMetric('stk',this)">Stock (I)</button>
+      </span>
+    </div>
+    <div class="cd">
+      <strong>월별 막대</strong> —
+      <span style="color:var(--st);font-weight:700">Sell-Thru (P·공급)</span> ·
+      <span style="color:var(--so);font-weight:700">Sell-Out (S·실판매)</span> ·
+      <span style="color:var(--stk);font-weight:700">Stock (I·월말재고)</span>
+      &nbsp;·&nbsp; <span id="main-range-note"><strong>2025 Jul~Dec</strong>(연한 막대) → <strong>2026 Jan~Jun</strong>(진한 막대) · 최근 12개월</span>
+      &nbsp;·&nbsp; 🏖 May~Sep Peak
+    </div>
+    <div class="legend">
+      <span class="li"><span class="ld" style="background:var(--st)"></span>Sell-Thru (P)</span>
+      <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
+      <span class="li"><span class="ld" style="background:var(--stk)"></span>Stock (I)</span>
+      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025</span>
+      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 Peak Season</span>
+    </div>
+    <canvas id="mainChart" height="200"></canvas>
+  </div>
+
+  <!-- Matrix Table -->
+  <div class="cc">
+    <div class="ct">
+      Monthly × Year Matrix
+      <span style="font-size:11px;font-weight:400;color:var(--muted);margin-left:6px">
+        ※ <span style="background:var(--so-bg);padding:1px 6px;border-radius:3px;color:var(--so);font-weight:700">Green = Sell-Out</span>
+      </span>
+    </div>
+    <div class="tbl" id="matrixTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 1: YoY Comparison ═══════ -->
+<div class="tab-content" id="t2">
+<div class="content">
+  <div class="stitle">4-Year YoY Comparison</div>
+  <div class="yr-legend">
+    <span class="yt" style="background:#f1f5f9;color:var(--c23)">-- 2023</span>
+    <span class="yt" style="background:#eff6ff;color:var(--c24)">━ 2024</span>
+    <span class="yt" style="background:#fffbeb;color:var(--c25)">━ 2025</span>
+    <span class="yt" style="background:var(--so-bg);color:var(--c26)">━━ 2026</span>
+    <span style="font-size:11px;color:var(--muted);margin-left:4px">· 2026 through Jun · Peak season shaded</span>
+  </div>
+  <div class="cc">
+    <div class="ct"><span style="color:var(--so)">★ Sell-Out</span> 4-Year Comparison</div>
+    <div class="cd">Channel sales qty · 2023/2024 = dashed</div>
+    <canvas id="yoyChartSO" height="200"></canvas>
+  </div>
+  <div class="grid2" style="margin-bottom:12px">
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct" style="color:var(--st)">Sell-Thru 4-Year Comparison</div>
+      <div class="cd" style="font-size:10px">SAP shipment qty</div>
+      <canvas id="yoyChartST" height="180"></canvas>
+    </div>
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct" style="color:var(--stk)">Stock 4-Year Comparison</div>
+      <div class="cd" style="font-size:10px">Month-end channel stock</div>
+      <canvas id="yoyChartStk" height="180"></canvas>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">Quarterly Summary (Sell-Out)</div>
+      <div class="tbl" id="qtrTable"></div>
+    </div>
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct" id="ytd-title">YTD Comparison</div>
+      <canvas id="ytdChart" height="180"></canvas>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 2: Channel Analysis ═══════ -->
+<div class="tab-content" id="t3">
+<div class="content">
+  <div class="stitle">Channel Sell-Out Mix &amp; Trend</div>
+  <div class="cc">
+    <div class="ct" id="mix-title">Annual Channel Sell-Out Mix</div>
+    <div class="cd">Basis: <strong style="color:var(--so)">Sell-Out</strong></div>
+    <canvas id="mixChart" height="160"></canvas>
+  </div>
+  <div class="grid2">
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct" id="chbar-title">Channel Sell-Out</div>
+      <canvas id="chBarChart" height="200"></canvas>
+    </div>
+    <div class="cc" style="margin-bottom:0">
+      <div class="ct">Channel Annual Table</div>
+      <div class="tbl" id="chTable"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 3: Data ═══════ -->
+<div class="tab-content" id="t4">
+<div class="content">
+  <div class="stitle">Data Coverage</div>
+  <div class="cc">
+    <div class="ct">Year × Metric Availability</div>
+    <div id="coverageTable"></div>
+    <div class="note">
+      Source: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2026 S/I = 5채널 Monthly Raw · P = SAP raw(data.json)<br>
+      2023 S = SWS→S&amp;S mapping, 2023 Stock = Ch.Stock (month-end)<br>
+      ✅ 2026-06 마감 완료: OR 5채널 전부 Sell-Out·Sell-Thru·재고 반영 (재고=<b>세트 기준</b>, IDU only·ODU 제외). MOS-2/Model Table 탭도 2026-06 기준으로 갱신.
+    </div>
+  </div>
+  <div class="cc" style="margin-top:0">
+    <div class="ct">Annual Full PSI Table</div>
+    <div class="tbl" id="fullTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 5: Model Table (May 2026 P/S/I model × channel) ═══════ -->
+<div class="tab-content" id="t5">
+<div class="content">
+  <div class="stitle" id="mtTitle">Model × Channel — P/S/I Matrix</div>
+  <div class="cc">
+    <div class="ct" id="mtSubtitle">May 2026 — 5-Channel Model-Level Unified Sheet</div>
+    <div class="cd" id="mtSources"></div>
+    <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
+      <span class="fl">Category:</span>
+      <button class="fb on" data-cat="ALL">ALL</button>
+      <button class="fb" data-cat="Split AC">Split AC</button>
+      <button class="fb" data-cat="Window">Window</button>
+      <button class="fb" data-cat="Free Standing">Floor Standing</button>
+      <button class="fb" data-cat="Concealed">Concealed</button>
+      <button class="fb" data-cat="Cassette">Cassette</button>
+      <span class="sep"></span>
+      <span class="fl">Sort:</span>
+      <select id="mtSort" class="fb" style="cursor:pointer">
+        <option value="cat">By Category</option>
+        <option value="so">S (Sell-Out) ↓</option>
+        <option value="st">P (Sell-Thru) ↓</option>
+        <option value="stk">I (Stock) ↓</option>
+      </select>
+      <input id="mtSearch" class="fb" placeholder="Search model…" style="cursor:text;width:160px">
+    </div>
+    <div class="tbl" id="modelTable"></div>
+    <div class="note" id="mtFooter"></div>
+  </div>
+  <div class="cc" id="unmappedCard" style="margin-top:12px;display:none">
+    <div class="ct">⚠️ Unmapped Models (v6 Master Registration Required)</div>
+    <div class="cd">Raw codes that remain unmapped after the automatic fallback chain. ODU is auto-excluded under the IDU-only policy (not counted as unmapped).</div>
+    <div class="tbl" id="unmappedTable"></div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 6: MOS-2 Action Plan ═══════ -->
+<div class="tab-content" id="t6">
+<div class="content">
+  <div class="stitle">MOS-2 Action Plan — Channel-by-Model Classification (Jun Month-End)</div>
+  <div class="cc">
+    <div class="ct">Purpose: Supply &amp; Promotion Decisions (Model-Level)</div>
+    <div class="cd" id="m2Meta"></div>
+    <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center">
+      <span class="fl">Channel:</span>
+      <button class="fb on" data-mch="eXtra">eXtra</button>
+      <button class="fb" data-mch="Al Manea">Al Manea</button>
+      <button class="fb" data-mch="SWS">SWS</button>
+      <button class="fb" data-mch="Black Box">Black Box</button>
+      <button class="fb" data-mch="Al Khunizan">Al Khunizan</button>
+    </div>
+    <div id="m2Summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
+    <div class="grid2" style="gap:14px">
+      <div>
+        <div class="ct" style="color:#dc2626">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">MOS-2 &lt; 1.0 (less than 1 month of cover). Peak season — immediate replenishment recommended.</div>
+        <div class="tbl" id="lowTable"></div>
+      </div>
+      <div>
+        <div class="ct" style="color:#d97706">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">MOS-2 &gt; 3.0 (over 3 months of cover). Slow rotation — review price-cut / bundle / campaign.</div>
+        <div class="tbl" id="overTable"></div>
+      </div>
+    </div>
+    <div class="grid2" style="gap:14px;margin-top:14px">
+      <div>
+        <div class="ct" style="color:#7c2d12">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">Stock = 0 with Jun SO &gt; 0 (selling but no stock). Highest-priority supply target.</div>
+        <div class="tbl" id="oosTable"></div>
+      </div>
+      <div>
+        <div class="ct" style="color:#475569">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">May + Jun SO = 0 with Stock &gt; 0. No recent sales — review discontinue / discount / return.</div>
+        <div class="tbl" id="slowTable"></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════ TAB 4: MOS Analysis ═══════ -->
+<div class="tab-content" id="t1">
+<div class="content">
+  <div class="stitle">MOS Analysis <span style="font-weight:400;font-size:12px;color:var(--muted)">(Month of Stock)</span></div>
+  <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+    <button class="fb on" id="mos-fwd-btn" onclick="setMosMode('fwd',this)">MOS+2 (Forward)</button>
+    <button class="fb" id="mos-bwd-btn" onclick="setMosMode('bwd',this)">MOS-2 (Backward)</button>
+    <span style="font-size:11px;color:var(--muted)">
+      MOS+2 = Month-end stock ÷ avg(next 2mo SO) &nbsp;|&nbsp; MOS-2 = Month-end stock ÷ avg(current+prior mo SO)
+    </span>
+  </div>
+  <div class="cc">
+    <div class="ct" id="mos-chart-title">MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)</div>
+    <div style="position:relative;height:320px"><canvas id="mosChart"></canvas></div>
+    <div class="note" style="margin-top:6px">
+      Reference: <span style="color:#ef4444;font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
+      <span style="color:#059669;font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
+      <span style="color:#d97706;font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
+      2026 MOS+2 is null if Jul/Aug actuals unavailable (see back-calc panel)
+    </div>
+  </div>
+  <div class="cc" style="margin-top:0">
+    <div class="ct">📐 2026 Jul/Aug Sell-Out Back-Calculation
+      <span style="font-weight:400;font-size:11px;color:var(--muted)">— MOS+2 target scenarios based on Jun-26 stock</span>
+    </div>
+    <div id="mosPanel"></div>
+  </div>
+</div>
+</div>
+
+<script>
+// ── 상수 ──────────────────────────────────────────────────────────────────
+const MONTHS = IR_PSI_DATA.months;
+const YEARS  = IR_PSI_DATA.years;
+const CHS    = IR_PSI_DATA.channels;
+const RANGE_MONTHS = {
+  'Q1':      ['Jan','Feb','Mar'],
+  'Q2':      ['Apr','May','Jun'],
+  'Jan-May': ['Jan','Feb','Mar','Apr','May'],
+  'H1':      ['Jan','Feb','Mar','Apr','May','Jun'],
+  'Full':    MONTHS,
+};
+const PEAK = ['May','Jun','Jul','Aug','Sep'];
+
+// 현재 필터 상태
+let curRange = 'H1';  // 2026-07 Jun 마감 반영 — 기본 H1(Jan~Jun)
+let curChs   = new Set(['ALL']);  // multi-select: 'ALL' or specific channels
+let curCats  = new Set(['ALL']); // multi-select: 'ALL' or specific categories
+let mainMetric = 'so';
+let yoyMetric  = 'so';
+
+// ── 데이터 헬퍼 ──────────────────────────────────────────────────────────
+// ch: undefined → use curChs filter state (default)
+//     'ALL'     → use IR_PSI_DATA.totals (explicit total)
+//     'eXtra'   → use specific channel (channel analysis table)
+function getVal(yr, mo, key, ch) {
+  const d = IR_PSI_DATA.data;
+  if (!d[yr]) return null;
+  const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st' || key === 'stk');
+
+  function fromBase(base) {
+    if (!base) return null;
+    if (useCat) {
+      let s = 0;
+      for (const c of curCats) s += base.by_cat?.[c]?.[key] ?? 0;
+      return s;
+    }
+    const v = base[key];
+    return (v !== null && v !== undefined) ? v : null;
+  }
+
+  // Explicit channel passed → direct lookup (no curChs aggregation)
+  if (ch !== undefined) {
+    const base = ch === 'ALL'
+      ? (IR_PSI_DATA.totals[yr] || {})[mo]
+      : (d[yr][ch] || {})[mo];
+    return fromBase(base);
+  }
+
+  // Use curChs filter
+  if (curChs.has('ALL')) {
+    return fromBase((IR_PSI_DATA.totals[yr] || {})[mo]);
+  }
+
+  // Aggregate multiple channels
+  if (key === 'stk') {
+    let sum = null;
+    for (const chn of curChs) {
+      const base = (d[yr][chn] || {})[mo];
+      let v;
+      if (useCat) {
+        let catSum = null;
+        for (const c of curCats) {
+          const cv = base?.by_cat?.[c]?.stk;
+          if (cv !== null && cv !== undefined) catSum = (catSum ?? 0) + cv;
+        }
+        v = catSum;
+      } else {
+        v = base?.stk;
+      }
+      if (v !== null && v !== undefined) sum = (sum ?? 0) + v;
+    }
+    return sum;
+  }
+  let tot = 0, has = false;
+  for (const chn of curChs) {
+    const v = fromBase((d[yr][chn] || {})[mo]);
+    if (v !== null && v !== undefined) { tot += v; has = true; }
+  }
+  return has ? tot : null;
+}
+
+function sumRange(yr, months, key, ch='ALL') {
+  let tot = 0, hasData = false;
+  for (const mo of months) {
+    const v = getVal(yr, mo, key, ch);
+    if (v !== null && v !== undefined) { tot += v; hasData = true; }
+  }
+  return hasData ? tot : null;
+}
+
+function fmtN(v, dec=0) {
+  if (v === null || v === undefined) return '—';
+  return Number(v).toLocaleString('en', {maximumFractionDigits: dec});
+}
+function fmtYoy(cur, prev) {
+  if (!cur || !prev) return {txt:'—', cls:''};
+  const p = ((cur - prev) / Math.abs(prev) * 100).toFixed(1);
+  const cls = p > 0 ? 'yoy-up' : 'dn';
+  const pfx = p > 0 ? '+' : '';
+  return {txt: pfx + p + '%', cls};
+}
+
+// ── 필터 이벤트 ──────────────────────────────────────────────────────────
+// 기간: 단일 선택. 활성 버튼 재클릭 → Full Year로 해제
+document.querySelectorAll('[data-range]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const isActive = btn.classList.contains('on');
+    const target = isActive ? 'Full' : btn.dataset.range;
+    document.querySelectorAll('[data-range]').forEach(b => b.classList.remove('on'));
+    (isActive ? document.querySelector('[data-range="Full"]') : btn).classList.add('on');
+    curRange = target;
+    render();
+  });
+});
+
+// 채널: 체크박스 다중 선택 (Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others)
+// 전체 체크(또는 전체 해제) = 'ALL' 센티널로 취급하여 기존 getVal()의 curChs.has('ALL') 총계 fast-path를 그대로 활용
+function selectedChannels() {
+  return Array.from(document.querySelectorAll('.ch-cb:checked')).map(el => el.value);
+}
+function selectedCategories() {
+  return Array.from(document.querySelectorAll('.cat-cb:checked')).map(el => el.value);
+}
+function syncChannelFilter() {
+  const sel = selectedChannels();
+  const total = document.querySelectorAll('.ch-cb').length;
+  curChs = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
+  render();
+}
+function syncCategoryFilter() {
+  const sel = selectedCategories();
+  const total = document.querySelectorAll('.cat-cb').length;
+  curCats = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
+  render();
+}
+document.querySelectorAll('.ch-cb').forEach(cb => cb.addEventListener('change', syncChannelFilter));
+document.querySelectorAll('.cat-cb').forEach(cb => cb.addEventListener('change', syncCategoryFilter));
+
+// 카테고리(모델 테이블 탭 전용 단일선택 버튼, #t5): 다중 선택 + 토글 해제. ALL은 단독 선택
+document.querySelectorAll('[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.cat;
+    if (v === 'ALL') {
+      curCats = new Set(['ALL']);
+    } else if (curCats.has(v)) {
+      curCats.delete(v);
+      if (curCats.size === 0) curCats.add('ALL');
+    } else {
+      curCats.delete('ALL');
+      curCats.add(v);
+    }
+    document.querySelectorAll('[data-cat]').forEach(b => {
+      b.classList.toggle('on', curCats.has(b.dataset.cat));
+    });
+    render();
+  });
+});
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(x => x.classList.remove('active'));
+    document.getElementById('t' + t.dataset.tab).classList.add('active');
+    renderCharts(); // re-render charts when tab shown
+  });
+});
+
+// ── Main Metric 토글 ──────────────────────────────────────────────────────
+const mainVisible = {so: true, st: true, stk: true};
+// 각 key → dataset index (막대 3종: st=0, so=1, stk=2)
+const MAIN_DS_IDX = {st: [0], so: [1], stk: [2]};
+
+function toggleMainMetric(key, btn) {
+  mainVisible[key] = !mainVisible[key];
+  btn.className = mainVisible[key] ? 'mt ' + key : 'mt';
+  btn.style.opacity = mainVisible[key] ? '1' : '0.35';
+  const ch = charts['mainChart'];
+  if (!ch) return;
+  MAIN_DS_IDX[key].forEach(idx => ch.setDatasetVisibility(idx, mainVisible[key]));
+  ch.update();
+}
+
+function applyMainVisibility() {
+  const ch = charts['mainChart'];
+  if (!ch) return;
+  Object.entries(MAIN_DS_IDX).forEach(([key, idxArr]) => {
+    idxArr.forEach(idx => ch.setDatasetVisibility(idx, mainVisible[key]));
+    const btn = document.getElementById('mtbtn-' + key);
+    if (btn) {
+      btn.className = mainVisible[key] ? 'mt ' + key : 'mt';
+      btn.style.opacity = mainVisible[key] ? '1' : '0.35';
+    }
+  });
+  ch.update();
+}
+function setYoyMetric(key, btn) {
+  yoyMetric = key;
+  renderQtrTable();
+}
+
+// ── Charts ────────────────────────────────────────────────────────────────
+const charts = {};
+
+function peakBg(chart) {
+  const ctx = chart.ctx;
+  const {chartArea: ca, scales: {x}, data: {labels}} = chart;
+  if (!ca || !labels) return;
+  ctx.save();
+  ctx.fillStyle = 'rgba(254,249,195,0.55)';
+  labels.forEach((mo, i) => {
+    if (!PEAK.includes(mo)) return;
+    const x0 = x.getPixelForValue(i - 0.5);
+    const x1 = x.getPixelForValue(i + 0.5);
+    ctx.fillRect(x0, ca.top, x1 - x0, ca.height);
+  });
+  ctx.restore();
+}
+
+const PEAK_PLUGIN = {
+  id:'peak',
+  beforeDatasetsDraw: peakBg,
+};
+
+// 연도 경계 구분선 + 라벨 (renderMainChart가 mainSplit을 매 렌더 갱신)
+let mainSplit = {boundary: null, left: '', right: ''};
+const YEAR_SPLIT_PLUGIN = {
+  id:'yearSplit',
+  afterDatasetsDraw(chart) {
+    if (mainSplit.boundary == null) return;
+    const {ctx, chartArea: ca, scales:{x}} = chart;
+    if (!ca || !x) return;
+    const px = x.getPixelForValue(mainSplit.boundary);
+    if (px == null) return;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(100,116,139,0.55)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([5,4]);
+    ctx.beginPath();
+    ctx.moveTo(px, ca.top);
+    ctx.lineTo(px, ca.bottom);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '700 10px system-ui,sans-serif';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = '#94a3b8';
+    ctx.textAlign = 'right';
+    ctx.fillText('◀ ' + mainSplit.left, px - 6, ca.top + 3);
+    ctx.fillStyle = '#059669';
+    ctx.textAlign = 'left';
+    ctx.fillText(mainSplit.right + ' ▶', px + 6, ca.top + 3);
+    ctx.restore();
+  }
+};
+
+
+function mkChart(id, cfg) {
+  if (charts[id]) { charts[id].destroy(); }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, cfg);
+}
+
+// 최근 실적월 자동 감지 (당월 마감 시 stk 기록 or so/st>0). 최신 연도부터 역순 탐색.
+function latestActualMonth() {
+  const yrs = [...YEARS].sort(); // 오름차순
+  for (let y = yrs.length - 1; y >= 0; y--) {
+    const t = IR_PSI_DATA.totals[yrs[y]] || {};
+    for (let i = MONTHS.length - 1; i >= 0; i--) {
+      const d = t[MONTHS[i]];
+      if (d && (d.stk != null || (d.so || 0) > 0 || (d.st || 0) > 0)) {
+        return {yr: parseInt(yrs[y], 10), mIdx: i};
+      }
+    }
+  }
+  return {yr: parseInt(yrs[yrs.length - 1], 10), mIdx: MONTHS.length - 1};
+}
+
+// 연도 경계선 위치·라벨 + 캡션 문구 동적 갱신
+function updateMainYearSplit(order) {
+  let splitIdx = -1;
+  for (let i = 1; i < order.length; i++) {
+    if (order[i].yr !== order[i - 1].yr) { splitIdx = i; break; }
+  }
+  mainSplit = splitIdx < 0
+    ? {boundary: null, left: '', right: ''}
+    : {boundary: splitIdx - 0.5, left: order[splitIdx - 1].yr, right: order[splitIdx].yr};
+
+  const note = document.getElementById('main-range-note');
+  if (note) {
+    const f = order[0], l = order[order.length - 1];
+    const early = order.filter(o => o.yr === f.yr);
+    const late  = order.filter(o => o.yr === l.yr);
+    note.innerHTML = (f.yr === l.yr)
+      ? `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong> · 최근 12개월`
+      : `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong>(연한 막대) → <strong>${l.yr} ${late[0].mo}~${late[late.length - 1].mo}</strong>(진한 막대) · 최근 12개월`;
+  }
+}
+
+function renderMainChart() {
+  // 점선 전부 제거, 3지표(P·S·I) 모두 막대. 단일 Y축.
+  // 시계열: 최근 실적월(anchor)에서 뒤로 12개월 롤링.
+  //   → 26년 7월 마감 반영 시 자동으로 25 Aug~Dec + 26 Jan~Jul 로 이동.
+  const A = latestActualMonth();
+  const ORDER = [];
+  for (let k = 11; k >= 0; k--) {
+    let m = A.mIdx - k, yr = A.yr;
+    while (m < 0) { m += 12; yr -= 1; }
+    ORDER.push({mo: MONTHS[m], yr: String(yr)});
+  }
+  const curYr = String(A.yr); // anchor 연도 = 당년(진한 막대)
+  const labels = ORDER.map(o => o.mo);
+  const pull = key => ORDER.map(o => getVal(o.yr, o.mo, key));
+  const st  = pull('st');
+  const so  = pull('so');
+  const stk = pull('stk');
+
+  // 당년(anchor 연도) = 진한 막대, 직전년 = 연한 막대
+  const shade = (solid, faded) => ORDER.map(o => o.yr === curYr ? solid : faded);
+
+  // Y축 음수 바닥: 실제 최소값 바로 아래(100 단위)로 타이트하게. 음수 없으면 0.
+  // (반품 net 음수 한 점 때문에 -5,000까지 벌어지던 빈 공간 제거)
+  const _vals = [...so, ...st, ...stk].filter(v => v !== null && v !== undefined);
+  const _min = _vals.length ? Math.min(0, ..._vals) : 0;
+  const yMin = _min < 0 ? Math.floor(_min / 100) * 100 : 0;
+
+  updateMainYearSplit(ORDER); // 경계선·캡션 동기화
+
+  mkChart('mainChart', {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Sell-Thru (P)',
+          data: st,
+          backgroundColor: shade('rgba(37,99,235,0.85)', 'rgba(37,99,235,0.30)'),
+          borderColor: '#2563eb',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: 'Sell-Out (S)',
+          data: so,
+          backgroundColor: shade('rgba(16,185,129,0.90)', 'rgba(16,185,129,0.32)'),
+          borderColor: '#059669',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: 'Stock (I)',
+          data: stk,
+          backgroundColor: shade('rgba(245,158,11,0.85)', 'rgba(245,158,11,0.30)'),
+          borderColor: '#d97706',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      layout: {padding: {top: 40}}, // 세로 라벨 헤드룸
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:12, font:{size:11}}},
+        tooltip: {
+          callbacks: {
+            title: items => {
+              const i = items[0].dataIndex;
+              return `${ORDER[i].mo} ${ORDER[i].yr}`;
+            },
+            label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
+          }
+        },
+        // 각 막대 실적 숫자 라벨 (세로 회전, 2026 진한 잉크 / 2025 연한 회색)
+        datalabels: {
+          anchor: 'end',
+          align: 'end',
+          offset: 1,
+          rotation: -90,
+          clamp: true,
+          font: {size: 12, weight: 'bold'},
+          color: ctx => (ORDER[ctx.dataIndex] && ORDER[ctx.dataIndex].yr === curYr) ? '#334155' : '#94a3b8',
+          formatter: v => (v === null || v === undefined) ? '' : fmtN(v),
+        },
+      },
+      scales: {
+        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        y: {
+          min: yMin,
+          grace: '8%',
+          grid:{color:'#f1f5f9'},
+          ticks:{font:{size:11}, callback: v => fmtN(v)},
+          title:{display:true, text:'Qty (EA)', font:{size:10}, color:'var(--muted)'},
+        },
+      },
+    },
+    plugins: [PEAK_PLUGIN, YEAR_SPLIT_PLUGIN, ChartDataLabels],
+  });
+  applyMainVisibility();
+}
+
+function _yoyLineDatasets(key, mos) {
+  mos = mos || MONTHS;
+  const styles = {
+    '2023': {border:'#94a3b8', width:1.8, dash:[5,3], r:3},
+    '2024': {border:'#60a5fa', width:2.2, dash:[6,2], r:3},
+    '2025': {border:'#f59e0b', width:2.5, dash:[],    r:4},
+    '2026': {border:'#10b981', width:3.5, dash:[],    r:5},
+  };
+  return YEARS.map(yr => {
+    const s = styles[yr];
+    return {
+      label: yr,
+      data: mos.map(mo => getVal(yr, mo, key)),
+      borderColor: s.border,
+      backgroundColor: s.border.replace(')', ',.08)').replace('rgb','rgba'),
+      borderWidth: s.width,
+      borderDash: s.dash,
+      pointRadius: s.r,
+      pointBackgroundColor: s.border,
+      tension: .3,
+      spanGaps: false,
+    };
+  });
+}
+
+function renderYoyChart() {
+  const mos = RANGE_MONTHS[curRange];
+  const baseOpts = {
+    responsive: true,
+    interaction: {mode:'index', intersect:false},
+    plugins: {
+      legend: {position:'top', labels:{boxWidth:12, font:{size:11}}},
+      tooltip: {callbacks: {label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`}},
+    },
+    scales: {
+      x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+      y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}, callback: v => fmtN(v)}},
+    },
+  };
+
+  mkChart('yoyChartSO', {
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('so', mos)},
+    options: baseOpts, plugins:[PEAK_PLUGIN],
+  });
+  mkChart('yoyChartST', {
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('st', mos)},
+    options: {...baseOpts, plugins:{...baseOpts.plugins, legend:{...baseOpts.plugins.legend, labels:{...baseOpts.plugins.legend.labels, color:'#2563eb'}}}},
+    plugins:[PEAK_PLUGIN],
+  });
+  mkChart('yoyChartStk', {
+    type:'line', data:{labels:mos, datasets:_yoyLineDatasets('stk', mos)},
+    options: baseOpts, plugins:[PEAK_PLUGIN],
+  });
+}
+
+function renderYtdChart() {
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out Comparison`;
+  const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so'));
+  const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
+
+  mkChart('ytdChart', {
+    type: 'bar',
+    data: {
+      labels: YEARS,
+      datasets: [{
+        label: `${rangeLabel} Sell-Out`,
+        data: so_yr,
+        backgroundColor: colors,
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {display:false},
+        tooltip: {callbacks: {label: ctx => ` ${fmtN(ctx.raw)}`}},
+      },
+      scales: {
+        x: {grid:{display:false}, ticks:{font:{size:11}}},
+        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v => fmtN(v)}},
+      },
+    },
+  });
+}
+
+function renderMixChart() {
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('mix-title').textContent = `Annual Channel Sell-Out Mix (${rangeLabel})`;
+  const datasets = CHS.map((ch, ci) => {
+    const colors = ['#2563eb','#0ea5e9','#8b5cf6','#f59e0b','#10b981'];
+    return {
+      label: ch,
+      data: YEARS.map(yr => sumRange(yr, mos, 'so', ch) || 0),
+      backgroundColor: colors[ci],
+      stack: 'mix',
+      borderRadius: 2,
+    };
+  });
+  mkChart('mixChart', {
+    type: 'bar',
+    data: {labels: YEARS, datasets},
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {position:'bottom', labels:{boxWidth:10, font:{size:10}}},
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`
+          }
+        },
+      },
+      scales: {
+        x: {grid:{display:false}, stacked:true, ticks:{font:{size:11}}},
+        y: {stacked:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+      },
+    },
+  });
+}
+
+function renderChBarChart() {
+  const mos = RANGE_MONTHS[curRange];
+  const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
+  document.getElementById('chbar-title').textContent = `Channel ${rangeLabel} Sell-Out`;
+  const data26 = CHS.map(ch => sumRange('2026', mos, 'so', ch) || 0);
+  const data25 = CHS.map(ch => sumRange('2025', mos, 'so', ch) || 0);
+
+  mkChart('chBarChart', {
+    type: 'bar',
+    data: {
+      labels: CHS,
+      datasets: [
+        {label:'2026', data:data26, backgroundColor:'#10b981', borderRadius:3},
+        {label:'2025', data:data25, backgroundColor:'rgba(245,158,11,.5)', borderRadius:3},
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:10, font:{size:11}}},
+        tooltip: {callbacks: {label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`}},
+      },
+      scales: {
+        x: {grid:{display:false}, ticks:{font:{size:10}, maxRotation:25}},
+        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+      },
+    },
+  });
+}
+
+// ── KPI 업데이트 ──────────────────────────────────────────────────────────
+function renderKpi() {
+  const mos = RANGE_MONTHS[curRange];
+  const catSuffix = !curCats.has('ALL') ? ` · ${[...curCats].join('+')}` : '';
+  const label = `(${mos[0]}–${mos[mos.length-1]} 2026${catSuffix})`;
+  document.getElementById('kpi-range-label').textContent = label;
+
+  const so26  = sumRange('2026', mos, 'so');
+  const so25  = sumRange('2025', mos, 'so');
+  const so24  = sumRange('2024', mos, 'so');
+  const so23  = sumRange('2023', mos, 'so');
+  const st26  = sumRange('2026', mos, 'st');
+  const st25  = sumRange('2025', mos, 'st');
+  // Stock: 마지막 월 값
+  const lastMo = mos[mos.length-1];
+  const stk26  = getVal('2026', lastMo, 'stk');
+  const stk25  = getVal('2025', lastMo, 'stk');
+
+  document.getElementById('kv-so').textContent = fmtN(so26);
+  const yoySo = fmtYoy(so26, so25);
+  document.getElementById('kv-so-yoy').textContent = yoySo.txt;
+  document.getElementById('kv-so-yoy').className = yoySo.cls;
+  document.getElementById('kv-so-base').textContent = so25 ? 'vs 2025 ' + fmtN(so25) : '';
+  document.getElementById('kv-so-mini').innerHTML =
+    `<span>2023: ${fmtN(so23)}</span><span>2024: ${fmtN(so24)}</span><span>2025: ${fmtN(so25)}</span>`;
+
+  document.getElementById('kv-st').textContent = fmtN(st26);
+  const yoySt = fmtYoy(st26, st25);
+  document.getElementById('kv-st-yoy').innerHTML = `<span class="${yoySt.cls}">${yoySt.txt}</span>`;
+  document.getElementById('kv-st-base').textContent = st25 ? 'vs 2025 ' + fmtN(st25) : '';
+  document.getElementById('kv-st-mini').innerHTML =
+    `<span>2025: ${fmtN(st25)}</span>`;
+
+  document.getElementById('kv-stk').textContent = fmtN(stk26);
+  const yoyStk = fmtYoy(stk26, stk25);
+  document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM' + (!curCats.has('ALL') ? ' · channel total' : '');
+  document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
+
+  if (so26 && st26) {
+    const ratio = (so26 / st26 * 100).toFixed(1);
+    document.getElementById('kv-ratio').textContent = ratio + '%';
+    const msg = ratio < 80 ? '⚠ Channel overstock warning' :
+                ratio < 95 ? 'Channel absorption healthy' : '✓ Supply=absorption balanced';
+    const col = ratio < 80 ? '#ef4444' : ratio < 95 ? '#f59e0b' : '#10b981';
+    document.getElementById('kv-ratio-sub').innerHTML = `<span style="color:${col}">${msg}</span>`;
+    document.getElementById('kv-ratio-mini').innerHTML =
+      `<span>2023: ${so23 && st26 ? (sumRange('2023',mos,'so')/sumRange('2023',mos,'st')*100).toFixed(0)+'%' : '—'}</span>
+       <span>2024: ${sumRange('2024',mos,'so') && sumRange('2024',mos,'st') ? (sumRange('2024',mos,'so')/sumRange('2024',mos,'st')*100).toFixed(0)+'%' : '—'}</span>
+       <span>2025: ${so25 && st25 ? (so25/st25*100).toFixed(0)+'%' : '—'}</span>`;
+  } else {
+    document.getElementById('kv-ratio').textContent = '—';
+  }
+}
+
+// ── Matrix Table ──────────────────────────────────────────────────────────
+function renderMatrixTable() {
+  const mos = RANGE_MONTHS[curRange];
+  const rows = [];
+  // S 행 (Sell-Out) 먼저
+  for (const yr of YEARS) {
+    const isSo = true;
+    const soClass = 'so-row';
+    let tds = `<td class="l" style="${yr==='2026'?'color:var(--so-dk)':''}">${yr}</td>`;
+    let ytd = 0;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'so');
+      const isNull = v === null;
+      if (!isNull) ytd += v;
+      tds += `<td${isNull?` class="null"`:yr==='2026'?' style="color:var(--so-dk);font-weight:700"':''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
+    rows.push(`<tr class="${soClass}">${tds}</tr>`);
+  }
+
+  // YoY% 행 생성 헬퍼 (SO 섹션 끝에서 호출하기 전에 먼저 정의)
+  function yoyRow(key, color, bgColor, ytdMode) {
+    // ytdMode: 'sum' = YTD 합계 YoY%, 'last' = 마지막 월 YoY%, false = 빈칸
+    const tds = [`<td class="l" style="color:${color};background:${bgColor}">YoY%</td>`];
+    let ytd26 = 0, ytd25 = 0, lastP = null;
+    for (const mo of mos) {
+      const v26 = getVal('2026', mo, key);
+      const v25 = getVal('2025', mo, key);
+      if (v26 !== null) ytd26 += v26;
+      if (v25 !== null) ytd25 += v25;
+      if (v26 === null || v25 === null || v25 === 0) { tds.push('<td class="null">—</td>'); continue; }
+      const p = ((v26-v25)/Math.abs(v25)*100).toFixed(1);
+      lastP = p;
+      tds.push(`<td class="${p>0?'up':'dn'}">${p>0?'+':''}${p}%</td>`);
+    }
+    if (ytdMode === 'sum' && ytd25) {
+      const p = ((ytd26-ytd25)/Math.abs(ytd25)*100).toFixed(1);
+      tds.push(`<td class="${p>0?'up':'dn'}" style="font-weight:700">${p>0?'+':''}${p}%</td>`);
+    } else if (ytdMode === 'last' && lastP !== null) {
+      tds.push(`<td class="${lastP>0?'up':'dn'}" style="font-weight:700;font-size:10px">${lastP>0?'+':''}${lastP}% <span style="font-weight:400;color:var(--muted)">(${mos[mos.length-1]})</span></td>`);
+    } else {
+      tds.push('<td></td>');
+    }
+    return `<tr style="background:${bgColor}">${tds.join('')}</tr>`;
+  }
+
+  rows.push(yoyRow('so', 'var(--so-dk)', '#d1fae5', 'sum'));
+
+  // P 행 (Sell-Thru)
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — Supply</td></tr>`);
+  for (const yr of YEARS) {
+    let tds = `<td class="l" style="color:var(--st)">${yr}</td>`;
+    let ytd = 0;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'st');
+      const isNull = v === null;
+      if (!isNull) ytd += v;
+      tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
+    rows.push(`<tr>${tds}</tr>`);
+  }
+  rows.push(yoyRow('st', 'var(--st)', '#dbeafe', 'sum'));
+
+  // I 행 (Stock 월말)
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — Month-End Inv.</td></tr>`);
+  for (const yr of YEARS) {
+    let tds = `<td class="l" style="color:var(--stk)">${yr}</td>`;
+    for (const mo of mos) {
+      const v = getVal(yr, mo, 'stk');
+      const isNull = v === null;
+      tds += `<td${isNull?` class="null"`:''}>${isNull?'—':fmtN(v)}</td>`;
+    }
+    tds += `<td></td>`;
+    rows.push(`<tr>${tds}</tr>`);
+  }
+  rows.push(yoyRow('stk', 'var(--stk)', '#fef3c7', 'last'));
+
+  const thMos = mos.map(m => `<th>${m}</th>`).join('');
+  document.getElementById('matrixTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">Metric/Year</th>${thMos}<th>YTD</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Quarterly Table ───────────────────────────────────────────────────────
+function renderQtrTable() {
+  const key = yoyMetric;
+  const filterSet = new Set(RANGE_MONTHS[curRange]);
+  const QTR_DEF = [
+    {label:'Q1', mos:['Jan','Feb','Mar']},
+    {label:'Q2', mos:['Apr','May','Jun']},
+    {label:'Q3', mos:['Jul','Aug','Sep']},
+    {label:'Q4', mos:['Oct','Nov','Dec']},
+  ];
+  // 기간 필터와 교집합 — 빈 분기는 제외, 부분 분기는 라벨에 범위 표시
+  const QTRS = QTR_DEF.map(q => {
+    const mos = q.mos.filter(m => filterSet.has(m));
+    if (!mos.length) return null;
+    const partial = mos.length < q.mos.length;
+    const label = partial ? `${q.label} (${mos[0]}–${mos[mos.length-1]})` : q.label;
+    return {label, mos};
+  }).filter(Boolean);
+
+  const rows = QTRS.map(q => {
+    let tds = `<td class="l">${q.label}</td>`;
+    YEARS.forEach(yr => {
+      const v = sumRange(yr, q.mos, key);
+      tds += `<td${v===null?' class="null"':yr==='2026'?' style="font-weight:700;color:var(--so)"':''}>${v===null?'—':fmtN(v)}</td>`;
+    });
+    const v26 = sumRange('2026', q.mos, key);
+    const v25 = sumRange('2025', q.mos, key);
+    const yoy = v26 !== null && v25 ? ((v26-v25)/Math.abs(v25)*100).toFixed(1) : null;
+    tds += `<td class="${yoy===null?'null':yoy>0?'up':'dn'}">${yoy===null?'—':(yoy>0?'+':'')+yoy+'%'}</td>`;
+    return `<tr>${tds}</tr>`;
+  });
+
+  document.getElementById('qtrTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">Quarter</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Channel Table ─────────────────────────────────────────────────────────
+function renderChTable() {
+  const mos = RANGE_MONTHS[curRange];
+  const rows = CHS.map(ch => {
+    const v26 = sumRange('2026', mos, 'so', ch);
+    const v25 = sumRange('2025', mos, 'so', ch);
+    const yoy = fmtYoy(v26, v25);
+    return `<tr>
+      <td class="l">${ch}</td>
+      ${YEARS.map(yr=>`<td>${fmtN(sumRange(yr,mos,'so',ch))}</td>`).join('')}
+      <td class="${yoy.cls}">${yoy.txt}</td>
+    </tr>`;
+  });
+  document.getElementById('chTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">Channel</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}<th>YoY%</th></tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Coverage Table ────────────────────────────────────────────────────────
+function renderCoverage() {
+  const mos = RANGE_MONTHS[curRange];
+  const total = mos.length;
+  const keys = [
+    {key:'so', label:'★ Sell-Out'},
+    {key:'st', label:'Sell-Thru'},
+    {key:'stk', label:'Stock'},
+  ];
+  const rows = keys.map(k => {
+    const tds = YEARS.map(yr => {
+      const available = mos.filter(mo => getVal(yr, mo, k.key) !== null).length;
+      const ok = available >= total;
+      return `<td style="text-align:center">
+        <span style="background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
+          ${ok?'✓ Complete':'⚠ '+available+'/'+total}
+        </span>
+      </td>`;
+    }).join('');
+    return `<tr><td class="l">${k.label}</td>${tds}</tr>`;
+  });
+  document.getElementById('coverageTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">Metric</th>${YEARS.map(y=>`<th>${y}</th>`).join('')}</tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── Full PSI Table ────────────────────────────────────────────────────────
+function renderFullTable() {
+  const mos = RANGE_MONTHS[curRange];
+  const rows = [];
+  for (const yr of YEARS) {
+    for (const [key, label, cls] of [['so','S','so-row'],['st','P',''],['stk','I','']]) {
+      const tds = mos.map(mo => {
+        const v = getVal(yr, mo, key);
+        return v !== null ? `<td>${fmtN(v)}</td>` : `<td class="null">—</td>`;
+      }).join('');
+      rows.push(`<tr class="${cls}"><td class="l">${yr} ${label}</td>${tds}</tr>`);
+    }
+  }
+  const thMos = mos.map(m=>`<th>${m}</th>`).join('');
+  document.getElementById('fullTable').innerHTML = `
+    <table>
+      <thead><tr><th class="l">Year/Metric</th>${thMos}</tr></thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>`;
+}
+
+// ── 전체 렌더 ─────────────────────────────────────────────────────────────
+function renderCharts() {
+  renderMainChart();
+  renderYoyChart();
+  renderYtdChart();
+  renderMixChart();
+  renderChBarChart();
+}
+
+// ── MOS Analysis ─────────────────────────────────────────────────────────
+let mosMode = 'fwd';
+
+function setMosMode(mode) {
+  mosMode = mode;
+  document.getElementById('mos-fwd-btn').classList.toggle('on', mode === 'fwd');
+  document.getElementById('mos-bwd-btn').classList.toggle('on', mode === 'bwd');
+  renderMosChart();
+}
+
+function calcMOS(yr, mo, fwd) {
+  const moIdx = MONTHS.indexOf(mo);
+  if (moIdx < 0) return null;
+  const stk = getVal(yr, mo, 'stk');
+  if (stk === null) return null;
+  let so1, so2;
+  if (fwd) {
+    if (moIdx + 2 > 11) return null; // Nov/Dec: 다음해 데이터 없음
+    so1 = getVal(yr, MONTHS[moIdx + 1], 'so');
+    so2 = getVal(yr, MONTHS[moIdx + 2], 'so');
+  } else {
+    if (moIdx < 1) return null; // Jan: 전월 없음
+    so1 = getVal(yr, MONTHS[moIdx - 1], 'so');
+    so2 = getVal(yr, mo, 'so');
+  }
+  if (so1 === null || so2 === null || so1 === 0 || so2 === 0) return null;
+  const avg = (so1 + so2) / 2;
+  return +(stk / avg).toFixed(2);
+}
+
+function renderMosChart() {
+  const fwd = mosMode === 'fwd';
+  document.getElementById('mos-chart-title').textContent = fwd
+    ? 'MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)'
+    : 'MOS-2 Trend — Month-end stock ÷ avg(current+prior mo SO)';
+
+  const yrStyles = {
+    '2023': {color:'#94a3b8', w:1.5, r:2},
+    '2024': {color:'#60a5fa', w:1.8, r:2},
+    '2025': {color:'#f59e0b', w:2.2, r:3},
+    '2026': {color:'#10b981', w:3.0, r:4},
+  };
+
+  const datasets = [
+    ...YEARS.map(yr => {
+      const s = yrStyles[yr];
+      return {
+        label: yr,
+        data: MONTHS.map(mo => calcMOS(yr, mo, fwd)),
+        borderColor: s.color,
+        backgroundColor: 'transparent',
+        borderWidth: s.w,
+        pointRadius: s.r,
+        tension: 0.3,
+        spanGaps: false,
+        datalabels: {
+          display: true,
+          color: s.color,
+          font: {size: 8, weight: 'bold'},
+          formatter: v => v !== null ? Number(v).toFixed(1) : '',
+          align: 'top',
+          offset: 1,
+        },
+      };
+    }),
+    {
+      label: 'Low Stock (1.5)',
+      data: MONTHS.map(() => 1.5),
+      borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+      datalabels: {display: false},
+    },
+    {
+      label: 'Optimal (2.0)',
+      data: MONTHS.map(() => 2.0),
+      borderColor: '#059669', borderWidth: 1.8, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+      datalabels: {display: false},
+    },
+    {
+      label: 'Overstock (2.5)',
+      data: MONTHS.map(() => 2.5),
+      borderColor: '#d97706', borderWidth: 1.5, borderDash: [6,3],
+      pointRadius: 0, backgroundColor: 'transparent', tension: 0,
+      datalabels: {display: false},
+    },
+  ];
+
+  mkChart('mosChart', {
+    type: 'line',
+    data: {labels: MONTHS, datasets},
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {position:'top', labels:{boxWidth:10, font:{size:10}, filter: item => item.datasetIndex < YEARS.length}},
+        tooltip: {
+          callbacks: {
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.raw !== null ? Number(ctx.raw).toFixed(1) : '—'}`
+          }
+        },
+        datalabels: {display: false}, // 기본 off, 데이터셋별로 개별 활성화
+      },
+      scales: {
+        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        y: {
+          min: 0,
+          grid: {color:'#f1f5f9'},
+          ticks: {font:{size:11}, callback: v => v.toFixed(1)},
+          title: {display:true, text:'MOS (months)', font:{size:10}, color:'var(--muted)'},
+        },
+      },
+    },
+    plugins: [PEAK_PLUGIN, ChartDataLabels],
+  });
+}
+
+function renderMosPanel() {
+  // 6월 마감 기준: Jun-26 재고 → Jul/Aug-26 목표 SO 역산 (MOS+2 forward)
+  const stk26 = getVal('2026', 'Jun', 'stk');
+  const so25a = getVal('2025', 'Jul', 'so');  // 직후 +1월
+  const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
+  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
+
+  if (stk26 === null) {
+    document.getElementById('mosPanel').innerHTML =
+      `<p style="color:var(--muted);padding:12px">Jun-26 stock data unavailable (${chLabel})</p>`;
+    return;
+  }
+
+  const totalSo25 = (so25a !== null && so25b !== null) ? so25a + so25b : null;
+  const ratioA = totalSo25 ? so25a / totalSo25 : 0.5;
+  const ratioB = totalSo25 ? so25b / totalSo25 : 0.5;
+
+  const fmtBadge = (v, base) => {
+    if (!v || !base) return '';
+    const p = ((v - base) / base * 100).toFixed(1);
+    return ` <span class="${p > 0 ? 'up' : 'dn'}" style="font-size:10px">${p > 0 ? '+' : ''}${p}%</span>`;
+  };
+
+  const targets = [
+    {mos:1.5, label:'1.5 — Low stock threshold', color:'#ef4444', bg:'#fef2f2'},
+    {mos:2.0, label:'2.0 — Optimal',             color:'#059669', bg:'#f0fdf4'},
+    {mos:2.5, label:'2.5 — Overstock threshold', color:'#d97706', bg:'#fffbeb'},
+  ];
+
+  const rows = targets.map(t => {
+    const avgNeeded = stk26 / t.mos;
+    const aT = Math.round(avgNeeded * 2 * ratioA);
+    const bT = Math.round(avgNeeded * 2 * ratioB);
+    return `<tr style="background:${t.bg}">
+      <td style="font-weight:700;color:${t.color}">${t.label}</td>
+      <td style="text-align:right;font-weight:700">${fmtN(Math.round(avgNeeded))}</td>
+      <td style="text-align:right">${fmtN(aT)}${fmtBadge(aT, so25a)}</td>
+      <td style="text-align:right">${fmtN(bT)}${fmtBadge(bT, so25b)}</td>
+    </tr>`;
+  });
+
+  const ratioNote = totalSo25
+    ? `2025 Jul:Aug = ${(ratioA*100).toFixed(0)}%:${(ratioB*100).toFixed(0)}% · Jul ${fmtN(so25a)}, Aug ${fmtN(so25b)}`
+    : 'No 2025 Jul/Aug actuals — 50:50 equal split';
+
+  document.getElementById('mosPanel').innerHTML = `
+    <div style="margin-bottom:10px">
+      <span style="font-weight:700;font-size:14px">Jun-26 Stock: ${fmtN(stk26)} EA</span>
+      <span style="color:var(--muted);font-size:12px;margin-left:8px">${chLabel}</span>
+      <span style="color:var(--muted);font-size:11px;margin-left:12px">· ${ratioNote}</span>
+    </div>
+    <div class="tbl">
+    <table>
+      <thead>
+        <tr>
+          <th class="l">MOS Target</th>
+          <th style="text-align:right">Req. Monthly SO</th>
+          <th style="text-align:right">Jul-26 Target</th>
+          <th style="text-align:right">Aug-26 Target</th>
+        </tr>
+      </thead>
+      <tbody>${rows.join('')}</tbody>
+    </table>
+    </div>
+    <div class="note" style="margin-top:8px">
+      Formula: Req. monthly SO = Jun stock ÷ MOS target &nbsp;|&nbsp; Jul/Aug split: based on 2025 actuals ratio<br>
+      MOS+2(Jun-26) = Jun-26 stock ÷ avg(Jul-26 SO, Aug-26 SO)
+    </div>`;
+}
+
+function renderMosTab() {
+  renderMosChart();
+  renderMosPanel();
+}
+
+function render() {
+  renderKpi();
+  renderMatrixTable();
+  renderQtrTable();
+  renderChTable();
+  renderCharts();
+  renderCoverage();
+  renderFullTable();
+  renderMosTab();
+  // header info
+  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
+  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model 2026-06 · ' + chLabel;
+}
+
+render();
+
+// ═══════ TAB 5: Model Table (May 2026 P/S/I 매트릭스) ═══════
+(function() {
+  if (typeof IR_PSI_MODEL_TABLE === 'undefined') return;
+  const D = IR_PSI_MODEL_TABLE;
+  const CHS = D.channels;
+  const CH_SHORT = {'eXtra':'eXtra','Al Manea':'AM','SWS':'SWS','Black Box':'BB','Al Khunizan':'AK'};
+
+  // subtitle + sources
+  document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5-Channel Model-Level P/S/I Matrix (generated: ' + D.generated + ')';
+  document.getElementById('mtSources').innerHTML =
+    '<b>P</b> (Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
+    '<b>S</b> (Sell-Out): ' + (D.sources?.SO || '') + '<br>' +
+    '<b>I</b> (Stock): ' + (D.sources?.STK || '');
+
+  let curCat = 'ALL';
+  let curSort = 'cat';
+  let curSearch = '';
+
+  function fmt(n) { return n === 0 ? '<span class="null">·</span>' : n.toLocaleString(); }
+
+  function filterRows() {
+    let rows = D.rows.slice();
+    if (curCat !== 'ALL') rows = rows.filter(r => r.category === curCat);
+    if (curSearch) {
+      const q = curSearch.toUpperCase();
+      rows = rows.filter(r => (r.std + ' ' + r.unified).toUpperCase().includes(q));
+    }
+    if (curSort === 'so') rows.sort((a,b) => b.so_total - a.so_total);
+    else if (curSort === 'st') rows.sort((a,b) => b.st_total - a.st_total);
+    else if (curSort === 'stk') rows.sort((a,b) => b.stk_total - a.stk_total);
+    return rows;
+  }
+
+  function renderTable() {
+    const rows = filterRows();
+    let html = '<table>';
+    // Header row 1: 채널 그룹
+    html += '<tr><th rowspan="2" class="l">Model</th><th rowspan="2">Category</th><th rowspan="2">BTU</th><th rowspan="2">H/C</th>';
+    CHS.forEach(ch => {
+      html += '<th colspan="3" style="background:#334155">' + CH_SHORT[ch] + '</th>';
+    });
+    html += '<th colspan="3" style="background:var(--so);color:#fff">TOTAL</th></tr>';
+    // Header row 2: P/S/I
+    html += '<tr>';
+    for (let i = 0; i < CHS.length + 1; i++) {
+      html += '<th style="background:#1e40af;font-size:10px">P</th>';
+      html += '<th style="background:var(--so-dk);font-size:10px">S</th>';
+      html += '<th style="background:#92400e;font-size:10px">I</th>';
+    }
+    html += '</tr>';
+
+    if (rows.length === 0) {
+      html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="padding:20px;color:var(--muted)">No models match the current filter</td></tr>';
+    } else {
+      let lastCat = '';
+      rows.forEach(r => {
+        if (curSort === 'cat' && r.category !== lastCat) {
+          lastCat = r.category;
+          html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="background:#e2e8f0;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
+        }
+        html += '<tr>';
+        html += '<td class="l">' + r.std + (r.unified !== r.std ? ' <span style="color:var(--muted);font-weight:400">→ ' + r.unified + '</span>' : '') + '</td>';
+        html += '<td>' + (r.category || '') + '</td><td>' + (r.btu || '') + '</td><td style="font-size:10px">' + (r.hc || '') + '</td>';
+        CHS.forEach(ch => {
+          html += '<td>' + fmt(r.st[ch] || 0) + '</td>';
+          html += '<td style="background:var(--so-bg)">' + fmt(r.so[ch] || 0) + '</td>';
+          html += '<td>' + fmt(r.stk[ch] || 0) + '</td>';
+        });
+        html += '<td style="font-weight:700;color:#1e40af">' + fmt(r.st_total) + '</td>';
+        html += '<td style="font-weight:700;color:var(--so-dk);background:var(--so-bg)">' + fmt(r.so_total) + '</td>';
+        html += '<td style="font-weight:700;color:#92400e">' + fmt(r.stk_total) + '</td>';
+        html += '</tr>';
+      });
+      // 합계 row
+      const t = D.totals;
+      html += '<tr style="background:#1a1f36;color:#fff;font-weight:700">';
+      html += '<td class="l" style="background:#1a1f36;color:#fff" colspan="4">Total (' + rows.length + '/' + D.totals.models + ' models)</td>';
+      CHS.forEach(ch => {
+        html += '<td>' + (t.st_by_ch[ch]||0).toLocaleString() + '</td>';
+        html += '<td>' + (t.so_by_ch[ch]||0).toLocaleString() + '</td>';
+        html += '<td>' + (t.stk_by_ch[ch]||0).toLocaleString() + '</td>';
+      });
+      html += '<td>' + t.st_grand.toLocaleString() + '</td>';
+      html += '<td>' + t.so_grand.toLocaleString() + '</td>';
+      html += '<td>' + t.stk_grand.toLocaleString() + '</td>';
+      html += '</tr>';
+    }
+    html += '</table>';
+    document.getElementById('modelTable').innerHTML = html;
+
+    document.getElementById('mtFooter').innerHTML =
+      'P=Sell-Thru (SAP raw IDU) · S=Sell-Out (channel raw) · I=Stock (month-end). ' +
+      'Filter: ' + rows.length + ' rows shown (total ' + D.totals.models + ' models)';
+  }
+
+  function renderUnmapped() {
+    const um = D.unmapped || {};
+    const sections = [];
+    ['st','so','stk'].forEach(k => {
+      const data = um[k];
+      if (!data || Object.keys(data).length === 0) return;
+      const label = {st:'ST Unmapped (SAP raw)', so:'SO Unmapped (channel raw)', stk:'Stock Unmapped (channel raw)'}[k];
+      let inner = '<div class="ct" style="font-size:12px;margin-top:8px">' + label + '</div>';
+      inner += '<table><tr><th class="l">Channel</th><th class="l">Raw Code</th><th>Qty</th></tr>';
+      Object.entries(data).forEach(([ch, items]) => {
+        const arr = Array.isArray(items) ? items : Object.entries(items);
+        arr.forEach(([code, qty]) => {
+          inner += '<tr><td class="l">' + ch + '</td><td class="l">' + code + '</td><td>' + qty + '</td></tr>';
+        });
+      });
+      inner += '</table>';
+      sections.push(inner);
+    });
+    if (sections.length === 0) {
+      document.getElementById('unmappedCard').style.display = 'none';
+    } else {
+      document.getElementById('unmappedCard').style.display = '';
+      document.getElementById('unmappedTable').innerHTML = sections.join('');
+    }
+  }
+
+  // 이벤트 바인딩
+  document.querySelectorAll('#t5 [data-cat]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#t5 [data-cat]').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      curCat = btn.dataset.cat;
+      renderTable();
+    });
+  });
+  document.getElementById('mtSort').addEventListener('change', e => {
+    curSort = e.target.value;
+    renderTable();
+  });
+  document.getElementById('mtSearch').addEventListener('input', e => {
+    curSearch = e.target.value.trim();
+    renderTable();
+  });
+
+  renderTable();
+  renderUnmapped();
+})();
+
+// ═══════ TAB 6: MOS-2 Action Plan ═══════
+(function() {
+  if (typeof IR_PSI_MODEL_TABLE === 'undefined' || !IR_PSI_MODEL_TABLE.mos_analysis) return;
+  const D = IR_PSI_MODEL_TABLE;
+  const TH = D.mos_thresholds;
+  document.getElementById('m2Meta').innerHTML =
+    `As of: 2026-06-30 (month-end) · Thresholds: LOW &lt; ${TH.low} / OVER &gt; ${TH.over} · ` +
+    `MOS-2 = (Jun-end Stock) ÷ ((May SO + Jun SO) / 2)`;
+
+  let curCh = 'eXtra';
+
+  function fmt(n) { return n === null || n === undefined ? '-' : (typeof n === 'number' ? n.toLocaleString() : n); }
+  function mosCell(m) {
+    if (m === null || m === undefined) return '<span class="null">∞</span>';
+    const c = m < TH.low ? '#dc2626' : m > TH.over ? '#d97706' : 'var(--so-dk)';
+    return `<b style="color:${c}">${m.toFixed(2)}</b>`;
+  }
+
+  function renderTable(items, kind) {
+    if (!items.length) {
+      return '<div class="note" style="border-left-color:#cbd5e1">No models in this category</div>';
+    }
+    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>BTU</th><th>May SO</th><th>Jun SO</th><th>Avg SO</th><th>Stock</th><th>MOS-2</th><th>Action</th></tr>';
+    items.forEach(it => {
+      let action = '';
+      if (kind === 'low') action = `+${Math.ceil(it.avg_so*2 - it.stk)} reorder`;
+      else if (kind === 'over') action = `-${Math.ceil(it.stk - it.avg_so*1.5)} clear`;
+      else if (kind === 'oos') action = `+${Math.ceil(it.so_may)} restock now`;
+      else if (kind === 'slow') action = `${it.stk} discontinue?`;
+      html += `<tr>
+        <td class="l">${it.std}${it.unified !== it.std ? ' <span style="color:var(--muted);font-size:10px">→' + it.unified + '</span>' : ''}</td>
+        <td style="font-size:10px">${it.category||''}</td>
+        <td>${it.btu||''}</td>
+        <td>${fmt(it.so_apr)}</td>
+        <td style="background:var(--so-bg)">${fmt(it.so_may)}</td>
+        <td>${fmt(it.avg_so)}</td>
+        <td><b>${fmt(it.stk)}</b></td>
+        <td>${mosCell(it.mos)}</td>
+        <td style="font-size:10px;color:var(--muted)">${action}</td>
+      </tr>`;
+    });
+    html += '</table>';
+    return html;
+  }
+
+  function renderAll() {
+    const a = D.mos_analysis[curCh];
+    if (!a) return;
+    document.getElementById('m2Summary').innerHTML = `
+      <div class="kpi" style="border-left:4px solid #dc2626"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#dc2626">${a.low_count}</div><div class="ks">Total stock ${a.low_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #d97706"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#d97706">${a.over_count}</div><div class="ks">Total stock ${a.over_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${a.oos_count}</div><div class="ks">Jun SO ${a.oos_so_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #475569"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#475569">${a.slow_count}</div><div class="ks">Total stock ${a.slow_stk_total.toLocaleString()}</div></div>
+    `;
+    document.getElementById('lowCount').textContent  = `(${a.low_count})`;
+    document.getElementById('overCount').textContent = `(${a.over_count})`;
+    document.getElementById('oosCount').textContent  = `(${a.oos_count})`;
+    document.getElementById('slowCount').textContent = `(${a.slow_count})`;
+    document.getElementById('lowTable').innerHTML  = renderTable(a.low,  'low');
+    document.getElementById('overTable').innerHTML = renderTable(a.over, 'over');
+    document.getElementById('oosTable').innerHTML  = renderTable(a.oos,  'oos');
+    document.getElementById('slowTable').innerHTML = renderTable(a.slow, 'slow');
+  }
+
+  document.querySelectorAll('#t6 [data-mch]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#t6 [data-mch]').forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      curCh = btn.dataset.mch;
+      renderAll();
+    });
+  });
+  renderAll();
+})();
+</script>
+</body>
+</html>
