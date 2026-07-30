@@ -1330,7 +1330,10 @@ function renderMosPanel() {
   const stk26 = getVal('2026', 'Jun', 'stk');
   const so25a = getVal('2025', 'Jul', 'so');  // 직후 +1월
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
-  const chLabel = curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + ');
+  // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
+  // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
+  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'));
 
   if (stk26 === null) {
     document.getElementById('mosPanel').innerHTML =
@@ -1409,8 +1412,9 @@ function render() {
   renderCoverage();
   renderFullTable();
   renderMosTab();
-  // header info
-  const chLabel = curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + ');
+  // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
+  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'));
   const mtAsOf = (typeof IR_PSI_MODEL_TABLE !== 'undefined')
     ? (IR_PSI_MODEL_TABLE.as_of_year + ' ' + IR_PSI_MODEL_TABLE.as_of_week)
     : '2026-06';
