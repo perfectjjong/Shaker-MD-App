@@ -31,8 +31,6 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .fb.yr24.on{background:var(--c24);border-color:var(--c24)}
 .fb.yr25.on{background:var(--c25);border-color:var(--c25)}
 .fb.yr26.on{background:var(--c26);border-color:var(--c26)}
-.ms-item{border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;background:#fff;cursor:pointer;color:var(--text);display:inline-flex;align-items:center;gap:4px}
-.ms-item input{cursor:pointer;margin:0}
 .sep{width:1px;height:20px;background:var(--border)}
 .content{padding:16px 24px;max-width:1400px;margin:0 auto}
 .stitle{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
@@ -112,26 +110,26 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
-  <button class="fb on" id="chAllBtn" type="button">All</button>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Ghanem" checked> Al Ghanem</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Shathri" checked> Al Shathri</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="BH" checked> BH</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="BM" checked> BM</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Dhamin" checked> Dhamin</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Star Appliance" checked> Star Appliance</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Tamkeen" checked> Tamkeen</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="Zagzoog" checked> Zagzoog</label>
-  <label class="ms-item"><input type="checkbox" class="ch-cb" value="IR_Others" checked> IR_Others</label>
+  <button class="fb on" data-ch="ALL">All</button>
+  <button class="fb" data-ch="Al Ghanem">Al Ghanem</button>
+  <button class="fb" data-ch="Al Shathri">Al Shathri</button>
+  <button class="fb" data-ch="BH">BH</button>
+  <button class="fb" data-ch="BM">BM</button>
+  <button class="fb" data-ch="Dhamin">Dhamin</button>
+  <button class="fb" data-ch="Star Appliance">Star Appliance</button>
+  <button class="fb" data-ch="Tamkeen">Tamkeen</button>
+  <button class="fb" data-ch="Zagzoog">Zagzoog</button>
+  <button class="fb" data-ch="IR_Others">IR_Others</button>
   <div class="sep"></div>
   <span class="fl">Category</span>
-  <button class="fb on" id="catAllBtn" type="button">All</button>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split Inverter" checked> Split Inv</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split On/Off" checked> Split On/Off</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Window AC" checked> Window</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Floor Standing AC" checked> FS</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Cassette" checked> Cassette</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Concealed" checked> Concealed</label>
-  <label class="ms-item"><input type="checkbox" class="cat-cb" value="Others" checked> Others</label>
+  <button class="fb on" data-cat="ALL">All</button>
+  <button class="fb" data-cat="Split Inverter">Split Inv</button>
+  <button class="fb" data-cat="Split On/Off">Split On/Off</button>
+  <button class="fb" data-cat="Window AC">Window</button>
+  <button class="fb" data-cat="Floor Standing AC">FS</button>
+  <button class="fb" data-cat="Cassette">Cassette</button>
+  <button class="fb" data-cat="Concealed">Concealed</button>
+  <button class="fb" data-cat="Others">Others</button>
 </div>
 
 <!-- ═══════ TAB 0: Overview ═══════ -->
@@ -521,41 +519,47 @@ document.querySelectorAll('[data-range]').forEach(btn => {
   });
 });
 
-// 채널: 체크박스 다중 선택 (Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others)
-// 전체 체크(또는 전체 해제) = 'ALL' 센티널로 취급하여 기존 getVal()의 curChs.has('ALL') 총계 fast-path를 그대로 활용
-function selectedChannels() {
-  return Array.from(document.querySelectorAll('.ch-cb:checked')).map(el => el.value);
-}
-function selectedCategories() {
-  return Array.from(document.querySelectorAll('.cat-cb:checked')).map(el => el.value);
-}
-function syncChannelFilter() {
-  const sel = selectedChannels();
-  const total = document.querySelectorAll('.ch-cb').length;
-  curChs = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
-  document.getElementById('chAllBtn').classList.toggle('on', curChs.has('ALL'));
-  render();
-}
-function syncCategoryFilter() {
-  const sel = selectedCategories();
-  const total = document.querySelectorAll('.cat-cb').length;
-  curCats = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
-  document.getElementById('catAllBtn').classList.toggle('on', curCats.has('ALL'));
-  render();
-}
-document.querySelectorAll('.ch-cb').forEach(cb => cb.addEventListener('change', syncChannelFilter));
-document.querySelectorAll('.cat-cb').forEach(cb => cb.addEventListener('change', syncCategoryFilter));
-// "All" 버튼: 체크박스 전체 선택 원클릭 (OR 원본의 단일선택 'All' 버튼과 동등한 편의 기능)
-document.getElementById('chAllBtn').addEventListener('click', () => {
-  document.querySelectorAll('.ch-cb').forEach(cb => cb.checked = true);
-  syncChannelFilter();
+// 채널: 다중 선택 + 토글 해제. ALL은 단독 선택 (OR 원본과 완전히 동일한 패턴)
+document.querySelectorAll('[data-ch]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.ch;
+    if (v === 'ALL') {
+      curChs = new Set(['ALL']);
+    } else if (curChs.has(v)) {
+      curChs.delete(v);
+      if (curChs.size === 0) curChs.add('ALL');
+    } else {
+      curChs.delete('ALL');
+      curChs.add(v);
+    }
+    document.querySelectorAll('[data-ch]').forEach(b => {
+      b.classList.toggle('on', curChs.has(b.dataset.ch));
+    });
+    render();
+  });
 });
-document.getElementById('catAllBtn').addEventListener('click', () => {
-  document.querySelectorAll('.cat-cb').forEach(cb => cb.checked = true);
-  syncCategoryFilter();
+
+// 카테고리: 다중 선택 + 토글 해제. ALL은 단독 선택 (OR 원본과 완전히 동일한 패턴)
+document.querySelectorAll('[data-cat]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.cat;
+    if (v === 'ALL') {
+      curCats = new Set(['ALL']);
+    } else if (curCats.has(v)) {
+      curCats.delete(v);
+      if (curCats.size === 0) curCats.add('ALL');
+    } else {
+      curCats.delete('ALL');
+      curCats.add(v);
+    }
+    document.querySelectorAll('[data-cat]').forEach(b => {
+      b.classList.toggle('on', curCats.has(b.dataset.cat));
+    });
+    render();
+  });
 });
 // ⚠️ Model Table 탭(#t5)의 자체 카테고리 필터 버튼은 이 전역 curCats와 별개(IIFE 스코프 curCat)로
-// 아래 Tab 5 재구성 스크립트에서 독립 처리한다 — data-cat 전역 위임 금지(체크박스 상태 오염 버그 방지).
+// 아래 Tab 5 재구성 스크립트에서 독립 처리한다 — data-mtcat으로 분리해 전역 data-cat 핸들러와 충돌 방지.
 
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => {
