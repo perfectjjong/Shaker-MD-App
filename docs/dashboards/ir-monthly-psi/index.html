@@ -111,6 +111,7 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
+  <button class="fb" id="chAllBtn" type="button">All</button>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Ghanem" checked> Al Ghanem</label>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Shathri" checked> Al Shathri</label>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="BH" checked> BH</label>
@@ -122,6 +123,7 @@ tr:hover td{background:#f8fafc}
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="IR_Others" checked> IR_Others</label>
   <div class="sep"></div>
   <span class="fl">Category</span>
+  <button class="fb" id="catAllBtn" type="button">All</button>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split Inverter" checked> Split Inv</label>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split On/Off" checked> Split On/Off</label>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Window AC" checked> Window</label>
@@ -539,6 +541,15 @@ function syncCategoryFilter() {
 }
 document.querySelectorAll('.ch-cb').forEach(cb => cb.addEventListener('change', syncChannelFilter));
 document.querySelectorAll('.cat-cb').forEach(cb => cb.addEventListener('change', syncCategoryFilter));
+// "All" 버튼: 체크박스 전체 선택 원클릭 (OR 원본의 단일선택 'All' 버튼과 동등한 편의 기능)
+document.getElementById('chAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.ch-cb').forEach(cb => cb.checked = true);
+  syncChannelFilter();
+});
+document.getElementById('catAllBtn').addEventListener('click', () => {
+  document.querySelectorAll('.cat-cb').forEach(cb => cb.checked = true);
+  syncCategoryFilter();
+});
 // ⚠️ Model Table 탭(#t5)의 자체 카테고리 필터 버튼은 이 전역 curCats와 별개(IIFE 스코프 curCat)로
 // 아래 Tab 5 재구성 스크립트에서 독립 처리한다 — data-cat 전역 위임 금지(체크박스 상태 오염 버그 방지).
 
