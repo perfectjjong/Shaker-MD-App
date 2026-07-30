@@ -108,10 +108,11 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-range="Q1">Q1</button>
   <button class="fb" data-range="Q2">Q2</button>
   <button class="fb on" data-range="H1">H1</button>
+  <button class="fb" data-range="H2">H2</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
-  <button class="fb" id="chAllBtn" type="button">All</button>
+  <button class="fb on" id="chAllBtn" type="button">All</button>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Ghanem" checked> Al Ghanem</label>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="Al Shathri" checked> Al Shathri</label>
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="BH" checked> BH</label>
@@ -123,7 +124,7 @@ tr:hover td{background:#f8fafc}
   <label class="ms-item"><input type="checkbox" class="ch-cb" value="IR_Others" checked> IR_Others</label>
   <div class="sep"></div>
   <span class="fl">Category</span>
-  <button class="fb" id="catAllBtn" type="button">All</button>
+  <button class="fb on" id="catAllBtn" type="button">All</button>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split Inverter" checked> Split Inv</label>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Split On/Off" checked> Split On/Off</label>
   <label class="ms-item"><input type="checkbox" class="cat-cb" value="Window AC" checked> Window</label>
@@ -406,6 +407,7 @@ const RANGE_MONTHS = {
   'Q1':      ['Jan','Feb','Mar'],
   'Q2':      ['Apr','May','Jun'],
   'H1':      ['Jan','Feb','Mar','Apr','May','Jun'],
+  'H2':      ['Jul','Aug','Sep','Oct','Nov','Dec'],
   'Full':    MONTHS,
 };
 const PEAK = ['May','Jun','Jul','Aug','Sep'];
@@ -531,12 +533,14 @@ function syncChannelFilter() {
   const sel = selectedChannels();
   const total = document.querySelectorAll('.ch-cb').length;
   curChs = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
+  document.getElementById('chAllBtn').classList.toggle('on', curChs.has('ALL'));
   render();
 }
 function syncCategoryFilter() {
   const sel = selectedCategories();
   const total = document.querySelectorAll('.cat-cb').length;
   curCats = (sel.length === 0 || sel.length === total) ? new Set(['ALL']) : new Set(sel);
+  document.getElementById('catAllBtn').classList.toggle('on', curCats.has('ALL'));
   render();
 }
 document.querySelectorAll('.ch-cb').forEach(cb => cb.addEventListener('change', syncChannelFilter));
