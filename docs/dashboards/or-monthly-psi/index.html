@@ -126,6 +126,8 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-cat="Cassette">Cassette</button>
   <button class="fb" data-cat="Concealed">Concealed</button>
   <button class="fb" data-cat="Others">Others</button>
+  <div class="sep"></div>
+  <button class="fb" id="oudToggle" type="button" title="2026년, OUD 스냅샷이 있는 월(3~7월 등)에만 On-Hand 재고에 가산됩니다. 2023-25 및 스냅샷 없는 월은 효과 없음.">OUD 포함</button>
 </div>
 
 <!-- ═══════ TAB 0: Overview ═══════ -->
@@ -398,6 +400,7 @@ tr:hover td{background:#f8fafc}
 const MONTHS = PSI_DATA.months;
 const YEARS  = PSI_DATA.years;
 const CHS    = PSI_DATA.channels;
+const CATS   = PSI_DATA.categories;
 const RANGE_MONTHS = {
   'Q1':      ['Jan','Feb','Mar'],
   'Q2':      ['Apr','May','Jun'],
@@ -418,7 +421,33 @@ let yoyMetric  = 'so';
 // ch: undefined → use curChs filter state (default)
 //     'ALL'     → use PSI_DATA.totals (explicit total)
 //     'eXtra'   → use specific channel (channel analysis table)
+let includeOud = false; // "OUD 포함" 토글 — 기본 OFF(On-Hand만). 2026·OUD 스냅샷 존재 월에만 효과 있음.
+
+// OUD(미배송 오픈오더) 수량 조회 — On-Hand를 덮어쓰지 않고 별도 필드(PSI_DATA.oud)에서 가산.
+// 2023-25 및 2026 중 스냅샷 없는 월(Jan/Feb 등)은 0 반환(On-Hand는 그대로 보존).
+function oudQty(yr, mo, chans, cats) {
+  if (!includeOud || yr !== '2026') return 0;
+  const monthData = PSI_DATA.oud?.['2026']?.[mo];
+  if (!monthData) return 0;
+  const chs = chans.has('ALL') ? CHS : [...chans];
+  const cs  = cats.has('ALL') ? CATS : [...cats];
+  let s = 0;
+  for (const ch of chs) {
+    for (const c of cs) {
+      s += monthData[ch]?.[c] || 0;
+    }
+  }
+  return s;
+}
+
 function getVal(yr, mo, key, ch) {
+  const base = _getValBase(yr, mo, key, ch);
+  if (key !== 'stk' || base === null) return base;
+  const chans = (ch !== undefined) ? new Set([ch]) : curChs;
+  return base + oudQty(yr, mo, chans, curCats);
+}
+
+function _getValBase(yr, mo, key, ch) {
   const d = PSI_DATA.data;
   if (!d[yr]) return null;
   const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st' || key === 'stk');
@@ -547,6 +576,13 @@ document.querySelectorAll('[data-cat]').forEach(btn => {
     });
     render();
   });
+});
+
+// OUD 포함 토글 (기본 OFF). 2026·스냅샷 존재 월에만 Stock에 가산.
+document.getElementById('oudToggle').addEventListener('click', () => {
+  includeOud = !includeOud;
+  document.getElementById('oudToggle').classList.toggle('on', includeOud);
+  render();
 });
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => {
@@ -1325,7 +1361,7 @@ function renderMosPanel() {
   const stk26 = getVal('2026', 'Jun', 'stk');
   const so25a = getVal('2025', 'Jul', 'so');  // 직후 +1월
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
-  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
+  const chLabel = (curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ')) + (includeOud ? ' · +OUD' : '');
 
   if (stk26 === null) {
     document.getElementById('mosPanel').innerHTML =
@@ -1405,7 +1441,7 @@ function render() {
   renderFullTable();
   renderMosTab();
   // header info
-  const chLabel = curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ');
+  const chLabel = (curChs.has('ALL') ? '5-channel total' : [...curChs].join(' + ')) + (includeOud ? ' · +OUD' : '');
   document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model 2026-06 · ' + chLabel;
 }
 
