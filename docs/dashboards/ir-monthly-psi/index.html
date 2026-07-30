@@ -418,14 +418,17 @@ let mainMetric = 'so';
 let yoyMetric  = 'so';
 
 // ── 데이터 헬퍼 ──────────────────────────────────────────────────────────
-// ⚠️ IR_PSI_DATA는 OR_PSI_DATA와 실제 스키마가 다름(Task 1-5 산출물 확인 결과):
-//   IR: {meta:{channels,categories,months,years}, years:{yr:{by_cat:{cat:{mo:{so,st,stk}}}, by_ch:{ch:{mo:{so,st,stk}}}}}}
+// IR_PSI_DATA 스키마 (channel×category 교차표 추가 후, fix/ir-monthly-psi-channel-category-crosstab):
+//   IR: {meta:{channels,categories,months,years}, years:{yr:{
+//          by_cat:{cat:{mo:{so,st,stk}}},              // 전채널 합계, 카테고리별
+//          by_ch:{ch:{mo:{so,st,stk}}},                // 전카테고리 합계, 채널별
+//          by_ch_cat:{ch:{cat:{mo:{so,st,stk}}}},      // 채널×카테고리 교차표(신규) — 둘 다 특정 선택 시 이걸로 정확한 교차값 조회
+//   }}}
 //   OR: {channels,months,years,categories, data:{yr:{ch:{mo:{...,by_cat}}}}, totals:{yr:{mo:{...,by_cat}}}}
-//   → IR엔 채널×카테고리 교차표가 없음(by_ch 항목엔 카테고리 분해 없음). by_cat 합계(전채널)와 by_ch 합계(전카테고리)는
-//     grand total 기준으로 서로 일치(검증됨) — 두 축 중 하나만 동시에 필터링 가능.
+//   세 구조 모두 동일 레코드의 다른 축 합계라 grand total 기준으로 서로 일치(검증됨, verify_ir_monthly_psi.py).
 // ch: undefined → use curChs filter state (default)
 //     'ALL'     → grand total (channel 필터 무시) — sumRange() 기본값 경유
-//     'BH' 등   → specific channel total (카테고리 교차 없음 → curCats 필터 미적용)
+//     'BH' 등   → specific channel total. 카테고리도 특정 선택 중이면 by_ch_cat 교차표로 정확한 교차값을 낸다.
 function getVal(yr, mo, key, ch) {
   const Y = IR_PSI_DATA.years[yr];
   if (!Y) return null;
@@ -447,10 +450,22 @@ function getVal(yr, mo, key, ch) {
     }
     return s;
   }
+  // 채널×카테고리 둘 다 특정 선택인 교차 케이스: by_ch_cat[chn][cat][mo][key]를 curCats로 합산.
+  function crossTotal(chans) {
+    let s = null;
+    for (const chn of chans) {
+      for (const c of curCats) {
+        const v = Y.by_ch_cat?.[chn]?.[c]?.[mo]?.[key];
+        if (v !== null && v !== undefined) s = (s ?? 0) + v;
+      }
+    }
+    return s;
+  }
 
   // Explicit channel 인자 (Channel Analysis 탭 개별 채널 조회 + sumRange 기본값 'ALL')
   if (ch !== undefined) {
     if (ch === 'ALL') return useCat ? catTotal() : grandTotal();
+    if (useCat) return crossTotal([ch]);
     const v = Y.by_ch?.[ch]?.[mo]?.[key];
     return (v !== null && v !== undefined) ? v : null;
   }
@@ -460,7 +475,8 @@ function getVal(yr, mo, key, ch) {
   if (curChs.has('ALL')) {
     return useCat ? catTotal() : grandTotal();
   }
-  // 특정 채널(들) 선택 → 채널 합계. 카테고리 필터가 동시에 걸려도 교차표가 없어 적용 불가(채널 우선).
+  // 특정 채널(들) 선택 → 카테고리도 특정 선택 중이면 by_ch_cat 교차표로 정확한 교차값을 낸다.
+  if (useCat) return crossTotal([...curChs]);
   let s = null;
   for (const chn of curChs) {
     const v = Y.by_ch?.[chn]?.[mo]?.[key];
@@ -969,7 +985,7 @@ function renderKpi() {
   document.getElementById('kv-stk').textContent = fmtN(stk26);
   const yoyStk = fmtYoy(stk26, stk25);
   document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
-  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM' + (!curCats.has('ALL') ? ' · channel total' : '');
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM';
   document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
 
   if (so26 && st26) {
@@ -1314,7 +1330,10 @@ function renderMosPanel() {
   const stk26 = getVal('2026', 'Jun', 'stk');
   const so25a = getVal('2025', 'Jul', 'so');  // 직후 +1월
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
-  const chLabel = curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + ');
+  // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
+  // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
+  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'));
 
   if (stk26 === null) {
     document.getElementById('mosPanel').innerHTML =
@@ -1393,8 +1412,9 @@ function render() {
   renderCoverage();
   renderFullTable();
   renderMosTab();
-  // header info
-  const chLabel = curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + ');
+  // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
+  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'));
   const mtAsOf = (typeof IR_PSI_MODEL_TABLE !== 'undefined')
     ? (IR_PSI_MODEL_TABLE.as_of_year + ' ' + IR_PSI_MODEL_TABLE.as_of_week)
     : '2026-06';
