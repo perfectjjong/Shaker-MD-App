@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GFK AC Split Tracker (SA)</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="gfk_data.js"></script>
+<style>
+:root{
+  --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
+  --lg:#a50034;--lg-bg:#fdeef2;--up:#10b981;--dn:#ef4444;--amber:#f59e0b;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
+.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100}
+.header h1{font-size:14px;font-weight:700}
+.header .sub{font-size:11px;color:#94a3b8}
+.header select{margin-left:auto;background:#2a3352;color:#fff;border:1px solid #3d4870;border-radius:5px;padding:4px 8px;font-size:11px}
+.toggle{display:flex;border:1px solid #3d4870;border-radius:6px;overflow:hidden}
+.toggle button{background:#2a3352;color:#cbd5e1;border:none;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer}
+.toggle button.on{background:var(--lg);color:#fff}
+.toggle button:disabled{cursor:not-allowed;opacity:.4}
+.content{padding:16px 24px;max-width:1200px;margin:0 auto}
+.mtd-note{font-size:11px;color:var(--amber);background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:12px;display:none}
+.insight{font-size:13px;font-weight:600;background:var(--lg-bg);border-left:4px solid var(--lg);border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:14px;color:#7a0027}
+.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.kpi{background:var(--card);border-radius:8px;padding:13px 15px;border:1px solid var(--border)}
+.kpi.hero{border-left:4px solid var(--lg);background:var(--lg-bg)}
+.kl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
+.kv{font-size:22px;font-weight:700;line-height:1}
+.kpi.hero .kv{color:var(--lg)}
+.ks{font-size:11px;margin-top:5px;color:var(--muted)}
+.up{color:var(--up);font-weight:700}
+.dn{color:var(--dn);font-weight:700}
+.stitle{font-size:12px;font-weight:700;color:var(--text);margin:18px 0 8px;display:flex;align-items:center;gap:8px}
+.cc{background:var(--card);border-radius:8px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+th{background:var(--navy);color:#fff;padding:6px 8px;text-align:center;font-weight:600;font-size:11px;white-space:nowrap}
+th.l{text-align:left}
+td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
+td.l{text-align:left;font-weight:600}
+tr.lg-row td{background:var(--lg-bg)}
+tr.lg-row td.l{color:var(--lg);font-weight:800}
+tr.others-row td{color:#94a3b8;font-style:italic}
+tr:hover td{background:#f8fafc}
+.tbl{overflow-x:auto}
+.tabs{display:flex;gap:4px;margin-bottom:10px}
+.tab{padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;border:1px solid var(--border);color:var(--muted)}
+.tab.active{background:var(--lg);color:#fff;border-color:var(--lg)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.chart-wrap{height:260px;margin-bottom:10px}
+.dq-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.dq-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
+.dq-ok{background:#f0fdf4;color:#065f46}
+.dq-warn{background:#fffbeb;color:#92400e}
+.warn-item{font-size:11.5px;color:#92400e;background:#fffbeb;border-left:3px solid var(--amber);border-radius:0 4px 4px 0;padding:6px 10px;margin-top:5px}
+.footer{font-size:10.5px;color:var(--muted);padding:16px 24px 30px;max-width:1200px;margin:0 auto;line-height:1.6}
+.rank{color:var(--muted);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🇸🇦 GFK AC Split Tracker</h1>
+  <span class="sub">Saudi Arabia · GfK Panelmarket · LG 관점</span>
+  <div class="toggle" id="periodToggle">
+    <button data-period="ytd" class="on">YTD 누적</button>
+    <button data-period="mtd">당월(MTD)</button>
+  </div>
+  <select id="monthSelect"></select>
+</div>
+
+<div class="content">
+  <div class="mtd-note" id="mtdNote"></div>
+  <div class="insight" id="insight"></div>
+
+  <div class="kpi-row">
+    <div class="kpi hero">
+      <div class="kl">LG 가치 점유율</div>
+      <div class="kv" id="k-share">-</div>
+      <div class="ks" id="k-share-sub">-</div>
+    </div>
+    <div class="kpi hero">
+      <div class="kl">LG 가치 YoY</div>
+      <div class="kv" id="k-value">-</div>
+      <div class="ks" id="k-value-sub">-</div>
+    </div>
+    <div class="kpi hero">
+      <div class="kl">LG ASP YoY (가격 이탈 경보)</div>
+      <div class="kv" id="k-asp">-</div>
+      <div class="ks" id="k-asp-sub">-</div>
+    </div>
+    <div class="kpi">
+      <div class="kl">시장 전체 YoY (기준선)</div>
+      <div class="kv" id="k-market">-</div>
+      <div class="ks" id="k-market-sub">-</div>
+    </div>
+  </div>
+
+  <div class="stitle">🏆 브랜드 경쟁 랭킹 (가치 기준)</div>
+  <div class="cc">
+    <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
+    <div class="tbl">
+      <table id="brandTable">
+        <thead><tr>
+          <th class="l">#</th><th class="l">브랜드</th>
+          <th>가치(CY, SAR)</th><th>가치 YoY</th>
+          <th>점유율(CY)</th><th>점유율 Δpp</th>
+          <th>수량 YoY</th><th>ASP YoY</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="stitle">📊 세그먼트 믹스 (시장 전체)</div>
+  <div class="cc">
+    <div class="tabs">
+      <div class="tab active" data-tab="price">가격대</div>
+      <div class="tab" data-tab="btu">BTU(용량)</div>
+      <div class="tab" data-tab="heat">기능(난방포함)</div>
+    </div>
+    <div class="tab-panel active" data-panel="price">
+      <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
+      <div class="tbl"><table id="priceTable"><thead><tr>
+        <th class="l">가격대(LC)</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+      </tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="tab-panel" data-panel="btu">
+      <div class="chart-wrap"><canvas id="btuChart"></canvas></div>
+      <div class="tbl"><table id="btuTable"><thead><tr>
+        <th class="l">BTU 구간</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+      </tr></thead><tbody></tbody></table></div>
+    </div>
+    <div class="tab-panel" data-panel="heat">
+      <div class="tbl"><table id="heatTable"><thead><tr>
+        <th class="l">난방포함 여부</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+      </tr></thead><tbody></tbody></table></div>
+    </div>
+  </div>
+
+  <div class="stitle">🔍 데이터 품질</div>
+  <div class="cc">
+    <div class="dq-row" id="dqBadges"></div>
+    <div id="dqWarnings"></div>
+  </div>
+</div>
+
+<div class="footer">
+  원본: GFK Custom Report (SA, AC Split) · Panelmarket(전체 시장) 기준 — Offline/Online 세부채널 및 '10688' 코드 채널은 원본에 존재하나
+  의미가 확인되지 않아 이번 버전에서 제외했습니다. MTD(당월 단독)는 원본에 없는 값으로, 연속월 YTD 차이로 역산합니다
+  (최초 입수월은 산출 불가). PPT 원본과의 수치 대조는 이 환경에서 EMF/PowerPoint 렌더링이 되지 않아 미검증 상태입니다.
+  매월 원본 파일 추가 시 <code>build_gfk_split_dashboard.py</code> 재실행으로 갱신됩니다.
+</div>
+
+<script>
+const fmtSAR = v => v==null ? '-' : (v/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M';
+const fmtPct = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'%';
+const fmtPP  = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'pp';
+const cls = v => v==null ? '' : (v>=0?'up':'dn');
+const arrow = v => v==null ? '' : (v>=0?'▲':'▼');
+
+let state = {period:'ytd', monthIdx: GFK_DATA.monthOrder.length-1};
+
+function curMonthKey(){ return GFK_DATA.monthOrder[state.monthIdx]; }
+function curData(){
+  const m = GFK_DATA.months[curMonthKey()];
+  if(state.period==='mtd') return m.mtd;
+  return m.ytd;
+}
+
+function initMonthSelect(){
+  const sel = document.getElementById('monthSelect');
+  GFK_DATA.monthOrder.forEach((k,i)=>{
+    const o = document.createElement('option');
+    o.value=i; o.textContent=k;
+    sel.appendChild(o);
+  });
+  sel.value = state.monthIdx;
+  sel.addEventListener('change', e=>{ state.monthIdx = +e.target.value; render(); });
+}
+
+function initPeriodToggle(){
+  document.querySelectorAll('#periodToggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.disabled) return;
+      state.period = btn.dataset.period;
+      document.querySelectorAll('#periodToggle button').forEach(b=>b.classList.toggle('on', b===btn));
+      render();
+    });
+  });
+}
+
+let brandChart, priceChart, btuChart;
+function bar(id, labels, cy, py, existing){
+  const ctx = document.getElementById(id);
+  if(existing) existing.destroy();
+  return new Chart(ctx, {
+    type:'bar',
+    data:{labels, datasets:[
+      {label:'PY', data:py, backgroundColor:'#cbd5e1'},
+      {label:'CY', data:cy, backgroundColor:'#a50034'},
+    ]},
+    options:{responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top', labels:{boxWidth:10,font:{size:10}}}},
+      scales:{y:{ticks:{callback:v=>(v/1e6).toFixed(0)+'M'}}}}
+  });
+}
+
+function render(){
+  const d = curData();
+  const monthMeta = GFK_DATA.months[curMonthKey()];
+  const mtdBtn = document.querySelector('[data-period="mtd"]');
+  mtdBtn.disabled = !monthMeta.mtd;
+  mtdBtn.title = monthMeta.mtd ? '' : (monthMeta.mtdNote || '');
+  if(state.period==='mtd' && !monthMeta.mtd){
+    state.period='ytd';
+    document.querySelectorAll('#periodToggle button').forEach(b=>b.classList.toggle('on', b.dataset.period==='ytd'));
+  }
+  const dd = curData();
+
+  const note = document.getElementById('mtdNote');
+  if(state.period==='mtd' || !monthMeta.mtd){
+    if(!monthMeta.mtd){ note.style.display='block'; note.textContent='⚠️ '+(monthMeta.mtdNote||'당월 단독 데이터 없음'); }
+    else note.style.display='none';
+  } else note.style.display='none';
+
+  const lg = dd.brands.find(b=>b.label==='LG') || {};
+  const gt = dd.grandTotal;
+
+  document.getElementById('k-share').textContent = lg.value_share_cy!=null ? lg.value_share_cy.toFixed(1)+'%' : '-';
+  document.getElementById('k-share-sub').innerHTML = `PY ${lg.value_share_py?.toFixed(1)}% · <span class="${cls(lg.value_share_cy-lg.value_share_py)}">${arrow(lg.value_share_cy-lg.value_share_py)} ${fmtPP(lg.value_share_cy-lg.value_share_py)}</span>`;
+
+  document.getElementById('k-value').textContent = fmtPct(lg.value_growth);
+  document.getElementById('k-value').className='kv '+cls(lg.value_growth);
+  document.getElementById('k-value-sub').textContent = `${fmtSAR(lg.value_cy)} (PY ${fmtSAR(lg.value_py)})`;
+
+  document.getElementById('k-asp').textContent = lg.asp_cy && lg.asp_py ? fmtPct((lg.asp_cy/lg.asp_py-1)*100) : '-';
+  document.getElementById('k-asp').className='kv '+cls(lg.asp_cy && lg.asp_py ? lg.asp_cy-lg.asp_py : null);
+  document.getElementById('k-asp-sub').textContent = lg.asp_cy ? `SAR ${lg.asp_cy.toFixed(0)} (PY ${lg.asp_py.toFixed(0)})` : '-';
+
+  document.getElementById('k-market').textContent = fmtPct(gt.value_growth);
+  document.getElementById('k-market').className='kv '+cls(gt.value_growth);
+  document.getElementById('k-market-sub').textContent = `수량 YoY ${fmtPct(gt.units_growth)}`;
+
+  const gap = (lg.value_growth??0) - (gt.value_growth??0);
+  document.getElementById('insight').textContent =
+    `${curMonthKey()} ${state.period==='mtd'?'당월':'YTD 누적'}: 시장 전체 가치 ${fmtPct(gt.value_growth)} 대비 LG는 ${fmtPct(lg.value_growth)} `+
+    `(시장 대비 ${gap>=0?'+':''}${gap.toFixed(1)}pp), 점유율 ${lg.value_share_py?.toFixed(1)}→${lg.value_share_cy?.toFixed(1)}%. `+
+    `ASP는 ${lg.asp_cy && lg.asp_py ? fmtPct((lg.asp_cy/lg.asp_py-1)*100) : '-'} — `+
+    `${(lg.asp_cy && lg.asp_py && lg.asp_cy/lg.asp_py-1 < -0.05) ? '점유율 확대가 가격 하락(다운트레이딩) 동반 여부 확인 필요.' : '가격 안정적.'}`;
+
+  const sorted = [...dd.brands].filter(b=>b.label!=='<Others>').sort((a,b)=>b.value_cy-a.value_cy);
+  const top10 = sorted.slice(0,10);
+  brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>b.value_cy), top10.map(b=>b.value_py), brandChart);
+
+  const tbody = document.querySelector('#brandTable tbody');
+  tbody.innerHTML='';
+  sorted.forEach((b,i)=>{
+    const tr = document.createElement('tr');
+    if(b.label==='LG') tr.className='lg-row';
+    const dpp = (b.value_share_cy??0)-(b.value_share_py??0);
+    tr.innerHTML = `<td class="rank">${i+1}</td><td class="l">${safeLabel(b.label)}</td>
+      <td>${fmtSAR(b.value_cy)}</td><td class="${cls(b.value_growth)}">${fmtPct(b.value_growth)}</td>
+      <td>${b.value_share_cy!=null?b.value_share_cy.toFixed(2)+'%':'-'}</td>
+      <td class="${cls(dpp)}">${fmtPP(dpp)}</td>
+      <td class="${cls(b.units_growth)}">${fmtPct(b.units_growth)}</td>
+      <td class="${cls(b.asp_cy && b.asp_py ? b.asp_cy-b.asp_py : null)}">${b.asp_cy && b.asp_py ? fmtPct((b.asp_cy/b.asp_py-1)*100) : '-'}</td>`;
+    tbody.appendChild(tr);
+  });
+  const othersRow = dd.brands.find(b=>b.label==='<Others>');
+  if(othersRow){
+    const tr = document.createElement('tr'); tr.className='others-row';
+    tr.innerHTML = `<td></td><td class="l">기타 브랜드(장기 롱테일)</td><td>${fmtSAR(othersRow.value_cy)}</td>
+      <td>${fmtPct(othersRow.value_growth)}</td><td>${othersRow.value_share_cy?.toFixed(2)}%</td><td></td><td></td><td></td>`;
+    tbody.appendChild(tr);
+  }
+
+  const priceRows = dd.priceClass;
+  priceChart = bar('priceChart', priceRows.map(p=>p.label), priceRows.map(p=>p.value_cy), priceRows.map(p=>p.value_py), priceChart);
+  fillSegTable('priceTable', priceRows, gt.value_cy);
+
+  const btuRows = dd.btu.filter(b=>b.label!=='<Others>');
+  btuChart = bar('btuChart', btuRows.map(b=>b.label.replace('BTU','').trim()), btuRows.map(b=>b.value_cy), btuRows.map(b=>b.value_py), btuChart);
+  fillSegTable('btuTable', dd.btu, gt.value_cy);
+
+  const heatRows = [];
+  if(dd.heating.yes) heatRows.push({...dd.heating.yes, label:'난방 포함(Heat Pump)'});
+  if(dd.heating.no) heatRows.push({...dd.heating.no, label:'난방 미포함'});
+  fillSegTable('heatTable', heatRows, gt.value_cy);
+
+  const dq = dd.dataQuality || {};
+  const dqBadges = document.getElementById('dqBadges');
+  dqBadges.innerHTML='';
+  Object.entries(dq.crossCheck||{}).forEach(([k,v])=>{
+    const b = document.createElement('span');
+    b.className='dq-badge '+(v?'dq-ok':'dq-warn');
+    b.textContent = (v?'✅ ':'⚠️ ')+k;
+    dqBadges.appendChild(b);
+  });
+  const warnBox = document.getElementById('dqWarnings');
+  warnBox.innerHTML = (dq.warnings||[]).map(w=>`<div class="warn-item">⚠️ ${w}</div>`).join('') || '<div style="color:#64748b;font-size:11.5px">이상 없음</div>';
+}
+
+function safeLabel(label){
+  if(label==='<Others>') return '미분류(Others)';
+  if(label==='<Grand Total>') return '전체';
+  return String(label).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function fillSegTable(tableId, rows, grandValueCy){
+  const tbody = document.querySelector('#'+tableId+' tbody');
+  tbody.innerHTML='';
+  rows.forEach(r=>{
+    const tr = document.createElement('tr');
+    if(r.label==='<Others>') tr.className='others-row';
+    const share = grandValueCy ? (r.value_cy/grandValueCy*100) : null;
+    tr.innerHTML = `<td class="l">${safeLabel(r.label)}</td><td>${fmtSAR(r.value_cy)}</td>
+      <td class="${cls(r.value_growth)}">${fmtPct(r.value_growth)}</td>
+      <td>${share!=null?share.toFixed(1)+'%':'-'}</td>
+      <td class="${cls(r.units_growth)}">${fmtPct(r.units_growth)}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===tab));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===tab.dataset.tab));
+    // Chart.js가 display:none 상태에서 만들어진 캔버스는 내부 레이아웃이 0x0으로 굳어 resize()만으로는
+    // 막대가 복구되지 않음 -> 탭이 보이는 시점(classList 반영 후)에 해당 차트를 완전히 재생성
+    render();
+  });
+});
+
+initMonthSelect();
+initPeriodToggle();
+render();
+</script>
+</body>
+</html>
