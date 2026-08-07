@@ -65,6 +65,10 @@ tr:hover td{background:#f8fafc}
 <div class="header">
   <h1>🇸🇦 GFK AC Split Tracker</h1>
   <span class="sub">Saudi Arabia · GfK Panelmarket · LG 관점</span>
+  <div class="toggle" id="metricToggle">
+    <button data-metric="value" class="on">금액(SAR)</button>
+    <button data-metric="units">수량(대)</button>
+  </div>
   <div class="toggle" id="periodToggle">
     <button data-period="ytd" class="on">YTD 누적</button>
     <button data-period="mtd">당월(MTD)</button>
@@ -99,7 +103,7 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
-  <div class="stitle">🏆 브랜드 경쟁 랭킹 (가치 기준)</div>
+  <div class="stitle" id="brandRankTitle">🏆 브랜드 경쟁 랭킹</div>
   <div class="cc">
     <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
     <div class="tbl">
@@ -115,6 +119,25 @@ tr:hover td{background:#f8fafc}
     </div>
   </div>
 
+  <div class="stitle">🎯 LG 포지셔닝 — 가격대/BTU별 경쟁 비교 (LG가 어디서 이기고 지는지)</div>
+  <div class="cc">
+    <div class="tabs" id="posTabs">
+      <div class="tab active" data-postab="price">가격대</div>
+      <div class="tab" data-postab="btu">BTU(용량)</div>
+    </div>
+    <div class="chart-wrap"><canvas id="posChart"></canvas></div>
+    <div class="tbl">
+      <table id="posTable">
+        <thead><tr>
+          <th class="l">구간</th><th id="posColLG">LG</th><th>LG YoY</th><th>LG 구간점유율</th>
+          <th>구간 1위</th><th>1위 값</th><th>LG 순위</th>
+        </tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="note" id="posNote" style="font-size:11px;color:#64748b;margin-top:8px"></div>
+  </div>
+
   <div class="stitle">📊 세그먼트 믹스 (시장 전체)</div>
   <div class="cc">
     <div class="tabs">
@@ -125,18 +148,18 @@ tr:hover td{background:#f8fafc}
     <div class="tab-panel active" data-panel="price">
       <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
       <div class="tbl"><table id="priceTable"><thead><tr>
-        <th class="l">가격대(LC)</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+        <th class="l">가격대(LC)</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
       </tr></thead><tbody></tbody></table></div>
     </div>
     <div class="tab-panel" data-panel="btu">
       <div class="chart-wrap"><canvas id="btuChart"></canvas></div>
       <div class="tbl"><table id="btuTable"><thead><tr>
-        <th class="l">BTU 구간</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+        <th class="l">BTU 구간</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
       </tr></thead><tbody></tbody></table></div>
     </div>
     <div class="tab-panel" data-panel="heat">
       <div class="tbl"><table id="heatTable"><thead><tr>
-        <th class="l">난방포함 여부</th><th>가치(CY)</th><th>가치 YoY</th><th>비중(CY)</th><th>수량 YoY</th>
+        <th class="l">난방포함 여부</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
       </tr></thead><tbody></tbody></table></div>
     </div>
   </div>
@@ -150,19 +173,31 @@ tr:hover td{background:#f8fafc}
 
 <div class="footer">
   원본: GFK Custom Report (SA, AC Split) · Panelmarket(전체 시장) 기준 — Offline/Online 세부채널 및 '10688' 코드 채널은 원본에 존재하나
-  의미가 확인되지 않아 이번 버전에서 제외했습니다. MTD(당월 단독)는 원본에 없는 값으로, 연속월 YTD 차이로 역산합니다
-  (최초 입수월은 산출 불가). PPT 원본과의 수치 대조는 이 환경에서 EMF/PowerPoint 렌더링이 되지 않아 미검증 상태입니다.
+  의미가 확인되지 않아 이번 버전에서 제외했습니다. "LG 포지셔닝" 매트릭스는 GfK 브랜드x가격대/브랜드xBTU 시트를 구조 기반으로
+  자동 식별해 사용합니다(시트명의 쿼리 코드는 매월 바뀔 수 있어 이름 대신 헤더 내용·Grand Total 값으로 식별).
+  ⚠️ BTU '12000~18000' 구간은 GfK의 AC Feat SPLIT 시트와 브랜드xBTU 매트릭스 시트 간 원본 자체 수치 불일치가 있어(2%p 초과) 데이터 품질
+  섹션에 자동 경고로 표시됩니다 — 다른 4개 BTU 구간은 두 시트가 정확히 일치합니다.
+  MTD(당월 단독)는 원본에 없는 값으로, 연속월 YTD 차이로 역산합니다(최초 입수월은 산출 불가).
+  PPT 원본과의 수치 대조는 이 환경에서 EMF/PowerPoint 렌더링이 되지 않아 미검증 상태입니다.
   매월 원본 파일 추가 시 <code>build_gfk_split_dashboard.py</code> 재실행으로 갱신됩니다.
 </div>
 
 <script>
 const fmtSAR = v => v==null ? '-' : (v/1e6).toLocaleString('en-US',{maximumFractionDigits:1})+'M';
+const fmtUnits = v => v==null ? '-' : Math.round(v).toLocaleString('en-US')+'대';
 const fmtPct = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'%';
 const fmtPP  = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'pp';
 const cls = v => v==null ? '' : (v>=0?'up':'dn');
 const arrow = v => v==null ? '' : (v>=0?'▲':'▼');
+const PALETTE = ['#a50034','#64748b','#0ea5e9','#f59e0b'];
 
-let state = {period:'ytd', monthIdx: GFK_DATA.monthOrder.length-1};
+let state = {period:'ytd', metric:'value', posAxis:'price', monthIdx: GFK_DATA.monthOrder.length-1};
+
+// 브랜드/세그먼트 행 오브젝트에서 현재 metric(value|units)에 맞는 필드를 꺼낸다.
+// 예: mfield(brandRow,'cy') -> state.metric==='value'면 value_cy, 'units'면 units_cy
+function mfield(obj, suffix){ return obj ? obj[`${state.metric}_${suffix}`] : null; }
+function fmtMetric(v){ return state.metric==='value' ? fmtSAR(v) : fmtUnits(v); }
+function metricLabel(){ return state.metric==='value' ? '금액' : '수량'; }
 
 function curMonthKey(){ return GFK_DATA.monthOrder[state.monthIdx]; }
 function curData(){
@@ -193,10 +228,21 @@ function initPeriodToggle(){
   });
 }
 
-let brandChart, priceChart, btuChart;
+function initMetricToggle(){
+  document.querySelectorAll('#metricToggle button').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      state.metric = btn.dataset.metric;
+      document.querySelectorAll('#metricToggle button').forEach(b=>b.classList.toggle('on', b===btn));
+      render();
+    });
+  });
+}
+
+let brandChart, priceChart, btuChart, posChart;
 function bar(id, labels, cy, py, existing){
   const ctx = document.getElementById(id);
   if(existing) existing.destroy();
+  const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
   return new Chart(ctx, {
     type:'bar',
     data:{labels, datasets:[
@@ -205,8 +251,29 @@ function bar(id, labels, cy, py, existing){
     ]},
     options:{responsive:true, maintainAspectRatio:false,
       plugins:{legend:{position:'top', labels:{boxWidth:10,font:{size:10}}}},
-      scales:{y:{ticks:{callback:v=>(v/1e6).toFixed(0)+'M'}}}}
+      scales:{y:{ticks:{callback:yTick}}}}
   });
+}
+
+function topCompetitors(brands, n){
+  return [...brands]
+    .filter(b=>b.label!=='LG' && b.label!=='<Others>')
+    .sort((a,b)=> (mfield(b.grandTotal,'cy')||0) - (mfield(a.grandTotal,'cy')||0))
+    .slice(0,n);
+}
+
+function bestWorstTier(matrix){
+  if(!matrix) return null;
+  const lg = matrix.brands.find(b=>b.label==='LG');
+  if(!lg) return null;
+  const rows = matrix.tierLabels.map((lbl,i)=>{
+    const tierTotal = mfield(matrix.grandTotal.tiers[i],'cy');
+    const lgVal = mfield(lg.tiers[i],'cy');
+    return { label: lbl, share: (tierTotal && lgVal!=null) ? lgVal/tierTotal*100 : null, growth: mfield(lg.tiers[i],'growth') };
+  }).filter(x=>x.share!=null);
+  if(!rows.length) return null;
+  rows.sort((a,b)=>b.share-a.share);
+  return { best: rows[0], worst: rows[rows.length-1] };
 }
 
 function render(){
@@ -229,32 +296,51 @@ function render(){
 
   const lg = dd.brands.find(b=>b.label==='LG') || {};
   const gt = dd.grandTotal;
+  const M = metricLabel(); // '금액' or '수량'
+  document.getElementById('brandRankTitle').textContent = `🏆 브랜드 경쟁 랭킹 (${M} 기준)`;
 
-  document.getElementById('k-share').textContent = lg.value_share_cy!=null ? lg.value_share_cy.toFixed(1)+'%' : '-';
-  document.getElementById('k-share-sub').innerHTML = `PY ${lg.value_share_py?.toFixed(1)}% · <span class="${cls(lg.value_share_cy-lg.value_share_py)}">${arrow(lg.value_share_cy-lg.value_share_py)} ${fmtPP(lg.value_share_cy-lg.value_share_py)}</span>`;
+  document.querySelector('#k-share').previousElementSibling.textContent = `LG ${M} 점유율`;
+  const shareCy = mfield(lg,'share_cy'), sharePy = mfield(lg,'share_py');
+  document.getElementById('k-share').textContent = shareCy!=null ? shareCy.toFixed(1)+'%' : '-';
+  document.getElementById('k-share-sub').innerHTML = shareCy!=null
+    ? `PY ${sharePy?.toFixed(1)}% · <span class="${cls(shareCy-sharePy)}">${arrow(shareCy-sharePy)} ${fmtPP(shareCy-sharePy)}</span>` : '-';
 
-  document.getElementById('k-value').textContent = fmtPct(lg.value_growth);
-  document.getElementById('k-value').className='kv '+cls(lg.value_growth);
-  document.getElementById('k-value-sub').textContent = `${fmtSAR(lg.value_cy)} (PY ${fmtSAR(lg.value_py)})`;
+  document.querySelector('#k-value').previousElementSibling.textContent = `LG ${M} YoY`;
+  const lgGrowth = mfield(lg,'growth');
+  document.getElementById('k-value').textContent = fmtPct(lgGrowth);
+  document.getElementById('k-value').className='kv '+cls(lgGrowth);
+  document.getElementById('k-value-sub').textContent = `${fmtMetric(mfield(lg,'cy'))} (PY ${fmtMetric(mfield(lg,'py'))})`;
 
   document.getElementById('k-asp').textContent = lg.asp_cy && lg.asp_py ? fmtPct((lg.asp_cy/lg.asp_py-1)*100) : '-';
   document.getElementById('k-asp').className='kv '+cls(lg.asp_cy && lg.asp_py ? lg.asp_cy-lg.asp_py : null);
   document.getElementById('k-asp-sub').textContent = lg.asp_cy ? `SAR ${lg.asp_cy.toFixed(0)} (PY ${lg.asp_py.toFixed(0)})` : '-';
 
-  document.getElementById('k-market').textContent = fmtPct(gt.value_growth);
-  document.getElementById('k-market').className='kv '+cls(gt.value_growth);
-  document.getElementById('k-market-sub').textContent = `수량 YoY ${fmtPct(gt.units_growth)}`;
+  document.querySelector('#k-market').previousElementSibling.textContent = `시장 전체 ${M} YoY (기준선)`;
+  const gtGrowth = mfield(gt,'growth');
+  const otherMetric = state.metric==='value' ? 'units' : 'value';
+  document.getElementById('k-market').textContent = fmtPct(gtGrowth);
+  document.getElementById('k-market').className='kv '+cls(gtGrowth);
+  document.getElementById('k-market-sub').textContent = `${otherMetric==='units'?'수량':'금액'} YoY ${fmtPct(gt[`${otherMetric}_growth`])}`;
 
-  const gap = (lg.value_growth??0) - (gt.value_growth??0);
-  document.getElementById('insight').textContent =
-    `${curMonthKey()} ${state.period==='mtd'?'당월':'YTD 누적'}: 시장 전체 가치 ${fmtPct(gt.value_growth)} 대비 LG는 ${fmtPct(lg.value_growth)} `+
-    `(시장 대비 ${gap>=0?'+':''}${gap.toFixed(1)}pp), 점유율 ${lg.value_share_py?.toFixed(1)}→${lg.value_share_cy?.toFixed(1)}%. `+
-    `ASP는 ${lg.asp_cy && lg.asp_py ? fmtPct((lg.asp_cy/lg.asp_py-1)*100) : '-'} — `+
-    `${(lg.asp_cy && lg.asp_py && lg.asp_cy/lg.asp_py-1 < -0.05) ? '점유율 확대가 가격 하락(다운트레이딩) 동반 여부 확인 필요.' : '가격 안정적.'}`;
+  const gap = (lgGrowth??0) - (gtGrowth??0);
+  const bwPrice = bestWorstTier(dd.priceMatrix);
+  const bwBtu = bestWorstTier(dd.btuMatrix);
+  const aspDown = lg.asp_cy && lg.asp_py && (lg.asp_cy/lg.asp_py-1) < -0.05;
+  let insight =
+    `${curMonthKey()} ${state.period==='mtd'?'당월':'YTD 누적'} · ${M} 기준 — `+
+    `시장 전체 ${fmtPct(gtGrowth)} 대비 LG는 ${fmtPct(lgGrowth)}(시장 대비 ${gap>=0?'+':''}${gap.toFixed(1)}pp), `+
+    `점유율 ${sharePy?.toFixed(1)}→${shareCy?.toFixed(1)}%. `;
+  if(bwPrice) insight += `가격대 기준 LG 최강 구간은 "${bwPrice.best.label}"(점유율 ${bwPrice.best.share.toFixed(1)}%), `+
+    `최약 구간은 "${bwPrice.worst.label}"(점유율 ${bwPrice.worst.share.toFixed(1)}%). `;
+  if(bwBtu) insight += `BTU 기준 최강 "${bwBtu.best.label}"(${bwBtu.best.share.toFixed(1)}%) / 최약 "${bwBtu.worst.label}"(${bwBtu.worst.share.toFixed(1)}%). `;
+  insight += lg.asp_cy && lg.asp_py
+    ? `ASP는 ${fmtPct((lg.asp_cy/lg.asp_py-1)*100)} — ${aspDown ? '점유율 확대가 가격 하락(다운트레이딩) 동반, 마진 영향 확인 필요.' : '가격 안정적.'}`
+    : '';
+  document.getElementById('insight').textContent = insight;
 
-  const sorted = [...dd.brands].filter(b=>b.label!=='<Others>').sort((a,b)=>b.value_cy-a.value_cy);
+  const sorted = [...dd.brands].filter(b=>b.label!=='<Others>').sort((a,b)=>(mfield(b,'cy')||0)-(mfield(a,'cy')||0));
   const top10 = sorted.slice(0,10);
-  brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>b.value_cy), top10.map(b=>b.value_py), brandChart);
+  brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>mfield(b,'cy')), top10.map(b=>mfield(b,'py')), brandChart);
 
   const tbody = document.querySelector('#brandTable tbody');
   tbody.innerHTML='';
@@ -278,18 +364,25 @@ function render(){
     tbody.appendChild(tr);
   }
 
+  renderPositioning(dd);
+
   const priceRows = dd.priceClass;
-  priceChart = bar('priceChart', priceRows.map(p=>p.label), priceRows.map(p=>p.value_cy), priceRows.map(p=>p.value_py), priceChart);
-  fillSegTable('priceTable', priceRows, gt.value_cy);
+  priceChart = bar('priceChart', priceRows.map(p=>p.label), priceRows.map(p=>mfield(p,'cy')), priceRows.map(p=>mfield(p,'py')), priceChart);
+  fillSegTable('priceTable', priceRows, mfield(gt,'cy'));
 
   const btuRows = dd.btu.filter(b=>b.label!=='<Others>');
-  btuChart = bar('btuChart', btuRows.map(b=>b.label.replace('BTU','').trim()), btuRows.map(b=>b.value_cy), btuRows.map(b=>b.value_py), btuChart);
-  fillSegTable('btuTable', dd.btu, gt.value_cy);
+  btuChart = bar('btuChart', btuRows.map(b=>b.label.replace('BTU','').trim()), btuRows.map(b=>mfield(b,'cy')), btuRows.map(b=>mfield(b,'py')), btuChart);
+  fillSegTable('btuTable', dd.btu, mfield(gt,'cy'));
 
   const heatRows = [];
   if(dd.heating.yes) heatRows.push({...dd.heating.yes, label:'난방 포함(Heat Pump)'});
   if(dd.heating.no) heatRows.push({...dd.heating.no, label:'난방 미포함'});
-  fillSegTable('heatTable', heatRows, gt.value_cy);
+  fillSegTable('heatTable', heatRows, mfield(gt,'cy'));
+
+  const otherM = otherMetric==='units' ? '수량' : '금액';
+  document.querySelectorAll('.seg-col-header').forEach(el=>{ el.textContent = `${M}(CY)`; });
+  document.querySelectorAll('.seg-growth-header').forEach(el=>{ el.textContent = `${M} YoY`; });
+  document.querySelectorAll('.seg-other-header').forEach(el=>{ el.textContent = `${otherM} YoY`; });
 
   const dq = dd.dataQuality || {};
   const dqBadges = document.getElementById('dqBadges');
@@ -310,24 +403,82 @@ function safeLabel(label){
   return String(label).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function fillSegTable(tableId, rows, grandValueCy){
+function fillSegTable(tableId, rows, grandCy){
+  const otherMetric = state.metric==='value' ? 'units' : 'value';
   const tbody = document.querySelector('#'+tableId+' tbody');
   tbody.innerHTML='';
   rows.forEach(r=>{
     const tr = document.createElement('tr');
     if(r.label==='<Others>') tr.className='others-row';
-    const share = grandValueCy ? (r.value_cy/grandValueCy*100) : null;
-    tr.innerHTML = `<td class="l">${safeLabel(r.label)}</td><td>${fmtSAR(r.value_cy)}</td>
-      <td class="${cls(r.value_growth)}">${fmtPct(r.value_growth)}</td>
+    const v = mfield(r,'cy');
+    const share = grandCy ? (v/grandCy*100) : null;
+    tr.innerHTML = `<td class="l">${safeLabel(r.label)}</td><td>${fmtMetric(v)}</td>
+      <td class="${cls(mfield(r,'growth'))}">${fmtPct(mfield(r,'growth'))}</td>
       <td>${share!=null?share.toFixed(1)+'%':'-'}</td>
-      <td class="${cls(r.units_growth)}">${fmtPct(r.units_growth)}</td>`;
+      <td class="${cls(r[`${otherMetric}_growth`])}">${fmtPct(r[`${otherMetric}_growth`])}</td>`;
     tbody.appendChild(tr);
   });
 }
 
-document.querySelectorAll('.tab').forEach(tab=>{
+function renderPositioning(dd){
+  const matrix = state.posAxis==='price' ? dd.priceMatrix : dd.btuMatrix;
+  const noteEl = document.getElementById('posNote');
+  if(!matrix){ noteEl.textContent = '이 기간에는 매트릭스 데이터가 없습니다.'; return; }
+  const lg = matrix.brands.find(b=>b.label==='LG');
+  if(!lg){ noteEl.textContent = 'LG 데이터를 찾을 수 없습니다.'; return; }
+
+  const comps = topCompetitors(matrix.brands, 3);
+  const series = [lg, ...comps];
+  const labels = matrix.tierLabels.map(l=>safeLabel(l).replace(' BTU','').replace(' LC','').trim());
+
+  const ctx = document.getElementById('posChart');
+  if(posChart) posChart.destroy();
+  const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
+  posChart = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets: series.map((b,i)=>({
+      label: b.label, data: b.tiers.map(t=>mfield(t,'cy')), backgroundColor: PALETTE[i]||'#cbd5e1'
+    })) },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'top', labels:{boxWidth:10,font:{size:10}}}},
+      scales:{y:{ticks:{callback:yTick}}} }
+  });
+
+  document.getElementById('posColLG').textContent = `LG ${metricLabel()}(CY)`;
+
+  const tbody = document.querySelector('#posTable tbody');
+  tbody.innerHTML='';
+  matrix.tierLabels.forEach((lbl,i)=>{
+    const ranked = matrix.brands.filter(b=>b.label!=='<Others>')
+      .map(b=>({label:b.label, v: mfield(b.tiers[i],'cy')}))
+      .filter(x=>x.v!=null)
+      .sort((a,b)=>b.v-a.v);
+    const lgVal = mfield(lg.tiers[i],'cy');
+    const tierTotal = mfield(matrix.grandTotal.tiers[i],'cy');
+    const lgShare = (tierTotal && lgVal!=null) ? (lgVal/tierTotal*100) : null;
+    const rank = ranked.findIndex(x=>x.label==='LG')+1;
+    const top1 = ranked[0];
+    const tr = document.createElement('tr');
+    if(top1 && top1.label==='LG') tr.classList.add('lg-row');
+    tr.innerHTML = `<td class="l">${safeLabel(lbl)}</td>
+      <td>${fmtMetric(lgVal)}</td>
+      <td class="${cls(mfield(lg.tiers[i],'growth'))}">${fmtPct(mfield(lg.tiers[i],'growth'))}</td>
+      <td>${lgShare!=null?lgShare.toFixed(1)+'%':'-'}</td>
+      <td class="l">${top1?safeLabel(top1.label):'-'}</td>
+      <td>${top1?fmtMetric(top1.v):'-'}</td>
+      <td class="rank">${rank||'-'} / ${ranked.length}</td>`;
+    tbody.appendChild(tr);
+  });
+
+  noteEl.textContent = `비교 대상: LG + 상위 3개 경쟁사(${comps.map(c=>c.label).join(', ')}) · ${metricLabel()} 기준(CY)`;
+}
+
+// .tabs 그룹별로 active 토글을 scope — posTabs 등 다른 탭 그룹의 active 상태를 건드리지 않도록
+// tab.closest('.tabs')로 자기 그룹 안에서만 active를 바꾼다.
+document.querySelectorAll('.tabs .tab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===tab));
+    tab.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===tab));
+    if(tab.dataset.tab === undefined) return; // posTabs 등 별도 핸들러가 있는 탭은 여기서 끝
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===tab.dataset.tab));
     // Chart.js가 display:none 상태에서 만들어진 캔버스는 내부 레이아웃이 0x0으로 굳어 resize()만으로는
     // 막대가 복구되지 않음 -> 탭이 보이는 시점(classList 반영 후)에 해당 차트를 완전히 재생성
@@ -335,8 +486,17 @@ document.querySelectorAll('.tab').forEach(tab=>{
   });
 });
 
+document.querySelectorAll('#posTabs .tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#posTabs .tab').forEach(t=>t.classList.toggle('active', t===tab));
+    state.posAxis = tab.dataset.postab;
+    render();
+  });
+});
+
 initMonthSelect();
 initPeriodToggle();
+initMetricToggle();
 render();
 </script>
 </body>
