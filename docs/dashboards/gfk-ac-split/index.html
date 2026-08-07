@@ -84,6 +84,7 @@ body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--
 .card-desc{font-size:12px;color:var(--ink-3);margin-bottom:14px}
 .chart-wrap{height:280px;margin-bottom:14px}
 .chart-wrap.short{height:220px}
+.chart-wrap.tall{height:380px}
 
 table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
 th{background:var(--sunken);color:var(--ink-2);padding:9px 10px;text-align:center;font-weight:700;font-size:11.5px;white-space:nowrap;border-bottom:1px solid var(--line)}
@@ -209,6 +210,12 @@ tr:hover td{background:#f8f8f7}
   </div>
 
   <div class="dpanel active" data-dpanel="brand">
+    <div class="card">
+      <div class="card-title">브랜드 포지셔닝 맵 (성장률 × 점유율)</div>
+      <div class="card-desc">X=YoY 성장률, Y=점유율, 버블 크기=규모. 우상단=성장하며 큰 브랜드, 좌하단=위축·소형. 전년 점유율 0.3%↑ 브랜드만(노이즈 컷) · 버블에 마우스를 올리면 브랜드명이 나옵니다.</div>
+      <div class="chart-wrap tall"><canvas id="scatterChart"></canvas></div>
+      <div class="sw-note" id="scatterNote"></div>
+    </div>
     <div class="card">
       <div class="card-title" id="brandCardTitle">브랜드 경쟁 랭킹</div>
       <div class="card-desc">상위 15개 브랜드 · LG 강조. 시장 전체가 위축되는 중에도 점유율이 오르는 브랜드가 누군지 한눈에.</div>
@@ -352,7 +359,80 @@ function initMonthSelect(){
   sel.addEventListener('change', e=>{ state.monthIdx = +e.target.value; render(); });
 }
 
-let brandChart, priceChart, btuChart, posChart;
+let brandChart, priceChart, btuChart, posChart, scatterChart;
+
+// 브랜드 포지셔닝 맵: 해석 없이 데이터만 배치 — 전년 점유율 0.3% 미만(표본이 너무 작아
+// %성장률이 극단값으로 튀는 브랜드, 예: +26653%)은 노이즈라 제외하고 좌표만 계산한다.
+function renderScatter(dd){
+  const ctx = document.getElementById('scatterChart');
+  if(scatterChart){ scatterChart.destroy(); scatterChart=null; }
+  if(!isVisible(ctx)) return;
+  const gt = dd.grandTotal;
+  const points = dd.brands.filter(b=>b.label!=='<Others>').map(b=>{
+    const growth = mfield(b,'growth');
+    const share = shareOf(b,gt,'cy');
+    const sharePy = shareOf(b,gt,'py');
+    const value = mfield(b,'cy');
+    return {label:b.label, x:growth, y:share, r:value, sharePy};
+  }).filter(p=>p.sharePy!=null && p.sharePy>=0.3 && p.x!=null && p.y!=null && p.r!=null);
+
+  const excluded = dd.brands.filter(b=>b.label!=='<Others>').length - points.length;
+  const lg = points.find(p=>p.label==='LG');
+  const others = points.filter(p=>p.label!=='LG');
+  const maxVal = Math.max(...points.map(p=>p.r), 1);
+  const toRadius = v => 4 + Math.sqrt(v/maxVal)*22;
+
+  // 라벨은 "이야기의 주인공"(LG)과 참고점이 될 상위 2개 경쟁사에만 직접 표기 — 나머지는
+  // 호버 툴팁으로 (dataviz 가이드: 모든 점에 라벨 금지, 선택적으로만).
+  const topOthersLabels = [...others].sort((a,b)=>b.y-a.y).slice(0,2).map(p=>p.label);
+  const directLabelPlugin = {
+    id:'directLabels',
+    afterDatasetsDraw(chart){
+      const {ctx} = chart;
+      chart.data.datasets.forEach((ds,dsi)=>{
+        const meta = chart.getDatasetMeta(dsi);
+        ds.data.forEach((pt,i)=>{
+          if(pt._label!=='LG' && !topOthersLabels.includes(pt._label)) return;
+          const el = meta.data[i];
+          if(!el) return;
+          ctx.save();
+          ctx.font = '700 11px -apple-system,sans-serif';
+          ctx.fillStyle = pt._label==='LG' ? '#a50034' : '#1e3a5f';
+          ctx.textAlign = 'left';
+          ctx.fillText(pt._label, el.x + el.options.radius + 4, el.y + 4);
+          ctx.restore();
+        });
+      });
+    }
+  };
+
+  scatterChart = new Chart(ctx, {
+    type:'bubble',
+    data:{ datasets:[
+      { label:'경쟁사', data: others.map(p=>({x:p.x, y:p.y, r:toRadius(p.r), _label:p.label})),
+        backgroundColor:'rgba(42,120,214,0.5)', borderColor:'#2a78d6', borderWidth:1 },
+      { label:'LG', data: lg ? [{x:lg.x, y:lg.y, r:toRadius(lg.r), _label:'LG'}] : [],
+        backgroundColor:'rgba(165,0,52,0.75)', borderColor:'#a50034', borderWidth:2 },
+    ]},
+    plugins:[directLabelPlugin],
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{
+        legend:{position:'top', align:'end', labels:{boxWidth:10,font:{size:11,weight:600}}},
+        tooltip:{callbacks:{label:(c)=>{
+          const p = c.raw;
+          return `${p._label}: 점유율 ${p.y.toFixed(1)}% · 성장 ${fmtPct(p.x)}`;
+        }}}
+      },
+      scales:{
+        x:{title:{display:true, text:`${metricLabel()} YoY 성장률(%)`, font:{size:11}}, grid:{color:'#eeeeec'}, ticks:{font:{size:11}}},
+        y:{title:{display:true, text:`점유율(%, ${channelLabel()})`, font:{size:11}}, grid:{color:'#eeeeec'}, ticks:{font:{size:11}}}
+      }
+    }
+  });
+  document.getElementById('scatterNote').textContent =
+    `표시 브랜드 ${points.length}개 (전년 점유율 0.3% 미만 ${excluded}개는 표본이 작아 성장률이 왜곡되어 제외).`;
+}
+
 // display:none 조상 아래 캔버스에 Chart.js를 생성하면 내부 devicePixelRatio 계산이 0-크기
 // 기준으로 굳어버려서, 나중에 destroy()+재생성해도 안 풀림(막대가 한쪽에 뭉치거나 안 보임) —
 // 그래서 숨겨진 캔버스는 애초에 차트를 만들지 않고, 탭이 열려 실제로 보일 때 처음 생성한다.
@@ -504,6 +584,7 @@ function render(){
   const sorted = [...dd.brands].filter(b=>b.label!=='<Others>').sort((a,b)=>(mfield(b,'cy')||0)-(mfield(a,'cy')||0));
   const top10 = sorted.slice(0,10);
   brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>mfield(b,'cy')), top10.map(b=>mfield(b,'py')), brandChart, PALETTE[0]);
+  renderScatter(dd);
 
   const rowHtml = (b,i) => {
     const tr = document.createElement('tr');
