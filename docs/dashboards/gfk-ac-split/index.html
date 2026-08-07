@@ -594,7 +594,7 @@ function render(){
     const otherGrowth=cfield(b,otherMetric+'_growth');
     const aspCy=cfield(b,'asp_cy'), aspPy=cfield(b,'asp_py');
     const shCy=shareOf(b,gt,'cy'), shPy=shareOf(b,gt,'py');
-    const dpp = (shCy??0)-(shPy??0);
+    const dpp = (shCy!=null || shPy!=null) ? (shCy??0)-(shPy??0) : null;
     tr.innerHTML = `<td class="rank">${i+1}</td><td class="l">${safeLabel(b.label)}</td>
       <td>${fmtMetric(primCy)}</td><td class="${cls(primGrowth)}">${fmtPct(primGrowth)}</td>
       <td>${shCy!=null?shCy.toFixed(2)+'%':'-'}</td>
