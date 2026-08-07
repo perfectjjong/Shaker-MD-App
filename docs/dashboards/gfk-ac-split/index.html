@@ -224,9 +224,9 @@ tr:hover td{background:#f8f8f7}
         <table id="brandTable">
           <thead><tr>
             <th class="l">#</th><th class="l">브랜드</th>
-            <th>가치(CY, SAR)</th><th>가치 YoY</th>
+            <th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th>
             <th>점유율(CY)</th><th>점유율 Δpp</th>
-            <th>수량 YoY</th><th>ASP YoY</th>
+            <th class="seg-other-header">수량 YoY</th><th>ASP YoY</th>
           </tr></thead>
           <tbody id="brandTbodyTop"></tbody>
           <tbody id="brandTbodyRest" class="hidden-rows"></tbody>
@@ -589,15 +589,17 @@ function render(){
   const rowHtml = (b,i) => {
     const tr = document.createElement('tr');
     if(b.label==='LG') tr.className='lg-row';
-    const vCy=cfield(b,'value_cy'), vGrowth=cfield(b,'value_growth'), uGrowth=cfield(b,'units_growth');
+    // 컬럼2/3은 현재 선택된 지표(금액/수량)를 따라감 — 토글과 무관하게 항상 금액이 나오던 버그 수정
+    const primCy=mfield(b,'cy'), primGrowth=mfield(b,'growth');
+    const otherGrowth=cfield(b,otherMetric+'_growth');
     const aspCy=cfield(b,'asp_cy'), aspPy=cfield(b,'asp_py');
     const shCy=shareOf(b,gt,'cy'), shPy=shareOf(b,gt,'py');
     const dpp = (shCy??0)-(shPy??0);
     tr.innerHTML = `<td class="rank">${i+1}</td><td class="l">${safeLabel(b.label)}</td>
-      <td>${fmtSAR(vCy)}</td><td class="${cls(vGrowth)}">${fmtPct(vGrowth)}</td>
+      <td>${fmtMetric(primCy)}</td><td class="${cls(primGrowth)}">${fmtPct(primGrowth)}</td>
       <td>${shCy!=null?shCy.toFixed(2)+'%':'-'}</td>
       <td class="${cls(dpp)}">${fmtPP(dpp)}</td>
-      <td class="${cls(uGrowth)}">${fmtPct(uGrowth)}</td>
+      <td class="${cls(otherGrowth)}">${fmtPct(otherGrowth)}</td>
       <td class="${cls(aspCy && aspPy ? aspCy-aspPy : null)}">${aspCy && aspPy ? fmtPct((aspCy/aspPy-1)*100) : '-'}</td>`;
     return tr;
   };
@@ -610,8 +612,9 @@ function render(){
   if(othersRow){
     const shCy = shareOf(othersRow,gt,'cy');
     const tr = document.createElement('tr'); tr.className='others-row';
-    tr.innerHTML = `<td></td><td class="l">기타 브랜드(장기 롱테일)</td><td>${fmtSAR(cfield(othersRow,'value_cy'))}</td>
-      <td>${fmtPct(cfield(othersRow,'value_growth'))}</td><td>${shCy!=null?shCy.toFixed(2)+'%':'-'}</td><td></td><td></td><td></td>`;
+    tr.innerHTML = `<td></td><td class="l">기타 브랜드(장기 롱테일)</td><td>${fmtMetric(mfield(othersRow,'cy'))}</td>
+      <td>${fmtPct(mfield(othersRow,'growth'))}</td><td>${shCy!=null?shCy.toFixed(2)+'%':'-'}</td><td></td>
+      <td>${fmtPct(cfield(othersRow,otherMetric+'_growth'))}</td><td></td>`;
     restBody.appendChild(tr);
   }
   const showMoreBtn = document.getElementById('brandShowMore');
