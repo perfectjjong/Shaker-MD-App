@@ -8,200 +8,298 @@
 <script src="gfk_data.js"></script>
 <style>
 :root{
-  --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
-  --lg:#a50034;--lg-bg:#fdeef2;--up:#10b981;--dn:#ef4444;--amber:#f59e0b;
+  --surface:#fcfcfb; --card:#ffffff; --sunken:#f4f4f2;
+  --ink:#141414; --ink-2:#52514e; --ink-3:#8a8985; --line:#e7e6e2;
+  --lg:#a50034; --lg-wash:#fdeef2;
+  --c-blue:#2a78d6; --c-orange:#eb6834; --c-aqua:#1baf7a;
+  --py:#d6d9de;
+  --good:#0ca30c; --critical:#d03b3b; --warning:#c98500;
+  --good-wash:#eefbea; --critical-wash:#fdeeee; --warning-wash:#fef8ea;
+  --radius:10px;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
-.header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100}
-.header h1{font-size:14px;font-weight:700}
-.header .sub{font-size:11px;color:#94a3b8}
-.header select{margin-left:auto;background:#2a3352;color:#fff;border:1px solid #3d4870;border-radius:5px;padding:4px 8px;font-size:11px}
-.toggle{display:flex;border:1px solid #3d4870;border-radius:6px;overflow:hidden}
-.toggle button{background:#2a3352;color:#cbd5e1;border:none;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer}
-.toggle button.on{background:var(--lg);color:#fff}
-.toggle button:disabled{cursor:not-allowed;opacity:.4}
-.filters{background:#fff;border-bottom:1px solid var(--border);padding:7px 24px;display:flex;gap:10px;align-items:center;position:sticky;top:46px;z-index:99;flex-wrap:wrap}
-.fl{font-size:11px;font-weight:600;color:var(--muted)}
-.fb{border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;background:#fff;cursor:pointer;color:var(--text)}
-.fb.on{background:var(--lg);color:#fff;border-color:var(--lg)}
-.channel-note{font-size:10.5px;color:var(--amber);display:none}
-.content{padding:16px 24px;max-width:1200px;margin:0 auto}
-.mtd-note{font-size:11px;color:var(--amber);background:#fffbeb;border:1px solid #fde68a;border-radius:6px;padding:6px 10px;margin-bottom:12px;display:none}
-.insight{font-size:13px;font-weight:600;background:var(--lg-bg);border-left:4px solid var(--lg);border-radius:0 6px 6px 0;padding:10px 14px;margin-bottom:14px;color:#7a0027}
-.kpi-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
-.kpi{background:var(--card);border-radius:8px;padding:13px 15px;border:1px solid var(--border)}
-.kpi.hero{border-left:4px solid var(--lg);background:var(--lg-bg)}
-.kl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px}
-.kv{font-size:22px;font-weight:700;line-height:1}
+body{font-family:-apple-system,'Segoe UI',system-ui,sans-serif;background:var(--sunken);color:var(--ink);font-size:14px;line-height:1.45}
+
+/* ===== Header ===== */
+.header{background:var(--ink);color:#fff;padding:0 24px;display:flex;align-items:center;gap:12px;height:52px;position:sticky;top:0;z-index:110}
+.header .brand{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;white-space:nowrap}
+.header .brand .badge{background:var(--lg);color:#fff;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:10px;letter-spacing:.02em}
+.header .sub{font-size:11.5px;color:#a3a3a0;white-space:nowrap}
+.header select{margin-left:auto;background:#2a2a28;color:#fff;border:1px solid #3d3d3a;border-radius:6px;padding:6px 10px;font-size:12.5px;font-weight:600;cursor:pointer}
+
+/* ===== Unified filter bar (single visual unit) ===== */
+.filterbar{background:var(--card);border-bottom:1px solid var(--line);padding:10px 24px;
+  display:flex;align-items:center;gap:18px;position:sticky;top:52px;z-index:105;flex-wrap:wrap;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.fgroup{display:flex;align-items:center;gap:8px}
+.fgroup .flabel{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.04em}
+.fseg{display:flex;background:var(--sunken);border-radius:8px;padding:2px;gap:2px}
+.fseg button{border:none;background:transparent;color:var(--ink-2);font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:background .1s}
+.fseg button.on{background:var(--lg);color:#fff}
+.fseg button:disabled{cursor:not-allowed;opacity:.35}
+.fseg button:not(.on):not(:disabled):hover{background:#ececeb}
+.fdivider{width:1px;height:24px;background:var(--line)}
+.channel-note{font-size:11px;color:var(--warning);margin-left:auto;display:none;font-weight:600}
+
+/* ===== Layout ===== */
+.content{padding:20px 24px 8px;max-width:1240px;margin:0 auto}
+.exec-zone{margin-bottom:22px}
+.mtd-note{font-size:12px;color:var(--warning);background:var(--warning-wash);border:1px solid #fbe7b8;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-weight:600;display:none}
+
+.insight-card{background:var(--lg-wash);border-radius:var(--radius);padding:16px 18px;margin-bottom:16px;display:flex;gap:12px;align-items:flex-start}
+.insight-card .icon{font-size:20px;line-height:1;margin-top:1px}
+.insight-card .text{font-size:14px;font-weight:600;color:#6b0029;line-height:1.55}
+
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px}
+.kpi{background:var(--card);border-radius:var(--radius);padding:16px 18px;border:1px solid var(--line)}
+.kpi.hero{background:var(--lg-wash);border-color:transparent}
+.kl{font-size:11.5px;color:var(--ink-3);font-weight:700;margin-bottom:8px;text-transform:uppercase;letter-spacing:.03em}
+.kv{font-size:28px;font-weight:700;line-height:1;font-variant-numeric:proportional-nums}
 .kpi.hero .kv{color:var(--lg)}
-.ks{font-size:11px;margin-top:5px;color:var(--muted)}
-.up{color:var(--up);font-weight:700}
-.dn{color:var(--dn);font-weight:700}
-.stitle{font-size:12px;font-weight:700;color:var(--text);margin:18px 0 8px;display:flex;align-items:center;gap:8px}
-.cc{background:var(--card);border-radius:8px;padding:14px;border:1px solid var(--border);margin-bottom:12px}
-table{width:100%;border-collapse:collapse;font-size:11.5px}
-th{background:var(--navy);color:#fff;padding:6px 8px;text-align:center;font-weight:600;font-size:11px;white-space:nowrap}
+.ks{font-size:12px;margin-top:8px;color:var(--ink-3);font-weight:600}
+.up{color:var(--good)}
+.dn{color:var(--critical)}
+
+.sw-title{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.sw-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sw-card{border-radius:var(--radius);padding:14px 16px}
+.sw-card.good{background:var(--good-wash)}
+.sw-card.bad{background:var(--critical-wash)}
+.sw-head{font-weight:700;font-size:12.5px;margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.sw-head.good{color:#0a6b0a}
+.sw-head.bad{color:#8f2a2a}
+.sw-item{font-size:13px;margin-bottom:6px;line-height:1.5;color:var(--ink-2)}
+.sw-item b{color:var(--ink)}
+.sw-note{font-size:11.5px;color:var(--ink-3);margin-top:10px;line-height:1.5}
+
+/* ===== Detail zone: top tabs ===== */
+.dtabs{display:flex;gap:6px;margin-bottom:14px;border-bottom:2px solid var(--line);padding-bottom:0}
+.dtab{padding:10px 16px;font-size:13.5px;font-weight:700;color:var(--ink-3);cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-2px;white-space:nowrap}
+.dtab.active{color:var(--lg);border-bottom-color:var(--lg)}
+.dtab:not(.active):hover{color:var(--ink-2)}
+.dpanel{display:none}
+.dpanel.active{display:block}
+
+.card{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--line);margin-bottom:16px}
+.card-title{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.card-desc{font-size:12px;color:var(--ink-3);margin-bottom:14px}
+.chart-wrap{height:280px;margin-bottom:14px}
+.chart-wrap.short{height:220px}
+
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th{background:var(--sunken);color:var(--ink-2);padding:9px 10px;text-align:center;font-weight:700;font-size:11.5px;white-space:nowrap;border-bottom:1px solid var(--line)}
 th.l{text-align:left}
-td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
-td.l{text-align:left;font-weight:600}
-tr.lg-row td{background:var(--lg-bg)}
+td{padding:8px 10px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink-2)}
+td.l{text-align:left;font-weight:600;color:var(--ink)}
+tr.lg-row td{background:var(--lg-wash)}
 tr.lg-row td.l{color:var(--lg);font-weight:800}
-tr.others-row td{color:#94a3b8;font-style:italic}
-tr:hover td{background:#f8fafc}
-.tbl{overflow-x:auto}
-.tabs{display:flex;gap:4px;margin-bottom:10px}
-.tab{padding:6px 14px;border-radius:6px;font-size:11.5px;font-weight:700;cursor:pointer;background:#fff;border:1px solid var(--border);color:var(--muted)}
-.tab.active{background:var(--lg);color:#fff;border-color:var(--lg)}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-.chart-wrap{height:260px;margin-bottom:10px}
-.dq-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
-.dq-badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:12px}
-.dq-ok{background:#f0fdf4;color:#065f46}
-.dq-warn{background:#fffbeb;color:#92400e}
-.warn-item{font-size:11.5px;color:#92400e;background:#fffbeb;border-left:3px solid var(--amber);border-radius:0 4px 4px 0;padding:6px 10px;margin-top:5px}
-.footer{font-size:10.5px;color:var(--muted);padding:16px 24px 30px;max-width:1200px;margin:0 auto;line-height:1.6}
-.rank{color:var(--muted);font-weight:700}
+tr.others-row td{color:var(--ink-3);font-style:italic}
+tr:hover td{background:#f8f8f7}
+.tbl{overflow-x:auto;border-radius:8px}
+.rank{color:var(--ink-3);font-weight:700}
+
+.subtabs{display:flex;gap:4px;margin-bottom:12px}
+.subtab{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;background:var(--sunken);border:1px solid transparent;color:var(--ink-2)}
+.subtab.active{background:var(--lg);color:#fff}
+.subpanel{display:none}
+.subpanel.active{display:block}
+
+.show-more{display:block;width:100%;text-align:center;padding:10px;font-size:12.5px;font-weight:700;color:var(--lg);background:var(--lg-wash);border:none;border-radius:8px;cursor:pointer;margin-top:10px}
+.show-more:hover{background:#fbe0e9}
+.hidden-rows{display:none}
+.hidden-rows.show{display:table-row-group}
+
+.dq-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.dq-badge{font-size:11.5px;font-weight:700;padding:5px 12px;border-radius:14px}
+.dq-ok{background:var(--good-wash);color:#0a6b0a}
+.dq-warn{background:var(--warning-wash);color:#7a5200}
+.warn-item{font-size:12.5px;color:#7a5200;background:var(--warning-wash);border-left:3px solid var(--warning);border-radius:0 6px 6px 0;padding:8px 12px;margin-top:6px;line-height:1.5}
+
+.footer{font-size:11px;color:var(--ink-3);padding:18px 24px 32px;max-width:1240px;margin:0 auto;line-height:1.7}
+.footer code{background:var(--sunken);padding:1px 5px;border-radius:4px}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>🇸🇦 GFK AC Split Tracker</h1>
-  <span class="sub">Saudi Arabia · GfK Panelmarket · LG 관점</span>
-  <div class="toggle" id="metricToggle">
-    <button data-metric="value" class="on">금액(SAR)</button>
-    <button data-metric="units">수량(대)</button>
-  </div>
-  <div class="toggle" id="periodToggle">
-    <button data-period="ytd" class="on">YTD 누적</button>
-    <button data-period="mtd">당월(MTD)</button>
-  </div>
+  <div class="brand">🇸🇦 GFK AC Split Tracker <span class="badge">LG 관점</span></div>
+  <span class="sub">Saudi Arabia · GfK Panelmarket</span>
   <select id="monthSelect"></select>
 </div>
 
-<div class="filters">
-  <span class="fl">채널</span>
-  <div id="channelToggle">
-    <button class="fb on" data-channel="total">전체(Panelmarket)</button>
-    <button class="fb" data-channel="offlineChains">오프라인-체인</button>
-    <button class="fb" data-channel="offlineIndependents">오프라인-독립점</button>
-    <button class="fb" data-channel="online">온라인</button>
+<div class="filterbar">
+  <div class="fgroup">
+    <span class="flabel">기간</span>
+    <div class="fseg" id="periodToggle">
+      <button data-period="ytd" class="on">YTD 누적</button>
+      <button data-period="mtd">당월(MTD)</button>
+    </div>
   </div>
-  <span class="channel-note" id="channelNote">⚠️ "LG 포지셔닝"(가격대/BTU 매트릭스)은 채널 분해가 없어 전체 기준으로 고정 표시됩니다</span>
+  <div class="fdivider"></div>
+  <div class="fgroup">
+    <span class="flabel">지표</span>
+    <div class="fseg" id="metricToggle">
+      <button data-metric="value" class="on">금액(SAR)</button>
+      <button data-metric="units">수량(대)</button>
+    </div>
+  </div>
+  <div class="fdivider"></div>
+  <div class="fgroup">
+    <span class="flabel">채널</span>
+    <div class="fseg" id="channelToggle">
+      <button class="on" data-channel="total">전체</button>
+      <button data-channel="offlineChains">체인</button>
+      <button data-channel="offlineIndependents">독립점</button>
+      <button data-channel="online">온라인</button>
+    </div>
+  </div>
+  <span class="channel-note" id="channelNote">⚠️ LG 포지셔닝 탭은 채널 분해가 없어 항상 전체 기준입니다</span>
 </div>
 
 <div class="content">
-  <div class="mtd-note" id="mtdNote"></div>
-  <div class="insight" id="insight"></div>
+  <div class="exec-zone">
+    <div class="mtd-note" id="mtdNote"></div>
 
-  <div class="stitle">🧭 LG 강점 · 보완 필요 구간 (채널·가격대·BTU 종합)</div>
-  <div class="cc">
-    <div id="swBox" style="display:grid;grid-template-columns:1fr 1fr;gap:12px"></div>
-    <div style="font-size:11px;color:#64748b;margin-top:8px" id="swNote"></div>
+    <div class="insight-card">
+      <div class="icon">💡</div>
+      <div class="text" id="insight"></div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi hero">
+        <div class="kl" id="k-share-label">LG 점유율</div>
+        <div class="kv" id="k-share">-</div>
+        <div class="ks" id="k-share-sub">-</div>
+      </div>
+      <div class="kpi hero">
+        <div class="kl" id="k-value-label">LG YoY</div>
+        <div class="kv" id="k-value">-</div>
+        <div class="ks" id="k-value-sub">-</div>
+      </div>
+      <div class="kpi hero">
+        <div class="kl">LG ASP YoY (가격 이탈 경보)</div>
+        <div class="kv" id="k-asp">-</div>
+        <div class="ks" id="k-asp-sub">-</div>
+      </div>
+      <div class="kpi">
+        <div class="kl" id="k-market-label">시장 전체 YoY (기준선)</div>
+        <div class="kv" id="k-market">-</div>
+        <div class="ks" id="k-market-sub">-</div>
+      </div>
+    </div>
+
+    <div class="sw-title">🧭 LG 강점 · 보완 필요 구간 (채널·가격대·BTU 종합)</div>
+    <div class="sw-grid">
+      <div class="sw-card good">
+        <div class="sw-head good">✅ 강점 — 점유율 상위 구간</div>
+        <div id="swGood"></div>
+      </div>
+      <div class="sw-card bad">
+        <div class="sw-head bad">⚠️ 보완 필요 — 점유율 하위 구간</div>
+        <div id="swBad"></div>
+      </div>
+    </div>
+    <div class="sw-note" id="swNote"></div>
   </div>
 
-  <div class="kpi-row">
-    <div class="kpi hero">
-      <div class="kl">LG 가치 점유율</div>
-      <div class="kv" id="k-share">-</div>
-      <div class="ks" id="k-share-sub">-</div>
-    </div>
-    <div class="kpi hero">
-      <div class="kl">LG 가치 YoY</div>
-      <div class="kv" id="k-value">-</div>
-      <div class="ks" id="k-value-sub">-</div>
-    </div>
-    <div class="kpi hero">
-      <div class="kl">LG ASP YoY (가격 이탈 경보)</div>
-      <div class="kv" id="k-asp">-</div>
-      <div class="ks" id="k-asp-sub">-</div>
-    </div>
-    <div class="kpi">
-      <div class="kl">시장 전체 YoY (기준선)</div>
-      <div class="kv" id="k-market">-</div>
-      <div class="ks" id="k-market-sub">-</div>
-    </div>
+  <div class="dtabs" id="dtabs">
+    <div class="dtab active" data-dtab="brand">🏆 브랜드 경쟁 랭킹</div>
+    <div class="dtab" data-dtab="pos">🎯 LG 포지셔닝</div>
+    <div class="dtab" data-dtab="seg">📊 세그먼트 믹스</div>
+    <div class="dtab" data-dtab="dq">🔍 데이터 품질</div>
   </div>
 
-  <div class="stitle" id="brandRankTitle">🏆 브랜드 경쟁 랭킹</div>
-  <div class="cc">
-    <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
-    <div class="tbl">
-      <table id="brandTable">
-        <thead><tr>
-          <th class="l">#</th><th class="l">브랜드</th>
-          <th>가치(CY, SAR)</th><th>가치 YoY</th>
-          <th>점유율(CY)</th><th>점유율 Δpp</th>
-          <th>수량 YoY</th><th>ASP YoY</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="stitle">🎯 LG 포지셔닝 — 가격대/BTU별 경쟁 비교 (LG가 어디서 이기고 지는지)</div>
-  <div class="cc">
-    <div class="tabs" id="posTabs">
-      <div class="tab active" data-postab="price">가격대</div>
-      <div class="tab" data-postab="btu">BTU(용량)</div>
-    </div>
-    <div class="chart-wrap"><canvas id="posChart"></canvas></div>
-    <div class="tbl">
-      <table id="posTable">
-        <thead><tr>
-          <th class="l">구간</th><th id="posColLG">LG</th><th>LG YoY</th><th>LG 구간점유율</th>
-          <th>구간 1위</th><th>1위 값</th><th>LG 순위</th>
-        </tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-    <div class="note" id="posNote" style="font-size:11px;color:#64748b;margin-top:8px"></div>
-  </div>
-
-  <div class="stitle">📊 세그먼트 믹스 (시장 전체)</div>
-  <div class="cc">
-    <div class="tabs">
-      <div class="tab active" data-tab="price">가격대</div>
-      <div class="tab" data-tab="btu">BTU(용량)</div>
-      <div class="tab" data-tab="heat">기능(난방포함)</div>
-    </div>
-    <div class="tab-panel active" data-panel="price">
-      <div class="chart-wrap"><canvas id="priceChart"></canvas></div>
-      <div class="tbl"><table id="priceTable"><thead><tr>
-        <th class="l">가격대(LC)</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
-      </tr></thead><tbody></tbody></table></div>
-    </div>
-    <div class="tab-panel" data-panel="btu">
-      <div class="chart-wrap"><canvas id="btuChart"></canvas></div>
-      <div class="tbl"><table id="btuTable"><thead><tr>
-        <th class="l">BTU 구간</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
-      </tr></thead><tbody></tbody></table></div>
-    </div>
-    <div class="tab-panel" data-panel="heat">
-      <div class="tbl"><table id="heatTable"><thead><tr>
-        <th class="l">난방포함 여부</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
-      </tr></thead><tbody></tbody></table></div>
+  <div class="dpanel active" data-dpanel="brand">
+    <div class="card">
+      <div class="card-title" id="brandCardTitle">브랜드 경쟁 랭킹</div>
+      <div class="card-desc">상위 15개 브랜드 · LG 강조. 시장 전체가 위축되는 중에도 점유율이 오르는 브랜드가 누군지 한눈에.</div>
+      <div class="chart-wrap"><canvas id="brandChart"></canvas></div>
+      <div class="tbl">
+        <table id="brandTable">
+          <thead><tr>
+            <th class="l">#</th><th class="l">브랜드</th>
+            <th>가치(CY, SAR)</th><th>가치 YoY</th>
+            <th>점유율(CY)</th><th>점유율 Δpp</th>
+            <th>수량 YoY</th><th>ASP YoY</th>
+          </tr></thead>
+          <tbody id="brandTbodyTop"></tbody>
+          <tbody id="brandTbodyRest" class="hidden-rows"></tbody>
+        </table>
+      </div>
+      <button class="show-more" id="brandShowMore">전체 브랜드 보기 (149개)</button>
     </div>
   </div>
 
-  <div class="stitle">🔍 데이터 품질</div>
-  <div class="cc">
-    <div class="dq-row" id="dqBadges"></div>
-    <div id="dqWarnings"></div>
+  <div class="dpanel" data-dpanel="pos">
+    <div class="card">
+      <div class="card-title">LG 포지셔닝 — 가격대/BTU별 경쟁 비교</div>
+      <div class="card-desc">LG가 어느 구간에서 이기고 지는지. LG + 상위 3개 경쟁사만 비교(전체 목록은 데이터 품질 탭 참고).</div>
+      <div class="subtabs" id="posTabs">
+        <div class="subtab active" data-postab="price">가격대</div>
+        <div class="subtab" data-postab="btu">BTU(용량)</div>
+      </div>
+      <div class="chart-wrap"><canvas id="posChart"></canvas></div>
+      <div class="tbl">
+        <table id="posTable">
+          <thead><tr>
+            <th class="l">구간</th><th id="posColLG">LG</th><th>LG YoY</th><th>LG 구간점유율</th>
+            <th>구간 1위</th><th>1위 값</th><th>LG 순위</th>
+          </tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="sw-note" id="posNote"></div>
+    </div>
+  </div>
+
+  <div class="dpanel" data-dpanel="seg">
+    <div class="card">
+      <div class="card-title">세그먼트 믹스 (시장 전체)</div>
+      <div class="card-desc">가격대 · BTU · 난방포함 여부별 시장 전체 트렌드 (브랜드 분해 없음 — Panelmarket 기준).</div>
+      <div class="subtabs" id="segTabs">
+        <div class="subtab active" data-segtab="price">가격대</div>
+        <div class="subtab" data-segtab="btu">BTU(용량)</div>
+        <div class="subtab" data-segtab="heat">기능(난방포함)</div>
+      </div>
+      <div class="subpanel active" data-segpanel="price">
+        <div class="chart-wrap short"><canvas id="priceChart"></canvas></div>
+        <div class="tbl"><table id="priceTable"><thead><tr>
+          <th class="l">가격대(LC)</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="subpanel" data-segpanel="btu">
+        <div class="chart-wrap short"><canvas id="btuChart"></canvas></div>
+        <div class="tbl"><table id="btuTable"><thead><tr>
+          <th class="l">BTU 구간</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+      <div class="subpanel" data-segpanel="heat">
+        <div class="tbl"><table id="heatTable"><thead><tr>
+          <th class="l">난방포함 여부</th><th class="seg-col-header">가치(CY)</th><th class="seg-growth-header">가치 YoY</th><th>비중(CY)</th><th class="seg-other-header">수량 YoY</th>
+        </tr></thead><tbody></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dpanel" data-dpanel="dq">
+    <div class="card">
+      <div class="card-title">데이터 품질 자동검증</div>
+      <div class="card-desc">시트 간 Grand Total 정합성 + 원본 자체 이상치를 매월 자동으로 확인합니다.</div>
+      <div class="dq-row" id="dqBadges"></div>
+      <div id="dqWarnings"></div>
+    </div>
   </div>
 </div>
 
 <div class="footer">
-  원본: GFK Custom Report (SA, AC Split) · Panelmarket(전체 시장) 기준 — Offline/Online 세부채널 및 '10688' 코드 채널은 원본에 존재하나
-  의미가 확인되지 않아 이번 버전에서 제외했습니다. "LG 포지셔닝" 매트릭스는 GfK 브랜드x가격대/브랜드xBTU 시트를 구조 기반으로
-  자동 식별해 사용합니다(시트명의 쿼리 코드는 매월 바뀔 수 있어 이름 대신 헤더 내용·Grand Total 값으로 식별).
-  ⚠️ BTU '12000~18000' 구간은 GfK의 AC Feat SPLIT 시트와 브랜드xBTU 매트릭스 시트 간 원본 자체 수치 불일치가 있어(2%p 초과) 데이터 품질
-  섹션에 자동 경고로 표시됩니다 — 다른 4개 BTU 구간은 두 시트가 정확히 일치합니다.
-  MTD(당월 단독)는 원본에 없는 값으로, 연속월 YTD 차이로 역산합니다(최초 입수월은 산출 불가).
-  PPT 원본과의 수치 대조는 이 환경에서 EMF/PowerPoint 렌더링이 되지 않아 미검증 상태입니다.
-  매월 원본 파일 추가 시 <code>build_gfk_split_dashboard.py</code> 재실행으로 갱신됩니다.
+  원본: GFK Custom Report (SA, AC Split) · Panelmarket(전체 시장) 기준 — '10688' 코드 채널은 원본에 존재하나 의미가 확인되지 않아
+  (Chains의 부분집합으로 추정) 제외했습니다. Chains/Independents/Online 3채널 합은 전체와 정확히 일치함(diff=0)을 검증했습니다.
+  "LG 포지셔닝" 매트릭스는 GfK 브랜드x가격대/브랜드xBTU 시트를 구조 기반으로 자동 식별합니다(시트명의 쿼리 코드는 매월 바뀔 수 있어
+  이름 대신 헤더 내용·Grand Total 값으로 식별). ⚠️ BTU '12000~18000' 구간은 AC Feat SPLIT 시트와 매트릭스 시트 간 원본 자체 수치
+  불일치가 있어(2%p 초과) 데이터 품질 탭에 경고로 표시됩니다. 인버터/정속(On-Off)·Coil-only 축은 이번 GfK 리포트 원본에 없습니다
+  (전체 워크북 스캔으로 확인). 난방포함 여부는 브랜드별 분해가 없어(시장 전체 수치만 존재) LG 강점·보완 종합에서 제외했습니다.
+  MTD(당월 단독)는 원본에 없는 값으로, 연속월 YTD 차이로 역산합니다(최초 입수월은 산출 불가). PPT 원본과의 수치 대조는 이
+  환경에서 EMF/PowerPoint 렌더링이 되지 않아 미검증 상태입니다. 매월 원본 파일 추가 시 <code>build_gfk_split_dashboard.py</code>
+  재실행으로 갱신됩니다.
 </div>
 
 <script>
@@ -211,14 +309,14 @@ const fmtPct = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'%';
 const fmtPP  = v => v==null ? '-' : (v>=0?'+':'')+v.toFixed(1)+'pp';
 const cls = v => v==null ? '' : (v>=0?'up':'dn');
 const arrow = v => v==null ? '' : (v>=0?'▲':'▼');
-const PALETTE = ['#a50034','#64748b','#0ea5e9','#f59e0b'];
+// 검증된 카테고리 팔레트(dataviz 스킬 validate_palette.js 통과) — LG는 브랜드 레드로 항상 고정,
+// 경쟁사 3개는 blue/orange/aqua. PY(전년)는 --py 회색으로 별도 처리.
+const PALETTE = ['#a50034','#2a78d6','#eb6834','#1baf7a'];
+const PY_COLOR = '#d6d9de';
 
 let state = {period:'ytd', metric:'value', channel:'total', posAxis:'price', monthIdx: GFK_DATA.monthOrder.length-1};
 const CHANNEL_LABELS = {total:'전체(Panelmarket)', offlineChains:'오프라인-체인', offlineIndependents:'오프라인-독립점', online:'온라인'};
 
-// 브랜드/세그먼트 행 오브젝트에서 현재 channel/metric 조합에 맞는 필드를 꺼낸다.
-// channel==='total'이면 행 자체(Panelmarket 총계), 아니면 obj.channels[channel] 하위 필드를 본다.
-// (채널 블록에는 share_* 필드가 없음 — 점유율은 shareOf()로 grandTotal 대비 재계산)
 function scoped(obj){
   if(!obj) return null;
   if(state.channel==='total') return obj;
@@ -226,15 +324,10 @@ function scoped(obj){
 }
 function mfield(obj, suffix){ const s = scoped(obj); return s ? s[`${state.metric}_${suffix}`] : null; }
 function cfield(obj, name){ const s = scoped(obj); return s ? s[name] : null; }
-// 브랜드x가격대/BTU 매트릭스(R22/R23)는 채널 분해가 없는 Panelmarket 전용 시트라
-// channel 필터와 무관하게 항상 원본 필드를 그대로 읽는다 (scoped() 타지 않음).
 function matrixField(obj, suffix){ return obj ? obj[`${state.metric}_${suffix}`] : null; }
 function fmtMetric(v){ return state.metric==='value' ? fmtSAR(v) : fmtUnits(v); }
 function metricLabel(){ return state.metric==='value' ? '금액' : '수량'; }
 function channelLabel(){ return CHANNEL_LABELS[state.channel]; }
-// row의 점유율(=grandTotal 대비 비중). channel==='total'이면 GfK가 준 share 컬럼을 그대로 쓰고
-// (반올림 등에서 재계산치와 미세하게 다를 수 있어 원본값 우선), 채널 필터가 걸리면 그 채널의
-// grandTotal로 나눠서 직접 계산한다.
 function shareOf(row, gt, side){
   if(state.channel==='total') return row ? row[`${state.metric}_share_${side}`] : null;
   const v = mfield(row, side), total = mfield(gt, side);
@@ -259,52 +352,30 @@ function initMonthSelect(){
   sel.addEventListener('change', e=>{ state.monthIdx = +e.target.value; render(); });
 }
 
-function initPeriodToggle(){
-  document.querySelectorAll('#periodToggle button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      if(btn.disabled) return;
-      state.period = btn.dataset.period;
-      document.querySelectorAll('#periodToggle button').forEach(b=>b.classList.toggle('on', b===btn));
-      render();
-    });
-  });
-}
-
-function initChannelToggle(){
-  document.querySelectorAll('#channelToggle button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      state.channel = btn.dataset.channel;
-      document.querySelectorAll('#channelToggle button').forEach(b=>b.classList.toggle('on', b===btn));
-      document.getElementById('channelNote').style.display = state.channel==='total' ? 'none' : 'inline';
-      render();
-    });
-  });
-}
-
-function initMetricToggle(){
-  document.querySelectorAll('#metricToggle button').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      state.metric = btn.dataset.metric;
-      document.querySelectorAll('#metricToggle button').forEach(b=>b.classList.toggle('on', b===btn));
-      render();
-    });
-  });
-}
-
 let brandChart, priceChart, btuChart, posChart;
-function bar(id, labels, cy, py, existing){
+// display:none 조상 아래 캔버스에 Chart.js를 생성하면 내부 devicePixelRatio 계산이 0-크기
+// 기준으로 굳어버려서, 나중에 destroy()+재생성해도 안 풀림(막대가 한쪽에 뭉치거나 안 보임) —
+// 그래서 숨겨진 캔버스는 애초에 차트를 만들지 않고, 탭이 열려 실제로 보일 때 처음 생성한다.
+function isVisible(el){ return !!el && el.offsetParent !== null; }
+
+function bar(id, labels, cy, py, existing, colorCy){
   const ctx = document.getElementById(id);
   if(existing) existing.destroy();
+  if(!isVisible(ctx)) return null;
   const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
   return new Chart(ctx, {
     type:'bar',
     data:{labels, datasets:[
-      {label:'PY', data:py, backgroundColor:'#cbd5e1'},
-      {label:'CY', data:cy, backgroundColor:'#a50034'},
+      {label:'전년(PY)', data:py, backgroundColor:PY_COLOR, borderRadius:3, borderSkipped:false},
+      {label:'현재(CY)', data:cy, backgroundColor:colorCy||PALETTE[0], borderRadius:3, borderSkipped:false},
     ]},
-    options:{responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:'top', labels:{boxWidth:10,font:{size:10}}}},
-      scales:{y:{ticks:{callback:yTick}}}}
+    options:{responsive:true, maintainAspectRatio:false, animation:false,
+      plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10,font:{size:11,weight:600}}},
+        tooltip:{padding:10, titleFont:{size:12}, bodyFont:{size:12}}},
+      scales:{
+        y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}},
+        x:{ticks:{font:{size:11}}, grid:{display:false}}
+      }}
   });
 }
 
@@ -329,8 +400,6 @@ function bestWorstTier(matrix){
   return { best: rows[0], worst: rows[rows.length-1] };
 }
 
-// 채널 3개(체인/독립/온라인) 중 LG 점유율이 가장 높은/낮은 채널. price/BTU 매트릭스와
-// 달리 채널은 브랜드 시트 자체에 있는 실측 채널 분해라 metric 토글도 그대로 반영된다.
 function channelBestWorst(dd){
   const lg = dd.brands.find(b=>b.label==='LG');
   const gt = dd.grandTotal;
@@ -362,24 +431,15 @@ function renderStrengthsWeaknesses(dd){
     strengths.push(`BTU — <b>${safeLabel(bwBtu.best.label)}</b> 점유율 ${bwBtu.best.share.toFixed(1)}%`);
     weaknesses.push(`BTU — <b>${safeLabel(bwBtu.worst.label)}</b> 점유율 ${bwBtu.worst.share.toFixed(1)}%`);
   }
-  const box = document.getElementById('swBox');
-  const li = arr => arr.map(s=>`<div style="font-size:12px;margin-bottom:5px;line-height:1.4">${s}</div>`).join('') || '<div style="font-size:12px;color:#94a3b8">데이터 없음</div>';
-  box.innerHTML = `
-    <div style="border-left:3px solid var(--up);padding:9px 12px;background:#f0fdf4;border-radius:0 6px 6px 0">
-      <div style="font-weight:700;color:#065f46;margin-bottom:7px;font-size:12px">✅ 강점 (점유율 상위 구간)</div>
-      ${li(strengths)}
-    </div>
-    <div style="border-left:3px solid var(--dn);padding:9px 12px;background:#fef2f2;border-radius:0 6px 6px 0">
-      <div style="font-weight:700;color:#991b1b;margin-bottom:7px;font-size:12px">⚠️ 보완 필요 (점유율 하위 구간)</div>
-      ${li(weaknesses)}
-    </div>`;
+  const li = arr => arr.map(s=>`<div class="sw-item">${s}</div>`).join('') || '<div class="sw-item">데이터 없음</div>';
+  document.getElementById('swGood').innerHTML = li(strengths);
+  document.getElementById('swBad').innerHTML = li(weaknesses);
   document.getElementById('swNote').textContent =
     '채널은 실측 데이터(브랜드 시트 채널 분해), 가격대·BTU는 Panelmarket 전체 기준(채널 필터 무관, 매트릭스 시트에 채널 분해 없음). '+
     '난방포함 여부는 원본에 브랜드별 분해가 없어(시장 전체 수치만 존재) 이 종합에서 제외했습니다.';
 }
 
 function render(){
-  const d = curData();
   const monthMeta = GFK_DATA.months[curMonthKey()];
   const mtdBtn = document.querySelector('[data-period="mtd"]');
   mtdBtn.disabled = !monthMeta.mtd;
@@ -391,23 +451,22 @@ function render(){
   const dd = curData();
 
   const note = document.getElementById('mtdNote');
-  if(state.period==='mtd' || !monthMeta.mtd){
-    if(!monthMeta.mtd){ note.style.display='block'; note.textContent='⚠️ '+(monthMeta.mtdNote||'당월 단독 데이터 없음'); }
-    else note.style.display='none';
-  } else note.style.display='none';
+  if(!monthMeta.mtd){ note.style.display='block'; note.textContent='⚠️ '+(monthMeta.mtdNote||'당월 단독 데이터 없음'); }
+  else note.style.display='none';
 
   const lg = dd.brands.find(b=>b.label==='LG') || {};
   const gt = dd.grandTotal;
-  const M = metricLabel(); // '금액' or '수량'
-  document.getElementById('brandRankTitle').textContent = `🏆 브랜드 경쟁 랭킹 (${M} 기준)`;
+  const M = metricLabel();
+  document.getElementById('brandCardTitle').textContent = `브랜드 경쟁 랭킹 (${M} 기준)`;
+  document.querySelectorAll('[data-dtab="brand"]')[0].textContent = `🏆 브랜드 경쟁 랭킹`;
 
-  document.querySelector('#k-share').previousElementSibling.textContent = `LG ${M} 점유율 (${channelLabel()})`;
+  document.getElementById('k-share-label').textContent = `LG ${M} 점유율 (${channelLabel()})`;
   const shareCy = shareOf(lg,gt,'cy'), sharePy = shareOf(lg,gt,'py');
   document.getElementById('k-share').textContent = shareCy!=null ? shareCy.toFixed(1)+'%' : '-';
   document.getElementById('k-share-sub').innerHTML = shareCy!=null
     ? `PY ${sharePy?.toFixed(1)}% · <span class="${cls(shareCy-sharePy)}">${arrow(shareCy-sharePy)} ${fmtPP(shareCy-sharePy)}</span>` : '-';
 
-  document.querySelector('#k-value').previousElementSibling.textContent = `LG ${M} YoY`;
+  document.getElementById('k-value-label').textContent = `LG ${M} YoY`;
   const lgGrowth = mfield(lg,'growth');
   document.getElementById('k-value').textContent = fmtPct(lgGrowth);
   document.getElementById('k-value').className='kv '+cls(lgGrowth);
@@ -417,7 +476,7 @@ function render(){
   document.getElementById('k-asp').className='kv '+cls(lg.asp_cy && lg.asp_py ? lg.asp_cy-lg.asp_py : null);
   document.getElementById('k-asp-sub').textContent = lg.asp_cy ? `SAR ${lg.asp_cy.toFixed(0)} (PY ${lg.asp_py.toFixed(0)})` : '-';
 
-  document.querySelector('#k-market').previousElementSibling.textContent = `시장 전체 ${M} YoY (기준선)`;
+  document.getElementById('k-market-label').textContent = `시장 전체 ${M} YoY (기준선)`;
   const gtGrowth = mfield(gt,'growth');
   const otherMetric = state.metric==='value' ? 'units' : 'value';
   document.getElementById('k-market').textContent = fmtPct(gtGrowth);
@@ -441,13 +500,12 @@ function render(){
   document.getElementById('insight').textContent = insight;
   renderStrengthsWeaknesses(dd);
 
+  // --- 브랜드 랭킹: 차트는 Top10, 표는 Top15 기본노출 + 나머지는 접힘 ---
   const sorted = [...dd.brands].filter(b=>b.label!=='<Others>').sort((a,b)=>(mfield(b,'cy')||0)-(mfield(a,'cy')||0));
   const top10 = sorted.slice(0,10);
-  brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>mfield(b,'cy')), top10.map(b=>mfield(b,'py')), brandChart);
+  brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>mfield(b,'cy')), top10.map(b=>mfield(b,'py')), brandChart, PALETTE[0]);
 
-  const tbody = document.querySelector('#brandTable tbody');
-  tbody.innerHTML='';
-  sorted.forEach((b,i)=>{
+  const rowHtml = (b,i) => {
     const tr = document.createElement('tr');
     if(b.label==='LG') tr.className='lg-row';
     const vCy=cfield(b,'value_cy'), vGrowth=cfield(b,'value_growth'), uGrowth=cfield(b,'units_growth');
@@ -460,25 +518,38 @@ function render(){
       <td class="${cls(dpp)}">${fmtPP(dpp)}</td>
       <td class="${cls(uGrowth)}">${fmtPct(uGrowth)}</td>
       <td class="${cls(aspCy && aspPy ? aspCy-aspPy : null)}">${aspCy && aspPy ? fmtPct((aspCy/aspPy-1)*100) : '-'}</td>`;
-    tbody.appendChild(tr);
-  });
+    return tr;
+  };
+  const topBody = document.getElementById('brandTbodyTop');
+  const restBody = document.getElementById('brandTbodyRest');
+  topBody.innerHTML=''; restBody.innerHTML='';
+  const SHOW_TOP = 15;
+  sorted.forEach((b,i)=>{ (i<SHOW_TOP?topBody:restBody).appendChild(rowHtml(b,i)); });
   const othersRow = dd.brands.find(b=>b.label==='<Others>');
   if(othersRow){
     const shCy = shareOf(othersRow,gt,'cy');
     const tr = document.createElement('tr'); tr.className='others-row';
     tr.innerHTML = `<td></td><td class="l">기타 브랜드(장기 롱테일)</td><td>${fmtSAR(cfield(othersRow,'value_cy'))}</td>
       <td>${fmtPct(cfield(othersRow,'value_growth'))}</td><td>${shCy!=null?shCy.toFixed(2)+'%':'-'}</td><td></td><td></td><td></td>`;
-    tbody.appendChild(tr);
+    restBody.appendChild(tr);
   }
+  const showMoreBtn = document.getElementById('brandShowMore');
+  showMoreBtn.textContent = `전체 브랜드 보기 (${sorted.length}개)`;
+  restBody.classList.remove('show');
+  showMoreBtn.style.display = 'block';
+  showMoreBtn.onclick = () => {
+    restBody.classList.add('show');
+    showMoreBtn.style.display = 'none';
+  };
 
   renderPositioning(dd);
 
   const priceRows = dd.priceClass;
-  priceChart = bar('priceChart', priceRows.map(p=>p.label), priceRows.map(p=>mfield(p,'cy')), priceRows.map(p=>mfield(p,'py')), priceChart);
+  priceChart = bar('priceChart', priceRows.map(p=>p.label), priceRows.map(p=>mfield(p,'cy')), priceRows.map(p=>mfield(p,'py')), priceChart, PALETTE[0]);
   fillSegTable('priceTable', priceRows, mfield(gt,'cy'));
 
   const btuRows = dd.btu.filter(b=>b.label!=='<Others>');
-  btuChart = bar('btuChart', btuRows.map(b=>b.label.replace('BTU','').trim()), btuRows.map(b=>mfield(b,'cy')), btuRows.map(b=>mfield(b,'py')), btuChart);
+  btuChart = bar('btuChart', btuRows.map(b=>b.label.replace('BTU','').trim()), btuRows.map(b=>mfield(b,'cy')), btuRows.map(b=>mfield(b,'py')), btuChart, PALETTE[0]);
   fillSegTable('btuTable', dd.btu, mfield(gt,'cy'));
 
   const heatRows = [];
@@ -501,13 +572,21 @@ function render(){
     dqBadges.appendChild(b);
   });
   const warnBox = document.getElementById('dqWarnings');
-  warnBox.innerHTML = (dq.warnings||[]).map(w=>`<div class="warn-item">⚠️ ${w}</div>`).join('') || '<div style="color:#64748b;font-size:11.5px">이상 없음</div>';
+  const escapeHtml = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  warnBox.innerHTML = (dq.warnings||[]).map(w=>`<div class="warn-item">⚠️ ${escapeHtml(w)}</div>`).join('') || '<div style="color:var(--ink-3);font-size:12.5px">이상 없음</div>';
 }
 
+// innerHTML(테이블 셀)에 넣을 라벨 — HTML 특수문자 escape 필요
 function safeLabel(label){
   if(label==='<Others>') return '미분류(Others)';
   if(label==='<Grand Total>') return '전체';
   return String(label).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+// Chart.js label(canvas 텍스트)에 넣을 라벨 — escape하면 "&lt;"가 그대로 찍히므로 원문 그대로
+function plainLabel(label){
+  if(label==='<Others>') return '미분류(Others)';
+  if(label==='<Grand Total>') return '전체';
+  return String(label);
 }
 
 function fillSegTable(tableId, rows, grandCy){
@@ -536,20 +615,31 @@ function renderPositioning(dd){
 
   const comps = topCompetitors(matrix.brands, 3);
   const series = [lg, ...comps];
-  const labels = matrix.tierLabels.map(l=>safeLabel(l).replace(' BTU','').replace(' LC','').trim());
+  // Chart.js는 canvas에 텍스트를 직접 그리므로 HTML 엔티티 escape(safeLabel)를 쓰면
+  // "&gt; 0 &lt;= 1200"처럼 그대로 찍힘 — plainLabel(escape 없음)을 써야 한다.
+  const labels = matrix.tierLabels.map(l=>plainLabel(l).replace(' BTU','').replace(' LC','').trim());
 
   const ctx = document.getElementById('posChart');
   if(posChart) posChart.destroy();
-  const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
-  posChart = new Chart(ctx, {
-    type:'bar',
-    data:{ labels, datasets: series.map((b,i)=>({
-      label: b.label, data: b.tiers.map(t=>matrixField(t,'cy')), backgroundColor: PALETTE[i]||'#cbd5e1'
-    })) },
-    options:{ responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{position:'top', labels:{boxWidth:10,font:{size:10}}}},
-      scales:{y:{ticks:{callback:yTick}}} }
-  });
+  if(isVisible(ctx)){
+    const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
+    posChart = new Chart(ctx, {
+      type:'bar',
+      data:{ labels, datasets: series.map((b,i)=>({
+        label: b.label, data: b.tiers.map(t=>matrixField(t,'cy')), backgroundColor: PALETTE[i]||'#cbd5e1',
+        borderRadius:3, borderSkipped:false
+      })) },
+      options:{ responsive:true, maintainAspectRatio:false, animation:false,
+        plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10,font:{size:11,weight:600}}},
+          tooltip:{padding:10}},
+        scales:{
+          y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}},
+          x:{ticks:{font:{size:11}}, grid:{display:false}}
+        } }
+    });
+  } else {
+    posChart = null;
+  }
 
   document.getElementById('posColLG').textContent = `LG ${metricLabel()}(CY)`;
 
@@ -580,31 +670,58 @@ function renderPositioning(dd){
   noteEl.textContent = `비교 대상: LG + 상위 3개 경쟁사(${comps.map(c=>c.label).join(', ')}) · ${metricLabel()} 기준(CY)`;
 }
 
-// .tabs 그룹별로 active 토글을 scope — posTabs 등 다른 탭 그룹의 active 상태를 건드리지 않도록
-// tab.closest('.tabs')로 자기 그룹 안에서만 active를 바꾼다.
-document.querySelectorAll('.tabs .tab').forEach(tab=>{
+// ===== 탭 배선 =====
+// 최상위 detail 탭(브랜드/포지셔닝/세그먼트/데이터품질)
+document.querySelectorAll('#dtabs .dtab').forEach(tab=>{
   tab.addEventListener('click', ()=>{
-    tab.closest('.tabs').querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t===tab));
-    if(tab.dataset.tab === undefined) return; // posTabs 등 별도 핸들러가 있는 탭은 여기서 끝
-    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.toggle('active', p.dataset.panel===tab.dataset.tab));
-    // Chart.js가 display:none 상태에서 만들어진 캔버스는 내부 레이아웃이 0x0으로 굳어 resize()만으로는
-    // 막대가 복구되지 않음 -> 탭이 보이는 시점(classList 반영 후)에 해당 차트를 완전히 재생성
+    document.querySelectorAll('#dtabs .dtab').forEach(t=>t.classList.toggle('active', t===tab));
+    document.querySelectorAll('.dpanel').forEach(p=>p.classList.toggle('active', p.dataset.dpanel===tab.dataset.dtab));
+    render(); // Chart.js display:none 캔버스 0x0 굳음 방지 — 탭 활성화 직후 재생성
+  });
+});
+// 포지셔닝 탭 내부의 가격대/BTU 서브탭
+document.querySelectorAll('#posTabs .subtab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#posTabs .subtab').forEach(t=>t.classList.toggle('active', t===tab));
+    state.posAxis = tab.dataset.postab;
+    render();
+  });
+});
+// 세그먼트 믹스 탭 내부의 가격대/BTU/난방 서브탭
+document.querySelectorAll('#segTabs .subtab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('#segTabs .subtab').forEach(t=>t.classList.toggle('active', t===tab));
+    document.querySelectorAll('[data-segpanel]').forEach(p=>p.classList.toggle('active', p.dataset.segpanel===tab.dataset.segtab));
     render();
   });
 });
 
-document.querySelectorAll('#posTabs .tab').forEach(tab=>{
-  tab.addEventListener('click', ()=>{
-    document.querySelectorAll('#posTabs .tab').forEach(t=>t.classList.toggle('active', t===tab));
-    state.posAxis = tab.dataset.postab;
+// ===== 통합 필터바 =====
+document.querySelectorAll('#periodToggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    if(btn.disabled) return;
+    state.period = btn.dataset.period;
+    document.querySelectorAll('#periodToggle button').forEach(b=>b.classList.toggle('on', b===btn));
+    render();
+  });
+});
+document.querySelectorAll('#metricToggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.metric = btn.dataset.metric;
+    document.querySelectorAll('#metricToggle button').forEach(b=>b.classList.toggle('on', b===btn));
+    render();
+  });
+});
+document.querySelectorAll('#channelToggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    state.channel = btn.dataset.channel;
+    document.querySelectorAll('#channelToggle button').forEach(b=>b.classList.toggle('on', b===btn));
+    document.getElementById('channelNote').style.display = state.channel==='total' ? 'none' : 'inline';
     render();
   });
 });
 
 initMonthSelect();
-initPeriodToggle();
-initMetricToggle();
-initChannelToggle();
 render();
 </script>
 </body>
