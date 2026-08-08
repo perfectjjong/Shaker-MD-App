@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>GFK AC Split Tracker (SA)</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="gfk_data.js"></script>
 <style>
 :root{
@@ -151,6 +152,7 @@ tr:hover td{background:#f8f8f7}
       <button data-channel="offlineChains">체인</button>
       <button data-channel="offlineIndependents">독립점</button>
       <button data-channel="online">온라인</button>
+      <button data-channel="lgExclusive">LG전용채널</button>
     </div>
   </div>
   <span class="channel-note" id="channelNote">⚠️ LG 포지셔닝 탭은 채널 분해가 없어 항상 전체 기준입니다</span>
@@ -322,7 +324,11 @@ const PALETTE = ['#a50034','#2a78d6','#eb6834','#1baf7a'];
 const PY_COLOR = '#d6d9de';
 
 let state = {period:'ytd', metric:'value', channel:'total', posAxis:'price', monthIdx: GFK_DATA.monthOrder.length-1};
-const CHANNEL_LABELS = {total:'전체(Panelmarket)', offlineChains:'오프라인-체인', offlineIndependents:'오프라인-독립점', online:'온라인'};
+const CHANNEL_LABELS = {total:'전체(Panelmarket)', offlineChains:'오프라인-체인', offlineIndependents:'오프라인-독립점', online:'온라인', lgExclusive:'LG전용채널'};
+// LG전용채널('10688' 코드)은 PPT 원본 확인 결과 CY/PY 모두 브랜드 구성 100% LG —
+// 체인/독립점/온라인과 동급의 4번째 채널이 아니라 체인 채널의 부분집합(서브셋)이다.
+// (검증: 체인+독립점+온라인 합계가 전체와 완전히 일치 — diff=0 — 이 3개가 MECE)
+const SUBSET_CHANNELS = new Set(['lgExclusive']);
 
 function scoped(obj){
   if(!obj) return null;
@@ -438,20 +444,26 @@ function renderScatter(dd){
 // 그래서 숨겨진 캔버스는 애초에 차트를 만들지 않고, 탭이 열려 실제로 보일 때 처음 생성한다.
 function isVisible(el){ return !!el && el.offsetParent !== null; }
 
+// GfK PPT 원본(EMF 렌더링으로 직접 확인)은 막대마다 값을 항상 표기함 — 호버 툴팁에만
+// 의존하지 않고 chartjs-plugin-datalabels로 막대 위에 값을 상시 표시해 그 관례를 따른다.
 function bar(id, labels, cy, py, existing, colorCy){
   const ctx = document.getElementById(id);
   if(existing) existing.destroy();
   if(!isVisible(ctx)) return null;
   const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
+  const labelFmt = v => v==null ? '' : (state.metric==='value' ? (v/1e6).toFixed(1)+'M' : Math.round(v).toLocaleString());
   return new Chart(ctx, {
     type:'bar',
+    plugins:[ChartDataLabels],
     data:{labels, datasets:[
       {label:'전년(PY)', data:py, backgroundColor:PY_COLOR, borderRadius:3, borderSkipped:false},
       {label:'현재(CY)', data:cy, backgroundColor:colorCy||PALETTE[0], borderRadius:3, borderSkipped:false},
     ]},
     options:{responsive:true, maintainAspectRatio:false, animation:false,
+      layout:{padding:{top:16}},
       plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10,font:{size:11,weight:600}}},
-        tooltip:{padding:10, titleFont:{size:12}, bodyFont:{size:12}}},
+        tooltip:{padding:10, titleFont:{size:12}, bodyFont:{size:12}},
+        datalabels:{anchor:'end', align:'top', offset:2, color:'#3a3a38', font:{size:10,weight:700}, formatter:labelFmt}},
       scales:{
         y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}},
         x:{ticks:{font:{size:11}}, grid:{display:false}}
@@ -484,7 +496,9 @@ function channelBestWorst(dd){
   const lg = dd.brands.find(b=>b.label==='LG');
   const gt = dd.grandTotal;
   if(!lg) return null;
-  const rows = Object.keys(CHANNEL_LABELS).filter(k=>k!=='total').map(ch=>{
+  // LG전용채널은 정의상 100% LG라 "어느 채널이 강한가" 비교에 넣으면 트리비얼한 결과만
+  // 나옴(체인의 부분집합이기도 함) — 실제 3분류(체인/독립점/온라인)만 비교.
+  const rows = Object.keys(CHANNEL_LABELS).filter(k=>k!=='total' && !SUBSET_CHANNELS.has(k)).map(ch=>{
     const lgV = lg.channels[ch][`${state.metric}_cy`];
     const gtV = gt.channels[ch][`${state.metric}_cy`];
     return { channel: ch, label: CHANNEL_LABELS[ch], share: gtV ? lgV/gtV*100 : null };
@@ -800,7 +814,16 @@ document.querySelectorAll('#channelToggle button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     state.channel = btn.dataset.channel;
     document.querySelectorAll('#channelToggle button').forEach(b=>b.classList.toggle('on', b===btn));
-    document.getElementById('channelNote').style.display = state.channel==='total' ? 'none' : 'inline';
+    const note = document.getElementById('channelNote');
+    if(SUBSET_CHANNELS.has(state.channel)){
+      note.style.display = 'inline';
+      note.textContent = '⚠️ LG전용채널은 체인 채널의 부분집합입니다(합산 시 이중계산 주의) · LG 포지셔닝 탭은 채널 분해가 없어 항상 전체 기준';
+    } else if(state.channel!=='total'){
+      note.style.display = 'inline';
+      note.textContent = '⚠️ LG 포지셔닝 탭은 채널 분해가 없어 항상 전체 기준입니다';
+    } else {
+      note.style.display = 'none';
+    }
     render();
   });
 });
