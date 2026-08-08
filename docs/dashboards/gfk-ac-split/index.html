@@ -213,6 +213,12 @@ tr:hover td{background:#f8f8f7}
 
   <div class="dpanel active" data-dpanel="brand">
     <div class="card">
+      <div class="card-title">채널별 브랜드 구성 (GfK 원본 레이아웃 — 채널을 나란히 동시 비교)</div>
+      <div class="card-desc">전체/체인/독립점/온라인/LG전용채널을 한 화면에서 비교. 각 채널 CY·PY 막대에 상위 7개 브랜드(고정 색상)+기타를 쌓음. LG=빨강 고정.</div>
+      <div class="chart-wrap tall"><canvas id="channelCompChart"></canvas></div>
+      <div class="sw-note" id="channelCompNote"></div>
+    </div>
+    <div class="card">
       <div class="card-title">브랜드 포지셔닝 맵 (성장률 × 점유율)</div>
       <div class="card-desc">X=YoY 성장률, Y=점유율, 버블 크기=규모. 우상단=성장하며 큰 브랜드, 좌하단=위축·소형. 전년 점유율 0.3%↑ 브랜드만(노이즈 컷) · 버블에 마우스를 올리면 브랜드명이 나옵니다.</div>
       <div class="chart-wrap tall"><canvas id="scatterChart"></canvas></div>
@@ -365,7 +371,78 @@ function initMonthSelect(){
   sel.addEventListener('change', e=>{ state.monthIdx = +e.target.value; render(); });
 }
 
-let brandChart, priceChart, btuChart, posChart, scatterChart;
+let brandChart, priceChart, btuChart, posChart, scatterChart, channelCompChart;
+
+// LG=빨강 고정, 나머지 6개 브랜드는 dataviz 검증 팔레트(8색 세트, LG 제외 7색 중 6개)
+// 순환 없이 고정 순서로 배정. "기타"는 중립 회색.
+const COMP_PALETTE = ['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300'];
+const COMP_OTHERS_COLOR = '#c7c6c2';
+
+// GfK PPT 원본 레이아웃(채널을 토글이 아니라 나란히 동시 비교) 재현.
+// 채널×기간(5채널×CY/PY=10칸)에 상위 6개 브랜드(고정, LG 제외)+LG+기타를 쌓아올린다.
+// 브랜드 선정은 "전체(total)" 채널 기준으로 고정 — 채널마다 다른 브랜드가 뽑히면
+// 막대 간 색상 의미가 흔들리기 때문에, GfK도 전체 하나로 브랜드 범례를 고정해서 씀.
+function renderChannelComposition(dd){
+  const ctx = document.getElementById('channelCompChart');
+  if(channelCompChart){ channelCompChart.destroy(); channelCompChart=null; }
+  if(!isVisible(ctx)) return;
+  const gt = dd.grandTotal;
+  const CHANNELS = ['total','offlineChains','offlineIndependents','online','lgExclusive'];
+  const CH_SHORT = {total:'전체', offlineChains:'체인', offlineIndependents:'독립점', online:'온라인', lgExclusive:'LG전용'};
+
+  const fieldOf = (row, ch, side) => {
+    if(ch==='total') return row[`${state.metric}_${side}`];
+    return row.channels[ch] ? row.channels[ch][`${state.metric}_${side}`] : null;
+  };
+  const or0v = v => v==null ? 0 : v;
+
+  const ranked = [...dd.brands].filter(b=>b.label!=='<Others>' && b.label!=='LG')
+    .sort((a,b)=>(b[`${state.metric}_cy`]||0)-(a[`${state.metric}_cy`]||0));
+  const top6 = ranked.slice(0,6);
+  const lg = dd.brands.find(b=>b.label==='LG');
+  const seriesBrands = [...top6, lg].filter(Boolean);
+
+  const labels = [];
+  CHANNELS.forEach(ch=>{ labels.push([CH_SHORT[ch],'CY']); labels.push([CH_SHORT[ch],'PY']); });
+
+  const datasets = seriesBrands.map((b,i)=>({
+    label: b.label,
+    backgroundColor: b.label==='LG' ? '#a50034' : COMP_PALETTE[i % COMP_PALETTE.length],
+    data: CHANNELS.flatMap(ch => [or0v(fieldOf(b,ch,'cy')), or0v(fieldOf(b,ch,'py'))]),
+  }));
+  // 기타 = 채널 총계 - (선정된 7개 브랜드 합) — 나머지 142개 브랜드 전부를 잔차로 정확히 포함
+  const othersData = CHANNELS.flatMap(ch=>{
+    const totalCy = or0v(fieldOf(gt,ch,'cy')), totalPy = or0v(fieldOf(gt,ch,'py'));
+    const sumCy = seriesBrands.reduce((s,b)=>s+or0v(fieldOf(b,ch,'cy')),0);
+    const sumPy = seriesBrands.reduce((s,b)=>s+or0v(fieldOf(b,ch,'py')),0);
+    return [Math.max(0,totalCy-sumCy), Math.max(0,totalPy-sumPy)];
+  });
+  datasets.push({label:'기타(142개 브랜드)', backgroundColor:COMP_OTHERS_COLOR, data:othersData});
+
+  const yTick = state.metric==='value' ? (v=>(v/1e6).toFixed(0)+'M') : (v=>v);
+  channelCompChart = new Chart(ctx, {
+    type:'bar',
+    plugins:[ChartDataLabels],
+    data:{ labels, datasets },
+    options:{ responsive:true, maintainAspectRatio:false, animation:false,
+      scales:{
+        x:{stacked:true, grid:{display:false}, ticks:{font:{size:10.5}}},
+        y:{stacked:true, ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}}
+      },
+      plugins:{
+        legend:{position:'top', labels:{boxWidth:10,font:{size:10.5,weight:600}}},
+        tooltip:{callbacks:{label:(c)=> `${c.dataset.label}: ${fmtMetric(c.raw)}`}},
+        datalabels:{
+          display:(c)=> c.dataset.data[c.dataIndex] > 0 && (c.dataset.data[c.dataIndex] / Math.max(...datasets.map(d=>d.data.reduce((a,b)=>a+b,0)))) > 0.03,
+          color:'#fff', font:{size:9,weight:700},
+          formatter:(v)=> state.metric==='value' ? (v/1e6).toFixed(0)+'M' : Math.round(v/1000)+'K'
+        }
+      }
+    }
+  });
+  document.getElementById('channelCompNote').textContent =
+    `브랜드 고정 선정: 전체 채널 ${metricLabel()} 기준 상위 6개(LG 제외) + LG. 채널마다 순위가 달라도 동일 브랜드=동일 색상 유지.`;
+}
 
 // 브랜드 포지셔닝 맵: 해석 없이 데이터만 배치 — 전년 점유율 0.3% 미만(표본이 너무 작아
 // %성장률이 극단값으로 튀는 브랜드, 예: +26653%)은 노이즈라 제외하고 좌표만 계산한다.
@@ -599,6 +676,7 @@ function render(){
   const top10 = sorted.slice(0,10);
   brandChart = bar('brandChart', top10.map(b=>b.label), top10.map(b=>mfield(b,'cy')), top10.map(b=>mfield(b,'py')), brandChart, PALETTE[0]);
   renderScatter(dd);
+  renderChannelComposition(dd);
 
   const rowHtml = (b,i) => {
     const tr = document.createElement('tr');
