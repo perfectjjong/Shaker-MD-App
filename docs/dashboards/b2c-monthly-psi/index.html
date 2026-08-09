@@ -729,7 +729,7 @@ function mkChart(id, cfg) {
 }
 
 // 최근 실적월 자동 감지 (당월 마감 시 stk 기록 or so/st>0). 최신 연도부터 역순 탐색.
-// (B2C_PSI_DATA엔 OR의 totals 노드가 없어 by_ch 9채널 합산으로 직접 계산 — 현재 필터 상태와 무관)
+// (B2C_PSI_DATA엔 OR의 totals 노드가 없어 by_ch 14채널 합산으로 직접 계산 — 현재 필터 상태와 무관)
 function latestActualMonth() {
   const yrs = [...YEARS].sort(); // 오름차순
   for (let y = yrs.length - 1; y >= 0; y--) {
@@ -1498,8 +1498,8 @@ function render() {
   const chLabel = (curChs.has('ALL') ? '14-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
-  const mtAsOf = (typeof B2C_PSI_MODEL_TABLE !== 'undefined')
-    ? (B2C_PSI_MODEL_TABLE.as_of_year + ' ' + B2C_PSI_MODEL_TABLE.as_of_week)
+  const mtAsOf = (typeof B2C_PSI_MODEL_TABLE !== 'undefined' && B2C_PSI_MODEL_TABLE.as_of)
+    ? ('IR ' + B2C_PSI_MODEL_TABLE.as_of.ir_as_of_year + ' ' + B2C_PSI_MODEL_TABLE.as_of.ir_as_of_week + ' · OR ' + B2C_PSI_MODEL_TABLE.as_of.or_month_label)
     : '2026-06';
   document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model ' + mtAsOf + ' · ' + chLabel;
 }
@@ -1519,7 +1519,8 @@ render();
   const MT_CHS = [...new Set(D.rows.map(r => r.channel))].sort();
 
   document.getElementById('mtSubtitle').textContent =
-    D.as_of_year + ' ' + D.as_of_week + ' — Model × Channel Snapshot (' + D.rows.length + ' rows)';
+    'IR ' + D.as_of.ir_as_of_year + ' ' + D.as_of.ir_as_of_week + ' · OR ' + D.as_of.or_month_label +
+    ' — Model × Channel Snapshot (' + D.rows.length + ' rows)';
 
   // 채널 드롭다운 옵션 채우기
   const chSel = document.getElementById('mtChSel');
@@ -1576,7 +1577,7 @@ render();
         html += '<td style="background:var(--so-bg)">' + fmt(r.so_recent) + '</td>';
         html += '<td>' + (r.mos === null || r.mos === undefined ? '<span class="null">∞</span>' : r.mos.toFixed(2)) + '</td>';
         html += '<td>' + flagBadge(r.flag) + '</td>';
-        html += '<td>' + (r.basis === 'IR-4wk-avg' ? 'IR 4주평균' : 'OR 2개월평균') + '</td>';
+        html += '<td>' + (D.basis_labels[r.basis] || r.basis) + '</td>';
         html += '</tr>';
       });
       const stkSum = rows.reduce((s,r) => s + (r.stk||0), 0);
@@ -1589,7 +1590,7 @@ render();
     html += '</table>';
     document.getElementById('modelTable').innerHTML = html;
     document.getElementById('mtFooter').innerHTML =
-      'Stock = latest snapshot · SO(4wk) = rolling 4-week sell-out · MOS = Stock ÷ (SO(4wk)/4). ' +
+      'Stock = latest snapshot · SO(recent) = IR 4주평균 또는 OR 2개월평균(기준 컬럼 참조) · MOS = 각 소스 원본 값 그대로. ' +
       'Filter: ' + rows.length + ' rows shown (total ' + D.rows.length + ')';
   }
 
@@ -1624,8 +1625,8 @@ render();
   const MT_CHS = [...new Set(D.rows.map(r => r.channel))].sort();
 
   document.getElementById('m2Meta').innerHTML =
-    `As of: ${D.as_of_year} ${D.as_of_week} · Flag = builder-classified (LOW/OVER/OOS/SLOW/NORMAL) · ` +
-    `MOS = Stock ÷ (SO 4wk÷4 monthly avg)`;
+    `As of: IR ${D.as_of.ir_as_of_year} ${D.as_of.ir_as_of_week} · OR ${D.as_of.or_month_label} · Flag = builder-classified (LOW/OVER/OOS/SLOW/NORMAL) · ` +
+    `MOS = 각 소스 원본 방법론 그대로(IR=4주평균, OR=2개월평균) — 재계산 없음`;
 
   const btnWrap = document.getElementById('m2ChBtns');
   MT_CHS.forEach((ch, i) => {
@@ -1647,9 +1648,9 @@ render();
     if (!items.length) {
       return '<div class="note" style="border-left-color:#cbd5e1">No models in this category</div>';
     }
-    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>Stock</th><th>SO(4wk)</th><th>Mo.avg SO</th><th>MOS</th><th>Action</th></tr>';
+    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>Stock</th><th>SO(recent)</th><th>Mo.avg SO</th><th>MOS</th><th>Action</th></tr>';
     items.forEach(it => {
-      const avgSo = (it.so_recent || 0) / 4;
+      const avgSo = it.basis === 'IR-4wk-avg' ? (it.so_recent || 0) / 4 : (it.so_recent || 0);
       let action = '';
       if (kind === 'low')       action = `+${Math.ceil(avgSo*2 - it.stk)} reorder`;
       else if (kind === 'over') action = `-${Math.ceil(it.stk - avgSo*1.5)} clear`;
@@ -1679,7 +1680,7 @@ render();
     document.getElementById('m2Summary').innerHTML = `
       <div class="kpi" style="border-left:4px solid #dc2626"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#dc2626">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
       <div class="kpi" style="border-left:4px solid #d97706"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#d97706">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${oos.length}</div><div class="ks">SO(4wk) ${sumSo(oos).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${oos.length}</div><div class="ks">SO(recent) ${sumSo(oos).toLocaleString()}</div></div>
       <div class="kpi" style="border-left:4px solid #475569"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#475569">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
     `;
     document.getElementById('lowCount').textContent  = `(${low.length})`;
