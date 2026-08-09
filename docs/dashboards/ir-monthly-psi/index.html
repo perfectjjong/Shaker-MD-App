@@ -113,15 +113,15 @@ tr:hover td{background:#f8fafc}
   <div class="sep"></div>
   <span class="fl">Channel</span>
   <button class="fb on" data-ch="ALL">All</button>
-  <button class="fb" data-ch="Al Ghanem">Al Ghanem</button>
-  <button class="fb" data-ch="Al Shathri">Al Shathri</button>
-  <button class="fb" data-ch="BH">BH</button>
-  <button class="fb" data-ch="BM">BM</button>
-  <button class="fb" data-ch="Dhamin">Dhamin</button>
-  <button class="fb" data-ch="Star Appliance">Star Appliance</button>
-  <button class="fb" data-ch="Tamkeen">Tamkeen</button>
-  <button class="fb" data-ch="Zagzoog">Zagzoog</button>
-  <button class="fb" data-ch="IR_Others">IR_Others</button>
+  <button class="fb on" data-ch="Al Ghanem">Al Ghanem</button>
+  <button class="fb on" data-ch="Al Shathri">Al Shathri</button>
+  <button class="fb on" data-ch="BH">BH</button>
+  <button class="fb on" data-ch="BM">BM</button>
+  <button class="fb on" data-ch="Dhamin">Dhamin</button>
+  <button class="fb on" data-ch="Star Appliance">Star Appliance</button>
+  <button class="fb on" data-ch="Tamkeen">Tamkeen</button>
+  <button class="fb on" data-ch="Zagzoog">Zagzoog</button>
+  <button class="fb on" data-ch="IR_Others">IR_Others</button>
   <div class="sep"></div>
   <span class="fl">Category</span>
   <button class="fb on" data-cat="ALL">All</button>
@@ -421,7 +421,7 @@ const PEAK = ['May','Jun','Jul','Aug','Sep'];
 
 // 현재 필터 상태
 let curRange = 'H1';  // 2026-07 Jun 마감 반영 — 기본 H1(Jan~Jun)
-let curChs   = new Set(['ALL']);  // multi-select: 'ALL' or specific channels
+let curChs   = new Set(CHS);  // multi-select: 기본값 = 전 채널 선택(개별 해제로 제외/포함 토글)
 let curCats  = new Set(['ALL']); // multi-select: 'ALL' or specific categories
 let mainMetric = 'so';
 let yoyMetric  = 'so';
@@ -507,11 +507,10 @@ function _getValBase(yr, mo, key, ch) {
   }
 
   // curChs 필터 상태 사용 (Main Chart / MOS Chart / MOS Panel에서만 실질적으로 작동 —
-  // 나머지는 sumRange 기본값 'ALL' 경유라 curChs 영향 안 받음, OR 원본과 동일한 설계)
-  if (curChs.has('ALL')) {
-    return useCat ? catTotal() : grandTotal();
-  }
-  // 특정 채널(들) 선택 → 카테고리도 특정 선택 중이면 by_ch_cat 교차표로 정확한 교차값을 낸다.
+  // 나머지는 sumRange 기본값 'ALL' 경유라 curChs 영향 안 받음, OR 원본과 동일한 설계).
+  // curChs는 이제 'ALL' 센티널이 아니라 실채널 이름 Set — 전 채널이 선택돼 있어도(기본값)
+  // 아래 일반 경로(교차표/개별합산)로 계산되며, by_cat/by_ch가 by_ch_cat에서 파생되므로
+  // grandTotal()/catTotal()과 결과가 항상 정확히 일치한다(구조적 보장).
   if (useCat) return crossTotal([...curChs]);
   let s = null;
   for (const chn of curChs) {
@@ -521,7 +520,9 @@ function _getValBase(yr, mo, key, ch) {
   return s;
 }
 
-function sumRange(yr, months, key, ch='ALL') {
+function sumRange(yr, months, key, ch) {
+  // ch 미지정 시 curChs(채널 필터) 반영 — getVal(...,undefined)이 curChs로 집계.
+  // 특정 채널을 명시적으로 넘기는 호출(Channel Analysis 등 채널별 breakdown)은 그대로 그 채널만 조회.
   let tot = 0, hasData = false;
   for (const mo of months) {
     const v = getVal(yr, mo, key, ch);
@@ -555,21 +556,21 @@ document.querySelectorAll('[data-range]').forEach(btn => {
   });
 });
 
-// 채널: 다중 선택 + 토글 해제. ALL은 단독 선택 (OR 원본과 완전히 동일한 패턴)
+// 채널: 다중 선택 + 토글 해제. All 클릭 = 전 채널 선택(전부 눌린 상태로 표시) →
+// 거기서 개별 채널(예: IR_Others)만 다시 클릭해 빼거나(제외) 넣을(포함) 수 있다.
 document.querySelectorAll('[data-ch]').forEach(btn => {
   btn.addEventListener('click', () => {
     const v = btn.dataset.ch;
     if (v === 'ALL') {
-      curChs = new Set(['ALL']);
+      curChs = new Set(CHS);
     } else if (curChs.has(v)) {
       curChs.delete(v);
-      if (curChs.size === 0) curChs.add('ALL');
+      if (curChs.size === 0) curChs = new Set(CHS);  // 전부 해제되면 전체 선택으로 복귀
     } else {
-      curChs.delete('ALL');
       curChs.add(v);
     }
     document.querySelectorAll('[data-ch]').forEach(b => {
-      b.classList.toggle('on', curChs.has(b.dataset.ch));
+      b.classList.toggle('on', b.dataset.ch === 'ALL' ? curChs.size === CHS.length : curChs.has(b.dataset.ch));
     });
     render();
   });
@@ -1394,7 +1395,7 @@ function renderMosPanel() {
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
   // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
   // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
-  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.size === CHS.length ? '9-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
 
@@ -1476,7 +1477,7 @@ function render() {
   renderFullTable();
   renderMosTab();
   // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
-  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.size === CHS.length ? '9-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
   const mtAsOf = (typeof IR_PSI_MODEL_TABLE !== 'undefined')

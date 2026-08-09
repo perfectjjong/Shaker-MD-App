@@ -524,7 +524,9 @@ function _getValBase(yr, mo, key, ch) {
   return s;
 }
 
-function sumRange(yr, months, key, ch='ALL') {
+function sumRange(yr, months, key, ch) {
+  // ch 미지정 시 curChs(채널 필터) 반영 — getVal(...,undefined)이 curChs로 집계.
+  // 특정 채널을 명시적으로 넘기는 호출(Channel Analysis 등 채널별 breakdown)은 그대로 그 채널만 조회.
   let tot = 0, hasData = false;
   for (const mo of months) {
     const v = getVal(yr, mo, key, ch);
