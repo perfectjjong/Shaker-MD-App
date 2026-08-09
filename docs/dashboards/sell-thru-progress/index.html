@@ -1245,10 +1245,41 @@ function renderTeam(){
   charts['team']=new Chart(document.getElementById('teamChart'),{type:'bar',data:{labels:teams,datasets:ds},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},datalabels:{anchor:'end',align:'end',color:'#cbd5e1',font:{size:8,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}},y:{ticks:{color:'#94a3b8',font:{size:10}},grid:{display:false}}}}});
 }
 
+// By Category has its own independent team-selection state (SEL_team1) —
+// deliberately NOT tied to the master Team filter (unlike By Team's toggle),
+// and NOT tied to the Compare panel's state either, so the two By Category
+// panels can each be set to a different team slice for actual comparison.
+var SEL_team1=null;
+function renderTeamToggle1(elId){
+  var el=document.getElementById(elId);
+  if(!el) return;
+  var b2cTeams=[...ALL.team].filter(function(t){return getDiv(t)==='B2C';}).sort();
+  if(!SEL_team1) SEL_team1=new Set(b2cTeams);
+  el.innerHTML='';
+  function mkBtn(label,isActive,onClick){
+    var b=document.createElement('button');
+    b.className='div-toggle-btn'+(isActive?' active':'');
+    b.textContent=label;
+    b.onclick=onClick;
+    return b;
+  }
+  var allActive=SEL_team1.size===b2cTeams.length && b2cTeams.every(function(t){return SEL_team1.has(t);});
+  el.appendChild(mkBtn('All',allActive,function(){
+    SEL_team1=new Set(b2cTeams); renderCat();
+  }));
+  b2cTeams.forEach(function(t){
+    el.appendChild(mkBtn(t,SEL_team1.has(t),function(){
+      if(SEL_team1.has(t)){ SEL_team1.delete(t); if(SEL_team1.size===0) SEL_team1.add(t); }
+      else SEL_team1.add(t);
+      renderCat();
+    }));
+  });
+}
+
 function renderCat(){
   dc('cat');
-  renderTeamToggle('divToggleCat');
-  var data=getFiltered(), cats=[...new Set(data.map(function(r){return r[C.CT];}))].sort(), years=[...SEL.year].sort(),
+  renderTeamToggle1('divToggleCat');
+  var data=getFilteredCustomTeam(SEL_team1), cats=[...new Set(data.map(function(r){return r[C.CT];}))].sort(), years=[...SEL.year].sort(),
       ds=years.map(function(yr){return{label:String(yr),data:cats.map(function(c){return data.filter(function(r){return r[C.Y]===yr&&r[C.CT]===c;}).reduce(function(s,r){return s+gv(r);},0);}),backgroundColor:(CY[yr]||'#94a3b8')+'cc',borderRadius:3};});
   charts['cat']=new Chart(document.getElementById('catChart'),{type:'bar',data:{labels:cats,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},datalabels:{anchor:'end',align:'top',color:'#cbd5e1',font:{size:8,weight:'600'},rotation:-45,formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#94a3b8',font:{size:9},maxRotation:45},grid:{display:false}},y:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
 }
