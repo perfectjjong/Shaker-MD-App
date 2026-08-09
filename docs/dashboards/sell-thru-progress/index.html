@@ -1839,6 +1839,16 @@ function exportExcel(){
   if(hasOud){ header.push('OUD_'+label,'OUD_Delta_'+label); }
   if(hasAr){ header.push('Credit_Limit','AR_Balance','AR_Overdue','OVD_0-30','OVD_30-60','OVD_60+','DSO_Simple','DSO_Aged'); }
   if(hasCol){ header.push('Col_MTD','Col_YTD'); }
+  // Monthly breakdown for the selected Year(s) (top filter), same account/team/div/status/period scope as the table
+  var selYears=[...SEL.year].sort(function(a,b){return a-b;}), months=['01','02','03','04','05','06','07','08','09','10','11','12'];
+  selYears.forEach(function(yr){ months.forEach(function(m){ header.push(yr+'_'+m+'_'+label); }); });
+  var acctMonthly={};
+  RAW.txn.filter(passFilterExceptYear).forEach(function(r){
+    if(selYears.indexOf(r[C.Y])===-1) return;
+    var id=r[C.ID], key=r[C.Y]+'_'+r[C.M];
+    if(!acctMonthly[id]) acctMonthly[id]={};
+    acctMonthly[id][key]=(acctMonthly[id][key]||0)+gv(r);
+  });
   var sq=document.getElementById('tblSearch'), q=(sq?sq.value:'').toLowerCase();
   var filtered=q?_tblData.filter(function(a){return(a.nm||'').toLowerCase().includes(q);}):_tblData;
   var csv='\uFEFF'+header.join(',')+'\n';
@@ -1852,6 +1862,7 @@ function exportExcel(){
     if(hasOud){ row.push(Math.round(isVal?a.oud_v:a.oud_q),Math.round(isVal?a.oud_dv:a.oud_dq)); }
     if(hasAr){ row.push(Math.round(a.ar_cl),Math.round(a.ar_bal),Math.round(a.ar_ovd),Math.round(a.ar_o1),Math.round(a.ar_o2),Math.round(a.ar_o3)); row.push(a.dso_simple!=null?a.dso_simple.toFixed(1):'',a.dso_aged!=null?a.dso_aged.toFixed(1):''); }
     if(hasCol){ row.push(Math.round(a.col_mtd),Math.round(a.col_ytd)); }
+    selYears.forEach(function(yr){ months.forEach(function(m){ row.push(Math.round((acctMonthly[a.id]||{})[yr+'_'+m]||0)); }); });
     csv+=row.join(',')+'\n';
   });
   var blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
