@@ -615,7 +615,7 @@ function buildGlobalFilters() {
     document.getElementById('globalFilterReset').addEventListener('click', resetAllFilters);
     const oudBtn = document.getElementById('oudToggleBtn');
     if (oudBtn) oudBtn.addEventListener('click', toggleOudMode);
-    msMonth.setOptions(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']);
+    msMonth.setOptions(AVAIL_MONTHS.map(m => m.charAt(0).toUpperCase() + m.slice(1)));
     populateFilterOptions();
 }
 
@@ -680,7 +680,9 @@ function resetAllFilters() {
    ========================================================= */
 /* ---- Month context helpers ---- */
 const MONTH_ORDER = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
-const AVAIL_MONTHS = ['jan','feb','mar','apr','may','jun']; // months available in this dashboard
+// 2026-08-09: 매달 손으로 늘려주던 하드코딩(끝이 'jun'에 고정돼 7월이 하루종일 안 뜬 사고) →
+// data_ir.js의 kpi 키 존재 여부로 자동 산출. 신규월 반영 시 이 파일을 더 이상 손댈 필요 없음.
+const AVAIL_MONTHS = MONTH_ORDER.filter(m => DATA && DATA.kpi && (m in DATA.kpi));
 // "All selected" = getSelected() returns [] → treat as all AVAIL_MONTHS
 function mAllSel() {
   const sel = FILTERS.month.map(m => m.toLowerCase());
@@ -755,13 +757,11 @@ function filteredByDealer() {
     const ck = mCur();
     const map = {};
     dc.forEach(d => {
-        if (!map[d.dealer]) map[d.dealer] = { name:d.dealer, region:d.region, salesman:d.salesman, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[d.dealer].jan, d.jan);
-        addPeriod(map[d.dealer].feb, d.feb);
-        addPeriod(map[d.dealer].mar, d.mar || zeroPeriod());
-        addPeriod(map[d.dealer].apr, d.apr || zeroPeriod());
-        addPeriod(map[d.dealer].may, d.may || zeroPeriod());
-        addPeriod(map[d.dealer].jun, d.jun || zeroPeriod());
+        if (!map[d.dealer]) {
+            map[d.dealer] = { name: d.dealer, region: d.region, salesman: d.salesman };
+            AVAIL_MONTHS.forEach(m => map[d.dealer][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[d.dealer][m], d[m] || zeroPeriod()));
     });
     return Object.values(map).map(d => { d.signal = calcSignal(d[ck]); return d; });
 }
@@ -771,13 +771,11 @@ function filteredByRegion() {
     const dc = filteredDealerCategory();
     const map = {};
     dc.forEach(d => {
-        if (!map[d.region]) map[d.region] = { name:d.region, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[d.region].jan, d.jan);
-        addPeriod(map[d.region].feb, d.feb);
-        addPeriod(map[d.region].mar, d.mar || zeroPeriod());
-        addPeriod(map[d.region].apr, d.apr || zeroPeriod());
-        addPeriod(map[d.region].may, d.may || zeroPeriod());
-        addPeriod(map[d.region].jun, d.jun || zeroPeriod());
+        if (!map[d.region]) {
+            map[d.region] = { name: d.region };
+            AVAIL_MONTHS.forEach(m => map[d.region][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[d.region][m], d[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -789,14 +787,10 @@ function filteredBySalesman() {
     dc.forEach(d => {
         if (!map[d.salesman]) {
             const orig = DATA.bySalesman.find(s => s.name === d.salesman);
-            map[d.salesman] = { name:d.salesman, region:d.region, manager: orig ? orig.manager : '', jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
+            map[d.salesman] = { name: d.salesman, region: d.region, manager: orig ? orig.manager : '' };
+            AVAIL_MONTHS.forEach(m => map[d.salesman][m] = zeroPeriod());
         }
-        addPeriod(map[d.salesman].jan, d.jan);
-        addPeriod(map[d.salesman].feb, d.feb);
-        addPeriod(map[d.salesman].mar, d.mar || zeroPeriod());
-        addPeriod(map[d.salesman].apr, d.apr || zeroPeriod());
-        addPeriod(map[d.salesman].may, d.may || zeroPeriod());
-        addPeriod(map[d.salesman].jun, d.jun || zeroPeriod());
+        AVAIL_MONTHS.forEach(m => addPeriod(map[d.salesman][m], d[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -807,13 +801,11 @@ function filteredByManager() {
     const map = {};
     salesmen.forEach(s => {
         if (!s.manager) return;
-        if (!map[s.manager]) map[s.manager] = { name:s.manager, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[s.manager].jan, s.jan);
-        addPeriod(map[s.manager].feb, s.feb);
-        addPeriod(map[s.manager].mar, s.mar || zeroPeriod());
-        addPeriod(map[s.manager].apr, s.apr || zeroPeriod());
-        addPeriod(map[s.manager].may, s.may || zeroPeriod());
-        addPeriod(map[s.manager].jun, s.jun || zeroPeriod());
+        if (!map[s.manager]) {
+            map[s.manager] = { name: s.manager };
+            AVAIL_MONTHS.forEach(m => map[s.manager][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[s.manager][m], s[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -823,13 +815,11 @@ function filteredByCategory() {
     const dc = filteredDealerCategory();
     const map = {};
     dc.forEach(d => {
-        if (!map[d.category]) map[d.category] = { name:d.category, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[d.category].jan, d.jan);
-        addPeriod(map[d.category].feb, d.feb);
-        addPeriod(map[d.category].mar, d.mar || zeroPeriod());
-        addPeriod(map[d.category].apr, d.apr || zeroPeriod());
-        addPeriod(map[d.category].may, d.may || zeroPeriod());
-        addPeriod(map[d.category].jun, d.jun || zeroPeriod());
+        if (!map[d.category]) {
+            map[d.category] = { name: d.category };
+            AVAIL_MONTHS.forEach(m => map[d.category][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[d.category][m], d[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -869,13 +859,11 @@ function filteredByClass() {
     const map = {};
     sd.forEach(d => {
         const key = d.category + '||' + d.className;
-        if (!map[key]) map[key] = { name:d.className, category:d.category, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[key].jan, d.jan);
-        addPeriod(map[key].feb, d.feb);
-        addPeriod(map[key].mar, d.mar || zeroPeriod());
-        addPeriod(map[key].apr, d.apr || zeroPeriod());
-        addPeriod(map[key].may, d.may || zeroPeriod());
-        addPeriod(map[key].jun, d.jun || zeroPeriod());
+        if (!map[key]) {
+            map[key] = { name: d.className, category: d.category };
+            AVAIL_MONTHS.forEach(m => map[key][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[key][m], d[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -885,13 +873,11 @@ function filteredTopSkus() {
     const sd = filteredSkuDetail();
     const map = {};
     sd.forEach(d => {
-        if (!map[d.sku]) map[d.sku] = { sku:d.sku, category:d.category, className:d.className, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-        addPeriod(map[d.sku].jan, d.jan);
-        addPeriod(map[d.sku].feb, d.feb);
-        addPeriod(map[d.sku].mar, d.mar || zeroPeriod());
-        addPeriod(map[d.sku].apr, d.apr || zeroPeriod());
-        addPeriod(map[d.sku].may, d.may || zeroPeriod());
-        addPeriod(map[d.sku].jun, d.jun || zeroPeriod());
+        if (!map[d.sku]) {
+            map[d.sku] = { sku: d.sku, category: d.category, className: d.className };
+            AVAIL_MONTHS.forEach(m => map[d.sku][m] = zeroPeriod());
+        }
+        AVAIL_MONTHS.forEach(m => addPeriod(map[d.sku][m], d[m] || zeroPeriod()));
     });
     return Object.values(map);
 }
@@ -1691,13 +1677,11 @@ function renderTab5() {
         // Aggregate by SKU within this category
         const skuMap = {};
         catSkus.forEach(s => {
-            if (!skuMap[s.sku]) skuMap[s.sku] = { sku:s.sku, className:s.className, jan:zeroPeriod(), feb:zeroPeriod(), mar:zeroPeriod(), apr:zeroPeriod(), may:zeroPeriod(), jun:zeroPeriod() };
-            addPeriod(skuMap[s.sku].jan, s.jan);
-            addPeriod(skuMap[s.sku].feb, s.feb);
-            addPeriod(skuMap[s.sku].mar, s.mar || zeroPeriod());
-            addPeriod(skuMap[s.sku].apr, s.apr || zeroPeriod());
-            addPeriod(skuMap[s.sku].may, s.may || zeroPeriod());
-            addPeriod(skuMap[s.sku].jun, s.jun || zeroPeriod());
+            if (!skuMap[s.sku]) {
+                skuMap[s.sku] = { sku: s.sku, className: s.className };
+                AVAIL_MONTHS.forEach(m => skuMap[s.sku][m] = zeroPeriod());
+            }
+            AVAIL_MONTHS.forEach(m => addPeriod(skuMap[s.sku][m], s[m] || zeroPeriod()));
         });
         const skuArr = Object.values(skuMap).sort((a,b) => ((b[ck]||{}).soQty||0) - ((a[ck]||{}).soQty||0));
 
