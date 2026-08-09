@@ -1490,7 +1490,7 @@ function renderColSnapshotChart(){
       ovdTotal+=arCur.accts[id].ovd;
     });
   }
-  charts['colSnap']=new Chart(document.getElementById('colSnapChart'),{type:'bar',data:{labels:['Collection (MTD)','Receivable (Balance)','Overdue'],datasets:[{label:'As of '+col.date,data:[colTotal,balTotal,ovdTotal],backgroundColor:['#10b981cc','#3b82f6cc','#ef4444cc'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:10,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{display:false}},y:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
+  charts['colSnap']=new Chart(document.getElementById('colSnapChart'),{type:'bar',data:{labels:['Collection (MTD)','Receivable (Balance)','Overdue'],datasets:[{label:'As of '+col.date,data:[colTotal,balTotal,ovdTotal],backgroundColor:['#10b981cc','#3b82f6cc','#ef4444cc'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:10,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{display:false}},y:{grace:'15%',ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
 }
 
 var _colTrendTeamState={sel:null};
