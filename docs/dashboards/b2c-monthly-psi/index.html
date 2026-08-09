@@ -283,7 +283,7 @@ tr:hover td{background:#f8fafc}
     <div class="ct">Year × Metric Availability</div>
     <div id="coverageTable"></div>
     <div class="note">
-      IR 8+Others 채널(Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others) · Sell-Thru(P)/Sell-Out(S)/Stock(I) · 2023–2026.<br>
+      OR 5채널(eXtra/Al Manea/SWS/Black Box/Al Khunizan) + IR 9채널(Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others) · Sell-Thru(P)/Sell-Out(S)/Stock(I) · 2023–2026.<br>
       ⚠️ 2023년 카테고리별 Stock(월말재고)은 Split Inverter/Window AC/Floor Standing AC만 원본에 모델 스냅샷이 존재(합계 약 159,628대) — Split On/Off·Cassette·Concealed는 2023 원본 자체에 재고 스냅샷이 없어 빈값(추정 금지).<br>
       ⚠️ IR_Others Stock: 2023·2024는 원본(B2C 마스터 파일) 값 그대로 반영. 단 이 컬럼은 검증 결과 실측 재고조사가 아니라 "개시재고+Σ(Sell-Thru−Sell-Out)" 롤포워드 값(8개 메이저 채널도 동일 컬럼에서 같은 특성 확인) — 절대 수준보다 변동 추이 참고용. 2025는 원본 자체에 값이 없어 빈값 유지(추정 금지).<br>
       ⚠️ 2025 Sell-Out(S)/Stock(I) (8개 실채널, IR_Others 제외): 2026-08-09부터 <code>LG PSI - IR_Final_Dec_updated_2025_Final_Shared.xlsx</code>(채널별 시트 MODEL 상세 블록) 기준으로 교체. Sell-Thru(P)는 기존 unified-sellout 소스 유지.<br>
@@ -1413,7 +1413,7 @@ function renderMosPanel() {
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
   // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
   // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
-  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.has('ALL') ? '14-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
 
@@ -1495,7 +1495,7 @@ function render() {
   renderFullTable();
   renderMosTab();
   // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
-  const chLabel = (curChs.has('ALL') ? '9-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.has('ALL') ? '14-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
   const mtAsOf = (typeof B2C_PSI_MODEL_TABLE !== 'undefined')
