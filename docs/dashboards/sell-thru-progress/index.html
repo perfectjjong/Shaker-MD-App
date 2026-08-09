@@ -1463,23 +1463,34 @@ function renderIndependentTeamToggle(elId, stateObj, onChange){
 }
 
 var _colSnapTeamState={sel:null};
+// Uses the live daily "current" snapshot (RAW.col / RAW.ar.current — updated
+// every day, e.g. as of 2026-08-08) rather than col_monthly's last CLOSED
+// month. col_monthly/ar_monthly deliberately exclude the in-progress month
+// (no month-end snapshot exists yet), so reusing them here would show last
+// month (Jul) under a "Current Month" label — wrong. (2026-08-09 형님 지적)
 function renderColSnapshotChart(){
   dc('colSnap');
-  var monthly=RAW.col_monthly;
-  if(!monthly||!monthly.length){ return; }
+  var col=RAW.col;
+  if(!col||!col.accts){ return; }
   renderIndependentTeamToggle('colSnapToggle', _colSnapTeamState, renderColSnapshotChart);
-  var latest=monthly[monthly.length-1];
   var filteredIds=getFilteredIdsNoPeriodCustomTeam(_colSnapTeamState.sel);
   var colTotal=0;
-  Object.keys(latest.accts).forEach(function(id){
+  Object.keys(col.accts).forEach(function(id){
     var nid=isNaN(+id)?id:+id;
     if(!filteredIds.has(nid)) return;
-    colTotal+=latest.accts[id].mtd;
+    colTotal+=col.accts[id].mtd;
   });
-  var ar=_arMonthlyTotals(latest.month, filteredIds);
-  var ym=latest.month.split('-'), yr=ym[0].slice(2), mm=ym[1];
-  var monthLabel=MONTH_LABELS[mm]+" '"+yr;
-  charts['colSnap']=new Chart(document.getElementById('colSnapChart'),{type:'bar',data:{labels:['Collection (MTD)','Receivable (Balance)','Overdue'],datasets:[{label:monthLabel,data:[colTotal,ar.bal||0,ar.ovd||0],backgroundColor:['#10b981cc','#3b82f6cc','#ef4444cc'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:10,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{display:false}},y:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
+  var balTotal=0, ovdTotal=0;
+  var arCur=RAW.ar && RAW.ar.current;
+  if(arCur && arCur.accts){
+    Object.keys(arCur.accts).forEach(function(id){
+      var nid=isNaN(+id)?id:+id;
+      if(!filteredIds.has(nid)) return;
+      balTotal+=arCur.accts[id].bal;
+      ovdTotal+=arCur.accts[id].ovd;
+    });
+  }
+  charts['colSnap']=new Chart(document.getElementById('colSnapChart'),{type:'bar',data:{labels:['Collection (MTD)','Receivable (Balance)','Overdue'],datasets:[{label:'As of '+col.date,data:[colTotal,balTotal,ovdTotal],backgroundColor:['#10b981cc','#3b82f6cc','#ef4444cc'],borderRadius:3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{anchor:'end',align:'top',color:'#94a3b8',font:{size:10,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',font:{size:11}},grid:{display:false}},y:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
 }
 
 var _colTrendTeamState={sel:null};
