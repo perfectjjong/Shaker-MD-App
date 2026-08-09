@@ -204,6 +204,7 @@ tfoot .fz{background:#0f172a}
   <div class="chart-box"><div class="chart-box-hdr"><h3>By Category (Compare)</h3><div class="div-toggle" id="teamToggleCat2"></div></div><canvas id="catChart2"></canvas></div>
   <div class="chart-box"><h3>OUD by Team (Current)</h3><canvas id="oudTeamChart"></canvas></div>
   <div class="chart-box"><h3>OUD Monthly Trend (Aug '25 ~ Jul '26)</h3><canvas id="oudDeltaChart"></canvas></div>
+  <div class="chart-box full-width"><h3>OUD Monthly Trend by Team</h3><canvas id="oudMonthlyTeamChart"></canvas></div>
 </div>
 
 <!-- All Accounts Table (unified: Sell-Thru + OUD + AR + Collection) -->
@@ -1384,6 +1385,38 @@ function renderOudDeltaChart(){
   charts['oudDelta']=new Chart(document.getElementById('oudDeltaChart'),{type:'line',data:{labels:labels,datasets:[{label:'OUD ('+(isVal?'Value':'Qty')+')',data:values,borderColor:'#fbbf24',backgroundColor:'#fbbf2433',tension:.3,fill:true,pointRadius:3,borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},datalabels:{align:'top',anchor:'end',color:'#fbbf24',font:{size:9,weight:'600'},formatter:function(v){return v?fmt(v):'';}}},scales:{x:{ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1e293b'}},y:{ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
 }
 
+// Same 12 monthly closing snapshots as renderOudDeltaChart, broken down by team
+// (stacked bar) instead of collapsed to one total — same main-filter linkage.
+var TEAM_PALETTE=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#f97316','#ec4899','#84cc16','#6366f1','#14b8a6','#eab308','#a855f7','#64748b'];
+function renderOudMonthlyTeamChart(){
+  dc('oudMonthlyTeam');
+  var monthly=RAW.oud_monthly;
+  if(!monthly||!monthly.length){ return; }
+  var isVal=mode==='value';
+  var filteredIds=getFilteredIdsNoPeriod();
+  var labels=[], allTeams=new Set(), byMonthTeam=[];
+  monthly.forEach(function(snap){
+    var ym=snap.month.split('-'), yr=ym[0].slice(2), mm=ym[1];
+    labels.push(MONTH_LABELS[mm]+" '"+yr);
+    var teamVals={};
+    Object.keys(snap.accts).forEach(function(id){
+      var nid=isNaN(+id)?id:+id;
+      if(!filteredIds.has(nid)) return;
+      var v=getOudVal(snap.accts[id], isVal);
+      if(isCatFiltered() && v===0 && getOudVal(snap.accts[id], !isVal)===0) return;
+      var tm=ACCT_TEAM[nid]||'Unknown';
+      allTeams.add(tm);
+      teamVals[tm]=(teamVals[tm]||0)+v;
+    });
+    byMonthTeam.push(teamVals);
+  });
+  var teams=[...allTeams].sort();
+  var ds=teams.map(function(t,i){
+    return{label:t,data:byMonthTeam.map(function(mv){return mv[t]||0;}),backgroundColor:TEAM_PALETTE[i%TEAM_PALETTE.length]+'cc',borderRadius:2};
+  });
+  charts['oudMonthlyTeam']=new Chart(document.getElementById('oudMonthlyTeamChart'),{type:'bar',data:{labels:labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#94a3b8',font:{size:11}}},datalabels:{display:false}},scales:{x:{stacked:true,ticks:{color:'#64748b',font:{size:10}},grid:{color:'#1e293b'}},y:{stacked:true,ticks:{color:'#64748b',callback:function(v){return fmt(v);}},grid:{color:'#1e293b'}}}}});
+}
+
 // ======== UNIFIED TABLE (Sell-Thru + OUD + AR + Collection) ========
 var _tblData=[];
 var _tblRsmTotal=0;
@@ -1994,7 +2027,7 @@ function renderAll(){
   renderTopTable();
   renderKPI(); renderOudKPI(); renderArKPI(); renderDsoKPI(); renderStatus();
   renderMonthly(); renderTeam(); renderCat(); renderGrowth(); renderCat2();
-  renderOudTeamChart(); renderOudDeltaChart();
+  renderOudTeamChart(); renderOudDeltaChart(); renderOudMonthlyTeamChart();
 }
 // ======== ASYNC DATA LOADER ========
 (function(){
