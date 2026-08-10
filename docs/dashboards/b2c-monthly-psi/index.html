@@ -111,7 +111,8 @@ tr:hover td{background:#f8fafc}
   <span class="fl">Channel</span>
   <button class="fb on" data-ch="ALL">All</button>
   <button class="fb" data-ch-group="OR" style="background:#f59e0b;color:#fff;border-color:#f59e0b">All OR</button>
-  <button class="fb" data-ch-group="IR" style="background:#3b82f6;color:#fff;border-color:#3b82f6">All IR</button>
+  <button class="fb" data-ch-group="IR_MAIN" style="background:#3b82f6;color:#fff;border-color:#3b82f6">IR Main</button>
+  <button class="fb" data-ch-group="IR_OTHERS" style="background:var(--muted);color:#fff;border-color:var(--muted)">IR_Others</button>
   <button class="fb on" data-ch="eXtra" style="border-color:#f59e0b;color:#f59e0b">eXtra</button>
   <button class="fb on" data-ch="Al Manea" style="border-color:#f59e0b;color:#f59e0b">Al Manea</button>
   <button class="fb on" data-ch="SWS" style="border-color:#f59e0b;color:#f59e0b">SWS</button>
@@ -558,11 +559,15 @@ document.querySelectorAll('[data-range]').forEach(btn => {
   });
 });
 
-// 채널 그룹 퀵필터: OR 전체/IR 전체 클릭 = 그 그룹 채널 전부를 선택한 것과 동일 효과
+// 채널 그룹 퀵필터: All OR/IR Main/IR_Others 클릭 = 그 그룹 채널 전부를 선택한 것과 동일 효과.
+// IR_MAIN = IR_Others를 뺀 8개 실채널, IR_OTHERS = IR_Others 단독(전체 IR 대신 두 개로 분리, 2026-08-10 형님 지시).
+const IR_MAIN_CHS = B2C_PSI_DATA.meta.groups.IR.filter(ch => ch !== 'IR_Others');
 document.querySelectorAll('[data-ch-group]').forEach(btn => {
   btn.addEventListener('click', () => {
     const group = btn.dataset.chGroup;
-    const groupChs = B2C_PSI_DATA.meta.groups[group];
+    const groupChs = group === 'IR_MAIN' ? IR_MAIN_CHS
+      : group === 'IR_OTHERS' ? ['IR_Others']
+      : B2C_PSI_DATA.meta.groups[group];
     curChs = new Set(groupChs);
     document.querySelectorAll('[data-ch]').forEach(b => {
       b.classList.toggle('on', b.dataset.ch === 'ALL' ? curChs.size === CHS.length : curChs.has(b.dataset.ch));
