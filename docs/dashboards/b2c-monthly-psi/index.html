@@ -81,7 +81,7 @@ tr:hover td{background:#f8fafc}
 
 <div class="header">
   <h1>B2C Monthly PSI</h1>
-  <span style="font-size:11px;color:#94a3b8">14 Channels · OR 5 + IR 9 · 2023–2026</span>
+  <span style="font-size:11px;color:#94a3b8">13 Channels · OR 5 + IR 8 · 2023–2026</span>
   <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
   <span class="badge" style="background:#1e40af;color:#bfdbfe">P = Sell-Thru</span>
   <span class="badge" style="background:#92400e;color:#fde68a">I = Stock</span>
@@ -1414,7 +1414,7 @@ function renderMosPanel() {
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
   // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
   // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
-  const chLabel = (curChs.size === CHS.length ? '14-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.size === CHS.length ? '13-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
 
@@ -1496,7 +1496,7 @@ function render() {
   renderFullTable();
   renderMosTab();
   // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
-  const chLabel = (curChs.size === CHS.length ? '14-channel total' : [...curChs].join(' + '))
+  const chLabel = (curChs.size === CHS.length ? '13-channel total' : [...curChs].join(' + '))
     + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
     + (includeOud ? ' · +OUD' : '');
   const mtAsOf = (typeof B2C_PSI_MODEL_TABLE !== 'undefined' && B2C_PSI_MODEL_TABLE.as_of)
