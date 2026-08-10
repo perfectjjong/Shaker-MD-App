@@ -281,11 +281,11 @@ tr:hover td{background:#f8fafc}
     <div class="ct">Year × Metric Availability</div>
     <div id="coverageTable"></div>
     <div class="note">
-      OR 5채널(eXtra/Al Manea/SWS/Black Box/Al Khunizan) + IR 9채널(Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others) · Sell-Thru(P)/Sell-Out(S)/Stock(I) · 2023–2026.<br>
-      ⚠️ 2023년 카테고리별 Stock(월말재고)은 Split Inverter/Window AC/Floor Standing AC만 원본에 모델 스냅샷이 존재(합계 약 159,628대) — Split On/Off·Cassette·Concealed는 2023 원본 자체에 재고 스냅샷이 없어 빈값(추정 금지).<br>
-      ⚠️ IR_Others Stock: 2023·2024는 원본(B2C 마스터 파일) 값 그대로 반영. 단 이 컬럼은 검증 결과 실측 재고조사가 아니라 "개시재고+Σ(Sell-Thru−Sell-Out)" 롤포워드 값(8개 메이저 채널도 동일 컬럼에서 같은 특성 확인) — 절대 수준보다 변동 추이 참고용. 2025는 원본 자체에 값이 없어 빈값 유지(추정 금지).<br>
-      ⚠️ 2025 Sell-Out(S)/Stock(I) (8개 실채널, IR_Others 제외): 2026-08-09부터 <code>LG PSI - IR_Final_Dec_updated_2025_Final_Shared.xlsx</code>(채널별 시트 MODEL 상세 블록) 기준으로 교체. Sell-Thru(P)는 기존 unified-sellout 소스 유지.<br>
-      Model Table / MOS-2 Action 탭은 별도 소스(latest week snapshot)로 채널×카테고리 히스토리가 아닌 최신 스냅샷 기준.
+      OR 5 channels (eXtra/Al Manea/SWS/Black Box/Al Khunizan) + IR 9 channels (Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others) · Sell-Thru(P)/Sell-Out(S)/Stock(I) · 2023–2026.<br>
+      ⚠️ For 2023, category-level Stock (month-end inventory) has a model snapshot in the source only for Split Inverter/Window AC/Floor Standing AC (total ≈159,628 units) — Split On/Off, Cassette, and Concealed have no stock snapshot at all in the 2023 source, so they're left blank (no estimation).<br>
+      ⚠️ IR_Others Stock: for 2023 and 2024, the source (B2C master file) value is used as-is. Note this column is not an actual physical stock count but a rolled-forward value ("opening stock + Σ(Sell-Thru − Sell-Out)") — the same characteristic was confirmed for the 8 major channels in this same column — so treat it as a trend reference rather than an absolute level. For 2025, the source itself has no value, so it stays blank (no estimation).<br>
+      ⚠️ 2025 Sell-Out(S)/Stock(I) (8 real channels, excluding IR_Others): switched to <code>LG PSI - IR_Final_Dec_updated_2025_Final_Shared.xlsx</code> (MODEL detail block on each channel's sheet) as of 2026-08-09. Sell-Thru(P) still uses the original unified-sellout source.<br>
+      The Model Table / MOS-2 Action tabs use a separate source (latest week snapshot) — a current snapshot, not a channel×category history.
     </div>
   </div>
   <div class="cc" style="margin-top:0">
@@ -301,7 +301,7 @@ tr:hover td{background:#f8fafc}
   <div class="stitle" id="mtTitle">Model × Channel — Latest Week Snapshot</div>
   <div class="cc">
     <div class="ct" id="mtSubtitle">Model-Level Snapshot</div>
-    <div class="cd" id="mtSources">Stock + rolling 4-week Sell-Out per (model, channel) row. ⚠️ 이 데이터는 모델별 채널×월 히스토리·BTU/H-C/압축기 정보를 포함하지 않습니다(제공 필드: model/category/channel/stk/so_recent/mos/flag) — 아래 표는 그 실제 필드만 사용.</div>
+    <div class="cd" id="mtSources">Stock + rolling 4-week Sell-Out per (model, channel) row. ⚠️ This data does not include per-model channel×month history or BTU/H-C/compressor info (fields provided: model/category/channel/stk/so_recent/mos/flag) — the table below uses only those actual fields.</div>
     <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Category:</span>
       <button class="fb on" data-mtcat="ALL">ALL</button>
@@ -340,7 +340,7 @@ tr:hover td{background:#f8fafc}
   <div class="cc">
     <div class="ct">Purpose: Supply &amp; Promotion Decisions (Model-Level)</div>
     <div class="cd" id="m2Meta"></div>
-    <div class="cd" style="margin-top:-4px">⚠️ 이 데이터는 월별 SO Apr/May 히스토리·mos_thresholds 기준 정보를 포함하지 않습니다 — 각 행의 <code>flag</code>(빌더가 이미 LOW/OVER/OOS/SLOW/NORMAL로 분류)를 그대로 사용. Action 제안 수량은 <code>so_recent÷4</code>(월평균 근사)로 파생 계산.</div>
+    <div class="cd" style="margin-top:-4px">⚠️ This data does not include monthly SO Apr/May history or mos_thresholds reference info — each row's <code>flag</code> (already classified by the builder as LOW/OVER/OOS/SLOW/NORMAL) is used as-is. The suggested Action quantity is derived as <code>so_recent÷4</code> (an approximate monthly average).</div>
     <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Channel:</span>
       <div id="m2ChBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
@@ -349,7 +349,7 @@ tr:hover td{background:#f8fafc}
     <div class="grid2" style="gap:14px">
       <div>
         <div class="ct" style="color:#dc2626">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">Builder flag = LOW (근접 재고 부족). Peak season — immediate replenishment recommended.</div>
+        <div class="cd">Builder flag = LOW (near stock-out). Peak season — immediate replenishment recommended.</div>
         <div class="tbl" id="lowTable"></div>
       </div>
       <div>
@@ -407,7 +407,6 @@ tr:hover td{background:#f8fafc}
 <script>
 // ── 상수 ──────────────────────────────────────────────────────────────────
 const MONTHS = B2C_PSI_DATA.meta.months;
-const MO_KR = {Jan:'1월',Feb:'2월',Mar:'3월',Apr:'4월',May:'5월',Jun:'6월',Jul:'7월',Aug:'8월',Sep:'9월',Oct:'10월',Nov:'11월',Dec:'12월'};
 const YEARS  = B2C_PSI_DATA.meta.years;
 const CHS    = B2C_PSI_DATA.meta.channels;
 const CATS   = B2C_PSI_DATA.meta.categories;
@@ -765,16 +764,6 @@ function updateMainYearSplit(order) {
   mainSplit = splitIdx < 0
     ? {boundary: null, left: '', right: ''}
     : {boundary: splitIdx - 0.5, left: order[splitIdx - 1].yr, right: order[splitIdx].yr};
-
-  const note = document.getElementById('main-range-note');
-  if (note) {
-    const f = order[0], l = order[order.length - 1];
-    const early = order.filter(o => o.yr === f.yr);
-    const late  = order.filter(o => o.yr === l.yr);
-    note.innerHTML = (f.yr === l.yr)
-      ? `<strong>${f.yr}년 ${MO_KR[early[0].mo]}~${MO_KR[early[early.length - 1].mo]}</strong> · 최근 12개월`
-      : `<strong>${f.yr}년 ${MO_KR[early[0].mo]}~${MO_KR[early[early.length - 1].mo]}</strong>(연한 막대) → <strong>${l.yr}년 ${MO_KR[late[0].mo]}~${MO_KR[late[late.length - 1].mo]}</strong>(진한 막대) · 최근 12개월`;
-  }
 }
 
 function renderMainChart() {
@@ -1563,7 +1552,7 @@ render();
 
   function renderTable() {
     const rows = filterRows();
-    let html = '<table><tr><th class="l">Model</th><th>Category</th><th>Channel</th><th>Stock</th><th>SO (4wk)</th><th>MOS</th><th>Flag</th><th>기준</th></tr>';
+    let html = '<table><tr><th class="l">Model</th><th>Category</th><th>Channel</th><th>Stock</th><th>SO (4wk)</th><th>MOS</th><th>Flag</th><th>Basis</th></tr>';
     if (rows.length === 0) {
       html += '<tr><td colspan="8" style="padding:20px;color:var(--muted)">No models match the current filter</td></tr>';
     } else {
@@ -1594,7 +1583,7 @@ render();
     html += '</table>';
     document.getElementById('modelTable').innerHTML = html;
     document.getElementById('mtFooter').innerHTML =
-      'Stock = latest snapshot · SO(recent) = IR 4주평균 또는 OR 2개월평균(기준 컬럼 참조) · MOS = 각 소스 원본 값 그대로. ' +
+      'Stock = latest snapshot · SO(recent) = IR 4-week avg or OR 2-month avg (see Basis column) · MOS = as reported by each source. ' +
       'Filter: ' + rows.length + ' rows shown (total ' + D.rows.length + ')';
   }
 
@@ -1630,7 +1619,7 @@ render();
 
   document.getElementById('m2Meta').innerHTML =
     `As of: IR ${D.as_of.ir_as_of_year} ${D.as_of.ir_as_of_week} · OR ${D.as_of.or_month_label} · Flag = builder-classified (LOW/OVER/OOS/SLOW/NORMAL) · ` +
-    `MOS = 각 소스 원본 방법론 그대로(IR=4주평균, OR=2개월평균) — 재계산 없음`;
+    `MOS = as defined by each source's own methodology (IR=4-week avg, OR=2-month avg) — not recalculated`;
 
   const btnWrap = document.getElementById('m2ChBtns');
   MT_CHS.forEach((ch, i) => {
