@@ -974,10 +974,11 @@ function classifyPattern(r){
 }
 
 function computeGap(r){ return (r.ac_odp26 != null && r.ha_odp26 != null) ? r.ac_odp26 - r.ha_odp26 : null; }
+const AC_HA_DAYS_YTD = 151; // Jan~CUR_MONTH YTD일수 (하드코딩 120 버그 수정, 매달 스크립트가 갱신)
 function computeOdpAc(r){ return r.ac_b26 > 0 ? (r.ac_od26 / r.ac_b26 * 100) : null; }
 function computeOdpHa(r){ return r.ha_b26 > 0 ? (r.ha_od26 / r.ha_b26 * 100) : null; }
-function computeDsoAc(r){ return r.ac_s26 > 0 ? (r.ac_b26 / r.ac_s26 * 120) : null; }
-function computeDsoHa(r){ return r.ha_s26 > 0 ? (r.ha_b26 / r.ha_s26 * 120) : null; }
+function computeDsoAc(r){ return r.ac_s26 > 0 ? (r.ac_b26 / r.ac_s26 * AC_HA_DAYS_YTD) : null; }
+function computeDsoHa(r){ return r.ha_s26 > 0 ? (r.ha_b26 / r.ha_s26 * AC_HA_DAYS_YTD) : null; }
 
 function lookupAccClass(name){
   if (typeof DATA === 'undefined' || !Array.isArray(DATA)) return 'Unknown';
@@ -1085,8 +1086,8 @@ function renderAch(){
   const ha_b = sum('ha_b26'), ha_o = sum('ha_od26'), ha_s25 = sum('ha_s25'), ha_s = sum('ha_s26');
   const ac_odp = ac_b > 0 ? (ac_o/ac_b*100) : null;
   const ha_odp = ha_b > 0 ? (ha_o/ha_b*100) : null;
-  const ac_dso = ac_s > 0 ? (ac_b/ac_s*120) : null;
-  const ha_dso = ha_s > 0 ? (ha_b/ha_s*120) : null;
+  const ac_dso = ac_s > 0 ? (ac_b/ac_s*AC_HA_DAYS_YTD) : null;
+  const ha_dso = ha_s > 0 ? (ha_b/ha_s*AC_HA_DAYS_YTD) : null;
   const stp_ar_t = sum('stp_ar'), stp_od_t = sum('stp_od'), stp_s25_t = sum('stp_s25'), stp_s26_t = sum('stp_s26');
   const stp_odp_t = stp_ar_t > 0 ? (stp_od_t/stp_ar_t*100) : null;
   const stp_dso_t = stp_s26_t > 0 ? (stp_ar_t/stp_s26_t*212) : null;
