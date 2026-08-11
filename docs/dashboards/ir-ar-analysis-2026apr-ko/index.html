@@ -790,6 +790,7 @@ function renderKpi(){
     if (!sub.dataset.origText) sub.dataset.origText = sub.textContent;
     sub.textContent = sub.dataset.origText + ` · ${avgStr}`;
   }
+  renderFhMatrix(baseFiltered, avgOd);
   row.querySelectorAll('.kpi').forEach(el => el.onclick = () => {
     const s = el.dataset.st;
     if (STATE.statuses.size === V2_STATUSES.length) { STATE.statuses = new Set([s]); }
