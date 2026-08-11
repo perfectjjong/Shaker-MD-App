@@ -167,11 +167,11 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   <div class="sub">87채널 · AR 160.7M / OD 88.8M (OD% 55%) · Sales YoY = 25년 1~5월 vs 26년 1~5월 시즌 보정 · OD·DSO = Dec-25 → May-26 시점 변화 · WOS = stk_may × 8.66 / (so_apr + so_may)</div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="tab1">📊 채널 분석</button>
-    <button class="tab-btn" data-tab="tab2">⚖️ Account별 AC vs HA 비교</button>
+    <button class="tab-btn active" data-tab="tab2">⚖️ Account별 AC vs HA 비교</button>
+    <button class="tab-btn" data-tab="tab1">📊 채널 분석</button>
   </div>
 
-  <div id="tab1" class="tab-panel active">
+  <div id="tab1" class="tab-panel">
   <div class="rules-tbl">
     <details open>
       <summary>📋 <b>v2 매트릭스 분류 기준</b> · 사전 분류(3) + 매트릭스 4사분면 + Overlay 회수의지 · 클릭하여 접기</summary>
@@ -272,7 +272,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   </div>
   </div><!-- /#tab1 -->
 
-  <div id="tab2" class="tab-panel">
+  <div id="tab2" class="tab-panel active">
     <div class="criteria" style="border-left-color:#a78bfa">
       <b>⚖️ Account별 AC Dealer vs HA Dealer 채권 비교</b> · 범위: 87 계정 (IR_Others + BH + OR) · 데이터: AR-HVAC vs HA 2026 May.xlsx · 매출 기간: <b>25 = Jan-Dec 풀이어</b> / <b>26 = Jan-May YTD</b> · <b style="color:#a78bfa">OD% 가중평균 — 필터 적용 시 동적 재계산</b>
     </div>
@@ -344,6 +344,8 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       </table>
     </div>
 
+    <details class="comment-fold">
+    <summary style="cursor:pointer;padding:8px 0;color:var(--muted);font-size:12px;font-weight:600">💬 분석 및 권고 조치 (클릭하여 펼치기)</summary>
     <div class="section" style="margin-top:14px">
       <div class="box">
         <h3>🔍 사업부별 결제 우선순위 분석</h3>
@@ -363,6 +365,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
         </ol>
       </div>
     </div>
+    </details>
 
     <div class="summary" style="background:#312e81;border-left-color:#a78bfa">
       <b>📌 한 줄 요약</b> &nbsp; IR Others 82계정에서 AC OD% 46.4%(64.2M/29.8M) vs HA OD% 17.4%(52.6M/9.1M) — <b>동일 거래선이라도 사업부별 결제 우선순위가 크게 다름</b>. 갭 +50pp 이상 계정은 AC 사업부 구조 시그널로 보고 RSM 합동 회의 필수.
@@ -1264,6 +1267,7 @@ function downloadXlsxTab2(){
 
 document.getElementById('dlXls1').onclick = downloadXlsxTab1;
 document.getElementById('dlXls2').onclick = downloadXlsxTab2;
+initTab2(); // Tab2가 기본 활성 탭이라 최초 로드 시 즉시 초기화 (모든 선언 완료 후 스크립트 맨 끝에서 호출)
 </script>
 </body>
 </html>

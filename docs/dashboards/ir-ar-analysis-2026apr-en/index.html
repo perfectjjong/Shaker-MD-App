@@ -167,11 +167,11 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   <div class="sub">87 channels · AR 160.7M / OD 88.8M (OD% 55%) · Sales YoY = 2025 Jan-May vs 2026 Jan-May (season-adjusted) · OD·DSO = Dec-25 → May-26 shift · WOS = stk_may × 8.66 / (so_apr + so_may)</div>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="tab1">📊 Channel Analysis</button>
-    <button class="tab-btn" data-tab="tab2">⚖️ AC vs HA Comparison by Account</button>
+    <button class="tab-btn active" data-tab="tab2">⚖️ AC vs HA Comparison by Account</button>
+    <button class="tab-btn" data-tab="tab1">📊 Channel Analysis</button>
   </div>
 
-  <div id="tab1" class="tab-panel active">
+  <div id="tab1" class="tab-panel">
   <div class="rules-tbl">
     <details open>
       <summary>📋 <b>v2 Matrix Classification</b> · Pre-filter(3) + Matrix 4-quadrant + Active Collection Overlay · Click to collapse</summary>
@@ -272,7 +272,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
   </div>
   </div><!-- /#tab1 -->
 
-  <div id="tab2" class="tab-panel">
+  <div id="tab2" class="tab-panel active">
     <div class="criteria" style="border-left-color:#a78bfa">
       <b>⚖️ AC Dealer vs HA Dealer Comparison</b> · Scope: 87 accounts (IR_Others + BH + OR) · Data: AR-HVAC vs HA 2026 May.xlsx · Period: <b>25 = Jan-Dec full year</b> / <b>26 = Jan-May YTD</b> · <b style="color:#a78bfa">Weighted Avg OD% recalculates dynamically on filter change</b>
     </div>
@@ -344,6 +344,8 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       </table>
     </div>
 
+    <details class="comment-fold">
+    <summary style="cursor:pointer;padding:8px 0;color:var(--muted);font-size:12px;font-weight:600">💬 Analysis &amp; Recommended Actions (click to expand)</summary>
     <div class="section" style="margin-top:14px">
       <div class="box">
         <h3>🔍 Payment Priority Analysis by Business Unit</h3>
@@ -363,6 +365,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
         </ol>
       </div>
     </div>
+    </details>
 
     <div class="summary" style="background:#312e81;border-left-color:#a78bfa">
       <b>📌 One-line Summary</b> &nbsp; IR Others 82 accounts: AC OD% 46.4%(64.2M/29.8M) vs HA OD% 17.4%(52.6M/9.1M) — <b>same dealers, dramatically different payment priority by BU</b>. Accounts with gap ≥ +50pp are AC BU structural signals — RSM joint meeting essential.
@@ -1257,6 +1260,7 @@ function downloadXlsxTab2(){
 
 document.getElementById('dlXls1').onclick = downloadXlsxTab1;
 document.getElementById('dlXls2').onclick = downloadXlsxTab2;
+initTab2(); // Tab2가 기본 활성 탭이라 최초 로드 시 즉시 초기화 (모든 선언 완료 후 스크립트 맨 끝에서 호출)
 </script>
 </body>
 </html>
