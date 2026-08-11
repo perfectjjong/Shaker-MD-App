@@ -1087,6 +1087,9 @@ function renderAch(){
   const ha_odp = ha_b > 0 ? (ha_o/ha_b*100) : null;
   const ac_dso = ac_s > 0 ? (ac_b/ac_s*120) : null;
   const ha_dso = ha_s > 0 ? (ha_b/ha_s*120) : null;
+  const stp_ar_t = sum('stp_ar'), stp_od_t = sum('stp_od'), stp_s25_t = sum('stp_s25'), stp_s26_t = sum('stp_s26');
+  const stp_odp_t = stp_ar_t > 0 ? (stp_od_t/stp_ar_t*100) : null;
+  const stp_dso_t = stp_s26_t > 0 ? (stp_ar_t/stp_s26_t*212) : null;
   const gap_t = (ac_odp != null && ha_odp != null) ? (ac_odp - ha_odp) : null;
 
   document.getElementById('achCount').textContent = `${arr.length}개 계정 · AC AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M (OD% ${ac_odp?ac_odp.toFixed(1):'-'}%) · HA AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M (OD% ${ha_odp?ha_odp.toFixed(1):'-'}%)`;
@@ -1148,12 +1151,12 @@ function renderAch(){
     <td>${fmtMa(ac_o)}</td>
     <td>${fmtPctA(ac_odp)}</td>
     <td>${fmtDsoA(ac_dso)}</td>
-    <td class="divider">${fmtMa(sum('stp_s25'))}</td>
-    <td>${fmtMa(sum('stp_s26'))}</td>
-    <td>${fmtMa(sum('stp_ar'))}</td>
-    <td>${fmtMa(sum('stp_od'))}</td>
-    <td>-</td>
-    <td>-</td>
+    <td class="divider">${fmtMa(stp_s25_t)}</td>
+    <td>${fmtMa(stp_s26_t)}</td>
+    <td>${fmtMa(stp_ar_t)}</td>
+    <td>${fmtMa(stp_od_t)}</td>
+    <td>${fmtPctA(stp_odp_t)}</td>
+    <td>${fmtDsoA(stp_dso_t)}</td>
     <td class="divider">${fmtMa(ha_s25)}</td>
     <td>${fmtMa(ha_s)}</td>
     <td>${fmtMa(ha_b)}</td>
