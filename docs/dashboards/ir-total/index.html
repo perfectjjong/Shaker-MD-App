@@ -557,29 +557,49 @@ let msMonth, msRegion, msSalesman, msDealer, msCategory, msSignal;
 let filterDebounce = null;
 let OUD_MODE = false;  // true = Stock includes OUD
 
-/* OUD lookup: dealer||category → LATEST week OUD qty/val */
-function buildOudLookup() {
-    const lk = {};
-    const meta = DATA.oudMeta;
-    if (!meta || meta.length === 0) return lk;
-    const latestKey = meta[meta.length - 1].key;
-    (DATA.oudDealerCategory || []).forEach(d => {
-        lk[d.dealer + '||' + d.category] = d[latestKey] || {qty:0, val:0};
+/* OUD lookup: dealer||category → 선택된 캘린더월에 속한 마지막 OUD 스냅샷 qty/val.
+   ⚠️ 2026-08-12 수정: 이전엔 월 필터와 무관하게 항상 "최신"(meta 마지막) 주차를 썼음 —
+   과거 월을 선택하고 OUD 토글을 켜면 최신(예: 8월) OUD가 과거월(예: 1월) On-Hand에
+   더해지는 버그였음(형님 지적: "같은 소스인데 대시보드마다 OUD 포함 숫자가 다르다" —
+   b2c-monthly-psi/ir-monthly-psi는 ir_monthly_psi_oud_loader.py의 _oud_last_week()로
+   이미 월별 스냅샷을 쓰고 있었는데 ir-total만 항상-최신 로직이라 어긋났음). 그 함수와
+   동일 로직으로 교체: 그 캘린더월에 속한 마지막 OUD 스냅샷만 사용, 그 달에 스냅샷이
+   없으면 OUD 미적용(0) — "OUD 데이터 없는 달=0, 거짓0 아님" 원칙 그대로 유지. */
+function buildMonthToOudWeek() {
+    const MON3 = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+    const out = {}, seen = {};
+    (DATA.oudMeta || []).forEach(e => {
+        const m = /^(\d{1,2}) (\w{3}) (\d{4})$/.exec(e.label || '');
+        if (!m) return;
+        const mi = MON3.findIndex(x => x === m[2].toLowerCase());
+        if (mi < 0) return;
+        const mk = MON3[mi];
+        const dt = new Date(parseInt(m[3], 10), mi, parseInt(m[1], 10));
+        if (!(mk in seen) || dt >= seen[mk]) { seen[mk] = dt; out[mk] = e.key; }
     });
+    return out;
+}
+const _monthToOudWeek = buildMonthToOudWeek();
+const _oudDCLookupCache = {};
+const _oudSkuLookupCache = {};
+function oudDCLookupFor(ck) {
+    const wk = _monthToOudWeek[ck];
+    if (!wk) return {};
+    if (_oudDCLookupCache[wk]) return _oudDCLookupCache[wk];
+    const lk = {};
+    (DATA.oudDealerCategory || []).forEach(d => { lk[d.dealer + '||' + d.category] = d[wk] || {qty:0, val:0}; });
+    _oudDCLookupCache[wk] = lk;
     return lk;
 }
-function buildOudSkuLookup() {
+function oudSkuLookupFor(ck) {
+    const wk = _monthToOudWeek[ck];
+    if (!wk) return {};
+    if (_oudSkuLookupCache[wk]) return _oudSkuLookupCache[wk];
     const lk = {};
-    const meta = DATA.oudMeta;
-    if (!meta || meta.length === 0) return lk;
-    const latestKey = meta[meta.length - 1].key;
-    (DATA.oudSku || []).forEach(d => {
-        lk[d.dealer + '||' + d.sku] = d[latestKey] || {qty:0, val:0};
-    });
+    (DATA.oudSku || []).forEach(d => { lk[d.dealer + '||' + d.sku] = d[wk] || {qty:0, val:0}; });
+    _oudSkuLookupCache[wk] = lk;
     return lk;
 }
-const _oudDCLookup = buildOudLookup();
-const _oudSkuLookup = buildOudSkuLookup();
 
 function toggleOudMode() {
     OUD_MODE = !OUD_MODE;
@@ -735,7 +755,7 @@ function filteredDealerCategory() {
     }).map(d => {
         if (!OUD_MODE) return {...d, signal: calcSignal(d[ck])};
         const clone = JSON.parse(JSON.stringify(d));
-        const oud = _oudDCLookup[d.dealer + '||' + d.category];
+        const oud = oudDCLookupFor(ck)[d.dealer + '||' + d.category];
         if (oud && clone[ck]) {
             clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
             clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
@@ -746,7 +766,7 @@ function filteredDealerCategory() {
 }
 
 function applyOudDC(d, ck) {
-    const oud = _oudDCLookup[d.dealer + '||' + d.category];
+    const oud = oudDCLookupFor(ck)[d.dealer + '||' + d.category];
     if (!oud || !d[ck]) return d[ck];
     return {...d[ck], stkQty: (d[ck].stkQty||0) + (oud.qty||0), stkVal: (d[ck].stkVal||0) + (oud.val||0)};
 }
@@ -838,7 +858,7 @@ function filteredSkuDetail() {
     }).map(d => {
         if (!OUD_MODE) return d;
         const clone = JSON.parse(JSON.stringify(d));
-        const oud = _oudSkuLookup[d.dealer + '||' + d.sku];
+        const oud = oudSkuLookupFor(ck)[d.dealer + '||' + d.sku];
         if (oud && clone[ck]) {
             clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
             clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
@@ -848,7 +868,7 @@ function filteredSkuDetail() {
 }
 
 function applyOudSku(d, ck) {
-    const oud = _oudSkuLookup[d.dealer + '||' + d.sku];
+    const oud = oudSkuLookupFor(ck)[d.dealer + '||' + d.sku];
     if (!oud || !d[ck]) return d[ck];
     return {...d[ck], stkQty: (d[ck].stkQty||0) + (oud.qty||0), stkVal: (d[ck].stkVal||0) + (oud.val||0)};
 }
