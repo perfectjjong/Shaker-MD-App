@@ -755,11 +755,17 @@ function filteredDealerCategory() {
     }).map(d => {
         if (!OUD_MODE) return {...d, signal: calcSignal(d[ck])};
         const clone = JSON.parse(JSON.stringify(d));
-        const oud = oudDCLookupFor(ck)[d.dealer + '||' + d.category];
-        if (oud && clone[ck]) {
-            clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
-            clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
-        }
+        // ⚠️ 2026-08-12 수정: 이전엔 ck(현재 선택 월) 컬럼만 패치해서, 여러 달을 한번에
+        // 보여주는 표(byDealer/byRegion 등, AVAIL_MONTHS 전체를 합산)에서 최신 달만
+        // 바뀌고 나머지 과거 달은 토글을 눌러도 그대로였음(형님 지적: "1~6월이 안 바뀌").
+        // AVAIL_MONTHS 전체를 각자의 월별 OUD 스냅샷으로 패치.
+        AVAIL_MONTHS.forEach(m => {
+            const oudM = oudDCLookupFor(m)[d.dealer + '||' + d.category];
+            if (oudM && clone[m]) {
+                clone[m].stkQty = (clone[m].stkQty || 0) + (oudM.qty || 0);
+                clone[m].stkVal = (clone[m].stkVal || 0) + (oudM.val || 0);
+            }
+        });
         clone.signal = calcSignal(clone[ck]);
         return clone;
     });
@@ -858,11 +864,14 @@ function filteredSkuDetail() {
     }).map(d => {
         if (!OUD_MODE) return d;
         const clone = JSON.parse(JSON.stringify(d));
-        const oud = oudSkuLookupFor(ck)[d.dealer + '||' + d.sku];
-        if (oud && clone[ck]) {
-            clone[ck].stkQty = (clone[ck].stkQty || 0) + (oud.qty || 0);
-            clone[ck].stkVal = (clone[ck].stkVal || 0) + (oud.val || 0);
-        }
+        // AVAIL_MONTHS 전체를 각자의 월별 OUD 스냅샷으로 패치 (filteredDealerCategory와 동일 수정)
+        AVAIL_MONTHS.forEach(m => {
+            const oudM = oudSkuLookupFor(m)[d.dealer + '||' + d.sku];
+            if (oudM && clone[m]) {
+                clone[m].stkQty = (clone[m].stkQty || 0) + (oudM.qty || 0);
+                clone[m].stkVal = (clone[m].stkVal || 0) + (oudM.val || 0);
+            }
+        });
         return clone;
     });
 }
