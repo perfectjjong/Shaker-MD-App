@@ -2306,9 +2306,10 @@ function renderTab7() {
     }
 
     // Datalabel options for stacked bars (show value inside segment if > 0)
-    const dlOpts = { plugins:{ datalabels:{ color:'#fff', font:{size:10, weight:'bold'},
+    const _dlSegColor = ctx => ['#b97b87','#d3a9b1','#e6cdd2'].includes(ctx.dataset.backgroundColor) ? '#5c0f1d' : '#fff';
+    const dlOpts = { plugins:{ datalabels:{ color:_dlSegColor, font:{size:10, weight:'bold'},
         formatter: v => v > 0 ? fmtNum(v) : '', display: ctx => ctx.dataset.data[ctx.dataIndex] > 0 } } };
-    const dlOptsVal = { plugins:{ datalabels:{ color:'#fff', font:{size:10, weight:'bold'},
+    const dlOptsVal = { plugins:{ datalabels:{ color:_dlSegColor, font:{size:10, weight:'bold'},
         formatter: v => v > 0 ? fmtVal(v) : '', display: ctx => ctx.dataset.data[ctx.dataIndex] > 0 } } };
 
     // Chart 7a: OUD Weekly Trend QTY (by category)
