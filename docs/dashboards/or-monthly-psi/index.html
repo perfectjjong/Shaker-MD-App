@@ -26,7 +26,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .filters{background:#fff;border-bottom:1px solid var(--border);padding:7px 24px;display:flex;gap:10px;align-items:center;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
 .fl{font-size:11px;font-weight:600;color:var(--muted)}
 .fb{border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:11px;background:#fff;cursor:pointer;color:var(--text)}
-.fb.on{background:var(--so);color:#fff;border-color:var(--so)}
+.fb.on{background:var(--so);color:#fff !important;border-color:var(--so)}
 .fb.yr23.on{background:var(--c23);border-color:var(--c23)}
 .fb.yr24.on{background:var(--c24);border-color:var(--c24)}
 .fb.yr25.on{background:var(--c25);border-color:var(--c25)}
@@ -928,7 +928,7 @@ function renderMixChart() {
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
   document.getElementById('mix-title').textContent = `Annual Channel Sell-Out Mix (${rangeLabel})`;
   const datasets = CHS.map((ch, ci) => {
-    const colors = ['#33302a','#0ea5e9','#8b5cf6','#a8863c','#8c1d2f'];
+    const colors = ['#33302a','#2a7a6e','#6d4b78','#a8863c','#8c1d2f'];
     return {
       label: ch,
       data: YEARS.map(yr => sumRange(yr, mos, 'so', ch) || 0),
