@@ -9,11 +9,11 @@
 <script src="gfk_data.js"></script>
 <style>
 :root{
-  --surface:#fcfcfb; --card:#ffffff; --sunken:#f4f4f2;
+  --surface:#fcfcfb; --card:#fffdf8; --sunken:#f4f4f2;
   --ink:#141414; --ink-2:#52514e; --ink-3:#8a8985; --line:#e7e6e2;
   --lg:#a50034; --lg-wash:#fdeef2;
   --c-blue:#2a78d6; --c-orange:#eb6834; --c-aqua:#1baf7a;
-  --py:#d6d9de;
+  --py:#ddd4c2;
   --good:#0ca30c; --critical:#d03b3b; --warning:#c98500;
   --good-wash:#eefbea; --critical-wash:#fdeeee; --warning-wash:#fef8ea;
   --radius:10px;
@@ -327,7 +327,7 @@ const arrow = v => v==null ? '' : (v>=0?'▲':'▼');
 // 검증된 카테고리 팔레트(dataviz 스킬 validate_palette.js 통과) — LG는 브랜드 레드로 항상 고정,
 // 경쟁사 3개는 blue/orange/aqua. PY(전년)는 --py 회색으로 별도 처리.
 const PALETTE = ['#a50034','#2a78d6','#eb6834','#1baf7a'];
-const PY_COLOR = '#d6d9de';
+const PY_COLOR = '#ddd4c2';
 
 let state = {period:'ytd', metric:'value', channel:'total', posAxis:'price', monthIdx: GFK_DATA.monthOrder.length-1};
 const CHANNEL_LABELS = {total:'전체(Panelmarket)', offlineChains:'오프라인-체인', offlineIndependents:'오프라인-독립점', online:'온라인', lgExclusive:'LG전용채널'};
@@ -427,7 +427,7 @@ function renderChannelComposition(dd){
     options:{ responsive:true, maintainAspectRatio:false, animation:false,
       scales:{
         x:{stacked:true, grid:{display:false}, ticks:{font:{size:10.5}}},
-        y:{stacked:true, ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}}
+        y:{stacked:true, ticks:{callback:yTick, font:{size:11}}, grid:{color:'#f7f3ea'}}
       },
       plugins:{
         legend:{position:'top', labels:{boxWidth:10,font:{size:10.5,weight:600}}},
@@ -507,8 +507,8 @@ function renderScatter(dd){
         }}}
       },
       scales:{
-        x:{title:{display:true, text:`${metricLabel()} YoY 성장률(%)`, font:{size:11}}, grid:{color:'#eeeeec'}, ticks:{font:{size:11}}},
-        y:{title:{display:true, text:`점유율(%, ${channelLabel()})`, font:{size:11}}, grid:{color:'#eeeeec'}, ticks:{font:{size:11}}}
+        x:{title:{display:true, text:`${metricLabel()} YoY 성장률(%)`, font:{size:11}}, grid:{color:'#f7f3ea'}, ticks:{font:{size:11}}},
+        y:{title:{display:true, text:`점유율(%, ${channelLabel()})`, font:{size:11}}, grid:{color:'#f7f3ea'}, ticks:{font:{size:11}}}
       }
     }
   });
@@ -542,7 +542,7 @@ function bar(id, labels, cy, py, existing, colorCy){
         tooltip:{padding:10, titleFont:{size:12}, bodyFont:{size:12}},
         datalabels:{anchor:'end', align:'top', offset:2, color:'#3a3a38', font:{size:10,weight:700}, formatter:labelFmt}},
       scales:{
-        y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}},
+        y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#f7f3ea'}},
         x:{ticks:{font:{size:11}}, grid:{display:false}}
       }}
   });
@@ -809,7 +809,7 @@ function renderPositioning(dd){
         plugins:{legend:{position:'top', align:'end', labels:{boxWidth:10,font:{size:11,weight:600}}},
           tooltip:{padding:10}},
         scales:{
-          y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#eeeeec'}},
+          y:{ticks:{callback:yTick, font:{size:11}}, grid:{color:'#f7f3ea'}},
           x:{ticks:{font:{size:11}}, grid:{display:false}}
         } }
     });

@@ -7,13 +7,13 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f0f4f8; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f7f3ea; }
   .panel { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-  .status-overstock  { color: #e53e3e; }
-  .status-ok         { color: #38a169; }
-  .status-understock { color: #d69e2e; }
-  .status-critical   { color: #c53030; font-weight: bold; }
-  .warn-badge { background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px; padding: 2px 8px; font-size: 12px; }
+  .status-overstock  { color: #b3261e; }
+  .status-ok         { color: #1d6b45; }
+  .status-understock { color: #8a6d2e; }
+  .status-critical   { color: #a01d17; font-weight: bold; }
+  .warn-badge { background: #f3ead2; border: 1px solid #a8863c; border-radius: 4px; padding: 2px 8px; font-size: 12px; }
 </style>
 </head>
 <body class="p-4">
@@ -271,15 +271,15 @@ function renderPanel1(simPrice) {
         {
           label: '기준 예측',
           data: baseMid,
-          backgroundColor: 'rgba(59,130,246,0.3)',
-          borderColor: 'rgba(59,130,246,0.8)',
+          backgroundColor: 'rgba(168,134,60,0.3)',
+          borderColor: 'rgba(168,134,60,0.8)',
           borderWidth: 2,
         },
         {
           label: `시뮬레이션 (SAR ${simPrice.toLocaleString()})`,
           data: simMid,
-          backgroundColor: 'rgba(16,185,129,0.5)',
-          borderColor: 'rgba(16,185,129,0.9)',
+          backgroundColor: 'rgba(140,29,47,0.5)',
+          borderColor: 'rgba(140,29,47,0.9)',
           borderWidth: 2,
         },
       ],
@@ -315,7 +315,7 @@ function renderPanel2(simPrice) {
   const gaps   = engine.getCompetitorGaps(simPrice);
   const brands = ['LG (시뮬)', ...gaps.map(g => g.brand)];
   const prices = [simPrice, ...gaps.map(g => g.price)];
-  const colors = ['rgba(239,68,68,0.7)', ...gaps.map(() => 'rgba(107,114,128,0.5)')];
+  const colors = ['rgba(179,38,30,0.7)', ...gaps.map(() => 'rgba(154,146,127,0.5)')];
 
   if (chartGap) chartGap.destroy();
   const ctx = document.getElementById('chart-gap').getContext('2d');
