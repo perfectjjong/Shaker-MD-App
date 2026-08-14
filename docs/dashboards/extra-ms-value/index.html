@@ -75,8 +75,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .kpi-card{flex:1;min-width:110px;padding:8px 10px;border-radius:6px;color:#fff;text-align:center}
 .kpi-card .kv{font-size:20px;font-weight:700;line-height:1.2}
 .kpi-card .kl{font-size:10px;opacity:.9;margin-top:2px;font-weight:500}
-.c-lg{background:#c0392b}.c-gree{background:#7a7a7a}.c-midea{background:#e67e22}
-.c-ss{background:#2980b9}.c-cp{background:#8e44ad}.c-green{background:#1d6b45}
+.c-lg{background:#8c1d2f}.c-gree{background:#5f7a2a}.c-midea{background:#b06a24}
+.c-ss{background:#33606d}.c-cp{background:#6d4b78}.c-green{background:#1d6b45}
 .c-black{background:#191714}.c-teal{background:#2a7a6e}.c-dgray{background:#3a352c}
 /* Chart grid - fills remaining space */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0}
@@ -227,7 +227,7 @@ const TG=RAW.tg; // type group: idx->"Rotary"/"Inverter"
 
 const Yi=0,Di=1,Bi=2,SFi=3,Ti=4,SZi=5,Ri=6,Pi=7,BRi=8,Qi=9,Vi=10,FPi=11;
 const KB=["LG","CLASS PRO","MIDEA","GREE","SAMSUNG","HISENSE","HAIER","PANASONIC","TCL","ZAMIL"];
-const BRAND_COLORS={LG:'#c0392b',GREE:'#7a7a7a',MIDEA:'#e67e22',SAMSUNG:'#2980b9','CLASS PRO':'#8e44ad',HISENSE:'#16a085',HAIER:'#d35400',PANASONIC:'#34495e',TCL:'#27ae60',ZAMIL:'#1abc9c'};
+const BRAND_COLORS={LG:'#8c1d2f',GREE:'#5f7a2a',MIDEA:'#b06a24',SAMSUNG:'#33606d','CLASS PRO':'#6d4b78',HISENSE:'#2a7a6e',HAIER:'#8a6d2e',PANASONIC:'#453f35',TCL:'#7a4a8a',ZAMIL:'#a5386b'};
 const BC=Object.values(BRAND_COLORS);
 const RC=['#1a237e','#e65100','#00897b','#c62828','#6a1b9a','#00838f','#ef6c00','#2e7d32','#ad1457','#4527a0'];
 const charts={};
@@ -616,7 +616,7 @@ function renderOverview(f){
   dc('c8');
   const lgW=aggBy(fc({...f,b:[],w:[],d:[]}).filter(r=>r[Bi]===lgBi),r=>rowWeek(r));
   const aw8=Object.keys(lgW).map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
-  charts.c8=new Chart($('c8'),{type:'line',data:{labels:aw8.map(i=>DD.w[i]),datasets:[{label:'LG Value (SAR)',data:aw8.map(i=>lgW[i][1]),borderColor:'#c0392b',backgroundColor:'rgba(192,57,43,.1)',tension:.3,borderWidth:2,pointRadius:3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9},formatter:v=>fmt(v)}},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+  charts.c8=new Chart($('c8'),{type:'line',data:{labels:aw8.map(i=>DD.w[i]),datasets:[{label:'LG Value (SAR)',data:aw8.map(i=>lgW[i][1]),borderColor:'#8c1d2f',backgroundColor:'rgba(140,29,47,.1)',tension:.3,borderWidth:2,pointRadius:3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9},formatter:v=>fmt(v)}},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
 }
 
 // ============ COMPETITION ============
