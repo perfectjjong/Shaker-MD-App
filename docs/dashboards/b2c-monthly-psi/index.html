@@ -10,10 +10,10 @@
 <script src="psi_model_table.js"></script>
 <style>
 :root{
-  --navy:#1a1f36;--bg:#f0f2f5;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#e2e8f0;
-  --so:#10b981;--so-bg:#f0fdf4;--so-dk:#065f46;
-  --st:#2563eb;--stk:#f59e0b;--red:#ef4444;--amber:#f59e0b;
-  --c23:#94a3b8;--c24:#60a5fa;--c25:#f59e0b;--c26:#10b981;
+  --navy:#191714;--bg:#f7f3ea;--card:#fffdf8;--text:#1e293b;--muted:#64748b;--border:#ddd4c2;
+  --so:#8c1d2f;--so-bg:#f6ebe6;--so-dk:#5c0f1d;
+  --st:#33302a;--stk:#a8863c;--red:#b3261e;--amber:#a8863c;
+  --c23:#9a927f;--c24:#7b8da0;--c25:#a8863c;--c26:#8c1d2f;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
@@ -60,19 +60,19 @@ th.l{text-align:left}
 td{padding:5px 8px;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap}
 td.l{text-align:left;font-weight:600;background:#fafafa}
 tr.so-row td{background:var(--so-bg)}
-tr.so-row td.l{background:#d1fae5;color:var(--so-dk)}
-tr:hover td{background:#f8fafc}
-.null{color:#cbd5e1;font-style:italic}
+tr.so-row td.l{background:#eddfd4;color:var(--so-dk)}
+tr:hover td{background:#f9f5ec}
+.null{color:#cfc6b2;font-style:italic}
 .up{color:var(--so);font-weight:700}
 .dn{color:var(--red);font-weight:700}
 .tab-content{display:none}
 .tab-content.active{display:block}
-.note{font-size:11px;color:var(--muted);padding:7px 10px;background:#f8fafc;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
+.note{font-size:11px;color:var(--muted);padding:7px 10px;background:#f9f5ec;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
 .metric-toggle{display:flex;gap:4px;margin-bottom:10px;align-items:center}
 .mt{border:2px solid var(--border);border-radius:6px;padding:4px 12px;font-size:11px;font-weight:600;cursor:pointer;background:#fff;color:var(--muted)}
 .mt.so{border-color:var(--so);background:var(--so-bg);color:var(--so)}
-.mt.st{border-color:var(--st);background:#eff6ff;color:var(--st)}
-.mt.stk{border-color:var(--stk);background:#fffbeb;color:var(--stk)}
+.mt.st{border-color:var(--st);background:#f3ede1;color:var(--st)}
+.mt.stk{border-color:var(--stk);background:#f8f2e2;color:var(--stk)}
 .yr-legend{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
 .yt{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
 </style>
@@ -81,14 +81,14 @@ tr:hover td{background:#f8fafc}
 
 <div class="header">
   <h1>B2C Monthly PSI</h1>
-  <span style="font-size:11px;color:#94a3b8">13 Channels · OR 5 + IR 8 · 2023–2026</span>
+  <span style="font-size:11px;color:#9a927f">13 Channels · OR 5 + IR 8 · 2023–2026</span>
   <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
-  <span class="badge" style="background:#1e40af;color:#bfdbfe">P = Sell-Thru</span>
-  <span class="badge" style="background:#92400e;color:#fde68a">I = Stock</span>
+  <span class="badge" style="background:#1e40af;color:#d5cbb8">P = Sell-Thru</span>
+  <span class="badge" style="background:#92400e;color:#e6d7ae">I = Stock</span>
   <a href="B2C_Monthly_PSI_RawData.xlsx" download
      title="Raw data · Year/Month/Channel/Category/Model/Sell Thru/Sell Out/Ch. Stock · model names unified across suffix variants"
-     style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#10b981;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel Download</a>
-  <span id="hdr-info" style="margin-left:12px;font-size:11px;color:#94a3b8"></span>
+     style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#8c1d2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel Download</a>
+  <span id="hdr-info" style="margin-left:12px;font-size:11px;color:#9a927f"></span>
 </div>
 
 <div class="tabs">
@@ -109,27 +109,28 @@ tr:hover td{background:#f8fafc}
   <button class="fb" data-range="Q4">Q4</button>
   <button class="fb on" data-range="H1">H1</button>
   <button class="fb" data-range="H2">H2</button>
+  <button class="fb" data-range="YTD">YTD</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
   <button class="fb on" data-ch="ALL">All</button>
-  <button class="fb" data-ch-group="OR" style="background:#f59e0b;color:#fff;border-color:#f59e0b">All OR</button>
-  <button class="fb" data-ch-group="IR_MAIN" style="background:#3b82f6;color:#fff;border-color:#3b82f6">IR Main</button>
+  <button class="fb" data-ch-group="OR" style="background:#a8863c;color:#fff;border-color:#a8863c">All OR</button>
+  <button class="fb" data-ch-group="IR_MAIN" style="background:#55503f;color:#fff;border-color:#55503f">IR Main</button>
   <button class="fb" data-ch-group="IR_OTHERS" style="background:var(--muted);color:#fff;border-color:var(--muted)">IR_Others</button>
-  <button class="fb on" data-ch="eXtra" style="border-color:#f59e0b;color:#f59e0b">eXtra</button>
-  <button class="fb on" data-ch="Al Manea" style="border-color:#f59e0b;color:#f59e0b">Al Manea</button>
-  <button class="fb on" data-ch="SWS" style="border-color:#f59e0b;color:#f59e0b">SWS</button>
-  <button class="fb on" data-ch="Black Box" style="border-color:#f59e0b;color:#f59e0b">Black Box</button>
-  <button class="fb on" data-ch="Al Khunizan" style="border-color:#f59e0b;color:#f59e0b">Al Khunizan</button>
-  <button class="fb on" data-ch="Al Ghanem" style="border-color:#3b82f6;color:#3b82f6">Al Ghanem</button>
-  <button class="fb on" data-ch="Al Shathri" style="border-color:#3b82f6;color:#3b82f6">Al Shathri</button>
-  <button class="fb on" data-ch="BH" style="border-color:#3b82f6;color:#3b82f6">BH</button>
-  <button class="fb on" data-ch="BM" style="border-color:#3b82f6;color:#3b82f6">BM</button>
-  <button class="fb on" data-ch="Dhamin" style="border-color:#3b82f6;color:#3b82f6">Dhamin</button>
-  <button class="fb on" data-ch="Star Appliance" style="border-color:#3b82f6;color:#3b82f6">Star Appliance</button>
-  <button class="fb on" data-ch="Tamkeen" style="border-color:#3b82f6;color:#3b82f6">Tamkeen</button>
-  <button class="fb on" data-ch="Zagzoog" style="border-color:#3b82f6;color:#3b82f6">Zagzoog</button>
-  <button class="fb on" data-ch="IR_Others" style="border-color:#3b82f6;color:#3b82f6">IR_Others</button>
+  <button class="fb on" data-ch="eXtra" style="border-color:#a8863c;color:#a8863c">eXtra</button>
+  <button class="fb on" data-ch="Al Manea" style="border-color:#a8863c;color:#a8863c">Al Manea</button>
+  <button class="fb on" data-ch="SWS" style="border-color:#a8863c;color:#a8863c">SWS</button>
+  <button class="fb on" data-ch="Black Box" style="border-color:#a8863c;color:#a8863c">Black Box</button>
+  <button class="fb on" data-ch="Al Khunizan" style="border-color:#a8863c;color:#a8863c">Al Khunizan</button>
+  <button class="fb on" data-ch="Al Ghanem" style="border-color:#55503f;color:#55503f">Al Ghanem</button>
+  <button class="fb on" data-ch="Al Shathri" style="border-color:#55503f;color:#55503f">Al Shathri</button>
+  <button class="fb on" data-ch="BH" style="border-color:#55503f;color:#55503f">BH</button>
+  <button class="fb on" data-ch="BM" style="border-color:#55503f;color:#55503f">BM</button>
+  <button class="fb on" data-ch="Dhamin" style="border-color:#55503f;color:#55503f">Dhamin</button>
+  <button class="fb on" data-ch="Star Appliance" style="border-color:#55503f;color:#55503f">Star Appliance</button>
+  <button class="fb on" data-ch="Tamkeen" style="border-color:#55503f;color:#55503f">Tamkeen</button>
+  <button class="fb on" data-ch="Zagzoog" style="border-color:#55503f;color:#55503f">Zagzoog</button>
+  <button class="fb on" data-ch="IR_Others" style="border-color:#55503f;color:#55503f">IR_Others</button>
   <div class="sep"></div>
   <span class="fl">Category</span>
   <button class="fb on" data-cat="ALL">All</button>
@@ -155,13 +156,13 @@ tr:hover td{background:#f8fafc}
       <div class="ks"><span id="kv-so-yoy" class="yoy-up"></span> <span id="kv-so-base" style="color:var(--muted)"></span></div>
       <div class="kmini" id="kv-so-mini"></div>
     </div>
-    <div class="kpi" style="border-left:3px solid #bfdbfe">
+    <div class="kpi" style="border-left:3px solid #d5cbb8">
       <div class="kl">Sell-Thru (P) — Supply</div>
       <div class="kv" id="kv-st" style="font-size:18px;color:var(--st)">—</div>
       <div class="ks"><span id="kv-st-yoy"></span> <span id="kv-st-base" style="color:var(--muted)"></span></div>
       <div class="kmini" id="kv-st-mini"></div>
     </div>
-    <div class="kpi" style="border-left:3px solid #fde68a">
+    <div class="kpi" style="border-left:3px solid #e6d7ae">
       <div class="kl">Stock (I) — Month-End Inv.</div>
       <div class="kv" id="kv-stk" style="font-size:18px;color:var(--stk)">—</div>
       <div class="ks"><span id="kv-stk-yoy"></span> <span id="kv-stk-base" style="color:var(--muted)"></span></div>
@@ -218,9 +219,9 @@ tr:hover td{background:#f8fafc}
 <div class="content">
   <div class="stitle">4-Year YoY Comparison</div>
   <div class="yr-legend">
-    <span class="yt" style="background:#f1f5f9;color:var(--c23)">-- 2023</span>
-    <span class="yt" style="background:#eff6ff;color:var(--c24)">━ 2024</span>
-    <span class="yt" style="background:#fffbeb;color:var(--c25)">━ 2025</span>
+    <span class="yt" style="background:#efe9db;color:var(--c23)">-- 2023</span>
+    <span class="yt" style="background:#f3ede1;color:var(--c24)">━ 2024</span>
+    <span class="yt" style="background:#f8f2e2;color:var(--c25)">━ 2025</span>
     <span class="yt" style="background:var(--so-bg);color:var(--c26)">━━ 2026</span>
     <span style="font-size:11px;color:var(--muted);margin-left:4px">· 2026 through Jun · Peak season shaded</span>
   </div>
@@ -351,24 +352,24 @@ tr:hover td{background:#f8fafc}
     <div id="m2Summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
     <div class="grid2" style="gap:14px">
       <div>
-        <div class="ct" style="color:#dc2626">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:#a01d17">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = LOW (near stock-out). Peak season — immediate replenishment recommended.</div>
         <div class="tbl" id="lowTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#d97706">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:#8a6d2e">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = OVER. Slow rotation — review price-cut / bundle / campaign.</div>
         <div class="tbl" id="overTable"></div>
       </div>
     </div>
     <div class="grid2" style="gap:14px;margin-top:14px">
       <div>
-        <div class="ct" style="color:#7c2d12">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:#6d5518">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = OOS (Stock = 0, selling). Highest-priority supply target.</div>
         <div class="tbl" id="oosTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#475569">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:#5c554b">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = SLOW (recent SO = 0, Stock &gt; 0). No recent sales — review discontinue / discount / return.</div>
         <div class="tbl" id="slowTable"></div>
       </div>
@@ -392,9 +393,9 @@ tr:hover td{background:#f8fafc}
     <div class="ct" id="mos-chart-title">MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)</div>
     <div style="position:relative;height:320px"><canvas id="mosChart"></canvas></div>
     <div class="note" style="margin-top:6px">
-      Reference: <span style="color:#ef4444;font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
-      <span style="color:#059669;font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
-      <span style="color:#d97706;font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
+      Reference: <span style="color:#b3261e;font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
+      <span style="color:#6d1522;font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
+      <span style="color:#8a6d2e;font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
       2026 MOS+2 is null if Jul/Aug actuals unavailable (see back-calc panel)
     </div>
   </div>
@@ -420,6 +421,7 @@ const RANGE_MONTHS = {
   'Q4':      ['Oct','Nov','Dec'],
   'H1':      ['Jan','Feb','Mar','Apr','May','Jun'],
   'H2':      ['Jul','Aug','Sep','Oct','Nov','Dec'],
+  'YTD':     MONTHS.slice(0, latestActualMonth().mIdx + 1), // Jan~최신 실적월, 월마감 시 자동 전진 (하드코딩 금지)
   'Full':    MONTHS,
 };
 const PEAK = ['May','Jun','Jul','Aug','Sep'];
@@ -680,7 +682,7 @@ function peakBg(chart) {
   const {chartArea: ca, scales: {x}, data: {labels}} = chart;
   if (!ca || !labels) return;
   ctx.save();
-  ctx.fillStyle = 'rgba(254,249,195,0.55)';
+  ctx.fillStyle = 'rgba(240,232,210,0.55)';
   labels.forEach((mo, i) => {
     if (!PEAK.includes(mo)) return;
     const x0 = x.getPixelForValue(i - 0.5);
@@ -706,7 +708,7 @@ const YEAR_SPLIT_PLUGIN = {
     const px = x.getPixelForValue(mainSplit.boundary);
     if (px == null) return;
     ctx.save();
-    ctx.strokeStyle = 'rgba(100,116,139,0.55)';
+    ctx.strokeStyle = 'rgba(154,146,127,0.55)';
     ctx.lineWidth = 1.5;
     ctx.setLineDash([5,4]);
     ctx.beginPath();
@@ -716,10 +718,10 @@ const YEAR_SPLIT_PLUGIN = {
     ctx.setLineDash([]);
     ctx.font = '700 10px system-ui,sans-serif';
     ctx.textBaseline = 'top';
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = '#9a927f';
     ctx.textAlign = 'right';
     ctx.fillText('◀ ' + mainSplit.left, px - 6, ca.top + 3);
-    ctx.fillStyle = '#059669';
+    ctx.fillStyle = '#6d1522';
     ctx.textAlign = 'left';
     ctx.fillText(mainSplit.right + ' ▶', px + 6, ca.top + 3);
     ctx.restore();
@@ -806,24 +808,24 @@ function renderMainChart() {
         {
           label: 'Sell-Thru (P)',
           data: st,
-          backgroundColor: shade('rgba(37,99,235,0.85)', 'rgba(37,99,235,0.30)'),
-          borderColor: '#2563eb',
+          backgroundColor: shade('rgba(25,23,20,0.85)', 'rgba(25,23,20,0.30)'),
+          borderColor: '#33302a',
           borderWidth: 1,
           borderRadius: 3,
         },
         {
           label: 'Sell-Out (S)',
           data: so,
-          backgroundColor: shade('rgba(16,185,129,0.90)', 'rgba(16,185,129,0.32)'),
-          borderColor: '#059669',
+          backgroundColor: shade('rgba(140,29,47,0.90)', 'rgba(140,29,47,0.32)'),
+          borderColor: '#6d1522',
           borderWidth: 1,
           borderRadius: 3,
         },
         {
           label: 'Stock (I)',
           data: stk,
-          backgroundColor: shade('rgba(245,158,11,0.85)', 'rgba(245,158,11,0.30)'),
-          borderColor: '#d97706',
+          backgroundColor: shade('rgba(168,134,60,0.85)', 'rgba(168,134,60,0.30)'),
+          borderColor: '#8a6d2e',
           borderWidth: 1,
           borderRadius: 3,
         },
@@ -853,16 +855,16 @@ function renderMainChart() {
           rotation: -90,
           clamp: true,
           font: {size: 12, weight: 'bold'},
-          color: ctx => (ORDER[ctx.dataIndex] && ORDER[ctx.dataIndex].yr === curYr) ? '#334155' : '#94a3b8',
+          color: ctx => (ORDER[ctx.dataIndex] && ORDER[ctx.dataIndex].yr === curYr) ? '#334155' : '#9a927f',
           formatter: v => (v === null || v === undefined) ? '' : fmtN(v),
         },
       },
       scales: {
-        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        x: {grid:{color:'#efe9db'}, ticks:{font:{size:11}}},
         y: {
           min: yMin,
           grace: '8%',
-          grid:{color:'#f1f5f9'},
+          grid:{color:'#efe9db'},
           ticks:{font:{size:11}, callback: v => fmtN(v)},
           title:{display:true, text:'Qty (EA)', font:{size:10}, color:'var(--muted)'},
         },
@@ -876,10 +878,10 @@ function renderMainChart() {
 function _yoyLineDatasets(key, mos) {
   mos = mos || MONTHS;
   const styles = {
-    '2023': {border:'#94a3b8', width:1.8, dash:[5,3], r:3},
-    '2024': {border:'#60a5fa', width:2.2, dash:[6,2], r:3},
-    '2025': {border:'#f59e0b', width:2.5, dash:[],    r:4},
-    '2026': {border:'#10b981', width:3.5, dash:[],    r:5},
+    '2023': {border:'#9a927f', width:1.8, dash:[5,3], r:3},
+    '2024': {border:'#7b8da0', width:2.2, dash:[6,2], r:3},
+    '2025': {border:'#a8863c', width:2.5, dash:[],    r:4},
+    '2026': {border:'#8c1d2f', width:3.5, dash:[],    r:5},
   };
   return YEARS.map(yr => {
     const s = styles[yr];
@@ -908,8 +910,8 @@ function renderYoyChart() {
       tooltip: {callbacks: {label: ctx => ` ${ctx.dataset.label}: ${fmtN(ctx.raw)}`}},
     },
     scales: {
-      x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
-      y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}, callback: v => fmtN(v)}},
+      x: {grid:{color:'#efe9db'}, ticks:{font:{size:11}}},
+      y: {grid:{color:'#efe9db'}, ticks:{font:{size:11}, callback: v => fmtN(v)}},
     },
   };
 
@@ -919,7 +921,7 @@ function renderYoyChart() {
   });
   mkChart('yoyChartST', {
     type:'line', data:{labels:mos, datasets:_yoyLineDatasets('st', mos)},
-    options: {...baseOpts, plugins:{...baseOpts.plugins, legend:{...baseOpts.plugins.legend, labels:{...baseOpts.plugins.legend.labels, color:'#2563eb'}}}},
+    options: {...baseOpts, plugins:{...baseOpts.plugins, legend:{...baseOpts.plugins.legend, labels:{...baseOpts.plugins.legend.labels, color:'#33302a'}}}},
     plugins:[PEAK_PLUGIN],
   });
   mkChart('yoyChartStk', {
@@ -933,7 +935,7 @@ function renderYtdChart() {
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
   document.getElementById('ytd-title').textContent = `${rangeLabel} Sell-Out Comparison`;
   const so_yr = YEARS.map(yr => sumRange(yr, mos, 'so'));
-  const colors = ['#94a3b8','#60a5fa','#f59e0b','#10b981'];
+  const colors = ['#9a927f','#7b8da0','#a8863c','#8c1d2f'];
 
   mkChart('ytdChart', {
     type: 'bar',
@@ -954,7 +956,7 @@ function renderYtdChart() {
       },
       scales: {
         x: {grid:{display:false}, ticks:{font:{size:11}}},
-        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v => fmtN(v)}},
+        y: {grid:{color:'#efe9db'}, ticks:{font:{size:10}, callback: v => fmtN(v)}},
       },
     },
   });
@@ -965,7 +967,7 @@ function renderMixChart() {
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
   document.getElementById('mix-title').textContent = `Annual Channel Sell-Out Mix (${rangeLabel})`;
   const datasets = CHS.map((ch, ci) => {
-    const colors = ['#2563eb','#0ea5e9','#8b5cf6','#f59e0b','#10b981','#ec4899','#84cc16','#f43f5e','#94a3b8'];
+    const colors = ['#33302a','#0ea5e9','#8b5cf6','#a8863c','#8c1d2f','#ec4899','#84cc16','#f43f5e','#9a927f'];
     return {
       label: ch,
       data: YEARS.map(yr => sumRange(yr, mos, 'so', ch) || 0),
@@ -989,7 +991,7 @@ function renderMixChart() {
       },
       scales: {
         x: {grid:{display:false}, stacked:true, ticks:{font:{size:11}}},
-        y: {stacked:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+        y: {stacked:true, grid:{color:'#efe9db'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
       },
     },
   });
@@ -1007,8 +1009,8 @@ function renderChBarChart() {
     data: {
       labels: CHS,
       datasets: [
-        {label:'2026', data:data26, backgroundColor:'#10b981', borderRadius:3},
-        {label:'2025', data:data25, backgroundColor:'rgba(245,158,11,.5)', borderRadius:3},
+        {label:'2026', data:data26, backgroundColor:'#8c1d2f', borderRadius:3},
+        {label:'2025', data:data25, backgroundColor:'rgba(168,134,60,.5)', borderRadius:3},
       ]
     },
     options: {
@@ -1019,7 +1021,7 @@ function renderChBarChart() {
       },
       scales: {
         x: {grid:{display:false}, ticks:{font:{size:10}, maxRotation:25}},
-        y: {grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
+        y: {grid:{color:'#efe9db'}, ticks:{font:{size:10}, callback: v=>fmtN(v)}},
       },
     },
   });
@@ -1069,7 +1071,7 @@ function renderKpi() {
     document.getElementById('kv-ratio').textContent = ratio + '%';
     const msg = ratio < 80 ? '⚠ Channel overstock warning' :
                 ratio < 95 ? 'Channel absorption healthy' : '✓ Supply=absorption balanced';
-    const col = ratio < 80 ? '#ef4444' : ratio < 95 ? '#f59e0b' : '#10b981';
+    const col = ratio < 80 ? '#b3261e' : ratio < 95 ? '#a8863c' : '#8c1d2f';
     document.getElementById('kv-ratio-sub').innerHTML = `<span style="color:${col}">${msg}</span>`;
     document.getElementById('kv-ratio-mini').innerHTML =
       `<span>2023: ${so23 && st26 ? (sumRange('2023',mos,'so')/sumRange('2023',mos,'st')*100).toFixed(0)+'%' : '—'}</span>
@@ -1112,7 +1114,7 @@ function renderMatrixTable() {
   }
 
   // P 행 (Sell-Thru) — 순서: Sell-Thru → Sell-Out → Stock
-  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#eff6ff;padding:4px 8px">▶ Sell-Thru (P) — Supply</td></tr>`);
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--st);background:#f3ede1;padding:4px 8px">▶ Sell-Thru (P) — Supply</td></tr>`);
   for (const yr of YEARS) {
     let tds = `<td class="l" style="color:var(--st)">${yr}</td>`;
     let ytd = 0;
@@ -1125,10 +1127,10 @@ function renderMatrixTable() {
     tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
     rows.push(`<tr>${tds}</tr>`);
   }
-  rows.push(yoyRow('st', 'var(--st)', '#dbeafe', 'sum'));
+  rows.push(yoyRow('st', 'var(--st)', '#efe4d4', 'sum'));
 
   // S 행 (Sell-Out)
-  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--so-dk);background:#d1fae5;padding:4px 8px">▶ Sell-Out (S) — Channel Sales</td></tr>`);
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--so-dk);background:#eddfd4;padding:4px 8px">▶ Sell-Out (S) — Channel Sales</td></tr>`);
   for (const yr of YEARS) {
     const isSo = true;
     const soClass = 'so-row';
@@ -1143,10 +1145,10 @@ function renderMatrixTable() {
     tds += `<td style="font-weight:700">${fmtN(ytd)}</td>`;
     rows.push(`<tr class="${soClass}">${tds}</tr>`);
   }
-  rows.push(yoyRow('so', 'var(--so-dk)', '#d1fae5', 'sum'));
+  rows.push(yoyRow('so', 'var(--so-dk)', '#eddfd4', 'sum'));
 
   // I 행 (Stock 월말)
-  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#fffbeb;padding:4px 8px">▶ Stock (I) — Month-End Inv.</td></tr>`);
+  rows.push(`<tr><td class="l" colspan="${mos.length+2}" style="font-size:10px;color:var(--stk);background:#f8f2e2;padding:4px 8px">▶ Stock (I) — Month-End Inv.</td></tr>`);
   for (const yr of YEARS) {
     let tds = `<td class="l" style="color:var(--stk)">${yr}</td>`;
     for (const mo of mos) {
@@ -1240,7 +1242,7 @@ function renderCoverage() {
       const available = mos.filter(mo => getVal(yr, mo, k.key) !== null).length;
       const ok = available >= total;
       return `<td style="text-align:center">
-        <span style="background:${ok?'#dcfce7':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
+        <span style="background:${ok?'#f6ebe6':'#fee2e2'};color:${ok?'#166534':'#991b1b'};padding:2px 8px;border-radius:3px;font-weight:700;font-size:11px">
           ${ok?'✓ Complete':'⚠ '+available+'/'+total}
         </span>
       </td>`;
@@ -1321,10 +1323,10 @@ function renderMosChart() {
     : 'MOS-2 Trend — Month-end stock ÷ avg(current+prior mo SO)';
 
   const yrStyles = {
-    '2023': {color:'#94a3b8', w:1.5, r:2},
-    '2024': {color:'#60a5fa', w:1.8, r:2},
-    '2025': {color:'#f59e0b', w:2.2, r:3},
-    '2026': {color:'#10b981', w:3.0, r:4},
+    '2023': {color:'#9a927f', w:1.5, r:2},
+    '2024': {color:'#7b8da0', w:1.8, r:2},
+    '2025': {color:'#a8863c', w:2.2, r:3},
+    '2026': {color:'#8c1d2f', w:3.0, r:4},
   };
 
   const datasets = [
@@ -1352,21 +1354,21 @@ function renderMosChart() {
     {
       label: 'Low Stock (1.5)',
       data: MONTHS.map(() => 1.5),
-      borderColor: '#ef4444', borderWidth: 1.5, borderDash: [6,3],
+      borderColor: '#b3261e', borderWidth: 1.5, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
       datalabels: {display: false},
     },
     {
       label: 'Optimal (2.0)',
       data: MONTHS.map(() => 2.0),
-      borderColor: '#059669', borderWidth: 1.8, borderDash: [6,3],
+      borderColor: '#6d1522', borderWidth: 1.8, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
       datalabels: {display: false},
     },
     {
       label: 'Overstock (2.5)',
       data: MONTHS.map(() => 2.5),
-      borderColor: '#d97706', borderWidth: 1.5, borderDash: [6,3],
+      borderColor: '#8a6d2e', borderWidth: 1.5, borderDash: [6,3],
       pointRadius: 0, backgroundColor: 'transparent', tension: 0,
       datalabels: {display: false},
     },
@@ -1389,10 +1391,10 @@ function renderMosChart() {
         datalabels: {display: false}, // 기본 off, 데이터셋별로 개별 활성화
       },
       scales: {
-        x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:11}}},
+        x: {grid:{color:'#efe9db'}, ticks:{font:{size:11}}},
         y: {
           min: 0,
-          grid: {color:'#f1f5f9'},
+          grid: {color:'#efe9db'},
           ticks: {font:{size:11}, callback: v => v.toFixed(1)},
           title: {display:true, text:'MOS (months)', font:{size:10}, color:'var(--muted)'},
         },
@@ -1430,9 +1432,9 @@ function renderMosPanel() {
   };
 
   const targets = [
-    {mos:1.5, label:'1.5 — Low stock threshold', color:'#ef4444', bg:'#fef2f2'},
-    {mos:2.0, label:'2.0 — Optimal',             color:'#059669', bg:'#f0fdf4'},
-    {mos:2.5, label:'2.5 — Overstock threshold', color:'#d97706', bg:'#fffbeb'},
+    {mos:1.5, label:'1.5 — Low stock threshold', color:'#b3261e', bg:'#fef2f2'},
+    {mos:2.0, label:'2.0 — Optimal',             color:'#6d1522', bg:'#f6ebe6'},
+    {mos:2.5, label:'2.5 — Overstock threshold', color:'#8a6d2e', bg:'#f8f2e2'},
   ];
 
   const rows = targets.map(t => {
@@ -1531,10 +1533,10 @@ render();
   let curSort = 'cat';
   let curSearch = '';
 
-  const FLAG_COLOR = {LOW:'#dc2626', OVER:'#d97706', OOS:'#7c2d12', SLOW:'#475569', NORMAL:'#94a3b8'};
+  const FLAG_COLOR = {LOW:'#a01d17', OVER:'#8a6d2e', OOS:'#6d5518', SLOW:'#5c554b', NORMAL:'#9a927f'};
   function fmt(n) { return (n === null || n === undefined) ? '<span class="null">—</span>' : (n === 0 ? '<span class="null">·</span>' : n.toLocaleString()); }
   function flagBadge(f) {
-    const c = FLAG_COLOR[f] || '#94a3b8';
+    const c = FLAG_COLOR[f] || '#9a927f';
     return '<span style="color:' + c + ';font-weight:700;font-size:10px">' + (f || '—') + '</span>';
   }
 
@@ -1563,7 +1565,7 @@ render();
       rows.forEach(r => {
         if (curSort === 'cat' && r.category !== lastCat) {
           lastCat = r.category;
-          html += '<tr><td colspan="8" style="background:#e2e8f0;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
+          html += '<tr><td colspan="8" style="background:#ddd4c2;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
         }
         html += '<tr>';
         html += '<td class="l">' + r.model + '</td>';
@@ -1578,8 +1580,8 @@ render();
       });
       const stkSum = rows.reduce((s,r) => s + (r.stk||0), 0);
       const soSum  = rows.reduce((s,r) => s + (r.so_recent||0), 0);
-      html += '<tr style="background:#1a1f36;color:#fff;font-weight:700">';
-      html += '<td class="l" style="background:#1a1f36;color:#fff" colspan="3">Total (' + rows.length + '/' + D.rows.length + ' rows)</td>';
+      html += '<tr style="background:#191714;color:#fff;font-weight:700">';
+      html += '<td class="l" style="background:#191714;color:#fff" colspan="3">Total (' + rows.length + '/' + D.rows.length + ' rows)</td>';
       html += '<td>' + stkSum.toLocaleString() + '</td><td>' + soSum.toLocaleString() + '</td><td></td><td></td><td></td>';
       html += '</tr>';
     }
@@ -1642,7 +1644,7 @@ render();
 
   function renderTable(items, kind) {
     if (!items.length) {
-      return '<div class="note" style="border-left-color:#cbd5e1">No models in this category</div>';
+      return '<div class="note" style="border-left-color:#cfc6b2">No models in this category</div>';
     }
     let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>Stock</th><th>SO(recent)</th><th>Mo.avg SO</th><th>MOS</th><th>Action</th></tr>';
     items.forEach(it => {
@@ -1674,10 +1676,10 @@ render();
     const sumSo = arr => arr.reduce((s,r) => s + (r.so_recent||0), 0);
 
     document.getElementById('m2Summary').innerHTML = `
-      <div class="kpi" style="border-left:4px solid #dc2626"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#dc2626">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #d97706"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#d97706">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #7c2d12"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#7c2d12">${oos.length}</div><div class="ks">SO(recent) ${sumSo(oos).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #475569"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#475569">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #a01d17"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#a01d17">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #8a6d2e"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#8a6d2e">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #6d5518"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#6d5518">${oos.length}</div><div class="ks">SO(recent) ${sumSo(oos).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #5c554b"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#5c554b">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
     `;
     document.getElementById('lowCount').textContent  = `(${low.length})`;
     document.getElementById('overCount').textContent = `(${over.length})`;
