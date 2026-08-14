@@ -41,7 +41,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* ===== Filter Bar ===== */
 .filter-bar{background:#fff;padding:8px 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end;border-bottom:1px solid #ddd4c2;z-index:200;box-shadow:0 1px 3px rgba(0,0,0,.08);flex-shrink:0}
 .fg{display:flex;flex-direction:column;gap:0;position:relative}
-.fg label{font-size:10px;font-weight:700;color:#fff;background:#1a8a5c;text-align:center;padding:3px 8px;border-radius:4px 4px 0 0;white-space:nowrap;letter-spacing:.3px}
+.fg label{font-size:10px;font-weight:700;color:#fff;background:#191714;text-align:center;padding:3px 8px;border-radius:4px 4px 0 0;white-space:nowrap;letter-spacing:.3px}
 /* Multi-select button */
 .ms-btn{padding:5px 10px 5px 8px;border:1px solid #cfc6b2;border-radius:0 0 4px 4px;font-size:12px;min-width:90px;max-width:180px;background:#fff;cursor:pointer;text-align:left;color:#26221c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;justify-content:space-between;gap:4px;line-height:1.5;height:30px}
 .ms-btn:hover{border-color:#8c1d2f;background:#f6ebe6}
@@ -76,8 +76,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .kpi-card .kv{font-size:20px;font-weight:700;line-height:1.2}
 .kpi-card .kl{font-size:10px;opacity:.9;margin-top:2px;font-weight:500}
 .c-lg{background:#c0392b}.c-gree{background:#7a7a7a}.c-midea{background:#e67e22}
-.c-ss{background:#2980b9}.c-cp{background:#8e44ad}.c-green{background:#1a8a5c}
-.c-black{background:#2c3e50}.c-teal{background:#16a085}.c-dgray{background:#4a5568}
+.c-ss{background:#2980b9}.c-cp{background:#8e44ad}.c-green{background:#1d6b45}
+.c-black{background:#191714}.c-teal{background:#2a7a6e}.c-dgray{background:#3a352c}
 /* Chart grid - fills remaining space */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0}
 .chart-grid.single{grid-template-columns:1fr}
@@ -100,7 +100,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* Year cards */
 .year-cards{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
 .ycard{flex:1;min-width:180px;background:#efe9db;color:#26221c;border-radius:6px;padding:10px;text-align:center}
-.ycard .yr{font-size:15px;font-weight:700;background:#1a8a5c;padding:3px;border-radius:4px;margin-bottom:6px}
+.ycard .yr{font-size:15px;font-weight:700;background:#191714;padding:3px;border-radius:4px;margin-bottom:6px}
 .ycard .sec{margin-bottom:4px}.ycard .wk{font-size:13px;font-weight:600}
 .ycard .dt{font-size:10px;opacity:.95;margin-top:1px}
 /* Perf layout: tables top, year cards bottom */
@@ -530,13 +530,13 @@ function renderTotal(f){
   const filtered=fc({...f,b:[]});
   const bAgg=aggBy(filtered,r=>r[Bi]);
   const bArr=Object.entries(bAgg).map(([k,v])=>({n:rev.b[k],q:v[1]})).sort((a,b)=>b.q-a.q).slice(0,15);
-  charts.c1=new Chart($('c1'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#95a5a6'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,grace:'15%',ticks:{callback:v=>fmt(v)}}}}});
+  charts.c1=new Chart($('c1'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#9a927f'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,grace:'15%',ticks:{callback:v=>fmt(v)}}}}});
 
   dc('c2');
   const filtered2=fc({...f,br:[]});
   const brAgg=aggBy(filtered2,r=>r[BRi]);
   const brArr=Object.entries(brAgg).map(([k,v])=>({n:rev.br[k],q:v[1]})).sort((a,b)=>b.q-a.q).slice(0,20);
-  charts.c2=new Chart($('c2'),{type:'bar',data:{labels:brArr.map(b=>b.n),datasets:[{data:brArr.map(b=>b.q),backgroundColor:'#3498db',borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+  charts.c2=new Chart($('c2'),{type:'bar',data:{labels:brArr.map(b=>b.n),datasets:[{data:brArr.map(b=>b.q),backgroundColor:'#a54b5e',borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
 }
 
 // ============ PRICE INDEX ============
@@ -571,21 +571,21 @@ function renderPrice(f){
   const aw=DD.w.map((_,i)=>i).filter(i=>wd.lgR[i]||wd.lgI[i]||wd.cR[i]||wd.cI[i]);
   function aspA(o){return aw.map(i=>o[i]?Math.round(o[i][0]/o[i][1]):null)}
   charts.c3=new Chart($('c3'),{type:'line',data:{labels:aw.map(i=>DD.w[i]),datasets:[
-    {label:'LG Final Price (Inverter)',data:aspA(wd.lgI),borderColor:'#3498db',pointRadius:3,tension:.2,borderWidth:2,spanGaps:true},
-    {label:'LG Final Price (Rotary)',data:aspA(wd.lgR),borderColor:'#2ecc71',pointRadius:3,tension:.2,borderWidth:2,spanGaps:true},
-    {label:'Comp Final Price (Inverter)',data:aspA(wd.cI),borderColor:'#e67e22',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
-    {label:'Comp Final Price (Rotary)',data:aspA(wd.cR),borderColor:'#8e44ad',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
+    {label:'LG Final Price (Inverter)',data:aspA(wd.lgI),borderColor:'#8c1d2f',pointRadius:3,tension:.2,borderWidth:2,spanGaps:true},
+    {label:'LG Final Price (Rotary)',data:aspA(wd.lgR),borderColor:'#1d6b45',pointRadius:3,tension:.2,borderWidth:2,spanGaps:true},
+    {label:'Comp Final Price (Inverter)',data:aspA(wd.cI),borderColor:'#b06a24',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
+    {label:'Comp Final Price (Rotary)',data:aspA(wd.cR),borderColor:'#6d4b78',pointRadius:2,tension:.2,borderWidth:2,borderDash:[5,3],spanGaps:true},
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
 
   dc('c4');
   const bData=fc({...f,b:[],w:[],d:[]});
   const bAgg=aggBy(bData,r=>r[Bi]);
   const bp=KB.map(b=>{const d=bAgg[idx.b[b]];return{n:b,a:d&&d[0]>0?Math.round(d[2]/d[0]):0}}).filter(b=>b.a>0).sort((a,b)=>b.a-a.a);
-  charts.c4=new Chart($('c4'),{type:'bar',data:{labels:bp.map(b=>b.n),datasets:[{data:bp.map(b=>b.a),backgroundColor:bp.map(b=>BRAND_COLORS[b.n]||'#95a5a6')}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},datalabels:DL_HBAR},scales:{x:{ticks:{callback:v=>fN(v)}}}}});
+  charts.c4=new Chart($('c4'),{type:'bar',data:{labels:bp.map(b=>b.n),datasets:[{data:bp.map(b=>b.a),backgroundColor:bp.map(b=>BRAND_COLORS[b.n]||'#9a927f')}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},datalabels:DL_HBAR},scales:{x:{ticks:{callback:v=>fN(v)}}}}});
 
   dc('c5');
   const sc=KB.map(b=>{const d=bAgg[idx.b[b]];if(!d||d[0]<=0)return null;return{x:Math.round(d[2]/d[0]),y:d[1],label:b}}).filter(Boolean);
-  charts.c5=new Chart($('c5'),{type:'scatter',data:{datasets:[{data:sc,backgroundColor:sc.map(s=>BRAND_COLORS[s.label]||'#95a5a6'),pointRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},formatter:(_,ctx)=>ctx.dataset.data[ctx.dataIndex].label},tooltip:{callbacks:{label:c=>c.raw.label+': Value='+fmt(c.raw.y)+', FP='+fN(c.raw.x)}}},scales:{x:{title:{display:true,text:'Avg Final Price (SAR)'}},y:{title:{display:true,text:'Total Value (SAR)'},ticks:{callback:v=>fmt(v)}}}}});
+  charts.c5=new Chart($('c5'),{type:'scatter',data:{datasets:[{data:sc,backgroundColor:sc.map(s=>BRAND_COLORS[s.label]||'#9a927f'),pointRadius:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:true,anchor:'end',align:'top',font:{size:9,weight:'bold'},formatter:(_,ctx)=>ctx.dataset.data[ctx.dataIndex].label},tooltip:{callbacks:{label:c=>c.raw.label+': Value='+fmt(c.raw.y)+', FP='+fN(c.raw.x)}}},scales:{x:{title:{display:true,text:'Avg Final Price (SAR)'}},y:{title:{display:true,text:'Total Value (SAR)'},ticks:{callback:v=>fmt(v)}}}}});
 }
 
 // ============ OVERVIEW ============
@@ -607,11 +607,11 @@ function renderOverview(f){
 
   dc('c6');
   const bArr=Object.entries(bAgg).map(([k,v])=>({n:rev.b[k],q:v[1]})).sort((a,b)=>b.q-a.q).slice(0,10);
-  charts.c6=new Chart($('c6'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#95a5a6')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
+  charts.c6=new Chart($('c6'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#9a927f')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
 
   dc('c7');
   const fArr=KB.map(b=>{const d=bAgg[idx.b[b]];if(!d||d[2]<=0||d[0]<=0)return null;return{n:b,a:Math.round(d[2]/d[0])}}).filter(Boolean).sort((a,b)=>b.a-a.a);
-  charts.c7=new Chart($('c7'),{type:'bar',data:{labels:fArr.map(b=>b.n),datasets:[{data:fArr.map(b=>b.a),backgroundColor:fArr.map(b=>BRAND_COLORS[b.n]||'#95a5a6')}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},datalabels:DL_HBAR},scales:{x:{ticks:{callback:v=>fN(v)}}}}});
+  charts.c7=new Chart($('c7'),{type:'bar',data:{labels:fArr.map(b=>b.n),datasets:[{data:fArr.map(b=>b.a),backgroundColor:fArr.map(b=>BRAND_COLORS[b.n]||'#9a927f')}]},options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',plugins:{legend:{display:false},datalabels:DL_HBAR},scales:{x:{ticks:{callback:v=>fN(v)}}}}});
 
   dc('c8');
   const lgW=aggBy(fc({...f,b:[],w:[],d:[]}).filter(r=>r[Bi]===lgBi),r=>rowWeek(r));
@@ -641,13 +641,13 @@ function renderComp(f){
   all.forEach(r=>{const w=rowWeek(r),q=r[Qi],fp=r[FPi];if(w===null||q<=0)return;if(r[Bi]===lgBi){if(!wD.lg[w])wD.lg[w]=[0,0];wD.lg[w][0]+=fp;wD.lg[w][1]+=q}else{if(!wD.comp[w])wD.comp[w]=[0,0];wD.comp[w][0]+=fp;wD.comp[w][1]+=q}});
   const aw9=Object.keys({...wD.lg,...wD.comp}).map(Number).sort((a,b)=>a-b);
   charts.c9=new Chart($('c9'),{type:'line',data:{labels:aw9.map(i=>DD.w[i]),datasets:[
-    {label:'LG Avg Final Price',data:aw9.map(i=>wD.lg[i]?Math.round(wD.lg[i][0]/wD.lg[i][1]):null),borderColor:'#c0392b',borderWidth:2,tension:.2,pointRadius:3,spanGaps:true},
-    {label:'Competitor Avg Final Price',data:aw9.map(i=>wD.comp[i]?Math.round(wD.comp[i][0]/wD.comp[i][1]):null),borderColor:'#3498db',borderWidth:2,tension:.2,pointRadius:3,borderDash:[5,3],spanGaps:true},
+    {label:'LG Avg Final Price',data:aw9.map(i=>wD.lg[i]?Math.round(wD.lg[i][0]/wD.lg[i][1]):null),borderColor:'#8c1d2f',borderWidth:2,tension:.2,pointRadius:3,spanGaps:true},
+    {label:'Competitor Avg Final Price',data:aw9.map(i=>wD.comp[i]?Math.round(wD.comp[i][0]/wD.comp[i][1]):null),borderColor:'#6b6355',borderWidth:2,tension:.2,pointRadius:3,borderDash:[5,3],spanGaps:true},
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:DL_LINE},scales:{y:{title:{display:true,text:'Avg Final Price (SAR)'},ticks:{callback:v=>fN(v)}}}}});
 
   dc('c10');
   const bp2=['LG',...comps].map(b=>{const d=bAgg[idx.b[b]];return{n:b,a:d&&d[0]>0?Math.round(d[2]/d[0]):0}}).filter(b=>b.a>0);
-  charts.c10=new Chart($('c10'),{type:'bar',data:{labels:bp2.map(b=>b.n),datasets:[{data:bp2.map(b=>b.a),backgroundColor:bp2.map(b=>BRAND_COLORS[b.n]||'#95a5a6')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{ticks:{callback:v=>fN(v)}}}}});
+  charts.c10=new Chart($('c10'),{type:'bar',data:{labels:bp2.map(b=>b.n),datasets:[{data:bp2.map(b=>b.a),backgroundColor:bp2.map(b=>BRAND_COLORS[b.n]||'#9a927f')}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{ticks:{callback:v=>fN(v)}}}}});
 }
 
 // ============ PERFORMANCE ============
@@ -739,7 +739,7 @@ function renderPromo(f){
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top'},datalabels:{display:false}},scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>fmt(v)}}}}});
 
   dc('c14');
-  charts.c14=new Chart($('c14'),{type:'doughnut',data:{labels:['With Promoter','Without'],datasets:[{data:[wQ,woQ],backgroundColor:['#2ecc71','#34495e']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},datalabels:DL_PIE}}});
+  charts.c14=new Chart($('c14'),{type:'doughnut',data:{labels:['With Promoter','Without'],datasets:[{data:[wQ,woQ],backgroundColor:['#1d6b45','#453f35']}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'},datalabels:DL_PIE}}});
 }
 
 var lo=document.getElementById("loading-overlay");if(lo)lo.remove();
