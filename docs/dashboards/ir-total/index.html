@@ -8,24 +8,24 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 :root {
-  --navy: #1F4E79;
-  --blue: #2E75B6;
-  --light-blue: #BDD7EE;
-  --green: #006100;
-  --red: #9C0006;
-  --gray: #595959;
-  --bg-stripe: #F2F2F2;
+  --navy: #6d1522;
+  --blue: #a54b5e;
+  --light-blue: #e6cdd2;
+  --green: #1d6b45;
+  --red: #a01d17;
+  --gray: #5c554b;
+  --bg-stripe: #f5f0e4;
   --white: #FFFFFF;
-  --opportunity: #1A7A3C;
-  --healthy: #B8860B;
-  --overstock: #9C0006;
-  --nodata: #6E6E6E;
-  --inactive: #595959;
+  --opportunity: #1d6b45;
+  --healthy: #8a6d2e;
+  --overstock: #a01d17;
+  --nodata: #6b6355;
+  --inactive: #5c554b;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #F5F5F5;
+  background: #f5f0e4;
   color: #333;
   font-size: 14px;
   line-height: 1.5;
@@ -44,7 +44,7 @@ body {
 .header-right { text-align: right; font-size: 12px; opacity: 0.8; }
 .tab-bar {
   display: flex;
-  background: #D9D9D9;
+  background: #d8d0be;
   padding: 0 24px;
   gap: 2px;
   overflow-x: auto;
@@ -54,7 +54,7 @@ body {
   cursor: pointer;
   border: none;
   border-radius: 4px 4px 0 0;
-  background: #E0E0E0;
+  background: #ddd4c2;
   color: #333;
   font-size: 13px;
   font-weight: 600;
@@ -111,21 +111,21 @@ thead th {
   font-weight: 700;
   text-align: center;
   padding: 10px 12px;
-  border: 1px solid #1a4060;
+  border: 1px solid #453a30;
   white-space: nowrap;
   cursor: default;
   position: sticky;
   top: 0;
 }
 thead th.sortable { cursor: pointer; }
-thead th.sortable:hover { background: #163a5c; }
+thead th.sortable:hover { background: #3a352c; }
 tbody td {
   padding: 8px 12px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid #ddd4c2;
   white-space: nowrap;
 }
 tbody tr:nth-child(even) { background: var(--bg-stripe); }
-tbody tr:hover { background: #E8F0FE; }
+tbody tr:hover { background: #f3ede1; }
 td.num { text-align: right; }
 td.txt { text-align: left; }
 td.ctr { text-align: center; }
@@ -174,8 +174,8 @@ td.ctr { text-align: center; }
   align-items: flex-start;
   flex-wrap: wrap;
   padding: 10px 24px;
-  background: #E8EDF2;
-  border-bottom: 1px solid #D0D0D0;
+  background: #efe9db;
+  border-bottom: 1px solid #cfc6b2;
 }
 #globalFilterReset {
   padding: 7px 16px;
@@ -189,7 +189,7 @@ td.ctr { text-align: center; }
   align-self: center;
   white-space: nowrap;
 }
-#globalFilterReset:hover { background: #163a5c; }
+#globalFilterReset:hover { background: #3a352c; }
 
 /* ============ MULTI-SELECT DROPDOWN ============ */
 .ms-dropdown { position: relative; min-width: 150px; flex-shrink: 0; }
@@ -246,7 +246,7 @@ td.ctr { text-align: center; }
 .ms-search {
   padding: 6px 8px;
   border: none;
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 1px solid #ddd4c2;
   font-size: 12px;
   outline: none;
   font-family: inherit;
@@ -255,7 +255,7 @@ td.ctr { text-align: center; }
   display: flex;
   gap: 10px;
   padding: 4px 8px;
-  border-bottom: 1px solid #E0E0E0;
+  border-bottom: 1px solid #ddd4c2;
   font-size: 11px;
 }
 .ms-controls a { color: var(--blue); cursor: pointer; text-decoration: none; }
@@ -269,7 +269,7 @@ td.ctr { text-align: center; }
   font-size: 12px;
   cursor: pointer;
 }
-.ms-option:hover { background: #F0F4FA; }
+.ms-option:hover { background: #f5f0e4; }
 .ms-option input[type="checkbox"] { margin: 0; flex-shrink: 0; }
 .ms-option.hidden { display: none; }
 
@@ -314,7 +314,7 @@ td.ctr { text-align: center; }
     <p>Monthly Report</p>
     <a href="IR_Total_Raw_Pivot_2026.xlsx" download
        title="Month · Channel · Category · Model level Sell-Thru / Sell-Out / Stock (pivot-ready Raw, ties to dashboard totals 100%)"
-       style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#10b981;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel Download (Raw Pivot)</a>
+       style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;background:#1d6b45;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel Download (Raw Pivot)</a>
   </div>
   <div class="header-right" id="headerMeta"></div>
 </div>
@@ -343,7 +343,7 @@ if (embedded) {
 } else if (typeof IR_DATA !== 'undefined') {
     DATA = IR_DATA;
 } else {
-    document.body.innerHTML = '<h1 style="padding:40px;color:#9C0006;">Error: No data found.</h1>';
+    document.body.innerHTML = '<h1 style="padding:40px;color:#a01d17;">Error: No data found.</h1>';
     throw new Error('No data');
 }
 
@@ -380,7 +380,7 @@ const stackedTotalPlugin = {
             }
             ctx.save();
             ctx.font = 'bold 11px -apple-system,sans-serif';
-            ctx.fillStyle = '#1F4E79';
+            ctx.fillStyle = '#6d1522';
             ctx.textAlign = 'center';
             ctx.fillText(fmt(total), bar.x, topY - 6);
             ctx.restore();
@@ -388,8 +388,8 @@ const stackedTotalPlugin = {
     }
 };
 const TAB_NAMES = ['Executive Summary','Sell-thru Health','Regional & Team','Dealer Analysis','Product Analysis','Opportunity Matrix','Data Validation','OUD Tracking'];
-const CAT_COLORS = ['#1F4E79','#2E75B6','#5B9BD5','#9DC3E6','#BDD7EE'];
-const SIGNAL_COLORS = { OPPORTUNITY:'#1A7A3C', HEALTHY:'#B8860B', OVERSTOCK:'#9C0006', INACTIVE:'#595959' };
+const CAT_COLORS = ['#6d1522','#a54b5e','#b97b87','#d3a9b1','#e6cdd2'];
+const SIGNAL_COLORS = { OPPORTUNITY:'#1d6b45', HEALTHY:'#8a6d2e', OVERSTOCK:'#a01d17', INACTIVE:'#5c554b' };
 
 /* =========================================================
    HELPER FUNCTIONS
@@ -416,8 +416,8 @@ function fmtPctInv(jan, feb) {
     return `<span class="${cls}">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
 }
 function fmtRatio(r) { return r == null ? 'N/A' : Number(r).toFixed(2); }
-function signalColor(s) { return SIGNAL_COLORS[s] || '#595959'; }
-function signalBg(s) { return { OPPORTUNITY:'#D6F0E0', HEALTHY:'#FFF8DC', OVERSTOCK:'#FBE5D6', INACTIVE:'#F2F2F2', 'NO-DATA':'#E0E0E0' }[s] || '#FFFFFF'; }
+function signalColor(s) { return SIGNAL_COLORS[s] || '#5c554b'; }
+function signalBg(s) { return { OPPORTUNITY:'#e8efe4', HEALTHY:'#f8f2e2', OVERSTOCK:'#f6ecda', INACTIVE:'#f5f0e4', 'NO-DATA':'#ddd4c2' }[s] || '#FFFFFF'; }
 function tlDot(soRatio) {
     if (soRatio == null) return '<span style="color:var(--inactive)">&#9679;</span>';
     if (soRatio > 6) return '<span style="color:var(--overstock)">&#9679;</span>';
@@ -606,7 +606,7 @@ function toggleOudMode() {
     const btn = document.getElementById('oudToggleBtn');
     if (btn) {
         btn.textContent = OUD_MODE ? 'Stock: On-Hand + OUD' : 'Stock: On-Hand Only';
-        btn.style.background = OUD_MODE ? '#2E75B6' : 'var(--navy)';
+        btn.style.background = OUD_MODE ? '#a54b5e' : 'var(--navy)';
     }
     Object.keys(tabInited).forEach(k => { tabInited[k] = false; });
     initTab(activeTabIdx);
@@ -1041,14 +1041,14 @@ function renderTab0() {
     const C = mCL(), P = mPL();
     destroyChart('c0a');
     const _allSelM = mAllSel();
-    const _barColors = ['#2E75B6','#4A90D9','#1F4E79','#3A5F8A','#2D4A70'];
+    const _barColors = ['#a54b5e','#b97b87','#6d1522','#6d5548','#553f35'];
     const ds0a = both && _allSelM.length > 0
         ? _allSelM.map((mk, i) => {
             const a = agg(fDealers, mk);
             const lbl = mk.charAt(0).toUpperCase() + mk.slice(1);
-            return { label:lbl, data:[a.stQty, a.soQty, a.stkQty], backgroundColor:_barColors[i] || '#1F4E79', borderRadius:4 };
+            return { label:lbl, data:[a.stQty, a.soQty, a.stkQty], backgroundColor:_barColors[i] || '#6d1522', borderRadius:4 };
           })
-        : [{ label:C, data:[cur.stQty, cur.soQty, cur.stkQty], backgroundColor:'#1F4E79', borderRadius:4 }];
+        : [{ label:C, data:[cur.stQty, cur.soQty, cur.stkQty], backgroundColor:'#6d1522', borderRadius:4 }];
     window.charts.c0a = new Chart(document.getElementById('chart0a'), {
         type:'bar', data:{ labels:['Sell-Thru','Sellout','Stock'], datasets:ds0a }, options: barOpts
     });
@@ -1062,7 +1062,7 @@ function renderTab0() {
         type:'doughnut',
         data:{ labels:['Opportunity','Healthy','Overstock','Inactive'],
             datasets:[{ data:[sigCounts.OPPORTUNITY, sigCounts.HEALTHY, sigCounts.OVERSTOCK, sigCounts.INACTIVE],
-                backgroundColor:['#1A7A3C','#B8860B','#9C0006','#595959'] }]
+                backgroundColor:['#1d6b45','#8a6d2e','#a01d17','#5c554b'] }]
         },
         options:{ responsive:true, maintainAspectRatio:false, cutout:'60%', plugins:{
             legend:{position:'bottom'},
@@ -1070,10 +1070,10 @@ function renderTab0() {
         }},
         plugins:[{ id:'centerText', beforeDraw(chart) {
             const {width,height,ctx:c}=chart; c.save();
-            c.font='bold 28px -apple-system,sans-serif'; c.fillStyle='#1F4E79';
+            c.font='bold 28px -apple-system,sans-serif'; c.fillStyle='#6d1522';
             c.textAlign='center'; c.textBaseline='middle';
             c.fillText(totalD, width/2, height/2);
-            c.font='12px -apple-system,sans-serif'; c.fillStyle='#595959';
+            c.font='12px -apple-system,sans-serif'; c.fillStyle='#5c554b';
             c.fillText('Dealers', width/2, height/2+20); c.restore();
         }}]
     });
@@ -1082,7 +1082,7 @@ function renderTab0() {
     const lbl0c = document.getElementById('lbl0c');
     destroyChart('c0c');
     const _0c_allM = mAllSel();
-    const _0c_colors = ['#2E75B6','#4A90D9','#1F4E79','#3A5F8A','#2D4A70'];
+    const _0c_colors = ['#a54b5e','#b97b87','#6d1522','#6d5548','#553f35'];
     if (FILTERS.region.length !== 1) {
         const fRegions = filteredByRegion();
         const rNames = fRegions.map(r => r.name).sort();
@@ -1093,12 +1093,12 @@ function renderTab0() {
                 return { label:lbl+' SO', data:rNames.map(rn => {
                     const reg = fRegions.find(x => x.name === rn);
                     return reg ? (reg[mk]||{}).soQty||0 : 0;
-                }), backgroundColor:_0c_colors[i]||'#1F4E79', borderRadius:4 };
+                }), backgroundColor:_0c_colors[i]||'#6d1522', borderRadius:4 };
               })
             : [{ label:C+' SO', data:rNames.map(rn => {
                 const reg = fRegions.find(x => x.name === rn);
                 return reg ? (reg[ck]||{}).soQty||0 : 0;
-            }), backgroundColor:'#1F4E79', borderRadius:4 }];
+            }), backgroundColor:'#6d1522', borderRadius:4 }];
         window.charts.c0c = new Chart(document.getElementById('chart0c'), {
             type:'bar', data:{ labels:rNames, datasets:ds0c }, options: barOpts
         });
@@ -1112,12 +1112,12 @@ function renderTab0() {
                 return { label:lbl+' SO', data:cNames.map(cn => {
                     const cat = fCats.find(x => x.name === cn);
                     return cat ? (cat[mk]||{}).soQty||0 : 0;
-                }), backgroundColor:_0c_colors[i]||'#1F4E79', borderRadius:4 };
+                }), backgroundColor:_0c_colors[i]||'#6d1522', borderRadius:4 };
               })
             : [{ label:C+' SO', data:cNames.map(cn => {
                 const cat = fCats.find(x => x.name === cn);
                 return cat ? (cat[ck]||{}).soQty||0 : 0;
-            }), backgroundColor:'#1F4E79', borderRadius:4 }];
+            }), backgroundColor:'#6d1522', borderRadius:4 }];
         window.charts.c0c = new Chart(document.getElementById('chart0c'), {
             type:'bar', data:{ labels:cNames, datasets:ds0c }, options: barOpts
         });
@@ -1221,15 +1221,15 @@ function renderTab1() {
     // Chart 1a
     destroyChart('c1a');
     const _1a_both = showBoth(), _1a_allM = mAllSel();
-    const _1a_colors = ['#1F4E79','#2E75B6','#4A90D9'];
+    const _1a_colors = ['#6d1522','#a54b5e','#b97b87'];
     const _1a_ds = _1a_both
         ? _1a_allM.map((mk, i) => {
             const lbl = mk.charAt(0).toUpperCase() + mk.slice(1);
-            return { label:lbl+' Sellout', data:fCats.map(c=>(c[mk]||{}).soQty||0), backgroundColor:_1a_colors[i]||'#1F4E79', borderRadius:4 };
+            return { label:lbl+' Sellout', data:fCats.map(c=>(c[mk]||{}).soQty||0), backgroundColor:_1a_colors[i]||'#6d1522', borderRadius:4 };
           })
         : [
-            { label:C+' Sell-Thru', data:fCats.map(c=>(c[ck]||{}).stQty||0), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:C+' Sellout', data:fCats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }
+            { label:C+' Sell-Thru', data:fCats.map(c=>(c[ck]||{}).stQty||0), backgroundColor:'#6d1522', borderRadius:4 },
+            { label:C+' Sellout', data:fCats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#a54b5e', borderRadius:4 }
           ];
     window.charts.c1a = new Chart(document.getElementById('chart1a'), {
         type: 'bar',
@@ -1377,9 +1377,9 @@ function renderTab2() {
     // Chart 2a
     destroyChart('c2a');
     const ds2a = both
-        ? [{ label:P+' SO', data: regions.map(r=>(r[pk]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 },
-           { label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        : [{ label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }];
+        ? [{ label:P+' SO', data: regions.map(r=>(r[pk]||{}).soQty||0), backgroundColor:'#a54b5e', borderRadius:4 },
+           { label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }]
+        : [{ label:C+' SO', data: regions.map(r=>(r[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }];
     window.charts.c2a = new Chart(document.getElementById('chart2a'), {
         type:'bar', data:{ labels: regions.map(r=>r.name), datasets:ds2a }, options: barOpts
     });
@@ -1388,7 +1388,7 @@ function renderTab2() {
     const salesSorted = [...salesmen].sort((a,b)=>((a[ck]||{}).soQty||0)-((b[ck]||{}).soQty||0));
     destroyChart('c2b');
     window.charts.c2b = new Chart(document.getElementById('chart2b'), {
-        type:'bar', data:{ labels: salesSorted.map(s=>s.name), datasets:[{ label:C+' Sellout', data: salesSorted.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }] },
+        type:'bar', data:{ labels: salesSorted.map(s=>s.name), datasets:[{ label:C+' Sellout', data: salesSorted.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 
@@ -1396,17 +1396,17 @@ function renderTab2() {
     const regionRatios = regions.map(r => soRatioFromPeriod(r[ck]) || 0);
     destroyChart('c2c');
     window.charts.c2c = new Chart(document.getElementById('chart2c'), {
-        type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#2E75B6', borderRadius:4 }] },
+        type:'bar', data:{ labels: regions.map(r=>r.name), datasets:[{ label:C+' MOS', data: regionRatios, backgroundColor:'#a54b5e', borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } },
         plugins: [{ id:'refLines', afterDraw(chart) {
             const { ctx, chartArea: { left, right }, scales: { y } } = chart;
             [3, 6].forEach(val => {
                 const yPos = y.getPixelForValue(val);
                 if (yPos >= y.top && yPos <= y.bottom) {
-                    ctx.save(); ctx.strokeStyle = val === 3 ? '#006100' : '#9C0006';
+                    ctx.save(); ctx.strokeStyle = val === 3 ? '#1d6b45' : '#a01d17';
                     ctx.lineWidth = 2; ctx.setLineDash([6, 4]);
                     ctx.beginPath(); ctx.moveTo(left, yPos); ctx.lineTo(right, yPos); ctx.stroke();
-                    ctx.fillStyle = val === 3 ? '#006100' : '#9C0006';
+                    ctx.fillStyle = val === 3 ? '#1d6b45' : '#a01d17';
                     ctx.font = '11px sans-serif';
                     ctx.fillText(val === 3 ? 'MOS = 3' : 'MOS = 6', right - 50, yPos - 5);
                     ctx.restore();
@@ -1599,9 +1599,9 @@ function renderTab4() {
     // Chart 4a
     destroyChart('c4a');
     const ds4a = both
-        ? [{ label:P+' SO', data: cats.map(c=>(c[pk]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 },
-           { label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
-        : [{ label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }];
+        ? [{ label:P+' SO', data: cats.map(c=>(c[pk]||{}).soQty||0), backgroundColor:'#a54b5e', borderRadius:4 },
+           { label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }]
+        : [{ label:C+' SO', data: cats.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }];
     window.charts.c4a = new Chart(document.getElementById('chart4a'), {
         type:'bar', data:{ labels: cats.map(c=>c.name), datasets:ds4a }, options: barOpts
     });
@@ -1610,7 +1610,7 @@ function renderTab4() {
     const topClass = [...classes].sort((a,b)=>((b[ck]||{}).soQty||0)-((a[ck]||{}).soQty||0)).slice(0,10).reverse();
     destroyChart('c4b');
     window.charts.c4b = new Chart(document.getElementById('chart4b'), {
-        type:'bar', data:{ labels: topClass.map(c=>c.name), datasets:[{ label:C+' Sellout', data: topClass.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#2E75B6', borderRadius:4 }] },
+        type:'bar', data:{ labels: topClass.map(c=>c.name), datasets:[{ label:C+' Sellout', data: topClass.map(c=>(c[ck]||{}).soQty||0), backgroundColor:'#a54b5e', borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 
@@ -1620,7 +1620,7 @@ function renderTab4() {
     window.charts.c4c = new Chart(document.getElementById('chart4c'), {
         type:'bar', data:{
             labels: topSkuChart.map(s=> s.sku.length > 25 ? s.sku.substring(0,25)+'...' : s.sku),
-            datasets:[{ label:C+' Sellout', data: topSkuChart.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#1F4E79', borderRadius:4 }]
+            datasets:[{ label:C+' Sellout', data: topSkuChart.map(s=>(s[ck]||{}).soQty||0), backgroundColor:'#6d1522', borderRadius:4 }]
         }, options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y', plugins:{ legend:{ display:false } }, scales:{ x:{ beginAtZero:true, ticks:{ callback: v=>fmtNum(v) } } } }
     });
 }
@@ -1896,7 +1896,7 @@ function renderTab6() {
         type:'bar',
         data:{ labels: top20Disc.map(r => { const l = r.dealer+' | '+r.category; return l.length > 28 ? l.substring(0,28)+'...' : l; }),
             datasets:[{ label:'Discrepancy (Qty)', data: top20Disc.map(r=>r.disc),
-                backgroundColor: top20Disc.map(r => r.disc > 0 ? '#2E75B6' : '#9C0006'), borderRadius:4 }] },
+                backgroundColor: top20Disc.map(r => r.disc > 0 ? '#a54b5e' : '#a01d17'), borderRadius:4 }] },
         options:{ responsive:true, maintainAspectRatio:false, indexAxis:'y',
             plugins:{ legend:{display:false}, tooltip:{callbacks:{label:ctx=>'Disc: '+(ctx.raw>0?'+':'')+fmtNum(ctx.raw)}} },
             scales:{ x:{ticks:{callback:v=>fmtNum(v)}} } }
@@ -1917,10 +1917,10 @@ function renderTab6() {
     window.charts.c6b = new Chart(document.getElementById('chart6b'), {
         type:'bar',
         data:{ labels:rNames, datasets:[
-            { label:'Clean', data:rNames.map(r=>regionMap[r].clean), backgroundColor:'#1A7A3C' },
-            { label:'Mismatch', data:rNames.map(r=>regionMap[r].mismatch), backgroundColor:'#B8860B' },
-            { label:'Missing', data:rNames.map(r=>regionMap[r].missing), backgroundColor:'#9C0006' },
-            { label:'Inactive', data:rNames.map(r=>regionMap[r].inactive), backgroundColor:'#595959' }
+            { label:'Clean', data:rNames.map(r=>regionMap[r].clean), backgroundColor:'#1d6b45' },
+            { label:'Mismatch', data:rNames.map(r=>regionMap[r].mismatch), backgroundColor:'#8a6d2e' },
+            { label:'Missing', data:rNames.map(r=>regionMap[r].missing), backgroundColor:'#a01d17' },
+            { label:'Inactive', data:rNames.map(r=>regionMap[r].inactive), backgroundColor:'#5c554b' }
         ]},
         options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{position:'bottom'}},
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} } }
@@ -2001,14 +2001,14 @@ function renderTab6() {
         });
     }
 
-    const hColors = {CLEAN:'#1A7A3C', WARNING:'#B8860B', ALERT:'#9C0006'};
+    const hColors = {CLEAN:'#1d6b45', WARNING:'#8a6d2e', ALERT:'#a01d17'};
     document.getElementById('tbl6summary').innerHTML = summaryRows.map(h =>
         `<tr><td class="txt">${h.name}</td><td class="ctr">${h.region}</td><td class="txt">${h.salesman}</td>
         <td class="num">${h.totalCat}</td>
         <td class="num">${h.cleanCat}</td>
-        <td class="num" style="color:${h.mismatch>0?'#9C0006':'inherit'};font-weight:${h.mismatch>0?'700':'normal'}">${h.mismatch}</td>
-        <td class="num" style="color:${h.janOnly>0?'#B8860B':'inherit'}">${h.janOnly}</td>
-        <td class="num" style="color:${h.febOnly>0?'#1A7A3C':'inherit'}">${h.febOnly}</td>
+        <td class="num" style="color:${h.mismatch>0?'#a01d17':'inherit'};font-weight:${h.mismatch>0?'700':'normal'}">${h.mismatch}</td>
+        <td class="num" style="color:${h.janOnly>0?'#8a6d2e':'inherit'}">${h.janOnly}</td>
+        <td class="num" style="color:${h.febOnly>0?'#1d6b45':'inherit'}">${h.febOnly}</td>
         <td class="num" style="font-weight:700">${h.purity.toFixed(1)}%</td>
         <td class="ctr"><span style="display:inline-block;padding:2px 8px;border-radius:12px;color:#FFF;font-size:11px;font-weight:600;background:${hColors[h.status]}">${h.status}</span></td></tr>`
     ).join('');
@@ -2035,12 +2035,12 @@ function buildTab7() {
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (${curDate7})</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Dealer stock as of ${curDate7}</div></div>
       <div class="kpi-card"><div class="kpi-label">OUD REMAINING (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">TOTAL CHANNEL (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#2E75B6">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
+      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">TOTAL CHANNEL (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#a54b5e">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">${C7} SELL-OUT</div><div class="kpi-value" id="k7-so">-</div><div class="kpi-change">MOS denominator</div></div>
     </div>
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">MOS — ON-HAND (${curDate7})</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">On-Hand ÷ ${C7} Sell-Out</div></div>
-      <div class="kpi-card" style="border-left-color:#2E75B6"><div class="kpi-label">MOS — TOTAL CHANNEL</div><div class="kpi-value" id="k7-mosAdj" style="color:#2E75B6">-</div><div class="kpi-change">Total Channel ÷ ${C7} Sell-Out</div></div>
+      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">MOS — TOTAL CHANNEL</div><div class="kpi-value" id="k7-mosAdj" style="color:#a54b5e">-</div><div class="kpi-change">Total Channel ÷ ${C7} Sell-Out</div></div>
       <div class="kpi-card"><div class="kpi-label">OUD DEALERS</div><div class="kpi-value" id="k7-oudDealers">-</div><div class="kpi-change" id="k7-oudDealersSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">OUD TREND</div><div class="kpi-value" id="k7-oudTrend">-</div><div class="kpi-change" id="k7-oudTrendSub"></div></div>
     </div>
@@ -2054,7 +2054,7 @@ function buildTab7() {
     </div>
     <div class="card">
       <h3 class="section-title">Dealer OUD Detail (QTY)</h3>
-      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start;padding:10px 12px;background:#E8EDF2;border-radius:6px;">
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:flex-start;padding:10px 12px;background:#efe9db;border-radius:6px;">
         <div class="ms-dropdown" id="oud-ms-region"></div>
         <div class="ms-dropdown" id="oud-ms-salesman"></div>
         <div class="ms-dropdown" id="oud-ms-dealer"></div>
@@ -2344,8 +2344,8 @@ function renderTab7() {
     destroyChart('c7b');
     window.charts.c7b = new Chart(document.getElementById('chart7b'), {
         type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
-            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhand), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOud), backgroundColor:'#2E75B6', borderRadius:4 },
+            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhand), backgroundColor:'#6d1522', borderRadius:4 },
+            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOud), backgroundColor:'#a54b5e', borderRadius:4 },
         ] },
         options:{ responsive:true, maintainAspectRatio:false, ...dlOpts,
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtNum(v)}} },
@@ -2368,8 +2368,8 @@ function renderTab7() {
     destroyChart('c7d');
     window.charts.c7d = new Chart(document.getElementById('chart7d'), {
         type:'bar', plugins: [stackedTotalPlugin], data:{ labels:cats7, datasets:[
-            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhandV), backgroundColor:'#1F4E79', borderRadius:4 },
-            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOudV), backgroundColor:'#2E75B6', borderRadius:4 },
+            { label:'On-Hand Stock', data: cats7.map(c=>catStockMap[c].onhandV), backgroundColor:'#6d1522', borderRadius:4 },
+            { label:'OUD Remaining', data: cats7.map(c=>catStockMap[c].remainingOudV), backgroundColor:'#a54b5e', borderRadius:4 },
         ] },
         options:{ responsive:true, maintainAspectRatio:false, ...dlOptsVal,
             scales:{ x:{stacked:true}, y:{stacked:true, beginAtZero:true, ticks:{callback:v=>fmtVal(v)}} },
@@ -2436,7 +2436,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2448,7 +2448,7 @@ function renderTab7() {
     const tPrevSo = dealerRows.reduce((s,r)=>s+(r.prevSo||0),0);
     const tDenomSo = tPrevSo > 0 ? (tSo + tPrevSo) / 2 : tSo;  // 평균 분모
     const tMosOH = tDenomSo > 0 ? tStk/tDenomSo : null, tMosA = tDenomSo > 0 ? tAdj/tDenomSo : null;
-    const totStyle = 'style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy)"';
+    const totStyle = 'style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy)"';
     document.getElementById('tbl7oud').innerHTML += `<tr>
         <td class="txt" ${totStyle}>TOTAL</td><td ${totStyle}></td><td ${totStyle}></td>
         <td class="num" ${totStyle}>${fmtNum(tStk)}</td>
@@ -2457,7 +2457,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // Dealer OUD Detail (VALUE) — same rows, same local filter, value columns
@@ -2484,7 +2484,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2502,7 +2502,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // ===== SKU OUD Detail =====
@@ -2599,7 +2599,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2616,7 +2616,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tsAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tsSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tsMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // SKU VALUE table
@@ -2643,7 +2643,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#2E75B6;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2660,7 +2660,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tsvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tsvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#E8EDF2;border-top:2px solid var(--navy);color:#2E75B6">${fmtRatio(tsvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tsvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 }
 
