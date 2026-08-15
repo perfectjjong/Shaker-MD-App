@@ -14,8 +14,8 @@
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 .header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;height:46px}
 .header h1{font-size:15px;font-weight:700}.header .sub{font-size:11px;color:#9a927f}.header .badge{background:var(--primary);padding:2px 8px;border-radius:10px;font-size:10px;margin-left:auto}
-.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;gap:0;position:sticky;top:46px;z-index:99}
-.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.2s}
+.tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;gap:0;position:sticky;top:46px;z-index:99;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{padding:10px 20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;transition:.2s;white-space:nowrap;flex-shrink:0}
 .tab:hover{color:var(--text)}.tab.active{color:var(--primary);border-bottom-color:var(--primary)}
 .filters{background:#fff;border-bottom:1px solid var(--border);padding:8px 24px;display:flex;gap:12px;align-items:flex-end;position:sticky;top:86px;z-index:98;flex-wrap:wrap}
 .filter-group{position:relative}.filter-label{font-size:10px;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:2px}

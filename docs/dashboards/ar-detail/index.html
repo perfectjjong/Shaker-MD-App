@@ -14,8 +14,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--tx
   height:54px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .nav h1{color:#fff;font-size:1.08rem;font-weight:700}
 .navsub{color:#c99aa4;font-size:.71rem;margin-top:1px}
-.ntabs{display:flex;gap:3px}
-.ntab{padding:6px 18px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.65);
+.ntabs{display:flex;gap:3px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
+.ntab{padding:6px 18px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.65);flex-shrink:0;white-space:nowrap;
   font-size:.83rem;font-weight:600;border:none;background:transparent;transition:all .2s}
 .ntab.on,.ntab:hover{background:rgba(255,255,255,.15);color:#fff}
 .pg{display:none;padding:18px 22px 48px}.pg.on{display:block}
@@ -131,7 +131,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 .mkv{font-size:.92rem;font-weight:800;margin-top:3px}
 .msec{font-size:.78rem;font-weight:700;margin:14px 0 6px;color:var(--txt)}
 .sec-lbl{font-size:.84rem;font-weight:700;margin-bottom:10px;color:var(--txt)}
-@media(max-width:680px){.cgrid,.yoy-grid,.cmp-grid{grid-template-columns:1fr}.kgrid{grid-template-columns:repeat(2,1fr)}.pg{padding:10px}}
+@media(max-width:680px){.cgrid,.yoy-grid,.cmp-grid{grid-template-columns:minmax(0,1fr)}.kgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.pg{padding:10px}}
 
 /* ── Scenario Simulator ── */
 .sc-box{background:#F0F7FF;border:1.5px solid #BFD8F7;border-radius:10px;padding:14px 16px;margin-top:12px;}
