@@ -3,24 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#191714">
   <title>Claude Code Skills Reference</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface2: #334155;
-      --accent: #3b82f6;
-      --text: #e2e8f0;
-      --text-dim: #94a3b8;
-      --border: #334155;
-      --green: #22c55e;
-      --purple: #a855f7;
-      --orange: #f97316;
-      --pink: #ec4899;
-      --cyan: #06b6d4;
-      --yellow: #eab308;
+      --bg: #191714;
+      --surface: #26221c;
+      --surface2: #3a352c;
+      --accent: #8c1d2f;
+      --text: #ddd4c2;
+      --text-dim: #9a927f;
+      --border: #3a352c;
+      --green: #1d6b45;
+      --purple: #6d4b78;
+      --orange: #b45f18;
+      --pink: #a5386b;
+      --cyan: #2a5a54;
+      --yellow: #8a6d2e;
     }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
@@ -49,7 +49,7 @@
       color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
       transition: all 0.2s ease;
     }
-    .nav-link:hover { border-color: var(--accent); background: #1e3a5f; }
+    .nav-link:hover { border-color: var(--accent); background: #f6ebe6; }
     .nav-link.active { border-color: var(--accent); background: rgba(59,130,246,0.15); }
 
     .controls {
@@ -119,11 +119,11 @@
       padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500;
       white-space: nowrap;
     }
-    .source-gstack { background: rgba(168,85,247,0.15); color: #c084fc; border: 1px solid rgba(168,85,247,0.3); }
-    .source-mattpocock { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-    .source-superpowers { background: rgba(249,115,22,0.12); color: #fb923c; border: 1px solid rgba(249,115,22,0.3); }
-    .source-builtin { background: rgba(6,182,212,0.12); color: #22d3ee; border: 1px solid rgba(6,182,212,0.3); }
-    .source-nimrodfisher { background: rgba(234,179,8,0.12); color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
+    .source-gstack { background: rgba(168,85,247,0.15); color: #7a4a8a; border: 1px solid rgba(168,85,247,0.3); }
+    .source-mattpocock { background: rgba(34,197,94,0.12); color: #5ba37f; border: 1px solid rgba(34,197,94,0.3); }
+    .source-superpowers { background: rgba(249,115,22,0.12); color: #b06a24; border: 1px solid rgba(249,115,22,0.3); }
+    .source-builtin { background: rgba(6,182,212,0.12); color: #3a8a7d; border: 1px solid rgba(6,182,212,0.3); }
+    .source-nimrodfisher { background: rgba(234,179,8,0.12); color: #bfa059; border: 1px solid rgba(234,179,8,0.3); }
 
     .skill-desc { font-size: 13px; color: var(--text-dim); line-height: 1.4; }
     .skill-trigger {
@@ -135,7 +135,7 @@
     .auto-badge {
       display: inline-block; padding: 2px 8px; border-radius: 4px;
       font-size: 10px; font-weight: 600; background: rgba(234,179,8,0.12);
-      color: #facc15; border: 1px solid rgba(234,179,8,0.3);
+      color: #bfa059; border: 1px solid rgba(234,179,8,0.3);
     }
 
     .empty-state {
@@ -192,11 +192,11 @@
 </div>
 
 <div class="stats-bar">
-  <span class="stat"><span class="stat-dot" style="background:#c084fc"></span>gstack 40+</span>
-  <span class="stat"><span class="stat-dot" style="background:#4ade80"></span>Matt Pocock 12</span>
-  <span class="stat"><span class="stat-dot" style="background:#fb923c"></span>Superpowers 13</span>
-  <span class="stat"><span class="stat-dot" style="background:#22d3ee"></span>Built-in 10</span>
-  <span class="stat"><span class="stat-dot" style="background:#facc15"></span>Data Analytics 31</span>
+  <span class="stat"><span class="stat-dot" style="background:#7a4a8a"></span>gstack 40+</span>
+  <span class="stat"><span class="stat-dot" style="background:#5ba37f"></span>Matt Pocock 12</span>
+  <span class="stat"><span class="stat-dot" style="background:#b06a24"></span>Superpowers 13</span>
+  <span class="stat"><span class="stat-dot" style="background:#3a8a7d"></span>Built-in 10</span>
+  <span class="stat"><span class="stat-dot" style="background:#bfa059"></span>Data Analytics 31</span>
   <span id="visibleCount" style="margin-left:auto"></span>
 </div>
 

@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0f172a">
+  <meta name="theme-color" content="#191714">
   <title>Dashboard Hub - OR Ch. Dashboard</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #0f172a;
-      --surface: #1e293b;
-      --surface2: #334155;
-      --accent: #3b82f6;
-      --text: #e2e8f0;
-      --text-dim: #94a3b8;
-      --border: #334155;
+      --bg: #f7f3ea;
+      --surface: #fffdf8;
+      --surface2: #f3ede1;
+      --accent: #8c1d2f;
+      --text: #191714;
+      --text-dim: #5c554b;
+      --border: #ddd4c2;
     }
 
     body {
@@ -40,7 +40,7 @@
       font-size: 13px;
     }
     .auth-bar .auth-user { display: flex; align-items: center; gap: 6px; color: var(--text-dim); }
-    .auth-bar .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: #00d26a; flex-shrink: 0; }
+    .auth-bar .auth-dot { width: 8px; height: 8px; border-radius: 50%; background: #1d6b45; flex-shrink: 0; }
     .auth-bar .auth-email { color: var(--text); font-weight: 500; }
     .auth-bar .auth-logout {
       padding: 4px 12px; border-radius: 6px; background: var(--surface2);
@@ -69,8 +69,8 @@
       color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
       transition: all 0.2s ease;
     }
-    .nav-link:hover { border-color: var(--accent); background: #1e3a5f; }
-    .nav-link.active { border-color: var(--accent); background: rgba(59, 130, 246, 0.15); }
+    .nav-link:hover { border-color: var(--accent); background: #f6ebe6; }
+    .nav-link.active { border-color: var(--accent); background: rgba(140, 29, 47, 0.08); }
     .nav-link-icon { font-size: 16px; }
 
     .grid {
@@ -82,13 +82,13 @@
       background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
       padding: 24px; transition: all 0.3s ease; height: 100%; cursor: pointer; user-select: none;
     }
-    .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15); }
+    .card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 24px rgba(140, 29, 47, 0.10); }
     .card-icon { font-size: 40px; margin-bottom: 14px; }
     .card-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
     .card-desc { font-size: 13px; color: var(--text-dim); line-height: 1.5; text-align: left; }
     .accordion-arrow { font-size: 12px; transition: transform 0.3s ease; color: var(--text-dim); }
     .accordion-card.open .accordion-arrow { transform: rotate(180deg); }
-    .accordion-card.open .card { border-color: var(--accent); box-shadow: 0 8px 24px rgba(59, 130, 246, 0.15); }
+    .accordion-card.open .card { border-color: var(--accent); box-shadow: 0 8px 24px rgba(140, 29, 47, 0.10); }
     .accordion-card.open .card:hover { transform: none; }
     .sub-list { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0; }
     .accordion-card.open .sub-list { max-height: 800px; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 12px 0 0; }
@@ -97,7 +97,7 @@
       border-radius: 8px; background: var(--surface2); border: 1px solid var(--border);
       text-decoration: none; color: var(--text); transition: all 0.2s ease; font-size: 14px;
     }
-    .sub-item:hover { border-color: var(--accent); background: #1e3a5f; }
+    .sub-item:hover { border-color: var(--accent); background: #f6ebe6; }
     .sub-item-icon { font-size: 20px; flex-shrink: 0; }
     .sub-item-info { flex: 1; min-width: 0; text-align: left; }
     .sub-item-name { font-weight: 500; font-size: 13px; text-align: left; }

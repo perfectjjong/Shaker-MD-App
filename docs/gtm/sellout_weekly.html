@@ -8,44 +8,44 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293b;font-size:14px}
-.header{background:linear-gradient(135deg,#1a1f36 0%,#2563eb 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#26221c;font-size:14px}
+.header{background:linear-gradient(135deg,#1a1f36 0%,#8c1d2f 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;justify-content:space-between}
 .header h1{font-size:18px;font-weight:700;letter-spacing:.5px}
 .header .meta{font-size:12px;opacity:.75;text-align:right}
 .badge{display:inline-block;background:rgba(255,255,255,.18);border-radius:12px;padding:3px 10px;font-size:11px;font-weight:600;margin-left:10px}
 .container{max-width:1200px;margin:0 auto;padding:20px}
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.kpi .label{font-size:11px;color:#64748b;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
-.kpi .value{font-size:24px;font-weight:700;color:#1e293b}
+.kpi .label{font-size:11px;color:#6b6355;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.kpi .value{font-size:24px;font-weight:700;color:#26221c}
 .kpi .sub{font-size:11px;margin-top:4px}
-.up{color:#10b981}.down{color:#ef4444}.neutral{color:#64748b}
+.up{color:#1d6b45}.down{color:#b3261e}.neutral{color:#6b6355}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;margin-bottom:16px}
 .card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.card h3{font-size:13px;font-weight:700;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.card h3 .tag{font-size:10px;background:#eff6ff;color:#2563eb;border-radius:6px;padding:2px 7px;font-weight:600}
-.card h3 .tag-amber{background:#fffbeb;color:#d97706}
-.card h3 .tag-green{background:#f0fdf4;color:#16a34a}
+.card h3{font-size:13px;font-weight:700;color:#453f35;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.card h3 .tag{font-size:10px;background:#f6ebe6;color:#8c1d2f;border-radius:6px;padding:2px 7px;font-weight:600}
+.card h3 .tag-amber{background:#f8f2e2;color:#8a6d2e}
+.card h3 .tag-green{background:#eff3ea;color:#1d6b45}
 canvas{max-width:100%}
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f8fafc;color:#475569;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
-td{padding:7px 10px;border-bottom:1px solid #f1f5f9}
+th{background:#f9f5ec;color:#5c554b;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #ddd4c2;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+td{padding:7px 10px;border-bottom:1px solid #efe9db}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
 .num{text-align:right;font-weight:600}
-.bar-inline{display:inline-block;height:6px;border-radius:3px;background:#3b82f6;vertical-align:middle;margin-left:6px}
+.bar-inline{display:inline-block;height:6px;border-radius:3px;background:#a54b5e;vertical-align:middle;margin-left:6px}
 .risk-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
 .risk-card{background:#fff;border-radius:10px;padding:16px 18px;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .risk-card h4{font-size:12px;font-weight:700;margin-bottom:10px}
-.risk-item{font-size:12px;padding:6px 0;border-bottom:1px solid #f1f5f9;display:flex;gap:8px}
+.risk-item{font-size:12px;padding:6px 0;border-bottom:1px solid #efe9db;display:flex;gap:8px}
 .risk-item:last-child{border-bottom:none}
 .pill{display:inline-block;border-radius:10px;padding:2px 8px;font-size:10px;font-weight:700}
-.pill-red{background:#fef2f2;color:#dc2626}
-.pill-green{background:#f0fdf4;color:#16a34a}
-.pill-amber{background:#fffbeb;color:#d97706}
-.footer{text-align:center;padding:16px;color:#94a3b8;font-size:11px}
-.section-divider{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px}
+.pill-red{background:#fef2f2;color:#a01d17}
+.pill-green{background:#eff3ea;color:#1d6b45}
+.pill-amber{background:#f8f2e2;color:#8a6d2e}
+.footer{text-align:center;padding:16px;color:#9a927f;font-size:11px}
+.section-divider{font-size:11px;font-weight:700;color:#9a927f;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px}
 </style>
 </head>
 <body>
@@ -108,7 +108,7 @@ tr:hover td{background:#fafafa}
         <tr><td>Floor Standing</td><td class="num">321</td><td class="num">114</td><td class="num">97</td><td class="num"><b>96</b></td><td class="num down">-1.0%</td></tr>
         <tr><td>Concealed</td><td class="num">143</td><td class="num">42</td><td class="num">36</td><td class="num"><b>57</b></td><td class="num up">+58.3%</td></tr>
         <tr><td>Cassette / Other</td><td class="num">19</td><td class="num">8</td><td class="num">5</td><td class="num"><b>2</b></td><td class="num down">-60.0%</td></tr>
-        <tr style="background:#f8fafc"><td><b>Total</b></td><td class="num"><b>4,060</b></td><td class="num"><b>1,874</b></td><td class="num"><b>1,468</b></td><td class="num"><b>1,625</b></td><td class="num up"><b>+10.7%</b></td></tr>
+        <tr style="background:#f9f5ec"><td><b>Total</b></td><td class="num"><b>4,060</b></td><td class="num"><b>1,874</b></td><td class="num"><b>1,468</b></td><td class="num"><b>1,625</b></td><td class="num up"><b>+10.7%</b></td></tr>
       </tbody>
     </table>
   </div>
@@ -145,10 +145,10 @@ tr:hover td{background:#fafafa}
       <thead><tr><th>Brand</th><th>Type</th><th class="num">Avg Price (SAR)</th><th class="num">vs LG</th></tr></thead>
       <tbody id="priceBody"></tbody>
     </table>
-    <div style="margin-top:12px;font-size:11px;color:#94a3b8">* ex-VAT prices · eXtra channel · W9 (latest available in DB)</div>
-    <div style="margin-top:8px;padding:10px;background:#eff6ff;border-radius:8px;font-size:12px">
+    <div style="margin-top:12px;font-size:11px;color:#9a927f">* ex-VAT prices · eXtra channel · W9 (latest available in DB)</div>
+    <div style="margin-top:8px;padding:10px;background:#f6ebe6;border-radius:8px;font-size:12px">
       <b>LG Inverter W17 (Price Tracking):</b> SAR 3,466<br>
-      <span style="color:#64748b">+14.5% vs W14 (SAR 3,025) — market highest</span>
+      <span style="color:#6b6355">+14.5% vs W14 (SAR 3,025) — market highest</span>
     </div>
   </div>
 </div>
@@ -156,14 +156,14 @@ tr:hover td{background:#fafafa}
 <!-- Risk & Actions -->
 <div class="risk-row">
   <div class="risk-card">
-    <h4 style="color:#dc2626">⚠ Risks & Watch Items</h4>
+    <h4 style="color:#a01d17">⚠ Risks & Watch Items</h4>
     <div class="risk-item"><span class="pill pill-red">HIGH</span><span>LG Inverter premium widening vs MIDEA (SAR 3,466 vs ~3,400) — price justification pressure</span></div>
     <div class="risk-item"><span class="pill pill-red">HIGH</span><span>W15–W16 post-Eid correction: -54% / -22% WoW — pattern may recur in Q2</span></div>
     <div class="risk-item"><span class="pill pill-amber">MED</span><span>IR share recovering (27%→34%) but still below 50/50 annual target</span></div>
     <div class="risk-item"><span class="pill pill-amber">MED</span><span>W18 actual (38 units) indicates early returns/corrections — final W18 will be higher</span></div>
   </div>
   <div class="risk-card">
-    <h4 style="color:#16a34a">✓ Opportunities & Actions</h4>
+    <h4 style="color:#1d6b45">✓ Opportunities & Actions</h4>
     <div class="risk-item"><span class="pill pill-green">ACT</span><span>Mega 시즌 H1 최대 피크 W18(5,080)·W19(3,044) — 재고 W16 이전 포지셔닝 필수</span></div>
     <div class="risk-item"><span class="pill pill-green">ACT</span><span>OR 채널 Mega 프로모 4/26~5/15 — BH/SWS/Black Box 입고 W17 완료 확인 요망</span></div>
     <div class="risk-item"><span class="pill pill-green">OPP</span><span>Concealed AC W17 spike +58% — check if project pipeline driving demand</span></div>
@@ -206,7 +206,7 @@ new Chart(document.getElementById('cMain'), {
       {
         label: 'Actual',
         data: actData,
-        backgroundColor: allWeeks.map(w => w==='W17'?'#2563eb':'#93c5fd'),
+        backgroundColor: allWeeks.map(w => w==='W17'?'#8c1d2f':'#93c5fd'),
         borderRadius: 3,
         order: 2
       },
@@ -214,7 +214,7 @@ new Chart(document.getElementById('cMain'), {
         label: 'Forecast',
         data: fcstData,
         backgroundColor: '#d1fae5',
-        borderColor: '#10b981',
+        borderColor: '#1d6b45',
         borderWidth: 1.5,
         borderRadius: 3,
         order: 2
@@ -227,12 +227,12 @@ new Chart(document.getElementById('cMain'), {
       legend: {position:'top', labels:{boxWidth:12,font:{size:11}}},
       datalabels: {
         display: ctx => ctx.dataset.data[ctx.dataIndex] >= 2500,
-        anchor:'end', align:'top', font:{size:9,weight:'bold'}, color:'#374151',
+        anchor:'end', align:'top', font:{size:9,weight:'bold'}, color:'#453f35',
         formatter: v => v ? v.toLocaleString() : ''
       }
     },
     scales: {
-      y: {beginAtZero:true, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}}},
+      y: {beginAtZero:true, grid:{color:'#efe9db'}, ticks:{font:{size:10}}},
       x: {grid:{display:false}, ticks:{font:{size:10}}}
     }
   }
@@ -245,8 +245,8 @@ new Chart(document.getElementById('cRatio'), {
   data: {
     labels: ratioWeeks,
     datasets: [
-      {label:'OR', data: ratioWeeks.map(w=>RATIO[w].or), backgroundColor:'#3b82f6', borderRadius:3},
-      {label:'IR', data: ratioWeeks.map(w=>RATIO[w].ir), backgroundColor:'#f59e0b', borderRadius:3}
+      {label:'OR', data: ratioWeeks.map(w=>RATIO[w].or), backgroundColor:'#a54b5e', borderRadius:3},
+      {label:'IR', data: ratioWeeks.map(w=>RATIO[w].ir), backgroundColor:'#a8863c', borderRadius:3}
     ]
   },
   options: {
@@ -261,7 +261,7 @@ new Chart(document.getElementById('cRatio'), {
     },
     scales: {
       x: {stacked:true, grid:{display:false}, ticks:{font:{size:10}}},
-      y: {stacked:true, max:100, grid:{color:'#f1f5f9'}, ticks:{font:{size:10}, callback:v=>v+'%'}}
+      y: {stacked:true, max:100, grid:{color:'#efe9db'}, ticks:{font:{size:10}, callback:v=>v+'%'}}
     }
   }
 });
@@ -269,7 +269,7 @@ new Chart(document.getElementById('cRatio'), {
 // ---- CHANNEL BAR CHART ----
 const chLabels = CH_APR.map(r=>r[0]);
 const chData   = CH_APR.map(r=>r[1]);
-const chColors = ['#2563eb','#f59e0b','#6366f1','#10b981','#ec4899','#14b8a6','#8b5cf6','#f43f5e','#0ea5e9','#84cc16','#ef4444','#06b6d4','#a78bfa','#fb923c','#94a3b8'];
+const chColors = ['#8c1d2f','#a8863c','#6366f1','#1d6b45','#ec4899','#14b8a6','#8b5cf6','#f43f5e','#0ea5e9','#84cc16','#b3261e','#06b6d4','#a78bfa','#fb923c','#9a927f'];
 new Chart(document.getElementById('cChannel'), {
   type: 'bar',
   data: {
@@ -287,12 +287,12 @@ new Chart(document.getElementById('cChannel'), {
     plugins: {
       legend:{display:false},
       datalabels:{
-        anchor:'end', align:'end', font:{size:9,weight:'bold'}, color:'#374151',
+        anchor:'end', align:'end', font:{size:9,weight:'bold'}, color:'#453f35',
         formatter: v => v.toLocaleString()
       }
     },
     scales: {
-      x: {grid:{color:'#f1f5f9'}, ticks:{font:{size:9}}},
+      x: {grid:{color:'#efe9db'}, ticks:{font:{size:9}}},
       y: {grid:{display:false}, ticks:{font:{size:10}}}
     }
   }
@@ -305,12 +305,12 @@ const peakWeeks = ['W18','W19','W22','W27'];
 Object.entries(fcstFull).forEach(([w,[tot,ms]])=>{
   const tr = document.createElement('tr');
   const isPeak = peakWeeks.includes(w);
-  tr.innerHTML = `<td>${w}${isPeak?' <span style="font-size:9px;color:#16a34a">▲peak</span>':''}</td><td class="num" style="${isPeak?'color:#2563eb;font-weight:700':''}">${tot.toLocaleString()}</td><td class="num">${ms.toLocaleString()}</td>`;
+  tr.innerHTML = `<td>${w}${isPeak?' <span style="font-size:9px;color:#1d6b45">▲peak</span>':''}</td><td class="num" style="${isPeak?'color:#8c1d2f;font-weight:700':''}">${tot.toLocaleString()}</td><td class="num">${ms.toLocaleString()}</td>`;
   fcstBody.appendChild(tr);
 });
 // Total row
 const totTr = document.createElement('tr');
-totTr.style.background='#f8fafc';
+totTr.style.background='#f9f5ec';
 const sumTot = Object.values(fcstFull).reduce((a,v)=>a+v[0],0);
 const sumMs  = Object.values(fcstFull).reduce((a,v)=>a+v[1],0);
 totTr.innerHTML = `<td><b>W18–W27</b></td><td class="num"><b>${sumTot.toLocaleString()}</b></td><td class="num"><b>${sumMs.toLocaleString()}</b></td>`;
@@ -332,16 +332,16 @@ sorted.forEach(([brand,type,price])=>{
   const base = type==='Inverter' ? lgInv : lgRot;
   const diff = ((price-base)/base*100).toFixed(1);
   const vsLg = brand==='LG' ? '—' : `${diff>0?'+':''}${diff}%`;
-  const vsColor = brand==='LG'?'':diff>0?'#ef4444':'#10b981';
+  const vsColor = brand==='LG'?'':diff>0?'#b3261e':'#1d6b45';
   if(type!==lastType){
     const hdr = document.createElement('tr');
-    hdr.innerHTML = `<td colspan="4" style="background:#f8fafc;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.4px">${type}</td>`;
+    hdr.innerHTML = `<td colspan="4" style="background:#f9f5ec;font-size:10px;font-weight:700;color:#6b6355;text-transform:uppercase;letter-spacing:.4px">${type}</td>`;
     priceBody.appendChild(hdr);
     lastType=type;
   }
   const tr = document.createElement('tr');
   const isBold = brand==='LG';
-  tr.innerHTML = `<td style="${isBold?'font-weight:700':''}"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${brand==='LG'?'#2563eb':brand==='GREE'?'#10b981':brand==='MIDEA'?'#f59e0b':brand==='HAIER'?'#8b5cf6':'#94a3b8'};margin-right:5px"></span>${brand}</td><td>${type}</td><td class="num" style="${isBold?'font-weight:700;color:#2563eb':''}">${price.toLocaleString()}</td><td class="num" style="color:${vsColor}">${vsLg}</td>`;
+  tr.innerHTML = `<td style="${isBold?'font-weight:700':''}"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${brand==='LG'?'#8c1d2f':brand==='GREE'?'#1d6b45':brand==='MIDEA'?'#a8863c':brand==='HAIER'?'#8b5cf6':'#9a927f'};margin-right:5px"></span>${brand}</td><td>${type}</td><td class="num" style="${isBold?'font-weight:700;color:#8c1d2f':''}">${price.toLocaleString()}</td><td class="num" style="color:${vsColor}">${vsLg}</td>`;
   priceBody.appendChild(tr);
 });
 </script>

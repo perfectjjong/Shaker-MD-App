@@ -7,11 +7,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-:root{--primary:#2563eb;--border:#e2e8f0;--muted:#94a3b8;--hdr:57px}
+:root{--primary:#8c1d2f;--border:#ddd4c2;--muted:#9a927f;--hdr:57px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293b;font-size:14px}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#26221c;font-size:14px}
 /* HEADER */
-.header{background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:var(--hdr)}
+.header{background:linear-gradient(135deg,#191714 0%,#6d1522 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;height:var(--hdr)}
 .header h1{font-size:16px;font-weight:700;letter-spacing:.3px}
 .badge{background:rgba(255,255,255,.2);border-radius:10px;padding:2px 9px;font-size:10px;font-weight:600;margin-left:7px}
 /* FILTER BAR */
@@ -21,20 +21,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293
 .ms-wrap{position:relative;min-width:130px}
 .ms-btn{padding:4px 24px 4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;width:100%;text-align:left;position:relative}
 .ms-btn::after{content:"▾";position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:10px;color:var(--muted)}
-.ms-btn.active-filter{border-color:var(--primary);background:#eff6ff;font-weight:600}
+.ms-btn.active-filter{border-color:var(--primary);background:#f6ebe6;font-weight:600}
 .ms-dd{position:absolute;top:calc(100% + 2px);left:0;background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.12);z-index:200;min-width:200px;display:none;padding:4px 0}
 .ms-dd.open{display:block}
-.ms-dd-head{padding:5px 12px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#374151}
+.ms-dd-head{padding:5px 12px;border-bottom:1px solid var(--border);margin-bottom:2px;display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;color:#453f35}
 .ms-dd label{display:flex;align-items:center;gap:7px;padding:5px 12px;font-size:12px;cursor:pointer;white-space:nowrap}
-.ms-dd label:hover{background:#f8fafc}
+.ms-dd label:hover{background:#f9f5ec}
 .ms-dd input[type=checkbox]{accent-color:var(--primary);cursor:pointer;flex-shrink:0}
-.grp-btn{padding:4px 11px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;font-weight:600;color:#475569;transition:all .12s}
+.grp-btn{padding:4px 11px;border:1px solid var(--border);border-radius:4px;font-size:12px;background:#fff;cursor:pointer;font-weight:600;color:#5c554b;transition:all .12s}
 .grp-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 /* TAB NAV */
 .tabnav{background:#fff;border-bottom:2px solid var(--border);padding:0 24px;display:flex;gap:0;position:sticky;top:calc(var(--hdr) + 40px);z-index:97}
-.tabnav-btn{padding:10px 20px;font-size:13px;font-weight:600;color:#64748b;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
+.tabnav-btn{padding:10px 20px;font-size:13px;font-weight:600;color:#6b6355;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .15s;white-space:nowrap}
 .tabnav-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
-.tabnav-btn:hover{color:#1e293b}
+.tabnav-btn:hover{color:#26221c}
 /* CONTENT */
 .container{max-width:1320px;margin:0 auto;padding:20px 24px}
 .tab-section{display:none}
@@ -42,47 +42,47 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f2f5;color:#1e293
 /* KPI */
 .kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
 .kpi{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.07);position:relative;overflow:hidden;border-top:3px solid transparent}
-.kpi.yr23{border-top-color:#94a3b8}
+.kpi.yr23{border-top-color:#9a927f}
 .kpi.yr24{border-top-color:#60a5fa}
-.kpi.yr25{border-top-color:#f59e0b}
-.kpi.yr26{border-top-color:#2563eb}
-.kpi.insight{border-top-color:#10b981}
-.kpi .yr-lbl{font-size:10px;color:#64748b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.kpi .val{font-size:21px;font-weight:700;color:#1e293b;letter-spacing:-.3px}
+.kpi.yr25{border-top-color:#a8863c}
+.kpi.yr26{border-top-color:#8c1d2f}
+.kpi.insight{border-top-color:#1d6b45}
+.kpi .yr-lbl{font-size:10px;color:#6b6355;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.kpi .val{font-size:21px;font-weight:700;color:#26221c;letter-spacing:-.3px}
 .kpi .sub{font-size:11px;margin-top:3px}
 .kpi .kbar{position:absolute;bottom:0;left:0;height:3px}
-.up{color:#10b981}.dn{color:#ef4444}.nt{color:#64748b}
+.up{color:#1d6b45}.dn{color:#b3261e}.nt{color:#6b6355}
 /* CARD */
 .card{background:#fff;border-radius:10px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,.07);margin-bottom:16px}
-.card-h{font-size:13px;font-weight:700;color:#374151;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.tag{font-size:10px;background:#eff6ff;color:#2563eb;border-radius:5px;padding:2px 7px;font-weight:600}
+.card-h{font-size:13px;font-weight:700;color:#453f35;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag{font-size:10px;background:#f6ebe6;color:#8c1d2f;border-radius:5px;padding:2px 7px;font-weight:600}
 .tag-or{background:#fef3c7;color:#b45309}
-.tag-ir{background:#dbeafe;color:#1e40af}
-.tag-fcst{background:#fef9c3;color:#ca8a04}
-.tag-green{background:#f0fdf4;color:#15803d}
-.tag-red{background:#fef2f2;color:#dc2626}
-.tag-gray{background:#f8fafc;color:#64748b}
+.tag-ir{background:#f0e0e2;color:#5c0f1d}
+.tag-fcst{background:#fef9c3;color:#8a6d2e}
+.tag-green{background:#eff3ea;color:#175a39}
+.tag-red{background:#fef2f2;color:#a01d17}
+.tag-gray{background:#f9f5ec;color:#6b6355}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
-.divider{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px;display:flex;align-items:center;gap:8px}
+.divider{font-size:11px;font-weight:700;color:#9a927f;text-transform:uppercase;letter-spacing:.8px;margin:20px 0 10px;padding-left:2px;display:flex;align-items:center;gap:8px}
 /* LEGEND */
 .legend-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px}
-.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#475569}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:#5c554b}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 /* TABLE */
 table{width:100%;border-collapse:collapse;font-size:12px}
-th{background:#f8fafc;color:#475569;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #e2e8f0;font-size:11px;text-transform:uppercase;white-space:nowrap}
-td{padding:6px 10px;border-bottom:1px solid #f1f5f9}
+th{background:#f9f5ec;color:#5c554b;font-weight:600;padding:7px 10px;text-align:left;border-bottom:2px solid #ddd4c2;font-size:11px;text-transform:uppercase;white-space:nowrap}
+td{padding:6px 10px;border-bottom:1px solid #efe9db}
 tr:last-child td{border-bottom:none}
 tr:hover td{background:#fafafa}
 .num{text-align:right;font-weight:600}
 .bar-mini{height:5px;border-radius:3px;min-width:2px;display:inline-block}
 /* INSIGHT BOX */
-.insight-box{background:linear-gradient(135deg,#eff6ff 0%,#f0fdf4 100%);border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#1e40af;line-height:1.6}
-.insight-box b{color:#1d4ed8}
-.warn-box{background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:#92400e}
+.insight-box{background:linear-gradient(135deg,#f6ebe6 0%,#eff3ea 100%);border:1px solid #bfdbfe;border-radius:8px;padding:12px 16px;margin-bottom:16px;font-size:12px;color:#5c0f1d;line-height:1.6}
+.insight-box b{color:#6d1522}
+.warn-box{background:#f8f2e2;border:1px solid #e6d7ae;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:#92400e}
 /* MISC */
-.footer{text-align:center;padding:16px;color:#94a3b8;font-size:11px;margin-top:8px}
+.footer{text-align:center;padding:16px;color:#9a927f;font-size:11px;margin-top:8px}
 canvas{max-width:100%}
 @media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.filters{gap:8px;padding:7px 12px}.container{padding:14px 12px}}
 </style>
@@ -210,13 +210,13 @@ canvas{max-width:100%}
 
       <!-- WORST -->
       <div style="background:#fef2f2;border:1.5px solid #fca5a5;border-radius:8px;padding:14px 16px">
-        <div style="font-weight:700;color:#dc2626;font-size:13px;margin-bottom:10px">▼ Worst &nbsp;<span style="font-weight:400;font-size:11px;color:#b91c1c">32K 시나리오</span></div>
+        <div style="font-weight:700;color:#a01d17;font-size:13px;margin-bottom:10px">▼ Worst &nbsp;<span style="font-weight:400;font-size:11px;color:#b91c1c">32K 시나리오</span></div>
         <div style="color:#7f1d1d;line-height:1.75">
-          <div style="margin-bottom:6px"><b style="color:#dc2626">Inverter −13%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#a01d17">Inverter −13%</b><br>
           Gree가 SAR 1,500~1,800대에 직접 가격 경쟁 지속. LG NS/ND 라인 가격 방어선 붕괴 시 점유율 이탈 현실화.</div>
-          <div style="margin-bottom:6px"><b style="color:#dc2626">OnOff −5%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#a01d17">OnOff −5%</b><br>
           eXtra Rotary 신규 진입 효과가 OR 채널 전반으로 확산되지 않고 eXtra 단독 카니발로 끝남. 프로모터 재가동 효과 미미.</div>
-          <div style="margin-bottom:6px"><b style="color:#dc2626">WindowAC 중립</b><br>
+          <div style="margin-bottom:6px"><b style="color:#a01d17">WindowAC 중립</b><br>
           교체 수요 특성상 시나리오 영향 없음. (×1.0 고정)</div>
           <div style="color:#b91c1c;font-size:11px;border-top:1px solid #fca5a5;padding-top:8px;margin-top:4px">
           ⚠ 트리거: 전쟁 재개 또는 소비심리 재경색, Gree IR 채널 침투 가속</div>
@@ -225,13 +225,13 @@ canvas{max-width:100%}
 
       <!-- MOST LIKELY -->
       <div style="background:#fefce8;border:1.5px solid #fde047;border-radius:8px;padding:14px 16px">
-        <div style="font-weight:700;color:#ca8a04;font-size:13px;margin-bottom:10px">◆ Most Likely &nbsp;<span style="font-weight:400;font-size:11px;color:#92400e">36K 시나리오</span></div>
+        <div style="font-weight:700;color:#8a6d2e;font-size:13px;margin-bottom:10px">◆ Most Likely &nbsp;<span style="font-weight:400;font-size:11px;color:#92400e">36K 시나리오</span></div>
         <div style="color:#78350f;line-height:1.75">
-          <div style="margin-bottom:6px"><b style="color:#ca8a04">OnOff +8%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#8a6d2e">OnOff +8%</b><br>
           eXtra Rotary 신규 진입이 Split OnOff 카테고리 인지도를 끌어올려 OR 채널 전반에 소폭 수요 창출. W18 메가 프로모(×2.0) 수요 점화 효과 유지.</div>
-          <div style="margin-bottom:6px"><b style="color:#ca8a04">Inverter +5%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#8a6d2e">Inverter +5%</b><br>
           Gree 경쟁 부담 있으나 2월부터 재가동된 프로모터 + LG 브랜드 프리미엄으로 방어. 휴전 이후 소비심리 점진 회복.</div>
-          <div style="margin-bottom:6px"><b style="color:#ca8a04">전 카테고리 +8% (Window 제외)</b><br>
+          <div style="margin-bottom:6px"><b style="color:#8a6d2e">전 카테고리 +8% (Window 제외)</b><br>
           라마단·여름 시즌 이중 수요 정상 집행. 4월 휴전 이후 억눌린 수요 일부 해소.</div>
           <div style="color:#92400e;font-size:11px;border-top:1px solid #fde047;padding-top:8px;margin-top:4px">
           ✦ 전제: 휴전 유지, 채널 프로모터 정상 운영, 공급망 지장 없음</div>
@@ -239,14 +239,14 @@ canvas{max-width:100%}
       </div>
 
       <!-- BEST -->
-      <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:8px;padding:14px 16px">
-        <div style="font-weight:700;color:#15803d;font-size:13px;margin-bottom:10px">▲ Best &nbsp;<span style="font-weight:400;font-size:11px;color:#166534">39K 시나리오</span></div>
+      <div style="background:#eff3ea;border:1.5px solid #86efac;border-radius:8px;padding:14px 16px">
+        <div style="font-weight:700;color:#175a39;font-size:13px;margin-bottom:10px">▲ Best &nbsp;<span style="font-weight:400;font-size:11px;color:#166534">39K 시나리오</span></div>
         <div style="color:#14532d;line-height:1.75">
-          <div style="margin-bottom:6px"><b style="color:#15803d">OnOff +35%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#175a39">OnOff +35%</b><br>
           eXtra Rotary 진입이 시장 전반에 Rotary/Split 교차 수요를 폭발적으로 자극. OR 전 채널에 Pull 수요 전파 → LG OnOff 직접 수혜.</div>
-          <div style="margin-bottom:6px"><b style="color:#15803d">Inverter +10%</b><br>
+          <div style="margin-bottom:6px"><b style="color:#175a39">Inverter +10%</b><br>
           Gree 가격 공세 무력화(가격 방어선 유지). Pent-up demand 본격 방출 + 여름 조기 진입으로 Inverter 프리미엄 수요 확대.</div>
-          <div style="margin-bottom:6px"><b style="color:#15803d">전 카테고리 +10% (Window 제외)</b><br>
+          <div style="margin-bottom:6px"><b style="color:#175a39">전 카테고리 +10% (Window 제외)</b><br>
           OR/IR 전 채널 프로모터 완전 재가동, 판촉 정상화. 기저(2025 Q2 YoY) 약했던 구간 역기저 수혜.</div>
           <div style="color:#166534;font-size:11px;border-top:1px solid #86efac;padding-top:8px;margin-top:4px">
           ✦ 트리거: eXtra Rotary Pull 확산 + Gree 침투 실패 동시 발생 시</div>
@@ -288,14 +288,14 @@ const D = {"h1":{"2023":{"OR":{"OnOff":3027,"Inverter":24005,"FloorStanding":680
 const CATS = ['OnOff','Inverter','FloorStanding','WindowAC','Concealed','Cassette'];
 const CAT_LABELS = {OnOff:'On/Off (Rotary)',Inverter:'Inverter',FloorStanding:'Floor Standing',WindowAC:'Window AC',Concealed:'Concealed',Cassette:'Cassette'};
 const C = {
-  OnOff:{bg:'#f59e0b',border:'#d97706'},
-  Inverter:{bg:'#2563eb',border:'#1d4ed8'},
-  FloorStanding:{bg:'#10b981',border:'#059669'},
+  OnOff:{bg:'#a8863c',border:'#8a6d2e'},
+  Inverter:{bg:'#8c1d2f',border:'#6d1522'},
+  FloorStanding:{bg:'#1d6b45',border:'#175a39'},
   WindowAC:{bg:'#8b5cf6',border:'#7c3aed'},
   Concealed:{bg:'#06b6d4',border:'#0891b2'},
-  Cassette:{bg:'#64748b',border:'#475569'},
+  Cassette:{bg:'#6b6355',border:'#5c554b'},
 };
-const YR_C = {'2023':'#94a3b8','2024':'#60a5fa','2025':'#f59e0b','2026':'#2563eb'};
+const YR_C = {'2023':'#9a927f','2024':'#60a5fa','2025':'#a8863c','2026':'#8c1d2f'};
 const YEARS = ['2023','2024','2025','2026'];
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun'];
 const MONTH_KR = {Jan:'1월',Feb:'2월',Mar:'3월',Apr:'4월',May:'5월',Jun:'6월'};
@@ -307,11 +307,11 @@ let activeTab = 'h1';
 let q2Scenario = 'likely';
 const Q2_SCENARIOS = {
   // OnOff: eXtra Rotary 안착 속도 / Inverter: Gree 볼륨 공세 방어 여부
-  worst:  {label:'Worst',       total:32000, color:'#dc2626',
+  worst:  {label:'Worst',       total:32000, color:'#a01d17',
            cats:{OnOff:0.95, Inverter:0.87, FloorStanding:0.95, WindowAC:1.0, Concealed:0.95, Cassette:0.95}},
-  likely: {label:'Most Likely', total:36000, color:'#ca8a04',
+  likely: {label:'Most Likely', total:36000, color:'#8a6d2e',
            cats:{OnOff:1.08, Inverter:1.05, FloorStanding:1.08, WindowAC:1.0, Concealed:1.08, Cassette:1.08}},
-  best:   {label:'Best',        total:39000, color:'#15803d',
+  best:   {label:'Best',        total:39000, color:'#175a39',
            cats:{OnOff:1.35, Inverter:1.10, FloorStanding:1.10, WindowAC:1.0, Concealed:1.10, Cassette:1.10}},
 };
 // 전역 FCST 시나리오 factor — H1/Q2/Monthly 모든 탭에서 사용
@@ -463,7 +463,7 @@ function updateFilterSummary() {
   const el = document.getElementById('filterSummary');
   const chTxt = activeChannel==='All'?'전 채널':`${activeChannel} 채널`;
   if(ex.length===0) { el.innerHTML=`<span style="color:var(--muted)">${chTxt} · All categories</span>`; }
-  else { el.innerHTML=`<span style="color:#ef4444">${chTxt} · 제외: ${ex.map(c=>CAT_LABELS[c]).join(', ')}</span>`; }
+  else { el.innerHTML=`<span style="color:#b3261e">${chTxt} · 제외: ${ex.map(c=>CAT_LABELS[c]).join(', ')}</span>`; }
 }
 
 // ══════════════════════════════
@@ -483,7 +483,7 @@ function renderH1() {
   const winAC25 = FILTER_STATE.cat.size===0 ? (D.h1['2025']['Total']['WindowAC']||0) : 0;
   document.getElementById('h1Insight').innerHTML =
     `<b>Business Context:</b> 2026 H1E 총 <b>${(t26e/1000).toFixed(1)}K</b>대 (실적 ${(t26/1000).toFixed(1)}K + FCST ${((t26e-t26)/1000).toFixed(1)}K). ` +
-    `vs 2025 YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `vs 2025 YoY <b style="color:${parseFloat(yoy)<0?'#a01d17':'#175a39'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
     (winAC25>0 ? `⚠ Window AC 제외 시 (+${(winAC25/1000).toFixed(0)}K 왜곡 제거) 실질 성장률 상이 — 우측 필터로 확인.` :
     `✓ Window AC 필터 적용 중 — 단종 영향 제거된 Like-for-Like 기준.`);
 
@@ -554,7 +554,7 @@ function renderH1() {
       }))
     },
     options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   // OR vs IR channel bar
@@ -563,12 +563,12 @@ function renderH1() {
     data:{
       labels:YEARS.map(y=>y==='2026'?'2026E':y),
       datasets:[
-        {label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0)),backgroundColor:'#f59e0b',borderRadius:3},
-        {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0)),backgroundColor:'#2563eb',borderRadius:3},
+        {label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0)),backgroundColor:'#a8863c',borderRadius:3},
+        {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0)),backgroundColor:'#8c1d2f',borderRadius:3},
       ]
     },
     options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=5000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   // OR/IR % stacked
@@ -581,7 +581,7 @@ function renderH1() {
           const orV=cats.reduce((a,c)=>a+(D.h1[y]['OR'][c]||0),0);
           const tot=cats.reduce((a,c)=>a+(D.h1[y]['Total'][c]||0),0);
           return tot>0?Math.round(orV/tot*100):0;
-        }),backgroundColor:'#fcd34d',borderRadius:3},
+        }),backgroundColor:'#e6d7ae',borderRadius:3},
         {label:'IR %',data:YEARS.map(y=>{
           const irV=cats.reduce((a,c)=>a+(D.h1[y]['IR'][c]||0),0);
           const tot=cats.reduce((a,c)=>a+(D.h1[y]['Total'][c]||0),0);
@@ -589,8 +589,8 @@ function renderH1() {
         }),backgroundColor:'#93c5fd',borderRadius:3},
       ]
     },
-    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:true,color:'#374151',font:{size:9,weight:'bold'},formatter:v=>v+'%'}},
-    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},y:{stacked:true,max:100,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v+'%'}}}}
+    options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:true,color:'#453f35',font:{size:9,weight:'bold'},formatter:v=>v+'%'}},
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11}}},y:{stacked:true,max:100,grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v+'%'}}}}
   });
 
   // YoY table
@@ -614,7 +614,7 @@ function renderH1() {
       tHtml+=`<td class="num">${(v/1000).toFixed(1)}K ${prev&&prev>0?fmtPct(v,prev):''}</td>`;
     });
     const cagr=vals[0]>0?(((vals[3]/vals[0])**(1/3)-1)*100).toFixed(1):'—';
-    const cc=vals[0]>0?(parseFloat(cagr)>=0?'#15803d':'#dc2626'):'#94a3b8';
+    const cc=vals[0]>0?(parseFloat(cagr)>=0?'#175a39':'#a01d17'):'#9a927f';
     tHtml+=`<td class="num" style="color:${cc};font-weight:700">${vals[0]>0?(parseFloat(cagr)>=0?'+':'')+cagr+'%':'—'}</td></tr>`;
   });
   // total row
@@ -623,10 +623,10 @@ function renderH1() {
     if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w[ch];return a+cats.reduce((s,c)=>s+(g?(g[c]||0)*sf(c):0),0);},0):0;v+=fa;}
     return v;
   });
-  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  tHtml+='<tr style="background:#f9f5ec;font-weight:700"><td>TOTAL</td>';
   yrTots.forEach((v,i)=>{tHtml+=`<td class="num"><b>${(v/1000).toFixed(1)}K</b> ${i>0?fmtPct(v,yrTots[i-1]):''}</td>`;});
   const tc=yrTots[0]>0?(((yrTots[3]/yrTots[0])**(1/3)-1)*100).toFixed(1):'—';
-  tHtml+=`<td class="num" style="color:${parseFloat(tc)>=0?'#15803d':'#dc2626'};font-weight:700">${parseFloat(tc)>=0?'+':''}${tc}%</td></tr></tbody>`;
+  tHtml+=`<td class="num" style="color:${parseFloat(tc)>=0?'#175a39':'#a01d17'};font-weight:700">${parseFloat(tc)>=0?'+':''}${tc}%</td></tr></tbody>`;
   document.getElementById('tH1Yoy').innerHTML = tHtml;
 }
 
@@ -643,7 +643,7 @@ function renderQ1() {
   const t25=q1tots[2]?._total||0, t26=q1tots[3]?._total||0;
   const yoy=t25>0?((t26-t25)/t25*100).toFixed(1):'—';
   document.getElementById('q1Insight').innerHTML =
-    `<b>Q1 (Jan–Mar)</b>는 비수기. 2026 Q1 <b>${(t26/1000).toFixed(1)}K</b>대 vs 2025 <b>${(t25/1000).toFixed(1)}K</b>대, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `<b>Q1 (Jan–Mar)</b>는 비수기. 2026 Q1 <b>${(t26/1000).toFixed(1)}K</b>대 vs 2025 <b>${(t25/1000).toFixed(1)}K</b>대, YoY <b style="color:${parseFloat(yoy)<0?'#a01d17':'#175a39'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
     `Q1:Q2 비율 — 2025 기준 Q1=${((q1tots[2]?._total||0)/(((q1tots[2]?._total||0)+(D.quarterly['2025']['Q2']['Total']?._total||0)))*100).toFixed(0)}% vs Q2=${((D.quarterly['2025']['Q2']['Total']?._total||0)/(((q1tots[2]?._total||0)+(D.quarterly['2025']['Q2']['Total']?._total||0)))*100).toFixed(0)}%. ` +
     `라마단·내셔널데이 프로모 집중 → Q1 끝에 수요 Spike 예상.`;
 
@@ -667,7 +667,7 @@ function renderQ1() {
     <div class="val">22% / 78%</div>
     <div class="sub nt">Q2가 비즈니스 핵심</div>
     <div class="sub">피크: 라마단·메가 프로모</div>
-    <div class="kbar" style="width:22%;background:#10b981"></div>
+    <div class="kbar" style="width:22%;background:#1d6b45"></div>
   </div>`;
   document.getElementById('q1Kpi').innerHTML = kHtml;
 
@@ -677,13 +677,13 @@ function renderQ1() {
     datasets:activeCatsFiltered.map(cat=>({label:CAT_LABELS[cat],data:YEARS.map(y=>D.quarterly[y]['Q1'][ch][cat]||0),
     backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3}))},
     options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
   mkChart('cQ1Ch',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026':y),
-    datasets:[{label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['OR'][c]||0),0)),backgroundColor:'#f59e0b',borderRadius:3},
-              {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['IR'][c]||0),0)),backgroundColor:'#2563eb',borderRadius:3}]},
+    datasets:[{label:'OR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['OR'][c]||0),0)),backgroundColor:'#a8863c',borderRadius:3},
+              {label:'IR',data:YEARS.map(y=>cats.reduce((a,c)=>a+(D.quarterly[y]['Q1']['IR'][c]||0),0)),backgroundColor:'#8c1d2f',borderRadius:3}]},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=1000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   let tHtml='<thead><tr><th>Category</th>';
@@ -696,7 +696,7 @@ function renderQ1() {
     vals.forEach((v,i)=>tHtml+=`<td class="num">${v.toLocaleString()} ${i>0?fmtPct(v,vals[i-1]):''}</td>`);
     tHtml+='</tr>';
   });
-  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  tHtml+='<tr style="background:#f9f5ec;font-weight:700"><td>TOTAL</td>';
   YEARS.forEach((y,i)=>{
     const v=q1tots[i]?._total||0;
     const prev=i>0?q1tots[i-1]?._total:null;
@@ -740,7 +740,7 @@ function renderQ2() {
   const fcst26 = t26 - actual26;
   document.getElementById('q2Insight').innerHTML =
     `<b>Q2 (Apr–Jun) = 피크 시즌.</b> 시나리오: <b style="color:${scn.color}">${scn.label} ${(scn.total/1000).toFixed(0)}K</b> &nbsp;|&nbsp; ` +
-    `2026 Q2E <b>${(t26/1000).toFixed(1)}K</b> (실적 ${(actual26/1000).toFixed(1)}K + FCST ${(fcst26/1000).toFixed(1)}K) vs 2025 ${(t25/1000).toFixed(1)}K, YoY <b style="color:${parseFloat(yoy)<0?'#dc2626':'#15803d'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
+    `2026 Q2E <b>${(t26/1000).toFixed(1)}K</b> (실적 ${(actual26/1000).toFixed(1)}K + FCST ${(fcst26/1000).toFixed(1)}K) vs 2025 ${(t25/1000).toFixed(1)}K, YoY <b style="color:${parseFloat(yoy)<0?'#a01d17':'#175a39'}">${parseFloat(yoy)>=0?'+':''}${yoy}%</b>. ` +
     `Mega 프로모 (Apr 26–May 15, W18–W20) FCST 반영. ` +
     `Window AC 단종으로 2025 Q2 대비 약 ${((D.quarterly['2025']['Q2']['Total']['WindowAC']||0)/1000).toFixed(0)}K 자연 감소.`;
 
@@ -755,7 +755,7 @@ function renderQ2() {
       <div class="val">${(v/1000).toFixed(1)}K</div>
       <div class="sub">${fmtPct(v,prev)} ${prev?'vs '+YEARS[i-1]:'Base'}</div>
       <div class="sub nt">On/Off ${v>0?Math.round(cd['OnOff']/v*100):0}%</div>
-      ${y==='2026'?'<div class="sub" style="color:#ca8a04">W14-W17실적+W18-W27FCST</div>':''}
+      ${y==='2026'?'<div class="sub" style="color:#8a6d2e">W14-W17실적+W18-W27FCST</div>':''}
       <div class="kbar" style="width:${bw}%;background:${YR_C[y]}"></div>
     </div>`;
   });
@@ -765,7 +765,7 @@ function renderQ2() {
     <div class="val">W18×2.0</div>
     <div class="sub">W19×1.8 / W20×1.3</div>
     <div class="sub nt">Window AC 단종: -${(wac25q2/1000).toFixed(1)}K YoY</div>
-    <div class="kbar" style="width:100%;background:#ca8a04"></div>
+    <div class="kbar" style="width:100%;background:#8a6d2e"></div>
   </div>`;
   document.getElementById('q2Kpi').innerHTML = kHtml;
 
@@ -776,7 +776,7 @@ function renderQ2() {
       label:CAT_LABELS[cat],data:YEARS.map(y=>q2Cats(y)[cat]||0),
       backgroundColor:C[cat].bg,borderColor:C[cat].border,borderWidth:1,borderRadius:3}))},
     options:{responsive:true,plugins:{legend:{display:false},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   // Q2 Weekly W14-W27: 2025 vs 2026
@@ -785,17 +785,17 @@ function renderQ2() {
   const w26actual = q2Weeks.map(w=>{if(D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0),0):0;});
   const w26fcst = q2Weeks.map(w=>{if(!D.weekly['2026']?.[w]?._fcst)return null;const wd=D.weekly['2026']?.[w];if(!wd)return 0;const g=wd[ch];return g?cats.reduce((a,c)=>a+(g[c]||0)*sf(c),0):0;});
   mkChart('cQ2Weekly',{type:'bar',data:{labels:q2Weeks,datasets:[
-    {label:'2025 Actual',data:w25vals,backgroundColor:'#fcd34d',borderRadius:2},
-    {label:'2026 Actual',data:w26actual,backgroundColor:'#2563eb',borderRadius:2},
-    {label:'2026 FCST',data:w26fcst,backgroundColor:'#93c5fd',borderRadius:2,borderWidth:1.5,borderColor:'#2563eb',borderDash:[4,2]},
+    {label:'2025 Actual',data:w25vals,backgroundColor:'#e6d7ae',borderRadius:2},
+    {label:'2026 Actual',data:w26actual,backgroundColor:'#8c1d2f',borderRadius:2},
+    {label:'2026 FCST',data:w26fcst,backgroundColor:'#93c5fd',borderRadius:2,borderWidth:1.5,borderColor:'#8c1d2f',borderDash:[4,2]},
   ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:false}},
-  scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
+  scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
 
   mkChart('cQ2Ch',{type:'bar',data:{labels:YEARS.map(y=>y==='2026'?'2026E':y),datasets:[
-    {label:'OR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['OR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['OR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#f59e0b',borderRadius:3},
-    {label:'IR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['IR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['IR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#2563eb',borderRadius:3},
+    {label:'OR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['OR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['OR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#a8863c',borderRadius:3},
+    {label:'IR',data:YEARS.map(y=>{let v=cats.reduce((a,c)=>a+(D.quarterly[y]['Q2']['IR'][c]||0),0);if(y==='2026'){const fa=D.weekly['2026']?Object.values(D.weekly['2026']).filter(w=>w._fcst).reduce((a,w)=>{const g=w['IR'];return a+(g?cats.reduce((s,c)=>s+(g[c]||0)*sf(c),0):0);},0):0;v+=fa;}return v;}),backgroundColor:'#8c1d2f',borderRadius:3},
   ]},options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=3000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-  scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
+  scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}});
 
   const scnLabel = `2026E<br><span style="font-size:9px;color:${scn.color};font-weight:700">${scn.label}</span>`;
   let tHtml='<thead><tr><th>Category</th>';
@@ -814,7 +814,7 @@ function renderQ2() {
     tHtml+='</tr>';
   });
   const roundTots = q2tots.map(v=>Math.round(v));
-  tHtml+='<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td>';
+  tHtml+='<tr style="background:#f9f5ec;font-weight:700"><td>TOTAL</td>';
   YEARS.forEach((y,i)=>{
     const isScn = (i===3);
     tHtml+=`<td class="num" ${isScn?`style="color:${scn.color}"`:''}>
@@ -854,7 +854,7 @@ function renderMonthly() {
   }));
   mkChart('cMoMain',{type:'bar',data:{labels:MONTHS,datasets},
     options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=5000,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{grid:{display:false},ticks:{font:{size:11}}},y:{grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   // Month mini-cards
@@ -871,9 +871,9 @@ function renderMonthly() {
     const prevV = prevG?prevG._total:0;
     const yoy = prevV>0?((curV-prevV)/prevV*100).toFixed(0):null;
     return `<div class="card" style="cursor:pointer;padding:12px 16px" onclick="showMoDetail('${m}')">
-      <div style="font-size:12px;font-weight:700;color:#374151;margin-bottom:6px">${m} ${MONTH_KR[m]}</div>
+      <div style="font-size:12px;font-weight:700;color:#453f35;margin-bottom:6px">${m} ${MONTH_KR[m]}</div>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px">${rows}</div>
-      ${yoy!==null?`<div style="font-size:11px;${parseFloat(yoy)>=0?'color:#15803d':'color:#dc2626'}">${parseFloat(yoy)>=0?'▲ +':'▼ '}${yoy}% YoY</div>`:''}
+      ${yoy!==null?`<div style="font-size:11px;${parseFloat(yoy)>=0?'color:#175a39':'color:#a01d17'}">${parseFloat(yoy)>=0?'▲ +':'▼ '}${yoy}% YoY</div>`:''}
     </div>`;
   }).join('');
 }
@@ -905,7 +905,7 @@ function showMoDetail(m) {
       }))
     },
     options:{responsive:true,plugins:{legend:{position:'top',labels:{boxWidth:10,font:{size:11}}},datalabels:{display:ctx=>ctx.dataset.data[ctx.dataIndex]>=500,color:'#fff',font:{size:9,weight:'bold'},formatter:v=>fmtN(v)}},
-    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#f1f5f9'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
+    scales:{x:{stacked:true,grid:{display:false},ticks:{font:{size:11,weight:'600'}}},y:{stacked:true,grid:{color:'#efe9db'},ticks:{font:{size:10},callback:v=>v>=1000?Math.round(v/1000)+'K':v}}}}
   });
 
   // Save/restore ch=Total for OR/IR split
@@ -929,7 +929,7 @@ function showMoDetail(m) {
       <td class="num">${prev25>0?fmtPct(totV,prev25):'<span class="nt">—</span>'}</td></tr>`;
   });
   const prev25tot = cats.reduce((a,c)=>a+(prev25Grp[c]||0),0);
-  tHtml+=`<tr style="background:#f8fafc;font-weight:700"><td>TOTAL</td><td class="num">${grand.or.toLocaleString()}</td><td class="num">${grand.ir.toLocaleString()}</td><td class="num"><b>${grand.tot.toLocaleString()}</b></td><td class="num">${prev25tot>0?fmtPct(grand.tot,prev25tot):'—'}</td></tr></tbody>`;
+  tHtml+=`<tr style="background:#f9f5ec;font-weight:700"><td>TOTAL</td><td class="num">${grand.or.toLocaleString()}</td><td class="num">${grand.ir.toLocaleString()}</td><td class="num"><b>${grand.tot.toLocaleString()}</b></td><td class="num">${prev25tot>0?fmtPct(grand.tot,prev25tot):'—'}</td></tr></tbody>`;
   document.getElementById('tMoDetail').innerHTML = tHtml;
   card.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
