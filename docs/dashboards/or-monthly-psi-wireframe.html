@@ -6,15 +6,15 @@
 <title>OR Monthly PSI Dashboard — Wireframe</title>
 <style>
 :root{
-  --navy:#1a1f36;--primary:#2563eb;--bg:#f0f2f5;--card:#fff;
-  --text:#1e293b;--muted:#64748b;--border:#e2e8f0;
-  --green:#10b981;--red:#ef4444;--amber:#f59e0b;--purple:#8b5cf6;
-  --teal:#14b8a6;--sky:#0ea5e9;
-  --c23:#94a3b8;--c24:#60a5fa;--c25:#f59e0b;--c26:#2563eb;
+  --navy:#1a1f36;--primary:#8c1d2f;--bg:#f7f3ea;--card:#fff;
+  --text:#26221c;--muted:#6b6355;--border:#ddd4c2;
+  --green:#1d6b45;--red:#b3261e;--amber:#a8863c;--purple:#6d4b78;
+  --teal:#14b8a6;--sky:#33606d;
+  --c23:#9a927f;--c24:#b97b87;--c25:#a8863c;--c26:#8c1d2f;
   /* S=Sell-Out 주색 */
-  --so:#10b981; --so-bg:#f0fdf4; --so-border:#bbf7d0;
-  --st:#2563eb; --st-bg:#eff6ff; --st-border:#bfdbfe;
-  --stk:#f59e0b; --stk-bg:#fffbeb; --stk-border:#fde68a;
+  --so:#1d6b45; --so-bg:#eff3ea; --so-border:#bbf7d0;
+  --st:#8c1d2f; --st-bg:#f6ebe6; --st-border:#bfdbfe;
+  --stk:#a8863c; --stk-bg:#f8f2e2; --stk-border:#e6d7ae;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
@@ -22,7 +22,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 /* ── HEADER ── */
 .header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:16px;height:46px}
 .header h1{font-size:15px;font-weight:700}
-.header .sub{font-size:11px;color:#94a3b8}
+.header .sub{font-size:11px;color:#9a927f}
 .badge{padding:2px 10px;border-radius:10px;font-size:10px;font-weight:700}
 .header-right{margin-left:auto;display:flex;gap:8px;align-items:center}
 
@@ -80,17 +80,17 @@ th{background:var(--navy);color:#fff;padding:6px 10px;text-align:center;font-wei
 th.left{text-align:left}
 td{padding:5px 10px;text-align:center;border-bottom:1px solid var(--border)}
 td.label{text-align:left;font-weight:600;background:var(--bg)}
-td.so{color:#065f46;font-weight:700}
+td.so{color:#124a2f;font-weight:700}
 td.yr23{color:var(--c23)}
 td.yr24{color:var(--c24)}
 td.yr25{color:var(--c25)}
 td.yr26{color:var(--c26);font-weight:700}
 td.yoy-up{color:var(--green);font-weight:700}
 td.yoy-dn{color:var(--red);font-weight:700}
-td.null{color:#cbd5e1;font-style:italic}
+td.null{color:#cfc6b2;font-style:italic}
 tr.so-row td{background:var(--so-bg)}
-tr.so-row td.label{background:#d1fae5}
-tr:hover td{background:#f8fafc}
+tr.so-row td.label{background:#e2ecdf}
+tr:hover td{background:#f9f5ec}
 
 /* ── METRIC TOGGLE ── */
 .metric-toggle{display:flex;gap:4px}
@@ -102,26 +102,26 @@ tr:hover td{background:#f8fafc}
 /* ── YEAR LEGEND ── */
 .yr-legend{display:flex;gap:12px;margin-bottom:8px}
 .yr-tag{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
-.yr-tag.y23{background:#f1f5f9;color:var(--c23)}
-.yr-tag.y24{background:#eff6ff;color:var(--c24)}
-.yr-tag.y25{background:#fffbeb;color:var(--c25)}
-.yr-tag.y26{background:#eff6ff;color:var(--c26)}
+.yr-tag.y23{background:#efe9db;color:var(--c23)}
+.yr-tag.y24{background:#f6ebe6;color:var(--c24)}
+.yr-tag.y25{background:#f8f2e2;color:var(--c25)}
+.yr-tag.y26{background:#f6ebe6;color:var(--c26)}
 
 /* ── HEATMAP ── */
 .heatmap{display:grid;grid-template-columns:80px repeat(12,1fr);gap:3px;font-size:11px}
 .hm-header{background:var(--navy);color:#fff;padding:4px;text-align:center;border-radius:3px;font-weight:600}
 .hm-label{background:var(--bg);padding:4px 6px;font-weight:600;border-radius:3px;display:flex;align-items:center}
 .hm-cell{padding:5px;text-align:center;border-radius:3px;font-weight:600}
-.hm-full{background:#dcfce7;color:#166534}
-.hm-partial{background:#fef9c3;color:#854d0e}
-.hm-missing{background:#fee2e2;color:#991b1b}
+.hm-full{background:#e8efe4;color:#124a2f}
+.hm-partial{background:#f3ead2;color:#854d0e}
+.hm-missing{background:#f4e3de;color:#991b1b}
 
 /* ── STACK BAR ── */
 .stack-bar{height:26px;border-radius:4px;display:flex;overflow:hidden;margin-bottom:4px}
 .sb-seg{display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff}
 
 /* ── MISC ── */
-.note{font-size:11px;color:var(--muted);padding:8px 12px;background:#f8fafc;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
+.note{font-size:11px;color:var(--muted);padding:8px 12px;background:#f9f5ec;border-left:3px solid var(--so);border-radius:0 4px 4px 0;margin-top:8px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .tab-content{display:none}.tab-content.active{display:block}
 
@@ -134,12 +134,12 @@ tr:hover td{background:#f8fafc}
 <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
 <div class="header">
   <h1>OR Monthly PSI Dashboard</h1>
-  <span style="font-size:11px;color:#94a3b8">5 Channels · 2023–2026</span>
-  <span class="badge" style="background:#1e3a2e;color:#4ade80;border:1px solid #166534">Jan 2023 ~ May 2026</span>
+  <span style="font-size:11px;color:#9a927f">5 Channels · 2023–2026</span>
+  <span class="badge" style="background:#1e3a2e;color:#4ade80;border:1px solid #124a2f">Jan 2023 ~ May 2026</span>
   <div class="header-right">
     <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out (주지표)</span>
-    <span class="badge" style="background:#1e40af;color:#bfdbfe">P = Sell-Thru</span>
-    <span class="badge" style="background:#92400e;color:#fde68a">I = Stock</span>
+    <span class="badge" style="background:#5c0f1d;color:#bfdbfe">P = Sell-Thru</span>
+    <span class="badge" style="background:#92400e;color:#e6d7ae">I = Stock</span>
   </div>
 </div>
 
@@ -256,58 +256,58 @@ tr:hover td{background:#f8fafc}
     <div class="legend">
       <span class="legend-item"><span class="legend-dot" style="background:var(--so)"></span> <strong>Sell-Out (S)</strong></span>
       <span class="legend-item"><span class="legend-dot" style="background:var(--st);opacity:.6"></span> Sell-Thru (P, 공급)</span>
-      <span class="legend-item"><span class="legend-dot" style="background:#cbd5e1"></span> Stock (I, 점선)</span>
-      <span class="legend-item" style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;color:var(--amber);font-weight:700">⛱ 피크 시즌</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#cfc6b2"></span> Stock (I, 점선)</span>
+      <span class="legend-item" style="margin-left:auto;background:#f3ead2;padding:2px 8px;border-radius:4px;color:var(--amber);font-weight:700">⛱ 피크 시즌</span>
     </div>
     <div class="chart-placeholder" style="height:260px">
       <svg width="92%" height="240" viewBox="0 0 720 240">
         <!-- Peak Season BG -->
-        <rect x="280" y="0" width="230" height="215" fill="#fef9c3" opacity=".5" rx="4"/>
+        <rect x="280" y="0" width="230" height="215" fill="#f3ead2" opacity=".5" rx="4"/>
         <text x="395" y="14" text-anchor="middle" font-size="10" fill="#b45309" font-weight="700">⛱ 피크 시즌 (5~9월)</text>
 
         <!-- Sell-Out BARS (초록, 주지표) -->
-        <rect x="22" y="160" width="36" height="50" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="82" y="125" width="36" height="85" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="142" y="85" width="36" height="125" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="202" y="110" width="36" height="100" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="262" y="60" width="36" height="150" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="322" y="65" width="36" height="145" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="382" y="75" width="36" height="135" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="442" y="95" width="36" height="115" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="502" y="70" width="36" height="140" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="562" y="150" width="36" height="60" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="622" y="155" width="36" height="55" fill="#10b981" rx="2" opacity=".85"/>
-        <rect x="682" y="158" width="36" height="52" fill="#10b981" rx="2" opacity=".85"/>
+        <rect x="22" y="160" width="36" height="50" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="82" y="125" width="36" height="85" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="142" y="85" width="36" height="125" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="202" y="110" width="36" height="100" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="262" y="60" width="36" height="150" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="322" y="65" width="36" height="145" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="382" y="75" width="36" height="135" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="442" y="95" width="36" height="115" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="502" y="70" width="36" height="140" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="562" y="150" width="36" height="60" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="622" y="155" width="36" height="55" fill="#1d6b45" rx="2" opacity=".85"/>
+        <rect x="682" y="158" width="36" height="52" fill="#1d6b45" rx="2" opacity=".85"/>
 
         <!-- Sell-Thru LINE (파랑, 공급 맥락) -->
         <polyline points="40,150 100,110 160,70 220,95 280,48 340,55 400,62 460,82 520,58 580,140 640,148 700,150"
-          fill="none" stroke="#2563eb" stroke-width="1.8" stroke-dasharray="6,3" opacity=".7"/>
+          fill="none" stroke="#8c1d2f" stroke-width="1.8" stroke-dasharray="6,3" opacity=".7"/>
 
         <!-- Stock LINE (회색 점선) -->
         <polyline points="40,90 100,88 160,85 220,82 280,75 340,78 400,82 460,85 520,80 580,86 640,90 700,92"
-          fill="none" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4,4" opacity=".8"/>
+          fill="none" stroke="#9a927f" stroke-width="1.5" stroke-dasharray="4,4" opacity=".8"/>
 
         <!-- X axis labels -->
-        <text x="40" y="232" text-anchor="middle" font-size="10" fill="#64748b">Jan</text>
-        <text x="100" y="232" text-anchor="middle" font-size="10" fill="#64748b">Feb</text>
-        <text x="160" y="232" text-anchor="middle" font-size="10" fill="#64748b">Mar</text>
-        <text x="220" y="232" text-anchor="middle" font-size="10" fill="#64748b">Apr</text>
-        <text x="280" y="232" text-anchor="middle" font-size="10" fill="#64748b">May</text>
-        <text x="340" y="232" text-anchor="middle" font-size="10" fill="#64748b">Jun</text>
-        <text x="400" y="232" text-anchor="middle" font-size="10" fill="#64748b">Jul</text>
-        <text x="460" y="232" text-anchor="middle" font-size="10" fill="#64748b">Aug</text>
-        <text x="520" y="232" text-anchor="middle" font-size="10" fill="#64748b">Sep</text>
-        <text x="580" y="232" text-anchor="middle" font-size="10" fill="#64748b">Oct</text>
-        <text x="640" y="232" text-anchor="middle" font-size="10" fill="#64748b">Nov</text>
-        <text x="700" y="232" text-anchor="middle" font-size="10" fill="#64748b">Dec</text>
+        <text x="40" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Jan</text>
+        <text x="100" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Feb</text>
+        <text x="160" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Mar</text>
+        <text x="220" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Apr</text>
+        <text x="280" y="232" text-anchor="middle" font-size="10" fill="#6b6355">May</text>
+        <text x="340" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Jun</text>
+        <text x="400" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Jul</text>
+        <text x="460" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Aug</text>
+        <text x="520" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Sep</text>
+        <text x="580" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Oct</text>
+        <text x="640" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Nov</text>
+        <text x="700" y="232" text-anchor="middle" font-size="10" fill="#6b6355">Dec</text>
 
         <!-- 범례 inline -->
-        <rect x="580" y="18" width="10" height="10" fill="#10b981" rx="1"/>
-        <text x="594" y="27" font-size="10" fill="#065f46" font-weight="700">Sell-Out</text>
-        <line x1="580" y1="38" x2="590" y2="38" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,2"/>
-        <text x="594" y="42" font-size="10" fill="#2563eb">Sell-Thru</text>
-        <line x1="580" y1="52" x2="590" y2="52" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <text x="594" y="56" font-size="10" fill="#94a3b8">Stock</text>
+        <rect x="580" y="18" width="10" height="10" fill="#1d6b45" rx="1"/>
+        <text x="594" y="27" font-size="10" fill="#124a2f" font-weight="700">Sell-Out</text>
+        <line x1="580" y1="38" x2="590" y2="38" stroke="#8c1d2f" stroke-width="2" stroke-dasharray="4,2"/>
+        <text x="594" y="42" font-size="10" fill="#8c1d2f">Sell-Thru</text>
+        <line x1="580" y1="52" x2="590" y2="52" stroke="#9a927f" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="594" y="56" font-size="10" fill="#9a927f">Stock</text>
       </svg>
     </div>
   </div>
@@ -333,7 +333,7 @@ tr:hover td{background:#f8fafc}
         <tbody>
 
           <!-- ★ Sell-Out 최상단 -->
-          <tr class="so-row"><td class="label" style="background:#d1fae5;color:var(--so)" rowspan="5">★ S<br>Sell-Out</td>
+          <tr class="so-row"><td class="label" style="background:#e2ecdf;color:var(--so)" rowspan="5">★ S<br>Sell-Out</td>
             <td class="label yr23">2023</td>
             <td>1,726</td><td>4,621</td><td>7,645</td><td>4,478</td><td>9,088</td>
             <td>8,118</td><td>5,563</td><td>5,360</td><td>10,643</td><td>2,948</td><td>3,063</td><td>3,197</td>
@@ -350,7 +350,7 @@ tr:hover td{background:#f8fafc}
             <td class="so">1,890</td><td class="so">4,780</td><td class="so">7,640</td><td class="so">4,920</td><td class="so">9,430</td>
             <td class="null">-</td><td class="null">-</td><td class="null">-</td><td class="null">-</td><td class="null">-</td><td class="null">-</td><td class="null">-</td>
           </tr>
-          <tr class="so-row"><td class="label" style="background:#d1fae5;color:var(--so)">YoY%</td>
+          <tr class="so-row"><td class="label" style="background:#e2ecdf;color:var(--so)">YoY%</td>
             <td class="yoy-up">+16.7</td><td class="yoy-up">+10.9</td><td class="yoy-up">+6.4</td><td class="yoy-up">+5.1</td><td class="yoy-up">+5.4</td>
             <td class="null">—</td><td class="null">—</td><td class="null">—</td><td class="null">—</td><td class="null">—</td><td class="null">—</td><td class="null">—</td>
           </tr>
@@ -447,53 +447,53 @@ tr:hover td{background:#f8fafc}
     <div class="chart-placeholder" style="height:270px">
       <svg width="92%" height="250" viewBox="0 0 720 250">
         <!-- Peak BG -->
-        <rect x="288" y="0" width="234" height="228" fill="#f0fdf4" opacity=".7" rx="4"/>
-        <text x="405" y="16" text-anchor="middle" font-size="10" fill="#166534" font-weight="700">⛱ 피크 시즌 (5~9월)</text>
+        <rect x="288" y="0" width="234" height="228" fill="#eff3ea" opacity=".7" rx="4"/>
+        <text x="405" y="16" text-anchor="middle" font-size="10" fill="#124a2f" font-weight="700">⛱ 피크 시즌 (5~9월)</text>
 
         <!-- 2023 -->
         <polyline points="40,210 100,185 160,140 220,170 280,118 340,130 400,155 460,160 520,105 580,195 640,200 700,198"
-          fill="none" stroke="#94a3b8" stroke-width="2"/>
+          fill="none" stroke="#9a927f" stroke-width="2"/>
         <!-- 2024 -->
         <polyline points="40,215 100,190 160,148 220,178 280,128 340,140 400,162 460,168 520,112 580,200 640,205 700,203"
-          fill="none" stroke="#60a5fa" stroke-width="2"/>
+          fill="none" stroke="#b97b87" stroke-width="2"/>
         <!-- 2025 -->
         <polyline points="40,205 100,180 160,135 220,165 280,115 340,125 400,148 460,155 520,100 580,192 640,197 700,195"
-          fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+          fill="none" stroke="#a8863c" stroke-width="2.5"/>
         <!-- 2026 (Jan~May 실선, 두껍게) -->
         <polyline points="40,198 100,172 160,128 220,158 280,108"
-          fill="none" stroke="#10b981" stroke-width="3.5"/>
+          fill="none" stroke="#1d6b45" stroke-width="3.5"/>
         <!-- 2026 dots -->
-        <circle cx="40" cy="198" r="5" fill="#10b981"/>
-        <circle cx="100" cy="172" r="5" fill="#10b981"/>
-        <circle cx="160" cy="128" r="5" fill="#10b981"/>
-        <circle cx="220" cy="158" r="5" fill="#10b981"/>
-        <circle cx="280" cy="108" r="5" fill="#10b981"/>
+        <circle cx="40" cy="198" r="5" fill="#1d6b45"/>
+        <circle cx="100" cy="172" r="5" fill="#1d6b45"/>
+        <circle cx="160" cy="128" r="5" fill="#1d6b45"/>
+        <circle cx="220" cy="158" r="5" fill="#1d6b45"/>
+        <circle cx="280" cy="108" r="5" fill="#1d6b45"/>
         <!-- 2026 May 값 표기 -->
-        <text x="280" y="98" text-anchor="middle" font-size="10" fill="#065f46" font-weight="700">9,430</text>
+        <text x="280" y="98" text-anchor="middle" font-size="10" fill="#124a2f" font-weight="700">9,430</text>
 
         <!-- X labels -->
-        <text x="40" y="244" text-anchor="middle" font-size="10" fill="#64748b">Jan</text>
-        <text x="100" y="244" text-anchor="middle" font-size="10" fill="#64748b">Feb</text>
-        <text x="160" y="244" text-anchor="middle" font-size="10" fill="#64748b">Mar</text>
-        <text x="220" y="244" text-anchor="middle" font-size="10" fill="#64748b">Apr</text>
-        <text x="280" y="244" text-anchor="middle" font-size="10" fill="#64748b">May</text>
-        <text x="340" y="244" text-anchor="middle" font-size="10" fill="#64748b">Jun</text>
-        <text x="400" y="244" text-anchor="middle" font-size="10" fill="#64748b">Jul</text>
-        <text x="460" y="244" text-anchor="middle" font-size="10" fill="#64748b">Aug</text>
-        <text x="520" y="244" text-anchor="middle" font-size="10" fill="#64748b">Sep</text>
-        <text x="580" y="244" text-anchor="middle" font-size="10" fill="#64748b">Oct</text>
-        <text x="640" y="244" text-anchor="middle" font-size="10" fill="#64748b">Nov</text>
-        <text x="700" y="244" text-anchor="middle" font-size="10" fill="#64748b">Dec</text>
+        <text x="40" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Jan</text>
+        <text x="100" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Feb</text>
+        <text x="160" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Mar</text>
+        <text x="220" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Apr</text>
+        <text x="280" y="244" text-anchor="middle" font-size="10" fill="#6b6355">May</text>
+        <text x="340" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Jun</text>
+        <text x="400" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Jul</text>
+        <text x="460" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Aug</text>
+        <text x="520" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Sep</text>
+        <text x="580" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Oct</text>
+        <text x="640" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Nov</text>
+        <text x="700" y="244" text-anchor="middle" font-size="10" fill="#6b6355">Dec</text>
 
         <!-- legend 우측 -->
-        <circle cx="584" cy="175" r="4" fill="#10b981"/>
-        <text x="592" y="179" font-size="10" fill="#065f46" font-weight="700">2026</text>
-        <line x1="580" y1="190" x2="592" y2="190" stroke="#f59e0b" stroke-width="2.5"/>
-        <text x="596" y="194" font-size="10" fill="#f59e0b">2025</text>
-        <line x1="580" y1="206" x2="592" y2="206" stroke="#60a5fa" stroke-width="2"/>
-        <text x="596" y="210" font-size="10" fill="#60a5fa">2024</text>
-        <line x1="580" y1="222" x2="592" y2="222" stroke="#94a3b8" stroke-width="2"/>
-        <text x="596" y="226" font-size="10" fill="#94a3b8">2023</text>
+        <circle cx="584" cy="175" r="4" fill="#1d6b45"/>
+        <text x="592" y="179" font-size="10" fill="#124a2f" font-weight="700">2026</text>
+        <line x1="580" y1="190" x2="592" y2="190" stroke="#a8863c" stroke-width="2.5"/>
+        <text x="596" y="194" font-size="10" fill="#a8863c">2025</text>
+        <line x1="580" y1="206" x2="592" y2="206" stroke="#b97b87" stroke-width="2"/>
+        <text x="596" y="210" font-size="10" fill="#b97b87">2024</text>
+        <line x1="580" y1="222" x2="592" y2="222" stroke="#9a927f" stroke-width="2"/>
+        <text x="596" y="226" font-size="10" fill="#9a927f">2023</text>
       </svg>
     </div>
   </div>
@@ -506,29 +506,29 @@ tr:hover td{background:#f8fafc}
       <div class="chart-placeholder" style="height:210px">
         <svg width="88%" height="190" viewBox="0 0 500 190">
           <!-- Q1 -->
-          <rect x="28" y="110" width="18" height="68" fill="#94a3b8" rx="2"/>
-          <rect x="50" y="100" width="18" height="78" fill="#60a5fa" rx="2"/>
-          <rect x="72" y="88" width="18" height="90" fill="#f59e0b" rx="2"/>
-          <rect x="94" y="78" width="18" height="100" fill="#10b981" rx="2"/>
-          <text x="73" y="182" text-anchor="middle" font-size="11" fill="#64748b" font-weight="700">Q1</text>
+          <rect x="28" y="110" width="18" height="68" fill="#9a927f" rx="2"/>
+          <rect x="50" y="100" width="18" height="78" fill="#b97b87" rx="2"/>
+          <rect x="72" y="88" width="18" height="90" fill="#a8863c" rx="2"/>
+          <rect x="94" y="78" width="18" height="100" fill="#1d6b45" rx="2"/>
+          <text x="73" y="182" text-anchor="middle" font-size="11" fill="#6b6355" font-weight="700">Q1</text>
           <!-- Q2 -->
-          <rect x="165" y="68" width="18" height="110" fill="#94a3b8" rx="2"/>
-          <rect x="187" y="58" width="18" height="120" fill="#60a5fa" rx="2"/>
-          <rect x="209" y="48" width="18" height="130" fill="#f59e0b" rx="2"/>
-          <rect x="231" y="38" width="18" height="140" fill="#10b981" rx="2"/>
-          <text x="208" y="182" text-anchor="middle" font-size="11" fill="#64748b" font-weight="700">Q2</text>
+          <rect x="165" y="68" width="18" height="110" fill="#9a927f" rx="2"/>
+          <rect x="187" y="58" width="18" height="120" fill="#b97b87" rx="2"/>
+          <rect x="209" y="48" width="18" height="130" fill="#a8863c" rx="2"/>
+          <rect x="231" y="38" width="18" height="140" fill="#1d6b45" rx="2"/>
+          <text x="208" y="182" text-anchor="middle" font-size="11" fill="#6b6355" font-weight="700">Q2</text>
           <!-- Q3 -->
-          <rect x="302" y="62" width="18" height="116" fill="#94a3b8" rx="2"/>
-          <rect x="324" y="52" width="18" height="126" fill="#60a5fa" rx="2"/>
-          <rect x="346" y="40" width="18" height="138" fill="#f59e0b" rx="2"/>
-          <rect x="368" y="2" width="18" height="176" fill="#e2e8f0" rx="2" stroke="#cbd5e1" stroke-dasharray="3"/>
-          <text x="346" y="182" text-anchor="middle" font-size="11" fill="#64748b" font-weight="700">Q3</text>
-          <text x="377" y="168" text-anchor="middle" font-size="9" fill="#94a3b8">N/A</text>
+          <rect x="302" y="62" width="18" height="116" fill="#9a927f" rx="2"/>
+          <rect x="324" y="52" width="18" height="126" fill="#b97b87" rx="2"/>
+          <rect x="346" y="40" width="18" height="138" fill="#a8863c" rx="2"/>
+          <rect x="368" y="2" width="18" height="176" fill="#ddd4c2" rx="2" stroke="#cfc6b2" stroke-dasharray="3"/>
+          <text x="346" y="182" text-anchor="middle" font-size="11" fill="#6b6355" font-weight="700">Q3</text>
+          <text x="377" y="168" text-anchor="middle" font-size="9" fill="#9a927f">N/A</text>
           <!-- Q4 -->
-          <rect x="428" y="135" width="18" height="43" fill="#94a3b8" rx="2"/>
-          <rect x="450" y="130" width="18" height="48" fill="#60a5fa" rx="2"/>
-          <rect x="472" y="125" width="18" height="53" fill="#f59e0b" rx="2"/>
-          <text x="455" y="182" text-anchor="middle" font-size="11" fill="#64748b" font-weight="700">Q4</text>
+          <rect x="428" y="135" width="18" height="43" fill="#9a927f" rx="2"/>
+          <rect x="450" y="130" width="18" height="48" fill="#b97b87" rx="2"/>
+          <rect x="472" y="125" width="18" height="53" fill="#a8863c" rx="2"/>
+          <text x="455" y="182" text-anchor="middle" font-size="11" fill="#6b6355" font-weight="700">Q4</text>
         </svg>
       </div>
     </div>
@@ -570,41 +570,41 @@ tr:hover td{background:#f8fafc}
     <div style="display:grid;grid-template-columns:80px 1fr 70px;gap:4px;align-items:center;margin-top:10px">
       <span style="font-size:11px;color:var(--c23);font-weight:700">2023</span>
       <div class="stack-bar">
-        <div class="sb-seg" style="width:33%;background:#2563eb">eXtra 33%</div>
-        <div class="sb-seg" style="width:27%;background:#0ea5e9">Al Manea 27%</div>
-        <div class="sb-seg" style="width:17%;background:#8b5cf6">SWS 17%</div>
-        <div class="sb-seg" style="width:14%;background:#f59e0b">B.Box 14%</div>
-        <div class="sb-seg" style="width:9%;background:#10b981">Al Kh. 9%</div>
+        <div class="sb-seg" style="width:33%;background:#8c1d2f">eXtra 33%</div>
+        <div class="sb-seg" style="width:27%;background:#33606d">Al Manea 27%</div>
+        <div class="sb-seg" style="width:17%;background:#6d4b78">SWS 17%</div>
+        <div class="sb-seg" style="width:14%;background:#a8863c">B.Box 14%</div>
+        <div class="sb-seg" style="width:9%;background:#1d6b45">Al Kh. 9%</div>
       </div>
       <span style="font-size:11px;color:var(--muted);text-align:right">25.7K</span>
 
       <span style="font-size:11px;color:var(--c24);font-weight:700">2024</span>
       <div class="stack-bar">
-        <div class="sb-seg" style="width:30%;background:#2563eb">30%</div>
-        <div class="sb-seg" style="width:29%;background:#0ea5e9">29%</div>
-        <div class="sb-seg" style="width:18%;background:#8b5cf6">18%</div>
-        <div class="sb-seg" style="width:13%;background:#f59e0b">13%</div>
-        <div class="sb-seg" style="width:10%;background:#10b981">10%</div>
+        <div class="sb-seg" style="width:30%;background:#8c1d2f">30%</div>
+        <div class="sb-seg" style="width:29%;background:#33606d">29%</div>
+        <div class="sb-seg" style="width:18%;background:#6d4b78">18%</div>
+        <div class="sb-seg" style="width:13%;background:#a8863c">13%</div>
+        <div class="sb-seg" style="width:10%;background:#1d6b45">10%</div>
       </div>
       <span style="font-size:11px;color:var(--muted);text-align:right">22.8K</span>
 
       <span style="font-size:11px;color:var(--c25);font-weight:700">2025</span>
       <div class="stack-bar">
-        <div class="sb-seg" style="width:28%;background:#2563eb">28%</div>
-        <div class="sb-seg" style="width:30%;background:#0ea5e9">Al Manea 30%</div>
-        <div class="sb-seg" style="width:19%;background:#8b5cf6">19%</div>
-        <div class="sb-seg" style="width:12%;background:#f59e0b">12%</div>
-        <div class="sb-seg" style="width:11%;background:#10b981">11%</div>
+        <div class="sb-seg" style="width:28%;background:#8c1d2f">28%</div>
+        <div class="sb-seg" style="width:30%;background:#33606d">Al Manea 30%</div>
+        <div class="sb-seg" style="width:19%;background:#6d4b78">19%</div>
+        <div class="sb-seg" style="width:12%;background:#a8863c">12%</div>
+        <div class="sb-seg" style="width:11%;background:#1d6b45">11%</div>
       </div>
       <span style="font-size:11px;color:var(--muted);text-align:right">24.2K</span>
 
       <span style="font-size:11px;color:var(--so);font-weight:700">2026★</span>
       <div class="stack-bar" style="outline:2px solid var(--so);border-radius:4px">
-        <div class="sb-seg" style="width:26%;background:#2563eb">26%</div>
-        <div class="sb-seg" style="width:31%;background:#0ea5e9">Al Manea 31%</div>
-        <div class="sb-seg" style="width:20%;background:#8b5cf6">SWS 20%</div>
-        <div class="sb-seg" style="width:12%;background:#f59e0b">12%</div>
-        <div class="sb-seg" style="width:11%;background:#10b981">11%</div>
+        <div class="sb-seg" style="width:26%;background:#8c1d2f">26%</div>
+        <div class="sb-seg" style="width:31%;background:#33606d">Al Manea 31%</div>
+        <div class="sb-seg" style="width:20%;background:#6d4b78">SWS 20%</div>
+        <div class="sb-seg" style="width:12%;background:#a8863c">12%</div>
+        <div class="sb-seg" style="width:11%;background:#1d6b45">11%</div>
       </div>
       <span style="font-size:11px;color:var(--so);text-align:right;font-weight:700">27.2K★</span>
     </div>
@@ -621,21 +621,21 @@ tr:hover td{background:#f8fafc}
       <div class="chart-desc"><strong style="color:var(--so)">초록 막대 = Sell-Out</strong> / 파랑 점선 = Sell-Thru (공급) / 4개년 YoY</div>
       <div class="chart-placeholder" style="height:195px">
         <svg width="90%" height="175" viewBox="0 0 500 175">
-          <rect x="185" y="0" width="115" height="165" fill="#f0fdf4" opacity=".6" rx="3"/>
+          <rect x="185" y="0" width="115" height="165" fill="#eff3ea" opacity=".6" rx="3"/>
           <!-- SO bars -->
-          <rect x="18" y="115" width="25" height="48" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="68" y="90" width="25" height="73" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="118" y="58" width="25" height="105" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="168" y="72" width="25" height="91" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="218" y="40" width="25" height="123" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="268" y="48" width="25" height="115" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="318" y="60" width="25" height="103" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="368" y="80" width="25" height="83" fill="#10b981" rx="2" opacity=".9"/>
-          <rect x="418" y="55" width="25" height="108" fill="#10b981" rx="2" opacity=".9"/>
+          <rect x="18" y="115" width="25" height="48" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="68" y="90" width="25" height="73" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="118" y="58" width="25" height="105" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="168" y="72" width="25" height="91" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="218" y="40" width="25" height="123" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="268" y="48" width="25" height="115" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="318" y="60" width="25" height="103" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="368" y="80" width="25" height="83" fill="#1d6b45" rx="2" opacity=".9"/>
+          <rect x="418" y="55" width="25" height="108" fill="#1d6b45" rx="2" opacity=".9"/>
           <!-- ST line -->
           <polyline points="30,105 80,80 130,48 180,62 230,30 280,38 330,48 380,68 430,45"
-            fill="none" stroke="#2563eb" stroke-width="1.5" stroke-dasharray="5,3" opacity=".6"/>
-          <text x="250" y="168" text-anchor="middle" font-size="10" fill="#64748b">← Jan ~ Sep →</text>
+            fill="none" stroke="#8c1d2f" stroke-width="1.5" stroke-dasharray="5,3" opacity=".6"/>
+          <text x="250" y="168" text-anchor="middle" font-size="10" fill="#6b6355">← Jan ~ Sep →</text>
         </svg>
       </div>
     </div>
@@ -645,19 +645,19 @@ tr:hover td{background:#f8fafc}
       <div class="chart-desc">월말 재고 ÷ 직전 4주 평균 <strong style="color:var(--so)">Sell-Out</strong> 기준</div>
       <div class="chart-placeholder" style="height:195px">
         <svg width="88%" height="175" viewBox="0 0 480 175">
-          <rect x="0" y="58" width="480" height="58" fill="#dcfce7" opacity=".4"/>
-          <text x="8" y="70" font-size="9" fill="#166534">적정 (4~8w)</text>
+          <rect x="0" y="58" width="480" height="58" fill="#e8efe4" opacity=".4"/>
+          <text x="8" y="70" font-size="9" fill="#124a2f">적정 (4~8w)</text>
           <polyline points="30,108 80,98 130,88 180,78 230,62 280,72 330,68 380,82 430,92 460,100"
-            fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/>
+            fill="none" stroke="#a8863c" stroke-width="2" stroke-dasharray="5,3"/>
           <polyline points="30,95 80,82 130,70 180,65 230,55"
-            fill="none" stroke="#10b981" stroke-width="2.5"/>
-          <circle cx="30" cy="95" r="4" fill="#10b981"/><circle cx="80" cy="82" r="4" fill="#10b981"/>
-          <circle cx="130" cy="70" r="4" fill="#10b981"/><circle cx="180" cy="65" r="4" fill="#10b981"/>
-          <circle cx="230" cy="55" r="4" fill="#10b981"/>
-          <line x1="0" y1="58" x2="480" y2="58" stroke="#ef4444" stroke-width="1" stroke-dasharray="4,3"/>
-          <text x="8" y="52" font-size="9" fill="#ef4444">위험선 (WOS&gt;8)</text>
-          <text x="390" y="96" font-size="10" fill="#f59e0b">2025</text>
-          <text x="238" y="50" font-size="10" fill="#065f46" font-weight="700">2026</text>
+            fill="none" stroke="#1d6b45" stroke-width="2.5"/>
+          <circle cx="30" cy="95" r="4" fill="#1d6b45"/><circle cx="80" cy="82" r="4" fill="#1d6b45"/>
+          <circle cx="130" cy="70" r="4" fill="#1d6b45"/><circle cx="180" cy="65" r="4" fill="#1d6b45"/>
+          <circle cx="230" cy="55" r="4" fill="#1d6b45"/>
+          <line x1="0" y1="58" x2="480" y2="58" stroke="#b3261e" stroke-width="1" stroke-dasharray="4,3"/>
+          <text x="8" y="52" font-size="9" fill="#b3261e">위험선 (WOS&gt;8)</text>
+          <text x="390" y="96" font-size="10" fill="#a8863c">2025</text>
+          <text x="238" y="50" font-size="10" fill="#124a2f" font-weight="700">2026</text>
         </svg>
       </div>
     </div>
@@ -674,8 +674,8 @@ tr:hover td{background:#f8fafc}
   <div class="chart-card" style="margin-bottom:12px">
     <div class="chart-title">연도 × 월 × 메트릭 가용성</div>
     <div style="margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
-      <span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:3px;font-weight:700">✓ 완전</span>
-      <span style="background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:3px;font-weight:700">✗ 미수령</span>
+      <span style="background:#e8efe4;color:#124a2f;padding:2px 10px;border-radius:3px;font-weight:700">✓ 완전</span>
+      <span style="background:#f4e3de;color:#991b1b;padding:2px 10px;border-radius:3px;font-weight:700">✗ 미수령</span>
     </div>
     <div style="overflow-x:auto">
     <div class="heatmap">

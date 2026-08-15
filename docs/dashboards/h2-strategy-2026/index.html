@@ -148,7 +148,7 @@ function drawQuarter(){
   charts.q=new Chart(ctx,{type:'bar',data:{
     labels:['OR 3Q','OR 4Q','IR 3Q','IR 4Q'],
     datasets:[
-      {label:'자연전망',data:[s.OR.q3,s.OR.q4,s.IR.q3,s.IR.q4],backgroundColor:'#3b82f6'},
+      {label:'자연전망',data:[s.OR.q3,s.OR.q4,s.IR.q3,s.IR.q4],backgroundColor:'#a54b5e'},
       {label:'목표',data:[s.OR.t3,s.OR.t4,s.IR.t3,s.IR.t4],backgroundColor:'rgba(148,163,184,.45)'},
     ]},options:{responsive:true,plugins:{legend:{labels:{color:'#191714'}}},
       scales:{x:{ticks:{color:'#453f35'}},y:{ticks:{color:'#453f35'},title:{display:true,text:'M SAR',color:'#6b6355'}}}}});
