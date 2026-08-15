@@ -239,7 +239,7 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    .accordion-card { animation: slideIn 0.3s ease both; text-decoration: none; color: inherit; display: block; }
+    .accordion-card { animation: slideIn 0.3s ease both; text-decoration: none; color: inherit; display: block; min-width: 0; }
 
     .footer {
       text-align: center;
@@ -251,6 +251,14 @@
 
     .footer a { color: var(--accent); text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 1024px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+    }
 
     @media (max-width: 600px) {
       .header h1 { font-size: 20px; }
