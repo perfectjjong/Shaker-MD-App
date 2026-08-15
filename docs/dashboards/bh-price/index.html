@@ -123,7 +123,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <!-- I-S1: Integrated KPI Cards -->
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <h2 class="text-base font-bold text-navy-800 mb-3">Integrated Overview</h2>
-    <div class="flex items-center gap-3 mb-3 text-xs">
+    <div class="flex items-center gap-3 mb-3 text-xs flex-wrap">
       <span class="font-semibold text-gray-500">WS Date:</span>
       <select id="int_ws_date" class="pt-sel"></select>
       <span class="font-semibold text-gray-500 ml-3">Retail Date:</span>
@@ -202,7 +202,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <!-- WS-S1: KPI Cards -->
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <h2 class="text-base font-bold text-navy-800 mb-3">Wholesale Overview</h2>
-    <div class="flex items-center gap-3 mb-3 text-xs">
+    <div class="flex items-center gap-3 mb-3 text-xs flex-wrap">
       <span class="font-semibold text-gray-500">Current Date:</span>
       <select id="ws_cur_date" class="pt-sel" onchange="renderWS()"></select>
       <span class="font-semibold text-gray-500 ml-3">Compare To:</span>
@@ -293,7 +293,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <!-- RT-S1: KPI Cards -->
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <h2 class="text-base font-bold text-navy-800 mb-3">Retail Overview</h2>
-    <div class="flex items-center gap-3 mb-3 text-xs">
+    <div class="flex items-center gap-3 mb-3 text-xs flex-wrap">
       <span class="font-semibold text-gray-500">Current Date:</span>
       <select id="rt_cur_week" class="pt-sel" onchange="renderRT()"></select>
       <span class="font-semibold text-gray-500 ml-3">Compare To:</span>
@@ -358,7 +358,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <!-- RT-S5: Brand Comparison -->
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <h2 class="text-base font-bold text-navy-800 mb-3">Retail Brand Price Comparison</h2>
-    <div class="flex items-center gap-2 mb-3">
+    <div class="flex items-center gap-2 mb-3 flex-wrap">
       <select id="rt_s5_pt" class="pt-sel" onchange="renderRtBrandBar()">
         <option value="cp">Current Price</option>
         <option value="rp">Regular Price</option>
@@ -1119,7 +1119,7 @@ function renderRtSkuStatus(){
     const name=(info.n||'-').replace(/"/g,'&quot;');
     const nameHtml=info.url?`<a href="${info.url}" target="_blank" class="text-blue-600 hover:underline">${name}</a>`:name;
     const modelHtml=info.url?`<a href="${info.url}" target="_blank" class="text-blue-600 hover:underline">${v.m}</a>`:v.m;
-    return `<div class="border rounded-lg p-2 ${cardCls}"><div class="flex items-center justify-between gap-2"><span style="color:${colorOf(brand)};font-weight:700" class="text-xs">${brand}</span>${meta}</div><div class="text-[10px] text-gray-700 mt-1 truncate" title="${name}">${nameHtml}</div><div class="flex justify-between mt-1 text-[10px]"><span class="text-gray-500">${info.c||'-'} · ${modelHtml}</span><span class="font-semibold">${info.cp!=null?'SAR '+fmtSAR(info.cp):'-'}</span></div></div>`;
+    return `<div class="border rounded-lg p-2 ${cardCls}"><div class="flex items-center justify-between gap-2 flex-wrap"><span style="color:${colorOf(brand)};font-weight:700" class="text-xs">${brand}</span>${meta}</div><div class="text-[10px] text-gray-700 mt-1 truncate" title="${name}">${nameHtml}</div><div class="flex justify-between mt-1 text-[10px]"><span class="text-gray-500">${info.c||'-'} · ${modelHtml}</span><span class="font-semibold">${info.cp!=null?'SAR '+fmtSAR(info.cp):'-'}</span></div></div>`;
   };
   document.getElementById('rtSkuStatusGrid').innerHTML=list.length?list.map(card).join(''):`<div class="text-gray-400 text-xs py-4 text-center col-span-full">No ${RT_SKU_TAB.replace('_',' ')} SKUs</div>`;
 }
