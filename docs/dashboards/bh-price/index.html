@@ -136,7 +136,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Price Gap Analysis (Wholesale vs Retail)</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="int_search" class="sec-search" placeholder="Search model..."/>
         <button class="dir-int-btn text-[10px] px-2 py-1 rounded bg-gray-700 text-white active" data-dir="all" onclick="setIntDir(this)">All</button>
         <button class="dir-int-btn text-[10px] px-2 py-1 rounded bg-gray-50" data-dir="high" onclick="setIntDir(this)">High Markup</button>
@@ -182,7 +182,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Matched Models — Wholesale vs Retail Detail</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="int_s5_search" class="sec-search" placeholder="Search model..." oninput="ST.intS5q=this.value;renderIntMatched()"/>
         <button onclick="downloadIntMatchedExcel()" class="text-[10px] px-3 py-1 rounded bg-green-600 text-white font-semibold hover:bg-green-700">Excel</button>
         <span id="int_s5_count" class="text-[10px] text-gray-400 ml-1"></span>
@@ -216,7 +216,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800 border-b-2 border-navy-800 pb-2">Wholesale Price Alerts <span id="ws_alert_compare" class="text-xs font-normal text-gray-400"></span></h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="ws_alert_search" class="sec-search" placeholder="Search..."/>
         <button class="ws-dir-btn text-[10px] px-2 py-1 rounded bg-gray-700 text-white active" data-dir="all" onclick="setWsDir(this)">All</button>
         <button class="ws-dir-btn text-[10px] px-2 py-1 rounded bg-gray-50" data-dir="up" onclick="setWsDir(this)">Up</button>
@@ -274,7 +274,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Wholesale Full Model Table</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="ws_s7_search" class="sec-search" placeholder="Search..."/>
         <button onclick="downloadWsExcel()" class="text-[10px] px-3 py-1 rounded bg-green-600 text-white font-semibold hover:bg-green-700">Excel</button>
       </div>
@@ -307,7 +307,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800 border-b-2 border-navy-800 pb-2">Retail Price Alerts <span id="rt_alert_compare" class="text-xs font-normal text-gray-400"></span></h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="rt_alert_search" class="sec-search" placeholder="Search..."/>
         <select id="rt_alert_pt" class="pt-sel" onchange="renderRtAlerts()">
           <option value="cp">Current Price</option>
@@ -342,7 +342,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Retail Category KPI</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="rt_s4_search" class="sec-search" placeholder="Search..."/>
         <select id="rt_s4_pt" class="pt-sel" onchange="renderRtCatKpi()">
           <option value="cp">Current Price</option>
@@ -371,7 +371,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Retail Price Trend</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="rt_s6_search" class="sec-search" placeholder="Search model..."/>
         <select id="rt_s6_pt" class="pt-sel" onchange="renderRtTrend()">
           <option value="cp">Current Price</option>
@@ -386,7 +386,7 @@ body{font-family:'Inter','system-ui',sans-serif}
   <div class="bg-white rounded-xl border p-4 mb-4 shadow-sm">
     <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
       <h2 class="text-base font-bold text-navy-800">Retail Full SKU Table</h2>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 flex-wrap">
         <input type="text" id="rt_s7_search" class="sec-search" placeholder="Search..."/>
         <button onclick="downloadRtExcel()" class="text-[10px] px-3 py-1 rounded bg-green-600 text-white font-semibold hover:bg-green-700">Excel</button>
       </div>
@@ -872,7 +872,7 @@ function renderWsNewDisc(){
 
   const newModels=curD.filter(r=>!prevModels.has(r.m));
   const discModels=prevD.filter(r=>!curModels.has(r.m));
-  const card=(r,type)=>`<div class="border rounded-lg p-2 ${type==='new'?'border-green-200 bg-green-50':'border-red-200 bg-red-50'}"><div class="flex items-center gap-2"><span style="color:${colorOf(r.b)};font-weight:700" class="text-xs">${r.b}</span><span class="text-[10px] text-gray-500">${r.m}</span></div><div class="text-[10px] text-gray-600 mt-1 truncate">${r.n||'-'}</div><div class="flex gap-2 mt-1 text-[10px]"><span class="text-gray-500">${r.c||'-'}</span><span class="font-semibold">${r.p!=null?'SAR '+fmtSAR(r.p):'-'}</span></div></div>`;
+  const card=(r,type)=>`<div class="border rounded-lg p-2 ${type==='new'?'border-green-200 bg-green-50':'border-red-200 bg-red-50'}"><div class="flex items-center gap-2 flex-wrap"><span style="color:${colorOf(r.b)};font-weight:700" class="text-xs">${r.b}</span><span class="text-[10px] text-gray-500">${r.m}</span></div><div class="text-[10px] text-gray-600 mt-1 truncate">${r.n||'-'}</div><div class="flex gap-2 mt-1 text-[10px]"><span class="text-gray-500">${r.c||'-'}</span><span class="font-semibold">${r.p!=null?'SAR '+fmtSAR(r.p):'-'}</span></div></div>`;
   document.getElementById('wsNewGrid').innerHTML=newModels.length?newModels.map(r=>card(r,'new')).join(''):'<div class="text-gray-400 text-xs py-4 text-center">No new models</div>';
   document.getElementById('wsDiscGrid').innerHTML=discModels.length?discModels.map(r=>card(r,'disc')).join(''):'<div class="text-gray-400 text-xs py-4 text-center">No discontinued models</div>';
   document.getElementById('ws_new_count').textContent='('+newModels.length+')';

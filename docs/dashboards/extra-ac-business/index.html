@@ -95,7 +95,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .ch-250 canvas,.ch-300 canvas,.ch-200 canvas{position:absolute;inset:0}
 
 /* Tables */
-.tbl-wrap{max-height:360px;overflow-y:auto}
+.tbl-wrap{max-height:360px;overflow-y:auto;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .dt{width:100%;border-collapse:collapse;font-size:11px}
 .dt th{text-align:left;padding:5px 8px;background:#f9f5ec;border-bottom:2px solid #ddd4c2;font-weight:700;color:var(--muted);text-transform:uppercase;font-size:9.5px;white-space:nowrap;position:sticky;top:0;z-index:1;cursor:pointer}
 .dt th.r,.dt td.r{text-align:right}
@@ -133,6 +133,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .loading .spinner{width:40px;height:40px;border:4px solid #ddd4c2;border-top-color:#8c1d2f;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:14px}
 .loading .error-msg{color:#a01d17;font-size:12px;max-width:90vw;word-break:break-all;margin-top:10px;padding:10px;background:#f8efe9;border:1px solid #ecd0cb;border-radius:6px;text-align:left;white-space:pre-wrap}
 @keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}.sf-row{grid-template-columns:minmax(0,1fr)}.sf-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}.grid-2,.alert-grid{grid-template-columns:minmax(0,1fr)}}
 </style>
 <script>window.onerror=function(m,s,l,c,e){var d=document.getElementById('loadErr');if(d){d.textContent='ERROR: '+m+'\nLine: '+l+', Col: '+c+'\nSource: '+(s||'');}return false;}</script>
 </head>
