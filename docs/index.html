@@ -440,6 +440,14 @@
       document.getElementById('navMgmt').classList.toggle('active', view === 'management');
     }
 
+    const COLLAPSED_BY_DEFAULT_DESKTOP = ['GTM Weekly', 'GTM Dashboard', 'Archive'];
+
+    function isOpenByDefault(groupName) {
+      const isMobile = window.matchMedia('(max-width: 700px)').matches;
+      if (isMobile) return groupName === 'Management Dashboard';
+      return !COLLAPSED_BY_DEFAULT_DESKTOP.includes(groupName);
+    }
+
     function render() {
       const grid = document.getElementById('dashboardGrid');
       const view = getView();
@@ -456,8 +464,9 @@
             <span class="sub-item-arrow">&rarr;</span>
           </a>
         `).join('');
+        const openClass = isOpenByDefault(g.name) ? ' open' : '';
         return `
-          <div class="accordion-card open" onclick="this.classList.toggle('open')">
+          <div class="accordion-card${openClass}" onclick="this.classList.toggle('open')">
             <div class="card">
               <div class="card-icon">${g.icon}</div>
               <div class="card-name">${esc(g.name)} <span class="accordion-arrow">&#9660;</span></div>
