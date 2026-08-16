@@ -739,7 +739,7 @@ function calcSignal(p) {
     if (!p.soQty && p.stkQty > 0) return 'OVERSTOCK';
     const mos = soRatioFromPeriod(p);
     if (mos == null) return 'INACTIVE';
-    return mos < 3 ? 'OPPORTUNITY' : mos <= 6 ? 'HEALTHY' : 'OVERSTOCK';
+    return mos < 2 ? 'OPPORTUNITY' : mos <= 4 ? 'HEALTHY' : 'OVERSTOCK';
 }
 
 /* ---- Core filtered source (all filters) ---- */
