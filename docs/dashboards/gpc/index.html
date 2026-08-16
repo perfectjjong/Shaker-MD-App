@@ -129,6 +129,39 @@
 
   footer{text-align:center;color:var(--mut);font-size:11.5px;margin-top:8px}
   footer b{color:var(--ink2)}
+
+  /* ── 반응형: 태블릿 ≤1024 / 모바일 ≤640 ── */
+  @media(max-width:1024px){
+    .wrap{padding:18px 18px 40px}
+    .bar{gap:16px;padding:12px 14px}
+    .cbox{height:300px}.cbox.tall{height:340px}
+  }
+  @media(max-width:640px){
+    .wrap{padding:12px 10px 32px}
+    body{font-size:13px}
+    .top{margin-bottom:14px}
+    .top h1{font-size:18px}
+    .top .meta{text-align:left;font-size:11px;line-height:1.6}
+    .bar{gap:12px;padding:12px 12px;margin-bottom:14px}
+    .sep{display:none}
+    .ctl{width:100%}
+    .pchips{max-width:none}
+    .pchip{min-width:30px;padding:5px 7px;font-size:12px}
+    .ytog{padding:5px 10px;font-size:12.5px}
+    .seg button{padding:5px 10px;font-size:12.5px}
+    .tabs{overflow-x:auto;scrollbar-width:none}
+    .tabs button{padding:10px 12px;font-size:13px;white-space:nowrap;flex:none}
+    .kpis{grid-template-columns:1fr;gap:10px;margin-bottom:14px}
+    .kpi{padding:14px 16px}
+    .kpi .big{font-size:26px}
+    .card{padding:14px 14px;margin-bottom:12px}
+    .card .h{margin-bottom:12px}
+    .card .h .row{flex-wrap:wrap;justify-content:flex-start}
+    .cbox{height:250px}.cbox.tall{height:290px}
+    .tbl th,.tbl td{padding:7px 9px;font-size:12px}
+    .tbl tr.prow td{font-size:10.5px}
+    .grid.g2{gap:12px}
+  }
 </style>
 </head>
 <body>
@@ -257,6 +290,8 @@
 <script src="gpc_data.js"></script>
 <script>
 Chart.register(ChartDataLabels);
+// Chart.js 4.4.2+datalabels: 초기 애니메이션 렌더에서 마지막 범례 아이템이 간헐 미도색 (뷰포트 의존) -> 전역 비활성화
+Chart.defaults.animation=false;
 Chart.defaults.font.family="'Pretendard',-apple-system,sans-serif";
 Chart.defaults.font.size=12;
 Chart.defaults.color="#8b919d";
@@ -274,6 +309,10 @@ const GRID={color:'#f2f3f5'};
 const DLF={size:9,weight:'700'};
 const MAINS=[...GPC_META.or_mains,...GPC_META.ir_mains];
 
+const isNarrow=()=>window.matchMedia('(max-width:640px)').matches;
+let _wasNarrow=isNarrow();
+window.addEventListener('resize',()=>{clearTimeout(window.__rzt);
+  window.__rzt=setTimeout(()=>{if(isNarrow()!==_wasNarrow){_wasNarrow=isNarrow();render();}},250);});
 const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
   chans:new Set(GPC_META.channels),cats:new Set(GPC_META.cats),
   metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1]};
@@ -479,22 +518,26 @@ function renderMain(){destroy('cMain');
   charts.cMain=new Chart(cMain,{type:'bar',data:{labels,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'top',align:'end'},
-        datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
+        datalabels:{display:!isNarrow(),anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
           formatter:v=>v==null?'':(isPct?v.toFixed(1)+'%':Math.round(v).toLocaleString())},
         tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':Math.round(c.parsed.y).toLocaleString()+' 천 SAR'}`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>isPct?v+'%':v.toLocaleString()}}}}});}
 
+let chanGms=[]; // 데이터셋 객체에 커스텀 배열을 넣으면 Chart.js 범례 마지막 아이템 미도색 결함 유발 -> 외부 보관
 function renderChanCmp(){destroy('cChanCmp');
   const yrs=selYears(),months=selMonths();
   const chans=GPC_META.channels;
+  chanGms=[];
   const ds=yrs.map(y=>{const gms=[];
     const data=chans.map(ch=>{const a=agg(y,months,{chans:new Set([ch])});gms.push(a.gm_pct);return a.gp/1000;});
-    return {label:''+y,backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:70,data,_gms:gms};});
+    chanGms.push(gms);
+    return {label:''+y,backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:70,data};});
   charts.cChanCmp=new Chart(cChanCmp,{type:'bar',data:{labels:chans,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
       datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
-        formatter:(v,ctx)=>v==null?'':`${Math.round(v).toLocaleString()}\nGM ${(ctx.dataset._gms[ctx.dataIndex]*100).toFixed(1)}%`},
-      tooltip:{callbacks:{label:c=>`${c.dataset.label}  GP ${Math.round(c.parsed.y).toLocaleString()} 천 SAR · GM ${(c.dataset._gms[c.dataIndex]*100).toFixed(1)}%`}}},
+        formatter:(v,ctx)=>v==null?'':(isNarrow()?`GM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`
+          :`${Math.round(v).toLocaleString()}\nGM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`)},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  GP ${Math.round(c.parsed.y).toLocaleString()} 천 SAR · GM ${(chanGms[c.datasetIndex][c.dataIndex]*100).toFixed(1)}%`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
 function renderErosion(){destroy('cErosion');
@@ -509,16 +552,20 @@ function renderErosion(){destroy('cErosion');
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(2)}%`}}},
       scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
+let vspAmts=[]; // 커스텀 배열 외부 보관 (범례 미도색 결함 회피)
 function renderVsp(){destroy('cVsp');
   const yrs=selYears();
   const labels=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  vspAmts=[];
   const ds=yrs.map(y=>{const av=new Set(GPC_META.year_months[String(y)]||[]);const amts=[];
     const data=Array.from({length:12},(_,i)=>{const m=i+1;if(!av.has(m)){amts.push(null);return null;}
       const a=agg(y,[m]);amts.push(a.vsp);return a.cogs?a.vsp/a.cogs*100:0;});
-    return {label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointRadius:3,pointHoverRadius:5,tension:.3,borderWidth:2.5,fill:false,spanGaps:false,data,_amts:amts};});
+    vspAmts.push(amts);
+    return {label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointStyle:'circle',pointRadius:3,pointHoverRadius:5,tension:.3,borderWidth:2.5,fill:false,spanGaps:false,data};});
   charts.cVsp=new Chart(cVsp,{type:'line',data:{labels,datasets:ds},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},datalabels:{display:false},
-      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(1)}%  (${fmt(c.dataset._amts[c.dataIndex])} 천 SAR)`}}},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',align:'end'},datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(1)}%  (${fmt(vspAmts[c.datasetIndex][c.dataIndex])} 천 SAR)`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
 
 // ── 탭2: 카테고리 ──
@@ -641,7 +688,7 @@ function renderCtRate(){destroy('cCtRate');
   document.getElementById('ctChartHint').textContent=`${y}년${prevY!==undefined?` (연한 막대 = ${prevY})`:''} · 선택 기간 · 전 카테고리 가중`;
   charts.cCtRate=new Chart(cCtRate,{type:'bar',data:{labels:MAINS,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
+      datalabels:{display:!isNarrow(),anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
         formatter:v=>v==null?'':v.toFixed(1)+'%'},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  YED율 ${c.parsed.y==null?'-':c.parsed.y.toFixed(1)+'%'}`}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:10.5},maxRotation:45}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
