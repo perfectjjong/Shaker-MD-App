@@ -16,7 +16,7 @@
     --y24:#cfc6b2; --y25:#3a352c; --y26:#8c1d2f;
     --pos:#1d6b45; --neg:#b3261e;
     --r:14px; --sh:0 1px 2px rgba(20,23,28,.04),0 1px 3px rgba(20,23,28,.03);
-  }@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}}:root[data-theme="dark"]{--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}
+  }@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}/*DARK-PRIMARY-BTN-FIX*/:root:not([data-theme="light"]) .ms .opt.on .box{color:#191510!important}:root:not([data-theme="light"]) .pchip.on{color:#191510!important}:root:not([data-theme="light"]) .top .mark{color:#191510!important}}:root[data-theme="dark"]{--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}:root[data-theme="dark"] .ms .opt.on .box{color:#191510!important}:root[data-theme="dark"] .pchip.on{color:#191510!important}:root[data-theme="dark"] .top .mark{color:#191510!important}
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-font-smoothing:antialiased}
   body{font-family:'Pretendard','Pretendard Variable',-apple-system,sans-serif;
@@ -301,7 +301,8 @@ Chart.defaults.plugins.legend.labels.boxWidth=8;
 Chart.defaults.plugins.legend.labels.padding=16;
 Chart.defaults.plugins.legend.labels.font={size:12,weight:'600'};
 
-const YCOL={2024:'#cfc6b2',2025:'#3a352c',2026:'#8c1d2f'};
+const __dk=(function(){var a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;})();
+const YCOL=__dk?{2024:'#cfc6b2',2025:'#b3a996',2026:'#d68a97'}:{2024:'#cfc6b2',2025:'#3a352c',2026:'#8c1d2f'};
 const YEARS=GPC_META.years;
 const UNITS=[['month','월'],['quarter','분기'],['half','반기'],['year','연간']];
 const METRICS=[['gm_pct','GM%'],['gp','GP'],['nsv','NSV'],['gsv','GSV']];
