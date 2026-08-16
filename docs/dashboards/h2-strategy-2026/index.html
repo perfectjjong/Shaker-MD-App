@@ -5,10 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2026 하반기 전략 코크핏 | Saudi LG AC</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
-  :root{--or:#a8863c;--ir:#8c1d2f;--bg:#f7f3ea;--card:#fffdf8;--mut:#6b6355;--line:#ddd4c2;--ok:#1d6b45;--warn:#8a6d2e;--bad:#b3261e;}
+  :root{--or:#a8863c;--ir:#8c1d2f;--bg:#f7f3ea;--card:#fffdf8;--mut:#6b6355;--line:#ddd4c2;--ok:#1d6b45;--warn:#8a6d2e;--bad:#b3261e;--auto-text-1:#191714;--auto-text-2:#453f35;--auto-text-3:#fca5a5;--auto-text-4:#5c554b;--auto-text-5:#a54b5e;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--or:#d4a855;--ir:#d68a97;--bg:#191510;--card:#221d17;--mut:#cfcac2;--line:#3a3226;--ok:#5ba37f;--warn:#e0c17a;--bad:#e2685c;--auto-text-1:#e2dfdb;--auto-text-2:#d9d5cd;--auto-text-3:#f95555;--auto-text-4:#d2cdc7;--auto-text-5:#d9aab4;}}:root[data-theme="dark"]{--or:#d4a855;--ir:#d68a97;--bg:#191510;--card:#221d17;--mut:#cfcac2;--line:#3a3226;--ok:#5ba37f;--warn:#e0c17a;--bad:#e2685c;--auto-text-1:#e2dfdb;--auto-text-2:#d9d5cd;--auto-text-3:#f95555;--auto-text-4:#d2cdc7;--auto-text-5:#d9aab4;}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:#191714;line-height:1.5;padding:20px}
+  body{font-family:'Segoe UI','Malgun Gothic',sans-serif;background:var(--bg);color:var(--auto-text-1);line-height:1.5;padding:20px}
   .wrap{max-width:1280px;margin:0 auto}
   h1{font-size:24px;font-weight:800}
   .sub{color:var(--mut);font-size:13px;margin-top:4px}
@@ -27,20 +28,20 @@
   th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
   th{color:var(--mut);font-weight:600;font-size:11px;text-transform:uppercase;position:sticky;top:0;background:var(--card)}
   td.l,th.l{text-align:left}
-  tr.or-row td.l{color:#a54b5e}tr.ir-row td.l{color:#fca5a5}
+  tr.or-row td.l{color:var(--auto-text-5)}tr.ir-row td.l{color:var(--auto-text-3)}
   tr.seg td.l{font-style:italic;color:var(--mut)}
   tr.grp{background:#efe9db;font-weight:800}
   .chip{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700}
-  .c-ok{background:rgba(16,185,129,.18);color:#1d6b45}
-  .c-warn{background:rgba(245,158,11,.18);color:#8a6d2e}
-  .c-bad{background:rgba(239,68,68,.18);color:#b3261e}
+  .c-ok{background:rgba(16,185,129,.18);color:var(--ok)}
+  .c-warn{background:rgba(245,158,11,.18);color:var(--warn)}
+  .c-bad{background:rgba(239,68,68,.18);color:var(--bad)}
   .chartbox{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}
   .chartbox h3{font-size:15px;margin-bottom:10px}
   canvas{max-height:340px}
   .secttitle{font-size:18px;font-weight:800;margin:22px 0 4px}
   .axis-tag{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:700;margin-left:8px}
-  .ax-val{background:rgba(37,99,235,.2);color:#a54b5e}
-  .ax-qty{background:rgba(245,158,11,.2);color:#8a6d2e}
+  .ax-val{background:rgba(37,99,235,.2);color:var(--auto-text-5)}
+  .ax-qty{background:rgba(245,158,11,.2);color:var(--warn)}
   .plan-grid{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
   .footnote{color:var(--mut);font-size:12px;margin-top:18px;border-top:1px solid var(--line);padding-top:12px}
 </style>
@@ -82,12 +83,12 @@ function gapChip(g){ // 양수=미달(빨강), 음수=초과(녹색)
   return `<span class="chip ${cls}">${s}M</span>`;
 }
 function mosChip(m){
-  if(m==null) return '<span style="color:#5c554b">–</span>';
+  if(m==null) return '<span style="color:var(--auto-text-4)">–</span>';
   const cls = m>=4?'c-bad':(m>=2.5?'c-warn':'c-ok');
   return `<span class="chip ${cls}">${m.toFixed(1)}개월</span>`;
 }
 function ovdChip(o){
-  if(!o) return '<span style="color:#5c554b">0</span>';
+  if(!o) return '<span style="color:var(--auto-text-4)">0</span>';
   const cls = o>=10?'c-bad':(o>=2.5?'c-warn':'c-ok');
   return `<span class="chip ${cls}">${o.toFixed(1)}M</span>`;
 }
@@ -100,19 +101,19 @@ function renderOverview(){
     <div class="card">
       <div class="lbl">${g} 하반기 — 시나리오 밴드 (M SAR)</div>
       <div style="display:flex;justify-content:space-between;margin-top:12px;gap:6px">
-        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S1 충격지속</div><div style="font-size:21px;font-weight:800;color:#b3261e">${x.S1.H2}</div></div>
-        <div style="text-align:center;flex:1;border-left:1px solid var(--line);border-right:1px solid var(--line)"><div style="font-size:11px;color:#8a6d2e">🎯 목표(공식)</div><div style="font-size:26px;font-weight:800;color:#8a6d2e">${x.target.H2}</div></div>
-        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S2 정상회복</div><div style="font-size:21px;font-weight:800;color:#1d6b45">${x.S2.H2}</div></div>
+        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S1 충격지속</div><div style="font-size:21px;font-weight:800;color:var(--bad)">${x.S1.H2}</div></div>
+        <div style="text-align:center;flex:1;border-left:1px solid var(--line);border-right:1px solid var(--line)"><div style="font-size:11px;color:var(--warn)">🎯 목표(공식)</div><div style="font-size:26px;font-weight:800;color:var(--warn)">${x.target.H2}</div></div>
+        <div style="text-align:center;flex:1"><div style="font-size:11px;color:var(--mut)">S2 정상회복</div><div style="font-size:21px;font-weight:800;color:var(--ok)">${x.S2.H2}</div></div>
       </div>
-      <div class="note" style="color:var(--mut);margin-top:10px;text-align:center">목표는 충격지속·정상회복 사이 — <b style="color:#8a6d2e">회복 ${pct(g)}% 실현</b> 지점 (달성 가능·보수적)</div>
+      <div class="note" style="color:var(--mut);margin-top:10px;text-align:center">목표는 충격지속·정상회복 사이 — <b style="color:var(--warn)">회복 ${pct(g)}% 실현</b> 지점 (달성 가능·보수적)</div>
     </div>`;};
   const macroRow=D.macro.map(e=>`<tr><td class="l" style="white-space:nowrap"><b>${e.m}</b></td>
-    <td class="l">${e.event}</td><td class="l" style="color:#453f35">${e.impact}</td>
+    <td class="l">${e.event}</td><td class="l" style="color:var(--auto-text-2)">${e.impact}</td>
     <td><span class="chip ${e.type==='shock'?'c-bad':'c-ok'}">${e.type==='shock'?'충격':'회복'}</span></td></tr>`).join('');
   el.innerHTML = `
-    <div class="card" style="border-color:#8a6d2e;margin-bottom:14px">
+    <div class="card" style="border-color:var(--warn);margin-bottom:14px">
       <div class="lbl">공식 FCST = 형님 목표 채택 · 거시 회복 반영 (2026-06-18)</div>
-      <div class="note" style="color:#453f35;margin-top:6px;font-size:13px">1~5월은 <b>사우디제이션(1월)+이란·미국전 소비위축(4~5월)</b> 충격기. 그 바닥을 미래에 복사하면 과소추정 → 충격월 제외 <b>정상 런레이트</b>(OR ${D.normal_base.OR} / IR ${D.normal_base.IR}M·월)로 회복 시나리오 산출. 회복계수 OR ×${D.recovery.OR} / IR ×${D.recovery.IR}.</div>
+      <div class="note" style="color:var(--auto-text-2);margin-top:6px;font-size:13px">1~5월은 <b>사우디제이션(1월)+이란·미국전 소비위축(4~5월)</b> 충격기. 그 바닥을 미래에 복사하면 과소추정 → 충격월 제외 <b>정상 런레이트</b>(OR ${D.normal_base.OR} / IR ${D.normal_base.IR}M·월)로 회복 시나리오 산출. 회복계수 OR ×${D.recovery.OR} / IR ×${D.recovery.IR}.</div>
     </div>
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(330px,1fr))">${scenCard('OR')}${scenCard('IR')}</div>
 
@@ -247,9 +248,9 @@ function renderPlan(){
     ${revTable('IR')}
     <div class="chartbox" style="margin-top:14px"><h3>핵심 리스크 / 레버 (참모 의견)</h3>
       <ul style="margin-left:18px;line-height:1.9;font-size:14px">
-        <li><b style="color:#b3261e">BH 이중 리스크</b> — OVD ${D.rows.find(r=>r.name==='BH').ovd}M(AR의 절반) + 재고 MOS ${f1(D.rows.find(r=>r.name==='BH').mos)}개월. 하반기 최대 IR 채널이나, 금액축(채권)·수량축(재고) 동시 경고 → 밀어내기보다 <b>회수·소진 정상화</b> 선행.</li>
-        <li><b style="color:#a54b5e">eXtra 구조적 의존</b> — 연간 ${D.rows.find(r=>r.name==='eXtra').annual}M(전체의 ~33%), OVD ${D.rows.find(r=>r.name==='eXtra').ovd}M로 채권 건전. OR 3Q gap의 대부분을 eXtra 8~9월 입고·프로모로 메우는 것이 현실적.</li>
-        <li><b style="color:#8a6d2e">전제 리스크</b> — 본 전망은 "거시 회복 ~60% 실현" 가정. 2025식 연말 부진(IR 11~12월 계수 0.69/0.51)이 재연되면 S1(충격지속)으로 회귀, Gap이 30M+로 재확대 → 월별 실적 모니터링 필수.</li>
+        <li><b style="color:var(--bad)">BH 이중 리스크</b> — OVD ${D.rows.find(r=>r.name==='BH').ovd}M(AR의 절반) + 재고 MOS ${f1(D.rows.find(r=>r.name==='BH').mos)}개월. 하반기 최대 IR 채널이나, 금액축(채권)·수량축(재고) 동시 경고 → 밀어내기보다 <b>회수·소진 정상화</b> 선행.</li>
+        <li><b style="color:var(--auto-text-5)">eXtra 구조적 의존</b> — 연간 ${D.rows.find(r=>r.name==='eXtra').annual}M(전체의 ~33%), OVD ${D.rows.find(r=>r.name==='eXtra').ovd}M로 채권 건전. OR 3Q gap의 대부분을 eXtra 8~9월 입고·프로모로 메우는 것이 현실적.</li>
+        <li><b style="color:var(--warn)">전제 리스크</b> — 본 전망은 "거시 회복 ~60% 실현" 가정. 2025식 연말 부진(IR 11~12월 계수 0.69/0.51)이 재연되면 S1(충격지속)으로 회귀, Gap이 30M+로 재확대 → 월별 실적 모니터링 필수.</li>
       </ul>
     </div>`;
 }
@@ -261,7 +262,7 @@ function revTable(g){
       <tr><th class="l">채널</th><th>ST목표(H2)</th><th>ST목표수량</th><th>현재고</th><th>현SO(H2환산)</th><th>필요SO(H2)</th><th>필요증감</th><th>MOS</th></tr>
       ${arr.map(x=>`<tr><td class="l">${x.ko}</td><td><b>${x.st_val.toFixed(1)}M</b></td><td>${x.st_qty.toLocaleString()}</td>
         <td>${x.stk?x.stk.toLocaleString():'–'}</td><td>${x.so_cur?x.so_cur.toLocaleString():'–'}</td>
-        <td><b style="color:#8a6d2e">${x.so_need?x.so_need.toLocaleString():'–'}</b></td>
+        <td><b style="color:var(--warn)">${x.so_need?x.so_need.toLocaleString():'–'}</b></td>
         <td>${x.lift==null?'–':`<span class="chip ${x.lift>30?'c-bad':(x.lift>0?'c-warn':'c-ok')}">${x.lift>0?'+':''}${x.lift}%</span>`}</td>
         <td>${mosChip(x.mos)}</td></tr>`).join('')}
     </table></div>
@@ -282,8 +283,8 @@ function renderExec(){
   el.innerHTML=`
     <div class="card" style="margin-bottom:14px">
       <div class="lbl">월별 PSI 실행플랜 — Sell-out 목표 → 재고·MOS 정상화 궤적</div>
-      <div class="note" style="color:#453f35;margin-top:6px;font-size:13px">Sell-thru 목표 달성의 조건은 <b>밀어내기가 아니라 Sell-out</b>입니다. SO목표를 시즌계수로 월배분(6~12월) → 재고방정식(재고=전월+출하−소진)으로 <b>월별 재고·MOS 정상화 궤적</b> 산출. Sell-out이 되면 재고(MOS)와 채권(OD)이 동시에 정상화됩니다.</div>
-      <select id="execSel" style="margin-top:10px;padding:9px;background:var(--bg);color:#191714;border:1px solid var(--line);border-radius:8px;font-size:14px;width:100%;max-width:460px">${opts}</select>
+      <div class="note" style="color:var(--auto-text-2);margin-top:6px;font-size:13px">Sell-thru 목표 달성의 조건은 <b>밀어내기가 아니라 Sell-out</b>입니다. SO목표를 시즌계수로 월배분(6~12월) → 재고방정식(재고=전월+출하−소진)으로 <b>월별 재고·MOS 정상화 궤적</b> 산출. Sell-out이 되면 재고(MOS)와 채권(OD)이 동시에 정상화됩니다.</div>
+      <select id="execSel" style="margin-top:10px;padding:9px;background:var(--bg);color:var(--auto-text-1);border:1px solid var(--line);border-radius:8px;font-size:14px;width:100%;max-width:460px">${opts}</select>
     </div>
     <div id="execBody"></div>`;
   document.getElementById('execSel').addEventListener('change',e=>drawExec(e.target.value));
@@ -346,7 +347,7 @@ function renderExtra(){
 
     <div class="chartbox">
       <h3>산출 근거 (금액→수량 역산) <span class="axis-tag ax-qty">수량축</span></h3>
-      <div style="color:#453f35;font-size:13px;line-height:1.8">
+      <div style="color:var(--auto-text-2);font-size:13px;line-height:1.8">
         · eXtra 1~5월 AC 월평균 매출 <b>${e.avg_val.toFixed(1)}M</b> × OR 시즌계수(8월 ${e.s8}, 9월 ${e.s9}) = 자연전망 8월 ${e.nat8.toFixed(1)}M / 9월 ${e.nat9.toFixed(1)}M<br>
         · OR 3Q Gap +${e.or_gap3.toFixed(1)}M 중 eXtra 귀속 <b>${e.ex_share.toFixed(0)}%</b>(자연전망 비중) = 추가 <b>+${e.ex_add.toFixed(1)}M</b> → 8~9월 시즌비례 배분(8월 +${e.add8.toFixed(1)} / 9월 +${e.add9.toFixed(1)})<br>
         · ⚠️ <b>악세사리 제외</b> AC 본품만. 8~9월 시즌믹스(인버터 집중)·카테고리 ASP로 수량 환산.
