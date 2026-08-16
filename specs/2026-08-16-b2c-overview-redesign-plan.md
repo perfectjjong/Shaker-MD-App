@@ -33,13 +33,13 @@
 **Files:**
 - Modify: `$GEN` (`main()` Step 4 부분, 앵커: `# Step 4: Deploy to Cloudflare`)
 
-- [ ] **Step 1: 플래그 파싱 추가** — `OUTPUT_FILE = ...` 정의 아래에:
+- [x] **Step 1: 플래그 파싱 추가** — `OUTPUT_FILE = ...` 정의 아래에:
 
 ```python
 NO_DEPLOY = '--no-deploy' in sys.argv
 ```
 
-- [ ] **Step 2: Step 4 배포 블록 감싸기** — `print("\n[Step 4] Deploying to Cloudflare...")`부터 git push try/except 끝까지를:
+- [x] **Step 2: Step 4 배포 블록 감싸기** — `print("\n[Step 4] Deploying to Cloudflare...")`부터 git push try/except 끝까지를:
 
 ```python
     if NO_DEPLOY:
@@ -49,8 +49,8 @@ NO_DEPLOY = '--no-deploy' in sys.argv
         # ... (기존 블록 그대로 들여쓰기 한 단계 추가)
 ```
 
-- [ ] **Step 3: 검증** — `python3 "$GEN" --no-deploy` 실행. 기대: `[Step 4] SKIPPED (--no-deploy)` 출력, `git -C ~/Shaker-MD-App status` 변화 없음, 로컬 `B2C_Unified_Dashboard.html` 갱신됨.
-- [ ] **Step 4: 백업 후 커밋 없음** — 이 폴더는 git 저장소가 아님. 대신 최초 수정 전 1회: `cp "$GEN" "$GEN.bak_$(date +%Y%m%d)"`
+- [x] **Step 3: 검증** — `python3 "$GEN" --no-deploy` 실행. 기대: `[Step 4] SKIPPED (--no-deploy)` 출력, `git -C ~/Shaker-MD-App status` 변화 없음, 로컬 `B2C_Unified_Dashboard.html` 갱신됨.
+- [x] **Step 4: 백업 후 커밋 없음** — 이 폴더는 git 저장소가 아님. 대신 최초 수정 전 1회: `cp "$GEN" "$GEN.bak_$(date +%Y%m%d)"`
 
 ### Task 2: 파이썬 `build_briefing()` — TDD
 
@@ -58,7 +58,7 @@ NO_DEPLOY = '--no-deploy' in sys.argv
 - Modify: `$GEN` (`generate_html` 함수 위에 함수 추가)
 - Test: `/home/ubuntu/2026/10. Automation/01. Sell Out Dashboard/02. B2C/01. Python Code/tests/test_briefing.py` (신규)
 
-- [ ] **Step 1: 실패하는 테스트 작성** — `tests/test_briefing.py`:
+- [x] **Step 1: 실패하는 테스트 작성** — `tests/test_briefing.py`:
 
 ```python
 import sys, os, importlib.util
@@ -107,8 +107,8 @@ def test_briefing_wos_and_reco():
     assert '30' in b['reco']              # WOS 주수 숫자 포함 (라벨 원칙)
 ```
 
-- [ ] **Step 2: 실패 확인** — `cd "$GEN_DIR" && python3 -m pytest tests/ -v` (pytest 없으면 `pip3 install pytest`). 기대: `AttributeError: build_briefing` FAIL. ⚠️ 모듈 import 시 `main()`이 실행되지 않는지 확인 — `$GEN` 하단이 `if __name__ == '__main__':` 가드인지 먼저 확인하고, 가드가 없으면 이 태스크에서 가드부터 추가한다.
-- [ ] **Step 3: 구현** — `$GEN`의 `generate_html` 정의 바로 위에:
+- [x] **Step 2: 실패 확인** — `cd "$GEN_DIR" && python3 -m pytest tests/ -v` (pytest 없으면 `pip3 install pytest`). 기대: `AttributeError: build_briefing` FAIL. ⚠️ 모듈 import 시 `main()`이 실행되지 않는지 확인 — `$GEN` 하단이 `if __name__ == '__main__':` 가드인지 먼저 확인하고, 가드가 없으면 이 태스크에서 가드부터 추가한다.
+- [x] **Step 3: 구현** — `$GEN`의 `generate_html` 정의 바로 위에:
 
 ```python
 def build_briefing(merged):
@@ -167,8 +167,8 @@ def build_briefing(merged):
             'reco': '권고: ' + ' / '.join(f"{i+1}) {r}" for i, r in enumerate(recos[:3]))}
 ```
 
-- [ ] **Step 4: 통과 확인** — `python3 -m pytest tests/ -v` 기대: 2 passed.
-- [ ] **Step 5: embed** — `generate_html` 내 `const _ALL = ''' + data_json + ''';` 라인을 다음으로 교체:
+- [x] **Step 4: 통과 확인** — `python3 -m pytest tests/ -v` 기대: 2 passed.
+- [x] **Step 5: embed** — `generate_html` 내 `const _ALL = ''' + data_json + ''';` 라인을 다음으로 교체:
 
 ```python
 const _ALL = ''' + data_json + ''';
@@ -176,14 +176,14 @@ const _BRIEFING = ''' + json.dumps(build_briefing(merged), ensure_ascii=False) +
 ```
 
 (파이썬 쪽: `data_json = ...` 아래에 `briefing_json = json.dumps(build_briefing(merged), ensure_ascii=False)` 만들고 문자열 연결에 사용해도 동일 — 스타일 자유, 결과는 `const _BRIEFING = {...};` 한 줄)
-- [ ] **Step 6: 재생성 검증** — `python3 "$GEN" --no-deploy && grep -c "_BRIEFING" B2C_Unified_Dashboard.html` 기대: ≥2 (선언+사용... 이 시점엔 1도 허용).
+- [x] **Step 6: 재생성 검증** — `python3 "$GEN" --no-deploy && grep -c "_BRIEFING" B2C_Unified_Dashboard.html` 기대: ≥2 (선언+사용... 이 시점엔 1도 허용).
 
 ### Task 3: JS 비교연도 상태 + 필터 함수 일반화
 
 **Files:**
 - Modify: `$GEN` JS부 (앵커: `let D=_ALL.data[currentYear];`, `function filtered(){`, `function filteredSellthru(){`)
 
-- [ ] **Step 1: 전역 상태 추가** — `let D=_ALL.data[currentYear];` 바로 아래:
+- [x] **Step 1: 전역 상태 추가** — `let D=_ALL.data[currentYear];` 바로 아래:
 
 ```js
 // ===== YoY compare state =====
@@ -193,7 +193,7 @@ let CD=_ALL.data[compareYear];
 function cmpWeekly(){return ((CD&&CD.meta&&CD.meta.weeks)||[]).length>=40;} // 2023/24 스냅샷=false→월 폴백
 ```
 
-- [ ] **Step 2: filtered 일반화** — `function filtered(){ return D.raw.filter(...) }` 본문을 데이터셋 인자 버전으로 분리:
+- [x] **Step 2: filtered 일반화** — `function filtered(){ return D.raw.filter(...) }` 본문을 데이터셋 인자 버전으로 분리:
 
 ```js
 function filteredRows(dd){
@@ -213,21 +213,21 @@ function filtered(){return filteredRows(D);}
 ```
 
 (주의: 비교연도 적용 시 주차 제외 필터(`FILTER_STATE.w`)는 라벨이 같아야 의미가 있음 — 월 폴백 모드에서는 KPI/차트 계산이 월 기준이라 자연 무해)
-- [ ] **Step 3: sellthru 동일 처리** — `filteredSellthruRows(dd)` + `filteredSellthru(){return filteredSellthruRows(D);}` (기존 본문 그대로, `D.sellthru`→`dd.sellthru`)
-- [ ] **Step 4: 재생성 + 콘솔 검증** — `python3 "$GEN" --no-deploy` 후 브라우저(또는 Playwright)로 로컬 파일 열어 콘솔 에러 0, 기존 화면 동일 렌더 확인.
+- [x] **Step 3: sellthru 동일 처리** — `filteredSellthruRows(dd)` + `filteredSellthru(){return filteredSellthruRows(D);}` (기존 본문 그대로, `D.sellthru`→`dd.sellthru`)
+- [x] **Step 4: 재생성 + 콘솔 검증** — `python3 "$GEN" --no-deploy` 후 브라우저(또는 Playwright)로 로컬 파일 열어 콘솔 에러 0, 기존 화면 동일 렌더 확인.
 
 ### Task 4: "vs 연도" 선택기 UI
 
 **Files:**
 - Modify: `$GEN` HTML부(앵커: `id="fYear"` filter-group 라인), JS부(앵커: `// Build year selector`)
 
-- [ ] **Step 1: HTML** — Year filter-group `</div></div>` 바로 뒤에:
+- [x] **Step 1: HTML** — Year filter-group `</div></div>` 바로 뒤에:
 
 ```html
 <div class="filter-group"><div class="filter-label">vs Year</div><div class="ms-wrap"><select id="vsYearSelect" class="ms-btn" style="padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:12px;font-weight:600;cursor:pointer;background:var(--teal);color:#fff"></select></div></div>
 ```
 
-- [ ] **Step 2: JS 빌더** — `// Build year selector` IIFE 아래에:
+- [x] **Step 2: JS 빌더** — `// Build year selector` IIFE 아래에:
 
 ```js
 function rebuildVsYear(){
@@ -244,20 +244,20 @@ document.getElementById('vsYearSelect').addEventListener('change',e=>{
 });
 ```
 
-- [ ] **Step 3: 연도 전환 연동** — 기존 `yearSelect` change 핸들러에서 `update()` 호출 전(앵커: `WEEKS=D.meta.weeks;MONTHS=D.meta.months;` 근처)에 추가:
+- [x] **Step 3: 연도 전환 연동** — 기존 `yearSelect` change 핸들러에서 `update()` 호출 전(앵커: `WEEKS=D.meta.weeks;MONTHS=D.meta.months;` 근처)에 추가:
 
 ```js
     compareYear=defaultCompareYear();CD=_ALL.data[compareYear];rebuildVsYear();
 ```
 
-- [ ] **Step 4: 검증** — 재생성 후 브라우저: vs 드롭다운 표시(기본 vs 2025), 2024 선택/연도 전환 시 콘솔 에러 0.
+- [x] **Step 4: 검증** — 재생성 후 브라우저: vs 드롭다운 표시(기본 vs 2025), 2024 선택/연도 전환 시 콘솔 에러 0.
 
 ### Task 5: Overview pane HTML + CSS 재구성
 
 **Files:**
 - Modify: `$GEN` HTML부(앵커: `<!-- OVERVIEW -->` ~ `<!-- CHANNEL -->` 직전), CSS부(앵커: `.grid-6{` 라인 뒤)
 
-- [ ] **Step 1: pane-overview 교체** — 기존 블록 전체를:
+- [x] **Step 1: pane-overview 교체** — 기존 블록 전체를:
 
 ```html
 <!-- OVERVIEW -->
@@ -281,7 +281,7 @@ document.getElementById('vsYearSelect').addEventListener('change',e=>{
 </div>
 ```
 
-- [ ] **Step 2: CSS 추가** — `.grid-6{...}` 라인 다음에:
+- [x] **Step 2: CSS 추가** — `.grid-6{...}` 라인 다음에:
 
 ```css
 .sowhat{background:var(--primary);color:var(--card);border-radius:var(--radius);padding:12px 18px;margin-bottom:16px;position:relative}
@@ -305,20 +305,20 @@ table.yoyhm{border-collapse:collapse;width:100%;font-size:11px}
 .ov-fold summary{cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);padding:8px 4px}
 ```
 
-- [ ] **Step 3: details 열림 시 차트 리사이즈** — JS 말미(앵커: 파일 끝 `update();` 근처)에:
+- [x] **Step 3: details 열림 시 차트 리사이즈** — JS 말미(앵커: 파일 끝 `update();` 근처)에:
 
 ```js
 document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cCatPie','cCatWeek'].forEach(id=>{if(charts[id])charts[id].resize()});});
 ```
 
-- [ ] **Step 4: 검증** — 재생성 후 브라우저: 새 구조 표시(4분면 자리 2개는 아직 빈 카드), 접이식 열면 기존 3차트 정상 렌더, 콘솔 에러 0. ⚠️ 기존 `update()`가 지운 `cWeekly` 스택차트는 아직 옛 코드로 렌더됨 — 정상(다음 태스크에서 교체).
+- [x] **Step 4: 검증** — 재생성 후 브라우저: 새 구조 표시(4분면 자리 2개는 아직 빈 카드), 접이식 열면 기존 3차트 정상 렌더, 콘솔 에러 0. ⚠️ 기존 `update()`가 지운 `cWeekly` 스택차트는 아직 옛 코드로 렌더됨 — 정상(다음 태스크에서 교체).
 
 ### Task 6: KPI 5종 교체
 
 **Files:**
 - Modify: `$GEN` JS `update()` 내 KPI 블록(앵커: `document.getElementById('kpiRow').innerHTML=[` 배열 전체와 그 위 `chCount`/`modelCount` 라인)
 
-- [ ] **Step 1: 비교 집계 계산 삽입** — `const ar=(v)=>...` 라인 위에:
+- [x] **Step 1: 비교 집계 계산 삽입** — `const ar=(v)=>...` 라인 위에:
 
 ```js
   // ===== YoY vs compareYear =====
@@ -360,7 +360,7 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
   const yy=v=>v===null?'N/A':(ar(v)+' '+Math.abs(v)+'% YoY');
 ```
 
-- [ ] **Step 2: KPI 배열 교체** — 기존 5개 객체 배열(`{l:'Latest Week...'}` ~ `{l:'Unified Models'...}`)을:
+- [x] **Step 2: KPI 배열 교체** — 기존 5개 객체 배열(`{l:'Latest Week...'}` ~ `{l:'Unified Models'...}`)을:
 
 ```js
     {l:'Latest Week ('+_lw+') vs '+compareYear,v:lq.toLocaleString(),s:yy(yoyW)+' · WoW '+ar(wow)+Math.abs(wow)+'%'+modeBadge,c:cl(yoyW===null?wow:yoyW),b:'var(--primary)'},
@@ -371,14 +371,14 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
 ```
 
 (주의: 기존 `chCount`/`modelCount` 계산 라인은 삭제)
-- [ ] **Step 3: 검증** — 재생성 후 파이썬 독립 재계산과 대사(Task 12 스크립트의 초기 버전을 이 시점에 만들어도 됨): 최소 `ALL` 기준 최신주/YTD YoY 값을 파이썬으로 계산해 화면 숫자와 일치 확인. `vs 2024` 전환 시 "월 기준 비교" 배지 표시 확인.
+- [x] **Step 3: 검증** — 재생성 후 파이썬 독립 재계산과 대사(Task 12 스크립트의 초기 버전을 이 시점에 만들어도 됨): 최소 `ALL` 기준 최신주/YTD YoY 값을 파이썬으로 계산해 화면 숫자와 일치 확인. `vs 2024` 전환 시 "월 기준 비교" 배지 표시 확인.
 
 ### Task 7: 4분면 ① 트렌드 오버레이 (+라벨)
 
 **Files:**
 - Modify: `$GEN` JS `update()` 내 `// Weekly bar (stacked by channel)` mk('cWeekly') 호출 블록
 
-- [ ] **Step 1: mk 호출 교체**:
+- [x] **Step 1: mk 호출 교체**:
 
 ```js
   // Q1: 셀아웃 트렌드 — 올해 스택바 + 비교연도 라인 (월 폴백 시 월 축)
@@ -412,14 +412,14 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
 ```
 
 (주의: 기존 블록의 `const cwk=...`, `const activeChs=...` 중복 선언 제거. 라벨의 주차 날짜 표기(`week_dates`)는 라벨 복잡도 때문에 주간모드에서 기존 방식 유지 가능 — `filteredWeeks.map(w=>w+'\n'+(D.meta.week_dates[w]||''))` 대신 위처럼 단순화; 시각 확인 후 결정)
-- [ ] **Step 2: 검증** — 재생성 후 브라우저: 바+점선 라인 동시 표시, 바 합계 라벨·라인 끝 값 라벨 표시, vs 2024 선택 시 X축이 월로 전환+배지.
+- [x] **Step 2: 검증** — 재생성 후 브라우저: 바+점선 라인 동시 표시, 바 합계 라벨·라인 끝 값 라벨 표시, vs 2024 선택 시 X축이 월로 전환+배지.
 
 ### Task 8: 4분면 ② YoY 히트맵 + 셀 드릴다운
 
 **Files:**
 - Modify: `$GEN` JS — `update()` 내 (기존 `// Category pie` 블록 앞), 전역에 `hmDrill` 추가
 
-- [ ] **Step 1: 렌더 코드 삽입** — `update()` 내부:
+- [x] **Step 1: 렌더 코드 삽입** — `update()` 내부:
 
 ```js
   // Q2: 채널×카테고리 YoY 히트맵 (라벨 원칙: 셀 안 % 숫자)
@@ -443,7 +443,7 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
     }).join('')+'</tr>').join('')+'</tbody>';
 ```
 
-- [ ] **Step 2: 드릴다운 전역 함수** — `cascadeAndUpdate()` 정의 아래:
+- [x] **Step 2: 드릴다운 전역 함수** — `cascadeAndUpdate()` 정의 아래:
 
 ```js
 function hmDrill(td){
@@ -455,14 +455,14 @@ function hmDrill(td){
 }
 ```
 
-- [ ] **Step 3: 검증** — 히트맵 % 숫자 표시, 툴팁에 양 연도 수량, 셀 클릭 → 필터 적용(filterCount 갱신)·체크박스 UI 동기화 확인. UI 미동기 시 `cascadeAndUpdate()` 대신 `FILTER_ORDER.forEach(id=>buildMultiSelect(id));update();`로 교정.
+- [x] **Step 3: 검증** — 히트맵 % 숫자 표시, 툴팁에 양 연도 수량, 셀 클릭 → 필터 적용(filterCount 갱신)·체크박스 UI 동기화 확인. UI 미동기 시 `cascadeAndUpdate()` 대신 `FILTER_ORDER.forEach(id=>buildMultiSelect(id));update();`로 교정.
 
 ### Task 9: 4분면 ③ WOS 신호등
 
 **Files:**
 - Modify: `$GEN` JS `update()` 내 (Task 8 코드 아래)
 
-- [ ] **Step 1: 렌더 코드**:
+- [x] **Step 1: 렌더 코드**:
 
 ```js
   // Q3: WOS 신호등 (라벨 원칙: WOS 주수·재고수량 숫자 병기)
@@ -484,14 +484,14 @@ function hmDrill(td){
   ).join('')||'<div style="color:var(--muted);padding:8px">No stock data for '+currentYear+'</div>';
 ```
 
-- [ ] **Step 2: 검증** — 위험(빨강) 상단 정렬, "과잉 21.3주 · 재고 1,240" 형식 숫자 표기, 행 클릭 → WOS 탭 전환.
+- [x] **Step 2: 검증** — 위험(빨강) 상단 정렬, "과잉 21.3주 · 재고 1,240" 형식 숫자 표기, 행 클릭 → WOS 탭 전환.
 
 ### Task 10: 4분면 ④ ST vs SO 갭
 
 **Files:**
 - Modify: `$GEN` JS `update()` 내 (Task 9 코드 아래)
 
-- [ ] **Step 1: 렌더 코드**:
+- [x] **Step 1: 렌더 코드**:
 
 ```js
   // Q4: 채널별 Sell-Thru vs Sell-Out 갭 (라벨 원칙: ST/SO 수량+갭%)
@@ -508,20 +508,20 @@ function hmDrill(td){
   ).join('')||'<div style="color:var(--muted);padding:8px">No sell-thru data</div>';
 ```
 
-- [ ] **Step 2: 검증** — |갭%| 내림차순 상위 10채널, ST/SO 수량 텍스트+갭% 표시, ±20% 초과 빨강.
+- [x] **Step 2: 검증** — |갭%| 내림차순 상위 10채널, ST/SO 수량 텍스트+갭% 표시, ±20% 초과 빨강.
 
 ### Task 11: So-What 밴드 하이브리드 렌더
 
 **Files:**
 - Modify: `$GEN` JS — 전역 상수 + `update()` 마지막(Overview 렌더 뒤)
 
-- [ ] **Step 1: 플래그** — `const WOS_LABELS=...` 아래:
+- [x] **Step 1: 플래그** — `const WOS_LABELS=...` 아래:
 
 ```js
 const SHOW_BRIEFING=true; // 품질 검증 후 형님 결정으로 false 가능 (spec §3.4)
 ```
 
-- [ ] **Step 2: 렌더 함수** — `update()` 정의 위:
+- [x] **Step 2: 렌더 함수** — `update()` 정의 위:
 
 ```js
 function renderBriefing(m){
@@ -547,20 +547,20 @@ function renderBriefing(m){
 }
 ```
 
-- [ ] **Step 3: 호출** — `update()` 내 KPI 렌더 직후:
+- [x] **Step 3: 호출** — `update()` 내 KPI 렌더 직후:
 
 ```js
   renderBriefing({lw:_lw,lq,yoyW,yoyM,wosRisks,gapMax});
 ```
 
-- [ ] **Step 4: 검증** — 초기 화면=embed 문장+"생성시점 분석" 표기, 필터 하나 적용 시 룰 문장+"현재 필터" 표기로 전환.
+- [x] **Step 4: 검증** — 초기 화면=embed 문장+"생성시점 분석" 표기, 필터 하나 적용 시 룰 문장+"현재 필터" 표기로 전환.
 
 ### Task 12: 통합 검증 스크립트 + 게이트
 
 **Files:**
 - Create: `/home/ubuntu/2026/10. Automation/01. Sell Out Dashboard/02. B2C/01. Python Code/verify_overview.py`
 
-- [ ] **Step 1: 검증 스크립트 작성**:
+- [x] **Step 1: 검증 스크립트 작성**:
 
 ```python
 #!/usr/bin/env python3
@@ -627,18 +627,18 @@ if __name__ == '__main__':
     main()
 ```
 
-- [ ] **Step 2: 실행** — `python3 "$GEN" --no-deploy && python3 verify_overview.py` 기대: `ALL CHECKS PASSED`. (playwright 미설치 시 `. /home/ubuntu/ai_env/bin/activate` 후 실행 — 가격 추적이 쓰는 환경에 이미 있음)
-- [ ] **Step 3: IR/OR 그룹 대사** — 브라우저에서 Group=IR/OR 클릭 후 KPI YoY가 `expected_kpis`의 IR/OR 값과 일치하는지 수동 확인(또는 Playwright에 `#btnIR` 클릭 추가).
-- [ ] **Step 4: vs 2024 폴백** — Playwright/수동: vs 2024 선택 → "월 기준 비교" 배지, 트렌드 X축=월 확인.
-- [ ] **Step 5: 부품 오염 게이트** — `python3 "/home/ubuntu/2026/10. Automation/dashboard_part_contamination_gate.py"` 기대: **GATE PASS**. 미통과 시 '완료' 단어 금지.
-- [ ] **Step 6: pytest 재실행** — `python3 -m pytest tests/ -v` 전부 통과.
+- [x] **Step 2: 실행** — `python3 "$GEN" --no-deploy && python3 verify_overview.py` 기대: `ALL CHECKS PASSED`. (playwright 미설치 시 `. /home/ubuntu/ai_env/bin/activate` 후 실행 — 가격 추적이 쓰는 환경에 이미 있음)
+- [x] **Step 3: IR/OR 그룹 대사** — 브라우저에서 Group=IR/OR 클릭 후 KPI YoY가 `expected_kpis`의 IR/OR 값과 일치하는지 수동 확인(또는 Playwright에 `#btnIR` 클릭 추가).
+- [x] **Step 4: vs 2024 폴백** — Playwright/수동: vs 2024 선택 → "월 기준 비교" 배지, 트렌드 X축=월 확인.
+- [x] **Step 5: 부품 오염 게이트** — `python3 "/home/ubuntu/2026/10. Automation/dashboard_part_contamination_gate.py"` 기대: **GATE PASS**. 미통과 시 '완료' 단어 금지.
+- [x] **Step 6: pytest 재실행** — `python3 -m pytest tests/ -v` 전부 통과.
 
 ### Task 13: 배포 + 보고
 
-- [ ] **Step 1: 최종 생성+배포** — `python3 "$GEN"` (플래그 없이). 생성기가 Cloudflare 복사 + git commit/push 자동 수행. 기대: `Pushed to GitHub -> Cloudflare auto-deploy`.
-- [ ] **Step 2: 스펙/플랜 체크박스 갱신 + Shaker-MD-App 커밋** — `specs/` 문서 상태 갱신 후 커밋·푸시(대시보드 push에 편승 금지, 별도 커밋).
-- [ ] **Step 3: 라이브 확인** — 1~2분 후 https://shaker-dashboard.pages.dev/dashboards/b2c-unified/ 새로고침, Overview 렌더 확인.
-- [ ] **Step 4: 보고** — 형식: "✅ Overview 개편 배포 완료 (검증: KPI 재계산 3그룹 일치 · Playwright 7탭 회귀 통과 · GATE PASS)" + So-What 밴드 품질 샘플 제시 → 유지/제거 결정 요청. 미검증 항목 있으면 명시.
+- [x] **Step 1: 최종 생성+배포** — `python3 "$GEN"` (플래그 없이). 생성기가 Cloudflare 복사 + git commit/push 자동 수행. 기대: `Pushed to GitHub -> Cloudflare auto-deploy`.
+- [x] **Step 2: 스펙/플랜 체크박스 갱신 + Shaker-MD-App 커밋** — `specs/` 문서 상태 갱신 후 커밋·푸시(대시보드 push에 편승 금지, 별도 커밋).
+- [x] **Step 3: 라이브 확인** — 1~2분 후 https://shaker-dashboard.pages.dev/dashboards/b2c-unified/ 새로고침, Overview 렌더 확인.
+- [x] **Step 4: 보고** — 형식: "✅ Overview 개편 배포 완료 (검증: KPI 재계산 3그룹 일치 · Playwright 7탭 회귀 통과 · GATE PASS)" + So-What 밴드 품질 샘플 제시 → 유지/제거 결정 요청. 미검증 항목 있으면 명시.
 
 ---
 
