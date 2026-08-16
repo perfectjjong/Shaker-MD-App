@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#191714">
   <title>Dashboard Hub - Management</title>
+  <script>
+    // 야간모드 시간 설정 — 기기 로컬 시각 기준, OS 다크모드 설정과 무관하게 동작.
+    // 여기 두 숫자만 바꾸면 발동 시간 조정 가능 (24시간 표기).
+    (function(){
+      var NIGHT_START = 22; // 22:00부터
+      var NIGHT_END = 6;    // 06:00까지
+      var h = new Date().getHours();
+      var isNight = (NIGHT_START > NIGHT_END)
+        ? (h >= NIGHT_START || h < NIGHT_END)
+        : (h >= NIGHT_START && h < NIGHT_END);
+      document.documentElement.setAttribute('data-theme', isNight ? 'dark' : 'light');
+    })();
+  </script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -13,9 +26,38 @@
       --surface: #fffdf8;
       --surface2: #f3ede1;
       --accent: #8c1d2f;
+      --accent-rgb: 140, 29, 47;
+      --accent-wash: #f6ebe6;
       --text: #191714;
       --text-dim: #5c554b;
       --border: #ddd4c2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #191510;
+        --surface: #221d17;
+        --surface2: #2a241c;
+        --accent: #d68a97;
+        --accent-rgb: 214, 138, 151;
+        --accent-wash: #35262a;
+        --text: #f0ece2;
+        --text-dim: #b3a996;
+        --border: #3a3226;
+      }
+    }
+
+    /* 시간 기반 야간모드 — OS 다크모드 설정과 무관하게 JS가 강제 적용 */
+    :root[data-theme="dark"] {
+      --bg: #191510;
+      --surface: #221d17;
+      --surface2: #2a241c;
+      --accent: #d68a97;
+      --accent-rgb: 214, 138, 151;
+      --accent-wash: #35262a;
+      --text: #f0ece2;
+      --text-dim: #b3a996;
+      --border: #3a3226;
     }
 
     body {
@@ -124,12 +166,12 @@
 
     .nav-link:hover {
       border-color: var(--accent);
-      background: #f6ebe6;
+      background: var(--accent-wash);
     }
 
     .nav-link.active {
       border-color: var(--accent);
-      background: rgba(140, 29, 47, 0.08);
+      background: rgba(var(--accent-rgb), 0.08);
     }
 
     .nav-link-icon { font-size: 16px; }
@@ -159,7 +201,7 @@
     .card:hover {
       transform: translateY(-4px);
       border-color: var(--accent);
-      box-shadow: 0 8px 24px rgba(140, 29, 47, 0.10);
+      box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.10);
     }
 
     .card-icon { font-size: 40px; margin-bottom: 14px; }
@@ -189,7 +231,7 @@
     .accordion-card.open .accordion-arrow { transform: rotate(180deg); }
     .accordion-card.open .card {
       border-color: var(--accent);
-      box-shadow: 0 8px 24px rgba(140, 29, 47, 0.10);
+      box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.10);
     }
     .accordion-card.open .card:hover { transform: none; }
 
@@ -224,7 +266,7 @@
 
     .sub-item:hover {
       border-color: var(--accent);
-      background: #f6ebe6;
+      background: var(--accent-wash);
     }
 
     .sub-item-icon { font-size: 20px; flex-shrink: 0; }
