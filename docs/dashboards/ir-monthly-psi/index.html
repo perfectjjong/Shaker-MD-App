@@ -8,13 +8,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="psi_data.js"></script>
 <script src="psi_model_table.js"></script>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
 :root{
   --navy:#191714;--bg:#f7f3ea;--card:#fffdf8;--text:#191714;--muted:#6b6355;--border:#ddd4c2;
   --so:#8c1d2f;--so-bg:#f6ebe6;--so-dk:#5c0f1d;
   --st:#33302a;--stk:#a8863c;--red:#b3261e;--amber:#a8863c;
   --c23:#9a927f;--c24:#7b8da0;--c25:#a8863c;--c26:#8c1d2f;
-}
+--amber-deep-text:#8a6d2e;--auto-text-1:#d5cbb8;--auto-text-2:#b45309;--stock-gold-text:#6d5518;--primary-deep-text:#6d1522;--green:#1d6b45;--auto-text-3:#e6d7ae;--auto-text-4:#5c554b;--auto-text-5:#cfc6b2;--red-deep-text:#a01d17;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--auto-text-2:#fac398;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-3:#d6be7b;--auto-text-4:#d2cdc7;--auto-text-5:#bfb398;--red-deep-text:#f09a90;}}:root[data-theme="dark"]{--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--auto-text-2:#fac398;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-3:#d6be7b;--auto-text-4:#d2cdc7;--auto-text-5:#bfb398;--red-deep-text:#f09a90;}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 .header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -42,7 +43,7 @@ body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--
 .kv{font-size:20px;font-weight:700;line-height:1}
 .kpi.hero .kv{font-size:26px;color:var(--so)}
 .ks{font-size:11px;margin-top:5px;color:var(--muted)}
-.yoy-up{color:#1d6b45;font-weight:700}
+.yoy-up{color:var(--green);font-weight:700}
 .yoy-dn{color:var(--red);font-weight:700}
 .kmini{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap}
 .kmini span{font-size:10px;padding:2px 6px;border-radius:10px;background:var(--bg);color:var(--muted)}
@@ -63,8 +64,8 @@ td.l{text-align:left;font-weight:600;background:#fafafa}
 tr.so-row td{background:var(--so-bg)}
 tr.so-row td.l{background:#eddfd4;color:var(--so-dk)}
 tr:hover td{background:#f9f5ec}
-.null{color:#cfc6b2;font-style:italic}
-.up{color:#1d6b45;font-weight:700}
+.null{color:var(--auto-text-5);font-style:italic}
+.up{color:var(--green);font-weight:700}
 .dn{color:var(--red);font-weight:700}
 .tab-content{display:none}
 .tab-content.active{display:block}
@@ -84,14 +85,14 @@ tr:hover td{background:#f9f5ec}
 
 <div class="header">
   <h1>IR Monthly PSI</h1>
-  <span style="font-size:11px;color:#9a927f">8+Others Channels · 2023–2026</span>
+  <span style="font-size:11px;color:var(--c23)">8+Others Channels · 2023–2026</span>
   <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
-  <span class="badge" style="background:#5c0f1d;color:#d5cbb8">P = Sell-Thru</span>
-  <span class="badge" style="background:#6d5518;color:#e6d7ae">I = Stock</span>
+  <span class="badge" style="background:#5c0f1d;color:var(--auto-text-1)">P = Sell-Thru</span>
+  <span class="badge" style="background:#6d5518;color:var(--auto-text-3)">I = Stock</span>
   <a href="IR_Monthly_PSI_RawData.xlsx" download
      title="Raw(피벗용) 데이터 · 채널×월×카테고리(2023~26) + 채널×월×모델(2023~25, 2026은 정합조정 1행) · Sell-Thru/Sell-Out/Stock"
      style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#8c1d2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel 다운로드</a>
-  <span id="hdr-info" style="margin-left:12px;font-size:11px;color:#9a927f"></span>
+  <span id="hdr-info" style="margin-left:12px;font-size:11px;color:var(--c23)"></span>
 </div>
 
 <div class="tabs">
@@ -193,7 +194,7 @@ tr:hover td{background:#f9f5ec}
       <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
       <span class="li"><span class="ld" style="background:var(--stk)"></span>Stock (I)</span>
       <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025</span>
-      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:#b45309;font-weight:700">🏖 Peak Season</span>
+      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:var(--auto-text-2);font-weight:700">🏖 Peak Season</span>
     </div>
     <div style="position:relative;height:320px"><canvas id="mainChart"></canvas></div>
   </div>
@@ -349,24 +350,24 @@ tr:hover td{background:#f9f5ec}
     <div id="m2Summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
     <div class="grid2" style="gap:14px">
       <div>
-        <div class="ct" style="color:#a01d17">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:var(--red-deep-text)">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = LOW (근접 재고 부족). Peak season — immediate replenishment recommended.</div>
         <div class="tbl" id="lowTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#8a6d2e">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:var(--amber-deep-text)">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = OVER. Slow rotation — review price-cut / bundle / campaign.</div>
         <div class="tbl" id="overTable"></div>
       </div>
     </div>
     <div class="grid2" style="gap:14px;margin-top:14px">
       <div>
-        <div class="ct" style="color:#6d5518">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:var(--stock-gold-text)">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = OOS (Stock = 0, selling). Highest-priority supply target.</div>
         <div class="tbl" id="oosTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:#5c554b">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="ct" style="color:var(--auto-text-4)">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
         <div class="cd">Builder flag = SLOW (recent SO = 0, Stock &gt; 0). No recent sales — review discontinue / discount / return.</div>
         <div class="tbl" id="slowTable"></div>
       </div>
@@ -390,9 +391,9 @@ tr:hover td{background:#f9f5ec}
     <div class="ct" id="mos-chart-title">MOS+2 Trend — Month-end stock ÷ avg(next 2mo SO)</div>
     <div style="position:relative;height:320px"><canvas id="mosChart"></canvas></div>
     <div class="note" style="margin-top:6px">
-      Reference: <span style="color:#b3261e;font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
-      <span style="color:#6d1522;font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
-      <span style="color:#8a6d2e;font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
+      Reference: <span style="color:var(--red);font-weight:700">─ ─ 1.5 Low Stock</span> &nbsp;
+      <span style="color:var(--primary-deep-text);font-weight:700">─ ─ 2.0 Optimal</span> &nbsp;
+      <span style="color:var(--amber-deep-text);font-weight:700">─ ─ 2.5 Overstock</span> &nbsp;|&nbsp;
       2026 MOS+2 is null if Jul/Aug actuals unavailable (see back-calc panel)
     </div>
   </div>
@@ -1661,10 +1662,10 @@ render();
     const sumSo = arr => arr.reduce((s,r) => s + (r.so_recent_4w||0), 0);
 
     document.getElementById('m2Summary').innerHTML = `
-      <div class="kpi" style="border-left:4px solid #a01d17"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:#a01d17">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #8a6d2e"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:#8a6d2e">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #6d5518"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:#6d5518">${oos.length}</div><div class="ks">SO(4wk) ${sumSo(oos).toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #5c554b"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:#5c554b">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #a01d17"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:var(--red-deep-text)">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #8a6d2e"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:var(--amber-deep-text)">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #6d5518"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:var(--stock-gold-text)">${oos.length}</div><div class="ks">SO(4wk) ${sumSo(oos).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #5c554b"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:var(--auto-text-4)">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
     `;
     document.getElementById('lowCount').textContent  = `(${low.length})`;
     document.getElementById('overCount').textContent = `(${over.length})`;

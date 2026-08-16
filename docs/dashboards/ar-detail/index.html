@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AR Receivables Dashboard</title>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--nav:#5c0f1d;--acc:#a54b5e;--acc2:#6d1522;--bg:#f7f3ea;--card:#fff;
   --bdr:#ddd4c2;--red:#a01d17;--grn:#1d6b45;--amb:#8a6d2e;--txt:#26221c;--mut:#6b6355;--lt:#f3ede1;
-  --BH:#1d6b45;--OR:#6d1522;--IR:#6d3a12}
+  --BH:#1d6b45;--OR:#6d1522;--IR:#6d3a12;--auto-text-1:#334155;--auto-text-2:#78350f;--primary:#8c1d2f;--muted-light:#9a927f;--auto-text-3:#6d3a12;--auto-text-4:#b06a24;--auto-text-5:#b45f18;--red:#b3261e;--auto-text-6:#c99aa4;--auto-text-7:#bfa059;--auto-text-8:#453f35;--auto-text-9:#6b7a90;--stock-gold-text:#6d5518;--auto-text-10:#c4574f;--auto-text-11:#6b6355;--auto-text-12:#a54b5e;--green-deep-text:#124a2f;--auto-text-13:#5ba37f;--auto-text-14:#26221c;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--nav:#f0cdd3;--acc:#d9aab4;--acc2:#f0cdd3;--bg:#191510;--card:#141414;--bdr:#3a3226;--red:#f09a90;--grn:#5ba37f;--amb:#e0c17a;--txt:#e1ddd6;--mut:#cfcac2;--lt:#211b0d;--BH:#5ba37f;--OR:#f0cdd3;--IR:#512b0d;--auto-text-1:#c6cfdd;--auto-text-2:#f5c7ae;--primary:#d68a97;--muted-light:#8a806c;--auto-text-3:#f2cfb3;--auto-text-4:#ecc6a0;--auto-text-5:#f2c39c;--red:#e2685c;--auto-text-6:#c898a3;--auto-text-7:#d9c79e;--auto-text-8:#d9d5cd;--auto-text-9:#b7bec9;--stock-gold-text:#d4b866;--auto-text-10:#dda09b;--auto-text-11:#cfcac2;--auto-text-12:#d9aab4;--green-deep-text:#8fc4a8;--auto-text-13:#add1bf;--auto-text-14:#e1ddd6;}}:root[data-theme="dark"]{--nav:#f0cdd3;--acc:#d9aab4;--acc2:#f0cdd3;--bg:#191510;--card:#141414;--bdr:#3a3226;--red:#f09a90;--grn:#5ba37f;--amb:#e0c17a;--txt:#e1ddd6;--mut:#cfcac2;--lt:#211b0d;--BH:#5ba37f;--OR:#f0cdd3;--IR:#512b0d;--auto-text-1:#c6cfdd;--auto-text-2:#f5c7ae;--primary:#d68a97;--muted-light:#8a806c;--auto-text-3:#f2cfb3;--auto-text-4:#ecc6a0;--auto-text-5:#f2c39c;--red:#e2685c;--auto-text-6:#c898a3;--auto-text-7:#d9c79e;--auto-text-8:#d9d5cd;--auto-text-9:#b7bec9;--stock-gold-text:#d4b866;--auto-text-10:#dda09b;--auto-text-11:#cfcac2;--auto-text-12:#d9aab4;--green-deep-text:#8fc4a8;--auto-text-13:#add1bf;--auto-text-14:#e1ddd6;}
 body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
 .nav{background:var(--nav);padding:0 22px;display:flex;align-items:center;justify-content:space-between;
   height:54px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.35)}
 .nav h1{color:#fff;font-size:1.08rem;font-weight:700}
-.navsub{color:#c99aa4;font-size:.71rem;margin-top:1px}
+.navsub{color:var(--auto-text-6);font-size:.71rem;margin-top:1px}
 .ntabs{display:flex;gap:3px;overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
 .ntab{padding:6px 18px;border-radius:6px;cursor:pointer;color:rgba(255,255,255,.65);flex-shrink:0;white-space:nowrap;
   font-size:.83rem;font-weight:600;border:none;background:transparent;transition:all .2s}
 .ntab.on,.ntab:hover{background:rgba(255,255,255,.15);color:#fff}
 .pg{display:none;padding:18px 22px 48px}.pg.on{display:block}
-.kgrid{margin-bottom:18px}.ov-mon-wrap{position:relative;display:inline-block;margin-bottom:10px}.ov-mon-toggle{padding:5px 14px;border-radius:7px;border:1px solid var(--bdr);background:var(--card);cursor:pointer;font-size:.75rem;font-weight:700;color:#5c0f1d;display:inline-flex;align-items:center;gap:6px}.ov-mon-toggle:hover{background:var(--lt)}.ov-mon-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.1)}.ov-mon-panel.open{display:block}.ov-mon-title{font-size:.64rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.ov-mon-options{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}.ov-mon-options label{display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer;padding:3px 4px;border-radius:5px;transition:background .1s}.ov-mon-options label:hover{background:var(--lt)}.ov-mon-options input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:#5c0f1d}.ov-mon-actions{display:flex;gap:6px;border-top:1px solid var(--bdr);padding-top:8px}.ov-mon-actions button{flex:1;padding:4px;font-size:.7rem;border-radius:5px;border:1px solid var(--bdr);cursor:pointer;background:var(--lt)}.ov-mon-actions button:hover{background:var(--bdr)}.ov-strip{border-radius:10px;padding:10px 12px 12px;margin-bottom:8px}.ov-strip-lbl{font-size:.68rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}.ov-strip-rec{background:var(--lt);border:1px solid var(--bdr)}.ov-strip-rec .ov-strip-lbl{color:#5c0f1d}.ov-strip-sal{background:var(--lt);border:1px solid var(--bdr)}.ov-strip-sal .ov-strip-lbl{color:#1d6b45}.ov-strip-od{background:#f9f1ec;border:1px solid #ecd0cb}.ov-strip-od .ov-strip-lbl{color:#a01d17}.ov-g-rec{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px}.ov-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.ov-g-od{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:9px}.ov-sub-lbl{font-size:.65rem;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin:6px 0 4px;padding-left:1px}.kcard-hero{grid-column:span 2}
+.kgrid{margin-bottom:18px}.ov-mon-wrap{position:relative;display:inline-block;margin-bottom:10px}.ov-mon-toggle{padding:5px 14px;border-radius:7px;border:1px solid var(--bdr);background:var(--card);cursor:pointer;font-size:.75rem;font-weight:700;color:var(--nav);display:inline-flex;align-items:center;gap:6px}.ov-mon-toggle:hover{background:var(--lt)}.ov-mon-panel{display:none;position:absolute;top:calc(100% + 4px);left:0;z-index:200;background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.1)}.ov-mon-panel.open{display:block}.ov-mon-title{font-size:.64rem;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}.ov-mon-options{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}.ov-mon-options label{display:flex;align-items:center;gap:7px;font-size:.78rem;cursor:pointer;padding:3px 4px;border-radius:5px;transition:background .1s}.ov-mon-options label:hover{background:var(--lt)}.ov-mon-options input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:#5c0f1d}.ov-mon-actions{display:flex;gap:6px;border-top:1px solid var(--bdr);padding-top:8px}.ov-mon-actions button{flex:1;padding:4px;font-size:.7rem;border-radius:5px;border:1px solid var(--bdr);cursor:pointer;background:var(--lt)}.ov-mon-actions button:hover{background:var(--bdr)}.ov-strip{border-radius:10px;padding:10px 12px 12px;margin-bottom:8px}.ov-strip-lbl{font-size:.68rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:8px}.ov-strip-rec{background:var(--lt);border:1px solid var(--bdr)}.ov-strip-rec .ov-strip-lbl{color:var(--nav)}.ov-strip-sal{background:var(--lt);border:1px solid var(--bdr)}.ov-strip-sal .ov-strip-lbl{color:var(--grn)}.ov-strip-od{background:#f9f1ec;border:1px solid #ecd0cb}.ov-strip-od .ov-strip-lbl{color:var(--red)}.ov-g-rec{display:grid;grid-template-columns:2fr 1fr 1fr;gap:9px}.ov-g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.ov-g-od{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:9px}.ov-sub-lbl{font-size:.65rem;color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin:6px 0 4px;padding-left:1px}.kcard-hero{grid-column:span 2}
 .kcard{background:linear-gradient(160deg,#ffffff 60%,var(--bg) 100%);border:1px solid var(--bdr);border-radius:10px;padding:14px 16px;
   position:relative;overflow:hidden;transition:box-shadow .18s,transform .18s;
   display:flex;flex-direction:column;justify-content:space-between;height:100%;box-sizing:border-box}
@@ -31,7 +32,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--tx
 .kval{font-size:1.35rem;font-weight:800;line-height:1.15;margin:4px 0 2px}
 .ksub{font-size:.69rem;color:var(--mut);margin-top:3px}
 .kbadge{display:inline-block;font-size:.67rem;font-weight:700;padding:2px 7px;border-radius:10px;margin-top:5px}
-.br{background:#f4e3de;color:var(--red)}.bg{background:#e2ecdf;color:var(--grn)}.ba{background:#f3ead2;color:#6d5518}
+.br{background:#f4e3de;color:var(--red)}.bg{background:#e2ecdf;color:var(--grn)}.ba{background:#f3ead2;color:var(--stock-gold-text)}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(460px,1fr));gap:14px;margin-bottom:16px}
 .cc{background:var(--card);border:1px solid var(--bdr);border-radius:10px;padding:16px 18px}
 .cc.wide{grid-column:1/-1}
@@ -137,26 +138,26 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 /* ── Scenario Simulator ── */
 .sc-box{background:#F0F7FF;border:1.5px solid #BFD8F7;border-radius:10px;padding:14px 16px;margin-top:12px;}
 .sc-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
-.sc-field label{display:block;font-size:.68rem;font-weight:700;color:#6d1522;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+.sc-field label{display:block;font-size:.68rem;font-weight:700;color:var(--acc2);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
 .sc-inp{width:100%;box-sizing:border-box;padding:7px 10px;border:1.5px solid #93C5FD;border-radius:7px;font-size:.85rem;font-weight:600;background:#fff;color:#111;outline:none;}
 .sc-inp:focus{border-color:#a54b5e;box-shadow:0 0 0 3px rgba(165,75,94,.15);}
 .sc-result{background:#fff;border:1px solid #E2E8F0;border-radius:8px;padding:10px 12px;}
 .sc-result-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
 .sc-metric{text-align:center;padding:6px 4px;}
-.sc-mlbl{font-size:.62rem;font-weight:700;color:#6b6355;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
+.sc-mlbl{font-size:.62rem;font-weight:700;color:var(--auto-text-11);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px;}
 .sc-mval{font-size:.82rem;font-weight:800;color:#111;}
 .sc-mdelta{font-size:.68rem;margin-top:2px;}
 .sc-actions{display:flex;gap:8px;margin-top:10px;}
 .sc-apply{flex:1;background:#6d1522;color:#fff;border:none;border-radius:7px;padding:8px 14px;font-size:.78rem;font-weight:700;cursor:pointer;}
 .sc-apply:hover{background:#a54b5e;}
-.sc-clear{background:#fff;color:#a01d17;border:1.5px solid #d99893;border-radius:7px;padding:8px 14px;font-size:.78rem;font-weight:700;cursor:pointer;}
+.sc-clear{background:#fff;color:var(--red);border:1.5px solid #d99893;border-radius:7px;padding:8px 14px;font-size:.78rem;font-weight:700;cursor:pointer;}
 .sc-clear:hover{background:#f8efe9;}
 /* Scenario Summary Panel */
 .sc-panel{background:#fff;border:2px solid #6d1522;border-radius:12px;padding:14px 16px;margin:0 0 18px 0;}
 .sc-panel-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:0;}
-.sc-panel-hdr h3{font-size:.88rem;font-weight:800;color:#6d1522;margin:0;}
-.sc-panel-toggle-btn{background:none;border:none;color:#a54b5e;font-size:.75rem;font-weight:700;cursor:pointer;padding:2px 8px;}
-.sc-summary-hdr{display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 1fr;gap:4px;font-size:.62rem;font-weight:800;color:#6b6355;text-transform:uppercase;letter-spacing:.04em;padding:6px 0 4px;border-bottom:1px solid var(--bdr);margin-top:8px;}
+.sc-panel-hdr h3{font-size:.88rem;font-weight:800;color:var(--acc2);margin:0;}
+.sc-panel-toggle-btn{background:none;border:none;color:var(--auto-text-12);font-size:.75rem;font-weight:700;cursor:pointer;padding:2px 8px;}
+.sc-summary-hdr{display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 1fr;gap:4px;font-size:.62rem;font-weight:800;color:var(--auto-text-11);text-transform:uppercase;letter-spacing:.04em;padding:6px 0 4px;border-bottom:1px solid var(--bdr);margin-top:8px;}
 .sc-summary-row{display:grid;grid-template-columns:2fr 1fr 1.5fr 1fr 1fr 1fr;gap:4px;font-size:.72rem;padding:5px 0;border-bottom:1px solid var(--bdr);align-items:center;}
 .sc-val{text-align:right;font-weight:600;}
 .sc-dn{color:var(--grn);}
@@ -178,7 +179,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 .exc-cn{font-weight:700;font-size:.88rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:300px;}
 .exc-cm{font-size:.71rem;color:var(--mut);}
 .exc-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:.65rem;font-weight:800;letter-spacing:.03em;white-space:nowrap;}
-.exc-blocked{background:#f4e3de;color:#a01d17;}.exc-eligible{background:#f3ead2;color:#6d5518;}.exc-ok{background:#e2ecdf;color:#1d6b45;}
+.exc-blocked{background:#f4e3de;color:var(--red);}.exc-eligible{background:#f3ead2;color:var(--stock-gold-text);}.exc-ok{background:#e2ecdf;color:var(--grn);}
 .exc-body{display:none;padding:16px;border-top:1px solid var(--bdr);}
 .exc-body.open{display:block;}
 .exc-metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:8px;margin-bottom:14px;}
@@ -205,7 +206,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 .exc-as{height:100%;}
 .exc-xbtn{background:none;border:none;color:var(--mut);font-size:1.05rem;cursor:pointer;padding:0 3px;opacity:.55;flex-shrink:0;}
 .exc-xbtn:hover{color:var(--red);opacity:1;}
-.exc-block-note{background:#f4e3de;border:1px solid #d99893;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.77rem;font-weight:700;color:#a01d17;}
+.exc-block-note{background:#f4e3de;border:1px solid #d99893;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:.77rem;font-weight:700;color:var(--red);}
 
 /* ── Executive Summary ─────────────────────────────── */
 #executive-summary{display:none;
@@ -228,7 +229,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 #executive-summary .es-title{
   font-size:1rem;
   font-weight:800;
-  color:#5c0f1d;
+  color:var(--nav);
   letter-spacing:.3px;
   display:flex;
   align-items:center;
@@ -245,7 +246,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 }
 #executive-summary .es-meta{
   font-size:.68rem;
-  color:#6b7a90;
+  color:var(--auto-text-9);
   background:#fff;
   border:1px solid #ddd4c2;
   border-radius:6px;
@@ -272,27 +273,27 @@ td:nth-child(4),td:nth-child(5){text-align:center}
   text-transform:uppercase;
   letter-spacing:.8px;
   margin:0 0 7px;
-  color:#5c0f1d;
+  color:var(--nav);
 }
-#executive-summary .es-block.efficiency h4{color:#6d1522}
-#executive-summary .es-block.risk h4{color:#a01d17}
+#executive-summary .es-block.efficiency h4{color:var(--acc2)}
+#executive-summary .es-block.risk h4{color:var(--red)}
 #executive-summary .es-block p{
   font-size:.8rem;
   line-height:1.65;
-  color:#453f35;
+  color:var(--auto-text-8);
   margin:0;
 }
 #executive-summary .es-block .es-stat{
   display:inline-block;
   font-weight:700;
-  color:#5c0f1d;
+  color:var(--nav);
   background:#efe9db;
   border-radius:4px;
   padding:1px 5px;
   font-size:.78rem;
 }
-#executive-summary .es-block.efficiency .es-stat{color:#6d1522;background:#f0e0e2}
-#executive-summary .es-block.risk .es-stat{color:#a01d17;background:#f4e3de}
+#executive-summary .es-block.efficiency .es-stat{color:var(--acc2);background:#f0e0e2}
+#executive-summary .es-block.risk .es-stat{color:var(--red);background:#f4e3de}
 #executive-summary .es-divider{
   border:none;
   border-top:1px dashed #ddd4c2;
@@ -462,14 +463,14 @@ td:nth-child(4),td:nth-child(5){text-align:center}
   <div class="per-bar" style="margin-bottom:4px">
     <label>Class:</label>
     <button class="per-btn on cls-btn" data-cls="" data-lbl="All" onclick="setClsFilter('',this)">All</button>
-    <button class="per-btn cls-btn" data-cls="A+" data-lbl="A+" onclick="setClsFilter('A+',this)" style="color:#124a2f;font-weight:700">A+</button>
-    <button class="per-btn cls-btn" data-cls="A" data-lbl="A" onclick="setClsFilter('A',this)" style="color:#1d6b45;font-weight:700">A</button>
-    <button class="per-btn cls-btn" data-cls="B" data-lbl="B" onclick="setClsFilter('B',this)" style="color:#8c1d2f;font-weight:700">B</button>
-    <button class="per-btn cls-btn" data-cls="C" data-lbl="C" onclick="setClsFilter('C',this)" style="color:#8a6d2e;font-weight:700">C</button>
-    <button class="per-btn cls-btn" data-cls="D" data-lbl="D" onclick="setClsFilter('D',this)" style="color:#a01d17;font-weight:700">D</button>
+    <button class="per-btn cls-btn" data-cls="A+" data-lbl="A+" onclick="setClsFilter('A+',this)" style="color:var(--green-deep-text);font-weight:700">A+</button>
+    <button class="per-btn cls-btn" data-cls="A" data-lbl="A" onclick="setClsFilter('A',this)" style="color:var(--grn);font-weight:700">A</button>
+    <button class="per-btn cls-btn" data-cls="B" data-lbl="B" onclick="setClsFilter('B',this)" style="color:var(--primary);font-weight:700">B</button>
+    <button class="per-btn cls-btn" data-cls="C" data-lbl="C" onclick="setClsFilter('C',this)" style="color:var(--amb);font-weight:700">C</button>
+    <button class="per-btn cls-btn" data-cls="D" data-lbl="D" onclick="setClsFilter('D',this)" style="color:var(--red);font-weight:700">D</button>
     <span style="margin:0 6px;color:var(--bdr)">|</span>
-    <button class="per-btn cls-btn" data-cls="IR-X" data-lbl="IR-X" onclick="setClsFilter('IR-X',this)" style="color:#6d3a12;font-weight:700">IR-X</button>
-    <button class="per-btn cls-btn" data-cls="OR-X" data-lbl="OR-X" onclick="setClsFilter('OR-X',this)" style="color:#6d1522;font-weight:700">OR-X</button>
+    <button class="per-btn cls-btn" data-cls="IR-X" data-lbl="IR-X" onclick="setClsFilter('IR-X',this)" style="color:var(--auto-text-3);font-weight:700">IR-X</button>
+    <button class="per-btn cls-btn" data-cls="OR-X" data-lbl="OR-X" onclick="setClsFilter('OR-X',this)" style="color:var(--acc2);font-weight:700">OR-X</button>
     <span style="font-size:.71rem;color:var(--mut);margin-left:8px">Classification from raw data &nbsp;·&nbsp; A+ &gt; A &gt; B &gt; C &gt; D</span>
     <span style="font-size:.71rem;color:var(--mut);margin-left:8px">A=No OD · B=OD 1-30 · C=OD 31-90 · D=OD&gt;90</span>
   </div>
@@ -515,7 +516,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
     <button class="per-btn cu-mon" onclick="setCuMon('ytd',this)">YTD</button>
     <span id="cu-per-lbl" style="font-size:.72rem;color:var(--mut);margin-left:auto"></span>
   </div>
-  <div style="font-size:.72rem;color:var(--mut);background:var(--lt);border:1px solid var(--bdr);border-radius:8px;padding:7px 12px;margin-bottom:8px;line-height:1.6"><strong style="color:var(--txt)">&#x1F4CA; Financial Health (FH) classification:</strong>&nbsp; <span style="color:#5ba37f">&#x25CF; Safe</span> — DSO ≤ 180d &amp; OD Rate ≤ avg&nbsp;&nbsp; <span style="color:#b06a24">&#x25C6; Critical</span> — DSO &gt; 180d but low OD Rate (top-right)&nbsp;&nbsp; <span style="color:#c4574f">&#x25CF; Potential</span> — DSO &gt; 180d &amp; OD Rate &gt; avg (bottom-right)&nbsp;&nbsp; <span style="color:#bfa059">&#x26A0; Watch</span> — DSO ≤ 180d but OD Rate &gt; avg</div>  <div class="fbar">
+  <div style="font-size:.72rem;color:var(--mut);background:var(--lt);border:1px solid var(--bdr);border-radius:8px;padding:7px 12px;margin-bottom:8px;line-height:1.6"><strong style="color:var(--txt)">&#x1F4CA; Financial Health (FH) classification:</strong>&nbsp; <span style="color:var(--auto-text-13)">&#x25CF; Safe</span> — DSO ≤ 180d &amp; OD Rate ≤ avg&nbsp;&nbsp; <span style="color:var(--auto-text-4)">&#x25C6; Critical</span> — DSO &gt; 180d but low OD Rate (top-right)&nbsp;&nbsp; <span style="color:var(--auto-text-10)">&#x25CF; Potential</span> — DSO &gt; 180d &amp; OD Rate &gt; avg (bottom-right)&nbsp;&nbsp; <span style="color:var(--auto-text-7)">&#x26A0; Watch</span> — DSO ≤ 180d but OD Rate &gt; avg</div>  <div class="fbar">
     <label>Channel</label>
     <select id="fCh" onchange="filt()"><option value="">All</option>
       <option>BH</option><option>OR</option><option>IR</option><option value="IR+BH">IR+BH</option></select>
@@ -557,7 +558,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 <!-- FINANCIAL HEALTH -->
 <div class="pg" id="pg-fh">
 
-  <div style="font-size:.72rem;color:var(--mut);background:var(--lt);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;margin-bottom:10px;line-height:1.6"><strong style="color:var(--txt)">&#x1F4CA; Financial Health (FH) classification:</strong>&nbsp; <span style="color:#1d6b45">&#x25CF; Safe</span> — DSO &le; 180d &amp; OD Rate &le; avg (top-left)&nbsp;&nbsp; <span style="color:#b45f18">&#x25C6; Potential</span> — DSO &gt; 180d but low OD Rate&nbsp;&nbsp; <span style="color:#a01d17">&#x25CF; Critical</span> — DSO &gt; 180d &amp; OD Rate &gt; avg&nbsp;&nbsp; <span style="color:#8a6d2e">&#x26A0; Watch</span> — DSO &le; 180d but OD Rate &gt; avg (bottom-left)</div>
+  <div style="font-size:.72rem;color:var(--mut);background:var(--lt);border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;margin-bottom:10px;line-height:1.6"><strong style="color:var(--txt)">&#x1F4CA; Financial Health (FH) classification:</strong>&nbsp; <span style="color:var(--grn)">&#x25CF; Safe</span> — DSO &le; 180d &amp; OD Rate &le; avg (top-left)&nbsp;&nbsp; <span style="color:var(--auto-text-5)">&#x25C6; Potential</span> — DSO &gt; 180d but low OD Rate&nbsp;&nbsp; <span style="color:var(--red)">&#x25CF; Critical</span> — DSO &gt; 180d &amp; OD Rate &gt; avg&nbsp;&nbsp; <span style="color:var(--amb)">&#x26A0; Watch</span> — DSO &le; 180d but OD Rate &gt; avg (bottom-left)</div>
   <!-- Filter bar -->
   <div class="fh-filter-bar">
 
@@ -682,12 +683,12 @@ td:nth-child(4),td:nth-child(5){text-align:center}
 <!-- EXTENDED AR (DSO > 365d) -->
 <div class="pg" id="pg-efh">
   <div style="font-size:.72rem;color:var(--mut);background:#f8f2e6;border:1px solid #FED7AA;border-radius:8px;padding:6px 12px;margin-bottom:10px;line-height:1.6">
-    <strong style="color:#b45f18">&#x1F4C8; High DSO Review — DSO &gt; 365d:</strong>
+    <strong style="color:var(--auto-text-5)">&#x1F4C8; High DSO Review — DSO &gt; 365d:</strong>
     &nbsp; Customers whose receivables take over a year to collect.
-    &nbsp; Same quadrant logic applies: <span style="color:#1d6b45">Safe</span> ·
-    <span style="color:#b45f18">Potential</span> ·
-    <span style="color:#a01d17">Critical</span> ·
-    <span style="color:#8a6d2e">Watch</span>
+    &nbsp; Same quadrant logic applies: <span style="color:var(--grn)">Safe</span> ·
+    <span style="color:var(--auto-text-5)">Potential</span> ·
+    <span style="color:var(--red)">Critical</span> ·
+    <span style="color:var(--amb)">Watch</span>
   </div>
   <div class="fh-filter-bar" id="efh-filter-bar">
     <div class="fh-dd" id="efh-dd-ch">
@@ -725,10 +726,10 @@ td:nth-child(4),td:nth-child(5){text-align:center}
         <div class="fh-chart-sub">X: DSO (days) vs DPO 180d &nbsp;|&nbsp; Y: Overdue Rate (%) vs selected acct avg &nbsp;|&nbsp; Bubble: AR Balance</div>
       </div>
       <div class="fh-qdots">
-        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8f2e2;border:1px solid #b45f18"></div><span style="color:#b45f18;font-weight:700">Watch</span></div>
-        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8efe9;border:1px solid #a01d17"></div><span style="color:#a01d17;font-weight:700">Critical</span></div>
-        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#e8efe4;border:1px solid #1d6b45"></div><span style="color:#1d6b45;font-weight:700">Safe</span></div>
-        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8f2e6;border:1px solid #8a6d2e"></div><span style="color:#8a6d2e;font-weight:700">Potential</span></div>
+        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8f2e2;border:1px solid #b45f18"></div><span style="color:var(--auto-text-5);font-weight:700">Watch</span></div>
+        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8efe9;border:1px solid #a01d17"></div><span style="color:var(--red);font-weight:700">Critical</span></div>
+        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#e8efe4;border:1px solid #1d6b45"></div><span style="color:var(--grn);font-weight:700">Safe</span></div>
+        <div class="fh-qdot"><div class="fh-qdot-sq" style="background:#f8f2e6;border:1px solid #8a6d2e"></div><span style="color:var(--amb);font-weight:700">Potential</span></div>
       </div>
     </div>
     <div id="efh-counts" style="margin-bottom:6px;position:relative"></div>
@@ -759,7 +760,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
     <div class="mmeta" id="mo-meta"></div>
     <div id="mo-per-bar" style="padding:6px 0 9px;border-bottom:1px solid var(--bdr);margin-bottom:10px">
       <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-bottom:5px">
-        <span style="font-size:.62rem;font-weight:700;color:#5c0f1d;text-transform:uppercase;letter-spacing:.4px;min-width:72px">2024–2025:</span>
+        <span style="font-size:.62rem;font-weight:700;color:var(--nav);text-transform:uppercase;letter-spacing:.4px;min-width:72px">2024–2025:</span>
         <button class="per-btn mo-mon-btn2425" onclick="moTogMon2425(0,this)">Jan</button>
         <button class="per-btn mo-mon-btn2425" onclick="moTogMon2425(1,this)">Feb</button>
         <button class="per-btn mo-mon-btn2425" onclick="moTogMon2425(2,this)">Mar</button>
@@ -775,7 +776,7 @@ td:nth-child(4),td:nth-child(5){text-align:center}
         <button class="per-btn" onclick="moClearMons2425()" style="margin-left:2px;opacity:.7;font-size:.65rem">Clear</button>
       </div>
       <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
-        <span style="font-size:.62rem;font-weight:700;color:#1d6b45;text-transform:uppercase;letter-spacing:.4px;min-width:72px">2026:</span>
+        <span style="font-size:.62rem;font-weight:700;color:var(--grn);text-transform:uppercase;letter-spacing:.4px;min-width:72px">2026:</span>
         <button class="per-btn mo-mon-btn26" onclick="moTogMon26(0,this)">Jan</button>
         <button class="per-btn mo-mon-btn26" onclick="moTogMon26(1,this)">Feb</button>
         <button class="per-btn mo-mon-btn26" onclick="moTogMon26(2,this)">Mar</button>
@@ -1820,7 +1821,7 @@ function render(){
     var fixedCols=
       '<td style="padding:0 4px;text-align:center"><span class="exp-toggle" id="tgl-'+idx+'" onclick="toggleExp('+idx+')" title="Monthly detail">&#x25BA;</span></td>'+
       '<td style="text-align:center;color:var(--mut);font-size:.7rem">'+(idx+1)+'</td>'+
-      '<td title="'+c.name+'" style="cursor:pointer" onclick="openMo(\''+esc+'\')">'+nm+(hasSc?' <span style="display:inline-block;background:#f0e0e2;color:#8c1d2f;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:8px;vertical-align:middle">&#x1F4CA; SC</span>':'')+'</td>'+
+      '<td title="'+c.name+'" style="cursor:pointer" onclick="openMo(\''+esc+'\')">'+nm+(hasSc?' <span style="display:inline-block;background:#f0e0e2;color:var(--primary);font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:8px;vertical-align:middle">&#x1F4CA; SC</span>':'')+'</td>'+
       '<td><span class="pill p'+c.channel+'">'+c.channel+'</span></td>'+
       '<td>'+clsBadge(classifyC(c))+'</td>'+
       (function(){
@@ -2183,7 +2184,7 @@ function excSimHtml(c,excAmt,cols){
     if(i===0&&termM===0&&excAmt>0)status='<span style="color:var(--red);font-size:.63rem;font-weight:700">&#x1F534; Immediate OD</span>';
     h+='<tr style="'+rowBg+'">'
       +'<td style="font-weight:'+(isMat?'700':'400')+';white-space:nowrap">'+labels[i]
-        +(isMat?'<br><span style="font-size:.58rem;background:#f3ead2;color:#6d5518;padding:1px 6px;border-radius:3px;font-weight:700">&#x23F1; Maturity</span>':'')
+        +(isMat?'<br><span style="font-size:.58rem;background:#f3ead2;color:var(--stock-gold-text);padding:1px 6px;border-radius:3px;font-weight:700">&#x23F1; Maturity</span>':'')
       +'</td>'
       +'<td style="font-weight:700">SAR '+f(row.ar)+'</td>'
       +'<td style="text-align:right;color:'+(curAR>0?'#1d6b45':'var(--mut)')+'">'+( curAR>0?'SAR '+f(curAR):'—')+'</td>'
@@ -2209,7 +2210,7 @@ function excSearch(){
   box.innerHTML=matches.map(function(c){
     var st=excStatus(c);
     var stHtml=st==='blocked'
-      ?'<span style="color:#6d5518;font-weight:700">&#x26A0; Overlimit</span>'
+      ?'<span style="color:var(--stock-gold-text);font-weight:700">&#x26A0; Overlimit</span>'
       :st==='eligible'
       ?'<span style="color:var(--amb);font-weight:700">&#x26A0; Has Overdue</span>'
       :'<span style="color:var(--grn)">&#x2713; Clear</span>';
@@ -2310,7 +2311,7 @@ function renderExcList(){
     var st=excStatus(c);
     var isBlocked=st==='blocked';
     var badgeHtml=isBlocked
-      ?'<span class="exc-badge" style="background:#f3ead2;color:#6d5518;border:1px solid #a8863c">&#x26A0; OVERLIMIT &mdash; Monitor</span>'
+      ?'<span class="exc-badge" style="background:#f3ead2;color:var(--stock-gold-text);border:1px solid #a8863c">&#x26A0; OVERLIMIT &mdash; Monitor</span>'
       :st==='eligible'
       ?'<span class="exc-badge exc-eligible">&#x26A0; OVERDUE &mdash; EXCEPTION REQUIRED</span>'
       :'<span class="exc-badge exc-ok">&#x2713; CLEAR</span>';
@@ -2342,9 +2343,9 @@ function renderExcList(){
       {l:'Channel Stk (incl. OUD)',v:'SAR '+f(c.ttl_channel_stk||0),col:'#2a5a54'},
     ].map(function(m){return'<div class="exc-m"><div class="exc-ml">'+m.l+'</div><div class="exc-mv" style="color:'+m.col+'">'+m.v+'</div></div>';}).join('');
     var agingDetail='<div style="font-size:.67rem;color:var(--mut);margin-top:6px;margin-bottom:4px">'
-      +'OD 1-30d: <b style="color:#c4574f">SAR '+f(c.od1)+'</b> &nbsp;&middot;&nbsp; '
-      +'31-60d: <b style="color:#b3261e">SAR '+f(c.od2)+'</b> &nbsp;&middot;&nbsp; '
-      +'61-90d: <b style="color:#a01d17">SAR '+f(c.od3)+'</b> &nbsp;&middot;&nbsp; '
+      +'OD 1-30d: <b style="color:var(--auto-text-10)">SAR '+f(c.od1)+'</b> &nbsp;&middot;&nbsp; '
+      +'31-60d: <b style="color:var(--red)">SAR '+f(c.od2)+'</b> &nbsp;&middot;&nbsp; '
+      +'61-90d: <b style="color:var(--red)">SAR '+f(c.od3)+'</b> &nbsp;&middot;&nbsp; '
       +'&gt;90d: <b style="color:var(--red)">SAR '+f(c.od4)+'</b>'
       +agingBar+'</div>';
     // M Month collection trend (last 4 months) — visible on exceptions page
@@ -2390,7 +2391,7 @@ function renderExcList(){
       ?'<span style="background:#a01d17;color:#fff;font-size:.82rem;font-weight:900;padding:6px 16px;border-radius:6px;white-space:nowrap;flex-shrink:0;box-shadow:0 3px 8px rgba(160,29,23,.45);letter-spacing:.02em;text-transform:uppercase">'+(D.periods[D.periods.length-1]||'May').split(' ')[0]+' Exception &nbsp;&#x25B8;&nbsp; SAR '+f(entry.excAmt)+'</span>'
       :'';
     var blockNote=isBlocked
-      ?'<div style="background:#f8f2e6;border:1px solid #a8863c;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:.73rem;color:#78350F">'
+      ?'<div style="background:#f8f2e6;border:1px solid #a8863c;border-radius:6px;padding:8px 12px;margin-bottom:8px;font-size:.73rem;color:var(--auto-text-2)">'
         +'&#x26A0; Customer is overlimit (AR SAR '+f(c.balance)+' &ge; Cr.Limit SAR '+f(c.credit_limit)+').'
         +' Verify M-month collection covers the gap before approving.</div>'
       :'';
@@ -2408,7 +2409,7 @@ function renderExcList(){
         +'<div class="exc-metrics">'+metrics+'</div>'
         +agingDetail
         +collTrendSection
-        +'<div id="exc-ovl-'+sid+'" style="'+(_ovl?'':'display:none;')+'background:#f8f2e6;border:1px solid #a8863c;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:.73rem;font-weight:600;color:#6d5518">'+_ovlMsg+'</div>'
+        +'<div id="exc-ovl-'+sid+'" style="'+(_ovl?'':'display:none;')+'background:#f8f2e6;border:1px solid #a8863c;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:.73rem;font-weight:600;color:var(--stock-gold-text)">'+_ovlMsg+'</div>'
         +'<hr style="border:none;border-top:1px solid var(--bdr);margin:13px 0">'
         +'<div class="exc-2col">'
           +'<div class="exc-field"><label>Exception Request (SAR)</label>'
@@ -2451,7 +2452,7 @@ function updateExcSummary(){
     +'<div class="exc-si"><div class="exc-sl">Blocked (Overlimit)</div><div class="exc-sv" style="color:var(--red)">'+blocked+'</div></div>'
     +'<div class="exc-si"><div class="exc-sl">Clear</div><div class="exc-sv" style="color:var(--grn)">'+clear+'</div></div>'
     +'<div style="width:1px;background:var(--bdr)"></div>'
-    +'<div class="exc-si"><div class="exc-sl">Total Exception Requested</div><div class="exc-sv" style="color:#6d1522">SAR '+f(totalExc)+'</div></div>'
+    +'<div class="exc-si"><div class="exc-sl">Total Exception Requested</div><div class="exc-sv" style="color:var(--acc2)">SAR '+f(totalExc)+'</div></div>'
     +'<div style="margin-left:auto;display:flex;gap:8px;align-items:center">'
       +'<button class="btnO" onclick="excClearAll()">Clear All</button>'
       +'<button class="sc-apply" onclick="excPrint()" style="padding:6px 18px;font-size:.77rem">&#x1F5A8; Print Layout 1</button>'
@@ -2475,8 +2476,8 @@ function excPrint(){
     var st=excStatus(c);
     var isBlocked=st==='blocked';
     var stTag=isBlocked
-      ?'<span style="background:#f3ead2;color:#6d5518;padding:3px 10px;border-radius:10px;font-size:.73rem;font-weight:800">&#x26A0; OVERLIMIT — Monitor</span>'
-      :'<span style="background:#f3ead2;color:#6d5518;padding:3px 10px;border-radius:10px;font-size:.73rem;font-weight:800">&#x26A0; EXCEPTION REQUIRED</span>';
+      ?'<span style="background:#f3ead2;color:var(--stock-gold-text);padding:3px 10px;border-radius:10px;font-size:.73rem;font-weight:800">&#x26A0; OVERLIMIT — Monitor</span>'
+      :'<span style="background:#f3ead2;color:var(--stock-gold-text);padding:3px 10px;border-radius:10px;font-size:.73rem;font-weight:800">&#x26A0; EXCEPTION REQUIRED</span>';
     var sim=excSimulate(c,entry.excAmt,entry.cols);
     var simRows=sim.slice(0,labels.length).map(function(r,i){
       return'<tr style="'+(i===0?'background:#f3ede1;font-weight:700':'')+'">'
@@ -2494,7 +2495,7 @@ function excPrint(){
       +'<div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:12px;font-size:.73rem">'
         +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">Credit Limit</div><strong>SAR '+c.credit_limit.toLocaleString()+'</strong></div>'
         +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">AR (MTD)</div><strong>SAR '+c.balance.toLocaleString()+'</strong></div>'
-        +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">Total OD</div><strong style="color:#a01d17">SAR '+c.total_od.toLocaleString()+'</strong></div>'
+        +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">Total OD</div><strong style="color:var(--red)">SAR '+c.total_od.toLocaleString()+'</strong></div>'
         +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">Credit Term</div><strong>'+((c.term||'').split('-')[0]||'—')+'</strong></div>'
         +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">DSO</div><strong>'+(c.dso||'—')+' d</strong></div>'
         +'<div><div style="color:#888;font-size:.6rem;text-transform:uppercase">Channel</div><strong>'+c.channel+'</strong></div>'
@@ -2515,8 +2516,8 @@ function excPrint(){
   });
   var win=window.open('','_blank');
   win.document.write('<!DOCTYPE html><html><head><title>Exception Approval — '+labels[0]+'</title>'
-    +'<style>body{font-family:Segoe UI,Arial,sans-serif;padding:32px;max-width:920px;margin:auto;color:#26221c}'
-    +'h2{color:#5c0f1d;border-bottom:2.5px solid #5c0f1d;padding-bottom:9px;margin-bottom:22px;font-size:1.1rem}'
+    +'<style>body{font-family:Segoe UI,Arial,sans-serif;padding:32px;max-width:920px;margin:auto;color:var(--auto-text-14)}'
+    +'h2{color:var(--nav);border-bottom:2.5px solid #5c0f1d;padding-bottom:9px;margin-bottom:22px;font-size:1.1rem}'
     +'@media print{.noprint{display:none}.cust-section{page-break-after:always;break-after:page}}</style></head><body>'
     +'<button class="noprint" onclick="window.print()" style="background:#5c0f1d;color:#fff;border:none;padding:8px 22px;border-radius:6px;cursor:pointer;margin-bottom:22px;font-size:.82rem">&#x1F5A8; Print</button>'
     +'<h2>&#x1F4CB; Exception Sales Approval Request — '+labels[0]+'</h2>'
@@ -2551,11 +2552,11 @@ function excPrint2(){
     var odPct=c.balance>0?(c.total_od/c.balance*100).toFixed(1)+'%':'0%';
     var st=excStatus(c);
     var stBadge=st==='blocked'
-      ?'<span style="background:#f3ead2;color:#6d5518;padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">&#x26A0; OVERLIMIT — Monitor</span>'
+      ?'<span style="background:#f3ead2;color:var(--stock-gold-text);padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">&#x26A0; OVERLIMIT — Monitor</span>'
       :st==='eligible'
-      ?'<span style="background:#f3ead2;color:#6d5518;padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">⚠ EXCEPTION REQUIRED</span>'
-      :'<span style="background:#e2ecdf;color:#124a2f;padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">✓ CLEAR</span>';
-    function kpi(lbl,val,col){return '<td style="padding:5px 8px;border:1px solid #ddd4c2;text-align:center;min-width:70px"><div style="font-size:.55rem;color:#6b6355;font-weight:700;text-transform:uppercase;letter-spacing:.3px">'+lbl+'</div><div style="font-size:.8rem;font-weight:700;color:'+(col||'#26221c')+'">'+val+'</div></td>';}
+      ?'<span style="background:#f3ead2;color:var(--stock-gold-text);padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">⚠ EXCEPTION REQUIRED</span>'
+      :'<span style="background:#e2ecdf;color:var(--green-deep-text);padding:2px 10px;border-radius:5px;font-size:.72rem;font-weight:800">✓ CLEAR</span>';
+    function kpi(lbl,val,col){return '<td style="padding:5px 8px;border:1px solid #ddd4c2;text-align:center;min-width:70px"><div style="font-size:.55rem;color:var(--auto-text-11);font-weight:700;text-transform:uppercase;letter-spacing:.3px">'+lbl+'</div><div style="font-size:.8rem;font-weight:700;color:'+(col||'#26221c')+'">'+val+'</div></td>';}
     // Collection trend: get last 4 months from time series
     var ts2=TS[name]||{};
     var mI2=D.periods.length-1; // May 2026 = last index
@@ -2567,7 +2568,7 @@ function excPrint2(){
     function bar(v){var pct=Math.round(v/maxColl*100);return '<div style="height:6px;background:#5c0f1d;border-radius:3px;width:'+pct+'%;margin-top:3px"></div>';}
     function ck(lbl,v,col){
       return '<td style="padding:5px 7px;border:1px solid #ddd4c2;text-align:center;min-width:65px">'
-        +'<div style="font-size:.52rem;color:#6b6355;font-weight:700;text-transform:uppercase;letter-spacing:.2px">'+lbl+'</div>'
+        +'<div style="font-size:.52rem;color:var(--auto-text-11);font-weight:700;text-transform:uppercase;letter-spacing:.2px">'+lbl+'</div>'
         +'<div style="font-size:.78rem;font-weight:700;color:'+(col||'#26221c')+'">SAR '+f(v)+'</div>'
         +bar(v)+'</td>';
     }
@@ -2590,36 +2591,36 @@ function excPrint2(){
       '</tr></table>';
     // Collection trend: Feb→Mar→Apr→May
     var collRow='<div style="margin-bottom:6px">'
-      +'<div style="font-size:.6rem;font-weight:700;color:#5c0f1d;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Collection Trend &mdash; Last 4 Months</div>'
+      +'<div style="font-size:.6rem;font-weight:700;color:var(--nav);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px">Collection Trend &mdash; Last 4 Months</div>'
       +'<table style="width:100%;border-collapse:collapse"><tr>'
       +ck(_period(-3)+' (M-3)',collFeb,'#453f35')
       +ck(_period(-2)+' (M-2)',collMar,'#453f35')
       +ck(_period(-1)+' (M-1)',collApr,'#8c1d2f')
       +ck(_period(0)+' (Current)',collMay,'#1d6b45')
       +'</tr></table></div>';
-    var odDetail='<div style="font-size:.7rem;color:#6b6355;margin-bottom:8px">'+
-      'OD 1-30d: <b style="color:#a01d17">SAR '+c.od1.toLocaleString()+'</b> &middot; '+
-      '31-60d: <b style="color:#a01d17">SAR '+c.od2.toLocaleString()+'</b> &middot; '+
-      '61-90d: <b style="color:#a01d17">SAR '+c.od3.toLocaleString()+'</b> &middot; '+
-      '&gt;90d: <b style="color:#a01d17">SAR '+c.od4.toLocaleString()+'</b></div>';
+    var odDetail='<div style="font-size:.7rem;color:var(--auto-text-11);margin-bottom:8px">'+
+      'OD 1-30d: <b style="color:var(--red)">SAR '+c.od1.toLocaleString()+'</b> &middot; '+
+      '31-60d: <b style="color:var(--red)">SAR '+c.od2.toLocaleString()+'</b> &middot; '+
+      '61-90d: <b style="color:var(--red)">SAR '+c.od3.toLocaleString()+'</b> &middot; '+
+      '&gt;90d: <b style="color:var(--red)">SAR '+c.od4.toLocaleString()+'</b></div>';
     var termM=excTermMonths(c);
     var excAmt=entry.excAmt||0;
     var simRows=sim.slice(0,labels.length).map(function(r,i){
       var _isMat=(i===termM&&termM>0)||(i===0&&termM===0);
       var _curAR=Math.max(0,r.ar-r.od);
       var _rowBg=i===0?'background:#f3ede1;font-weight:700':_isMat?'background:#f8f2e6;font-weight:700;border-left:3px solid #a8863c':'';
-      var _status=_isMat&&termM>0?'<span style="color:#a01d17;font-size:.63rem;font-weight:700">&#x1F534; All AR aged to OD</span>'
-        :_isMat&&termM===0?'<span style="color:#a01d17;font-size:.63rem;font-weight:700">&#x1F534; Immediate OD</span>'
-        :i===0&&excAmt>0?'<span style="color:#8c1d2f;font-size:.63rem">+SAR '+f(excAmt)+' added</span>':'';
+      var _status=_isMat&&termM>0?'<span style="color:var(--red);font-size:.63rem;font-weight:700">&#x1F534; All AR aged to OD</span>'
+        :_isMat&&termM===0?'<span style="color:var(--red);font-size:.63rem;font-weight:700">&#x1F534; Immediate OD</span>'
+        :i===0&&excAmt>0?'<span style="color:var(--primary);font-size:.63rem">+SAR '+f(excAmt)+' added</span>':'';
       return '<tr style="'+_rowBg+'">'+
-        '<td style="white-space:nowrap">'+labels[i]+(_isMat?'<br><span style="font-size:.58rem;background:#f3ead2;color:#6d5518;padding:1px 5px;border-radius:3px">&#x23F1; Maturity</span>':'')+'</td>'+
+        '<td style="white-space:nowrap">'+labels[i]+(_isMat?'<br><span style="font-size:.58rem;background:#f3ead2;color:var(--stock-gold-text);padding:1px 5px;border-radius:3px">&#x23F1; Maturity</span>':'')+'</td>'+
         '<td style="text-align:right;font-weight:700">SAR '+r.ar.toLocaleString()+'</td>'+
         '<td style="text-align:right;color:'+(_curAR>0?'#1d6b45':'#6b6355')+'">'+(_curAR>0?'SAR '+_curAR.toLocaleString():'—')+'</td>'+
         '<td style="text-align:right;font-weight:700;color:'+(r.od>0?'#a01d17':'#1d6b45')+'">SAR '+r.od.toLocaleString()+'</td>'+
         '<td style="text-align:right">'+(r.ar>0?(r.od/r.ar*100).toFixed(1)+'%':'0%')+'</td>'+
-        '<td style="text-align:right;color:#1d6b45">'+(entry.cols[i]>0?'SAR '+entry.cols[i].toLocaleString():'—')+'</td>'+
+        '<td style="text-align:right;color:var(--grn)">'+(entry.cols[i]>0?'SAR '+entry.cols[i].toLocaleString():'—')+'</td>'+
         '<td style="text-align:right;color:'+(r.avail>0?'#1d6b45':'#a01d17')+'">SAR '+r.avail.toLocaleString()+'</td>'+
-        (function(ar,s,lbl){var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var md=[31,28,31,30,31,30,31,31,30,31,30,31];var m=lbl.match(/\((\w+)\s/);if(!m||!s)return'<td style="text-align:right;color:#8a6d2e">—</td>';var mi=mn.indexOf(m[1]);if(mi<0)return'<td style="text-align:right;color:#8a6d2e">—</td>';var cd=0;for(var j=0;j<=mi;j++)cd+=md[j];return'<td style="text-align:right;color:#8a6d2e">'+(cd?Math.round(ar/(s/cd))+'d':'—')+'</td>';})(r.ar,c.sales_26+(entry.excAmt||0),labels[i])+
+        (function(ar,s,lbl){var mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];var md=[31,28,31,30,31,30,31,31,30,31,30,31];var m=lbl.match(/\((\w+)\s/);if(!m||!s)return'<td style="text-align:right;color:var(--amb)">—</td>';var mi=mn.indexOf(m[1]);if(mi<0)return'<td style="text-align:right;color:var(--amb)">—</td>';var cd=0;for(var j=0;j<=mi;j++)cd+=md[j];return'<td style="text-align:right;color:var(--amb)">'+(cd?Math.round(ar/(s/cd))+'d':'—')+'</td>';})(r.ar,c.sales_26+(entry.excAmt||0),labels[i])+
         '<td>'+_status+'</td>'+
         '</tr>';
     }).join('');
@@ -2655,20 +2656,20 @@ function excPrint2(){
       '</div>'+
       kpiRow+stkRow+collRow+
       (entry.reason?'<div style="margin-bottom:8px;padding:8px 10px;background:#FAFAFA;border:1px solid #ddd4c2;border-radius:6px">'
-        +'<span style="font-size:.6rem;font-weight:700;color:#6b6355;text-transform:uppercase;letter-spacing:.3px">Remarks / Exception Reason</span>'
-        +'<div style="font-size:.78rem;color:#26221c;margin-top:3px">'+entry.reason+'</div>'
+        +'<span style="font-size:.6rem;font-weight:700;color:var(--auto-text-11);text-transform:uppercase;letter-spacing:.3px">Remarks / Exception Reason</span>'
+        +'<div style="font-size:.78rem;color:var(--auto-text-14);margin-top:3px">'+entry.reason+'</div>'
         +'</div>':'')+
       odDetail+
-      '<div style="font-size:.68rem;font-weight:700;color:#5c0f1d;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">M+3 Simulation Preview</div>'+m3Row+
-      '<div style="font-size:.68rem;font-weight:700;color:#5c0f1d;margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">AR &amp; OD Simulation</div>'+simTable+
+      '<div style="font-size:.68rem;font-weight:700;color:var(--nav);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">M+3 Simulation Preview</div>'+m3Row+
+      '<div style="font-size:.68rem;font-weight:700;color:var(--nav);margin-bottom:4px;text-transform:uppercase;letter-spacing:.3px">AR &amp; OD Simulation</div>'+simTable+
     '<div style="margin-top:32px;border-top:1px solid #ddd4c2;padding-top:16px">'+'<div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:28px">'+'<div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.8rem"><strong>Mr. Eunjung Jun, EVP</strong></div>'+'<div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.8rem"><strong>Mr. Mohammed I. Abunayyan, CEO</strong></div>'+'</div>'+'<div style="display:grid;grid-template-columns:1fr 2fr;gap:40px">'+'<div style="border-top:2px solid #333;padding-top:8px;text-align:center;font-size:.8rem"><strong>B2C Operation Manager</strong></div>'+'<div></div></div></div>'+
     '</div>';
   });
   // signatures now embedded per customer
   win.document.write('<html><head><title>Exception Approval — Layout 2</title>'+
-    '<style>body{font-family:Segoe UI,Arial,sans-serif;padding:28px;max-width:920px;margin:auto;color:#26221c}'+
+    '<style>body{font-family:Segoe UI,Arial,sans-serif;padding:28px;max-width:920px;margin:auto;color:var(--auto-text-14)}'+
     'table td,table th{border:1px solid #ddd4c2}'+
-    'h2{color:#5c0f1d;border-bottom:2.5px solid #5c0f1d;padding-bottom:9px;margin-bottom:18px}'+
+    'h2{color:var(--nav);border-bottom:2.5px solid #5c0f1d;padding-bottom:9px;margin-bottom:18px}'+
     '@media print{.noprint{display:none}}</style></head><body>'+
     '<button class="noprint" onclick="window.print()" style="background:#5c0f1d;color:#fff;border:none;padding:7px 20px;border-radius:5px;cursor:pointer;margin-bottom:20px">&#x1F5A8; Print</button>'+
     '<h2>&#x1F4CB; Exception Sales Approval &mdash; '+labels[0]+'</h2>'+
@@ -2724,7 +2725,7 @@ var FH_QN={1:'Safe',2:'Potential',3:'Critical',4:'Watch'};
 var FH_QC={1:'#1d6b45',2:'#8a6d2e',3:'#a01d17',4:'#b45f18'};
 var FH_QB={1:'#e8efe4',2:'#f8f2e2',3:'#f8efe9',4:'#f8f2e6'};
 function _fhQBadge(q){
-  if(!q)return'<span style="color:#6b6355;font-size:.65rem">—</span>';
+  if(!q)return'<span style="color:var(--auto-text-11);font-size:.65rem">—</span>';
   return'<span style="display:inline-block;padding:2px 9px;border-radius:4px;font-size:.65rem;font-weight:700;background:'+FH_QB[q]+';color:'+FH_QC[q]+'">'+(FH_QN[q]||q)+'</span>';
 }
 function _fhRenderShifts(){
@@ -2761,11 +2762,11 @@ function _fhRenderShifts(){
     return risk(b)-risk(a);
   });
   if(!shifted.length){
-    el.innerHTML='<div style="background:#efe9db;border-radius:12px;padding:16px;margin-top:12px;color:#6b6355;font-size:.78rem;text-align:center">No quadrant shifts detected across 2024 → 2025 → 2026</div>';
+    el.innerHTML='<div style="background:#efe9db;border-radius:12px;padding:16px;margin-top:12px;color:var(--auto-text-11);font-size:.78rem;text-align:center">No quadrant shifts detected across 2024 → 2025 → 2026</div>';
     return;
   }
   var h='<div style="background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:16px;margin-top:12px">'
-    +'<div style="font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:3px">Quadrant Shifts &mdash; <span style="color:#9a927f;font-weight:400;font-size:.75rem">'+shifted.length+' customers changed quadrant</span></div>'
+    +'<div style="font-size:.85rem;font-weight:700;color:var(--txt);margin-bottom:3px">Quadrant Shifts &mdash; <span style="color:var(--muted-light);font-weight:400;font-size:.75rem">'+shifted.length+' customers changed quadrant</span></div>'
     +'<div style="font-size:.65rem;color:var(--mut);margin-bottom:12px">2024 &rarr; 2025 &rarr; 2026 YTD &nbsp;|&nbsp; OD baseline: avg of visible accounts per year</div>'
     +'<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:.74rem">'
     +'<thead><tr>'
@@ -2788,7 +2789,7 @@ function _fhRenderShifts(){
           +(d.dso!=null?'<span style="color:var(--txt)">'+d.dso+'d</span>':'<span style="color:var(--mut)">—</span>')
           +' / <span style="color:'+odColor+'">'+d.odR.toFixed(0)+'%</span></td>';
       }).join('')
-      +'<td style="padding:8px 10px;text-align:center">'+yd.map(function(d){return _fhQBadge(d.q);}).join('<span style="color:#334155;margin:0 4px">→</span>')+'</td>'
+      +'<td style="padding:8px 10px;text-align:center">'+yd.map(function(d){return _fhQBadge(d.q);}).join('<span style="color:var(--auto-text-1);margin:0 4px">→</span>')+'</td>'
       +'</tr>';
   });
   h+='</tbody></table></div></div>';

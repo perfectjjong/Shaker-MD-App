@@ -4,22 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>B2C AR/DSO Analysis — May 2026 Closing</title>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
 :root{
   --bg:#f7f3ea;--card:#fffdf8;--card2:#efe9db;--text:#191714;--muted:#6b6355;--border:#cfc6b2;
   --c-red:#b3261e;--c-orange:#b45f18;--c-yellow:#8a6d2e;--c-green:#1d6b45;--c-gray:#6b6355;--c-blue:#8c1d2f;
   --c-bad:#0c0a09;
-}
+--auto-text-1:#b97b87;--auto-text-2:#e8efe9;--auto-text-3:#a68aa8;--auto-text-4:#86648f;--auto-text-5:#5f93a0;--auto-text-6:#e0ccd4;--auto-text-7:#3f8a63;--auto-text-8:#f3ead2;--auto-text-9:#f4e3de;--auto-text-10:#bfa059;--amber:#a8863c;--auto-text-11:#a86326;--auto-text-12:#453f35;--auto-text-13:#ecd0cb;--purple:#6d4b78;--auto-text-14:#6b6355;--auto-text-15:#2a7d54;--auto-text-16:#b3564e;--auto-text-17:#a54b5e;--auto-text-18:#b5824a;--auto-text-19:#7a4a8a;--auto-text-20:#e6cdd2;--auto-text-21:#26221c;--auto-text-22:#3f7a8a;--auto-text-23:#191714;--auto-text-24:#f0e0e2;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#191510;--card:#221d17;--card2:#2a241c;--text:#e2dfdb;--muted:#b3a996;--border:#242016;--c-red:#e2685c;--c-orange:#4a270a;--c-yellow:#e0c17a;--c-green:#5ba37f;--c-gray:#302c26;--c-blue:#d68a97;--c-bad:#e6e1de;--auto-text-1:#cda1aa;--auto-text-2:#8eb093;--auto-text-3:#c1adc2;--auto-text-4:#c7b6cc;--auto-text-5:#afc9d0;--auto-text-6:#bb8fa1;--auto-text-7:#b3dcc7;--auto-text-8:#d8ba6b;--auto-text-9:#cf8670;--auto-text-10:#d9c79e;--amber:#d4a855;--auto-text-11:#eac4a3;--auto-text-12:#d9d5cd;--auto-text-13:#ce8679;--purple:#a084b0;--auto-text-14:#cfcac2;--auto-text-15:#b3e6cd;--auto-text-16:#d9a9a5;--auto-text-17:#d9aab4;--auto-text-18:#dac0a4;--auto-text-19:#ceb4d7;--auto-text-20:#c28692;--auto-text-21:#e1ddd6;--auto-text-22:#b3d3dc;--auto-text-23:#e2dfdb;--auto-text-24:#c17f87;}}:root[data-theme="dark"]{--bg:#191510;--card:#221d17;--card2:#2a241c;--text:#e2dfdb;--muted:#b3a996;--border:#242016;--c-red:#e2685c;--c-orange:#4a270a;--c-yellow:#e0c17a;--c-green:#5ba37f;--c-gray:#302c26;--c-blue:#d68a97;--c-bad:#e6e1de;--auto-text-1:#cda1aa;--auto-text-2:#8eb093;--auto-text-3:#c1adc2;--auto-text-4:#c7b6cc;--auto-text-5:#afc9d0;--auto-text-6:#bb8fa1;--auto-text-7:#b3dcc7;--auto-text-8:#d8ba6b;--auto-text-9:#cf8670;--auto-text-10:#d9c79e;--amber:#d4a855;--auto-text-11:#eac4a3;--auto-text-12:#d9d5cd;--auto-text-13:#ce8679;--purple:#a084b0;--auto-text-14:#cfcac2;--auto-text-15:#b3e6cd;--auto-text-16:#d9a9a5;--auto-text-17:#d9aab4;--auto-text-18:#dac0a4;--auto-text-19:#ceb4d7;--auto-text-20:#c28692;--auto-text-21:#e1ddd6;--auto-text-22:#b3d3dc;--auto-text-23:#e2dfdb;--auto-text-24:#c17f87;}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;font-size:13px;line-height:1.4}
 .wrap{max-width:1700px;margin:0 auto;padding:16px}
-h1{font-size:22px;margin-bottom:4px;color:#191714}
-h2{font-size:15px;margin:16px 0 8px;color:#191714;display:flex;align-items:center;gap:8px}
+h1{font-size:22px;margin-bottom:4px;color:var(--auto-text-23)}
+h2{font-size:15px;margin:16px 0 8px;color:var(--auto-text-23);display:flex;align-items:center;gap:8px}
 .sub{color:var(--muted);font-size:12px;margin-bottom:14px}
 .criteria{background:var(--card);padding:10px 14px;border-radius:6px;font-size:11px;color:var(--muted);margin-bottom:14px;border-left:3px solid var(--c-blue)}
 .criteria b{color:var(--text)}
 .rules-tbl{background:var(--card);border-radius:6px;overflow:hidden;margin-bottom:14px;border-left:3px solid var(--c-blue)}
-.rules-tbl .hdr{padding:8px 14px;background:var(--card2);font-size:12px;color:#191714;font-weight:600;display:flex;align-items:center;gap:8px}
+.rules-tbl .hdr{padding:8px 14px;background:var(--card2);font-size:12px;color:var(--auto-text-23);font-weight:600;display:flex;align-items:center;gap:8px}
 .rules-tbl .hdr .hdr-sub{color:var(--muted);font-size:11px;font-weight:400}
 .rules-tbl table{width:100%;border-collapse:collapse;font-size:11.5px}
 .rules-tbl th{background:#f7f3ea;color:var(--muted);text-align:left;padding:6px 10px;font-weight:500;font-size:10.5px;border-bottom:1px solid var(--border)}
@@ -27,19 +28,19 @@ h2{font-size:15px;margin:16px 0 8px;color:#191714;display:flex;align-items:cente
 .rules-tbl tr:last-child td{border-bottom:none}
 .rules-tbl td.prio{text-align:center;color:var(--muted);width:32px;font-weight:600}
 .rules-tbl td.cat{white-space:nowrap;font-weight:600;width:160px}
-.rules-tbl td.cond{color:#26221c;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.5}
-.rules-tbl td.cond .op{color:#a8863c;font-weight:600}
-.rules-tbl td.cond code{background:#f7f3ea;color:#2a7d54;padding:1px 5px;border-radius:3px;font-size:10.5px}
-.rules-tbl tr.r-na td.cat{color:#453f35}
-.rules-tbl tr.r-bad td.cat{color:#6b6355}
-.rules-tbl tr.r-noso td.cat{color:#3f7a8a}
-.rules-tbl tr.r-emer td.cat{color:#a54b5e}
-.rules-tbl tr.r-sales td.cat{color:#86648f}
-.rules-tbl tr.r-risk td.cat{color:#a86326}
-.rules-tbl tr.r-watch td.cat{color:#a8863c}
-.rules-tbl tr.r-norm td.cat{color:#2a7d54}
+.rules-tbl td.cond{color:var(--auto-text-21);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.5}
+.rules-tbl td.cond .op{color:var(--amber);font-weight:600}
+.rules-tbl td.cond code{background:#f7f3ea;color:var(--auto-text-15);padding:1px 5px;border-radius:3px;font-size:10.5px}
+.rules-tbl tr.r-na td.cat{color:var(--auto-text-12)}
+.rules-tbl tr.r-bad td.cat{color:var(--auto-text-14)}
+.rules-tbl tr.r-noso td.cat{color:var(--auto-text-22)}
+.rules-tbl tr.r-emer td.cat{color:var(--auto-text-17)}
+.rules-tbl tr.r-sales td.cat{color:var(--auto-text-4)}
+.rules-tbl tr.r-risk td.cat{color:var(--auto-text-11)}
+.rules-tbl tr.r-watch td.cat{color:var(--amber)}
+.rules-tbl tr.r-norm td.cat{color:var(--auto-text-15)}
 .rules-tbl details{margin:0}
-.rules-tbl summary{cursor:pointer;list-style:none;color:#b97b87;font-size:11px;padding:6px 14px;background:var(--card2);user-select:none}
+.rules-tbl summary{cursor:pointer;list-style:none;color:var(--auto-text-1);font-size:11px;padding:6px 14px;background:var(--card2);user-select:none}
 .rules-tbl summary::after{content:" ▼";font-size:9px}
 .rules-tbl details[open] summary::after{content:" ▲"}
 .kpi-row{display:grid;grid-template-columns:repeat(8,1fr);gap:8px;margin-bottom:14px}
@@ -49,15 +50,15 @@ h2{font-size:15px;margin:16px 0 8px;color:#191714;display:flex;align-items:cente
 .kpi-label{font-size:11px;color:var(--muted);margin-bottom:4px}
 .kpi-n{font-size:20px;font-weight:600}
 .kpi-sub{font-size:10px;color:var(--muted);margin-top:2px}
-.kpi.s-potential{border-top-color:#8c1d2f} .kpi.s-potential .kpi-n{color:#b97b87} .status-card.s-potential{border-top-color:#8c1d2f} .t-potential{color:#b97b87}
-.kpi.s-emer{border-top-color:var(--c-red)} .kpi.s-emer .kpi-n{color:#a54b5e}
-.kpi.s-sales{border-top-color:#6d4b78} .kpi.s-sales .kpi-n{color:#86648f}
-.kpi.s-risk{border-top-color:var(--c-orange)} .kpi.s-risk .kpi-n{color:#a86326}
-.kpi.s-bad{border-top-color:#000;background:#26221c} .kpi.s-bad .kpi-n{color:#6b6355}
-.kpi.s-watch{border-top-color:var(--c-yellow)} .kpi.s-watch .kpi-n{color:#a8863c}
-.kpi.s-norm{border-top-color:var(--c-green)} .kpi.s-norm .kpi-n{color:#2a7d54}
-.kpi.s-noso{border-top-color:#3f7a8a} .kpi.s-noso .kpi-n{color:#3f7a8a}
-.kpi.s-na{border-top-color:var(--c-gray)} .kpi.s-na .kpi-n{color:#453f35}
+.kpi.s-potential{border-top-color:#8c1d2f} .kpi.s-potential .kpi-n{color:var(--auto-text-1)} .status-card.s-potential{border-top-color:#8c1d2f} .t-potential{color:var(--auto-text-1)}
+.kpi.s-emer{border-top-color:var(--c-red)} .kpi.s-emer .kpi-n{color:var(--auto-text-17)}
+.kpi.s-sales{border-top-color:#6d4b78} .kpi.s-sales .kpi-n{color:var(--auto-text-4)}
+.kpi.s-risk{border-top-color:var(--c-orange)} .kpi.s-risk .kpi-n{color:var(--auto-text-11)}
+.kpi.s-bad{border-top-color:#000;background:#26221c} .kpi.s-bad .kpi-n{color:var(--auto-text-14)}
+.kpi.s-watch{border-top-color:var(--c-yellow)} .kpi.s-watch .kpi-n{color:var(--amber)}
+.kpi.s-norm{border-top-color:var(--c-green)} .kpi.s-norm .kpi-n{color:var(--auto-text-15)}
+.kpi.s-noso{border-top-color:#3f7a8a} .kpi.s-noso .kpi-n{color:var(--auto-text-22)}
+.kpi.s-na{border-top-color:var(--c-gray)} .kpi.s-na .kpi-n{color:var(--auto-text-12)}
 .filter{background:var(--card);padding:10px 14px;border-radius:6px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
 .filter label{font-size:11px;color:var(--muted)}
 .filter .group{display:flex;gap:4px;align-items:center}
@@ -71,77 +72,77 @@ table{width:100%;border-collapse:collapse;font-size:11.5px}
 thead{position:sticky;top:0;background:var(--card2);z-index:1}
 th{padding:8px 6px;text-align:right;font-weight:500;color:var(--muted);font-size:10.5px;cursor:pointer;user-select:none;border-bottom:1px solid var(--border);white-space:nowrap}
 th.l{text-align:left}
-th:hover{color:#191714}
+th:hover{color:var(--auto-text-23)}
 th.sort-asc::after{content:" ▲";color:var(--c-blue)}
 th.sort-desc::after{content:" ▼";color:var(--c-blue)}
 tbody tr{border-bottom:1px solid #ddd4c2}
 tbody tr:hover{background:var(--card2)}
 tr.total-row{position:sticky;bottom:0;background:#5c0f1d;font-weight:600;border-top:2px solid #a54b5e;z-index:1}
 tr.total-row:hover{background:#5c0f1d}
-tr.total-row td{padding:8px 6px;color:#bfa059;border-bottom:none}
-tr.total-row td.l{color:#191714}
-tr.total-row td.note{text-align:left;color:#453f35;font-size:10px;font-weight:400;white-space:normal;line-height:1.3}
+tr.total-row td{padding:8px 6px;color:var(--auto-text-10);border-bottom:none}
+tr.total-row td.l{color:var(--auto-text-23)}
+tr.total-row td.note{text-align:left;color:var(--auto-text-12);font-size:10px;font-weight:400;white-space:normal;line-height:1.3}
 td{padding:6px 6px;text-align:right;white-space:nowrap}
 td.l{text-align:left}
 td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .gr{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:600;min-width:24px;text-align:center}
-.gr-A\+,.gr-A{background:#5c0f1d;color:#f0e0e2}
-.gr-B{background:#33606d;color:#e8efe9}
-.gr-C{background:#6d5518;color:#f3ead2}
-.gr-D{background:#6d3a12;color:#f4e3de}
-.gr--{background:#e5ddcb;color:#6b6355}
-.gr-IR-X{background:#e5ddcb;color:#6b6355}
-.st-emer{color:#a54b5e;font-weight:600}
-.st-sales{color:#86648f;font-weight:600}
-.st-risk{color:#a86326;font-weight:600}
-.st-bad{color:#6b6355}
-.st-watch{color:#a8863c}
-.st-norm{color:#2a7d54}
-.st-noso{color:#3f7a8a;font-weight:500}
-.st-na{color:#453f35}
-.pos{color:#2a7d54} .neg{color:#b3564e} .neu{color:var(--muted)}
-.bad{color:#a54b5e;font-weight:600}
-.good{color:#2a7d54;font-weight:600}
+.gr-A\+,.gr-A{background:#5c0f1d;color:var(--auto-text-24)}
+.gr-B{background:#33606d;color:var(--auto-text-2)}
+.gr-C{background:#6d5518;color:var(--auto-text-8)}
+.gr-D{background:#6d3a12;color:var(--auto-text-9)}
+.gr--{background:#e5ddcb;color:var(--auto-text-14)}
+.gr-IR-X{background:#e5ddcb;color:var(--auto-text-14)}
+.st-emer{color:var(--auto-text-17);font-weight:600}
+.st-sales{color:var(--auto-text-4);font-weight:600}
+.st-risk{color:var(--auto-text-11);font-weight:600}
+.st-bad{color:var(--auto-text-14)}
+.st-watch{color:var(--amber)}
+.st-norm{color:var(--auto-text-15)}
+.st-noso{color:var(--auto-text-22);font-weight:500}
+.st-na{color:var(--auto-text-12)}
+.pos{color:var(--auto-text-15)} .neg{color:var(--auto-text-16)} .neu{color:var(--muted)}
+.bad{color:var(--auto-text-17);font-weight:600}
+.good{color:var(--auto-text-15);font-weight:600}
 .diag{max-width:280px;text-align:left;font-size:10.5px;color:var(--muted);white-space:normal;line-height:1.3}
-.diag.urgent{color:#a54b5e}
+.diag.urgent{color:var(--auto-text-17)}
 .section{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .box{background:var(--card);padding:14px;border-radius:6px}
-.box h3{font-size:13px;margin-bottom:8px;color:#191714}
+.box h3{font-size:13px;margin-bottom:8px;color:var(--auto-text-23)}
 .box ol{padding-left:18px;font-size:11.5px;line-height:1.6}
 .box li{margin-bottom:4px;color:var(--text)}
-.box li b{color:#a54b5e}
+.box li b{color:var(--auto-text-17)}
 .summary{background:#5c0f1d;color:#fff;padding:14px;border-radius:6px;margin-top:14px;font-size:12px;line-height:1.5;border-left:4px solid #a54b5e}
-.summary b{color:#bfa059}
+.summary b{color:var(--auto-text-10)}
 @media (max-width:1200px){.kpi-row{grid-template-columns:repeat(3,1fr)}.section{grid-template-columns:1fr}}
 /* Tabs */
 .tabs{display:flex;gap:4px;margin-bottom:14px;border-bottom:2px solid var(--border)}
 .tab-btn{padding:10px 18px;cursor:pointer;background:transparent;border:none;color:var(--muted);font-size:13px;font-weight:500;border-bottom:3px solid transparent;transition:all .15s;font-family:inherit}
 .tab-btn:hover{color:var(--text)}
-.tab-btn.active{color:#8c1d2f;border-bottom-color:var(--c-blue);background:linear-gradient(180deg,transparent,rgba(140,29,47,0.08))}
+.tab-btn.active{color:var(--c-blue);border-bottom-color:var(--c-blue);background:linear-gradient(180deg,transparent,rgba(140,29,47,0.08))}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 /* AC vs HA comparison */
 .ach-tbl-wrap{background:var(--card);border-radius:6px;overflow:auto;max-height:70vh}
 .ach-tbl-wrap table{font-size:11px}
-.ach-tbl-wrap thead tr.group-row th{background:#f7f3ea;border-bottom:1px solid var(--border);font-size:11px;color:#191714;text-align:center;padding:6px 4px}
-.ach-tbl-wrap thead tr.group-row th.ac-grp{background:#6d3a12;color:#b5824a}
-.ach-tbl-wrap thead tr.group-row th.ha-grp{background:#124a2f;color:#3f8a63}
-.ach-tbl-wrap thead tr.group-row th.stp-grp{background:#5c0f1d;color:#e6cdd2}
+.ach-tbl-wrap thead tr.group-row th{background:#f7f3ea;border-bottom:1px solid var(--border);font-size:11px;color:var(--auto-text-23);text-align:center;padding:6px 4px}
+.ach-tbl-wrap thead tr.group-row th.ac-grp{background:#6d3a12;color:var(--auto-text-18)}
+.ach-tbl-wrap thead tr.group-row th.ha-grp{background:#124a2f;color:var(--auto-text-7)}
+.ach-tbl-wrap thead tr.group-row th.stp-grp{background:#5c0f1d;color:var(--auto-text-20)}
 .ach-tbl-wrap td.stp-cell{background:rgba(92,15,29,0.08)}
-.ach-tbl-wrap thead tr.group-row th.gap-grp{background:#4a3a55;color:#e0ccd4}
+.ach-tbl-wrap thead tr.group-row th.gap-grp{background:#4a3a55;color:var(--auto-text-6)}
 .ach-tbl-wrap thead tr.col-row th{background:var(--card2);border-bottom:1px solid var(--border);font-size:10px;padding:5px 4px}
 .ach-tbl-wrap th.divider, .ach-tbl-wrap td.divider{border-left:2px solid #cfc6b2}
 .ach-tbl-wrap td.ac-cell{background:rgba(124,45,18,0.08)}
 .ach-tbl-wrap td.ha-cell{background:rgba(18,74,47,0.08)}
 .ach-tbl-wrap td.gap-cell{background:rgba(74,58,85,0.10);font-weight:600}
-.gap-big{color:#b3564e}.gap-mid{color:#a8863c}.gap-low{color:#2a7d54}.gap-neg{color:#3f7a8a}
+.gap-big{color:var(--auto-text-16)}.gap-mid{color:var(--amber)}.gap-low{color:var(--auto-text-15)}.gap-neg{color:var(--auto-text-22)}
 .pattern{font-size:10px;padding:2px 6px;border-radius:3px;white-space:nowrap;font-weight:500}
-.p-acbad{background:#6d1522;color:#ecd0cb}
-.p-habad{background:#2a4a54;color:#5f93a0}
-.p-bothbad{background:#efe9db;color:#6b6355}
-.p-bothok{background:#124a2f;color:#3f8a63}
-.p-aconly{background:#4a3a55;color:#e0ccd4}
-.p-haonly{background:#553063;color:#a68aa8}
+.p-acbad{background:#6d1522;color:var(--auto-text-13)}
+.p-habad{background:#2a4a54;color:var(--auto-text-5)}
+.p-bothbad{background:#efe9db;color:var(--auto-text-14)}
+.p-bothok{background:#124a2f;color:var(--auto-text-7)}
+.p-aconly{background:#4a3a55;color:var(--auto-text-6)}
+.p-haonly{background:#553063;color:var(--auto-text-3)}
 .summary-mini{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
 .summary-mini .card{background:var(--card);border-radius:6px;padding:10px 12px;border-left:3px solid var(--c-blue)}
 .summary-mini .card.ac{border-left-color:#b45f18}
@@ -151,7 +152,7 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 .summary-mini .card .val{font-size:18px;font-weight:600}
 .summary-mini .card .sub{font-size:10px;color:var(--muted);margin-top:2px}
 .ach-filter{background:var(--card);padding:10px 14px;border-radius:6px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:14px;align-items:center}
-.xls-btn{padding:5px 12px;border:1px solid #1d6b45;background:#124a2f;color:#3f8a63;border-radius:14px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .15s}
+.xls-btn{padding:5px 12px;border:1px solid #1d6b45;background:#124a2f;color:var(--auto-text-7);border-radius:14px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .15s}
 .xls-btn:hover{background:#1d6b45;color:#fff}
 .xls-btn:active{transform:translateY(1px)}
 @media(max-width:600px){.summary-mini{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}.section{grid-template-columns:minmax(0,1fr)!important}}
@@ -279,23 +280,23 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
 
   <div id="tab2" class="tab-panel active">
     <div class="criteria" style="border-left-color:#6d4b78">
-      <b>⚖️ AC Dealer vs HA Dealer Comparison</b> · Scope: 87 accounts (IR_Others + BH + OR) · Data: AR-HVAC vs HA 2026 May.xlsx · Period: <b>25 = Jan-Dec full year</b> / <b>26 = Jan-May YTD</b> · <b style="color:#6d4b78">Weighted Avg OD% recalculates dynamically on filter change</b>
+      <b>⚖️ AC Dealer vs HA Dealer Comparison</b> · Scope: 87 accounts (IR_Others + BH + OR) · Data: AR-HVAC vs HA 2026 May.xlsx · Period: <b>25 = Jan-Dec full year</b> / <b>26 = Jan-May YTD</b> · <b style="color:var(--purple)">Weighted Avg OD% recalculates dynamically on filter change</b>
     </div>
 
     <div class="summary-mini" id="achKpiCards">
       <div class="card ac">
         <div class="lbl" id="acKpiLbl">🟧 AC Dealers (IR Others May-26)</div>
         <div class="val" id="acKpiVal">AR 64.2M / OD 29.8M</div>
-        <div class="sub" id="acKpiSub">OD% <b style="color:#a54b5e">46.4%</b> · DSO 204d · Sales 25 (Jan-Dec) 93.5M → 26 (Jan-May) 37.7M</div>
+        <div class="sub" id="acKpiSub">OD% <b style="color:var(--auto-text-17)">46.4%</b> · DSO 204d · Sales 25 (Jan-Dec) 93.5M → 26 (Jan-May) 37.7M</div>
       </div>
       <div class="card ha">
         <div class="lbl" id="haKpiLbl">🟩 HA Dealers (IR Others May-26)</div>
         <div class="val" id="haKpiVal">AR 52.6M / OD 9.1M</div>
-        <div class="sub" id="haKpiSub">OD% <b style="color:#2a7d54">17.4%</b> · DSO 122d · Sales 25 (Jan-Dec) 103.4M → 26 (Jan-May) 51.5M</div>
+        <div class="sub" id="haKpiSub">OD% <b style="color:var(--auto-text-15)">17.4%</b> · DSO 122d · Sales 25 (Jan-Dec) 103.4M → 26 (Jan-May) 51.5M</div>
       </div>
       <div class="card gap">
         <div class="lbl" id="gapKpiLbl">📐 Cross-BU Gap (May-26)</div>
-        <div class="val" id="gapKpiVal">ΔOD% <b style="color:#86648f">+29.0pp</b></div>
+        <div class="val" id="gapKpiVal">ΔOD% <b style="color:var(--auto-text-4)">+29.0pp</b></div>
         <div class="sub" id="gapKpiSub">AC is 29pp worse than HA · Same dealer, different payment priority by BU</div>
       </div>
       <div class="card">
@@ -362,10 +363,10 @@ td.name{max-width:200px;overflow:hidden;text-overflow:ellipsis;font-weight:500}
       <div class="box">
         <h3>🔍 Payment Priority Analysis by Business Unit</h3>
         <ol style="font-size:11.5px;line-height:1.7">
-          <li><b style="color:#a54b5e">AC↓↓ HA↑ pattern</b>: Same dealer pays HA normally but AC is overdue → AC BU's <b>weakened credit policy / lack of sales push / product underperformance</b> suspected. Negotiate BU-level payment priority at RSM meeting.</li>
-          <li><b style="color:#86648f">Accounts with gap ≥ +50pp</b>: Not a simple dealer credit issue but a BU structural signal. Cannot be resolved by collection team alone → AC RSM + Credit Manager + Sales Head joint meeting.</li>
-          <li><b style="color:#5f93a0">AC↑ HA↓ pattern (reversed)</b>: Where found, HA collection review needed (inventory/promotion imbalance possible).</li>
-          <li><b style="color:#3f8a63">AC=HA normal pattern</b>: Dealer is fundamentally healthy → benchmark / expansion candidate.</li>
+          <li><b style="color:var(--auto-text-17)">AC↓↓ HA↑ pattern</b>: Same dealer pays HA normally but AC is overdue → AC BU's <b>weakened credit policy / lack of sales push / product underperformance</b> suspected. Negotiate BU-level payment priority at RSM meeting.</li>
+          <li><b style="color:var(--auto-text-4)">Accounts with gap ≥ +50pp</b>: Not a simple dealer credit issue but a BU structural signal. Cannot be resolved by collection team alone → AC RSM + Credit Manager + Sales Head joint meeting.</li>
+          <li><b style="color:var(--auto-text-5)">AC↑ HA↓ pattern (reversed)</b>: Where found, HA collection review needed (inventory/promotion imbalance possible).</li>
+          <li><b style="color:var(--auto-text-7)">AC=HA normal pattern</b>: Dealer is fundamentally healthy → benchmark / expansion candidate.</li>
         </ol>
       </div>
       <div class="box">
@@ -682,12 +683,12 @@ function renderFhMatrix(baseFiltered, avgOd){
 
   document.getElementById('fhMatrixHeader').innerHTML =
     `<div style="display:flex;align-items:baseline;gap:14px;flex-wrap:wrap">` +
-    `<span style="font-size:13px;font-weight:600;color:#26221c;letter-spacing:0.2px">Financial Health Matrix</span>` +
-    `<span style="font-size:10.5px;color:#6b6355">${baseFiltered.length} channels</span>` +
-    `<span style="font-size:10.5px;color:#6b6355">•</span>` +
-    `<span style="font-size:10.5px;color:#6b6355">Avg OD% <span style="color:#6d4b78;font-weight:600">${avgOd!=null?avgOd.toFixed(1):'-'}%</span> (weighted, dynamic)</span>` +
-    (overlayN > 0 ? `<span style="font-size:10.5px;color:#7a4a8a;font-weight:600">🚨 ${overlayN} Active Collection</span>` : '') +
-    `<span style="font-size:10.5px;color:#6b6355;margin-left:auto">size = WOS</span>` +
+    `<span style="font-size:13px;font-weight:600;color:var(--auto-text-21);letter-spacing:0.2px">Financial Health Matrix</span>` +
+    `<span style="font-size:10.5px;color:var(--auto-text-14)">${baseFiltered.length} channels</span>` +
+    `<span style="font-size:10.5px;color:var(--auto-text-14)">•</span>` +
+    `<span style="font-size:10.5px;color:var(--auto-text-14)">Avg OD% <span style="color:var(--purple);font-weight:600">${avgOd!=null?avgOd.toFixed(1):'-'}%</span> (weighted, dynamic)</span>` +
+    (overlayN > 0 ? `<span style="font-size:10.5px;color:var(--auto-text-19);font-weight:600">🚨 ${overlayN} Active Collection</span>` : '') +
+    `<span style="font-size:10.5px;color:var(--auto-text-14);margin-left:auto">size = WOS</span>` +
     `</div>`;
 }
 
@@ -907,7 +908,7 @@ function render(){
       <td class="${c.wos==null?'':(c.wos>50?'neg':'')}">${fmtW(c.wos)}</td>
       <td>${fmtN(c.oud)}</td>
       <td class=\"${c.oud_wos==null?'':(c.oud_wos>50?'neg':'')}\">${fmtW(c.oud_wos)}</td>
-      <td class="l" style="font-size:10.5px;line-height:1.4">${(c.so_ttl==null||c.so_ttl===0)?'<span style=\"color:#6b6355\">Data N/A</span>':('WOS : '+(v2ClassifyStock(c.wos,c.group)||'-')+(c.oud_wos!=null?' / OUD: '+(v2ClassifyStock(c.oud_wos,c.group)||'-'):''))}</td>
+      <td class="l" style="font-size:10.5px;line-height:1.4">${(c.so_ttl==null||c.so_ttl===0)?'<span style=\"color:var(--auto-text-14)\">Data N/A</span>':('WOS : '+(v2ClassifyStock(c.wos,c.group)||'-')+(c.oud_wos!=null?' / OUD: '+(v2ClassifyStock(c.oud_wos,c.group)||'-'):''))}</td>
     </tr>`;
   }).join('') + (arr.length ? `<tr class="total-row">
     <td class="l">Σ TOTAL (${arr.length} ch)</td>
@@ -1097,12 +1098,12 @@ function renderAch(){
   // v2: Tab2 KPI 카드 동적 갱신 (필터 적용 시 weighted avg 재계산)
   document.getElementById('acKpiLbl').textContent = `🟧 AC Dealers (${arr.length} accounts)`;
   document.getElementById('acKpiVal').textContent = `AR ${(ac_b/1e6).toFixed(1)}M / OD ${(ac_o/1e6).toFixed(1)}M`;
-  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:#a54b5e">${ac_odp!=null?ac_odp.toFixed(1):'-'}%</b> · DSO ${ac_dso!=null?ac_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ac_s25/1e6).toFixed(1)}M → 26 (Jan-May) ${(ac_s/1e6).toFixed(1)}M <!-- acKpiVal_DYNAMIC_MARK -->`;
+  document.getElementById('acKpiSub').innerHTML = `OD% <b style="color:var(--auto-text-17)">${ac_odp!=null?ac_odp.toFixed(1):'-'}%</b> · DSO ${ac_dso!=null?ac_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ac_s25/1e6).toFixed(1)}M → 26 (Jan-May) ${(ac_s/1e6).toFixed(1)}M <!-- acKpiVal_DYNAMIC_MARK -->`;
   document.getElementById('haKpiLbl').textContent = `🟩 HA Dealers (${arr.length} accounts)`;
   document.getElementById('haKpiVal').textContent = `AR ${(ha_b/1e6).toFixed(1)}M / OD ${(ha_o/1e6).toFixed(1)}M`;
-  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:#2a7d54">${ha_odp!=null?ha_odp.toFixed(1):'-'}%</b> · DSO ${ha_dso!=null?ha_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ha_s25/1e6).toFixed(1)}M → 26 (Jan-May) ${(ha_s/1e6).toFixed(1)}M`;
+  document.getElementById('haKpiSub').innerHTML = `OD% <b style="color:var(--auto-text-15)">${ha_odp!=null?ha_odp.toFixed(1):'-'}%</b> · DSO ${ha_dso!=null?ha_dso.toFixed(0):'-'}d · Sales 25 (Jan-Dec) ${(ha_s25/1e6).toFixed(1)}M → 26 (Jan-May) ${(ha_s/1e6).toFixed(1)}M`;
   if (gap_t != null) {
-    document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:#86648f">${gap_t>=0?'+':''}${gap_t.toFixed(1)}pp</b>`;
+    document.getElementById('gapKpiVal').innerHTML = `ΔOD% <b style="color:var(--auto-text-4)">${gap_t>=0?'+':''}${gap_t.toFixed(1)}pp</b>`;
     document.getElementById('gapKpiSub').textContent = gap_t > 0 ? `AC OD% ${gap_t.toFixed(0)}pp higher than HA` : `HA OD% ${(-gap_t).toFixed(0)}pp higher than AC`;
   }
   // Extreme gap count
@@ -1164,7 +1165,7 @@ function renderAch(){
     <td>${fmtPctA(ha_odp)}</td>
     <td>${fmtDsoA(ha_dso)}</td>
     <td class="divider ${gapClass(gap_t)}">${fmtGap(gap_t)}</td>
-    <td class="l" style="font-size:10px;color:#453f35">Sums: Sales/AR/OD · Recomputed: OD%=ΣOD/ΣAR · DSO=ΣAR/ΣSales26×${AC_HA_DAYS_YTD} (YTD basis)</td>
+    <td class="l" style="font-size:10px;color:var(--auto-text-12)">Sums: Sales/AR/OD · Recomputed: OD%=ΣOD/ΣAR · DSO=ΣAR/ΣSales26×${AC_HA_DAYS_YTD} (YTD basis)</td>
   </tr>` : '');
 
   document.querySelectorAll('#achTbl thead tr.col-row th').forEach(th => {

@@ -7,6 +7,7 @@
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
   :root{
     --lg:#8c1d2f; --lg-soft:#f6ebe6;
@@ -15,7 +16,7 @@
     --y24:#cfc6b2; --y25:#3a352c; --y26:#8c1d2f;
     --pos:#1d6b45; --neg:#b3261e;
     --r:14px; --sh:0 1px 2px rgba(20,23,28,.04),0 1px 3px rgba(20,23,28,.03);
-  }
+  }@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}}:root[data-theme="dark"]{--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-font-smoothing:antialiased}
   body{font-family:'Pretendard','Pretendard Variable',-apple-system,sans-serif;
