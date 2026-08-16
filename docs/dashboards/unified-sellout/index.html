@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Weekly IR Sell out - Dashboard - 9 Ch.</title>
+<title>Weekly IR Sell out - Dashboard - 8 Ch.</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
@@ -56,7 +56,7 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </head>
 <body>
 <div class="header">
-<h1>📊 Weekly IR Sell out - Dashboard - 9 Ch.</h1>
+<h1>📊 Weekly IR Sell out - Dashboard - 8 Ch.</h1>
 <span class="sub">LG AC · 9 Channels Combined · Unified Model Mapping</span>
 <span class="badge" id="yearBadge">2026 · W33</span>
 </div>
@@ -726,7 +726,7 @@ function updateSD(){
   // KPI
   document.getElementById('sdKpi').innerHTML=[
     {l:'Total Sell-thru',v:siTotal.toLocaleString(),s:'SAP '+currentYear+' YTD',b:'#8c1d2f'},
-    {l:'Total Sell-out',v:soTotal.toLocaleString(),s:'9 Ch. '+currentYear+' Data',b:'#1d6b45'},
+    {l:'Total Sell-out',v:soTotal.toLocaleString(),s:'8 Ch. '+currentYear+' Data',b:'#1d6b45'},
     {l:'Inventory Gap (Thru-Out)',v:(gap>=0?'+':'')+gap.toLocaleString(),s:gap>0?'Inventory buildup':'Shortage risk',b:gap>0?'#a8863c':'#b3261e'},
     {l:'Sell-through Rate',v:sellThru+'%',s:sellThru>=80?'Healthy':'Needs attention',b:sellThru>=80?'#1d6b45':'#a8863c'},
     {l:'Models Tracked',v:new Set([...soRows.map(r=>r.model),...siRows.map(r=>r.model)]).size,s:'Sell-thru: '+new Set(siRows.map(r=>r.model)).size+' / Out: '+new Set(soRows.map(r=>r.model)).size,b:'#6d4b78'},
