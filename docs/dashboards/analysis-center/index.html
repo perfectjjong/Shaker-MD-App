@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>데이터 분석 센터 — Shaker Dashboard</title>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);if(isNight){document.documentElement.classList.add('dark');}})();</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f0f2f5;color:#26221c;font-size:13px}
@@ -16,6 +17,41 @@ body{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:#f0f2f
 .main{max-width:1280px;margin:0 auto;padding:20px 24px}
 .tab-content{display:none}
 table{width:100%;border-collapse:collapse}
+</style>
+<style id="night-mode-overrides">
+html.dark body{background:#191510!important;color:#f0ece2!important}
+html.dark body{background:#191510!important;color:#f0ece2!important}
+html.dark .header .sub{color:#8a806c!important}
+html.dark .sig{background:#3d0c0c!important}
+html.dark .tabs{background:#141414!important}
+html.dark .tab-btn{color:#b3a996!important}
+html.dark .tab-btn:hover{color:#f0ece2!important}
+html.dark .tab-btn.active{color:#d68a97!important;border-bottom-color:#d68a97!important}
+html.dark [style*="background:#fff"]{background:#141414!important}
+html.dark [style*="color:#6b6355"]{color:#b3a996!important}
+html.dark [style*="color:#c62828"]{color:#ea9595!important}
+html.dark [style*="color:#9a927f"]{color:#8a806c!important}
+html.dark [style*="color:#26221c"]{color:#f0ece2!important}
+html.dark [style*="color:#b45f18"]{color:#f1c097!important}
+html.dark [style*="color:#1d6b45"]{color:#5ba37f!important}
+html.dark [style*="background:#f9f5ec"]{background:#211a0b!important}
+html.dark [style*="color:#64748b"]{color:#b4bdc9!important}
+html.dark [style*="color:#10b981"]{color:#93f6d5!important}
+html.dark [style*="background:#eff3ea"]{background:#171c10!important}
+html.dark [style*="background:#1d6b45"]{background:#12432b!important}
+html.dark [style*="color:#8c1d2f"]{color:#d68a97!important}
+html.dark [style*="background:#fafafa"]{background:#151515!important}
+html.dark [style*="color:#a01d17"]{color:#f09a90!important}
+html.dark [style*="background:#26221c"]{background:#363028!important}
+html.dark [style*="color:#453f35"]{color:#d9d5cd!important}
+html.dark [style*="color:#166534"]{color:#b0eec8!important}
+html.dark [style*="background:#f4e3de"]{background:#23110c!important}
+html.dark [style*="background:#f3ead2"]{background:#261e0a!important}
+html.dark [style*="background:#ddd4c2"]{background:#3a3226!important}
+html.dark [style*="color:#b71c1c"]{color:#ef9797!important}
+html.dark [style*="color:#f57f17"]{color:#f9b77c!important}
+html.dark [style*="background:#fefce8"]{background:#2a2602!important}
+html.dark [style*="color:#555"]{color:#c9c9c9!important}
 </style>
 </head>
 <body>

@@ -6,8 +6,9 @@
 <title>IR Monthly Total Dashboard</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
 <style>
-:root {
+:root{
   --navy: #6d1522;
   --blue: #a54b5e;
   --light-blue: #e6cdd2;
@@ -21,7 +22,7 @@
   --overstock: #a01d17;
   --nodata: #6b6355;
   --inactive: #5c554b;
-}
+--auto-text-1:#a54b5e;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#f0cdd3;--blue:#d9aab4;--light-blue:#221115;--green:#5ba37f;--red:#f09a90;--gray:#d2cdc7;--bg-stripe:#221b0c;--white:#141414;--opportunity:#5ba37f;--healthy:#e0c17a;--overstock:#f09a90;--nodata:#302c26;--inactive:#d2cdc7;--auto-text-1:#d9aab4;}}:root[data-theme="dark"]{--navy:#f0cdd3;--blue:#d9aab4;--light-blue:#221115;--green:#5ba37f;--red:#f09a90;--gray:#d2cdc7;--bg-stripe:#221b0c;--white:#141414;--opportunity:#5ba37f;--healthy:#e0c17a;--overstock:#f09a90;--nodata:#302c26;--inactive:#d2cdc7;--auto-text-1:#d9aab4;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .header,:root:not([data-theme="light"]) .tab-btn.active,:root:not([data-theme="light"]) thead th,:root:not([data-theme="light"]) .badge-navy,:root:not([data-theme="light"]) #globalFilterReset{background:#480e17!important;color:#f0ece2!important}:root:not([data-theme="light"]) body{background:#191510!important;color:#e0ddd8!important}}:root[data-theme="dark"] .header,:root[data-theme="dark"] .tab-btn.active,:root[data-theme="dark"] thead th,:root[data-theme="dark"] .badge-navy,:root[data-theme="dark"] #globalFilterReset{background:#480e17!important;color:#f0ece2!important}:root[data-theme="dark"] body{background:#191510!important;color:#e0ddd8!important}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) [style*="background:var(--navy);color:#fff"]{background:#480e17!important}:root:not([data-theme="light"]) [style*="background:#efe9db"]{background:#211b0e!important}:root:not([data-theme="light"]) [style*="background:#1d6b45"]{background:#12432b!important}:root:not([data-theme="light"]) [style*="color:#555"]{color:#c9c9c9!important}}:root[data-theme="dark"] [style*="background:var(--navy);color:#fff"]{background:#480e17!important}:root[data-theme="dark"] [style*="background:#efe9db"]{background:#211b0e!important}:root[data-theme="dark"] [style*="background:#1d6b45"]{background:#12432b!important}:root[data-theme="dark"] [style*="color:#555"]{color:#c9c9c9!important}
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -343,7 +344,7 @@ if (embedded) {
 } else if (typeof IR_DATA !== 'undefined') {
     DATA = IR_DATA;
 } else {
-    document.body.innerHTML = '<h1 style="padding:40px;color:#a01d17;">Error: No data found.</h1>';
+    document.body.innerHTML = '<h1 style="padding:40px;color:var(--red);">Error: No data found.</h1>';
     throw new Error('No data');
 }
 
@@ -2035,12 +2036,12 @@ function buildTab7() {
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">ON-HAND STOCK (${curDate7})</div><div class="kpi-value" id="k7-onhand">-</div><div class="kpi-change">Dealer stock as of ${curDate7}</div></div>
       <div class="kpi-card"><div class="kpi-label">OUD REMAINING (${latest.label})</div><div class="kpi-value" id="k7-oudLatest">-</div><div class="kpi-change" id="k7-oudChg"></div></div>
-      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">TOTAL CHANNEL (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:#a54b5e">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
+      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">TOTAL CHANNEL (On-Hand + OUD)</div><div class="kpi-value" id="k7-adjStock" style="color:var(--auto-text-1)">-</div><div class="kpi-change" id="k7-adjStockSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">${C7} SELL-OUT</div><div class="kpi-value" id="k7-so">-</div><div class="kpi-change">MOS denominator</div></div>
     </div>
     <div class="kpi-grid">
       <div class="kpi-card"><div class="kpi-label">MOS — ON-HAND (${curDate7})</div><div class="kpi-value" id="k7-mosOnhand">-</div><div class="kpi-change">On-Hand ÷ ${C7} Sell-Out</div></div>
-      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">MOS — TOTAL CHANNEL</div><div class="kpi-value" id="k7-mosAdj" style="color:#a54b5e">-</div><div class="kpi-change">Total Channel ÷ ${C7} Sell-Out</div></div>
+      <div class="kpi-card" style="border-left-color:#a54b5e"><div class="kpi-label">MOS — TOTAL CHANNEL</div><div class="kpi-value" id="k7-mosAdj" style="color:var(--auto-text-1)">-</div><div class="kpi-change">Total Channel ÷ ${C7} Sell-Out</div></div>
       <div class="kpi-card"><div class="kpi-label">OUD DEALERS</div><div class="kpi-value" id="k7-oudDealers">-</div><div class="kpi-change" id="k7-oudDealersSub"></div></div>
       <div class="kpi-card"><div class="kpi-label">OUD TREND</div><div class="kpi-value" id="k7-oudTrend">-</div><div class="kpi-change" id="k7-oudTrendSub"></div></div>
     </div>
@@ -2437,7 +2438,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:var(--auto-text-1);font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2458,7 +2459,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:var(--auto-text-1)">${fmtRatio(tMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // Dealer OUD Detail (VALUE) — same rows, same local filter, value columns
@@ -2485,7 +2486,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:var(--auto-text-1);font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2503,7 +2504,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:var(--auto-text-1)">${fmtRatio(tvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // ===== SKU OUD Detail =====
@@ -2600,7 +2601,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtNum(r.adj)}</td>
             <td class="num">${fmtNum(r.so)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:var(--auto-text-1);font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2617,7 +2618,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtNum(tsAdj)}</td>
         <td class="num" ${totStyle}>${fmtNum(tsSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tsMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:var(--auto-text-1)">${fmtRatio(tsMosA)}</td>
         <td ${totStyle}></td></tr>`;
 
     // SKU VALUE table
@@ -2644,7 +2645,7 @@ function renderTab7() {
             <td class="num" style="font-weight:700">${fmtVal(r.adjV)}</td>
             <td class="num">${fmtVal(r.soV)}</td>
             <td class="num">${fmtRatio(r.mosOH)}</td>
-            <td class="num" style="color:#a54b5e;font-weight:600">${fmtRatio(r.mosA)}</td>
+            <td class="num" style="color:var(--auto-text-1);font-weight:600">${fmtRatio(r.mosA)}</td>
             <td class="ctr">${sigBadge}</td></tr>`;
     }).join('');
 
@@ -2661,7 +2662,7 @@ function renderTab7() {
         <td class="num" ${totStyle}>${fmtVal(tsvAdj)}</td>
         <td class="num" ${totStyle}>${fmtVal(tsvSo)}</td>
         <td class="num" ${totStyle}>${fmtRatio(tsvMosOH)}</td>
-        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:#a54b5e">${fmtRatio(tsvMosA)}</td>
+        <td class="num" ${totStyle} style="font-weight:700;background:#efe9db;border-top:2px solid var(--navy);color:var(--auto-text-1)">${fmtRatio(tsvMosA)}</td>
         <td ${totStyle}></td></tr>`;
 }
 

@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>LG AC 시뮬레이터</title>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);if(isNight){document.documentElement.classList.add('dark');}})();</script>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
@@ -14,6 +15,28 @@
   .status-understock { color: #8a6d2e; }
   .status-critical   { color: #a01d17; font-weight: bold; }
   .warn-badge { background: #f3ead2; border: 1px solid #a8863c; border-radius: 4px; padding: 2px 8px; font-size: 12px; }
+</style>
+<style id="night-mode-overrides">
+html.dark body{background:#191510!important}
+html.dark <style>
+  body{background:#191510!important}
+html.dark .panel{background:#141414!important}
+html.dark .status-overstock{color:#e2685c!important}
+html.dark .status-ok{color:#5ba37f!important}
+html.dark .status-understock{color:#e0c17a!important}
+html.dark .status-critical{color:#f09a90!important}
+html.dark .warn-badge{background:#261e0a!important}
+html.dark .bg-blue-50{background-color:#00132b!important}
+html.dark .bg-gray-50{background-color:#111519!important}
+html.dark .bg-white{background-color:#221d17!important}
+html.dark .text-blue-700{color:#8da7f0!important}
+html.dark .text-gray-400{color:#aab0ba!important}
+html.dark .text-gray-500{color:#babec5!important}
+html.dark .text-gray-600{color:#c0c7d0!important}
+html.dark .text-gray-700{color:#c4cbd7!important}
+html.dark .text-gray-800{color:#c8d2e0!important}
+html.dark .text-red-600{color:#ec8c8c!important}
+html.dark .bg-green-50{background-color:#05260f!important}html.dark .bg-red-50{background-color:#270303!important}html.dark .text-green-700{color:#a7f0c2!important}html.dark .text-red-700{color:#ef9696!important}
 </style>
 </head>
 <body class="p-4">
