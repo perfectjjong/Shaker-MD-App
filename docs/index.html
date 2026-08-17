@@ -340,6 +340,28 @@
   <script>
     const GROUPS = [
       {
+        name: '역할별 대시보드 (Role-based)',
+        description: '임원(B2C 13 Ch.) → 팀장(IR/OR) → 담당자(13채널) · 합계 구조적 일치 (15)',
+        icon: '🗂️',
+        children: [
+          { name: 'IR 팀장용 (8 Ch. + Others)', description: 'IR channel comparison & ranking — derived from B2C 13 Ch.', url: '/dashboards/team-ir/', icon: '🧭' },
+          { name: 'OR 팀장용 (5 Ch. + Others)', description: 'OR channel comparison & ranking — derived from B2C 13 Ch.', url: '/dashboards/team-or/', icon: '🧭' },
+          { name: 'BH 담당자용', description: 'IR · BH single-channel dashboard', url: '/dashboards/ch-bh/', icon: '🎯', indent: true },
+          { name: 'BM 담당자용', description: 'IR · BM single-channel dashboard', url: '/dashboards/ch-bm/', icon: '🎯', indent: true },
+          { name: 'Tamkeen 담당자용', description: 'IR · Tamkeen single-channel dashboard', url: '/dashboards/ch-tamkeen/', icon: '🎯', indent: true },
+          { name: 'Zagzoog 담당자용', description: 'IR · Zagzoog single-channel dashboard', url: '/dashboards/ch-zagzoog/', icon: '🎯', indent: true },
+          { name: 'Dhamin 담당자용', description: 'IR · Dhamin single-channel dashboard', url: '/dashboards/ch-dhamin/', icon: '🎯', indent: true },
+          { name: 'Star Appliance 담당자용', description: 'IR · Star Appliance single-channel dashboard', url: '/dashboards/ch-star-appliance/', icon: '🎯', indent: true },
+          { name: 'Al Ghanem 담당자용', description: 'IR · Al Ghanem single-channel dashboard', url: '/dashboards/ch-al-ghanem/', icon: '🎯', indent: true },
+          { name: 'Al Shathri 담당자용', description: 'IR · Al Shathri single-channel dashboard', url: '/dashboards/ch-al-shathri/', icon: '🎯', indent: true },
+          { name: 'Al Manea 담당자용', description: 'OR · Al Manea single-channel dashboard', url: '/dashboards/ch-al-manea/', icon: '🎯', indent: true },
+          { name: 'SWS 담당자용', description: 'OR · SWS single-channel dashboard', url: '/dashboards/ch-sws/', icon: '🎯', indent: true },
+          { name: 'Black Box 담당자용', description: 'OR · Black Box single-channel dashboard', url: '/dashboards/ch-black-box/', icon: '🎯', indent: true },
+          { name: 'Al Khunizan 담당자용', description: 'OR · Al Khunizan single-channel dashboard', url: '/dashboards/ch-al-khunizan/', icon: '🎯', indent: true },
+          { name: 'eXtra 담당자용', description: 'OR · eXtra single-channel dashboard', url: '/dashboards/ch-extra/', icon: '🎯', indent: true },
+        ],
+      },
+      {
         name: 'Management Dashboard',
         description: 'Management dashboards (6)',
         icon: '📋',
