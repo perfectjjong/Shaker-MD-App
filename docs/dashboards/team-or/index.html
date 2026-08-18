@@ -77,6 +77,28 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 .grp-or{border-color:var(--amber);color:var(--amber)}.grp-or.active{background:#a8863c;color:#fff}
 @media(max-width:900px){.grid-5,.grid-6{grid-template-columns:repeat(2,1fr)}.grid-2,.grid-3{grid-template-columns:1fr}.tab{padding:8px 12px;font-size:11px}.filters{gap:8px;padding:8px 12px}.content{padding:12px 12px}.kpi-val{font-size:16px}.header h1{font-size:13px}.header .sub{display:none}}
 @media(max-width:700px){.card{overflow-x:auto}}
+
+.cmd-wrap{display:flex;flex-direction:column;gap:14px}
+.cmd-card{background:var(--card,#fff);border:1px solid var(--border,#e3ddcf);border-radius:8px;padding:14px 16px}
+.cmd-h{font-size:13px;font-weight:700;margin:0 0 2px;letter-spacing:.01em}
+.cmd-sub{font-size:11px;opacity:.65;margin:0 0 10px}
+table.cmd{width:100%;border-collapse:collapse;font-size:12px}
+table.cmd th{text-align:right;padding:6px 8px;border-bottom:1px solid var(--border,#e3ddcf);font-size:11px;
+  font-weight:700;opacity:.8;cursor:pointer;user-select:none;white-space:nowrap}
+table.cmd th:first-child,table.cmd td:first-child{text-align:left}
+table.cmd th.on{color:var(--primary,#8c1d2f)}
+table.cmd td{text-align:right;padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.14);white-space:nowrap}
+table.cmd tr.muted td{opacity:.42;font-style:italic}
+.pos{color:#1d6b45;font-weight:700}.neg{color:#a01d3a;font-weight:700}
+.cmd-bad{color:#a01d3a;font-weight:700}.cmd-warn{color:#a8863c;font-weight:700}
+.act{display:flex;gap:9px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(128,128,128,.14);font-size:12px}
+.act:last-child{border-bottom:none}
+.act .dot{flex:0 0 auto;font-size:12px;line-height:1.5}
+.act .who{font-weight:700;min-width:120px;flex:0 0 auto}
+.act .why{opacity:.85}
+.cmd-empty{font-size:12px;opacity:.6;padding:8px 0}
+@media(max-width:820px){table.cmd{font-size:11px}.act .who{min-width:88px}}
+
 </style>
 </head>
 <body>
@@ -86,7 +108,8 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 <span class="badge" id="yearBadge">2026 · W34</span>
 </div>
 <div class="tabs" id="tabBar">
-<div class="tab active" data-tab="overview">Overview</div>
+<div class="tab active" data-tab="command">Command</div>
+<div class="tab" data-tab="overview">Overview</div>
 <div class="tab" data-tab="channel">Channel Analysis</div>
 <div class="tab" data-tab="product">Product Analysis</div>
 <div class="tab" data-tab="supplydemand">Supply vs Demand</div>
@@ -111,7 +134,26 @@ td{padding:7px 10px;border-bottom:1px solid var(--border)}tr:hover td{background
 </div>
 <div class="content">
 <!-- OVERVIEW -->
-<div class="tab-pane active" id="pane-overview">
+<div class="tab-pane active" id="pane-command">
+<div class="cmd-wrap">
+  <div class="cmd-card">
+    <div class="cmd-h">채널 순위판 <span id="cmdWk" style="font-weight:400;opacity:.6"></span></div>
+    <div class="cmd-sub">헤더를 클릭하면 정렬 축이 바뀝니다 · 회색 행 = 담당자 없는 잔여 계정 묶음</div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdRank"></table></div>
+  </div>
+  <div class="cmd-card">
+    <div class="cmd-h">액션 큐</div>
+    <div class="cmd-sub">규칙 판정 결과 — 위에서부터 급한 순서</div>
+    <div id="cmdAct"></div>
+  </div>
+  <div class="cmd-card">
+    <div class="cmd-h">재고 재배치 후보</div>
+    <div class="cmd-sub">같은 모델을 과잉 채널 → 결품 채널로 · 최근 4주 셀아웃 기준</div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdMove"></table></div>
+  </div>
+</div>
+</div>
+<div class="tab-pane" id="pane-overview">
 <div id="sowhatBand" class="sowhat" style="display:none"></div>
 <div class="grid-5" id="kpiRow"></div>
 <div class="grid-2">
@@ -1277,6 +1319,161 @@ function updatePT(){
 document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cCatPie','cCatWeek'].forEach(id=>{if(charts[id])charts[id].resize()});});
 update();
 </script>
+
+<script>
+// ===== COMMAND TAB (팀장용) =====
+var CMD_SORT={key:'ytd',dir:-1};
+function cmdIsOthers(ch){return /_Others$/.test(ch)}
+function cmdLastWeek(){
+  var has={};D.raw.forEach(function(r){has[r.w]=1});
+  for(var i=WEEKS.length-1;i>=0;i--){if(has[WEEKS[i]])return WEEKS[i]}
+  return WEEKS[WEEKS.length-1];
+}
+function cmdRows(){
+  var lw=cmdLastWeek(),li=WEEKS.indexOf(lw),pw=li>0?WEEKS[li-1]:null;
+  var prev4=WEEKS.slice(Math.max(0,li-4),li);
+  var soW={},soP={},so4={},ytd={},sty={},stkv={},stkAnchor={};
+  D.raw.forEach(function(r){
+    ytd[r.ch]=(ytd[r.ch]||0)+r.q;
+    if(r.w===lw)soW[r.ch]=(soW[r.ch]||0)+r.q;
+    if(pw&&r.w===pw)soP[r.ch]=(soP[r.ch]||0)+r.q;
+    if(prev4.indexOf(r.w)>=0)so4[r.ch]=(so4[r.ch]||0)+r.q;
+  });
+  D.sellthru.forEach(function(r){sty[r.ch]=(sty[r.ch]||0)+r.q});
+  var sc=(D.stock&&D.stock.channels)||{};
+  Object.keys(sc).forEach(function(ch){
+    var tb=sc[ch].total_by_week||{},v=tb[lw];
+    if(typeof v!=='number'){ // 월앵커형(IR_Others 등)은 마지막 실값 사용
+      var ks=Object.keys(tb).filter(function(k){return typeof tb[k]==='number'})
+        .sort(function(a,b){return +a.slice(1)-(+b.slice(1))});
+      v=ks.length?tb[ks[ks.length-1]]:null;
+    }
+    stkv[ch]=v;
+    if(typeof tb[lw]!=='number'&&typeof v==='number'){
+      var ks2=Object.keys(tb).filter(function(k){return typeof tb[k]==='number'})
+        .sort(function(a,b){return +a.slice(1)-(+b.slice(1))});
+      stkAnchor[ch]=ks2.length?ks2[ks2.length-1]:null;
+    }
+  });
+  var tot=0;Object.keys(ytd).forEach(function(k){tot+=ytd[k]});
+  return (D.dims.channels||[]).map(function(ch){
+    var avg=(so4[ch]||0)/4, stk=stkv[ch];
+    return {ch:ch,others:cmdIsOthers(ch),lw:soW[ch]||0,pw:pw?(soP[ch]||0):null,avg:avg,
+      ytd:ytd[ch]||0,share:tot?(ytd[ch]||0)/tot*100:0,stk:(typeof stk==='number'?stk:null),
+      wos:(typeof stk==='number'&&avg>0)?stk/avg:null,gap:(sty[ch]||0)-(ytd[ch]||0),anchor:stkAnchor[ch]||null,
+      wow:(pw&&soP[ch])?((soW[ch]||0)-soP[ch])/soP[ch]*100:null};
+  });
+}
+function cmdFmt(n){return n==null?'–':n.toLocaleString()}
+function renderCmdRank(rows){
+  var lw=cmdLastWeek();
+  var el=document.getElementById('cmdWk');if(el)el.textContent='· 최신주 '+lw;
+  var cols=[['ch','채널'],['lw','금주 SO'],['wow','WoW'],['avg','4주평균'],['ytd','YTD'],
+            ['share','점유'],['stk','재고'],['wos','WOS'],['gap','ST−SO 갭']];
+  var s=CMD_SORT;
+  var sorted=rows.slice().sort(function(a,b){
+    var x=a[s.key],y=b[s.key];
+    if(x==null)return 1;if(y==null)return -1;
+    if(typeof x==='string')return x.localeCompare(y)*s.dir;
+    return (x-y)*s.dir;
+  });
+  var h='<tr>'+cols.map(function(c){
+    return '<th class="'+(s.key===c[0]?'on':'')+'" onclick="cmdSort(\''+c[0]+'\')">'+c[1]+
+      (s.key===c[0]?(s.dir<0?' ▾':' ▴'):'')+'</th>';}).join('')+'</tr>';
+  h+=sorted.map(function(r){
+    var th=getWosThresholds(r.ch)||{opportunity:8,healthy:16};
+    var wcls=r.wos==null?'':(r.wos<th.opportunity?'cmd-bad':(r.wos>th.healthy?'cmd-warn':''));
+    var wow=r.wow==null?'–':(r.wow>=0?'<span class="pos">+'+Math.round(r.wow)+'%</span>'
+                                     :'<span class="neg">'+Math.round(r.wow)+'%</span>');
+    return '<tr class="'+(r.others?'muted':'')+'">'+
+      '<td>'+r.ch+(r.others?' <span style="font-size:10px">(잔여)</span>':'')+'</td>'+
+      '<td>'+cmdFmt(r.lw)+'</td><td>'+wow+'</td><td>'+Math.round(r.avg).toLocaleString()+'</td>'+
+      '<td>'+cmdFmt(r.ytd)+'</td><td>'+r.share.toFixed(1)+'%</td><td>'+cmdFmt(r.stk)+(r.anchor?' <span style="font-size:9px;opacity:.7">('+r.anchor+' 월마감)</span>':'')+'</td>'+
+      '<td class="'+wcls+'">'+(r.wos==null?'–':Math.round(r.wos)+'w')+'</td>'+
+      '<td class="'+(r.gap>0?'cmd-warn':'')+'">'+(r.gap>0?'+':'')+r.gap.toLocaleString()+'</td></tr>';
+  }).join('');
+  document.getElementById('cmdRank').innerHTML=h;
+}
+function cmdSort(k){
+  if(CMD_SORT.key===k)CMD_SORT.dir*=-1;else{CMD_SORT.key=k;CMD_SORT.dir=(k==='ch')?1:-1}
+  renderCmdRank(cmdRows());
+}
+function renderCmdAct(rows){
+  var acts=[];
+  rows.filter(function(r){return !r.others}).forEach(function(r){
+    var th=getWosThresholds(r.ch)||{opportunity:8,healthy:16};
+    if(r.wos!=null&&r.wos>th.healthy&&r.lw===0)
+      acts.push([0,r.ch,'🔴','재고 '+Math.round(r.wos)+'주치인데 금주 셀아웃 0 — 정체. 프로모 또는 재고 회수 검토']);
+    else if(r.wos!=null&&r.wos<th.opportunity)
+      acts.push([1,r.ch,'🔴','WOS '+Math.round(r.wos)+'주 — 결품 위험. 즉시 보충 (재고 '+cmdFmt(r.stk)+')']);
+    else if(r.wos!=null&&r.wos>th.healthy)
+      acts.push([2,r.ch,'🟡','WOS '+Math.round(r.wos)+'주 과잉 — 소진 계획 점검']);
+    if(r.gap>0&&r.ytd>0&&r.gap/r.ytd>0.15)
+      acts.push([3,r.ch,'🟡','ST−SO 갭 +'+r.gap.toLocaleString()+' (YTD 대비 '+Math.round(r.gap/r.ytd*100)+'%) — 밀어낸 물량 미소진. 채권·재고 점검']);
+    if(r.wow!=null&&r.wow<=-30)
+      acts.push([4,r.ch,'🟡','셀아웃 전주 대비 '+Math.round(r.wow)+'% — 원인 확인']);
+  });
+  acts.sort(function(a,b){return a[0]-b[0]});
+  var el=document.getElementById('cmdAct');
+  if(!acts.length){el.innerHTML='<div class="cmd-empty">🟢 규칙 판정상 조치 필요 채널 없음</div>';return}
+  el.innerHTML=acts.map(function(a){
+    return '<div class="act"><span class="dot">'+a[2]+'</span><span class="who">'+a[1]+
+           '</span><span class="why">'+a[3]+'</span></div>';}).join('');
+}
+function renderCmdMove(){
+  var lw=cmdLastWeek(),li=WEEKS.indexOf(lw),prev4=WEEKS.slice(Math.max(0,li-3),li+1);
+  var so={},sc=(D.stock&&D.stock.channels)||{};
+  D.raw.forEach(function(r){
+    if(prev4.indexOf(r.w)<0)return;
+    (so[r.model]=so[r.model]||{})[r.ch]=(so[r.model][r.ch]||0)+r.q;
+  });
+  var stk={};
+  Object.keys(sc).forEach(function(ch){
+    if(cmdIsOthers(ch))return;
+    (sc[ch].models||[]).forEach(function(m){
+      var v=(m.stock||{})[lw];
+      if(typeof v==='number'&&v>0)(stk[m.model]=stk[m.model]||{})[ch]=v;
+    });
+  });
+  var out=[];
+  Object.keys(stk).forEach(function(mo){
+    var over=[],short=[];
+    Object.keys(stk[mo]).forEach(function(ch){
+      var s=stk[mo][ch],w=(so[mo]&&so[mo][ch])||0,th=getWosThresholds(ch)||{opportunity:8,healthy:16};
+      var wk=w>0?s/(w/4):999;
+      if(wk>th.healthy&&s>=20)over.push({ch:ch,stk:s,so:w,wk:wk});
+    });
+    Object.keys(so[mo]||{}).forEach(function(ch){
+      if(cmdIsOthers(ch))return;  // 잔여 계정 묶음은 재배치 대상 아님(보내는 쪽·받는 쪽 모두 제외)
+      var s=(stk[mo]&&stk[mo][ch])||0,w=so[mo][ch],th=getWosThresholds(ch)||{opportunity:8,healthy:16};
+      var wk=w>0?s/(w/4):999;
+      if(w>0&&wk<th.opportunity)short.push({ch:ch,stk:s,so:w,wk:wk});
+    });
+    if(over.length&&short.length){
+      over.sort(function(a,b){return b.stk-a.stk});short.sort(function(a,b){return a.wk-b.wk});
+      out.push({model:mo,from:over[0],to:short[0]});
+    }
+  });
+  out.sort(function(a,b){return b.from.stk-a.from.stk});
+  var t=document.getElementById('cmdMove');
+  if(!out.length){t.innerHTML='<tr><td class="cmd-empty">과잉·결품이 동시에 걸리는 모델 없음 — 재배치 후보 없음</td></tr>';return}
+  t.innerHTML='<tr><th>모델</th><th>보내는 채널</th><th>재고</th><th>WOS</th><th>받는 채널</th><th>재고</th><th>WOS</th></tr>'+
+    out.slice(0,15).map(function(o){
+      var fw=o.from.wk>=999?'무판매':Math.round(o.from.wk)+'w';
+      var tw=o.to.stk===0?'재고 0':Math.round(o.to.wk)+'w';
+      return '<tr><td>'+o.model+'</td><td style="text-align:right">'+o.from.ch+'</td><td>'+o.from.stk.toLocaleString()+
+        '</td><td class="cmd-warn">'+fw+'</td><td style="text-align:right">'+o.to.ch+
+        '</td><td>'+o.to.stk.toLocaleString()+'</td><td class="cmd-bad">'+tw+'</td></tr>';
+    }).join('');
+}
+function renderCommand(){
+  try{
+    var rows=cmdRows();
+    renderCmdRank(rows);renderCmdAct(rows);renderCmdMove();
+  }catch(e){console.error('renderCommand',e)}
+}
+
+(function(){var _u=window.update;if(typeof _u==="function"){window.update=function(){var r=_u.apply(this,arguments);renderCommand();return r};}window.addEventListener("load",function(){renderCommand()});})();</script>
 
 <script>/* role-scope */window.addEventListener("load",function(){var g=document.getElementById('fGroup');if(g&&g.closest('.filter-group'))g.closest('.filter-group').style.display='none';});</script>
 </body>
