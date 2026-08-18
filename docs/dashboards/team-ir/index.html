@@ -147,9 +147,9 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
     <div id="cmdAct"></div>
   </div>
   <div class="cmd-card">
-    <div class="cmd-h">재고 재배치 후보</div>
-    <div class="cmd-sub">같은 모델을 과잉 채널 → 결품 채널로 · 최근 4주 셀아웃 기준</div>
-    <div style="overflow-x:auto"><table class="cmd" id="cmdMove"></table></div>
+    <div class="cmd-h">보충 발주 후보</div>
+    <div class="cmd-sub" id="cmdOrdSub">최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고</div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdOrder"></table></div>
   </div>
 </div>
 </div>
@@ -1420,56 +1420,60 @@ function renderCmdAct(rows){
     return '<div class="act"><span class="dot">'+a[2]+'</span><span class="who">'+a[1]+
            '</span><span class="why">'+a[3]+'</span></div>';}).join('');
 }
-function renderCmdMove(){
-  var lw=cmdLastWeek(),li=WEEKS.indexOf(lw),prev4=WEEKS.slice(Math.max(0,li-3),li+1);
-  var so={},sc=(D.stock&&D.stock.channels)||{};
+function renderCmdOrder(){
+  var lw=cmdLastWeek(),li=WEEKS.indexOf(lw),last4=WEEKS.slice(Math.max(0,li-3),li+1);
+  var sc=(D.stock&&D.stock.channels)||{};
+  // 채널×모델 최근 4주 셀아웃
+  var so={};
   D.raw.forEach(function(r){
-    if(prev4.indexOf(r.w)<0)return;
-    (so[r.model]=so[r.model]||{})[r.ch]=(so[r.model][r.ch]||0)+r.q;
+    if(last4.indexOf(r.w)<0||cmdIsOthers(r.ch))return;
+    (so[r.ch]=so[r.ch]||{})[r.model]=(so[r.ch][r.model]||0)+r.q;
   });
-  var stk={};
-  Object.keys(sc).forEach(function(ch){
-    if(cmdIsOthers(ch))return;
-    (sc[ch].models||[]).forEach(function(m){
-      var v=(m.stock||{})[lw];
-      if(typeof v==='number'&&v>0)(stk[m.model]=stk[m.model]||{})[ch]=v;
-    });
-  });
+  var cat={};D.raw.forEach(function(r){if(!cat[r.model])cat[r.model]=r.c});
   var out=[];
-  Object.keys(stk).forEach(function(mo){
-    var over=[],short=[];
-    Object.keys(stk[mo]).forEach(function(ch){
-      var s=stk[mo][ch],w=(so[mo]&&so[mo][ch])||0,th=getWosThresholds(ch)||{opportunity:8,healthy:16};
-      var wk=w>0?s/(w/4):999;
-      if(wk>th.healthy&&s>=20)over.push({ch:ch,stk:s,so:w,wk:wk});
+  Object.keys(so).forEach(function(ch){
+    var th=getWosThresholds(ch)||{opportunity:8,healthy:16};
+    var target=Math.round((th.opportunity+th.healthy)/2);   // 건전구간 중앙 = 목표 커버리지
+    var byModel={};
+    ((sc[ch]||{}).models||[]).forEach(function(m){
+      var v=(m.stock||{})[lw];
+      if(typeof v==='number')byModel[m.model]=v;
     });
-    Object.keys(so[mo]||{}).forEach(function(ch){
-      if(cmdIsOthers(ch))return;  // 잔여 계정 묶음은 재배치 대상 아님(보내는 쪽·받는 쪽 모두 제외)
-      var s=(stk[mo]&&stk[mo][ch])||0,w=so[mo][ch],th=getWosThresholds(ch)||{opportunity:8,healthy:16};
-      var wk=w>0?s/(w/4):999;
-      if(w>0&&wk<th.opportunity)short.push({ch:ch,stk:s,so:w,wk:wk});
+    Object.keys(so[ch]).forEach(function(mo){
+      var sold=so[ch][mo]; if(sold<=0)return;
+      // 음수 재고(롤포워드 산출 오류, IR 8채널 전반 1,327 model-week)는 0으로 클램프.
+      // 그대로 쓰면 권장 발주가 부풀려진다. 클램프 사실은 화면에 표기한다.
+      var raw=byModel[mo], negFlag=(typeof raw==='number'&&raw<0);
+      var stk=negFlag?0:(raw||0);
+      var rate=sold/4, wos=rate>0?stk/rate:null;
+      if(wos===null||wos>=th.opportunity)return;            // 결품 위험 구간만
+      var need=Math.round(target*rate-stk);
+      if(need<=0)return;
+      out.push({ch:ch,model:mo,cat:cat[mo]||'',stk:stk,rate:rate,wos:wos,target:target,need:need,neg:negFlag,rawStk:raw});
     });
-    if(over.length&&short.length){
-      over.sort(function(a,b){return b.stk-a.stk});short.sort(function(a,b){return a.wk-b.wk});
-      out.push({model:mo,from:over[0],to:short[0]});
-    }
   });
-  out.sort(function(a,b){return b.from.stk-a.from.stk});
-  var t=document.getElementById('cmdMove');
-  if(!out.length){t.innerHTML='<tr><td class="cmd-empty">과잉·결품이 동시에 걸리는 모델 없음 — 재배치 후보 없음</td></tr>';return}
-  t.innerHTML='<tr><th>모델</th><th>보내는 채널</th><th>재고</th><th>WOS</th><th>받는 채널</th><th>재고</th><th>WOS</th></tr>'+
-    out.slice(0,15).map(function(o){
-      var fw=o.from.wk>=999?'무판매':Math.round(o.from.wk)+'w';
-      var tw=o.to.stk===0?'재고 0':Math.round(o.to.wk)+'w';
-      return '<tr><td>'+o.model+'</td><td style="text-align:right">'+o.from.ch+'</td><td>'+o.from.stk.toLocaleString()+
-        '</td><td class="cmd-warn">'+fw+'</td><td style="text-align:right">'+o.to.ch+
-        '</td><td>'+o.to.stk.toLocaleString()+'</td><td class="cmd-bad">'+tw+'</td></tr>';
+  out.sort(function(a,b){return b.need-a.need});
+  var t=document.getElementById('cmdOrder');
+  if(!out.length){t.innerHTML='<tr><td class="cmd-empty">결품 위험 구간 모델 없음 — 보충 발주 후보 없음</td></tr>';return}
+  var tot={};out.forEach(function(o){tot[o.ch]=(tot[o.ch]||0)+o.need});
+  var sub=document.getElementById('cmdOrdSub');
+  if(sub)sub.innerHTML='최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고 &nbsp;|&nbsp; <b>채널별 합계</b> '+
+    Object.keys(tot).sort(function(a,b){return tot[b]-tot[a]}).map(function(c){
+      return c+' '+tot[c].toLocaleString()+'대'}).join(' · ');
+  t.innerHTML='<tr><th>채널</th><th>모델</th><th>카테고리</th><th>현재고</th><th>주간판매</th><th>WOS</th><th>목표</th><th>권장 발주</th></tr>'+
+    out.slice(0,20).map(function(o){
+      return '<tr><td>'+o.ch+'</td><td style="text-align:right">'+o.model+'</td>'+
+        '<td style="text-align:right;opacity:.7">'+o.cat+'</td>'+
+        '<td>'+o.stk.toLocaleString()+'</td><td>'+o.rate.toFixed(1)+'</td>'+
+        '<td class="cmd-bad">'+(o.neg?'재고 '+o.rawStk+' ⚠':(o.stk===0?'재고 0':Math.round(o.wos)+'w'))+'</td>'+
+        '<td style="opacity:.7">'+o.target+'w</td>'+
+        '<td style="font-weight:700">'+o.need.toLocaleString()+'</td></tr>';
     }).join('');
 }
 function renderCommand(){
   try{
     var rows=cmdRows();
-    renderCmdRank(rows);renderCmdAct(rows);renderCmdMove();
+    renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();
   }catch(e){console.error('renderCommand',e)}
 }
 
