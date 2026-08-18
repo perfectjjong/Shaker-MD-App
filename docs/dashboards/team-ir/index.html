@@ -151,6 +151,11 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
     <div class="cmd-sub" id="cmdOrdSub">최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고</div>
     <div style="overflow-x:auto"><table class="cmd" id="cmdOrder"></table></div>
   </div>
+  <div class="cmd-card">
+    <div class="cmd-h">가격 포지션 <span style="font-weight:400;opacity:.6">· 동급 대비</span></div>
+    <div class="cmd-sub" id="cmdPriceSub">같은 (카테고리 × BTU × 압축기 × 냉방/냉난방) 그룹 안에서 가격순위로 등급(High/Mid/Entry)을 나누고, <b>LG와 같은 등급의 경쟁 중앙값</b>과 비교합니다 — 최저가 단순비교 아님</div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdPrice"></table></div>
+  </div>
 </div>
 </div>
 <div class="tab-pane" id="pane-overview">
@@ -1320,7 +1325,8 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
 update();
 </script>
 
-<script>
+<script>const _PRICEPOS = {"BH":{"asOf":"2026-08-18","lgModels":2,"groups":42,"items":[{"model":"LH302C0UK0","cat":"Split AC","btu":27000,"comp":"정속","typ":"냉방","p":4259,"rank":3,"n":3,"tier":"High","peers":2,"cb":"Admiral","cp":3337,"gap":28,"d":"2026-08-18"},{"model":"W181ECSN3","cat":"Window AC","btu":18000,"comp":"정속","typ":"냉방","p":1449,"rank":10,"n":11,"tier":"High","peers":3,"cb":"Zamil","cp":1416,"gap":2,"d":"2026-08-18"}],"n":2,"tiers":{"High":2,"Mid":0,"Entry":0},"medGap":28,"under":0},"BM":{"asOf":"2026-08-18","lgModels":10,"groups":28,"items":[{"model":"ND182C0NK0","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉방","p":3466,"rank":7,"n":7,"tier":"High","peers":4,"cb":"General","cp":3010,"gap":15,"d":"2026-08-18"},{"model":"NT382C2","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉방","p":7453,"rank":9,"n":9,"tier":"High","peers":2,"cb":"Midea","cp":6695,"gap":11,"d":"2026-08-18"},{"model":"NF182C2SK1","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉방","p":3293,"rank":6,"n":7,"tier":"High","peers":4,"cb":"General","cp":3010,"gap":9,"d":"2026-08-18"},{"model":"NS242C3","cat":"Split AC","btu":24000,"comp":"인버터","typ":"냉방","p":3900,"rank":4,"n":6,"tier":"Mid","peers":1,"cb":"Midea","cp":3567,"gap":9,"d":"2026-08-18"},{"model":"NS182C2","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉방","p":3206,"rank":5,"n":7,"tier":"High","peers":4,"cb":"General","cp":3010,"gap":6,"d":"2026-08-18"},{"model":"LA242C0.NK0","cat":"Split AC","btu":24000,"comp":"정속","typ":"냉방","p":3120,"rank":8,"n":17,"tier":"Mid","peers":3,"cb":"Midea","cp":3293,"gap":-5,"d":"2026-08-18"}],"n":10,"tiers":{"High":7,"Mid":3,"Entry":0},"medGap":6,"under":5},"Tamkeen":{"asOf":"2026-08-18","lgModels":38,"groups":39,"items":[{"model":"ND242C0.NK0","cat":"Split AC","btu":21000,"comp":"정속","typ":"냉방","p":3699,"rank":10,"n":10,"tier":"High","peers":3,"cb":"Craft","cp":2729,"gap":36,"d":"2026-08-18"},{"model":"ND182C0.NK0","cat":"Split AC","btu":18000,"comp":"정속","typ":"냉방","p":3049,"rank":21,"n":21,"tier":"High","peers":4,"cb":"General Supreme","cp":2264,"gap":35,"d":"2026-08-18"},{"model":"NV242C0SK0","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":2979,"rank":4,"n":11,"tier":"Entry","peers":2,"cb":"Samsung","cp":2245,"gap":33,"d":"2026-08-18"},{"model":"NV182H1NK0","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉난방","p":3179,"rank":8,"n":8,"tier":"High","peers":4,"cb":"General Supreme","cp":2499,"gap":27,"d":"2026-08-18"},{"model":"LT302H0.NK0","cat":"Split AC","btu":27000,"comp":"정속","typ":"냉난방","p":5309,"rank":4,"n":4,"tier":"High","peers":1,"cb":"Gree","cp":4399,"gap":21,"d":"2026-08-18"},{"model":"NS182H2.NK2","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉난방","p":2969,"rank":6,"n":8,"tier":"High","peers":4,"cb":"General Supreme","cp":2499,"gap":19,"d":"2026-08-18"}],"n":38,"tiers":{"High":22,"Mid":6,"Entry":10},"medGap":3,"under":16},"Zagzoog":null,"Dhamin":null,"Star Appliance":{"asOf":"2026-08-18","lgModels":20,"groups":54,"items":[{"model":"ال جى مكيف سبليت 21500 وحدة با","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3935,"rank":5,"n":5,"tier":"High","peers":3,"cb":"Aux","cp":2301,"gap":71,"d":"2026-08-18"},{"model":"ال جى فريش مكيف سبليت 18000 وح","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉난방","p":3446,"rank":7,"n":7,"tier":"High","peers":1,"cb":"Midea","cp":2161,"gap":59,"d":"2026-08-18"},{"model":"ال جى فريش مكيف سبليت 12000 وح","cat":"Split AC","btu":12000,"comp":"인버터","typ":"냉난방","p":2924,"rank":6,"n":6,"tier":"High","peers":1,"cb":"Midea","cp":1867,"gap":57,"d":"2026-08-18"},{"model":"ال جي مكيف مخفي 3 طن - 34000 و","cat":"Concealed Set","btu":33000,"comp":"인버터","typ":"냉난방","p":8381,"rank":4,"n":4,"tier":"High","peers":1,"cb":"بيسك","cp":5884,"gap":42,"d":"2026-08-17"},{"model":"ال جي مكيف سبليت سمارت انفرتر ","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉난방","p":3398,"rank":2,"n":5,"tier":"Entry","peers":1,"cb":"Aux","cp":2443,"gap":39,"d":"2026-08-18"},{"model":"ال جى مكيف سبليت سمارت 21500 و","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3202,"rank":4,"n":5,"tier":"High","peers":3,"cb":"Aux","cp":2301,"gap":39,"d":"2026-08-18"}],"n":20,"tiers":{"High":15,"Mid":3,"Entry":2},"medGap":23,"under":6},"Al Ghanem":{"asOf":"2026-08-18","lgModels":4,"groups":24,"items":[{"model":"ال جي مكيف سبليت 28800 وحدة حا","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉방","p":3799,"rank":3,"n":9,"tier":"Entry","peers":2,"cb":"Oscar","cp":3049,"gap":25,"d":"2026-07-23"},{"model":"ال جي مكيف سبيلت 18000 وحدة با","cat":"Split AC","btu":18000,"comp":"정속","typ":"냉방","p":2599,"rank":20,"n":21,"tier":"High","peers":6,"cb":"Midea","cp":2174,"gap":20,"d":"2026-08-15"},{"model":"إل جي مكيف سبليت 18000 وحدة - ","cat":"Split AC","btu":18000,"comp":"정속","typ":"냉방","p":1899,"rank":11,"n":21,"tier":"Mid","peers":6,"cb":"Oscar","cp":1849,"gap":3,"d":"2026-08-05"},{"model":"ال جي مكيف سبليت جيت كول 28600","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉방","p":4099,"rank":5,"n":9,"tier":"Mid","peers":2,"cb":"Mando","cp":4149,"gap":-1,"d":"2026-08-15"}],"n":4,"tiers":{"High":1,"Mid":2,"Entry":1},"medGap":20,"under":1},"Al Shathri":{"asOf":"2026-08-18","lgModels":3,"groups":41,"items":[{"model":"LC242C0.NK0","cat":"Split AC","btu":24000,"comp":"정속","typ":"냉방","p":2499,"rank":12,"n":15,"tier":"High","peers":4,"cb":"Mando","cp":2699,"gap":-7,"d":"2026-08-18"},{"model":"S-LG2490","cat":"Split AC","btu":24000,"comp":"정속","typ":"냉방","p":1799,"rank":1,"n":15,"tier":"Entry","peers":4,"cb":"Zetrust","cp":2049,"gap":-12,"d":"2026-08-18"},{"model":"S-LG1873","cat":"Split AC","btu":18000,"comp":"정속","typ":"냉방","p":1299,"rank":1,"n":15,"tier":"Entry","peers":4,"cb":"Dansat","cp":1574,"gap":-17,"d":"2026-08-18"}],"n":3,"tiers":{"High":1,"Mid":0,"Entry":2},"medGap":-12,"under":3}};
+
 // ===== COMMAND TAB (팀장용) =====
 var CMD_SORT={key:'ytd',dir:-1};
 function cmdIsOthers(ch){return /_Others$/.test(ch)}
@@ -1470,10 +1476,52 @@ function renderCmdOrder(){
         '<td style="font-weight:700">'+o.need.toLocaleString()+'</td></tr>';
     }).join('');
 }
+function renderCmdPrice(){
+  var t=document.getElementById('cmdPrice'); if(!t)return;
+  if(typeof _PRICEPOS==='undefined'||!_PRICEPOS){t.innerHTML='<tr><td class="cmd-empty">가격 데이터 없음</td></tr>';return}
+  var rows=[],none=[],asOf=null;
+  Object.keys(_PRICEPOS).forEach(function(ch){
+    var v=_PRICEPOS[ch];
+    if(!v){none.push(ch);return}
+    asOf=asOf||v.asOf;
+    (v.items||[]).forEach(function(it){rows.push(Object.assign({ch:ch},it))});
+  });
+  rows.sort(function(a,b){return b.gap-a.gap});
+  // 한 채널이 상위를 독식하면 팀장이 채널 전반을 못 본다 → 채널당 최대 2건
+  var cap={},keep=[];
+  rows.forEach(function(r){if((cap[r.ch]=(cap[r.ch]||0)+1)<=2)keep.push(r)});
+  rows=keep;
+  // 표는 대응 우선순위(비싼 순) 상위만 보여주므로 전체 그림을 요약으로 병기
+  var T={High:0,Mid:0,Entry:0},N=0,U=0,meds=[];
+  Object.keys(_PRICEPOS).forEach(function(ch){
+    var v=_PRICEPOS[ch]; if(!v)return;
+    N+=v.n||0; U+=v.under||0;
+    if(v.medGap!=null)meds.push(v.medGap);
+    Object.keys(v.tiers||{}).forEach(function(k){T[k]=(T[k]||0)+v.tiers[k]});
+  });
+  meds.sort(function(a,b){return a-b});
+  var md=meds.length?meds[Math.floor(meds.length/2)]:null;
+  var sub=document.getElementById('cmdPriceSub');
+  if(sub)sub.innerHTML+=' &nbsp;|&nbsp; 기준 '+(asOf||'-')+
+    ' · 비교 '+N+'건 (High '+T.High+' / Mid '+T.Mid+' / Entry '+T.Entry+')'+
+    (md!=null?' · 동급 대비 중앙값 <b>'+(md>0?'+':'')+md+'%</b>':'')+
+    ' · 동급보다 싼 항목 '+U+'건'+
+    (none.length?' · <b>가격추적 없음</b>: '+none.join(', '):'');
+  if(!rows.length){t.innerHTML='<tr><td class="cmd-empty">동급 비교 가능한 그룹 없음</td></tr>';return}
+  t.innerHTML='<tr><th>채널</th><th>LG 모델</th><th>그룹</th><th>등급</th><th>LG가</th><th>동급 중앙값</th><th>갭</th><th>그룹내 순위</th></tr>'+
+    rows.slice(0,18).map(function(r){
+      var g=r.gap>0?'<span class="neg">+'+r.gap+'%</span>':'<span class="pos">'+r.gap+'%</span>';
+      return '<tr><td>'+r.ch+'</td><td style="text-align:right">'+r.model+'</td>'+
+        '<td style="text-align:right;opacity:.75">'+(r.btu?r.btu.toLocaleString()+'BTU ':'')+r.comp+' '+r.typ+'</td>'+
+        '<td style="opacity:.8">'+r.tier+'</td><td>'+r.p.toLocaleString()+'</td>'+
+        '<td>'+r.cp.toLocaleString()+' <span style="font-size:10px;opacity:.65">'+r.cb+'</span></td>'+
+        '<td>'+g+'</td><td style="opacity:.75">'+r.rank+'/'+r.n+'</td></tr>';
+    }).join('');
+}
 function renderCommand(){
   try{
     var rows=cmdRows();
-    renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();
+    renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();renderCmdPrice();
   }catch(e){console.error('renderCommand',e)}
 }
 

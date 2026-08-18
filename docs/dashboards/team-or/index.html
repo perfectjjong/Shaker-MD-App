@@ -151,6 +151,11 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
     <div class="cmd-sub" id="cmdOrdSub">최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고</div>
     <div style="overflow-x:auto"><table class="cmd" id="cmdOrder"></table></div>
   </div>
+  <div class="cmd-card">
+    <div class="cmd-h">가격 포지션 <span style="font-weight:400;opacity:.6">· 동급 대비</span></div>
+    <div class="cmd-sub" id="cmdPriceSub">같은 (카테고리 × BTU × 압축기 × 냉방/냉난방) 그룹 안에서 가격순위로 등급(High/Mid/Entry)을 나누고, <b>LG와 같은 등급의 경쟁 중앙값</b>과 비교합니다 — 최저가 단순비교 아님</div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdPrice"></table></div>
+  </div>
 </div>
 </div>
 <div class="tab-pane" id="pane-overview">
@@ -1320,7 +1325,8 @@ document.getElementById('ovFold').addEventListener('toggle',()=>{['cMonthly','cC
 update();
 </script>
 
-<script>
+<script>const _PRICEPOS = {"Al Manea":{"asOf":"2026-08-18","lgModels":20,"groups":31,"items":[{"model":"LT302H0.NKO / LT302H0.UK0","cat":"Split AC","btu":27000,"comp":"정속","typ":"냉방","p":5309,"rank":5,"n":5,"tier":"High","peers":3,"cb":"Kelvinator","cp":2999,"gap":77,"d":"2026-08-18"},{"model":"LT302C0.NK0 / LT302C0.UK0","cat":"Split AC","btu":27000,"comp":"정속","typ":"냉방","p":4899,"rank":4,"n":5,"tier":"High","peers":3,"cb":"Kelvinator","cp":2999,"gap":63,"d":"2026-08-18"},{"model":"NT382H2.NR2-NT382H2.UR2","cat":"Split AC","btu":30000,"comp":"인버터","typ":"냉방","p":6149,"rank":7,"n":7,"tier":"High","peers":1,"cb":"Haam","cp":5000,"gap":23,"d":"2026-08-18"},{"model":"NF122H0.NJ0 NF122H0.UJ0","cat":"Split AC","btu":12000,"comp":"인버터","typ":"냉방","p":2749,"rank":11,"n":11,"tier":"High","peers":2,"cb":"Gree","cp":2274,"gap":21,"d":"2026-08-14"},{"model":"NF122C0.NJ0 NF122C0.UJ0","cat":"Split AC","btu":12000,"comp":"인버터","typ":"냉방","p":2699,"rank":10,"n":11,"tier":"High","peers":2,"cb":"Gree","cp":2274,"gap":19,"d":"2026-08-18"},{"model":"NT382C2.NR2-NT382C2.UR2","cat":"Split AC","btu":30000,"comp":"인버터","typ":"냉방","p":5899,"rank":6,"n":7,"tier":"High","peers":1,"cb":"Haam","cp":5000,"gap":18,"d":"2026-08-13"}],"n":20,"tiers":{"High":15,"Mid":5,"Entry":0},"medGap":6,"under":7},"SWS":{"asOf":"2026-08-18","lgModels":25,"groups":23,"items":[{"model":"LG - Concealed Air Conditioner","cat":"Split AC","btu":27000,"comp":"정속","typ":"냉방","p":12399,"rank":8,"n":8,"tier":"High","peers":2,"cb":"Midea","cp":6549,"gap":89,"d":"2026-08-18"},{"model":"LG -Split Air Conditioner, 210","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3949,"rank":11,"n":11,"tier":"High","peers":3,"cb":"Mando","cp":2729,"gap":45,"d":"2026-08-18"},{"model":"LG Split Air Conditioner 21500","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3699,"rank":10,"n":11,"tier":"High","peers":3,"cb":"Mando","cp":2729,"gap":36,"d":"2026-08-18"},{"model":"LG Split Air Conditioner 21000","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3649,"rank":8,"n":11,"tier":"High","peers":3,"cb":"Mando","cp":2729,"gap":34,"d":"2026-08-18"},{"model":"LG Split AC, Hot & Cold, 22,10","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3649,"rank":9,"n":11,"tier":"High","peers":3,"cb":"Mando","cp":2729,"gap":34,"d":"2026-08-18"},{"model":"LG Art Cool Split AC 22000 BTU","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉방","p":3599,"rank":7,"n":11,"tier":"Mid","peers":3,"cb":"Mando","cp":2729,"gap":32,"d":"2026-08-18"}],"n":25,"tiers":{"High":13,"Mid":11,"Entry":1},"medGap":7,"under":8},"Black Box":{"asOf":"2026-08-18","lgModels":39,"groups":22,"items":[{"model":"W242EH.SN3","cat":"Window AC","btu":24000,"comp":"정속","typ":"냉방","p":2199,"rank":6,"n":6,"tier":"High","peers":4,"cb":"Haier","cp":1699,"gap":29,"d":"2026-08-18"},{"model":"LT302H0.NK0","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉방","p":5309,"rank":17,"n":17,"tier":"High","peers":4,"cb":"Gree","cp":4249,"gap":25,"d":"2026-08-18"},{"model":"APNQ55GT3E6/AUUQ55GT6","cat":"Floor Standing AC","btu":48000,"comp":"인버터","typ":"냉방","p":8199,"rank":2,"n":5,"tier":"Entry","peers":1,"cb":"Midea","cp":6899,"gap":19,"d":"2026-08-18"},{"model":"W242EC.SN3","cat":"Window AC","btu":24000,"comp":"정속","typ":"냉방","p":1999,"rank":5,"n":6,"tier":"High","peers":4,"cb":"Haier","cp":1699,"gap":18,"d":"2026-08-18"},{"model":"W181EH.SN3","cat":"Window AC","btu":18000,"comp":"정속","typ":"냉방","p":1699,"rank":11,"n":11,"tier":"High","peers":2,"cb":"Gree","cp":1449,"gap":17,"d":"2026-08-18"},{"model":"LK182C0.NK0","cat":"Split AC","btu":18000,"comp":"정속","typ":"냉방","p":2349,"rank":14,"n":22,"tier":"Mid","peers":5,"cb":"MANDO","cp":2049,"gap":15,"d":"2026-08-18"}],"n":39,"tiers":{"High":21,"Mid":17,"Entry":1},"medGap":4,"under":16},"Al Khunizan":{"asOf":"2026-08-18","lgModels":39,"groups":65,"items":[{"model":"nd242h4","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉난방","p":6319,"rank":9,"n":9,"tier":"High","peers":5,"cb":"BASIC","cp":2599,"gap":143,"d":"2026-07-19"},{"model":"abnw21gm1t6","cat":"Concealed Set","btu":18000,"comp":"인버터","typ":"냉난방","p":4999,"rank":3,"n":4,"tier":"High","peers":2,"cb":"BASIC","cp":2449,"gap":104,"d":"2026-07-26"},{"model":"abnw21gm1t6-auuw21gt6","cat":"Concealed Set","btu":18000,"comp":"인버터","typ":"냉난방","p":4999,"rank":4,"n":4,"tier":"High","peers":2,"cb":"BASIC","cp":2449,"gap":104,"d":"2026-08-18"},{"model":"abnw55gm3ta","cat":"Concealed Set","btu":48000,"comp":"인버터","typ":"냉난방","p":9499,"rank":5,"n":6,"tier":"High","peers":4,"cb":"FUJI","cp":5749,"gap":65,"d":"2026-07-26"},{"model":"abnw55gm3ta-abuw55gm3ta","cat":"Concealed Set","btu":48000,"comp":"인버터","typ":"냉난방","p":9499,"rank":6,"n":6,"tier":"High","peers":4,"cb":"FUJI","cp":5749,"gap":65,"d":"2026-08-18"},{"model":"nd242h0","cat":"Split AC","btu":21000,"comp":"인버터","typ":"냉난방","p":3949,"rank":7,"n":9,"tier":"High","peers":5,"cb":"BASIC","cp":2599,"gap":52,"d":"2026-08-18"}],"n":39,"tiers":{"High":33,"Mid":6,"Entry":0},"medGap":15,"under":10},"eXtra":{"asOf":"2026-08-18","lgModels":25,"groups":33,"items":[{"model":"NF122H0","cat":"Split AC","btu":12000,"comp":"인버터","typ":"냉난방","p":2749,"rank":4,"n":4,"tier":"High","peers":1,"cb":"TCL","cp":2399,"gap":15,"d":"2026-08-18"},{"model":"LA302H0.NK0","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉난방","p":5259,"rank":7,"n":7,"tier":"High","peers":2,"cb":"GREE","cp":4589,"gap":15,"d":"2026-08-18"},{"model":"NF122C0","cat":"Split AC","btu":12000,"comp":"인버터","typ":"냉방","p":2699,"rank":5,"n":5,"tier":"High","peers":1,"cb":"AUX","cp":2399,"gap":13,"d":"2026-08-15"},{"model":"NT382H2","cat":"Split AC","btu":36000,"comp":"인버터","typ":"냉난방","p":6149,"rank":4,"n":4,"tier":"High","peers":1,"cb":"GREE","cp":5499,"gap":12,"d":"2026-08-18"},{"model":"LA302C0.NK0","cat":"Split AC","btu":30000,"comp":"정속","typ":"냉방","p":4849,"rank":8,"n":8,"tier":"High","peers":2,"cb":"GREE","cp":4364,"gap":11,"d":"2026-08-18"},{"model":"NW182H0","cat":"Split AC","btu":18000,"comp":"인버터","typ":"냉난방","p":4079,"rank":16,"n":17,"tier":"High","peers":5,"cb":"SAMSUNG","cp":3699,"gap":10,"d":"2026-08-18"}],"n":25,"tiers":{"High":16,"Mid":9,"Entry":0},"medGap":3,"under":8}};
+
 // ===== COMMAND TAB (팀장용) =====
 var CMD_SORT={key:'ytd',dir:-1};
 function cmdIsOthers(ch){return /_Others$/.test(ch)}
@@ -1470,10 +1476,52 @@ function renderCmdOrder(){
         '<td style="font-weight:700">'+o.need.toLocaleString()+'</td></tr>';
     }).join('');
 }
+function renderCmdPrice(){
+  var t=document.getElementById('cmdPrice'); if(!t)return;
+  if(typeof _PRICEPOS==='undefined'||!_PRICEPOS){t.innerHTML='<tr><td class="cmd-empty">가격 데이터 없음</td></tr>';return}
+  var rows=[],none=[],asOf=null;
+  Object.keys(_PRICEPOS).forEach(function(ch){
+    var v=_PRICEPOS[ch];
+    if(!v){none.push(ch);return}
+    asOf=asOf||v.asOf;
+    (v.items||[]).forEach(function(it){rows.push(Object.assign({ch:ch},it))});
+  });
+  rows.sort(function(a,b){return b.gap-a.gap});
+  // 한 채널이 상위를 독식하면 팀장이 채널 전반을 못 본다 → 채널당 최대 2건
+  var cap={},keep=[];
+  rows.forEach(function(r){if((cap[r.ch]=(cap[r.ch]||0)+1)<=2)keep.push(r)});
+  rows=keep;
+  // 표는 대응 우선순위(비싼 순) 상위만 보여주므로 전체 그림을 요약으로 병기
+  var T={High:0,Mid:0,Entry:0},N=0,U=0,meds=[];
+  Object.keys(_PRICEPOS).forEach(function(ch){
+    var v=_PRICEPOS[ch]; if(!v)return;
+    N+=v.n||0; U+=v.under||0;
+    if(v.medGap!=null)meds.push(v.medGap);
+    Object.keys(v.tiers||{}).forEach(function(k){T[k]=(T[k]||0)+v.tiers[k]});
+  });
+  meds.sort(function(a,b){return a-b});
+  var md=meds.length?meds[Math.floor(meds.length/2)]:null;
+  var sub=document.getElementById('cmdPriceSub');
+  if(sub)sub.innerHTML+=' &nbsp;|&nbsp; 기준 '+(asOf||'-')+
+    ' · 비교 '+N+'건 (High '+T.High+' / Mid '+T.Mid+' / Entry '+T.Entry+')'+
+    (md!=null?' · 동급 대비 중앙값 <b>'+(md>0?'+':'')+md+'%</b>':'')+
+    ' · 동급보다 싼 항목 '+U+'건'+
+    (none.length?' · <b>가격추적 없음</b>: '+none.join(', '):'');
+  if(!rows.length){t.innerHTML='<tr><td class="cmd-empty">동급 비교 가능한 그룹 없음</td></tr>';return}
+  t.innerHTML='<tr><th>채널</th><th>LG 모델</th><th>그룹</th><th>등급</th><th>LG가</th><th>동급 중앙값</th><th>갭</th><th>그룹내 순위</th></tr>'+
+    rows.slice(0,18).map(function(r){
+      var g=r.gap>0?'<span class="neg">+'+r.gap+'%</span>':'<span class="pos">'+r.gap+'%</span>';
+      return '<tr><td>'+r.ch+'</td><td style="text-align:right">'+r.model+'</td>'+
+        '<td style="text-align:right;opacity:.75">'+(r.btu?r.btu.toLocaleString()+'BTU ':'')+r.comp+' '+r.typ+'</td>'+
+        '<td style="opacity:.8">'+r.tier+'</td><td>'+r.p.toLocaleString()+'</td>'+
+        '<td>'+r.cp.toLocaleString()+' <span style="font-size:10px;opacity:.65">'+r.cb+'</span></td>'+
+        '<td>'+g+'</td><td style="opacity:.75">'+r.rank+'/'+r.n+'</td></tr>';
+    }).join('');
+}
 function renderCommand(){
   try{
     var rows=cmdRows();
-    renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();
+    renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();renderCmdPrice();
   }catch(e){console.error('renderCommand',e)}
 }
 
