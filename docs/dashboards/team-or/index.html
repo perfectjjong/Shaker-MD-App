@@ -97,6 +97,20 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
 .act .who{font-weight:700;min-width:120px;flex:0 0 auto}
 .act .why{opacity:.85}
 .cmd-empty{font-size:12px;opacity:.6;padding:8px 0}
+.hero{background:linear-gradient(180deg,rgba(140,29,47,.07),transparent);border:1px solid var(--border,#e3ddcf);
+  border-radius:8px;padding:14px 16px}
+.hero-h{font-size:12px;font-weight:700;letter-spacing:.02em;opacity:.75;margin-bottom:6px}
+.hero-l{font-size:15px;font-weight:700;line-height:1.5}
+.hero-s{font-size:12px;opacity:.8;margin-top:6px;line-height:1.6}
+.kv{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
+.kv div{font-size:11px;opacity:.75}.kv b{display:block;font-size:17px;opacity:1;margin-top:2px}
+.bar{position:relative;height:16px;background:rgba(128,128,128,.13);border-radius:3px;min-width:150px}
+.bar i{position:absolute;top:0;bottom:0;border-radius:3px}
+.bar .need{background:rgba(160,29,58,.30)}
+.bar .have{background:#1d6b45;opacity:.82}
+.bar .mid{position:absolute;top:-3px;bottom:-3px;width:2px;background:#453f35;opacity:.55}
+.lgd{font-size:10px;opacity:.7;display:flex;gap:12px;margin:4px 0 8px}
+.lgd i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
 @media(max-width:820px){table.cmd{font-size:11px}.act .who{min-width:88px}}
 
 </style>
@@ -136,6 +150,15 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
 <!-- OVERVIEW -->
 <div class="tab-pane active" id="pane-command">
 <div class="cmd-wrap">
+  <div class="hero" id="cmdHero"></div>
+  <div class="cmd-card">
+    <div class="cmd-h">잔여 시즌 재고 과부족 <span style="font-weight:400;opacity:.6">· 현재고로 남은 시즌을 감당할 수 있는가</span></div>
+    <div class="cmd-sub" id="cmdGapSub"></div>
+    <div class="lgd"><span><i class="have" style="background:#1d6b45"></i>보유 재고</span>
+      <span><i class="need" style="background:rgba(160,29,58,.30)"></i>잔여 수요(낙관까지)</span>
+      <span><i style="background:#453f35"></i>중립 시나리오</span></div>
+    <div style="overflow-x:auto"><table class="cmd" id="cmdGap"></table></div>
+  </div>
   <div class="cmd-card">
     <div class="cmd-h">채널 순위판 <span id="cmdWk" style="font-weight:400;opacity:.6"></span></div>
     <div class="cmd-sub">헤더를 클릭하면 정렬 축이 바뀝니다 · 회색 행 = 담당자 없는 잔여 계정 묶음</div>
@@ -148,7 +171,7 @@ table.cmd tr.muted td{opacity:.42;font-style:italic}
   </div>
   <div class="cmd-card">
     <div class="cmd-h">보충 발주 후보</div>
-    <div class="cmd-sub" id="cmdOrdSub">최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고</div>
+    <div class="cmd-sub" id="cmdOrdSub">권장 발주 = 잔여 시즌 수요 − 현재고 · 모델별 올해 실적 × 중립 잔여율 (고정 주수 아님 — 과보충하면 시즌 후 악성재고)</div>
     <div style="overflow-x:auto"><table class="cmd" id="cmdOrder"></table></div>
   </div>
   <div class="cmd-card">
@@ -1329,6 +1352,7 @@ update();
 </script>
 
 <script>const _PRICEPOS = {"Al Manea":{"asOf":"2026-08-18","lgModels":13,"groups":15,"items":[{"model":"NT382H","raw":"NT382H2.NR2-NT382H2.UR2","v6mismatch":false,"cat":"Split Inverter","btu":30000,"typ":"냉방","p":6149,"rival":"Gree","rrank":1,"rp":4589,"rn":3,"rlo":4579,"rhi":4849,"gap":34,"d":"2026-08-18"},{"model":"NT382C","raw":"NT382C2.NR2-NT382C2.UR2","v6mismatch":false,"cat":"Split Inverter","btu":30000,"typ":"냉방","p":5899,"rival":"Gree","rrank":1,"rp":4589,"rn":3,"rlo":4579,"rhi":4849,"gap":29,"d":"2026-08-13"},{"model":"NV182C","raw":"NV182C1.NK0 NV182C1.UK0","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3600,"rival":"Gree","rrank":1,"rp":2914,"rn":2,"rlo":2699,"rhi":3129,"gap":24,"d":"2026-08-18"},{"model":"NF122H","raw":"NF122H0.NJ0 NF122H0.UJ0","v6mismatch":false,"cat":"Split Inverter","btu":12000,"typ":"냉방","p":2749,"rival":"Gree","rrank":1,"rp":2249,"rn":3,"rlo":1919,"rhi":2299,"gap":22,"d":"2026-08-14"},{"model":"NF122C","raw":"NF122C0.NJ0 NF122C0.UJ0","v6mismatch":false,"cat":"Split Inverter","btu":12000,"typ":"냉방","p":2699,"rival":"Gree","rrank":1,"rp":2249,"rn":3,"rlo":1919,"rhi":2299,"gap":20,"d":"2026-08-18"},{"model":"AM182C","raw":"AM182C0.UK1 / AM182C0.NK1","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3389,"rival":"Gree","rrank":1,"rp":2914,"rn":2,"rlo":2699,"rhi":3129,"gap":16,"d":"2026-08-18"}],"n":14,"tiers":{"Gree":14},"medGap":11,"under":4,"diag":{"lg":22,"lgV6":22,"v6miss":0,"v6missEx":[],"rivals":{"Gree":19,"Midea":0,"TCL":0},"matched":14,"reason":"","lgSpecs":["12,000BTU 인버터","18,000BTU 인버터","18,000BTU 정속","21,000BTU 인버터","24,000BTU 정속","27,000BTU 정속"]}},"SWS":{"asOf":"2026-08-18","lgModels":12,"groups":16,"items":[{"model":"NT382H","raw":"LG Titan Split Air Conditioner","v6mismatch":true,"cat":"Split On-Off","btu":30000,"typ":"냉방","p":6149,"rival":"Gree","rrank":1,"rp":4429,"rn":1,"rlo":4429,"rhi":4429,"gap":39,"d":"2026-08-18"},{"model":"NT382C","raw":"LG Split Air Conditioner 30000","v6mismatch":true,"cat":"Split On-Off","btu":30000,"typ":"냉방","p":5899,"rival":"Gree","rrank":1,"rp":4429,"rn":1,"rlo":4429,"rhi":4429,"gap":33,"d":"2026-08-18"},{"model":"LO182C","raw":"LG Split Air Conditioner 18400","v6mismatch":false,"cat":"Split On-Off","btu":18000,"typ":"냉방","p":3229,"rival":"Gree","rrank":1,"rp":2779,"rn":3,"rlo":2479,"rhi":4299,"gap":16,"d":"2026-08-18"},{"model":"NS242H","raw":"LG Split Air Conditioner 21000","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉방","p":3649,"rival":"TCL","rrank":3,"rp":3199,"rn":1,"rlo":3199,"rhi":3199,"gap":14,"d":"2026-08-18"},{"model":"AM242C","raw":"LG Art Cool Split AC 22000 BTU","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉방","p":3599,"rival":"TCL","rrank":3,"rp":3199,"rn":1,"rlo":3199,"rhi":3199,"gap":13,"d":"2026-08-18"},{"model":"NS182H","raw":"LG Split AC 18000 BTU Heat & C","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":2969,"rival":"Gree","rrank":1,"rp":2739,"rn":2,"rlo":2629,"rhi":2849,"gap":8,"d":"2026-08-18"}],"n":13,"tiers":{"Gree":8,"TCL":4,"Midea":1},"medGap":8,"under":5,"diag":{"lg":25,"lgV6":13,"v6miss":12,"v6missEx":["LG - ArtCool Split Air Conditi","LG - Split Air Conditioner, 18","LG - Split Air Conditioner, 22"],"rivals":{"Gree":16,"Midea":13,"TCL":20},"matched":13,"reason":"","lgSpecs":["12,000BTU 인버터","12,000BTU 정속","18,000BTU 인버터","18,000BTU 정속","21,000BTU 인버터","24,000BTU 정속"]}},"Black Box":{"asOf":"2026-08-18","lgModels":22,"groups":10,"items":[{"model":"LT302H","raw":"LT302H0.NK0","v6mismatch":false,"cat":"Split On-Off","btu":30000,"typ":"냉방","p":5309,"rival":"Gree","rrank":1,"rp":4649,"rn":2,"rlo":4499,"rhi":4799,"gap":14,"d":"2026-08-18"},{"model":"LT302C","raw":"LT302C0.NK0","v6mismatch":false,"cat":"Split On-Off","btu":30000,"typ":"냉방","p":4899,"rival":"Gree","rrank":1,"rp":4649,"rn":2,"rlo":4499,"rhi":4799,"gap":5,"d":"2026-08-18"},{"model":"AM182C","raw":"AM182C0.UK1","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3389,"rival":"Gree","rrank":1,"rp":3299,"rn":5,"rlo":2649,"rhi":4600,"gap":3,"d":"2026-08-18"},{"model":"AM182C","raw":"AM182C2.NK2","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3389,"rival":"Gree","rrank":1,"rp":3299,"rn":5,"rlo":2649,"rhi":4600,"gap":3,"d":"2026-08-18"},{"model":"LK182H","raw":"LK182H0.NK0","v6mismatch":false,"cat":"Split On-Off","btu":18000,"typ":"냉방","p":2649,"rival":"Gree","rrank":1,"rp":2674,"rn":2,"rlo":2549,"rhi":2799,"gap":-1,"d":"2026-08-18"},{"model":"NF122H","raw":"NF122H0.NJ1","v6mismatch":false,"cat":"Split Inverter","btu":12000,"typ":"냉방","p":2749,"rival":"Gree","rrank":1,"rp":2788,"rn":4,"rlo":2199,"rhi":3565,"gap":-1,"d":"2026-08-18"}],"n":32,"tiers":{"Gree":32},"medGap":-10,"under":28,"diag":{"lg":32,"lgV6":32,"v6miss":0,"v6missEx":[],"rivals":{"Gree":30,"Midea":30,"TCL":16},"matched":32,"reason":"","lgSpecs":["12,000BTU 인버터","18,000BTU 인버터","18,000BTU 정속","24,000BTU 인버터","24,000BTU 정속","30,000BTU 인버터"]}},"Al Khunizan":{"asOf":"2026-08-18","lgModels":21,"groups":30,"items":[{"model":"ND242H","raw":"nd242h4","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉난방","p":6319,"rival":"TCL","rrank":3,"rp":2999,"rn":2,"rlo":2999,"rhi":2999,"gap":111,"d":"2026-07-19"},{"model":"ND242H","raw":"nd242h0","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉난방","p":3949,"rival":"TCL","rrank":3,"rp":2999,"rn":2,"rlo":2999,"rhi":2999,"gap":32,"d":"2026-08-18"},{"model":"ND242H","raw":"nd242h1","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉난방","p":3949,"rival":"TCL","rrank":3,"rp":2999,"rn":2,"rlo":2999,"rhi":2999,"gap":32,"d":"2026-08-18"},{"model":"AM182C","raw":"am182c0","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3389,"rival":"Gree","rrank":1,"rp":2599,"rn":1,"rlo":2599,"rhi":2599,"gap":30,"d":"2026-08-18"},{"model":"ND242C","raw":"nd242c1","v6mismatch":false,"cat":"Split Inverter","btu":21000,"typ":"냉방","p":3699,"rival":"TCL","rrank":3,"rp":2899,"rn":1,"rlo":2899,"rhi":2899,"gap":28,"d":"2026-08-18"},{"model":"NT382C","raw":"nt382c2","v6mismatch":false,"cat":"Split Inverter","btu":30000,"typ":"냉방","p":5899,"rival":"Gree","rrank":1,"rp":4599,"rn":1,"rlo":4599,"rhi":4599,"gap":28,"d":"2026-08-18"}],"n":25,"tiers":{"TCL":7,"Gree":18},"medGap":9,"under":10,"diag":{"lg":28,"lgV6":28,"v6miss":0,"v6missEx":[],"rivals":{"Gree":23,"Midea":0,"TCL":33},"matched":25,"reason":"","lgSpecs":["12,000BTU 인버터","18,000BTU 인버터","18,000BTU 정속","21,000BTU 인버터","21,000BTU 정속","24,000BTU 인버터"]}},"eXtra":{"asOf":"2026-08-18","lgModels":21,"groups":20,"items":[{"model":"NF122C","raw":"NF122C0","v6mismatch":false,"cat":"Split Inverter","btu":12000,"typ":"냉방","p":2699,"rival":"TCL","rrank":3,"rp":1869,"rn":1,"rlo":1869,"rhi":1869,"gap":44,"d":"2026-08-15"},{"model":"NF122H","raw":"NF122H0","v6mismatch":false,"cat":"Split Inverter","btu":12000,"typ":"냉난방","p":2749,"rival":"TCL","rrank":3,"rp":2199,"rn":2,"rlo":1999,"rhi":2399,"gap":25,"d":"2026-08-18"},{"model":"AF182C","raw":"AF182C0","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3499,"rival":"Gree","rrank":1,"rp":2899,"rn":1,"rlo":2899,"rhi":2899,"gap":21,"d":"2026-08-18"},{"model":"AM182C","raw":"AM182C0","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉방","p":3389,"rival":"Gree","rrank":1,"rp":2899,"rn":1,"rlo":2899,"rhi":2899,"gap":17,"d":"2026-08-18"},{"model":"NT382H","raw":"NT382H2","v6mismatch":false,"cat":"Split Inverter","btu":36000,"typ":"냉난방","p":6149,"rival":"Gree","rrank":1,"rp":5499,"rn":1,"rlo":5499,"rhi":5499,"gap":12,"d":"2026-08-18"},{"model":"NW182H","raw":"NW182H0","v6mismatch":false,"cat":"Split Inverter","btu":18000,"typ":"냉난방","p":4079,"rival":"Midea","rrank":2,"rp":3799,"rn":1,"rlo":3799,"rhi":3799,"gap":7,"d":"2026-08-18"}],"n":22,"tiers":{"TCL":2,"Gree":17,"Midea":3},"medGap":3,"under":9,"diag":{"lg":22,"lgV6":22,"v6miss":0,"v6missEx":[],"rivals":{"Gree":18,"Midea":30,"TCL":19},"matched":22,"reason":"","lgSpecs":["12,000BTU 인버터","18,000BTU 인버터","18,000BTU 정속","24,000BTU 인버터","24,000BTU 정속","30,000BTU 정속"]}}};
+const _SEASON = {"cut":33,"curYear":"2026","ytd":75711,"scenarios":{"보수":0.4181,"중립":0.7281,"낙관":1.0594},"byYear":{"2023":{"done":65788,"rest":46495,"ratio":0.7067,"share":41.4},"2024":{"done":82040,"rest":86915,"ratio":1.0594,"share":51.4},"2025":{"done":84454,"rest":35311,"ratio":0.4181,"share":29.5}},"shareLo":29.5,"shareHi":51.4};
 
 // ===== COMMAND TAB (팀장용) =====
 var CMD_SORT={key:'ytd',dir:-1};
@@ -1428,23 +1452,39 @@ function cmdSort(k){
   renderCmdRank(cmdRows());
 }
 function renderCmdAct(rows){
+  // 판정축 = 잔여 시즌 수요 대비 과부족. WOS(현 속도 지속 가정)는 시즌 편차가 커
+  // 오판을 만든다(예: BH WOS 22주=과잉으로 보이나 잔여수요 대비는 +369로 적정).
+  var S=cmdSeason(), gaps={}, byCh={};
+  cmdGapRows().forEach(function(g){gaps[g.ch]=g});
+  rows.forEach(function(r){byCh[r.ch]=r});
   var acts=[];
-  rows.filter(function(r){return !r.others}).forEach(function(r){
-    var th=getWosThresholds(r.ch)||{opportunity:8,healthy:16};
-    if(r.wos!=null&&r.wos>th.healthy&&r.lw===0)
-      acts.push([0,r.ch,'🔴','재고 '+Math.round(r.wos)+'주치인데 금주 셀아웃 0 — 정체. 프로모 또는 재고 회수 검토']);
-    else if(r.wos!=null&&r.wos<th.opportunity)
-      acts.push([1,r.ch,'🔴','WOS '+Math.round(r.wos)+'주 — 결품 위험. 즉시 보충 (재고 '+cmdFmt(r.stk)+')']);
-    else if(r.wos!=null&&r.wos>th.healthy)
-      acts.push([2,r.ch,'🟡','WOS '+Math.round(r.wos)+'주 과잉 — 소진 계획 점검']);
-    if(r.gap>0&&r.ytd>0&&r.gap/r.ytd>0.15)
-      acts.push([3,r.ch,'🟡','ST−SO 갭 +'+r.gap.toLocaleString()+' (YTD 대비 '+Math.round(r.gap/r.ytd*100)+'%) — 밀어낸 물량 미소진. 채권·재고 점검']);
-    if(r.wow!=null&&r.wow<=-30)
-      acts.push([4,r.ch,'🟡','셀아웃 전주 대비 '+Math.round(r.wow)+'% — 원인 확인']);
+  cmdGapRows().filter(function(g){return !g.others}).forEach(function(g){
+    var r=byCh[g.ch]||{}, share=g.ytd?Math.abs(g.gapMid)/g.ytd*100:0;
+    if(g.gapMid<0 && g.gapLo<0)
+      acts.push([0,g.ch,'🔴','보수 시나리오에서도 '+Math.abs(g.gapLo).toLocaleString()+'대 부족 (중립 '+
+        Math.abs(g.gapMid).toLocaleString()+'대). 현재고 '+g.stk.toLocaleString()+
+        '대로 잔여 시즌 감당 불가 — 9월 피크 전 보충 확정 필요']);
+    else if(g.gapMid<0)
+      acts.push([1,g.ch,'🟡','중립 '+Math.abs(g.gapMid).toLocaleString()+'대 부족 (보수 시나리오면 +'+
+        g.gapLo.toLocaleString()+' 여유) — 수요 전개 보며 보충 준비']);
+    else if(g.gapHi>0)
+      acts.push([2,g.ch,'🟡','낙관 시나리오에서도 '+g.gapHi.toLocaleString()+
+        '대 남음 — 시즌 종료 후 이월 확정. 소진 계획 필요']);
+    if(r.gap>0 && g.ytd>0 && r.gap/g.ytd>0.15)
+      acts.push([3,g.ch,'🟡','ST−SO 갭 +'+r.gap.toLocaleString()+' (올해 판매 대비 '+
+        Math.round(r.gap/g.ytd*100)+'%) — 출하분이 소비자까지 안 갔음. 채권·진열 점검']);
+    if(r.wow!=null && r.wow<=-30 && g.gapMid<0)
+      acts.push([4,g.ch,'🟡','재고가 부족한데 셀아웃까지 전주 대비 '+Math.round(r.wow)+
+        '% — 결품으로 인한 기회손실 가능성. 매장 재고 확인']);
+  });
+  // Others 는 담당자가 없으나 규모가 크면 별도 환기
+  cmdGapRows().filter(function(g){return g.others&&g.gapMid>0}).forEach(function(g){
+    acts.push([2,g.ch,'🟠','담당자 없는 잔여 계정에 재고 '+g.stk.toLocaleString()+
+      '대 (잔여수요 대비 +'+g.gapMid.toLocaleString()+'). 관리 주체 지정 검토']);
   });
   acts.sort(function(a,b){return a[0]-b[0]});
   var el=document.getElementById('cmdAct');
-  if(!acts.length){el.innerHTML='<div class="cmd-empty">🟢 규칙 판정상 조치 필요 채널 없음</div>';return}
+  if(!acts.length){el.innerHTML='<div class="cmd-empty">🟢 잔여 시즌 기준 조치 필요 채널 없음</div>';return}
   el.innerHTML=acts.map(function(a){
     return '<div class="act"><span class="dot">'+a[2]+'</span><span class="who">'+a[1]+
            '</span><span class="why">'+a[3]+'</span></div>';}).join('');
@@ -1459,10 +1499,17 @@ function renderCmdOrder(){
     (so[r.ch]=so[r.ch]||{})[r.model]=(so[r.ch][r.model]||0)+r.q;
   });
   var cat={};cmdSrc().forEach(function(r){if(!cat[r.model])cat[r.model]=r.c});
+  // 모델×채널 올해 누적(기준주까지) — 잔여 수요 산출용
+  var S0=cmdSeason(), cutw=S0?S0.cut:99, ytdModel={};
+  cmdSrc().forEach(function(r){
+    if(cmdIsOthers(r.ch)||+String(r.w).slice(1)>cutw)return;
+    (ytdModel[r.ch]=ytdModel[r.ch]||{})[r.model]=(ytdModel[r.ch][r.model]||0)+r.q;
+  });
   var out=[];
   Object.keys(so).forEach(function(ch){
-    var th=getWosThresholds(ch)||{opportunity:8,healthy:16};
-    var target=Math.round((th.opportunity+th.healthy)/2);   // 건전구간 중앙 = 목표 커버리지
+    // 고정 목표주수(IR 12w/OR 7w)는 시즌을 무시한 값이라 폐기.
+    // 잔여 시즌 수요(중립) 만큼만 채운다 — 과보충 = 시즌 후 악성재고.
+    var S=cmdSeason(), rest=(S?S.scenarios['중립']:1.0);
     var byModel={};
     ((sc[ch]||{}).models||[]).forEach(function(m){
       var v=(m.stock||{})[lw];
@@ -1474,11 +1521,12 @@ function renderCmdOrder(){
       // 그대로 쓰면 권장 발주가 부풀려진다. 클램프 사실은 화면에 표기한다.
       var raw=byModel[mo], negFlag=(typeof raw==='number'&&raw<0);
       var stk=negFlag?0:(raw||0);
-      var rate=sold/4, wos=rate>0?stk/rate:null;
-      if(wos===null||wos>=th.opportunity)return;            // 결품 위험 구간만
-      var need=Math.round(target*rate-stk);
-      if(need<=0)return;
-      out.push({ch:ch,model:mo,cat:cat[mo]||'',stk:stk,rate:rate,wos:wos,target:target,need:need,neg:negFlag,rawStk:raw});
+      var rate=sold/4;
+      var demand=Math.round(ytdModel[ch][mo]*rest);          // 이 모델의 잔여 시즌 수요
+      var need=demand-stk;
+      if(need<=0)return;                                     // 잔여 수요를 이미 커버
+      out.push({ch:ch,model:mo,cat:cat[mo]||'',stk:stk,rate:rate,demand:demand,
+                cover:demand>0?stk/demand*100:0,need:need,neg:negFlag,rawStk:raw});
     });
   });
   out.sort(function(a,b){return b.need-a.need});
@@ -1486,16 +1534,17 @@ function renderCmdOrder(){
   if(!out.length){t.innerHTML='<tr><td class="cmd-empty">결품 위험 구간 모델 없음 — 보충 발주 후보 없음</td></tr>';return}
   var tot={};out.forEach(function(o){tot[o.ch]=(tot[o.ch]||0)+o.need});
   var sub=document.getElementById('cmdOrdSub');
-  if(sub)sub.innerHTML='최근 4주 판매속도 기준 · 권장 발주 = 목표주수 × 주간판매 − 현재고 &nbsp;|&nbsp; <b>채널별 합계</b> '+
+  if(sub)sub.innerHTML='권장 발주 = 잔여 시즌 수요 − 현재고 (모델별 올해 실적 × 중립 잔여율) &nbsp;|&nbsp; <b>채널별 합계</b> '+
     Object.keys(tot).sort(function(a,b){return tot[b]-tot[a]}).map(function(c){
       return c+' '+tot[c].toLocaleString()+'대'}).join(' · ');
-  t.innerHTML='<tr><th>채널</th><th>모델</th><th>카테고리</th><th>현재고</th><th>주간판매</th><th>WOS</th><th>목표</th><th>권장 발주</th></tr>'+
+  t.innerHTML='<tr><th>채널</th><th>모델 (v6)</th><th>카테고리</th><th>현재고</th><th>잔여 시즌 수요</th><th>충족률</th><th>권장 발주</th></tr>'+
     out.slice(0,20).map(function(o){
+      var cov=Math.round(o.cover||0);
       return '<tr><td>'+o.ch+'</td><td style="text-align:right">'+o.model+'</td>'+
         '<td style="text-align:right;opacity:.7">'+o.cat+'</td>'+
-        '<td>'+o.stk.toLocaleString()+'</td><td>'+o.rate.toFixed(1)+'</td>'+
-        '<td class="cmd-bad">'+(o.neg?'재고 '+o.rawStk+' ⚠':(o.stk===0?'재고 0':Math.round(o.wos)+'w'))+'</td>'+
-        '<td style="opacity:.7">'+o.target+'w</td>'+
+        '<td>'+(o.neg?'<span class="cmd-bad">'+o.rawStk+' ⚠</span>':o.stk.toLocaleString())+'</td>'+
+        '<td>'+o.demand.toLocaleString()+'</td>'+
+        '<td class="'+(cov<30?'cmd-bad':(cov<70?'cmd-warn':''))+'">'+cov+'%</td>'+
         '<td style="font-weight:700">'+o.need.toLocaleString()+'</td></tr>';
     }).join('');
 }
@@ -1560,9 +1609,76 @@ function renderCmdCoverage(){
   }).join('');
   t.innerHTML=h;
 }
+// ===== 시즌 기준 과부족 =====
+function cmdSeason(){ return (typeof _SEASON!=='undefined'&&_SEASON)?_SEASON:null; }
+function cmdGapRows(){
+  var S=cmdSeason(); if(!S)return [];
+  var cut=S.cut, ytd={}, stk={};
+  cmdSrc().forEach(function(r){ if(+String(r.w).slice(1)<=cut) ytd[r.ch]=(ytd[r.ch]||0)+r.q; });
+  var sc=(D.stock&&D.stock.channels)||{};
+  Object.keys(sc).forEach(function(ch){
+    var tb=sc[ch].total_by_week||{},ks=Object.keys(tb).filter(function(k){return typeof tb[k]==='number'})
+      .sort(function(a,b){return +a.slice(1)-(+b.slice(1))});
+    if(ks.length)stk[ch]=tb[ks[ks.length-1]];
+  });
+  return Object.keys(ytd).filter(function(ch){return stk[ch]!=null}).map(function(ch){
+    var y=ytd[ch],s=stk[ch],o={};
+    Object.keys(S.scenarios).forEach(function(k){o[k]=Math.round(y*S.scenarios[k])});
+    return {ch:ch,others:cmdIsOthers(ch),stk:s,ytd:y,need:o,
+            gapLo:s-o['보수'],gapMid:s-o['중립'],gapHi:s-o['낙관']};
+  }).sort(function(a,b){return a.gapMid-b.gapMid});
+}
+function renderCmdHero(){
+  var S=cmdSeason(),el=document.getElementById('cmdHero'); if(!el||!S)return;
+  var rows=cmdGapRows(),T={lo:0,mid:0,hi:0,stk:0,ytd:0};
+  rows.forEach(function(r){T.lo+=r.gapLo;T.mid+=r.gapMid;T.hi+=r.gapHi;T.stk+=r.stk;T.ytd+=r.ytd});
+  var yrs=Object.keys(S.byYear).map(function(y){return y+' '+S.byYear[y].share+'%'}).join(' · ');
+  var verdict = T.mid<0
+      ? '<span class="cmd-bad">잔여 시즌 수요 대비 재고가 '+Math.abs(T.mid).toLocaleString()+'대 부족</span> — 지금 문제는 과잉이 아니라 <b>결품</b>입니다'
+      : '<span class="pos">잔여 시즌 수요를 '+T.mid.toLocaleString()+'대 초과 보유</span> — 소진 계획이 필요합니다';
+  var worst=rows.filter(function(r){return !r.others}).slice(0,3)
+      .map(function(r){return r.ch+' '+r.gapMid.toLocaleString()}).join(' · ');
+  el.innerHTML='<div class="hero-h">W'+S.cut+' 시점 판단</div>'+
+    '<div class="hero-l">'+verdict+'</div>'+
+    '<div class="hero-s">과거 3년 이 시점 이후 판매 비중 '+yrs+' → 아직 시즌이 끝나지 않았습니다. '+
+    '잔여 수요는 기수행 대비 '+Math.round(S.scenarios['보수']*100)+'~'+Math.round(S.scenarios['낙관']*100)+'% (중립 '+Math.round(S.scenarios['중립']*100)+'%)로 '+
+    '편차가 커, 아래 3시나리오를 함께 봅니다.</div>'+
+    '<div class="kv">'+
+      '<div>올해 누적 판매<b>'+T.ytd.toLocaleString()+'</b></div>'+
+      '<div>현재 재고<b>'+T.stk.toLocaleString()+'</b></div>'+
+      '<div>보수 시나리오 과부족<b class="'+(T.lo<0?'neg':'pos')+'">'+(T.lo>0?'+':'')+T.lo.toLocaleString()+'</b></div>'+
+      '<div>중립<b class="'+(T.mid<0?'neg':'pos')+'">'+(T.mid>0?'+':'')+T.mid.toLocaleString()+'</b></div>'+
+      '<div>낙관<b class="'+(T.hi<0?'neg':'pos')+'">'+(T.hi>0?'+':'')+T.hi.toLocaleString()+'</b></div>'+
+      '<div>가장 모자란 채널<b style="font-size:13px">'+(worst||'—')+'</b></div>'+
+    '</div>';
+}
+function renderCmdGap(){
+  var S=cmdSeason(),t=document.getElementById('cmdGap'); if(!t)return;
+  if(!S){t.innerHTML='<tr><td class="cmd-empty">시즌 기준 데이터 없음</td></tr>';return}
+  var rows=cmdGapRows();
+  var sub=document.getElementById('cmdGapSub');
+  if(sub)sub.innerHTML='잔여 수요 = 올해 W1~W'+S.cut+' 실적 × 과거 3년 잔여율(보수 '+
+    Math.round(S.scenarios['보수']*100)+'% / 중립 '+Math.round(S.scenarios['중립']*100)+'% / 낙관 '+
+    Math.round(S.scenarios['낙관']*100)+'%) · <b>부족 순</b> 정렬';
+  var maxv=Math.max.apply(null,rows.map(function(r){return Math.max(r.stk,r.need['낙관'])}).concat([1]));
+  t.innerHTML='<tr><th>채널</th><th>현재고</th><th>올해 판매</th><th>잔여 수요(보수~낙관)</th>'+
+    '<th style="text-align:left;min-width:170px">재고 vs 수요</th><th>중립 과부족</th></tr>'+
+    rows.map(function(r){
+      var w1=Math.round(r.stk/maxv*100),w2=Math.round(r.need['낙관']/maxv*100),w3=Math.round(r.need['중립']/maxv*100);
+      var g=r.gapMid;
+      return '<tr class="'+(r.others?'muted':'')+'"><td>'+r.ch+(r.others?' <span style="font-size:10px">(잔여)</span>':'')+'</td>'+
+        '<td>'+r.stk.toLocaleString()+'</td><td>'+r.ytd.toLocaleString()+'</td>'+
+        '<td style="opacity:.8">'+r.need['보수'].toLocaleString()+'~'+r.need['낙관'].toLocaleString()+'</td>'+
+        '<td><div class="bar"><i class="need" style="left:0;width:'+w2+'%"></i>'+
+            '<i class="have" style="left:0;width:'+w1+'%"></i>'+
+            '<span class="mid" style="left:'+w3+'%"></span></div></td>'+
+        '<td class="'+(g<0?'cmd-bad':'pos')+'">'+(g>0?'+':'')+g.toLocaleString()+'</td></tr>';
+    }).join('');
+}
 function renderCommand(){
   try{
     var rows=cmdRows();
+    renderCmdHero();renderCmdGap();
     renderCmdRank(rows);renderCmdAct(rows);renderCmdOrder();renderCmdPrice();renderCmdCoverage();
   }catch(e){console.error('renderCommand',e)}
 }
