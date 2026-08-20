@@ -1455,7 +1455,12 @@ function render() {
   renderMosTab();
   // header info
   const chLabel = (curChs.size === CHS.length ? '5-channel total' : [...curChs].join(' + ')) + (includeOud ? ' · +OUD' : '');
-  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model 2026-06 · ' + chLabel;
+  // 2026-08-20: 월 라벨 하드코딩 제거 — psi_model_table.js 의 month/month_label 에서 파생.
+  // 매월 마감마다 손으로 8곳을 고쳐야 했고, 빠뜨리면 화면만 한 달 뒤처졌다.
+  const _mt = (typeof PSI_MODEL_TABLE !== 'undefined') ? PSI_MODEL_TABLE : null;
+  const _ym = _mt ? (_mt.year + '-' + String(_mt.month).padStart(2, '0')) : '';
+  document.getElementById('hdr-info').textContent =
+    (_ym ? ('PSI ~' + _ym + ' · MOS/Model ' + _ym + ' · ') : '') + chLabel;
 }
 
 render();
@@ -1469,6 +1474,27 @@ render();
 
   // subtitle + sources
   document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5-Channel Model-Level P/S/I Matrix (generated: ' + D.generated + ')';
+
+  // 정적 월 라벨 자동 치환 (2026-08-20) — 매월 수동 편집 제거
+  (function fixMonthLabels() {
+    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const cur = MON[(D.month || 1) - 1];
+    const prev = MON[(D.month || 1) - 2] || 'Dec';
+    const yy = String(D.year || 2026).slice(-2);
+    const rules = [
+      [/through\s+[A-Z][a-z]{2}\b/g, 'through ' + cur],
+      [/\([A-Z][a-z]{2} Month-End\)/g, '(' + cur + ' Month-End)'],
+      [/Stock = 0 with [A-Z][a-z]{2} SO/g, 'Stock = 0 with ' + cur + ' SO'],
+      [/[A-Z][a-z]{2} \+ [A-Z][a-z]{2} SO = 0/g, prev + ' + ' + cur + ' SO = 0'],
+      [/based on [A-Z][a-z]{2}-\d{2} stock/g, 'based on ' + cur + '-' + yy + ' stock'],
+    ];
+    document.querySelectorAll('.cd, .ct, .cs, .note, span, div').forEach(function (el) {
+      if (el.children.length) return;            // 잎 노드만
+      let t = el.textContent, o = t;
+      rules.forEach(function (r) { t = t.replace(r[0], r[1]); });
+      if (t !== o) el.textContent = t;
+    });
+  })();
   document.getElementById('mtSources').innerHTML =
     '<b>P</b> (Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
     '<b>S</b> (Sell-Out): ' + (D.sources?.SO || '') + '<br>' +

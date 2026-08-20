@@ -3,10 +3,11 @@
 """
 unified_psi.json에 7~12월 FCST(금액·수량 이중축)를 산출해 추가한다.
 방법론(2026-06-17 형님 확정):
-  - 1~5월 = data.json txn 실적 (권위)
-  - 6월   = rsm_fcst embed (account별 RSM FCST)
-  - 7~12월 = bucket 1~5월 평균 × 그룹(OR/IR) 시즌계수
-            시즌계수(m) = 2025 그룹 m월 / 2025 그룹 1~5월 평균  (OR/IR 분리 곡선)
+  - 실적구간(1~ACT_END월) = data.json txn 실적 (권위). ACT_END = sell_thru_date 직전 마감월.
+  - RSM월 = rsm_fcst embed (account별). 실적으로 마감된 달이면 실적 우선.
+  - 이후~12월 = bucket 실적구간 평균 × 그룹(OR/IR) 시즌계수
+            시즌계수(m) = 과거연도 m월 / 그 연도 '동일 실적구간' 평균 (분모 구간 일치 필수)
+  ⚠️ 월 리터럴 금지: 구간은 전부 ACT_END/RSM_M/FCST_START 에서 파생시킨다 (2026-08-20).
   - 이중축: value(st_val) / qty(st_qty) 각각 동일 로직.
 16 bucket = 13채널 + OR_Others + IR_Others + SME.
 """
@@ -17,6 +18,25 @@ import shared_classification as sc
 DASH = '/home/ubuntu/Shaker-MD-App/docs/dashboards/sell-thru-progress'
 d = json.load(open(f'{DASH}/data.json'))
 txn, rsm, master = d['txn'], d['rsm_fcst'], d['master']
+
+# ── 실적/예측 경계 (2026-08-20 동적화) ──────────────────────────────
+# 기존에는 "1~5월 실적 / 6월 RSM / 7~12월 예측"이 하드코딩이라, data.json 에 6·7월
+# 실적이 쌓여도 계속 예측치로 덮어썼다 (H2 대시보드가 6/17 기준에서 정지한 원인).
+# ⚠️ 예측 산식(1~5월 평균 × 시즌계수)은 형님 확정 방법론이라 그대로 둔다.
+#    바뀌는 것은 "실적이 있는 달은 실적을 쓴다"는 부분뿐.
+_MONTH_NAMES = ['january', 'february', 'march', 'april', 'may', 'june',
+                'july', 'august', 'september', 'october', 'november', 'december']
+_sd = str(d.get('sell_thru_date', '')).strip()          # 예: '08-19'
+try:
+    ACT_END = int(_sd.split('-')[0]) - 1                 # 진행중 월 직전까지가 마감 실적
+except (ValueError, IndexError):
+    ACT_END = 5
+ACT_END = max(1, min(12, ACT_END))
+_rm = str(rsm.get('_month', '')).strip().lower()         # 예: 'August 2026'
+RSM_M = next((i + 1 for i, n in enumerate(_MONTH_NAMES) if n in _rm), 0)
+FCST_START = max(ACT_END, RSM_M) + 1
+print(f"[경계] 실적 1~{ACT_END}월 (sell_thru_date={_sd}) · "
+      f"RSM {RSM_M or '-'}월 · 예측 {FCST_START}~12월")
 ALIAS = sc.ACCOUNT_ALIAS
 ORC, IRC = sc.OR_CHANNEL_MAP, sc.IR_CHANNEL_MAP
 master_team = {int(float(r['id'])): r.get('team', '') for r in master}
@@ -66,7 +86,7 @@ season = {}
 for grp in ('OR', 'IR'):
     num = {m: 0.0 for m in range(1, 13)}; den = 0.0
     for y in SEASON_YEARS:
-        base = sum(gyr[y][grp][1:6]) / 5.0   # 해당 연도 1~5월 평균
+        base = sum(gyr[y][grp][1:ACT_END + 1]) / ACT_END   # 해당 연도 실적구간 평균
         if base <= 0:
             continue
         w = WEIGHTS[y]; den += w
@@ -84,7 +104,7 @@ def ensure(b):
         buckets[b] = {'val': {m: 0.0 for m in range(1, 13)}, 'qty': {m: 0.0 for m in range(1, 13)}}
     return buckets[b]
 for t in txn:
-    if t[0] != 2026 or not (1 <= int(t[1]) <= 5):
+    if t[0] != 2026 or not (1 <= int(t[1]) <= ACT_END):
         continue
     b = to_bucket(t[3], t[5])
     if not b:
@@ -102,25 +122,30 @@ for b in ('eXtra','Al Manea','SWS','Black Box','Al Khunizan','BH','BM','Tamkeen'
 # 검증: bucket 1~5월 합 = txn 2026 1~5월 OR/IR 그룹 합
 _chk = {'OR':0.0,'IR':0.0}
 for b,e in buckets.items():
-    _chk[GROUP.get(b,'IR')] += sum(e['val'][m] for m in range(1,6))
-print(f"[검증] 1~5월 OR={_chk['OR']/1e6:.1f}M (기대 102.2)  IR={_chk['IR']/1e6:.1f}M (기대 77.9)")
+    _chk[GROUP.get(b,'IR')] += sum(e['val'][m] for m in range(1, ACT_END + 1))
+print(f"[검증] 1~{ACT_END}월 실적 OR={_chk['OR']/1e6:.1f}M  IR={_chk['IR']/1e6:.1f}M")
 
-# ---- 3) 6월 = RSM FCST (account별) ----
-for aid, v in rsm['value'].items():
+# ---- 3) RSM FCST 적용월 (account별) — 실적 마감월이면 실적 우선, RSM skip ----
+_use_rsm = RSM_M > ACT_END
+for aid, v in (rsm['value'].items() if _use_rsm else []):
     b = to_bucket(aid, master_team.get(int(float(aid)), ''))
     if b:
-        ensure(b)['val'][6] += v
-for aid, q in rsm['qty'].items():
+        ensure(b)['val'][RSM_M] += v
+for aid, q in (rsm['qty'].items() if _use_rsm else []):
     b = to_bucket(aid, master_team.get(int(float(aid)), ''))
     if b:
-        ensure(b)['qty'][6] += q
+        ensure(b)['qty'][RSM_M] += q
 
-# ---- 4) 7~12월 FCST = 1~5월 평균 × 그룹 시즌계수 ----
+# ---- 4) 예측 = 실적구간 평균 × 그룹 시즌계수 ----
+# 산식(월평균×시즌계수)은 형님 확정 그대로. 다만 '평균 구간'이 1~5월로 박혀 있어
+# 6·7월 실적이 쌓여도 예측이 계속 1~5월 충격기 바닥을 베이스로 삼던 것을 수정(2026-08-20).
+# ⚠️ 시즌계수 분모(과거연도 base)와 2026 베이스는 반드시 같은 구간이어야 정합 —
+#    두 곳 모두 ACT_END 를 쓴다. ACT_END=5 면 기존 동작과 정확히 동일.
 for b, e in buckets.items():
     grp = GROUP.get(b, 'IR')
-    avg_v = sum(e['val'][m] for m in range(1, 6)) / 5.0
-    avg_q = sum(e['qty'][m] for m in range(1, 6)) / 5.0
-    for m in range(7, 13):
+    avg_v = sum(e['val'][m] for m in range(1, ACT_END + 1)) / ACT_END
+    avg_q = sum(e['qty'][m] for m in range(1, ACT_END + 1)) / ACT_END
+    for m in range(FCST_START, 13):
         e['val'][m] = avg_v * season[grp][m]
         e['qty'][m] = avg_q * season[grp][m]
 
@@ -141,11 +166,19 @@ for b, e in buckets.items():
         mm = f'{m:02d}'
         node['value'].setdefault(mm, {})['st_val'] = round(e['val'][m], 0)
         node['qty'].setdefault(mm, {})['st_qty'] = round(e['qty'][m], 0)
-        if m >= 7:
+        if m >= FCST_START:
             node['value'][mm]['fcst'] = True
             node['qty'][mm]['fcst'] = True
 u['_meta'] = u.get('_meta', {})
-u['_meta']['fcst_method'] = '1-5월 실적 + 6월 RSM + 7-12월(1-5평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균). 2026-06-18'
+_rsm_txt = f' + {RSM_M}월 RSM' if _use_rsm else ''
+u['_meta']['fcst_method'] = (
+    f'1-{ACT_END}월 실적{_rsm_txt} + {FCST_START}-12월'
+    f'(1-{ACT_END}평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)')
+u['_meta']['built'] = __import__('datetime').date.today().isoformat()
+# 실적/예측 경계를 '값'으로 심는다 — 하류(H2 코크핏 등)가 문자열을 파싱하거나
+# 자체 월 리터럴을 다시 박지 않도록. 경계가 바뀌면 소비자가 자동으로 따라온다.
+u['_meta']['period'] = {'act_end': ACT_END, 'rsm_month': RSM_M if _use_rsm else None,
+                        'fcst_start': FCST_START}
 u['_meta']['season_index'] = {g: {m: round(season[g][m], 3) for m in range(1, 13)} for g in ('OR', 'IR')}
 TARGET = {  # 형님 2026-06-17 확정 (OR=+OR_Others, IR=+IR_Others+SME)
     'OR': {'3Q': 70, '4Q': 25, 'H2': 95}, 'IR': {'3Q': 60, '4Q': 35, 'H2': 95}}
@@ -192,14 +225,16 @@ print('시즌계수 (2024·2025 가중평균 4:6, 최근 가중, 1~5월평균=1.
 for g in ('OR', 'IR'):
     print(' ', g, {m: round(season[g][m], 2) for m in [6,7,8,9,10,11,12]})
 print('='*78)
-print(f"{'bucket':<16}{'1-5실적':>9}{'6월RSM':>8}{'7-12FCST':>9}{'연간':>8}  (M SAR)")
+_lab_act=f'1-{ACT_END}실적'; _lab_rsm=(f'{RSM_M}월RSM' if _use_rsm else '-')
+_lab_fc=f'{FCST_START}-12FCST'
+print(f"{'bucket':<16}{_lab_act:>9}{_lab_rsm:>8}{_lab_fc:>9}{'연간':>8}  (M SAR)")
 tot_or = tot_ir = 0
 for b in order:
     if b not in buckets: continue
     e = buckets[b]
-    h1a = sum(e['val'][m] for m in range(1,6))/1e6
-    jun = e['val'][6]/1e6
-    h2 = sum(e['val'][m] for m in range(7,13))/1e6
+    h1a = sum(e['val'][m] for m in range(1, ACT_END + 1))/1e6
+    jun = (e['val'][RSM_M]/1e6) if _use_rsm else 0.0
+    h2 = sum(e['val'][m] for m in range(FCST_START, 13))/1e6
     yr = h1a+jun+h2
     grp = GROUP.get(b)
     if grp=='OR': tot_or+=yr
