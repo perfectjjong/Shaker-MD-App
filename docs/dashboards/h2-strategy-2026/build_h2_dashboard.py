@@ -17,6 +17,12 @@ SRC = os.path.join(HERE, '..', 'sell-thru-progress', 'unified_psi.json')
 u = json.load(open(SRC))
 CH = u['channels']
 META = u.get('_meta', {})
+# 실적/예측 경계는 unified_psi._meta.period 단일 진실에서 읽는다 (2026-08-20).
+# 월 리터럴을 여기 다시 박으면 소스가 롤링돼도 이 화면만 과거에 멈춘다.
+_P = META.get('period', {}) or {}
+ACT_END = int(_P.get('act_end') or 5)
+RSM_M = _P.get('rsm_month')
+FCST_START = int(_P.get('fcst_start') or 7)
 TGT = META.get('target_2026', {'OR': {'3Q': 70, '4Q': 25, 'H2': 95},
                                'IR': {'3Q': 60, '4Q': 35, 'H2': 95}})
 
@@ -49,27 +55,27 @@ for c in ORDER:
     for m in range(1, 13):
         grp_val[g][m] += mval[m - 1] / 1e6
         grp_qty[g][m] += mqty[m - 1]
-    h1 = sum(mval[0:5]) / 1e6
-    jun = mval[5] / 1e6
-    q3 = sum(mval[6:9]) / 1e6
-    q4 = sum(mval[9:12]) / 1e6
-    annual = h1 + jun + q3 + q4
+    h1 = sum(mval[0:ACT_END]) / 1e6                      # 마감 실적 구간
+    jun = (mval[RSM_M - 1] / 1e6) if RSM_M else 0.0      # RSM 적용월 (없으면 0)
+    q3 = sum(mval[6:9]) / 1e6                            # 3Q=7~9월 (달력 고정)
+    q4 = sum(mval[9:12]) / 1e6                           # 4Q=10~12월 (달력 고정)
+    annual = sum(mval[0:12]) / 1e6
     ar = vget(c, '', '', 'value') or CH[c].get('value', {}).get('ar_bal', 0)
     ovd = CH[c].get('value', {}).get('ovd', 0)
     # MOS (수량축): 최근 실측 재고 ÷ 1~5월 평균 sell-out. 세그먼트는 데이터 없음.
     stk, mos, so_avg = None, None, None
     if not seg:
-        so15 = [vget(c, f'{m:02d}', 'so_qty', 'qty') for m in range(1, 6)]
-        so_avg = sum(so15) / 5.0 if any(so15) else 0
+        so_act = [vget(c, f'{m:02d}', 'so_qty', 'qty') or 0 for m in range(1, ACT_END + 1)]
+        so_avg = sum(so_act) / len(so_act) if any(so_act) else 0
         # 최근 실측 재고: 06→05→... 중 stk_qty 존재하는 마지막
-        for m in (6, 5, 4, 3):
+        for m in range(ACT_END + 1, 0, -1):
             s = vget(c, f'{m:02d}', 'stk_qty', 'qty')
             if s:
                 stk = s
                 break
         if stk and so_avg:
             mos = stk / so_avg
-    asp = (sum(mval[0:5]) / sum(mqty[0:5])) if sum(mqty[0:5]) else 0   # 1~5월 실효 ASP
+    asp = (sum(mval[0:ACT_END]) / sum(mqty[0:ACT_END])) if sum(mqty[0:ACT_END]) else 0  # 실적구간 실효 ASP
     rows.append({
         'name': c, 'ko': KO.get(c, c), 'group': g, 'seg': seg,
         'mval': [round(x, 0) for x in mval], 'mqty': [round(x, 0) for x in mqty],
@@ -111,6 +117,8 @@ PAYLOAD = {
     'tot_annual': tot_annual, 'tot_gap': tot_gap,
     'season': META.get('season_index', {}),
     'fcst_method': META.get('fcst_method', ''),
+    'built': META.get('built', ''),
+    'period': {'act_end': ACT_END, 'rsm_month': RSM_M, 'fcst_start': FCST_START},
     'scenarios': META.get('scenarios', {}),
     'recovery': META.get('recovery_factor', {}),
     'normal_base': META.get('normal_base', {}),
@@ -146,17 +154,21 @@ PAYLOAD['plan'] = {
 TARGET_MOS = 2.0   # 하반기말 목표 재고 (개월) — 정상 회전 수준
 SEASON = META.get('season_index', {})
 def monthly_sim(g, stk0, so_h2):
-    """월별 PSI 시뮬(6~12월): SO를 시즌계수로 배분 + 재고방정식(Stock=전월+ST-SO)으로 정상화 궤적.
-    so_h2=7~12 소진목표. 6월은 7~12 런레이트로 환산 표시(상반기→하반기 연결)."""
-    seas = {int(k): v for k, v in SEASON.get(g, {}).items() if 6 <= int(k) <= 12}
-    ss = sum(v for k, v in seas.items() if k >= 7) or 1     # 7~12 런레이트 기준
-    end_stk = so_h2 / 6 * TARGET_MOS          # 목표 기말재고(2개월)
-    out, prev, n = [], stk0, 7                # 6~12 = 7개월에 걸쳐 정상화
-    for i, m in enumerate(range(6, 13)):
+    """월별 PSI 시뮬: SO를 시즌계수로 배분 + 재고방정식(Stock=전월+ST-SO)으로 정상화 궤적.
+    구간은 _meta.period 에서 파생 — 시작=RSM월(없으면 FCST_START), 소진목표 분모=남은 개월수.
+    2026-08-20: 6~12월 7개월 고정이던 것을 동적화(마감월을 '앞으로 정상화할 구간'으로 재계산하던 버그)."""
+    _sim_start = RSM_M if RSM_M else FCST_START
+    _rem = 13 - FCST_START                                  # 예측으로 소진할 남은 개월수
+    seas = {int(k): v for k, v in SEASON.get(g, {}).items() if _sim_start <= int(k) <= 12}
+    ss = sum(v for k, v in seas.items() if k >= FCST_START) or 1
+    end_stk = so_h2 / _rem * TARGET_MOS       # 목표 기말재고
+    out, prev = [], stk0
+    n = 13 - _sim_start                        # 정상화에 쓰는 개월수
+    for i, m in enumerate(range(_sim_start, 13)):
         so = so_h2 * seas.get(m, 0) / ss
         target = stk0 + (end_stk - stk0) * (i + 1) / n   # 재고 선형 정상화 궤적
         st = so + (target - prev)                         # 재고방정식 역산
-        mos = target / (so_h2 / 6) if so_h2 else 0
+        mos = target / (so_h2 / _rem) if so_h2 else 0
         out.append({'m': m, 'so': round(so), 'st': round(max(st, 0)),
                     'stk': round(target), 'mos': round(mos, 1)})
         prev = target
@@ -189,7 +201,9 @@ PAYLOAD['reverse'] = {'OR': reverse_plan('OR'), 'IR': reverse_plan('IR')}
 
 # ---- 집계 뷰: OR합/IR합/전체 (큰 그림) ----
 def agg_exec(pl):
-    agg = {m: {'so': 0, 'st': 0, 'stk': 0} for m in range(6, 13)}
+    _s0 = RSM_M if RSM_M else FCST_START
+    _rem = 13 - FCST_START
+    agg = {m: {'so': 0, 'st': 0, 'stk': 0} for m in range(_s0, 13)}
     so_need = stk_now = so_cur = st_val = 0.0
     cats = {}
     for x in pl:
@@ -200,10 +214,10 @@ def agg_exec(pl):
         for c in x['cats']:
             cats[c['cat']] = cats.get(c['cat'], 0) + c['qty']
     monthly = [{'m': m, 'so': agg[m]['so'], 'st': agg[m]['st'], 'stk': agg[m]['stk'],
-                'mos': round(agg[m]['stk'] / (so_need / 6), 1) if so_need else 0} for m in range(6, 13)]
+                'mos': round(agg[m]['stk'] / (so_need / _rem), 1) if so_need else 0} for m in range(_s0, 13)]
     cats_l = [{'cat': c, 'qty': q} for c, q in sorted(cats.items(), key=lambda x: -x[1])]
     return {'monthly': monthly, 'so_need': round(so_need), 'stk': round(stk_now),
-            'mos': round(stk_now / (so_cur / 6), 1) if so_cur else 0, 'st_val': round(st_val, 1),
+            'mos': round(stk_now / (so_cur / _rem), 1) if so_cur else 0, 'st_val': round(st_val, 1),
             'lift': round((so_need / so_cur - 1) * 100, 0) if so_cur else 0, 'cats': cats_l}
 PAYLOAD['exec_agg'] = {'ALL': agg_exec(PAYLOAD['reverse']['OR'] + PAYLOAD['reverse']['IR']),
                        'OR': agg_exec(PAYLOAD['reverse']['OR']), 'IR': agg_exec(PAYLOAD['reverse']['IR'])}
@@ -232,12 +246,12 @@ for t in TXN:
     if _aid(t) != EX or t[7] not in AC_CATS:
         continue
     y, m = t[0], int(t[1])
-    if y == 2026 and 1 <= m <= 5:
+    if y == 2026 and 1 <= m <= ACT_END:
         ex_c15[t[7]][0] += t[8] or 0; ex_c15[t[7]][1] += t[9] or 0
     if y in (2024, 2025) and m in (8, 9):
         ex_s[t[7]][0] += t[8] or 0; ex_s[t[7]][1] += t[9] or 0
 
-ex_avg_val = sum(v[0] for v in ex_c15.values()) / 5.0 / 1e6        # 월평균 매출(M, AC)
+ex_avg_val = sum(v[0] for v in ex_c15.values()) / ACT_END / 1e6    # 월평균 매출(M, AC) — 실적구간
 seas_OR = PAYLOAD['season'].get('OR', {})
 s8, s9 = seas_OR.get('8', 1.06), seas_OR.get('9', 1.42)
 nat8, nat9 = ex_avg_val * s8, ex_avg_val * s9                       # 8/9월 자연전망(M)
@@ -484,7 +498,7 @@ function renderPSI(){
     <div class="chartbox">
       <h3>채널별 PSI <span class="axis-tag ax-val">금액축 ST·AR·OVD</span><span class="axis-tag ax-qty">수량축 MOS</span></h3>
       <div style="overflow-x:auto"><table>
-        <tr><th class="l">채널 / 세그먼트</th><th>1-5실적</th><th>6월RSM</th><th>3Q FCST</th><th>4Q FCST</th><th>연간</th>
+        <tr><th class="l">채널 / 세그먼트</th><th>1-${D.period.act_end}실적</th><th>${D.period.rsm_month?D.period.rsm_month+'월RSM':'RSM'}</th><th>3Q FCST</th><th>4Q FCST</th><th>연간</th>
         <th>AR</th><th>OVD</th><th>MOS</th></tr>
         ${body}
       </table></div>
@@ -517,10 +531,10 @@ function drawLine(id,key,unit){
   const orD=D[key].OR.slice(1), irD=D[key].IR.slice(1);
   const seg=(arr,from)=>arr.map((v,i)=>i>=from?v:null);
   charts[id]=new Chart(ctx,{type:'line',data:{labels:MN,datasets:[
-    {label:'OR 실적',data:orD.map((v,i)=>i<=4?v:null),borderColor:'#2563eb',backgroundColor:'#2563eb',tension:.3,spanGaps:false},
-    {label:'OR FCST',data:orD.map((v,i)=>i>=4?v:null),borderColor:'#2563eb',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
-    {label:'IR 실적',data:irD.map((v,i)=>i<=4?v:null),borderColor:'#dc2626',backgroundColor:'#dc2626',tension:.3,spanGaps:false},
-    {label:'IR FCST',data:irD.map((v,i)=>i>=4?v:null),borderColor:'#dc2626',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
+    {label:'OR 실적',data:orD.map((v,i)=>i<=D.period.act_end-1?v:null),borderColor:'#2563eb',backgroundColor:'#2563eb',tension:.3,spanGaps:false},
+    {label:'OR FCST',data:orD.map((v,i)=>i>=D.period.act_end-1?v:null),borderColor:'#2563eb',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
+    {label:'IR 실적',data:irD.map((v,i)=>i<=D.period.act_end-1?v:null),borderColor:'#dc2626',backgroundColor:'#dc2626',tension:.3,spanGaps:false},
+    {label:'IR FCST',data:irD.map((v,i)=>i>=D.period.act_end-1?v:null),borderColor:'#dc2626',borderDash:[6,4],tension:.3,spanGaps:true,pointStyle:'rectRot'},
   ]},options:{responsive:true,plugins:{legend:{labels:{color:'#e2e8f0'}}},
     scales:{x:{ticks:{color:'#cbd5e1'}},y:{ticks:{color:'#cbd5e1'},title:{display:true,text:unit,color:'#94a3b8'}}}}});
 }
@@ -603,10 +617,11 @@ function drawExec(val){
   x = isAgg ? D.exec_agg[val] : window._execAll[+val.slice(2)];
   const title = val==='ALL'?'전체 (OR+IR)':val==='OR'?'OR 합계':val==='IR'?'IR 합계':x.ko;
   const b=document.getElementById('execBody');
-  // 현재(5월) 시작점 + 6~12월
-  const cur={m:5,so:null,st:null,stk:x.stk,mos:x.mos};
+  // 현재 시점(=마지막 마감월) 시작점 + 시뮬 구간
+  const _cm=D.period.act_end;
+  const cur={m:_cm,so:null,st:null,stk:x.stk,mos:x.mos};
   const allm=[cur,...x.monthly];
-  const rows=allm.map(r=>`<tr${r.m===5?' style="background:#0b1220"':''}><td class="l">${r.m===5?'현재(5월)':r.m+'월'}</td>
+  const rows=allm.map(r=>`<tr${r.m===_cm?' style="background:#0b1220"':''}><td class="l">${r.m===_cm?'현재('+_cm+'월)':r.m+'월'}</td>
     <td>${r.so==null?'–':r.so.toLocaleString()}</td><td>${r.st==null?'–':r.st.toLocaleString()}</td>
     <td>${r.stk.toLocaleString()}</td><td>${mosChip(r.mos)}</td></tr>`).join('');
   const cats=(x.cats||[]).map(c=>`<tr><td class="l">${c.cat}</td><td><b>${c.qty.toLocaleString()}대</b></td></tr>`).join('');
@@ -629,7 +644,7 @@ function drawExec(val){
 }
 function drawExecChart(allm,title){
   const ctx=document.getElementById('cExec'); if(charts.exec)charts.exec.destroy();
-  charts.exec=new Chart(ctx,{data:{labels:allm.map(r=>r.m===5?'현재':r.m+'월'),datasets:[
+  charts.exec=new Chart(ctx,{data:{labels:allm.map(r=>r.m===_cm?'현재':r.m+'월'),datasets:[
     {type:'bar',label:'기말재고(대)',data:allm.map(r=>r.stk),backgroundColor:'rgba(59,130,246,.5)',yAxisID:'y'},
     {type:'bar',label:'SO목표(대)',data:allm.map(r=>r.so),backgroundColor:'rgba(16,185,129,.55)',yAxisID:'y'},
     {type:'line',label:'MOS(개월)',data:allm.map(r=>r.mos),borderColor:'#fbbf24',backgroundColor:'#fbbf24',yAxisID:'y1',tension:.3,pointRadius:4}
@@ -706,7 +721,9 @@ function activate(p){
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>activate(t.dataset.p)));
 
 document.getElementById('subline').textContent='공식 FCST=형님 목표(거시 회복 반영): OR 3Q70·4Q25·H2 95M / IR 3Q60·4Q35·H2 95M · 충격기(사우디제이션·이란미국전) 보정 · 단위 M SAR';
-document.getElementById('foot').textContent='데이터: unified_psi.json (단일 진실) · '+D.fcst_method+' · 이중축 분리(금액↔AR/OVD, 수량↔SO/재고). 재생성: build_h2_dashboard.py';
+// 2026-08-20: 페이지가 자기 기준일을 밝히도록. 없으면 본문의 옛 날짜 라벨이
+// '최신 기준일'로 오독된다(Argus stale_content 오탐 + 사람 오독 둘 다).
+document.getElementById('foot').textContent='기준일: '+(D.built||'-')+' · 데이터: unified_psi.json (단일 진실) · '+D.fcst_method+' · 이중축 분리(금액↔AR/OVD, 수량↔SO/재고). 재생성: build_h2_dashboard.py';
 renderOverview();
 </script>
 </body>
