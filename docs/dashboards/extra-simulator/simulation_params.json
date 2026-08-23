@@ -14,22 +14,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -62,22 +62,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -109,23 +109,23 @@
       "elasticity_r2": null,
       "competitor_prices": {
         "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
+          "current": 3579,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -158,12 +158,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 4899,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
@@ -193,54 +193,6 @@
         "vs_lowest_pct": -38.8
       }
     },
-    "MINI_2Ton_HCI": {
-      "display_name": "MINI SPLIT 2 Ton Hot And Cold - Inverter",
-      "base_price_SAR": 2299,
-      "elasticity": -1.5,
-      "elasticity_r2": null,
-      "competitor_prices": {
-        "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
-          "source": "extra"
-        },
-        "MIDEA": {
-          "current": 3349,
-          "date": "2026-08-20",
-          "source": "extra"
-        },
-        "ZAMIL": {
-          "current": 2249,
-          "date": "2026-08-20",
-          "source": "extra"
-        },
-        "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
-          "source": "extra"
-        }
-      },
-      "channel_factors": {
-        "extra": 1.0,
-        "sws": 0.9,
-        "blackbox": 0.9,
-        "almanea": 0.9,
-        "bh": 0.8,
-        "bm": 0.8,
-        "tamkeen": 0.8,
-        "zagzoog": 0.8,
-        "alghanem": 0.8,
-        "alshathri": 0.8,
-        "dhamin": 0.8,
-        "star": 0.8
-      },
-      "recommended_price_range": {
-        "lower_SAR": 2137,
-        "upper_SAR": 2299,
-        "rationale": "Lowest competitor (ZAMIL 2249 SAR) -5% vs current LG",
-        "vs_lowest_pct": -7.0
-      }
-    },
     "MINI_1Ton_CI": {
       "display_name": "MINI SPLIT 1 Ton Cold - Inverter",
       "base_price_SAR": 2299,
@@ -249,22 +201,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 2039,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3399,
-          "date": "2026-08-20",
+          "current": 2949,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -289,6 +241,54 @@
         "vs_lowest_pct": -18.6
       }
     },
+    "MINI_2Ton_HCI": {
+      "display_name": "MINI SPLIT 2 Ton Hot And Cold - Inverter",
+      "base_price_SAR": 2299,
+      "elasticity": -1.5,
+      "elasticity_r2": null,
+      "competitor_prices": {
+        "GREE": {
+          "current": 3579,
+          "date": "2026-08-23",
+          "source": "extra"
+        },
+        "MIDEA": {
+          "current": 3349,
+          "date": "2026-08-23",
+          "source": "extra"
+        },
+        "ZAMIL": {
+          "current": 2249,
+          "date": "2026-08-23",
+          "source": "extra"
+        },
+        "SAMSUNG": {
+          "current": 2999,
+          "date": "2026-08-23",
+          "source": "extra"
+        }
+      },
+      "channel_factors": {
+        "extra": 1.0,
+        "sws": 0.9,
+        "blackbox": 0.9,
+        "almanea": 0.9,
+        "bh": 0.8,
+        "bm": 0.8,
+        "tamkeen": 0.8,
+        "zagzoog": 0.8,
+        "alghanem": 0.8,
+        "alshathri": 0.8,
+        "dhamin": 0.8,
+        "star": 0.8
+      },
+      "recommended_price_range": {
+        "lower_SAR": 2137,
+        "upper_SAR": 2299,
+        "rationale": "Lowest competitor (ZAMIL 2249 SAR) -5% vs current LG",
+        "vs_lowest_pct": -7.0
+      }
+    },
     "MINI_1Ton_HCI": {
       "display_name": "MINI SPLIT 1 Ton Hot And Cold - Inverter",
       "base_price_SAR": 2299,
@@ -297,22 +297,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 2039,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3399,
-          "date": "2026-08-20",
+          "current": 2949,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -345,12 +345,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 5499,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -383,12 +383,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 4899,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
@@ -426,12 +426,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 5499,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -464,22 +464,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -512,22 +512,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -560,12 +560,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 4899,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
@@ -602,23 +602,23 @@
       "elasticity_r2": null,
       "competitor_prices": {
         "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
+          "current": 3579,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -651,22 +651,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -698,23 +698,23 @@
       "elasticity_r2": null,
       "competitor_prices": {
         "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
+          "current": 3579,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -747,12 +747,12 @@
       "competitor_prices": {
         "GREE": {
           "current": 4899,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 4959,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
@@ -790,22 +790,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -837,23 +837,23 @@
       "elasticity_r2": null,
       "competitor_prices": {
         "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
+          "current": 3579,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -886,22 +886,22 @@
       "competitor_prices": {
         "GREE": {
           "current": 1969,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
@@ -933,23 +933,23 @@
       "elasticity_r2": null,
       "competitor_prices": {
         "GREE": {
-          "current": 2449,
-          "date": "2026-08-20",
+          "current": 3579,
+          "date": "2026-08-23",
           "source": "extra"
         },
         "MIDEA": {
           "current": 3349,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "ZAMIL": {
           "current": 2249,
-          "date": "2026-08-20",
+          "date": "2026-08-23",
           "source": "extra"
         },
         "SAMSUNG": {
-          "current": 3549,
-          "date": "2026-08-20",
+          "current": 2999,
+          "date": "2026-08-23",
           "source": "extra"
         }
       },
