@@ -1,7 +1,7 @@
 {
  "_meta": {
   "src": "data.json+psi_data.js+data_ir.js",
-  "built": "2026-08-24",
+  "built": "2026-08-25",
   "version": "v1(dual-axis)",
   "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
   "fcst_method": "1-7월 실적 + 8월 RSM + 9-12월(1-7평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)",
@@ -1805,7 +1805,7 @@
    },
    "qty": {
     "06": {
-     "st_qty": 1712.0
+     "st_qty": 1848.0
     },
     "07": {
      "st_qty": 1192.0,
@@ -1816,19 +1816,19 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 1782.0,
+     "st_qty": 1805.0,
      "fcst": true
     },
     "10": {
-     "st_qty": 1633.0,
+     "st_qty": 1654.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 916.0,
+     "st_qty": 927.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 682.0,
+     "st_qty": 691.0,
      "fcst": true
     },
     "01": {
