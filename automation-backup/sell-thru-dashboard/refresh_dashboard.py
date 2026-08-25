@@ -2410,6 +2410,12 @@ def update_raw_from_daily():
                 row_list[70] = r[4]  if len(r) > 4  else None  # Material
                 row_list[77] = r[58] if len(r) > 58 else None  # Category
 
+            # 서비스센터 요금 라인(자재 OWNO*): Daily 파일에 카테고리가 비어 있어
+            # 안전장치 [체크3]에 걸려 병합이 영구 차단됨 → Miscellaneous로 분류
+            # (ZERO_QTY_CATS 적용: 수량 0, 금액만 반영 — 2026-08-25 진단 결과 반영)
+            if not row_list[77] and str(row_list[70] or '').strip().upper().startswith('OWNO'):
+                row_list[77] = 'Miscellaneous'
+
             div_info = div_map.get(payer_id, (None, None, None))
             classification = div_info[0]
             new_exist = div_info[1]
