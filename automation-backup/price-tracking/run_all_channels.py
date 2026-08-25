@@ -15,6 +15,7 @@ run_all_channels.py
   --no-ai-repair      실패 채널 AI 자동 수정 비활성화
   --no-notify         텔레그램 알림 비활성화
   --no-db             SQLite DB 기록 비활성화
+  --no-ingest         가격 데이터 SQLite 적재(ingest_daily) 비활성화
 """
 
 import subprocess
@@ -413,6 +414,8 @@ def main():
                         help="텔레그램 알림 비활성화")
     parser.add_argument("--no-db", action="store_true",
                         help="SQLite DB 기록 비활성화")
+    parser.add_argument("--no-ingest", action="store_true",
+                        help="가격 데이터 SQLite 적재(ingest_daily) 비활성화")
     args = parser.parse_args()
 
     # 최대 workers 제한 (3개 초과 시 과부하 위험)
@@ -576,6 +579,25 @@ def main():
                 )
             except Exception as e:
                 log(f"[DB] 배치 완료 기록 실패: {e}", None)
+
+    # ── 가격 데이터 SQLite 적재 (전 채널 완료 후 단독 실행 — 설계 D1/D2) ──
+    if not args.no_ingest:
+        ingest_path = '/home/ubuntu/Shaker-MD-App/price-tracking/db/ingest_daily.py'
+        if not os.path.exists(ingest_path):
+            ingest_path = os.path.join(os.path.dirname(BASE_DIR), "Shaker-MD-App",
+                                       "price-tracking", "db", "ingest_daily.py")
+        if os.path.exists(ingest_path):
+            try:
+                r = subprocess.run([sys.executable, ingest_path],
+                                   capture_output=True, text=True, timeout=600)
+                for line in (r.stdout or "").strip().splitlines():
+                    log(f"[ingest] {line}", None)
+                if r.returncode != 0:
+                    log(f"[ingest] 일부 채널 적재 실패/스킵 (exit {r.returncode})", None)
+            except Exception as e:
+                log(f"[ingest] 실행 실패 (무시하고 계속): {e}", None)
+        else:
+            log("[ingest] ingest_daily.py 없음 — 스킵", None)
 
     # ── 완료 알림 ────────────────────────────────────────────
     lines = [
