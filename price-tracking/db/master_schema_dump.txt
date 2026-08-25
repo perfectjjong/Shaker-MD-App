@@ -1,0 +1,92 @@
+
+=== price-tracking/channels/alkhater/alkhater_ac_prices.xlsx
+[시트: 2026-05-11] 172행 x 16열
+   ('SKU', 'Product_Name', 'Brand', 'Model', 'Ton', 'Compressor', 'AC_Type', 'Cold_HC', 'Price_SAR', 'Original_Price_SAR', 'Is_On_Sale', 'URL', 'Page', 'Scraped_At', 'Discount_Pct', 'In_Stock')
+   ('AC06325', 'KSGA18NE1- KSGA18GE-1 مكيف سوبر جنرال 18000 وحدة بارد شباك', 'Super General', 'KSGA18NE1', '1.5', 'Rotary', 'Window', 'Cooling Only', '2199', '2199', 'False', 'https://alkhaterstore.com/product/ksga18ne1-%d9%85%d9%83%d9%', '1', '2026-05-11 14:38', None, None)
+
+=== price-tracking/channels/alkhunaizan/AlKhunaizan_AC_Prices Tracking_Master.xlsx
+[시트: Dashboard_Summary] 125행 x 13열
+   ('🏪 Al-Khunaizan AC Price Tracking Dashboard', None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Last Updated: 2026-08-25 | Total SKUs: 180', None, None, None, None, None, None, None, None, None, None, None, None)
+[시트: Price_Change_Alert] 4행 x 11열
+   ('🔔 Price Change Alert (Effective Price)', None, None, None, None, None, None, None, None, None, None)
+   ('Price changes: 2026-08-24 → 2026-08-25 (0 models)', None, None, None, None, None, None, None, None, None, None)
+[시트: New_Discontinued_SKUs] 11행 x 9열
+   ('🆕 New & Discontinued SKUs', None, None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25', None, None, None, None, None, None, None, None)
+[시트: Brand_Avg_Price_Comparison] 56행 x 13열
+   ('💰 Brand Avg Price Comparison by Category & Ton', None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Date: 2026-08-25 | Price: Effective Price (Avg)', None, None, None, None, None, None, None, None, None, None, None, None)
+
+=== price-tracking/channels/almanea/Almanea_AC_Price_Tracking_Master.xlsx
+[시트: Dashboard_Summary] 89행 x 13열
+   ('Al Manea — AC Price Tracking Dashboard', None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Latest: 2026-08-25  |  Total SKUs: 88  |  Brands: 12', None, None, None, None, None, None, None, None, None, None, None, None)
+[시트: Price_Change_Alert] 6행 x 11열
+   ('Price Change Alert', None, None, None, None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25  |  Changed: 2 SKUs', None, None, None, None, None, None, None, None, None, None)
+[시트: New_Discontinued_SKUs] 12행 x 8열
+   ('New & Discontinued SKUs', None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25', None, None, None, None, None, None, None)
+[시트: Brand_Avg_Price_Compare] 38행 x 13열
+   ('Brand Average Price Comparison by Category & Capacity', None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Date: 2026-08-25  |  Price basis: AlAhli Price (avg) / SAR', None, None, None, None, None, None, None, None, None, None, None, None)
+
+=== price-tracking/channels/bh/BH_Subdealer_AC_Master.xlsx
+[시트: Total_Model Info] 581행 x 7열
+   ('Brand', 'Category', 'Model Code', 'BTU', 'Ton', 'Type', 'Product Description')
+   ('Kelvinator', 'Cassette AC', 'KLC18HA1', '17100', '1.5', 'H&C', 'Cassette AC Kelvinator Cooling Capacity 17.100 BTU Heating 5')
+[시트: Whole selling Price_Master] 3209행 x 10열
+   ('Brand', 'Category', 'Model Code', 'BTU', 'Ton', 'Type', 'Product Description', 'Status', 'Price', 'Update Date')
+   ('Kolin', 'Cassette AC', 'KOACCT24KCH', '21300', '2', 'H&C', 'Cassette AC Kolin Cooling Capacity 21.300 BTU Heating 7.8 kW', 'New', '3259', '2026-01-13')
+[시트: Weekly_Price_DB] 36939행 x 18열
+   ('Week', 'Retailer', 'Brand', 'Model Code', 'Product Name', 'Type', 'BTU', 'CO/C&H', 'Regular Price', 'Current Price', 'Discount %', 'Discount SAR', 'Stock', 'Promo From', 'Promo To', 'Last Updated', 'Product URL', 'Run Timestamp')
+   ('2026-W04', 'BH Store', 'Aston', 'ASWAC18TL6', 'Aston Window Ac Cooling Capacity 18,000 Btu', 'Window', '18000', 'CO', '1498', '1179', '0.21', '319', '6', '2025-05-05T21:00:00Z', '2030-01-01T00:00:00Z', '2025-10-29T08:13:45.005089Z', 'https://bhstore.com.sa/sa-en/مكيف-شباك-استون-سعة-التبريد-180', '2026-01-27 17:15:52')
+
+=== price-tracking/channels/binmomen/Binmomen_AC_Data.xlsx
+[시트: Sheet1] 6033행 x 20열
+   ('No', 'Product_Name_EN', 'Product_Name_AR', 'SKU', 'Brand', 'Category', 'BTU', 'Tonnage', 'Cooling_Type', 'Inverter', 'Compressor', 'Original_Price', 'Sale_Price', 'Discount', 'In_Stock', 'Stock_Qty', 'Warranty', 'Image_URL', 'Product_URL', 'Scrape_Date')
+   ('1', 'AC LG 18 Split Inverter Fresh Cold', 'مكيف LG 18 إسبليت انفرتر فريش بارد', 'NF182C2SK1', 'LG', 'Split AC', '18000', '1.5', 'Cold Only', 'Yes', 'Rotary', '3293', '2964', '10%', 'Yes', '2', '2 Years', 'https://binmomen.com.sa/wp-content/uploads/2024/11/a8194d534', 'https://binmomen.com.sa/product/%d9%85%d9%83%d9%8a%d9%81-%d8', '2026-02-23 21:13')
+
+=== price-tracking/channels/blackbox/Black Box_AC_Price tracking_Master.xlsx
+[시트: Dashboard_Summary] 125행 x 14열
+   ('Blackbox.com.sa — AC Price Tracking Dashboard', None, None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Latest: 2026-08-25  |  Total SKUs: 242  |  Brands: 15  |  In', None, None, None, None, None, None, None, None, None, None, None, None, None)
+[시트: Price_Change_Alert] 110행 x 11열
+   ('Price Change Alert', None, None, None, None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25  |  Changed: 106 models', None, None, None, None, None, None, None, None, None, None)
+[시트: New_Discontinued_SKUs] 10행 x 9열
+   ('New & Discontinued Models', None, None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25', None, None, None, None, None, None, None, None)
+[시트: Brand_Price_Compare] 56행 x 13열
+   ('Brand Average Price Comparison by AC Type & Capacity', None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Date: 2026-08-25  |  Price basis: Effective Price (avg) / SA', None, None, None, None, None, None, None, None, None, None, None, None)
+
+=== price-tracking/channels/extra/extra_ac_Prices_Tracking_Master.xlsx
+[시트: Dashboard_Summary] 25행 x 14열
+   ('🛒 Extra.com AC Price Tracking Dashboard', None, None, None, None, None, None, None, None, None, None, None, None, None)
+   ('Last Updated: 2026-08-25', None, None, None, None, None, None, None, None, None, None, None, None, None)
+[시트: Price_Change_Alert] 13행 x 11열
+   ('🔔 Price Change Alert (Final Sale Price)', None, None, None, None, None, None, None, None, None, None)
+   ('Price changes: 2026-08-24 → 2026-08-25 (9 models)', None, None, None, None, None, None, None, None, None, None)
+[시트: Jood_Price_Change_Alert] 140행 x 11열
+   ('🔔 Jood Gold Price Change Alert', None, None, None, None, None, None, None, None, None, None)
+   ('Price changes: 2026-08-24 → 2026-08-25 (136 models)', None, None, None, None, None, None, None, None, None, None)
+[시트: New_Discontinued_SKUs] 54행 x 9열
+   ('🆕 New & Discontinued SKUs', None, None, None, None, None, None, None, None)
+   ('2026-08-24 → 2026-08-25', None, None, None, None, None, None, None, None)
+
+=== price-tracking/channels/najm/najm_ac_master.xlsx
+[시트: Sheet1] 10160행 x 32열
+   ('product_id', 'sku', 'name_ar', 'name_en', 'category_en', 'category_ar', 'salla_tag', 'brand_ar', 'brand_en', 'btu', 'ton', 'compressor', 'ac_type', 'currency', 'price', 'regular_price', 'is_on_sale', 'discount_pct', 'status', 'is_available', 'is_out_of_stock', 'rating_avg', 'rating_count', 'url', 'image_url', 'run_date', 'scraped_at', 'bank_promo_price', 'bank_promo_code', 'bank_promo_disc_pct', 'bank_promo_label', 'free_install')
+   ('1855243702', '1000620', 'ميديا مكيف سبليت مشن اكستريم 27000 وحدة - حار وبارد - انفرتر', 'Midea Mission Extreme split air conditioner, 27,000 BTU - ho', 'Split AC', 'مكيف سبليت', 'عروض رمضان', 'ميديا', 'Midea', '27000', '2.5', 'Inverter', 'Heat & Cool', 'SAR', '3783.99', '6202.66', 'True', '39.0%', 'sale', 'True', 'False', None, None, 'https://najm.store/ميديا-مكيف-سبليت-مشن-اكستريم-27000-وحدة-ح', 'https://cdn.salla.sa/xAvlNg/49c502be-ef8e-4353-be0c-95b41f03', '2026-02-24', '2026-02-24 14:38:27', None, None, None, None, None)
+
+=== price-tracking/channels/sws/SWS_AC_Price_Tracking_Master.xlsx
+[시트: Products_DB] 33752행 x 18열
+   ('Timestamp', 'Type', 'Sub-Category', 'Product ID', 'Product Name', 'Brand', 'Capacity (BTU)', 'Capacity (Ton)', 'Compressor', 'Mode', 'Price (SAR)', 'Original Price (SAR)', 'Discount', 'Free Install', 'Cashback', 'Final Price (SAR)', 'Stock', 'Product_URL')
+   ('2026-03-01 11:47:48', 'Split', 'Wall Mount Split', '15867', 'Midea Split Wall-Mounted Air Conditioner, Cool Only, 12,000 ', 'Midea', '12000', '1', 'On-Off', 'CO', '1679', '2899', '-42.08%', 'No', None, '1679', 'In Stock', None)
+
+=== price-tracking/channels/technobest/TechnoBest_AC_Master.xlsx
+[시트: Sheet1] 32851행 x 23열
+   ('No', 'scrape_date', 'scrape_timestamp', 'category', 'product_id', 'sku', 'name', 'brand_ar', 'brand_en', 'BTU', 'Ton', 'regular_price', 'sale_price', 'discount_pct', 'currency', 'is_on_sale', 'is_available', 'is_out_of_stock', 'status', 'promotion', 'subtitle', 'url', 'image_url')
+   ('1', '2026-03-06', '2026-03-06 09:14:55', 'Split AC', '1094711235', '11701008', 'تي سي ال فئة تي سوبر مكيف سبيلت 18000 وحدة بارد فقط بريش ذهب', 'تي سي ال', 'TCL', '18000', '1.5', '2949', '1799', '39', 'SAR', 'True', 'True', 'False', 'sale', 'تركيب مجاني | داخل الرياض', 'خصم 39%', 'https://techno-best.com/تي-سي-ال-فئة-تي-سوبر-مكيف-سبيلت-1800', 'https://cdn.salla.sa/RxKan/179cda34-e6c8-4926-98c2-a02ef139f')
