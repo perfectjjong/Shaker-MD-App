@@ -1,7 +1,7 @@
 # Sell-Thru SQLite 이관 (2단계) — 설계 문서
 
 - 날짜: 2026-08-25
-- 상태: 초안 (형님 검토 대기)
+- 상태: 확정 (§9 결정 완료) + 구현 진행
 - 대상: Sell-Thru 대시보드 파이프라인의 데이터 계층 (거래 / OUD / AR / 수금 / SO 파이프라인)
 - 실행 위치: OCI 서버 (`~/2026/10. Automation/00. Sell Thru Dashboard/`)
 - 선행: 1단계 Price Tracking 이관 (PR #25, 완료) — 동일한 패턴 재사용
@@ -162,7 +162,7 @@ CREATE TABLE so_pipeline_snapshots ( -- PGI / 잔여 / 오픈 SO
 
 | Phase | 작업 | 완료 기준 |
 |---|---|---|
-| **1. 모듈 + 백필** | `sell-thru-dashboard/st_db.py` (schema/커넥션/UPSERT) + `backfill_st.py`: 기존 파서 함수를 import해 3개년 raw + 전체 스냅샷 파일 적재 | §6.1 검증 통과 |
+| **1. 모듈 + 백필** | `sell-thru-dashboard/st_db.py` (schema/커넥션/UPSERT). **별도 백필 스크립트 불필요** — `refresh_dashboard.py`가 매 실행 3개년 raw 전체를 로드하므로, 훅이 들어간 첫 실행이 곧 거래 백필이다. 스냅샷은 로더가 유지하는 범위(최신/직전/월말)가 초기 적재되고 이후 실행마다 일 단위로 누적 | §6.1 검증 통과 |
 | **2. 일일 병행 적재** | `refresh_dashboard.py`에 persist 훅 추가 (파싱 직후, HTML 생성 전. `--no-db` 옵션). xlsx·JSON 출력은 그대로 | 7일간 data.json의 txn 집계 = DB GROUP BY 결과 일치 |
 | **3. 출력 전환** | `data.json`의 `txn`을 DB 쿼리 산출로 교체 + 오래된 연도는 월 집계로 축소 (14MB → 수 MB 목표). 스냅샷 JSON도 동일 | 대시보드 화면 diff 무변화 |
 | **4. 규칙의 데이터화 (선택)** | `TEAM_OVERRIDE`/`ACCOUNT_ALIAS`를 DB 테이블로 이전, 코드에는 로더만 | 규칙 변경 시 재배포 불필요 |
@@ -191,9 +191,17 @@ CREATE TABLE so_pipeline_snapshots ( -- PGI / 잔여 / 오픈 SO
 | refresh_dashboard.py가 git 미추적 원본 — 훅 추가분 유실 위험 | 1단계처럼 `automation-backup/`이 정본, 서버 사본에 배포하는 절차 유지 |
 | 금액·채권 데이터 유출 | DB 파일 600 권한 + git 제외 + 백업도 서버 내 보관 |
 
-## 9. 확인 필요 사항 (형님 결정)
+## 9. 결정 사항 (2026-08-25 형님 확정)
 
-1. **백업의 외부 보관** — 가격 DB와 달리 매출·AR 금액이라 git 보관 부적절. 서버 내 보관만 할지, 별도 사설 저장소(OCI Object Storage 등)를 쓸지
-2. **거래 그레인** — 인보이스 라인(권장, 자재 단위 분석 가능) vs 현행 일×계정×카테고리 집계(가볍지만 확장성 없음)
-3. **Phase 4 (규칙의 데이터화)** 진행 여부 — TEAM_OVERRIDE 변경이 잦다면 가치 있음
-4. **수금(col) 상세** — 현재 코드에서 수금 로더 구조를 아직 정밀 확인 안 함. Phase 1 착수 시 확정
+1. **백업의 외부 보관** → **OCI Object Storage 비공개 버킷** (`backup_sell_thru_oci.sh`, 요일별 7세대 로테이션, price_data.db 동반 백업)
+2. **거래 그레인** → **인보이스 라인 단위** (GPC 연동의 전제)
+3. **규칙의 데이터화** → **즉시 진행** — `team_overrides`/`account_aliases` 테이블이 정본, 코드 상수는 최초 시드+폴백. 규칙 추가 = DB 행 삽입 (코드 수정·재배포 불필요)
+
+## 10. GPC 시뮬레이션 연동 (장래 확장)
+
+GPC 손익 원본(`GPC_Accrual*.xlsx`)도 셀스루와 동일한 **인보이스 라인 그레인**(고객ID + 인보이스 날짜 + 카테고리 + 자재)이다 — `build_gpc_dashboard.py`가 이미 라인 단위로 파싱 중(35컬럼: qty/GSV/YED/ADC/EVPD/DSI/COGS/INV/VSP).
+
+- **연동 방식**: 같은 `sell_thru.db`에 `gpc_lines` 테이블 추가 (컬럼: inv_date, account_id, category, material, qty, gsv, yed, adc, vpd, dsi, cogs, inv, vsp). `build_gpc_dashboard.py`에 refresh_dashboard와 동일한 persist 훅.
+- **가능해지는 것**: 계정×월 단위로 `transactions`(매출) ↔ `gpc_lines`(마진) join → "이 딜러 매출은 늘었는데 GP는 줄었다", 할인율 시나리오 시뮬레이션(YED/ADC/VPD를 변수로 GP 재계산)을 SQL로.
+- **전제 충족**: 본 설계의 ②(라인 그레인) 확정으로 join 키가 확보됨. 채널 분류는 `shared_classification`(SSOT)을 양쪽이 공유하므로 정합성 문제 없음.
+- 구현은 본 이관(Phase 2 검증) 완료 후 별도 진행.

@@ -220,6 +220,18 @@ ACCOUNT_ALIAS = {
     1800002288: 1110000009,   # Bin Momen 서브 3 → 메인
 }
 
+# ── 규칙의 데이터화: DB(sell_thru.db)의 team_overrides/account_aliases가 정본 ──
+# 위 코드 상수는 최초 시드 + DB 접근 실패 시 폴백. 규칙 추가는 DB에 행 삽입으로.
+try:
+    import st_db as _st_db
+    _rules = _st_db.load_rules(defaults={
+        'team_override': TEAM_OVERRIDE, 'account_alias': ACCOUNT_ALIAS})
+    TEAM_OVERRIDE.update(_rules['team_override'])
+    ACCOUNT_ALIAS.update(_rules['account_alias'])
+    print(f"[st_db] 규칙 로드: override {len(TEAM_OVERRIDE)} / alias {len(ACCOUNT_ALIAS)}")
+except Exception as _e:
+    print(f"[st_db] 규칙 로드 실패 — 코드 상수 사용: {_e}")
+
 def normalize_id(val):
     if val is None: return None
     if isinstance(val, (int, float)):
@@ -380,6 +392,11 @@ def load_raw_2025_2026(path, sheet, c24, c25, year_label, dealer_map=None):
             'Account_ID': cid, 'Account_Name': r[39],
             'Team': team, 'Category': cat,
             'Value': float(r[6]) if r[6] else 0, 'Quantity': qty,
+            # SAP 원본 필드 (st_db 저장용 — 규칙 변경 시 소급 재파생의 근거)
+            'Account_ID_Raw': int(r[38]) if isinstance(r[38], (int, float)) else r[38],
+            'Material': mat_clean, 'Raw_Category': r[77],
+            'Emp_No': emp_txn, 'Raw_Class': classification,
+            'Qty_Raw': int(r[5]) if isinstance(r[5], (int, float)) else 0,
         })
     wb.close()
     print(f"   {len(rows)} rows loaded, {skipped} excluded")
@@ -2559,7 +2576,8 @@ def main():
     ovr_hash = (str(sorted(TEAM_OVERRIDE.items())) + str(sorted(SME_EMPLOYEES))
                 + str(sorted(STATUS_OVERRIDE.items()))
                 + str(sorted(ZERO_QTY_CATS)) + str(sorted(ZERO_QTY_MATERIALS))
-                + str(sorted(HALF_QTY_CATS)))
+                + str(sorted(HALF_QTY_CATS))
+                + str(sorted(ACCOUNT_ALIAS.items())) + "|stdb1")  # alias 변경도 캐시 무효화 + st_db 필드 확장 버전
 
     # --- 2025 Data ---
     sig_25 = f"{_file_signature(FILES['2025_raw'])}|{cls_sig}|{ovr_hash}"
@@ -2686,6 +2704,15 @@ def main():
                 print(f"     + {r['Account_ID']} / {r['Account_Name']}")
             dm = pd.concat([dm, pd.DataFrame(rsm_missing)], ignore_index=True)
     save_html(df_final, dm, oud_data, ar_data, col_data, pgi_result, remain_result, open_result, sell_thru_date=daily_file_date, ir_target=ir_target, rsm_fcst=rsm_result)
+
+    # ── SQLite 적재 (sell_thru.db) — 라인 그레인 df + 스냅샷. 실패해도 대시보드는 정상 ──
+    import sys as _sys
+    if '--no-db' not in _sys.argv:
+        try:
+            import st_db
+            st_db.persist_all(df, dm, oud_data, ar_data, col_data, pgi_data)
+        except Exception as e:
+            print(f"   [st_db] 적재 실패 (대시보드 생성에는 영향 없음): {e}")
 
     elapsed = time.time() - t_start
     print("\n" + "=" * 50)
