@@ -227,6 +227,213 @@ def normalize_alkhater(raw, sheet_name=None):
     }
 
 
+def normalize_bh(raw, sheet_name=None):
+    # Weekly_Price_DB: Retailer는 'BH Store' 고정 (consolidate_ac.py가 하드코딩)
+    sl = parse_num(raw.get("Current Price") or raw.get("Current_Price"))
+    qty = parse_int(raw.get("Stock"))
+    return {
+        "sku": text(raw.get("Model Code") or raw.get("Model_Code")),
+        "brand": text(raw.get("Brand")),
+        "model": text(raw.get("Model Code") or raw.get("Model_Code")),
+        "name_en": text(raw.get("Product Name")),
+        "name_ar": None,
+        "category": text(raw.get("Type")),
+        "btu": parse_int(raw.get("BTU")),
+        "ton": None,
+        "compressor": None,
+        "ac_type": text(raw.get("CO/C&H")),
+        "url": text(raw.get("Product URL")),
+        "run_date": date_part(raw.get("Run Timestamp") or raw.get("Run_Timestamp")),
+        "scraped_at": text(raw.get("Run Timestamp") or raw.get("Run_Timestamp")),
+        "sp": parse_num(raw.get("Regular Price") or raw.get("Regular_Price")),
+        "sl": sl,
+        "fp": sl,
+        "fj": None,
+        "discount_pct": parse_pct(raw.get("Discount %")),
+        "in_stock": (1 if qty and qty > 0 else 0) if qty is not None else None,
+        "stock_qty": qty,
+        "promo_text": None,
+        "attrs": _attrs(raw, ["Week", "Retailer", "Discount SAR", "Promo From",
+                              "Promo To", "Last Updated"]),
+    }
+
+
+def normalize_sws(raw, sheet_name=None):
+    d = parse_pct(raw.get("Discount"))  # '-42.08%' 형태 → 절대값 사용
+    return {
+        "sku": text(raw.get("Product ID")),
+        "brand": text(raw.get("Brand")),
+        "model": None,
+        "name_en": text(raw.get("Product Name")),
+        "name_ar": None,
+        "category": text(raw.get("Type")),
+        "btu": parse_int(raw.get("Capacity (BTU)")),
+        "ton": parse_num(raw.get("Capacity (Ton)")),
+        "compressor": text(raw.get("Compressor")),
+        "ac_type": text(raw.get("Mode")),
+        "url": text(raw.get("Product_URL")),
+        "run_date": date_part(raw.get("Timestamp")),
+        "scraped_at": text(raw.get("Timestamp")),
+        "sp": parse_num(raw.get("Original Price (SAR)")),
+        "sl": parse_num(raw.get("Price (SAR)")),
+        "fp": parse_num(raw.get("Final Price (SAR)")) or parse_num(raw.get("Price (SAR)")),
+        "fj": None,
+        "discount_pct": abs(d) if d is not None else None,
+        "in_stock": parse_bool(raw.get("Stock")),
+        "stock_qty": None,
+        "promo_text": text(raw.get("Cashback")),
+        "attrs": _attrs(raw, ["Sub-Category", "Free Install", "Cashback"]),
+    }
+
+
+def normalize_alkhunaizan(raw, sheet_name=None):
+    # Capacity=Ton / Nominal Capacity=BTU 가정 — 서버 백필 시 스팟 체크로 검증할 것
+    sl = parse_num(raw.get("Promotion Price (SAR)"))
+    return {
+        "sku": text(raw.get("SKU")) or text(raw.get("Reference")),
+        "brand": text(raw.get("Brand")),
+        "model": None,
+        "name_en": text(raw.get("Product Name")),
+        "name_ar": None,
+        "category": text(raw.get("Category")),
+        "btu": parse_int(raw.get("Nominal Capacity")),
+        "ton": parse_num(raw.get("Capacity")),
+        "compressor": text(raw.get("Compressor Type")),
+        "ac_type": text(raw.get("Type")),
+        "url": text(raw.get("URL")),
+        "run_date": date_part(raw.get("Scraped_At")),
+        "scraped_at": text(raw.get("Scraped_At")),
+        "sp": parse_num(raw.get("Original Price (SAR)")),
+        "sl": sl,
+        "fp": parse_num(raw.get("Only Pay Price (SAR)")) or sl,
+        "fj": None,
+        "discount_pct": parse_pct(raw.get("Discount Rate (%)")),
+        "in_stock": parse_bool(raw.get("Stock Status")),
+        "stock_qty": None,
+        "promo_text": None,
+        "attrs": _attrs(raw, ["Reference", "Wifi", "Color", "Energy Grade",
+                              "Save amount (SAR)", "Free Installation"]),
+    }
+
+
+def normalize_almanea(raw, sheet_name=None):
+    sl = parse_num(raw.get("Promo_Price"))
+    qty = parse_int(raw.get("Stock"))
+    return {
+        "sku": text(raw.get("SKU")),
+        "brand": text(raw.get("Brand")),
+        "model": text(raw.get("Model")),
+        "name_en": text(raw.get("Product_Name")),
+        "name_ar": None,
+        "category": text(raw.get("Category")),
+        "btu": parse_int(raw.get("BTU")),
+        "ton": parse_num(raw.get("Capacity_Ton")),
+        "compressor": text(raw.get("Compressor_Type")),
+        "ac_type": text(raw.get("Function")),
+        "url": text(raw.get("URL_Key")),
+        "run_date": date_part(raw.get("Scraped_At")),
+        "scraped_at": text(raw.get("Scraped_At")),
+        "sp": parse_num(raw.get("Original_Price")),
+        "sl": sl,
+        "fp": parse_num(raw.get("Final_Promo_Price")) or sl,   # Cashback 반영가
+        "fj": parse_num(raw.get("AlAhli_Price")),              # Al Ahli 카드가
+        "discount_pct": parse_pct(raw.get("Discount_Pct")),
+        "in_stock": (1 if qty and qty > 0 else 0) if qty is not None else None,
+        "stock_qty": qty,
+        "promo_text": text(raw.get("Offer_Detail")),
+        "attrs": _attrs(raw, ["Energy_Rating", "Color", "Country", "Warranty_Yr",
+                              "Compressor_Warranty_Yr", "Has_Offer", "Free_Gift"]),
+    }
+
+
+def normalize_blackbox(raw, sheet_name=None):
+    return {
+        "sku": text(raw.get("Model Code")),
+        "brand": text(raw.get("Brand")),
+        "model": text(raw.get("Model Code")),
+        "name_en": text(raw.get("Name")),
+        "name_ar": None,
+        "category": text(raw.get("AC Type")),
+        "btu": parse_int(raw.get("BTU")),
+        "ton": parse_num(raw.get("Ton")),
+        "compressor": text(raw.get("Compressor")),
+        "ac_type": text(raw.get("Mode")),
+        "url": text(raw.get("URL")),
+        "run_date": date_part(raw.get("Scraped At")),
+        "scraped_at": text(raw.get("Scraped At")),
+        "sp": parse_num(raw.get("Original Price")),
+        "sl": parse_num(raw.get("Sale Price")),
+        "fp": parse_num(raw.get("Effective Price")),           # Alert 기준 (cascade)
+        "fj": parse_num(raw.get("Effective BP")),              # BP 멤버십가 (별도 탭 기준)
+        "discount_pct": parse_pct(raw.get("Discount %")),
+        "in_stock": parse_bool(raw.get("In Stock")),
+        "stock_qty": parse_int(raw.get("Stock Qty")),
+        "promo_text": None,
+        "attrs": _attrs(raw, ["Extra Disc %", "BP Price", "Free Install", "Install SAR",
+                              "+10% Regular", "+10% BP Only", "Sale Ends"]),
+    }
+
+
+def normalize_tamkeen(raw, sheet_name=None):
+    # file_per_date 소스: sheet_name 자리에 파일명에서 추출한 날짜('YYYY-MM-DD')가 전달됨
+    sl = parse_num(raw.get("Sale Price (SR)"))
+    qty = parse_int(raw.get("Stock Qty"))
+    return {
+        "sku": text(raw.get("SKU")),
+        "brand": text(raw.get("Brand")),
+        "model": None,
+        "name_en": text(raw.get("Name")),
+        "name_ar": None,
+        "category": text(raw.get("Category")),
+        "btu": parse_int(raw.get("Capacity (BTU)")),
+        "ton": parse_num(raw.get("Tonnage")),
+        "compressor": text(raw.get("Compressor")),
+        "ac_type": text(raw.get("Cooling Type")),
+        "url": text(raw.get("Product URL")),
+        "run_date": sheet_name,
+        "scraped_at": None,
+        "sp": parse_num(raw.get("Original Price (SR)")),
+        "sl": sl,
+        "fp": sl,  # 조건부 할인 없음
+        "fj": None,
+        "discount_pct": parse_pct(raw.get("Discount (%)")),
+        "in_stock": parse_bool(raw.get("In Stock")),
+        "stock_qty": qty,
+        "promo_text": None,
+        "attrs": _attrs(raw, ["Discount (SR)", "Free Installation", "Express Delivery",
+                              "Expected Delivery", "Image URL"]),
+    }
+
+
+def normalize_technobest(raw, sheet_name=None):
+    sl = parse_num(raw.get("sale_price"))
+    return {
+        "sku": text(raw.get("sku")) or text(raw.get("product_id")),
+        "brand": text(raw.get("brand_en")),
+        "model": None,
+        "name_en": None,
+        "name_ar": text(raw.get("name")),
+        "category": text(raw.get("category")),
+        "btu": parse_int(raw.get("BTU")),
+        "ton": parse_num(raw.get("Ton")),
+        "compressor": None,
+        "ac_type": None,
+        "url": text(raw.get("url")),
+        "run_date": date_part(raw.get("scrape_date")),
+        "scraped_at": text(raw.get("scrape_timestamp")),
+        "sp": parse_num(raw.get("regular_price")),
+        "sl": sl,
+        "fp": sl,  # 조건부 할인 없음
+        "fj": None,
+        "discount_pct": parse_pct(raw.get("discount_pct")),
+        "in_stock": parse_bool(raw.get("is_available")),
+        "stock_qty": None,
+        "promo_text": text(raw.get("promotion")) or text(raw.get("subtitle")),
+        "attrs": _attrs(raw, ["brand_ar", "currency", "is_on_sale", "is_out_of_stock",
+                              "status", "subtitle", "image_url"]),
+    }
+
+
 # ── 채널별 소스 정의 ──────────────────────────────────────────────────────────
 # source: 'single_sheet' = 시트 하나에 전 기간 누적 / 'sheet_per_date' = 날짜별 시트
 # legacy_master: config.get_master_path()에 파일이 없을 때 폴백 경로 (price-tracking/ 기준)
@@ -251,12 +458,40 @@ MAPPINGS = {
         "legacy_master": "channels/alkhater/alkhater_ac_prices.xlsx",
         "normalize": normalize_alkhater,
     },
-    # ── Phase 0: 서버 실물 마스터 확인 후 매핑 작성 필요 ──
-    "bh": None,
-    "sws": None,
-    "alkhunaizan": None,
-    "almanea": None,
-    "tamkeen": None,
-    "blackbox": None,
-    "technobest": None,
+    "bh": {
+        "source": "single_sheet", "sheet": "Weekly_Price_DB",
+        "legacy_master": "channels/bh/BH_Subdealer_AC_Master.xlsx",
+        "normalize": normalize_bh,
+    },
+    "sws": {
+        "source": "single_sheet", "sheet": "Products_DB",
+        "legacy_master": "channels/sws/SWS_AC_Price_Tracking_Master.xlsx",
+        "normalize": normalize_sws,
+    },
+    "alkhunaizan": {
+        "source": "single_sheet", "sheet": "Products_DB",
+        "legacy_master": "channels/alkhunaizan/AlKhunaizan_AC_Prices Tracking_Master.xlsx",
+        "normalize": normalize_alkhunaizan,
+    },
+    "almanea": {
+        "source": "single_sheet", "sheet": "Products_DB",
+        "legacy_master": "channels/almanea/Almanea_AC_Price_Tracking_Master.xlsx",
+        "normalize": normalize_almanea,
+    },
+    "blackbox": {
+        "source": "single_sheet", "sheet": "Product_DB",
+        "legacy_master": "channels/blackbox/Black Box_AC_Price tracking_Master.xlsx",
+        "normalize": normalize_blackbox,
+    },
+    "technobest": {
+        "source": "single_sheet", "sheet": 0,
+        "legacy_master": "channels/technobest/TechnoBest_AC_Master.xlsx",
+        "normalize": normalize_technobest,
+    },
+    "tamkeen": {
+        # 단일 마스터 없음 — 날짜별 스냅샷 파일 누적, 날짜당 최신 파일 사용 (대시보드와 동일 규칙)
+        "source": "file_per_date", "sheet": "All Products",
+        "glob": "~/2026/06. Price Tracking/06. Tamkeen/Tamkeen_Complete_*.xlsx",
+        "normalize": normalize_tamkeen,
+    },
 }

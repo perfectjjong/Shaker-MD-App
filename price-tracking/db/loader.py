@@ -4,7 +4,9 @@
 
 backfill.py(전체 이력)와 ingest_daily.py(당일분)가 공유한다.
 """
+import glob as globmod
 import json
+import os
 import re
 import statistics
 import sys
@@ -25,8 +27,29 @@ REACTIVE_MIN_ABSENT = 2      # 연속 부재 N일 이상 후 복귀 시 'reactiv
 DISCONTINUED_DAYS = 14       # 연속 부재 N일 도달 시 'discontinued'
 
 
+def _date_snapshot_files(mapping):
+    """file_per_date 소스: 날짜별 스냅샷 파일 목록 → [(YYYY-MM-DD, path)].
+    _partial 제외, 날짜당 최신(HHMM) 파일 1개 (tamkeen 대시보드와 동일 규칙)."""
+    files = [f for f in globmod.glob(os.path.expanduser(mapping["glob"]))
+             if "_partial" not in os.path.basename(f)]
+    by_date = {}
+    for f in files:
+        m = re.search(r"(\d{8})_(\d{4})", os.path.basename(f))
+        if not m:
+            continue
+        d, t = m.group(1), m.group(2)
+        if d not in by_date or t > by_date[d][1]:
+            by_date[d] = (f, t)
+    return sorted((f"{d[:4]}-{d[4:6]}-{d[6:8]}", info[0]) for d, info in by_date.items())
+
+
 def resolve_master_path(channel: str) -> Path:
-    """config.py의 중앙 data/ 경로 우선, 없으면 채널 폴더의 legacy 마스터 폴백."""
+    """config.py의 중앙 data/ 경로 우선, 없으면 채널 폴더의 legacy 마스터 폴백.
+    file_per_date 소스는 스냅샷 파일이 1개라도 있으면 그 디렉토리를 반환."""
+    m = MAPPINGS.get(channel)
+    if m and m.get("source") == "file_per_date":
+        files = _date_snapshot_files(m)
+        return Path(files[0][1]).parent if files else None
     try:
         import config
         p = config.get_master_path(channel)
@@ -52,6 +75,10 @@ def read_master_rows(channel: str, master_path: Path):
     if m["source"] == "sheet_per_date":
         sheets = pd.read_excel(master_path, sheet_name=None, engine="openpyxl")
         frames = [(name, df) for name, df in sheets.items() if DATE_RE.match(str(name))]
+    elif m["source"] == "file_per_date":
+        # 날짜별 개별 파일 — 날짜 문자열을 sheet_name 자리로 normalize에 전달
+        frames = [(run_date, pd.read_excel(f, sheet_name=m["sheet"], engine="openpyxl"))
+                  for run_date, f in _date_snapshot_files(m)]
     else:
         df = pd.read_excel(master_path, sheet_name=m["sheet"], engine="openpyxl")
         frames = [(None, df)]
