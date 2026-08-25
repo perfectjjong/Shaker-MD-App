@@ -94,6 +94,15 @@ def text(v):
     return str(v).strip() or None
 
 
+def url_slug(u):
+    """상품 URL의 마지막 경로 조각 → 대체 SKU (사이트에 모델코드가 없는 상품용)."""
+    u = text(u)
+    if not u:
+        return None
+    slug = u.rstrip("/").split("/")[-1].split("?")[0]
+    return slug or None
+
+
 def _attrs(raw, keys):
     """채널 고유 필드를 JSON 보존용 dict로 추출 (빈 값 제외)."""
     out = {}
@@ -261,7 +270,7 @@ def normalize_bh(raw, sheet_name=None):
 def normalize_sws(raw, sheet_name=None):
     d = parse_pct(raw.get("Discount"))  # '-42.08%' 형태 → 절대값 사용
     return {
-        "sku": text(raw.get("Product ID")),
+        "sku": text(raw.get("Product ID")) or url_slug(raw.get("Product_URL")),
         "brand": text(raw.get("Brand")),
         "model": None,
         "name_en": text(raw.get("Product Name")),
@@ -348,7 +357,8 @@ def normalize_almanea(raw, sheet_name=None):
 
 def normalize_blackbox(raw, sheet_name=None):
     return {
-        "sku": text(raw.get("Model Code")),
+        # Model Code 부재 상품(MANDO Concealed 등)은 URL 슬러그를 대체 SKU로 사용
+        "sku": text(raw.get("Model Code")) or url_slug(raw.get("URL")),
         "brand": text(raw.get("Brand")),
         "model": text(raw.get("Model Code")),
         "name_en": text(raw.get("Name")),
