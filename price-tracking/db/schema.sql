@@ -1,6 +1,7 @@
--- Price Tracking SQLite 스키마 v1
+-- Price Tracking SQLite 스키마 v1 (price_data.db)
 -- 설계: specs/2026-08-25-price-tracking-sqlite-migration-design.md
--- 기존 db_manager.PriceTrackingDB 테이블(batches/runs/ai_repairs)과 같은 파일을 공유한다.
+-- 운영 로그 DB(db_manager의 price_tracking.db)와는 별도 파일 — 테이블 이름 충돌 방지 (설계 D4).
+-- 실행 메타데이터와 join이 필요하면: ATTACH DATABASE 'price_tracking.db' AS ops;
 
 -- 채널 마스터 (PRICE_SCHEME_GUIDE.md의 Alert 기준 반영)
 CREATE TABLE IF NOT EXISTS channels (

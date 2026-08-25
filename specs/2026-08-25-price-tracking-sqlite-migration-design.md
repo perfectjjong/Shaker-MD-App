@@ -73,7 +73,8 @@
 - **D1. 수집기 무변경, 적재는 후처리 ETL** — 스크래퍼 10개를 고치지 않고, `run_all_channels.py` 전 채널 완료 후 `ingest_daily.py`가 각 마스터의 "오늘 행"을 읽어 DB에 적재. 스크래퍼 실패·수정과 DB 적재가 분리되어 리스크 최소.
 - **D2. 단일 파일, 단일 라이터** — 적재는 ETL 1개 프로세스만 수행 (채널 병렬 스크래핑과 무관). `journal_mode=WAL`, `busy_timeout=5000`으로 운영 DB 기록(`db_manager`)과의 동시 접근 충돌 방지.
 - **D3. 공통 스키마 + JSON 확장** — 가격·재고·식별자 등 공통 필드는 정규 컬럼으로, 채널 고유 필드(사은품, 은행 프로모, 평점 등)는 `attrs` JSON 컬럼에 원본 보존. 스키마 변경 없이 신규 채널 수용.
-- **D4. 파일 위치** — `/home/ubuntu/2026/06. Price Tracking/price_tracking.db` (cron 작업 디렉토리, 기존 운영 DB와 통합). `.gitignore`의 `*.db` 규칙 유지 (git 미추적), 백업은 §7.2.
+- **D4. 파일 위치** — `/home/ubuntu/2026/06. Price Tracking/price_data.db` (cron 작업 디렉토리, **운영 로그 DB와 별도 파일**). `.gitignore`의 `*.db` 규칙 유지 (git 미추적), 백업은 §7.2.
+  - *(2026-08-25 수정)* 당초 운영 DB(`price_tracking.db`)와 단일 파일 통합을 계획했으나, 서버 실물 확인 결과 `db_manager`가 이미 `channels`/`price_snapshots`/`products`(잔재)/`price_alerts` 등의 테이블 이름을 자기 스키마로 점유 중이어서 충돌 — 별도 파일로 분리한다. 실행 메타데이터와의 join은 `ATTACH DATABASE 'price_tracking.db' AS ops`로 동일하게 가능하며, `db.py`에 운영 DB를 잘못 여는 실수를 막는 안전장치를 둔다.
 
 ## 4. 스키마 설계 (DDL)
 
@@ -210,7 +211,7 @@ CREATE TABLE schema_migrations (
 
 ### 7.2 백업
 
-- cron 말미에 `sqlite3 price_tracking.db ".backup '<dir>/price_tracking_$(date +%u).db'"` — **요일별 로테이션 7세대**
+- cron 말미에 `sqlite3 price_data.db ".backup '<dir>/price_data_$(date +%u).db'"` — **요일별 로테이션 7세대**
 - 주 1회 `VACUUM INTO`로 압축 스냅샷을 `/home/ubuntu/Shaker-MD-App/automation-backup/price-tracking-db/` 에 보관 (git 추적 여부는 용량 보고 결정 — LFS 검토)
 - `integrity_check.py`에 `PRAGMA integrity_check` 항목 추가, 실패 시 기존 텔레그램 알림 경로로 통보
 
