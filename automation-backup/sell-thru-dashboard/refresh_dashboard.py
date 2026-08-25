@@ -1412,10 +1412,11 @@ def load_oud(id_remap=None):
         rows = list(ws.iter_rows(values_only=True))
         wb.close()
 
-        # Find header row (row with 'Customer Name')
+        # Find header row — 구양식: A열 'Customer Name' / 신양식(2026-08~ HVAC.xlsx,
+        # Detail1 시트 SO 라인 단위): A열 'Customer'
         header_idx = None
         for i, r in enumerate(rows):
-            if r and r[0] == 'Customer Name':
+            if r and str(r[0] or '').strip() in ('Customer Name', 'Customer'):
                 header_idx = i
                 break
         if header_idx is None:
@@ -1431,6 +1432,8 @@ def load_oud(id_remap=None):
             return None
 
         col_name = find_col('Customer Name')
+        if col_name is None:
+            col_name = find_col('Customer')  # 신양식
         col_acc = find_col('Dealer ACC No') or find_col('Column1')
         col_rqty = find_col('R-Qty')
         col_tval = find_col('Total Value')
