@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>OR Monthly PSI 2023–2026</title>
+<title>B2C Monthly PSI 2023–2026</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="psi_data.js"></script>
@@ -15,7 +15,7 @@
   --so:#8c1d2f;--so-bg:#f6ebe6;--so-dk:#5c0f1d;
   --st:#33302a;--stk:#a8863c;--red:#b3261e;--amber:#a8863c;
   --c23:#9a927f;--c24:#7b8da0;--c25:#a8863c;--c26:#8c1d2f;
---amber-deep-text:#8a6d2e;--auto-text-1:#d5cbb8;--auto-text-2:#b45309;--stock-gold-text:#6d5518;--primary-deep-text:#6d1522;--green:#1d6b45;--auto-text-3:#e6d7ae;--auto-text-4:#5c554b;--auto-text-5:#cfc6b2;--red-deep-text:#a01d17;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--auto-text-2:#fac398;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-3:#d6be7b;--auto-text-4:#d2cdc7;--auto-text-5:#bfb398;--red-deep-text:#f09a90;}:root:not([data-theme="light"]) [style*="background:#f3ede1"]{background:#2b2519!important}:root:not([data-theme="light"]) [style*="background:#f8f2e2"]{background:#302a1a!important}:root:not([data-theme="light"]) [style*="background:#eddfd4"]{background:#2f2620!important}:root:not([data-theme="light"]) [style*="background:#f9f5ec"]{background:#241f18!important}:root:not([data-theme="light"]) [style*="background:#fafafa"]{background:#20201f!important}:root:not([data-theme="light"]) [style*="background:#efe9db"]{background:#2b251d!important}:root:not([data-theme="light"]) [style*="background:#ddd4c2"]{background:#3a3226!important}:root:not([data-theme="light"]) [style*="background:#efe4d4"]{background:#2f2820!important}:root:not([data-theme="light"]) [style*="background:#fef9c3"]{background:#332f1a!important}:root:not([data-theme="light"]) [style*="background:#fef3c7"]{background:#332d18!important}/*PSI-DARK-CLASSFIX*/:root:not([data-theme="light"]) td.l{background:#242019!important}:root:not([data-theme="light"]) tr.so-row td.l{background:#2f2620!important}:root:not([data-theme="light"]) tr.st-row td.l{background:#2b2519!important}:root:not([data-theme="light"]) tr.stk-row td.l{background:#302a1a!important}:root:not([data-theme="light"]) tr:hover td{background:#2e281f!important}:root:not([data-theme="light"]) .note{background:#241f18!important}:root:not([data-theme="light"]) .mt.st{background:#2b2519!important}:root:not([data-theme="light"]) .mt.stk{background:#302a1a!important}:root:not([data-theme="light"]) .mt.so{background:#2f2620!important}/*PSI-DARK-TINT2*/:root:not([data-theme="light"]) [style*="background:#fef2f2"]{background:#3a2422!important;color:#e8e2dc!important}:root:not([data-theme="light"]) [style*="background:#f6ebe6"]{background:#33272b!important}:root:not([data-theme="light"]) [style*="color:#166534"]{color:#7fc79b!important}:root:not([data-theme="light"]) [style*="color:#991b1b"]{color:#f0a8a2!important}:root:not([data-theme="light"]) [style*="background:#fef9c3"]{background:#332f1a!important}/*PSI-DARK-BADGE*/:root:not([data-theme="light"]) [style*="background:var(--so)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:var(--st)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:var(--stk)"]{color:#191510!important}:root:not([data-theme="light"]) td[style*="background:var(--so)"],th[style*="background:var(--so)"]{color:#191510!important}/*PSI-DARK-BADGE2*/:root:not([data-theme="light"]) [style*="background:var(--so-dk)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:#5c0f1d"]{color:#f0cdd3!important}:root:not([data-theme="light"]) [style*="background:var(--navy)"]{color:#f0ece2!important}:root:not([data-theme="light"]) .badge[style*="background:var(--so)"]{color:#191510!important}:root:not([data-theme="light"]) .badge[style*="background:var(--st)"]{color:#191510!important}:root:not([data-theme="light"]) .badge[style*="background:var(--stk)"]{color:#191510!important}/*DARK-BADGE-EXCEL-FIX*/:root:not([data-theme="light"]) .badge{color:#191510!important}:root:not([data-theme="light"]) .btn-excel{background:#1b2b22!important;border-color:#2f6b4c!important}/*DARK-PRIMARY-BTN-FIX*/:root:not([data-theme="light"]) .fb.on{color:#191510!important}}:root[data-theme="dark"]{--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--auto-text-2:#fac398;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-3:#d6be7b;--auto-text-4:#d2cdc7;--auto-text-5:#bfb398;--red-deep-text:#f09a90;}:root[data-theme="dark"] .fb.on{color:#191510!important}:root[data-theme="dark"] .badge{color:#191510!important}:root[data-theme="dark"] .btn-excel{background:#1b2b22!important;border-color:#2f6b4c!important}/*PSI-DARK-BADGE2*/:root[data-theme="dark"] [style*="background:var(--so-dk)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:#5c0f1d"]{color:#f0cdd3!important}:root[data-theme="dark"] [style*="background:var(--navy)"]{color:#f0ece2!important}:root[data-theme="dark"] .badge[style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] .badge[style*="background:var(--st)"]{color:#191510!important}:root[data-theme="dark"] .badge[style*="background:var(--stk)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--st)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--stk)"]{color:#191510!important}:root[data-theme="dark"] td[style*="background:var(--so)"],th[style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:#fef2f2"]{background:#3a2422!important;color:#e8e2dc!important}:root[data-theme="dark"] [style*="background:#f6ebe6"]{background:#33272b!important}:root[data-theme="dark"] [style*="color:#166534"]{color:#7fc79b!important}:root[data-theme="dark"] [style*="color:#991b1b"]{color:#f0a8a2!important}:root[data-theme="dark"] [style*="background:#fef9c3"]{background:#332f1a!important}:root[data-theme="dark"] td.l{background:#242019!important}:root[data-theme="dark"] tr.so-row td.l{background:#2f2620!important}:root[data-theme="dark"] tr.st-row td.l{background:#2b2519!important}:root[data-theme="dark"] tr.stk-row td.l{background:#302a1a!important}:root[data-theme="dark"] tr:hover td{background:#2e281f!important}:root[data-theme="dark"] .note{background:#241f18!important}:root[data-theme="dark"] .mt.st{background:#2b2519!important}:root[data-theme="dark"] .mt.stk{background:#302a1a!important}:root[data-theme="dark"] .mt.so{background:#2f2620!important}:root[data-theme="dark"] [style*="background:#f3ede1"]{background:#2b2519!important}:root[data-theme="dark"] [style*="background:#f8f2e2"]{background:#302a1a!important}:root[data-theme="dark"] [style*="background:#eddfd4"]{background:#2f2620!important}:root[data-theme="dark"] [style*="background:#f9f5ec"]{background:#241f18!important}:root[data-theme="dark"] [style*="background:#fafafa"]{background:#20201f!important}:root[data-theme="dark"] [style*="background:#efe9db"]{background:#2b251d!important}:root[data-theme="dark"] [style*="background:#ddd4c2"]{background:#3a3226!important}:root[data-theme="dark"] [style*="background:#efe4d4"]{background:#2f2820!important}:root[data-theme="dark"] [style*="background:#fef9c3"]{background:#332f1a!important}:root[data-theme="dark"] [style*="background:#fef3c7"]{background:#332d18!important}
+--amber-deep-text:#8a6d2e;--auto-text-1:#d5cbb8;--stock-gold-text:#6d5518;--primary-deep-text:#6d1522;--green:#1d6b45;--auto-text-2:#e6d7ae;--auto-text-3:#55503f;--auto-text-4:#cfc6b2;--auto-text-5:#5c554b;--red-deep-text:#a01d17;}@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-2:#d6be7b;--auto-text-3:#d6d3c8;--auto-text-4:#bfb398;--auto-text-5:#d2cdc7;--red-deep-text:#f09a90;}:root:not([data-theme="light"]) [style*="background:#f3ede1"]{background:#2b2519!important}:root:not([data-theme="light"]) [style*="background:#f8f2e2"]{background:#302a1a!important}:root:not([data-theme="light"]) [style*="background:#eddfd4"]{background:#2f2620!important}:root:not([data-theme="light"]) [style*="background:#f9f5ec"]{background:#241f18!important}:root:not([data-theme="light"]) [style*="background:#fafafa"]{background:#20201f!important}:root:not([data-theme="light"]) [style*="background:#efe9db"]{background:#2b251d!important}:root:not([data-theme="light"]) [style*="background:#ddd4c2"]{background:#3a3226!important}:root:not([data-theme="light"]) [style*="background:#efe4d4"]{background:#2f2820!important}:root:not([data-theme="light"]) [style*="background:#fef9c3"]{background:#332f1a!important}:root:not([data-theme="light"]) [style*="background:#fef3c7"]{background:#332d18!important}/*PSI-DARK-CLASSFIX*/:root:not([data-theme="light"]) td.l{background:#242019!important}:root:not([data-theme="light"]) tr.so-row td.l{background:#2f2620!important}:root:not([data-theme="light"]) tr.st-row td.l{background:#2b2519!important}:root:not([data-theme="light"]) tr.stk-row td.l{background:#302a1a!important}:root:not([data-theme="light"]) tr:hover td{background:#2e281f!important}:root:not([data-theme="light"]) .note{background:#241f18!important}:root:not([data-theme="light"]) .mt.st{background:#2b2519!important}:root:not([data-theme="light"]) .mt.stk{background:#302a1a!important}:root:not([data-theme="light"]) .mt.so{background:#2f2620!important}/*PSI-DARK-TINT2*/:root:not([data-theme="light"]) [style*="background:#fef2f2"]{background:#3a2422!important;color:#e8e2dc!important}:root:not([data-theme="light"]) [style*="background:#f6ebe6"]{background:#33272b!important}:root:not([data-theme="light"]) [style*="color:#166534"]{color:#7fc79b!important}:root:not([data-theme="light"]) [style*="color:#991b1b"]{color:#f0a8a2!important}:root:not([data-theme="light"]) [style*="background:#fef9c3"]{background:#332f1a!important}/*PSI-DARK-BADGE*/:root:not([data-theme="light"]) [style*="background:var(--so)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:var(--st)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:var(--stk)"]{color:#191510!important}:root:not([data-theme="light"]) td[style*="background:var(--so)"],th[style*="background:var(--so)"]{color:#191510!important}/*PSI-DARK-BADGE2*/:root:not([data-theme="light"]) [style*="background:var(--so-dk)"]{color:#191510!important}:root:not([data-theme="light"]) [style*="background:#5c0f1d"]{color:#f0cdd3!important}:root:not([data-theme="light"]) [style*="background:var(--navy)"]{color:#f0ece2!important}:root:not([data-theme="light"]) .badge[style*="background:var(--so)"]{color:#191510!important}:root:not([data-theme="light"]) .badge[style*="background:var(--st)"]{color:#191510!important}:root:not([data-theme="light"]) .badge[style*="background:var(--stk)"]{color:#191510!important}/*DARK-BADGE-EXCEL-FIX*/:root:not([data-theme="light"]) .badge{color:#191510!important}:root:not([data-theme="light"]) .btn-excel{background:#1b2b22!important;border-color:#2f6b4c!important}/*DARK-PRIMARY-BTN-FIX*/:root:not([data-theme="light"]) .fb.on{color:#191510!important}}:root[data-theme="dark"]{--navy:#100d09;--bg:#191510;--card:#221d17;--text:#e2dfdb;--muted:#b3a996;--border:#3a3226;--so:#d68a97;--so-bg:#22130c;--so-dk:#f0cdd3;--st:#dbd9d4;--stk:#d4a855;--red:#e2685c;--amber:#d4a855;--c23:#8a806c;--c24:#b0bbc6;--c25:#d4a855;--c26:#d68a97;--amber-deep-text:#e0c17a;--auto-text-1:#c0b194;--stock-gold-text:#d4b866;--primary-deep-text:#f0cdd3;--green:#5ba37f;--auto-text-2:#d6be7b;--auto-text-3:#d6d3c8;--auto-text-4:#bfb398;--auto-text-5:#d2cdc7;--red-deep-text:#f09a90;}:root[data-theme="dark"] .fb.on{color:#191510!important}:root[data-theme="dark"] .badge{color:#191510!important}:root[data-theme="dark"] .btn-excel{background:#1b2b22!important;border-color:#2f6b4c!important}/*PSI-DARK-BADGE2*/:root[data-theme="dark"] [style*="background:var(--so-dk)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:#5c0f1d"]{color:#f0cdd3!important}:root[data-theme="dark"] [style*="background:var(--navy)"]{color:#f0ece2!important}:root[data-theme="dark"] .badge[style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] .badge[style*="background:var(--st)"]{color:#191510!important}:root[data-theme="dark"] .badge[style*="background:var(--stk)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--st)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:var(--stk)"]{color:#191510!important}:root[data-theme="dark"] td[style*="background:var(--so)"],th[style*="background:var(--so)"]{color:#191510!important}:root[data-theme="dark"] [style*="background:#fef2f2"]{background:#3a2422!important;color:#e8e2dc!important}:root[data-theme="dark"] [style*="background:#f6ebe6"]{background:#33272b!important}:root[data-theme="dark"] [style*="color:#166534"]{color:#7fc79b!important}:root[data-theme="dark"] [style*="color:#991b1b"]{color:#f0a8a2!important}:root[data-theme="dark"] [style*="background:#fef9c3"]{background:#332f1a!important}:root[data-theme="dark"] td.l{background:#242019!important}:root[data-theme="dark"] tr.so-row td.l{background:#2f2620!important}:root[data-theme="dark"] tr.st-row td.l{background:#2b2519!important}:root[data-theme="dark"] tr.stk-row td.l{background:#302a1a!important}:root[data-theme="dark"] tr:hover td{background:#2e281f!important}:root[data-theme="dark"] .note{background:#241f18!important}:root[data-theme="dark"] .mt.st{background:#2b2519!important}:root[data-theme="dark"] .mt.stk{background:#302a1a!important}:root[data-theme="dark"] .mt.so{background:#2f2620!important}:root[data-theme="dark"] [style*="background:#f3ede1"]{background:#2b2519!important}:root[data-theme="dark"] [style*="background:#f8f2e2"]{background:#302a1a!important}:root[data-theme="dark"] [style*="background:#eddfd4"]{background:#2f2620!important}:root[data-theme="dark"] [style*="background:#f9f5ec"]{background:#241f18!important}:root[data-theme="dark"] [style*="background:#fafafa"]{background:#20201f!important}:root[data-theme="dark"] [style*="background:#efe9db"]{background:#2b251d!important}:root[data-theme="dark"] [style*="background:#ddd4c2"]{background:#3a3226!important}:root[data-theme="dark"] [style*="background:#efe4d4"]{background:#2f2820!important}:root[data-theme="dark"] [style*="background:#fef9c3"]{background:#332f1a!important}:root[data-theme="dark"] [style*="background:#fef3c7"]{background:#332d18!important}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px}
 .header{background:var(--navy);color:#fff;padding:10px 24px;display:flex;align-items:center;gap:14px;height:46px;position:sticky;top:0;z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch}
@@ -64,8 +64,8 @@ td.l{text-align:left;font-weight:600;background:#fafafa}
 tr.so-row td{background:var(--so-bg)}
 tr.so-row td.l{background:#eddfd4;color:var(--so-dk)}
 tr:hover td{background:#f9f5ec}
-.null{color:var(--auto-text-5);font-style:italic}
-.up{color:var(--green);font-weight:700}
+.null{color:var(--auto-text-4);font-style:italic}
+.up{color:var(--so);font-weight:700}
 .dn{color:var(--red);font-weight:700}
 .tab-content{display:none}
 .tab-content.active{display:block}
@@ -84,14 +84,14 @@ tr:hover td{background:#f9f5ec}
 <body>
 
 <div class="header">
-  <h1>OR Monthly PSI</h1>
-  <span style="font-size:11px;color:var(--c23)">5 Channels · 2023–2026</span>
+  <h1>B2C Monthly PSI</h1>
+  <span style="font-size:11px;color:var(--c23)">13 Channels · OR 5 + IR 8 · 2023–2026</span>
   <span class="badge" style="background:var(--so);color:#fff">★ S = Sell-Out</span>
-  <span class="badge" style="background:#5c0f1d;color:var(--auto-text-1)">P = Sell-Thru</span>
-  <span class="badge" style="background:#6d5518;color:var(--auto-text-3)">I = Stock</span>
-  <a href="OR_Monthly_PSI_RawData.xlsx" download
-     title="Raw(피벗용) 데이터 · 채널×월×카테고리(2023~26) + 채널×월×모델(2026) · Sell-Thru/Sell-Out/Stock"
-     style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#8c1d2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel 다운로드</a>
+  <span class="badge" style="background:#33302a;color:var(--auto-text-1)">P = Sell-Thru</span>
+  <span class="badge" style="background:#92400e;color:var(--auto-text-2)">I = Stock</span>
+  <a href="B2C_Monthly_PSI_RawData.xlsx" download
+     title="Raw data · Year/Month/Channel/Category/Model/Sell Thru/Sell Out/Ch. Stock · model names unified across suffix variants"
+     style="margin-left:auto;display:inline-flex;align-items:center;gap:5px;background:#8c1d2f;color:#fff;font-size:11px;font-weight:700;padding:5px 12px;border-radius:6px;text-decoration:none">📥 Excel Download</a>
   <span id="hdr-info" style="margin-left:12px;font-size:11px;color:var(--c23)"></span>
 </div>
 
@@ -113,15 +113,28 @@ tr:hover td{background:#f9f5ec}
   <button class="fb" data-range="Q4">Q4</button>
   <button class="fb on" data-range="H1">H1</button>
   <button class="fb" data-range="H2">H2</button>
+  <button class="fb" data-range="YTD">YTD</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
   <button class="fb on" data-ch="ALL">All</button>
-  <button class="fb on" data-ch="eXtra">eXtra</button>
-  <button class="fb on" data-ch="Al Manea">Al Manea</button>
-  <button class="fb on" data-ch="SWS">SWS</button>
-  <button class="fb on" data-ch="Black Box">Black Box</button>
-  <button class="fb on" data-ch="Al Khunizan">Al Khunizan</button>
+  <button class="fb" data-ch-group="OR" style="background:#a8863c;color:#fff;border-color:#a8863c">All OR</button>
+  <button class="fb" data-ch-group="IR_MAIN" style="background:#55503f;color:#fff;border-color:#55503f">IR Main</button>
+  <button class="fb" data-ch-group="IR_OTHERS" style="background:var(--muted);color:#fff;border-color:var(--muted)">IR_Others</button>
+  <button class="fb on" data-ch="eXtra" style="border-color:#a8863c;color:var(--stk)">eXtra</button>
+  <button class="fb on" data-ch="Al Manea" style="border-color:#a8863c;color:var(--stk)">Al Manea</button>
+  <button class="fb on" data-ch="SWS" style="border-color:#a8863c;color:var(--stk)">SWS</button>
+  <button class="fb on" data-ch="Black Box" style="border-color:#a8863c;color:var(--stk)">Black Box</button>
+  <button class="fb on" data-ch="Al Khunizan" style="border-color:#a8863c;color:var(--stk)">Al Khunizan</button>
+  <button class="fb on" data-ch="Al Ghanem" style="border-color:#55503f;color:var(--auto-text-3)">Al Ghanem</button>
+  <button class="fb on" data-ch="Al Shathri" style="border-color:#55503f;color:var(--auto-text-3)">Al Shathri</button>
+  <button class="fb on" data-ch="BH" style="border-color:#55503f;color:var(--auto-text-3)">BH</button>
+  <button class="fb on" data-ch="BM" style="border-color:#55503f;color:var(--auto-text-3)">BM</button>
+  <button class="fb on" data-ch="Dhamin" style="border-color:#55503f;color:var(--auto-text-3)">Dhamin</button>
+  <button class="fb on" data-ch="Star Appliance" style="border-color:#55503f;color:var(--auto-text-3)">Star Appliance</button>
+  <button class="fb on" data-ch="Tamkeen" style="border-color:#55503f;color:var(--auto-text-3)">Tamkeen</button>
+  <button class="fb on" data-ch="Zagzoog" style="border-color:#55503f;color:var(--auto-text-3)">Zagzoog</button>
+  <button class="fb on" data-ch="IR_Others" style="border-color:#55503f;color:var(--auto-text-3)">IR_Others</button>
   <div class="sep"></div>
   <span class="fl">Category</span>
   <button class="fb on" data-cat="ALL">All</button>
@@ -129,11 +142,11 @@ tr:hover td{background:#f9f5ec}
   <button class="fb" data-cat="Split On/Off">Split On/Off</button>
   <button class="fb" data-cat="Window AC">Window</button>
   <button class="fb" data-cat="Floor Standing AC">FS</button>
-  <button class="fb" data-cat="Cassette AC">Cassette</button>
-  <button class="fb" data-cat="Concealed Set">Concealed</button>
+  <button class="fb" data-cat="Cassette">Cassette</button>
+  <button class="fb" data-cat="Concealed">Concealed</button>
   <button class="fb" data-cat="Others">Others</button>
   <div class="sep"></div>
-  <button class="fb" id="oudToggle" type="button" title="2026년, OUD 스냅샷이 있는 월(3~7월 등)에만 On-Hand 재고에 가산됩니다. 2023-25 및 스냅샷 없는 월은 효과 없음.">OUD 포함</button>
+  <button class="fb" id="oudToggle" type="button" title="Only added to On-Hand stock for 2026 months with an OUD snapshot (e.g. Mar–Jul). No effect for 2023–25 or months without a snapshot.">Include OUD</button>
 </div>
 
 <!-- ═══════ TAB 0: Overview ═══════ -->
@@ -178,19 +191,16 @@ tr:hover td{background:#f9f5ec}
       </span>
     </div>
     <div class="cd">
-      <strong>월별 막대</strong> —
-      <span style="color:var(--st);font-weight:700">Sell-Thru (P·공급)</span> ·
-      <span style="color:var(--so);font-weight:700">Sell-Out (S·실판매)</span> ·
-      <span style="color:var(--stk);font-weight:700">Stock (I·월말재고)</span>
-      &nbsp;·&nbsp; <span id="main-range-note"><strong>2025 Jul~Dec</strong>(연한 막대) → <strong>2026 Jan~Jun</strong>(진한 막대) · 최근 12개월</span>
-      &nbsp;·&nbsp; 🏖 May~Sep Peak
+      <strong>Monthly bars</strong> —
+      <span style="color:var(--st);font-weight:700">Sell-Thru (P·Supply)</span> ·
+      <span style="color:var(--so);font-weight:700">Sell-Out (S·Actual Sale)</span> ·
+      <span style="color:var(--stk);font-weight:700">Stock (I·Month-End Inv.)</span>
     </div>
     <div class="legend">
       <span class="li"><span class="ld" style="background:var(--st)"></span>Sell-Thru (P)</span>
       <span class="li"><span class="ld" style="background:var(--so)"></span><strong>Sell-Out (S)</strong></span>
       <span class="li"><span class="ld" style="background:var(--stk)"></span>Stock (I)</span>
-      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>연한 막대 = 2025</span>
-      <span style="margin-left:auto;background:#fef9c3;padding:2px 8px;border-radius:4px;font-size:11px;color:var(--auto-text-2);font-weight:700">🏖 Peak Season</span>
+      <span class="li"><span class="ld" style="background:var(--so);opacity:.32"></span>Faded bars = 2025</span>
     </div>
     <div style="position:relative;height:320px"><canvas id="mainChart"></canvas></div>
   </div>
@@ -279,10 +289,11 @@ tr:hover td{background:#f9f5ec}
     <div class="ct">Year × Metric Availability</div>
     <div id="coverageTable"></div>
     <div class="note">
-      Source: 2023 Consolidated xlsx · 2024 LG PSI Regional xlsx · 2026 S/I = 5채널 Monthly Raw · P = SAP raw(data.json)<br>
-      2023 S = SWS→S&amp;S mapping, 2023 Stock = Ch.Stock (month-end)<br>
-      ⚠️ 2025 Sell-Out(S)/Stock(I): 2026-08-09부터 <code>LG PSI - OR_Final_December_Final_Shared_2025.xlsx</code>(채널별 시트 MODEL 상세 블록) 기준으로 교체. Sell-Thru(P)는 기존 SAP raw(data.json) 유지.<br>
-      ✅ 2026-06 마감 완료: OR 5채널 전부 Sell-Out·Sell-Thru·재고 반영 (재고=<b>세트 기준</b>, IDU only·ODU 제외). MOS-2/Model Table 탭도 2026-06 기준으로 갱신.
+      OR 5 channels (eXtra/Al Manea/SWS/Black Box/Al Khunizan) + IR 9 channels (Al Ghanem/Al Shathri/BH/BM/Dhamin/Star Appliance/Tamkeen/Zagzoog/IR_Others) · Sell-Thru(P)/Sell-Out(S)/Stock(I) · 2023–2026.<br>
+      ⚠️ For 2023, category-level Stock (month-end inventory) has a model snapshot in the source only for Split Inverter/Window AC/Floor Standing AC (total ≈159,628 units) — Split On/Off, Cassette, and Concealed have no stock snapshot at all in the 2023 source, so they're left blank (no estimation).<br>
+      ⚠️ IR_Others Stock: for 2023 and 2024, the source (B2C master file) value is used as-is. Note this column is not an actual physical stock count but a rolled-forward value ("opening stock + Σ(Sell-Thru − Sell-Out)") — the same characteristic was confirmed for the 8 major channels in this same column — so treat it as a trend reference rather than an absolute level. For 2025, the source itself has no value, so it stays blank (no estimation).<br>
+      ⚠️ 2025 Sell-Out(S)/Stock(I) (8 real channels, excluding IR_Others): switched to <code>LG PSI - IR_Final_Dec_updated_2025_Final_Shared.xlsx</code> (MODEL detail block on each channel's sheet) as of 2026-08-09. Sell-Thru(P) still uses the original unified-sellout source.<br>
+      The Model Table / MOS-2 Action tabs use a separate source (latest week snapshot) — a current snapshot, not a channel×category history.
     </div>
   </div>
   <div class="cc" style="margin-top:0">
@@ -292,79 +303,78 @@ tr:hover td{background:#f9f5ec}
 </div>
 </div>
 
-<!-- ═══════ TAB 5: Model Table (May 2026 P/S/I model × channel) ═══════ -->
+<!-- ═══════ TAB 5: Model Table (IR: model × channel row-level snapshot) ═══════ -->
 <div class="tab-content" id="t5">
 <div class="content">
-  <div class="stitle" id="mtTitle">Model × Channel — P/S/I Matrix</div>
+  <div class="stitle" id="mtTitle">Model × Channel — Latest Week Snapshot</div>
   <div class="cc">
-    <div class="ct" id="mtSubtitle">May 2026 — 5-Channel Model-Level Unified Sheet</div>
-    <div class="cd" id="mtSources"></div>
+    <div class="ct" id="mtSubtitle">Model-Level Snapshot</div>
+    <div class="cd" id="mtSources">Stock + rolling 4-week Sell-Out per (model, channel) row. ⚠️ This data does not include per-model channel×month history or BTU/H-C/compressor info (fields provided: model/category/channel/stk/so_recent/mos/flag) — the table below uses only those actual fields.</div>
     <div style="display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Category:</span>
-      <button class="fb on" data-cat="ALL">ALL</button>
-      <button class="fb" data-cat="Split AC">Split AC</button>
-      <button class="fb" data-cat="Window">Window</button>
-      <button class="fb" data-cat="Free Standing">Floor Standing</button>
-      <button class="fb" data-cat="Concealed Set">Concealed</button>
-      <button class="fb" data-cat="Cassette AC">Cassette</button>
+      <button class="fb on" data-mtcat="ALL">ALL</button>
+      <button class="fb" data-mtcat="Split Inverter">Split Inv</button>
+      <button class="fb" data-mtcat="Split On/Off">Split On/Off</button>
+      <button class="fb" data-mtcat="Window AC">Window</button>
+      <button class="fb" data-mtcat="Floor Standing AC">FS</button>
+      <button class="fb" data-mtcat="Cassette">Cassette</button>
+      <button class="fb" data-mtcat="Concealed">Concealed</button>
+      <button class="fb" data-mtcat="Others">Others</button>
+      <span class="sep"></span>
+      <span class="fl">Channel:</span>
+      <select id="mtChSel" class="fb" style="cursor:pointer">
+        <option value="ALL">All Channels</option>
+      </select>
       <span class="sep"></span>
       <span class="fl">Sort:</span>
       <select id="mtSort" class="fb" style="cursor:pointer">
         <option value="cat">By Category</option>
-        <option value="so">S (Sell-Out) ↓</option>
-        <option value="st">P (Sell-Thru) ↓</option>
-        <option value="stk">I (Stock) ↓</option>
+        <option value="so">SO (4wk) ↓</option>
+        <option value="stk">Stock ↓</option>
+        <option value="mos">MOS ↓</option>
       </select>
       <input id="mtSearch" class="fb" placeholder="Search model…" style="cursor:text;width:160px">
     </div>
     <div class="tbl" id="modelTable"></div>
     <div class="note" id="mtFooter"></div>
   </div>
-  <div class="cc" id="unmappedCard" style="margin-top:12px;display:none">
-    <div class="ct">⚠️ Unmapped Models (v6 Master Registration Required)</div>
-    <div class="cd">Raw codes that remain unmapped after the automatic fallback chain. ODU is auto-excluded under the IDU-only policy (not counted as unmapped).</div>
-    <div class="tbl" id="unmappedTable"></div>
-  </div>
 </div>
 </div>
 
-<!-- ═══════ TAB 6: MOS-2 Action Plan ═══════ -->
+<!-- ═══════ TAB 6: MOS-2 Action Plan (IR: builder flag 기반 분류) ═══════ -->
 <div class="tab-content" id="t6">
 <div class="content">
-  <div class="stitle">MOS-2 Action Plan — Channel-by-Model Classification (Jun Month-End)</div>
+  <div class="stitle">MOS-2 Action Plan — Channel-by-Model Classification</div>
   <div class="cc">
     <div class="ct">Purpose: Supply &amp; Promotion Decisions (Model-Level)</div>
     <div class="cd" id="m2Meta"></div>
+    <div class="cd" style="margin-top:-4px">⚠️ This data does not include monthly SO Apr/May history or mos_thresholds reference info — each row's <code>flag</code> (already classified by the builder as LOW/OVER/OOS/SLOW/NORMAL) is used as-is. The suggested Action quantity is derived as <code>so_recent÷4</code> (an approximate monthly average).</div>
     <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;align-items:center">
       <span class="fl">Channel:</span>
-      <button class="fb on" data-mch="eXtra">eXtra</button>
-      <button class="fb" data-mch="Al Manea">Al Manea</button>
-      <button class="fb" data-mch="SWS">SWS</button>
-      <button class="fb" data-mch="Black Box">Black Box</button>
-      <button class="fb" data-mch="Al Khunizan">Al Khunizan</button>
+      <div id="m2ChBtns" style="display:flex;gap:6px;flex-wrap:wrap"></div>
     </div>
     <div id="m2Summary" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px"></div>
     <div class="grid2" style="gap:14px">
       <div>
         <div class="ct" style="color:var(--red-deep-text)">🔴 LOW STOCK — Supply Up Required <span id="lowCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">MOS-2 &lt; 1.0 (less than 1 month of cover). Peak season — immediate replenishment recommended.</div>
+        <div class="cd">Builder flag = LOW (near stock-out). Peak season — immediate replenishment recommended.</div>
         <div class="tbl" id="lowTable"></div>
       </div>
       <div>
         <div class="ct" style="color:var(--amber-deep-text)">🟡 OVER STOCK — Promotion Recommended <span id="overCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">MOS-2 &gt; 3.0 (over 3 months of cover). Slow rotation — review price-cut / bundle / campaign.</div>
+        <div class="cd">Builder flag = OVER. Slow rotation — review price-cut / bundle / campaign.</div>
         <div class="tbl" id="overTable"></div>
       </div>
     </div>
     <div class="grid2" style="gap:14px;margin-top:14px">
       <div>
         <div class="ct" style="color:var(--stock-gold-text)">⚠️ OUT OF STOCK — Immediate Replenishment <span id="oosCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">Stock = 0 with Jun SO &gt; 0 (selling but no stock). Highest-priority supply target.</div>
+        <div class="cd">Builder flag = OOS (Stock = 0, selling). Highest-priority supply target.</div>
         <div class="tbl" id="oosTable"></div>
       </div>
       <div>
-        <div class="ct" style="color:var(--auto-text-4)">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
-        <div class="cd">May + Jun SO = 0 with Stock &gt; 0. No recent sales — review discontinue / discount / return.</div>
+        <div class="ct" style="color:var(--auto-text-5)">🐌 SLOW MOVER — Dead Stock Review <span id="slowCount" style="font-weight:400;color:var(--muted)"></span></div>
+        <div class="cd">Builder flag = SLOW (recent SO = 0, Stock &gt; 0). No recent sales — review discontinue / discount / return.</div>
         <div class="tbl" id="slowTable"></div>
       </div>
     </div>
@@ -404,10 +414,10 @@ tr:hover td{background:#f9f5ec}
 
 <script>
 // ── 상수 ──────────────────────────────────────────────────────────────────
-const MONTHS = PSI_DATA.months;
-const YEARS  = PSI_DATA.years;
-const CHS    = PSI_DATA.channels;
-const CATS   = PSI_DATA.categories;
+const MONTHS = B2C_PSI_DATA.meta.months;
+const YEARS  = B2C_PSI_DATA.meta.years;
+const CHS    = B2C_PSI_DATA.meta.channels;
+const CATS   = B2C_PSI_DATA.meta.categories;
 const RANGE_MONTHS = {
   'Q1':      ['Jan','Feb','Mar'],
   'Q2':      ['Apr','May','Jun'],
@@ -415,6 +425,7 @@ const RANGE_MONTHS = {
   'Q4':      ['Oct','Nov','Dec'],
   'H1':      ['Jan','Feb','Mar','Apr','May','Jun'],
   'H2':      ['Jul','Aug','Sep','Oct','Nov','Dec'],
+  'YTD':     MONTHS.slice(0, latestActualMonth().mIdx + 1), // Jan~최신 실적월, 월마감 시 자동 전진 (하드코딩 금지)
   'Full':    MONTHS,
 };
 const PEAK = ['May','Jun','Jul','Aug','Sep'];
@@ -427,16 +438,25 @@ let mainMetric = 'so';
 let yoyMetric  = 'so';
 
 // ── 데이터 헬퍼 ──────────────────────────────────────────────────────────
+// B2C_PSI_DATA 스키마 (channel×category 교차표 추가 후, fix/ir-monthly-psi-channel-category-crosstab):
+//   IR: {meta:{channels,categories,months,years}, years:{yr:{
+//          by_cat:{cat:{mo:{so,st,stk}}},              // 전채널 합계, 카테고리별
+//          by_ch:{ch:{mo:{so,st,stk}}},                // 전카테고리 합계, 채널별
+//          by_ch_cat:{ch:{cat:{mo:{so,st,stk}}}},      // 채널×카테고리 교차표(신규) — 둘 다 특정 선택 시 이걸로 정확한 교차값 조회
+//   }}}
+//   OR: {channels,months,years,categories, data:{yr:{ch:{mo:{...,by_cat}}}}, totals:{yr:{mo:{...,by_cat}}}}
+//   세 구조 모두 동일 레코드의 다른 축 합계라 grand total 기준으로 서로 일치(검증됨, verify_ir_monthly_psi.py).
 // ch: undefined → use curChs filter state (default)
-//     'ALL'     → use PSI_DATA.totals (explicit total)
-//     'eXtra'   → use specific channel (channel analysis table)
+//     'ALL'     → grand total (channel 필터 무시) — sumRange() 기본값 경유
+//     'BH' 등   → specific channel total. 카테고리도 특정 선택 중이면 by_ch_cat 교차표로 정확한 교차값을 낸다.
 let includeOud = false; // "OUD 포함" 토글 — 기본 OFF(On-Hand만). 2026·OUD 스냅샷 존재 월에만 효과 있음.
 
-// OUD(미배송 오픈오더) 수량 조회 — On-Hand를 덮어쓰지 않고 별도 필드(PSI_DATA.oud)에서 가산.
-// 2023-25 및 2026 중 스냅샷 없는 월(Jan/Feb 등)은 0 반환(On-Hand는 그대로 보존).
+// OUD(미배송 오픈오더) 수량 조회 — On-Hand를 덮어쓰지 않고 별도 필드(oud_by_ch_cat)에서 가산.
+// 2023-25 및 2026 중 스냅샷 없는 월(Jan/Feb 등)은 0 반환(그 달 자체에 OUD 데이터가 없다는 뜻,
+// 거짓0 아님 — On-Hand는 그대로 보존되고 그냥 더할 게 없을 뿐).
 function oudQty(yr, mo, chans, cats) {
   if (!includeOud || yr !== '2026') return 0;
-  const monthData = PSI_DATA.oud?.['2026']?.[mo];
+  const monthData = B2C_PSI_DATA.years['2026'].oud_by_ch_cat?.[mo];
   if (!monthData) return 0;
   const chs = chans.has('ALL') ? CHS : [...chans];
   const cs  = cats.has('ALL') ? CATS : [...cats];
@@ -457,60 +477,58 @@ function getVal(yr, mo, key, ch) {
 }
 
 function _getValBase(yr, mo, key, ch) {
-  const d = PSI_DATA.data;
-  if (!d[yr]) return null;
-  const useCat = !curCats.has('ALL') && (key === 'so' || key === 'st' || key === 'stk');
+  const Y = B2C_PSI_DATA.years[yr];
+  if (!Y) return null;
+  const useCat = !curCats.has('ALL') && curCats.size > 0;
 
-  function fromBase(base) {
-    if (!base) return null;
-    if (useCat) {
-      let s = 0;
-      for (const c of curCats) s += base.by_cat?.[c]?.[key] ?? 0;
-      return s;
+  function catTotal() {
+    let s = null;
+    for (const c of curCats) {
+      const v = Y.by_cat?.[c]?.[mo]?.[key];
+      if (v !== null && v !== undefined) s = (s ?? 0) + v;
     }
-    const v = base[key];
+    return s;
+  }
+  function grandTotal() {
+    let s = null;
+    for (const c of CHS) {
+      const v = Y.by_ch?.[c]?.[mo]?.[key];
+      if (v !== null && v !== undefined) s = (s ?? 0) + v;
+    }
+    return s;
+  }
+  // 채널×카테고리 둘 다 특정 선택인 교차 케이스: by_ch_cat[chn][cat][mo][key]를 curCats로 합산.
+  function crossTotal(chans) {
+    let s = null;
+    for (const chn of chans) {
+      for (const c of curCats) {
+        const v = Y.by_ch_cat?.[chn]?.[c]?.[mo]?.[key];
+        if (v !== null && v !== undefined) s = (s ?? 0) + v;
+      }
+    }
+    return s;
+  }
+
+  // Explicit channel 인자 (Channel Analysis 탭 개별 채널 조회 + sumRange 기본값 'ALL')
+  if (ch !== undefined) {
+    if (ch === 'ALL') return useCat ? catTotal() : grandTotal();
+    if (useCat) return crossTotal([ch]);
+    const v = Y.by_ch?.[ch]?.[mo]?.[key];
     return (v !== null && v !== undefined) ? v : null;
   }
 
-  // Explicit channel passed → direct lookup (no curChs aggregation)
-  if (ch !== undefined) {
-    const base = ch === 'ALL'
-      ? (PSI_DATA.totals[yr] || {})[mo]
-      : (d[yr][ch] || {})[mo];
-    return fromBase(base);
-  }
-
-  // Use curChs filter. curChs는 이제 'ALL' 센티널이 아니라 실채널 이름 Set —
-  // 전 채널이 선택돼 있어도(기본값) 아래 일반 집계 경로로 계산되며, PSI_DATA.totals가
-  // 바로 이 채널들의 합으로 빌드되므로(or_monthly_psi_builder.py build_totals) 결과가
-  // totals[yr][mo]와 항상 정확히 일치한다(구조적 보장).
-
-  // Aggregate multiple channels
-  if (key === 'stk') {
-    let sum = null;
-    for (const chn of curChs) {
-      const base = (d[yr][chn] || {})[mo];
-      let v;
-      if (useCat) {
-        let catSum = null;
-        for (const c of curCats) {
-          const cv = base?.by_cat?.[c]?.stk;
-          if (cv !== null && cv !== undefined) catSum = (catSum ?? 0) + cv;
-        }
-        v = catSum;
-      } else {
-        v = base?.stk;
-      }
-      if (v !== null && v !== undefined) sum = (sum ?? 0) + v;
-    }
-    return sum;
-  }
-  let tot = 0, has = false;
+  // curChs 필터 상태 사용 (Main Chart / MOS Chart / MOS Panel에서만 실질적으로 작동 —
+  // 나머지는 sumRange 기본값 'ALL' 경유라 curChs 영향 안 받음, OR 원본과 동일한 설계).
+  // curChs는 이제 'ALL' 센티널이 아니라 실채널 이름 Set — 전 채널이 선택돼 있어도(기본값)
+  // 아래 일반 경로(교차표/개별합산)로 계산되며, by_cat/by_ch가 by_ch_cat에서 파생되므로
+  // grandTotal()/catTotal()과 결과가 항상 정확히 일치한다(구조적 보장, verify 스크립트 확인됨).
+  if (useCat) return crossTotal([...curChs]);
+  let s = null;
   for (const chn of curChs) {
-    const v = fromBase((d[yr][chn] || {})[mo]);
-    if (v !== null && v !== undefined) { tot += v; has = true; }
+    const v = Y.by_ch?.[chn]?.[mo]?.[key];
+    if (v !== null && v !== undefined) s = (s ?? 0) + v;
   }
-  return has ? tot : null;
+  return s;
 }
 
 function sumRange(yr, months, key, ch) {
@@ -549,8 +567,26 @@ document.querySelectorAll('[data-range]').forEach(btn => {
   });
 });
 
+// 채널 그룹 퀵필터: All OR/IR Main/IR_Others 클릭 = 그 그룹 채널 전부를 선택한 것과 동일 효과.
+// IR_MAIN = IR_Others를 뺀 8개 실채널, IR_OTHERS = IR_Others 단독(전체 IR 대신 두 개로 분리, 2026-08-10 형님 지시).
+const IR_MAIN_CHS = B2C_PSI_DATA.meta.groups.IR.filter(ch => ch !== 'IR_Others');
+document.querySelectorAll('[data-ch-group]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const group = btn.dataset.chGroup;
+    const groupChs = group === 'IR_MAIN' ? IR_MAIN_CHS
+      : group === 'IR_OTHERS' ? ['IR_Others']
+      : B2C_PSI_DATA.meta.groups[group];
+    curChs = new Set(groupChs);
+    document.querySelectorAll('[data-ch]').forEach(b => {
+      b.classList.toggle('on', b.dataset.ch === 'ALL' ? curChs.size === CHS.length : curChs.has(b.dataset.ch));
+    });
+    document.querySelectorAll('[data-ch-group]').forEach(b => b.classList.toggle('on', b === btn));
+    render();
+  });
+});
+
 // 채널: 다중 선택 + 토글 해제. All 클릭 = 전 채널 선택(전부 눌린 상태로 표시) →
-// 거기서 개별 채널만 다시 클릭해 빼거나(제외) 넣을(포함) 수 있다.
+// 거기서 개별 채널(예: IR_Others)만 다시 클릭해 빼거나(제외) 넣을(포함) 수 있다.
 document.querySelectorAll('[data-ch]').forEach(btn => {
   btn.addEventListener('click', () => {
     const v = btn.dataset.ch;
@@ -565,11 +601,12 @@ document.querySelectorAll('[data-ch]').forEach(btn => {
     document.querySelectorAll('[data-ch]').forEach(b => {
       b.classList.toggle('on', b.dataset.ch === 'ALL' ? curChs.size === CHS.length : curChs.has(b.dataset.ch));
     });
+    document.querySelectorAll('[data-ch-group]').forEach(b => b.classList.remove('on'));
     render();
   });
 });
 
-// 카테고리: 다중 선택 + 토글 해제. ALL은 단독 선택
+// 카테고리: 다중 선택 + 토글 해제. ALL은 단독 선택 (OR 원본과 완전히 동일한 패턴)
 document.querySelectorAll('[data-cat]').forEach(btn => {
   btn.addEventListener('click', () => {
     const v = btn.dataset.cat;
@@ -595,6 +632,9 @@ document.getElementById('oudToggle').addEventListener('click', () => {
   document.getElementById('oudToggle').classList.toggle('on', includeOud);
   render();
 });
+// ⚠️ Model Table 탭(#t5)의 자체 카테고리 필터 버튼은 이 전역 curCats와 별개(IIFE 스코프 curCat)로
+// 아래 Tab 5 재구성 스크립트에서 독립 처리한다 — data-mtcat으로 분리해 전역 data-cat 핸들러와 충돌 방지.
+
 document.querySelectorAll('.tab').forEach(t => {
   t.addEventListener('click', () => {
     document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
@@ -701,13 +741,22 @@ function mkChart(id, cfg) {
 }
 
 // 최근 실적월 자동 감지 (당월 마감 시 stk 기록 or so/st>0). 최신 연도부터 역순 탐색.
+// (B2C_PSI_DATA엔 OR의 totals 노드가 없어 by_ch 14채널 합산으로 직접 계산 — 현재 필터 상태와 무관)
 function latestActualMonth() {
   const yrs = [...YEARS].sort(); // 오름차순
   for (let y = yrs.length - 1; y >= 0; y--) {
-    const t = PSI_DATA.totals[yrs[y]] || {};
+    const Y = B2C_PSI_DATA.years[yrs[y]] || {};
     for (let i = MONTHS.length - 1; i >= 0; i--) {
-      const d = t[MONTHS[i]];
-      if (d && (d.stk != null || (d.so || 0) > 0 || (d.st || 0) > 0)) {
+      const mo = MONTHS[i];
+      let stk = null, so = 0, st = 0;
+      for (const c of CHS) {
+        const cell = Y.by_ch?.[c]?.[mo];
+        if (!cell) continue;
+        if (cell.stk != null) stk = (stk ?? 0) + cell.stk;
+        so += cell.so || 0;
+        st += cell.st || 0;
+      }
+      if (stk != null || so > 0 || st > 0) {
         return {yr: parseInt(yrs[y], 10), mIdx: i};
       }
     }
@@ -724,16 +773,6 @@ function updateMainYearSplit(order) {
   mainSplit = splitIdx < 0
     ? {boundary: null, left: '', right: ''}
     : {boundary: splitIdx - 0.5, left: order[splitIdx - 1].yr, right: order[splitIdx].yr};
-
-  const note = document.getElementById('main-range-note');
-  if (note) {
-    const f = order[0], l = order[order.length - 1];
-    const early = order.filter(o => o.yr === f.yr);
-    const late  = order.filter(o => o.yr === l.yr);
-    note.innerHTML = (f.yr === l.yr)
-      ? `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong> · 최근 12개월`
-      : `<strong>${f.yr} ${early[0].mo}~${early[early.length - 1].mo}</strong>(연한 막대) → <strong>${l.yr} ${late[0].mo}~${late[late.length - 1].mo}</strong>(진한 막대) · 최근 12개월`;
-  }
 }
 
 function renderMainChart() {
@@ -932,7 +971,7 @@ function renderMixChart() {
   const rangeLabel = mos.length > 1 ? `${mos[0]}–${mos[mos.length-1]}` : mos[0];
   document.getElementById('mix-title').textContent = `Annual Channel Sell-Out Mix (${rangeLabel})`;
   const datasets = CHS.map((ch, ci) => {
-    const colors = ['#33302a','#2a7a6e','#6d4b78','#a8863c','#8c1d2f'];
+    const colors = ['#33302a','#2a7a6e','#6d4b78','#a8863c','#8c1d2f','#b86289','#5f7a2a','#c4574f','#9a927f'];
     return {
       label: ch,
       data: YEARS.map(yr => sumRange(yr, mos, 'so', ch) || 0),
@@ -1028,7 +1067,7 @@ function renderKpi() {
   document.getElementById('kv-stk').textContent = fmtN(stk26);
   const yoyStk = fmtYoy(stk26, stk25);
   document.getElementById('kv-stk-yoy').innerHTML = `<span class="${yoyStk.cls}">${yoyStk.txt}</span>`;
-  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM' + (!curCats.has('ALL') ? ' · channel total' : '');
+  document.getElementById('kv-stk-base').textContent = lastMo + ' 2026 EOM';
   document.getElementById('kv-stk-mini').innerHTML = `<span>2025 ${lastMo}: ${fmtN(stk25)}</span>`;
 
   if (so26 && st26) {
@@ -1374,7 +1413,11 @@ function renderMosPanel() {
   const stk26 = getVal('2026', 'Jun', 'stk');
   const so25a = getVal('2025', 'Jul', 'so');  // 직후 +1월
   const so25b = getVal('2025', 'Aug', 'so');  // 직후 +2월
-  const chLabel = (curChs.size === CHS.length ? '5-channel total' : [...curChs].join(' + ')) + (includeOud ? ' · +OUD' : '');
+  // 채널 필터뿐 아니라 카테고리 필터도 라벨에 반영 — 둘 다 특정 선택이면 표시 숫자가
+  // by_ch_cat 교차값이므로, 라벨도 두 필터를 다 보여줘야 혼동(원 버그 리포트 원인)이 없다.
+  const chLabel = (curChs.size === CHS.length ? '13-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
+    + (includeOud ? ' · +OUD' : '');
 
   if (stk26 === null) {
     document.getElementById('mosPanel').innerHTML =
@@ -1453,169 +1496,115 @@ function render() {
   renderCoverage();
   renderFullTable();
   renderMosTab();
-  // header info
-  const chLabel = (curChs.size === CHS.length ? '5-channel total' : [...curChs].join(' + ')) + (includeOud ? ' · +OUD' : '');
-  // 2026-08-20: 월 라벨 하드코딩 제거 — psi_model_table.js 의 month/month_label 에서 파생.
-  // 매월 마감마다 손으로 8곳을 고쳐야 했고, 빠뜨리면 화면만 한 달 뒤처졌다.
-  const _mt = (typeof PSI_MODEL_TABLE !== 'undefined') ? PSI_MODEL_TABLE : null;
-  const _ym = _mt ? (_mt.year + '-' + String(_mt.month).padStart(2, '0')) : '';
-  document.getElementById('hdr-info').textContent =
-    (_ym ? ('PSI ~' + _ym + ' · MOS/Model ' + _ym + ' · ') : '') + chLabel;
+  // header info — 채널 필터 + 카테고리 필터 둘 다 라벨에 반영(둘 다 특정 선택 시 by_ch_cat 교차값 표시 중임을 명시)
+  const chLabel = (curChs.size === CHS.length ? '13-channel total' : [...curChs].join(' + '))
+    + (curCats.has('ALL') ? '' : ' · ' + [...curCats].join('+'))
+    + (includeOud ? ' · +OUD' : '');
+  const mtAsOf = (typeof B2C_PSI_MODEL_TABLE !== 'undefined' && B2C_PSI_MODEL_TABLE.as_of)
+    ? ('IR ' + B2C_PSI_MODEL_TABLE.as_of.ir_as_of_year + ' ' + B2C_PSI_MODEL_TABLE.as_of.ir_as_of_week + ' · OR ' + B2C_PSI_MODEL_TABLE.as_of.or_month_label)
+    : '2026-06';
+  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model ' + mtAsOf + ' · ' + chLabel;
 }
 
 render();
 
-// ═══════ TAB 5: Model Table (May 2026 P/S/I 매트릭스) ═══════
+// ═══════ TAB 5: Model Table ═══════
+// ⚠️ B2C_PSI_MODEL_TABLE 스키마는 OR_PSI_MODEL_TABLE과 완전히 다름(Task 1-5 산출물 확인):
+//   IR: {as_of_week, as_of_year, rows:[{model,category,channel,stk,so_recent,mos,flag}]}  (행=모델×채널 1건)
+//   OR: {generated,year,month,month_label,channels,mos_thresholds,mos_analysis,sources,totals,unmapped,
+//        rows:[{std,unified,category,sub_cat,btu,hc,comp,st{ch},so{ch},stk{ch},...,mos{ch}}]}  (행=모델, 채널은 열)
+//   → BTU/H-C/압축기·채널별 열-매트릭스·sources·unmapped·mos_analysis 사전그룹 모두 IR엔 없음.
+//     아래는 실제 존재하는 필드(model/category/channel/stk/so_recent/mos/flag)만으로 재설계한 버전.
 (function() {
-  if (typeof PSI_MODEL_TABLE === 'undefined') return;
-  const D = PSI_MODEL_TABLE;
-  const CHS = D.channels;
-  const CH_SHORT = {'eXtra':'eXtra','Al Manea':'AM','SWS':'SWS','Black Box':'BB','Al Khunizan':'AK'};
+  if (typeof B2C_PSI_MODEL_TABLE === 'undefined') return;
+  const D = B2C_PSI_MODEL_TABLE;
+  const MT_CHS = [...new Set(D.rows.map(r => r.channel))].sort();
 
-  // subtitle + sources
-  document.getElementById('mtSubtitle').textContent = D.month_label + ' — 5-Channel Model-Level P/S/I Matrix (generated: ' + D.generated + ')';
+  document.getElementById('mtSubtitle').textContent =
+    'IR ' + D.as_of.ir_as_of_year + ' ' + D.as_of.ir_as_of_week + ' · OR ' + D.as_of.or_month_label +
+    ' — Model × Channel Snapshot (' + D.rows.length + ' rows)';
 
-  // 정적 월 라벨 자동 치환 (2026-08-20) — 매월 수동 편집 제거
-  (function fixMonthLabels() {
-    const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    const cur = MON[(D.month || 1) - 1];
-    const prev = MON[(D.month || 1) - 2] || 'Dec';
-    const yy = String(D.year || 2026).slice(-2);
-    const rules = [
-      [/through\s+[A-Z][a-z]{2}\b/g, 'through ' + cur],
-      [/\([A-Z][a-z]{2} Month-End\)/g, '(' + cur + ' Month-End)'],
-      [/Stock = 0 with [A-Z][a-z]{2} SO/g, 'Stock = 0 with ' + cur + ' SO'],
-      [/[A-Z][a-z]{2} \+ [A-Z][a-z]{2} SO = 0/g, prev + ' + ' + cur + ' SO = 0'],
-      [/based on [A-Z][a-z]{2}-\d{2} stock/g, 'based on ' + cur + '-' + yy + ' stock'],
-    ];
-    document.querySelectorAll('.cd, .ct, .cs, .note, span, div').forEach(function (el) {
-      if (el.children.length) return;            // 잎 노드만
-      let t = el.textContent, o = t;
-      rules.forEach(function (r) { t = t.replace(r[0], r[1]); });
-      if (t !== o) el.textContent = t;
-    });
-  })();
-  document.getElementById('mtSources').innerHTML =
-    '<b>P</b> (Sell-Thru): ' + (D.sources?.ST || '') + '<br>' +
-    '<b>S</b> (Sell-Out): ' + (D.sources?.SO || '') + '<br>' +
-    '<b>I</b> (Stock): ' + (D.sources?.STK || '');
+  // 채널 드롭다운 옵션 채우기
+  const chSel = document.getElementById('mtChSel');
+  MT_CHS.forEach(ch => {
+    const opt = document.createElement('option');
+    opt.value = ch; opt.textContent = ch;
+    chSel.appendChild(opt);
+  });
 
   let curCat = 'ALL';
+  let curCh  = 'ALL';
   let curSort = 'cat';
   let curSearch = '';
 
-  function fmt(n) { return n === 0 ? '<span class="null">·</span>' : n.toLocaleString(); }
+  const FLAG_COLOR = {LOW:'#a01d17', OVER:'#8a6d2e', OOS:'#6d5518', SLOW:'#5c554b', NORMAL:'#9a927f'};
+  function fmt(n) { return (n === null || n === undefined) ? '<span class="null">—</span>' : (n === 0 ? '<span class="null">·</span>' : n.toLocaleString()); }
+  function flagBadge(f) {
+    const c = FLAG_COLOR[f] || '#9a927f';
+    return '<span style="color:' + c + ';font-weight:700;font-size:10px">' + (f || '—') + '</span>';
+  }
 
   function filterRows() {
     let rows = D.rows.slice();
     if (curCat !== 'ALL') rows = rows.filter(r => r.category === curCat);
+    if (curCh !== 'ALL') rows = rows.filter(r => r.channel === curCh);
     if (curSearch) {
       const q = curSearch.toUpperCase();
-      rows = rows.filter(r => (r.std + ' ' + r.unified).toUpperCase().includes(q));
+      rows = rows.filter(r => r.model.toUpperCase().includes(q));
     }
-    if (curSort === 'so') rows.sort((a,b) => b.so_total - a.so_total);
-    else if (curSort === 'st') rows.sort((a,b) => b.st_total - a.st_total);
-    else if (curSort === 'stk') rows.sort((a,b) => b.stk_total - a.stk_total);
+    if (curSort === 'so') rows.sort((a,b) => (b.so_recent||0) - (a.so_recent||0));
+    else if (curSort === 'stk') rows.sort((a,b) => (b.stk||0) - (a.stk||0));
+    else if (curSort === 'mos') rows.sort((a,b) => (b.mos ?? -1) - (a.mos ?? -1));
+    else rows.sort((a,b) => (a.category||'').localeCompare(b.category||'') || a.model.localeCompare(b.model));
     return rows;
   }
 
   function renderTable() {
     const rows = filterRows();
-    let html = '<table>';
-    // Header row 1: 채널 그룹
-    html += '<tr><th rowspan="2" class="l">Model</th><th rowspan="2">Category</th><th rowspan="2">BTU</th><th rowspan="2">H/C</th>';
-    CHS.forEach(ch => {
-      html += '<th colspan="3" style="background:#334155">' + CH_SHORT[ch] + '</th>';
-    });
-    html += '<th colspan="3" style="background:var(--so);color:#fff">TOTAL</th></tr>';
-    // Header row 2: P/S/I
-    html += '<tr>';
-    for (let i = 0; i < CHS.length + 1; i++) {
-      html += '<th style="background:#5c0f1d;font-size:10px">P</th>';
-      html += '<th style="background:var(--so-dk);font-size:10px">S</th>';
-      html += '<th style="background:#6d5518;font-size:10px">I</th>';
-    }
-    html += '</tr>';
-
+    let html = '<table><tr><th class="l">Model</th><th>Category</th><th>Channel</th><th>Stock</th><th>SO (4wk)</th><th>MOS</th><th>Flag</th><th>Basis</th></tr>';
     if (rows.length === 0) {
-      html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="padding:20px;color:var(--muted)">No models match the current filter</td></tr>';
+      html += '<tr><td colspan="8" style="padding:20px;color:var(--muted)">No models match the current filter</td></tr>';
     } else {
       let lastCat = '';
       rows.forEach(r => {
         if (curSort === 'cat' && r.category !== lastCat) {
           lastCat = r.category;
-          html += '<tr><td colspan="' + (4 + (CHS.length+1)*3) + '" style="background:#ddd4c2;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
+          html += '<tr><td colspan="8" style="background:#ddd4c2;font-weight:700;text-align:left;padding:6px 10px;color:var(--text)">▶ ' + r.category + '</td></tr>';
         }
         html += '<tr>';
-        html += '<td class="l">' + r.std + (r.unified !== r.std ? ' <span style="color:var(--muted);font-weight:400">→ ' + r.unified + '</span>' : '') + '</td>';
-        html += '<td>' + (r.category || '') + '</td><td>' + (r.btu || '') + '</td><td style="font-size:10px">' + (r.hc || '') + '</td>';
-        CHS.forEach(ch => {
-          html += '<td>' + fmt(r.st[ch] || 0) + '</td>';
-          html += '<td style="background:var(--so-bg)">' + fmt(r.so[ch] || 0) + '</td>';
-          html += '<td>' + fmt(r.stk[ch] || 0) + '</td>';
-        });
-        html += '<td style="font-weight:700;color:var(--so-dk)">' + fmt(r.st_total) + '</td>';
-        html += '<td style="font-weight:700;color:var(--so-dk);background:var(--so-bg)">' + fmt(r.so_total) + '</td>';
-        html += '<td style="font-weight:700;color:var(--stock-gold-text)">' + fmt(r.stk_total) + '</td>';
+        html += '<td class="l">' + r.model + '</td>';
+        html += '<td>' + (r.category || '') + '</td>';
+        html += '<td>' + r.channel + '</td>';
+        html += '<td><b>' + fmt(r.stk) + '</b></td>';
+        html += '<td style="background:var(--so-bg)">' + fmt(r.so_recent) + '</td>';
+        html += '<td>' + (r.mos === null || r.mos === undefined ? '<span class="null">∞</span>' : r.mos.toFixed(2)) + '</td>';
+        html += '<td>' + flagBadge(r.flag) + '</td>';
+        html += '<td>' + (D.basis_labels[r.basis] || r.basis) + '</td>';
         html += '</tr>';
       });
-      // 합계 row
-      const t = D.totals;
+      const stkSum = rows.reduce((s,r) => s + (r.stk||0), 0);
+      const soSum  = rows.reduce((s,r) => s + (r.so_recent||0), 0);
       html += '<tr style="background:#191714;color:#fff;font-weight:700">';
-      html += '<td class="l" style="background:#191714;color:#fff" colspan="4">Total (' + rows.length + '/' + D.totals.models + ' models)</td>';
-      CHS.forEach(ch => {
-        html += '<td>' + (t.st_by_ch[ch]||0).toLocaleString() + '</td>';
-        html += '<td>' + (t.so_by_ch[ch]||0).toLocaleString() + '</td>';
-        html += '<td>' + (t.stk_by_ch[ch]||0).toLocaleString() + '</td>';
-      });
-      html += '<td>' + t.st_grand.toLocaleString() + '</td>';
-      html += '<td>' + t.so_grand.toLocaleString() + '</td>';
-      html += '<td>' + t.stk_grand.toLocaleString() + '</td>';
+      html += '<td class="l" style="background:#191714;color:#fff" colspan="3">Total (' + rows.length + '/' + D.rows.length + ' rows)</td>';
+      html += '<td>' + stkSum.toLocaleString() + '</td><td>' + soSum.toLocaleString() + '</td><td></td><td></td><td></td>';
       html += '</tr>';
     }
     html += '</table>';
     document.getElementById('modelTable').innerHTML = html;
-
     document.getElementById('mtFooter').innerHTML =
-      'P=Sell-Thru (SAP raw IDU) · S=Sell-Out (channel raw) · I=Stock (month-end). ' +
-      'Filter: ' + rows.length + ' rows shown (total ' + D.totals.models + ' models)';
+      'Stock = latest snapshot · SO(recent) = IR 4-week avg or OR 2-month avg (see Basis column) · MOS = as reported by each source. ' +
+      'Filter: ' + rows.length + ' rows shown (total ' + D.rows.length + ')';
   }
 
-  function renderUnmapped() {
-    const um = D.unmapped || {};
-    const sections = [];
-    ['st','so','stk'].forEach(k => {
-      const data = um[k];
-      if (!data || Object.keys(data).length === 0) return;
-      const label = {st:'ST Unmapped (SAP raw)', so:'SO Unmapped (channel raw)', stk:'Stock Unmapped (channel raw)'}[k];
-      let inner = '<div class="ct" style="font-size:12px;margin-top:8px">' + label + '</div>';
-      inner += '<table><tr><th class="l">Channel</th><th class="l">Raw Code</th><th>Qty</th></tr>';
-      Object.entries(data).forEach(([ch, items]) => {
-        const arr = Array.isArray(items) ? items : Object.entries(items);
-        arr.forEach(([code, qty]) => {
-          inner += '<tr><td class="l">' + ch + '</td><td class="l">' + code + '</td><td>' + qty + '</td></tr>';
-        });
-      });
-      inner += '</table>';
-      sections.push(inner);
-    });
-    if (sections.length === 0) {
-      document.getElementById('unmappedCard').style.display = 'none';
-    } else {
-      document.getElementById('unmappedCard').style.display = '';
-      document.getElementById('unmappedTable').innerHTML = sections.join('');
-    }
-  }
-
-  // 이벤트 바인딩
-  document.querySelectorAll('#t5 [data-cat]').forEach(btn => {
+  document.querySelectorAll('#t5 [data-mtcat]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#t5 [data-cat]').forEach(b => b.classList.remove('on'));
+      document.querySelectorAll('#t5 [data-mtcat]').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
-      curCat = btn.dataset.cat;
+      curCat = btn.dataset.mtcat;
       renderTable();
     });
   });
+  chSel.addEventListener('change', e => { curCh = e.target.value; renderTable(); });
   document.getElementById('mtSort').addEventListener('change', e => {
     curSort = e.target.value;
     renderTable();
@@ -1626,46 +1615,55 @@ render();
   });
 
   renderTable();
-  renderUnmapped();
 })();
 
 // ═══════ TAB 6: MOS-2 Action Plan ═══════
+// IR 행에는 이미 빌더가 계산한 flag(LOW/OVER/OOS/SLOW/NORMAL)가 있어 그걸 그대로 그룹화한다.
+// OR의 mos_analysis(사전 그룹화된 채널별 low/over/oos/slow 배열 + so_apr/so_may/avg_so 월별 히스토리)는
+// IR 산출물에 없으므로 rows에서 직접 파생 — Action 제안 수량만 so_recent÷4(월평균 근사)로 계산.
 (function() {
-  if (typeof PSI_MODEL_TABLE === 'undefined' || !PSI_MODEL_TABLE.mos_analysis) return;
-  const D = PSI_MODEL_TABLE;
-  const TH = D.mos_thresholds;
+  if (typeof B2C_PSI_MODEL_TABLE === 'undefined') return;
+  const D = B2C_PSI_MODEL_TABLE;
+  const MT_CHS = [...new Set(D.rows.map(r => r.channel))].sort();
+
   document.getElementById('m2Meta').innerHTML =
-    `As of: 2026-06-30 (month-end) · Thresholds: LOW &lt; ${TH.low} / OVER &gt; ${TH.over} · ` +
-    `MOS-2 = (Jun-end Stock) ÷ ((May SO + Jun SO) / 2)`;
+    `As of: IR ${D.as_of.ir_as_of_year} ${D.as_of.ir_as_of_week} · OR ${D.as_of.or_month_label} · Flag = builder-classified (LOW/OVER/OOS/SLOW/NORMAL) · ` +
+    `MOS = as defined by each source's own methodology (IR=4-week avg, OR=2-month avg) — not recalculated`;
 
-  let curCh = 'eXtra';
+  const btnWrap = document.getElementById('m2ChBtns');
+  MT_CHS.forEach((ch, i) => {
+    const b = document.createElement('button');
+    b.className = 'fb' + (i === 0 ? ' on' : '');
+    b.dataset.mch = ch;
+    b.textContent = ch;
+    btnWrap.appendChild(b);
+  });
+  let curCh = MT_CHS[0];
 
-  function fmt(n) { return n === null || n === undefined ? '-' : (typeof n === 'number' ? n.toLocaleString() : n); }
+  function fmt(n) { return (n === null || n === undefined) ? '-' : n.toLocaleString(); }
   function mosCell(m) {
     if (m === null || m === undefined) return '<span class="null">∞</span>';
-    const c = m < TH.low ? '#a01d17' : m > TH.over ? '#8a6d2e' : 'var(--so-dk)';
-    return `<b style="color:${c}">${m.toFixed(2)}</b>`;
+    return `<b>${m.toFixed(2)}</b>`;
   }
 
   function renderTable(items, kind) {
     if (!items.length) {
       return '<div class="note" style="border-left-color:#cfc6b2">No models in this category</div>';
     }
-    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>BTU</th><th>May SO</th><th>Jun SO</th><th>Avg SO</th><th>Stock</th><th>MOS-2</th><th>Action</th></tr>';
+    let html = '<table><tr><th class="l">Model</th><th>Cat</th><th>Stock</th><th>SO(recent)</th><th>Mo.avg SO</th><th>MOS</th><th>Action</th></tr>';
     items.forEach(it => {
+      const avgSo = it.basis === 'IR-4wk-avg' ? (it.so_recent || 0) / 4 : (it.so_recent || 0);
       let action = '';
-      if (kind === 'low') action = `+${Math.ceil(it.avg_so*2 - it.stk)} reorder`;
-      else if (kind === 'over') action = `-${Math.ceil(it.stk - it.avg_so*1.5)} clear`;
-      else if (kind === 'oos') action = `+${Math.ceil(it.so_may)} restock now`;
+      if (kind === 'low')       action = `+${Math.ceil(avgSo*2 - it.stk)} reorder`;
+      else if (kind === 'over') action = `-${Math.ceil(it.stk - avgSo*1.5)} clear`;
+      else if (kind === 'oos')  action = `+${Math.ceil(avgSo)} restock now`;
       else if (kind === 'slow') action = `${it.stk} discontinue?`;
       html += `<tr>
-        <td class="l">${it.std}${it.unified !== it.std ? ' <span style="color:var(--muted);font-size:10px">→' + it.unified + '</span>' : ''}</td>
+        <td class="l">${it.model}</td>
         <td style="font-size:10px">${it.category||''}</td>
-        <td>${it.btu||''}</td>
-        <td>${fmt(it.so_apr)}</td>
-        <td style="background:var(--so-bg)">${fmt(it.so_may)}</td>
-        <td>${fmt(it.avg_so)}</td>
         <td><b>${fmt(it.stk)}</b></td>
+        <td style="background:var(--so-bg)">${fmt(it.so_recent)}</td>
+        <td>${avgSo.toFixed(1)}</td>
         <td>${mosCell(it.mos)}</td>
         <td style="font-size:10px;color:var(--muted)">${action}</td>
       </tr>`;
@@ -1675,27 +1673,31 @@ render();
   }
 
   function renderAll() {
-    const a = D.mos_analysis[curCh];
-    if (!a) return;
+    const rows = D.rows.filter(r => r.channel === curCh);
+    const byFlag = f => rows.filter(r => r.flag === f);
+    const low = byFlag('LOW'), over = byFlag('OVER'), oos = byFlag('OOS'), slow = byFlag('SLOW');
+    const sum = arr => arr.reduce((s,r) => s + (r.stk||0), 0);
+    const sumSo = arr => arr.reduce((s,r) => s + (r.so_recent||0), 0);
+
     document.getElementById('m2Summary').innerHTML = `
-      <div class="kpi" style="border-left:4px solid #a01d17"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:var(--red-deep-text)">${a.low_count}</div><div class="ks">Total stock ${a.low_stk_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #8a6d2e"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:var(--amber-deep-text)">${a.over_count}</div><div class="ks">Total stock ${a.over_stk_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #6d5518"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:var(--stock-gold-text)">${a.oos_count}</div><div class="ks">Jun SO ${a.oos_so_total.toLocaleString()}</div></div>
-      <div class="kpi" style="border-left:4px solid #5c554b"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:var(--auto-text-4)">${a.slow_count}</div><div class="ks">Total stock ${a.slow_stk_total.toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #a01d17"><div class="kl">🔴 LOW STOCK</div><div class="kv" style="color:var(--red-deep-text)">${low.length}</div><div class="ks">Total stock ${sum(low).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #8a6d2e"><div class="kl">🟡 OVER STOCK</div><div class="kv" style="color:var(--amber-deep-text)">${over.length}</div><div class="ks">Total stock ${sum(over).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #6d5518"><div class="kl">⚠️ OUT OF STOCK</div><div class="kv" style="color:var(--stock-gold-text)">${oos.length}</div><div class="ks">SO(recent) ${sumSo(oos).toLocaleString()}</div></div>
+      <div class="kpi" style="border-left:4px solid #5c554b"><div class="kl">🐌 SLOW MOVER</div><div class="kv" style="color:var(--auto-text-5)">${slow.length}</div><div class="ks">Total stock ${sum(slow).toLocaleString()}</div></div>
     `;
-    document.getElementById('lowCount').textContent  = `(${a.low_count})`;
-    document.getElementById('overCount').textContent = `(${a.over_count})`;
-    document.getElementById('oosCount').textContent  = `(${a.oos_count})`;
-    document.getElementById('slowCount').textContent = `(${a.slow_count})`;
-    document.getElementById('lowTable').innerHTML  = renderTable(a.low,  'low');
-    document.getElementById('overTable').innerHTML = renderTable(a.over, 'over');
-    document.getElementById('oosTable').innerHTML  = renderTable(a.oos,  'oos');
-    document.getElementById('slowTable').innerHTML = renderTable(a.slow, 'slow');
+    document.getElementById('lowCount').textContent  = `(${low.length})`;
+    document.getElementById('overCount').textContent = `(${over.length})`;
+    document.getElementById('oosCount').textContent  = `(${oos.length})`;
+    document.getElementById('slowCount').textContent = `(${slow.length})`;
+    document.getElementById('lowTable').innerHTML  = renderTable(low,  'low');
+    document.getElementById('overTable').innerHTML = renderTable(over, 'over');
+    document.getElementById('oosTable').innerHTML  = renderTable(oos,  'oos');
+    document.getElementById('slowTable').innerHTML = renderTable(slow, 'slow');
   }
 
-  document.querySelectorAll('#t6 [data-mch]').forEach(btn => {
+  btnWrap.querySelectorAll('[data-mch]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#t6 [data-mch]').forEach(b => b.classList.remove('on'));
+      btnWrap.querySelectorAll('[data-mch]').forEach(b => b.classList.remove('on'));
       btn.classList.add('on');
       curCh = btn.dataset.mch;
       renderAll();
