@@ -21,9 +21,13 @@
 # 08. Automation 폴더 하나만 통째로 받고, 무엇이 들어왔는지에 따라
 # dispatch-pipeline.sh가 pipeline-rules.conf를 보고 해당 파이프라인만 실행한다.
 #
-# 서버 경로는 기존 백업 스크립트의 "/home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard"
-# 에서 역산한 값이다. OneDrive의 "08. Automation"과 서버의 "10. Automation"이
-# 같은 하위 폴더(00. Sell Thru Dashboard)를 갖고 있어 대응된다고 보았다.
-# 서버에서 반드시 실제 경로를 확인하고 고칠 것.
+# OneDrive 경로는 서버에서 rclone lsd로 확인된 실제 값이다:
+#   rclone lsd "onedrive:문서/01. 2026/01. Work"  →  08. Automation 확인됨
+#
+# 서버 경로는 아직 추정값이다. 기존 백업 스크립트의
+# "/home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard" 에서 역산했다
+# (OneDrive의 "08. Automation"과 서버의 "10. Automation"이 같은 하위 폴더
+# 00. Sell Thru Dashboard 를 갖고 있어 대응된다고 보았다).
+# ls "/home/ubuntu/2026/" 로 실제 경로를 확인하고 고칠 것.
 
 automation | 문서/01. 2026/01. Work/08. Automation | /home/ubuntu/2026/10. Automation | /home/ubuntu/Shaker-MD-App/onedrive-sync/dispatch-pipeline.sh

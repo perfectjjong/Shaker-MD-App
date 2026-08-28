@@ -75,35 +75,125 @@ rclone version
 
 ### 2. OneDrive 리모트 등록
 
-서버에는 브라우저가 없으므로 **인증만 노트북에서** 하고 토큰을 붙여넣는다.
+⚠️ **먼저 읽을 것 — 기본 설정으로는 실패한다.**
 
-서버에서:
+rclone이 기본으로 요청하는 권한에는 `.All`이 붙은 것들이 들어 있다:
 
-```bash
-rclone config
+```
+Files.Read Files.ReadWrite Files.Read.All Files.ReadWrite.All Sites.Read.All offline_access
 ```
 
-- `n` (New remote) → 이름은 **`onedrive`**
+`.All`은 조직 전체 리소스 접근이라 Entra에서 **무조건 관리자 승인**을 요구한다.
+shaker.com.sa 테넌트에서 실제로 "관리자 승인 필요" 화면에 막혔다.
+
+우리는 본인 OneDrive만 쓰면 되므로 권한을 최소로 좁혀서 실행한다:
+
+```bash
+RCLONE_ONEDRIVE_ACCESS_SCOPES="Files.ReadWrite offline_access" rclone config
+```
+
+`Files.ReadWrite`(본인 파일)와 `offline_access`(토큰 갱신)는 **사용자 본인이
+동의할 수 있는 권한**이라 관리자 없이 통과한다. 이 조합으로 실제 인증에 성공했다.
+
+이어서:
+
+- `n` (New remote) → 이름은 **`onedrive`** (스크립트 기본값)
 - Storage → `onedrive`
-- `client_id`, `client_secret` → 그냥 Enter (rclone 기본값 사용)
-- Region → `global`
-- **`Use auto config?` → `n`**  ← 헤드리스 서버라 반드시 n
-- 화면에 `rclone authorize "onedrive"` 명령이 뜬다
+- `client_id`, `client_secret`, `region`, `tenant` → 전부 Enter (비움)
+- `Edit advanced config?` → `n`
+- `Use web browser to automatically authenticate?` → **아래 인증 방법에 따라 다름**
 
-노트북(브라우저 있는 PC)에서 rclone을 설치한 뒤 그 명령을 그대로 실행하면
-Microsoft 로그인 창이 열린다. `J_Park@shaker.com.sa`로 로그인하면 터미널에
-`{"access_token":...}` 형태의 토큰이 출력된다. **그 한 줄 전체를** 서버 쪽
-프롬프트에 붙여넣는다.
+인증이 끝나면:
 
-- 이어서 드라이브 목록이 뜨면 **OneDrive (Business)** 항목을 고른다
-- `y` 로 저장 → `q` 로 종료
+- `Type of connection` → Enter (기본값 `onedrive`)
+- 드라이브 목록에서 **business** 항목 번호 선택
+- `Is that okay?` → `y` → `Keep this remote?` → `y` → `q`
 
-확인:
+#### 인증 방법 A — 브라우저 있는 PC가 있을 때
+
+`Use web browser...` → **`n`**
+
+화면에 `rclone authorize "onedrive" "eyJ..."` 명령이 뜬다. PC에 rclone을 설치하고
+그 명령을 그대로 실행하면 브라우저가 열린다. 로그인 후 출력되는
+`{"access_token":...}` **한 줄 전체**를 서버 프롬프트에 붙여넣는다.
+
+PC에서도 권한을 좁혀야 한다:
+
+```bash
+RCLONE_ONEDRIVE_ACCESS_SCOPES="Files.ReadWrite offline_access" rclone authorize "onedrive" "eyJ..."
+```
+
+#### 인증 방법 B — 폰만 있을 때 (SSH 포트 포워딩)
+
+`Use web browser...` → **`y`**
+
+rclone이 서버의 `127.0.0.1:53682`에 콜백 서버를 띄운다. SSH 앱의 포트 포워딩으로
+폰에서 그 포트에 닿게 만들면 폰 브라우저로 인증할 수 있다.
+
+Termius 기준 — Port Forwarding → `+` → **Local**:
+
+| 항목 | 값 |
+|------|-----|
+| Local port | `53682` |
+| Destination address | `127.0.0.1` |
+| Destination port | `53682` |
+
+규칙을 켠 뒤, rclone이 출력하는 링크를 폰 브라우저에 붙여넣는다:
+
+```
+http://127.0.0.1:53682/auth?state=...
+```
+
+터널을 타고 서버로 들어가 Microsoft 로그인으로 넘어간다. 로그인·수락하면 콜백이
+같은 터널로 돌아와 rclone이 코드를 받는다.
+
+> 앱을 전환하는 동안 터널이 끊길 수 있다. "서버에 연결할 수 없음"이 뜨면 SSH 앱에서
+> 규칙을 다시 켜고 같은 주소를 새로고침한다. rclone은 `Waiting for code...` 상태를
+> 유지하므로 재시도하면 된다.
+
+#### 인증 방법 C — 포트 포워딩을 못 쓸 때
+
+`Use web browser...` → `y` 로 두고, tmux 창을 하나 더 열어 `curl`로 중계한다.
+
+```bash
+# 1) rclone이 출력한 링크의 state 값으로 진짜 로그인 URL을 얻는다
+curl -s -o /dev/null -w '%{redirect_url}\n' "http://127.0.0.1:53682/auth?state=<값>"
+
+# 2) 나온 URL을 폰/PC 브라우저에서 열고 로그인
+#    리다이렉트가 http://127.0.0.1:53682/?code=... 로 가면서 실패하는데,
+#    주소창의 URL 전체를 복사한다
+
+# 3) 복사한 URL을 서버에서 그대로 호출하면 rclone이 코드를 받는다
+curl "<복사한 URL 전체>"
+```
+
+#### 확인
 
 ```bash
 rclone lsd onedrive:
 rclone lsd "onedrive:문서/01. 2026/01. Work"
 ```
+
+`08. Automation` 이 보이면 성공이다. (이 경로는 실제 확인된 값이다)
+
+#### 토큰 갱신 안정성
+
+`RCLONE_ONEDRIVE_ACCESS_SCOPES`는 인증할 때만 쓴 환경변수라 설정 파일에는 남지
+않는다. 나중에 `rclone config reconnect`를 하면 다시 기본(넓은) 권한을 요청해
+관리자 승인 벽에 막힌다. 설정 파일(`rclone config file`로 경로 확인)의
+`[onedrive]` 섹션에 넣어두면 그 사고를 막을 수 있다:
+
+```
+access_scopes = Files.ReadWrite offline_access
+```
+
+넣은 뒤 `rclone lsd onedrive:` 가 여전히 되는지 확인한다.
+
+#### 그래도 관리자 승인을 요구하면
+
+테넌트가 서드파티 앱 자체를 차단하는 설정이다. IT에 rclone 승인을 요청하거나,
+자체 Entra 앱을 등록(위임 권한 `Files.ReadWrite` + `offline_access`)한 뒤
+`rclone config`의 `client_id`/`client_secret`에 그 값을 넣는다.
 
 ### 3. 설정 3종 작성
 
@@ -186,10 +276,9 @@ OneDrive 것보다 오래된 수정시각을 갖게 되면 갱신 대상이 된�
 
 ## 문제 해결
 
-**`rclone authorize` 에서 관리자 승인을 요구하는 경우**
-테넌트가 서드파티 앱을 막고 있는 것이다. Entra 관리자에게 rclone 승인을 요청하거나,
-자체 앱을 등록(위임 권한 `Files.ReadWrite.All` + `offline_access`)한 뒤
-`rclone config`의 `client_id`/`client_secret`에 그 값을 넣는다.
+**"관리자 승인 필요"가 뜨는 경우**
+설치 절차 2번의 권한 축소(`RCLONE_ONEDRIVE_ACCESS_SCOPES`)를 빠뜨린 것이 가장 흔하다.
+좁힌 뒤에도 막히면 테넌트가 서드파티 앱 자체를 차단하는 설정이다 — 2번 마지막 항목 참고.
 
 **디스크 부족으로 계속 중단되는 경우**
 `sync-settings.conf`의 `INCLUDE_EXT`를 좁히거나, `sync-map.conf`의 대상을
