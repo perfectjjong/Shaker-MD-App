@@ -21,6 +21,27 @@ OneDrive의 `08. Automation` 폴더에 파일이 올라오면 OCI 서버의 대�
 넘겨서, 서버가 생성한 산출물이 OneDrive의 옛 버전으로 되돌아가는 것을 막는다.
 이 설정을 끄면 최신 여부와 무관하게 항상 OneDrive 것으로 덮어쓴다.
 
+> ⚠️ **양쪽 다 기계가 쓰는 파일에는 이 설정이 오히려 위험하다.**
+>
+> `--update`는 "mtime이 최신인 쪽이 옳다"는 휴리스틱이다. OneDrive 쪽을 사람이
+> 올리고 서버 쪽만 기계가 만든다면 잘 맞는다. 그러나 이 레포의 실제 구조에서는
+> OneDrive 쪽도 자동화가 쓴다 — `automation-backup/price-tracking/run_all_channels.py`
+> 는 Windows Task Scheduler로 돌면서 `C:/Users/J_park/Documents/2026/01. Work/`
+> (OneDrive 동기화 폴더) 아래에 엑셀을 기록한다.
+>
+> 그런 파일에서는 이런 일이 생길 수 있다:
+>
+> ```
+> 03:00  스크래퍼가 OneDrive에 새 master.xlsx 기록
+> 04:00  서버가 git pull·ingest 등으로 같은 이름 파일의 mtime을 갱신
+>  →    --update 가 "서버가 더 최신"으로 보고 조용히 건너뜀
+>  →    서버는 낡은 데이터로 계속 돌고, 에러도 남지 않는다
+> ```
+>
+> **조용히 틀리는** 실패라 발견이 늦다. 양쪽 다 기계가 쓰는 파일은 mtime 비교에
+> 맡기지 말고, `INCLUDE_EXT` 화이트리스트나 제외 규칙으로 **동기화 대상 자체에서
+> 빼는** 편이 결정론적이라 안전하다. 어느 폴더가 자동화 소유인지 먼저 파악할 것.
+
 수정시각 비교 허용오차는 `MODIFY_WINDOW`(기본 `1s`)다. OneDrive가 초 단위
 정밀도라 이보다 작게 두면 같은 파일이 매 회차 다시 전송될 수 있다.
 
