@@ -7,21 +7,37 @@
 # 단방향이다. 서버 → OneDrive 방향으로는 아무것도 쓰지 않는다
 # (rclone copy는 대상에만 쓰고, 원본은 읽기만 한다).
 #
-# 설정: sync-map.conf  (sync-map.conf.example 참고)
+# 용량 보호 (sync-settings.conf에서 조정):
+#   1) 확장자 화이트리스트 — 허용된 확장자만 내려받는다
+#   2) 단일 파일 크기 상한
+#   3) 회차당 총 전송량 상한
+#   4) 동기화 전 디스크 여유 공간 점검
+#
+# 설정: sync-map.conf, sync-settings.conf  (각각 .example 참고)
 # 설치: ./install-cron.sh
 # 사용법:
 #   ./sync-onedrive-to-oci.sh              # 전체 매핑 동기화
 #   ./sync-onedrive-to-oci.sh --dry-run    # 실제 복사 없이 대상만 확인
 #   ./sync-onedrive-to-oci.sh --only NAME  # 특정 매핑만
-#   ./sync-onedrive-to-oci.sh --list       # 매핑 목록 출력
+#   ./sync-onedrive-to-oci.sh --list       # 매핑 목록과 현재 설정 출력
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 
 CONF="${ONEDRIVE_SYNC_CONF:-$SCRIPT_DIR/sync-map.conf}"
+SETTINGS="${ONEDRIVE_SYNC_SETTINGS:-$SCRIPT_DIR/sync-settings.conf}"
 REMOTE="${ONEDRIVE_REMOTE:-onedrive}"
 LOCK="${ONEDRIVE_SYNC_LOCK:-/tmp/onedrive-sync.lock}"
 RCLONE="${RCLONE_BIN:-rclone}"
+
+# 용량 가드 기본값 — sync-settings.conf가 있으면 그 값이 우선한다
+INCLUDE_EXT="xlsx,xls,xlsm,csv,txt,json"
+MAX_FILE_SIZE="100M"
+MAX_TRANSFER="2G"
+MIN_FREE_DISK_MB="5000"
+
+# shellcheck source=/dev/null
+[ -f "$SETTINGS" ] && . "$SETTINGS"
 
 DRY_RUN=0
 ONLY=""
@@ -32,7 +48,7 @@ while [ $# -gt 0 ]; do
         --dry-run) DRY_RUN=1 ;;
         --only)    ONLY="${2:-}"; shift ;;
         --list)    LIST_ONLY=1 ;;
-        -h|--help) sed -n '2,20p' "${BASH_SOURCE[0]}"; exit 0 ;;
+        -h|--help) sed -n '2,25p' "${BASH_SOURCE[0]}"; exit 0 ;;
         *) echo "알 수 없는 옵션: $1" >&2; exit 2 ;;
     esac
     shift
@@ -47,10 +63,57 @@ trim() {
     printf '%s' "$s"
 }
 
+# xlsx → [xX][lL][sS][xX]  (rclone 필터는 대소문자를 구분한다)
+ci_glob() {
+    local s="$1" out="" c lower upper i
+    for (( i = 0; i < ${#s}; i++ )); do
+        c="${s:i:1}"
+        case "$c" in
+            [a-zA-Z])
+                lower="$(printf '%s' "$c" | tr 'A-Z' 'a-z')"
+                upper="$(printf '%s' "$c" | tr 'a-z' 'A-Z')"
+                out+="[${lower}${upper}]"
+                ;;
+            *) out+="$c" ;;
+        esac
+    done
+    printf '%s' "$out"
+}
+
+# 확장자 화이트리스트를 rclone --include 인자로 변환
+build_include_args() {
+    include_args=()
+    local ext
+    local -a exts
+    IFS=',' read -ra exts <<< "$INCLUDE_EXT"
+    for ext in "${exts[@]}"; do
+        ext="$(trim "$ext")"
+        [ -z "$ext" ] && continue
+        include_args+=( --include "*.$(ci_glob "$ext")" )
+    done
+}
+
+# 대상 경로가 속한 파일시스템의 여유 공간(MB)
+free_disk_mb() {
+    local probe="$1"
+    while [ ! -d "$probe" ] && [ "$probe" != "/" ] && [ -n "$probe" ]; do
+        probe="$(dirname "$probe")"
+    done
+    df -Pm "$probe" 2>/dev/null | awk 'NR==2 {print $4}'
+}
+
 [ -f "$CONF" ] || { log "설정 파일 없음: $CONF  (sync-map.conf.example을 복사해서 만드십시오)"; exit 1; }
 command -v "$RCLONE" >/dev/null 2>&1 || { log "rclone 미설치 — README.md의 설치 절차를 따르십시오"; exit 1; }
 
+build_include_args
+
 if [ "$LIST_ONLY" -eq 1 ]; then
+    echo "설정 (${SETTINGS})"
+    echo "  확장자 화이트리스트 : $INCLUDE_EXT"
+    echo "  단일 파일 최대       : $MAX_FILE_SIZE"
+    echo "  회차당 전송 상한     : $MAX_TRANSFER"
+    echo "  최소 여유 디스크     : ${MIN_FREE_DISK_MB} MB"
+    echo
     printf '%-20s %-55s %s\n' "NAME" "ONEDRIVE" "LOCAL"
     while IFS='|' read -r name od local pipeline || [ -n "$name" ]; do
         name="$(trim "$name")"
@@ -109,19 +172,33 @@ while IFS='|' read -r name od_path local_path pipeline || [ -n "$name" ]; do
         continue
     fi
 
+    # 디스크 점검을 복사보다 먼저 — 꽉 찬 뒤에 아는 것은 늦다
+    avail="$(free_disk_mb "$local_path")"
+    if [ -n "$avail" ] && [ "$avail" -lt "$MIN_FREE_DISK_MB" ]; then
+        log "[$name] 디스크 여유 부족: ${avail} MB < 기준 ${MIN_FREE_DISK_MB} MB — 동기화 중단"
+        failed=1
+        continue
+    fi
+
     mkdir -p "$local_path"
 
     rclone_log="$(mktemp)"
     rc=0
     "$RCLONE" copy "${REMOTE}:${od_path}" "$local_path" \
-        --create-empty-src-dirs \
+        "${include_args[@]}" \
+        --max-size "$MAX_FILE_SIZE" \
+        --max-transfer "$MAX_TRANSFER" \
         --use-json-log --log-level INFO --log-file "$rclone_log" --stats 0 \
         --transfers 4 --checkers 8 --retries 3 --low-level-retries 10 \
         --exclude '~$*' --exclude '.~lock.*' --exclude '*.tmp' --exclude '.DS_Store' \
         $( [ "$DRY_RUN" -eq 1 ] && printf '%s' '--dry-run' ) \
         </dev/null || rc=$?
 
-    if [ "$rc" -ne 0 ]; then
+    # 8 = --max-transfer 상한 도달. 실패가 아니라 의도된 제동이므로
+    # 받아온 파일은 정상 처리하고 다음 회차에 이어받는다.
+    if [ "$rc" -eq 8 ]; then
+        log "[$name] 전송 상한(${MAX_TRANSFER}) 도달 — 나머지는 다음 회차에 이어받음"
+    elif [ "$rc" -ne 0 ]; then
         log "[$name] rclone 실패 (exit $rc)"
         sed -n '1,20p' "$rclone_log" >&2 || true
         rm -f "$rclone_log"

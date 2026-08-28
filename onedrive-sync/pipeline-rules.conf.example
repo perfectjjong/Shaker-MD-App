@@ -1,0 +1,21 @@
+# dispatch-pipeline.sh 규칙
+#
+# 형식:
+#   경로 접두사 | 실행할 명령
+#
+# - 경로 접두사는 매핑의 OCI 서버 폴더 기준 상대경로다.
+#   (sync-map.conf의 "automation" 매핑이면 "/home/ubuntu/2026/10. Automation" 기준)
+# - 이번 회차에 들어온 파일 중 그 접두사로 시작하는 것이 하나라도 있으면
+#   명령을 한 번 실행한다. 없으면 실행하지 않는다.
+# - 여러 규칙이 걸리면 위에서부터 순서대로 모두 실행한다.
+# - 명령에 넘어가는 환경변수: sync-map.conf의 SYNC_* 전부에 더해
+#     SYNC_MATCHED_LIST   이 규칙에 걸린 파일 목록 파일 경로
+#     SYNC_MATCHED_COUNT  이 규칙에 걸린 파일 수
+#     SYNC_MATCHED_PREFIX 걸린 접두사
+
+00. Sell Thru Dashboard/ | cd /home/ubuntu/Shaker-MD-App && python3 -m automation-backup.sell-thru-dashboard.st_db
+
+03. Operation/03. PSI/ | cd /home/ubuntu/Shaker-MD-App && python3 price-tracking/orchestrator.py
+
+# 프로모션 자료는 파이프라인 없이 Telegram 알림만
+# 04. Promotion/ | set -a; . /home/ubuntu/Shaker-MD-App/.env; set +a; curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="프로모션 자료 ${SYNC_MATCHED_COUNT}건 동기화됨" >/dev/null
