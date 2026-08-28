@@ -1,0 +1,183 @@
+#!/bin/bash
+# OneDrive → OCI 서버 단방향 동기화
+#
+# OneDrive의 지정 폴더를 OCI 서버의 대응 폴더로 내려받고,
+# 새로 들어온 파일이 있으면 해당 매핑에 등록된 파이프라인을 실행한다.
+#
+# 단방향이다. 서버 → OneDrive 방향으로는 아무것도 쓰지 않는다
+# (rclone copy는 대상에만 쓰고, 원본은 읽기만 한다).
+#
+# 설정: sync-map.conf  (sync-map.conf.example 참고)
+# 설치: ./install-cron.sh
+# 사용법:
+#   ./sync-onedrive-to-oci.sh              # 전체 매핑 동기화
+#   ./sync-onedrive-to-oci.sh --dry-run    # 실제 복사 없이 대상만 확인
+#   ./sync-onedrive-to-oci.sh --only NAME  # 특정 매핑만
+#   ./sync-onedrive-to-oci.sh --list       # 매핑 목록 출력
+set -euo pipefail
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+
+CONF="${ONEDRIVE_SYNC_CONF:-$SCRIPT_DIR/sync-map.conf}"
+REMOTE="${ONEDRIVE_REMOTE:-onedrive}"
+LOCK="${ONEDRIVE_SYNC_LOCK:-/tmp/onedrive-sync.lock}"
+RCLONE="${RCLONE_BIN:-rclone}"
+
+DRY_RUN=0
+ONLY=""
+LIST_ONLY=0
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --dry-run) DRY_RUN=1 ;;
+        --only)    ONLY="${2:-}"; shift ;;
+        --list)    LIST_ONLY=1 ;;
+        -h|--help) sed -n '2,20p' "${BASH_SOURCE[0]}"; exit 0 ;;
+        *) echo "알 수 없는 옵션: $1" >&2; exit 2 ;;
+    esac
+    shift
+done
+
+log() { printf '[onedrive-sync] %s %s\n' "$(date '+%F %T')" "$*"; }
+
+trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    s="${s%"${s##*[![:space:]]}"}"
+    printf '%s' "$s"
+}
+
+[ -f "$CONF" ] || { log "설정 파일 없음: $CONF  (sync-map.conf.example을 복사해서 만드십시오)"; exit 1; }
+command -v "$RCLONE" >/dev/null 2>&1 || { log "rclone 미설치 — README.md의 설치 절차를 따르십시오"; exit 1; }
+
+if [ "$LIST_ONLY" -eq 1 ]; then
+    printf '%-20s %-55s %s\n' "NAME" "ONEDRIVE" "LOCAL"
+    while IFS='|' read -r name od local pipeline || [ -n "$name" ]; do
+        name="$(trim "$name")"
+        case "$name" in ''|\#*) continue ;; esac
+        printf '%-20s %-55s %s\n' "$name" "$(trim "$od")" "$(trim "$local")"
+    done < "$CONF"
+    exit 0
+fi
+
+# 동시 실행 방지 — cron 주기보다 동기화가 오래 걸려도 겹치지 않는다
+exec 9>"$LOCK"
+if ! flock -n 9; then
+    log "이전 실행이 아직 진행 중 — 이번 회차 건너뜀"
+    exit 0
+fi
+
+# rclone이 실제로 전송한(또는 dry-run에서 전송했을) 파일 목록을 JSON 로그에서 추출한다
+extract_transferred() {
+    python3 - "$1" "$2" <<'PY'
+import json, sys
+log_path, dry = sys.argv[1], sys.argv[2] == "1"
+prefix = "Skipped copy" if dry else "Copied"
+with open(log_path, encoding="utf-8", errors="replace") as fh:
+    for line in fh:
+        line = line.strip()
+        if not line.startswith("{"):
+            continue
+        try:
+            entry = json.loads(line)
+        except ValueError:
+            continue
+        if not str(entry.get("msg", "")).startswith(prefix):
+            continue
+        obj = entry.get("object")
+        if obj:
+            print(obj)
+PY
+}
+
+failed=0
+synced_total=0
+
+while IFS='|' read -r name od_path local_path pipeline || [ -n "$name" ]; do
+    name="$(trim "$name")"
+    case "$name" in ''|\#*) continue ;; esac
+
+    od_path="$(trim "${od_path:-}")"
+    local_path="$(trim "${local_path:-}")"
+    pipeline="$(trim "${pipeline:-}")"
+
+    [ -n "$ONLY" ] && [ "$ONLY" != "$name" ] && continue
+
+    if [ -z "$od_path" ] || [ -z "$local_path" ]; then
+        log "[$name] 설정이 불완전함 (OneDrive/로컬 경로 누락) — 건너뜀"
+        failed=1
+        continue
+    fi
+
+    mkdir -p "$local_path"
+
+    rclone_log="$(mktemp)"
+    rc=0
+    "$RCLONE" copy "${REMOTE}:${od_path}" "$local_path" \
+        --create-empty-src-dirs \
+        --use-json-log --log-level INFO --log-file "$rclone_log" --stats 0 \
+        --transfers 4 --checkers 8 --retries 3 --low-level-retries 10 \
+        --exclude '~$*' --exclude '.~lock.*' --exclude '*.tmp' --exclude '.DS_Store' \
+        $( [ "$DRY_RUN" -eq 1 ] && printf '%s' '--dry-run' ) \
+        </dev/null || rc=$?
+
+    if [ "$rc" -ne 0 ]; then
+        log "[$name] rclone 실패 (exit $rc)"
+        sed -n '1,20p' "$rclone_log" >&2 || true
+        rm -f "$rclone_log"
+        failed=1
+        continue
+    fi
+
+    file_list="$(mktemp)"
+    extract_transferred "$rclone_log" "$DRY_RUN" > "$file_list"
+    rm -f "$rclone_log"
+
+    count="$(wc -l < "$file_list" | tr -d ' ')"
+
+    if [ "$count" -eq 0 ]; then
+        rm -f "$file_list"
+        continue
+    fi
+
+    synced_total=$(( synced_total + count ))
+
+    if [ "$DRY_RUN" -eq 1 ]; then
+        log "[$name] (dry-run) 복사 대상 ${count}건:"
+        sed 's/^/    /' "$file_list"
+        rm -f "$file_list"
+        continue
+    fi
+
+    log "[$name] ${count}건 동기화 → $local_path"
+    sed 's/^/    /' "$file_list"
+
+    if [ -z "$pipeline" ]; then
+        rm -f "$file_list"
+        continue
+    fi
+
+    log "[$name] 파이프라인 실행: $pipeline"
+    prc=0
+    SYNC_NAME="$name" \
+    SYNC_LOCAL_DIR="$local_path" \
+    SYNC_REMOTE_PATH="$od_path" \
+    SYNC_FILE_COUNT="$count" \
+    SYNC_FILE_LIST="$file_list" \
+        bash -c "$pipeline" </dev/null || prc=$?
+
+    if [ "$prc" -ne 0 ]; then
+        log "[$name] 파이프라인 실패 (exit $prc)"
+        failed=1
+    else
+        log "[$name] 파이프라인 완료"
+    fi
+
+    rm -f "$file_list"
+done < "$CONF"
+
+if [ "$synced_total" -eq 0 ]; then
+    log "변경 없음"
+fi
+
+exit "$failed"

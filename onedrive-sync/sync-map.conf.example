@@ -1,0 +1,35 @@
+# OneDrive → OCI 서버 동기화 매핑
+#
+# 형식 (파이프 4칸):
+#   이름 | OneDrive 경로 | OCI 서버 경로 | 새 파일 감지 시 실행할 명령(선택)
+#
+# - OneDrive 경로는 rclone 리모트의 드라이브 루트 기준 상대경로다.
+#   실제 경로는 서버에서 아래로 확인한다:
+#       rclone lsd onedrive:
+#       rclone lsd "onedrive:문서/01. 2026/01. Work/08. Automation"
+# - 경로에 공백·점·한글이 있어도 그대로 쓴다. 따옴표는 붙이지 않는다.
+# - 4번째 칸을 비우면 복사만 하고 아무것도 실행하지 않는다.
+# - 파이프라인에 넘어가는 환경변수:
+#       SYNC_NAME        매핑 이름
+#       SYNC_LOCAL_DIR   내려받은 서버 폴더
+#       SYNC_REMOTE_PATH OneDrive 원본 경로
+#       SYNC_FILE_COUNT  이번에 들어온 파일 수
+#       SYNC_FILE_LIST   파일 목록이 한 줄에 하나씩 담긴 임시 파일 경로
+#
+# 주의: 단방향 복사라 OneDrive 쪽 파일이 서버의 같은 이름 파일을 덮어쓴다.
+#       서버가 직접 생성하는 산출물(.db, 대시보드 html 등)이 있는 폴더를
+#       대상으로 잡으면 그 산출물이 날아갈 수 있다. 처음에는 반드시
+#       --dry-run으로 확인하고, 불안하면 아래 inbox 방식을 쓴다.
+
+sell-thru | 문서/01. 2026/01. Work/08. Automation/03. Operation | /home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard | cd /home/ubuntu/Shaker-MD-App && python3 -m automation-backup.sell-thru-dashboard.st_db
+
+price-tracking | 문서/01. 2026/01. Work/08. Automation/03. Operation/03. PSI | /home/ubuntu/2026/06. Price Tracking | cd /home/ubuntu/Shaker-MD-App && python3 price-tracking/orchestrator.py
+
+promotion | 문서/01. 2026/01. Work/08. Automation/03. Operation/04. Promotion | /home/ubuntu/2026/10. Automation/04. Promotion |
+
+# --- 대안: 서버 작업 폴더를 건드리지 않는 inbox 방식 ---
+# 산출물 손실 걱정 없이 받기만 하고, 파이프라인이 inbox에서 꺼내 쓰게 한다.
+# sell-thru-inbox | 문서/01. 2026/01. Work/08. Automation/03. Operation | /home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard/inbox | cd /home/ubuntu/Shaker-MD-App && python3 -m automation-backup.sell-thru-dashboard.st_db
+
+# --- 파이프라인 대신 Telegram 알림만 보내는 예시 ---
+# kpi | 문서/01. 2026/01. Work/08. Automation/03. Operation/06. KPI Management | /home/ubuntu/2026/10. Automation/06. KPI Management | curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" -d chat_id="${TELEGRAM_CHAT_ID}" -d text="[$SYNC_NAME] 새 파일 ${SYNC_FILE_COUNT}건 동기화됨" >/dev/null
