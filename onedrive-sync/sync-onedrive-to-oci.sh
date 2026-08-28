@@ -7,6 +7,11 @@
 # 단방향이다. 서버 → OneDrive 방향으로는 아무것도 쓰지 않는다
 # (rclone copy는 대상에만 쓰고, 원본은 읽기만 한다).
 #
+# 중복 처리:
+#   - 서버에 이미 있고 내용이 같은 파일(크기·수정시각 일치)은 전송하지 않는다.
+#   - 같은 이름의 파일이 양쪽에 있으면 더 최신인 쪽을 남긴다. 서버 파일이
+#     더 최신이면 건너뛰므로, 서버가 생성한 산출물이 옛 버전으로 덮이지 않는다.
+#
 # 용량 보호 (sync-settings.conf에서 조정):
 #   1) 확장자 화이트리스트 — 허용된 확장자만 내려받는다
 #   2) 단일 파일 크기 상한
@@ -35,6 +40,8 @@ INCLUDE_EXT="xlsx,xls,xlsm,csv,txt,json"
 MAX_FILE_SIZE="100M"
 MAX_TRANSFER="2G"
 MIN_FREE_DISK_MB="5000"
+KEEP_NEWER_ON_SERVER="true"
+MODIFY_WINDOW="1s"
 
 # shellcheck source=/dev/null
 [ -f "$SETTINGS" ] && . "$SETTINGS"
@@ -80,17 +87,32 @@ ci_glob() {
     printf '%s' "$out"
 }
 
-# 확장자 화이트리스트를 rclone --include 인자로 변환
-build_include_args() {
-    include_args=()
+# rclone 필터 규칙을 만든다.
+#
+# --include와 --exclude를 섞으면 rclone이 평가 순서를 보장하지 않아
+# Office 임시파일 ~$보고서.xlsx 가 화이트리스트의 *.xlsx에 먼저 걸릴 수 있다.
+# --filter로 순서를 명시한다 — 위에서부터 먼저 일치하는 규칙이 이긴다.
+#   1) 제외 규칙 (임시·잠금 파일)
+#   2) 확장자 화이트리스트
+#   3) 나머지 전부 제외
+build_filter_args() {
+    filter_args=()
     local ext
     local -a exts
+
+    filter_args+=( --filter '- ~$*' )       # Office 임시파일
+    filter_args+=( --filter '- .~lock.*' )  # LibreOffice 잠금파일
+    filter_args+=( --filter '- .DS_Store' )
+    filter_args+=( --filter '- *.tmp' )
+
     IFS=',' read -ra exts <<< "$INCLUDE_EXT"
     for ext in "${exts[@]}"; do
         ext="$(trim "$ext")"
         [ -z "$ext" ] && continue
-        include_args+=( --include "*.$(ci_glob "$ext")" )
+        filter_args+=( --filter "+ *.$(ci_glob "$ext")" )
     done
+
+    filter_args+=( --filter '- *' )
 }
 
 # 대상 경로가 속한 파일시스템의 여유 공간(MB)
@@ -105,7 +127,7 @@ free_disk_mb() {
 [ -f "$CONF" ] || { log "설정 파일 없음: $CONF  (sync-map.conf.example을 복사해서 만드십시오)"; exit 1; }
 command -v "$RCLONE" >/dev/null 2>&1 || { log "rclone 미설치 — README.md의 설치 절차를 따르십시오"; exit 1; }
 
-build_include_args
+build_filter_args
 
 if [ "$LIST_ONLY" -eq 1 ]; then
     echo "설정 (${SETTINGS})"
@@ -113,6 +135,7 @@ if [ "$LIST_ONLY" -eq 1 ]; then
     echo "  단일 파일 최대       : $MAX_FILE_SIZE"
     echo "  회차당 전송 상한     : $MAX_TRANSFER"
     echo "  최소 여유 디스크     : ${MIN_FREE_DISK_MB} MB"
+    echo "  서버 최신본 보존     : $KEEP_NEWER_ON_SERVER (수정시각 허용오차 ${MODIFY_WINDOW})"
     echo
     printf '%-20s %-55s %s\n' "NAME" "ONEDRIVE" "LOCAL"
     while IFS='|' read -r name od local pipeline || [ -n "$name" ]; do
@@ -185,12 +208,13 @@ while IFS='|' read -r name od_path local_path pipeline || [ -n "$name" ]; do
     rclone_log="$(mktemp)"
     rc=0
     "$RCLONE" copy "${REMOTE}:${od_path}" "$local_path" \
-        "${include_args[@]}" \
+        "${filter_args[@]}" \
         --max-size "$MAX_FILE_SIZE" \
         --max-transfer "$MAX_TRANSFER" \
+        --modify-window "$MODIFY_WINDOW" \
+        $( [ "$KEEP_NEWER_ON_SERVER" = "true" ] && printf '%s' '--update' ) \
         --use-json-log --log-level INFO --log-file "$rclone_log" --stats 0 \
         --transfers 4 --checkers 8 --retries 3 --low-level-retries 10 \
-        --exclude '~$*' --exclude '.~lock.*' --exclude '*.tmp' --exclude '.DS_Store' \
         $( [ "$DRY_RUN" -eq 1 ] && printf '%s' '--dry-run' ) \
         </dev/null || rc=$?
 
