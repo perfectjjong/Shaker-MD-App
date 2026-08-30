@@ -1,7 +1,7 @@
 {
  "_meta": {
   "src": "data.json+psi_data.js+data_ir.js",
-  "built": "2026-08-28",
+  "built": "2026-08-30",
   "version": "v1(dual-axis)",
   "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
   "fcst_method": "1-7월 실적 + 8월 RSM + 9-12월(1-7평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)",
@@ -75,9 +75,9 @@
    },
    "IR": {
     "S1": {
-     "3Q": 58.6,
+     "3Q": 76.3,
      "4Q": 36.3,
-     "H2": 94.9
+     "H2": 112.6
     },
     "target": {
      "3Q": 60,
@@ -85,9 +85,9 @@
      "H2": 95
     },
     "S2": {
-     "3Q": 72.2,
+     "3Q": 94.0,
      "4Q": 44.7,
-     "H2": 116.9
+     "H2": 138.7
     }
    }
   },
@@ -703,7 +703,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 3788600.0,
+     "st_val": 7577200.0,
      "fcst": true
     },
     "09": {
@@ -759,7 +759,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 2080.0,
+     "st_qty": 4160.0,
      "fcst": true
     },
     "09": {
@@ -813,7 +813,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 971672.0,
+     "st_val": 1943343.0,
      "fcst": true
     },
     "09": {
@@ -869,7 +869,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 350.0,
+     "st_qty": 700.0,
      "fcst": true
     },
     "09": {
@@ -923,7 +923,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 305922.0,
+     "st_val": 611843.0,
      "fcst": true
     },
     "09": {
@@ -979,7 +979,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 150.0,
+     "st_qty": 300.0,
      "fcst": true
     },
     "09": {
@@ -1033,7 +1033,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 1655109.0,
+     "st_val": 3310217.0,
      "fcst": true
     },
     "09": {
@@ -1089,7 +1089,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 1000.0,
+     "st_qty": 2000.0,
      "fcst": true
     },
     "09": {
@@ -1143,7 +1143,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 197702.0,
+     "st_val": 395404.0,
      "fcst": true
     },
     "09": {
@@ -1199,7 +1199,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 95.0,
+     "st_qty": 190.0,
      "fcst": true
     },
     "09": {
@@ -1253,7 +1253,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 1951519.0,
+     "st_val": 3903038.0,
      "fcst": true
     },
     "09": {
@@ -1309,7 +1309,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 792.0,
+     "st_qty": 1584.0,
      "fcst": true
     },
     "09": {
@@ -1363,7 +1363,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 1812039.0,
+     "st_val": 3624077.0,
      "fcst": true
     },
     "09": {
@@ -1419,7 +1419,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 269.0,
+     "st_qty": 538.0,
      "fcst": true
     },
     "09": {
@@ -1471,7 +1471,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 1352314.0,
+     "st_val": 2704628.0,
      "fcst": true
     },
     "09": {
@@ -1527,7 +1527,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 344.0,
+     "st_qty": 688.0,
      "fcst": true
     },
     "09": {
@@ -1661,7 +1661,7 @@
      "fcst": true
     },
     "08": {
-     "st_val": 5649690.0,
+     "st_val": 11299378.0,
      "fcst": true
     },
     "09": {
@@ -1705,7 +1705,7 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 2469.0,
+     "st_qty": 4938.0,
      "fcst": true
     },
     "09": {

@@ -36,8 +36,26 @@ IR_MAINS = ["BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
             "Al Ghanem", "Dhamin", "Zagzoog", "Box Appliance"]
 MAIN_SET = set(OR_MAINS) | set(IR_MAINS)
 
-CATS = ["Inverter", "ON/OFF", "Window", "Free Stand", "Cassette", "Concealed",
-        "CAC Ducted", "PACKAGE", "Multi-V", "Applied", "Accessory/Others"]
+# 2026-08-26 형님 지시로 카테고리 정본화. 원본 Accrual 엑셀(AC컬럼)은 구 라벨을 쓰지만
+# 대시보드 산출물은 전사 정본 라벨로 통일한다 — 다른 대시보드와 필터·비교가 어긋나던 문제.
+# ⚠️ **1:1 대응만** 바꾼다. GPC 고유 축(CAC Ducted / Applied / Accessory/Others)은
+#    정본에 대응 항목이 없어 병합하면 손익 분석 정보가 사라지므로 그대로 둔다.
+#    (예: CAC Ducted 를 Concealed Set 에 합치면 덕트형 구분이 소실)
+CATS = ["Split Inverter", "Split On/Off", "Window AC", "Floor Standing AC", "Cassette AC",
+        "Concealed Set", "CAC Ducted", "Unitary Package", "Multi-V", "Applied",
+        "Accessory/Others"]
+
+# 원본 엑셀 라벨 → 정본 라벨 (norm_cat 에서 최우선 적용)
+_SRC_TO_CANON = {
+    "inverter": "Split Inverter",
+    "on/off": "Split On/Off",
+    "window": "Window AC",
+    "free stand": "Floor Standing AC",
+    "free standing": "Floor Standing AC",
+    "cassette": "Cassette AC",
+    "concealed": "Concealed Set",
+    "package": "Unitary Package",
+}
 MONTH_NAMES = {n: i for i, n in enumerate(
     ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], 1)}
 
@@ -57,6 +75,9 @@ def latest_src():
 
 def norm_cat(s):
     s = re.sub(r"\s+", " ", str(s or "")).strip()
+    canon = _SRC_TO_CANON.get(s.lower())
+    if canon:
+        return canon
     for c in CATS:
         if s.lower() == c.lower():
             return c
