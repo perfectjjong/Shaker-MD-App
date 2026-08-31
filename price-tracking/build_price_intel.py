@@ -393,10 +393,48 @@ def telegram_summary(d) -> str:
     return "\n".join(L)
 
 
+REPO = Path("/home/ubuntu/Shaker-MD-App")
+
+
+def deploy():
+    """커밋 + push. rc=0을 배포 성공으로 믿지 않는다 [[project_deploy_branch_drift_incident]].
+
+    2026-08-30 사고: 피처 브랜치에 있으면 `push origin main`이 로컬 main(정지 상태)을
+    밀어 "Everything up-to-date" rc=0으로 통과 → 이틀치 배포가 조용히 증발했다.
+    그래서 ①main 여부를 먼저 막고 ②push 후 원격과의 차이를 실측한다."""
+    import subprocess
+
+    def git(*args, check=True):
+        return subprocess.run(["git", "-C", str(REPO), *args],
+                              capture_output=True, text=True, check=check)
+
+    branch = git("branch", "--show-current").stdout.strip()
+    if branch != "main":
+        raise RuntimeError(
+            f"배포 중단 — 현재 브랜치가 '{branch}'다(main 아님). "
+            f"여기서 push하면 조용히 누락된다. main으로 되돌린 뒤 재실행할 것.")
+
+    rel = str(OUT.relative_to(REPO))
+    git("add", rel)
+    if not git("diff", "--cached", "--quiet", check=False).returncode:
+        print("· 변경 없음 — 커밋 생략")
+    else:
+        git("-c", "commit.gpgsign=false", "commit", "-q", "-m",
+            f"chore(price-intel): 대시보드 갱신 {datetime.now():%Y-%m-%d}")
+        print(f"· 커밋 {git('rev-parse', '--short', 'HEAD').stdout.strip()}")
+
+    git("push", "origin", "main")
+    git("fetch", "-q", "origin", "main")
+    behind = git("rev-list", "--count", "origin/main..main").stdout.strip()
+    if behind != "0":
+        raise RuntimeError(f"배포 실패 — push 후에도 미반영 커밋 {behind}개. 원격 확인 필요.")
+    print("✅ 배포 검증: 원격 main 일치")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--telegram", action="store_true", help="주간 요약 텔레그램 발송")
-    ap.add_argument("--chat-id", default=None)
+    ap.add_argument("--deploy", action="store_true", help="커밋+push (원격 검증 포함)")
     a = ap.parse_args()
 
     d = build_all()
@@ -405,14 +443,16 @@ def main():
     print(f"✅ 생성: {OUT}  ({OUT.stat().st_size:,} bytes)")
     print(f"   기준일 {d['freshness']['anchor']} · 지연채널 {d['freshness']['stale_count']}개")
 
+    if a.deploy:
+        deploy()
+
     if a.telegram:
+        # chat_id/토큰은 notify 모듈이 정본 — 하드코딩하지 않는다
         sys.path.insert(0, "/home/ubuntu/sonolbot")
-        from telegram_sender import send_message_sync
-        chat = a.chat_id or __import__("os").environ.get("TELEGRAM_CHAT_ID")
-        if not chat:
-            print("⚠️ chat_id 미지정 — 발송 생략", file=sys.stderr)
-            return 2
-        send_message_sync(chat, telegram_summary(d))
+        from notify import telegram_send
+        if not telegram_send(telegram_summary(d)):
+            print("❌ 텔레그램 발송 실패", file=sys.stderr)
+            return 2   # 발송 실패는 조용히 넘기지 않는다 — 크론 관제가 rc로 잡는다
         print("✅ 텔레그램 발송 완료")
     return 0
 
