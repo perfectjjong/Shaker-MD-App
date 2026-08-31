@@ -94,6 +94,19 @@ def text(v):
     return str(v).strip() or None
 
 
+def id_text(v):
+    """SKU/ID용 문자열화. 엑셀 열에 NaN이 섞이면 pandas가 int 열을 float로 승격시켜
+    1000620 → '1000620.0'이 되고, 같은 SKU가 두 상품으로 갈라진다. 정수값 float는 .0을 제거한다."""
+    if _is_nan(v) or v == "":
+        return None
+    if isinstance(v, float) and v.is_integer():
+        return str(int(v))
+    s = str(v).strip()
+    if s.endswith(".0") and s[:-2].lstrip("-").isdigit():
+        s = s[:-2]
+    return s or None
+
+
 def url_slug(u):
     """상품 URL의 마지막 경로 조각 → 대체 SKU (사이트에 모델코드가 없는 상품용)."""
     u = text(u)
@@ -149,7 +162,7 @@ def normalize_extra(raw, sheet_name=None):
 
 
 def normalize_najm(raw, sheet_name=None):
-    sku = text(raw.get("sku")) or text(raw.get("product_id"))
+    sku = id_text(raw.get("sku")) or id_text(raw.get("product_id"))
     return {
         "sku": sku,
         "brand": text(raw.get("brand_en")),
@@ -270,7 +283,7 @@ def normalize_bh(raw, sheet_name=None):
 def normalize_sws(raw, sheet_name=None):
     d = parse_pct(raw.get("Discount"))  # '-42.08%' 형태 → 절대값 사용
     return {
-        "sku": text(raw.get("Product ID")) or url_slug(raw.get("Product_URL")),
+        "sku": id_text(raw.get("Product ID")) or url_slug(raw.get("Product_URL")),
         "brand": text(raw.get("Brand")),
         "model": None,
         "name_en": text(raw.get("Product Name")),

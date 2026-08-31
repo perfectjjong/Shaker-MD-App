@@ -65,12 +65,20 @@ def resolve_master_path(channel: str) -> Path:
     return None
 
 
+def _is_blank(v):
+    if v is None:
+        return True
+    if isinstance(v, float) and v != v:  # NaN
+        return True
+    return str(v).strip() == ""
+
+
 def read_master_rows(channel: str, master_path: Path):
     """마스터 xlsx → (run_date, [정규화 행]) dict. 정규화 실패 행은 errors에 수집."""
     import pandas as pd
     m = MAPPINGS[channel]
     norm = m["normalize"]
-    by_date, errors = {}, []
+    by_date, errors, blanks = {}, [], 0
 
     if m["source"] == "sheet_per_date":
         sheets = pd.read_excel(master_path, sheet_name=None, engine="openpyxl")
@@ -85,11 +93,17 @@ def read_master_rows(channel: str, master_path: Path):
 
     for sheet_name, df in frames:
         for raw in df.to_dict("records"):
+            # 엑셀 패딩용 완전 공백 행은 데이터 결손이 아니다 — 실패로 세면 진짜 실패를 가린다
+            if all(_is_blank(v) for v in raw.values()):
+                blanks += 1
+                continue
             row = norm(raw, sheet_name=sheet_name)
             if not row["sku"] or not row["run_date"]:
                 errors.append({"reason": "sku/run_date 누락", "raw": {k: str(v)[:80] for k, v in raw.items()}})
                 continue
             by_date.setdefault(row["run_date"], []).append(row)
+    if blanks:
+        print(f"  [{channel}] 공백 행 {blanks}건 스킵 (엑셀 패딩, 결손 아님)")
     return by_date, errors
 
 

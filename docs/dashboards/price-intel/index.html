@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ko"><head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Price Intelligence — 경쟁 가격 인텔리전스</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f7f3ea;color:#191714;
+ font-family:Inter,-apple-system,'Segoe UI',system-ui,sans-serif;font-size:14px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:26px 20px 60px}
+header{border-bottom:2px solid #8c1d2f;padding-bottom:14px;margin-bottom:20px}
+h1{margin:0;font-size:23px;font-weight:700;letter-spacing:-.3px}
+.sub{color:#6b6355;font-size:12px;margin-top:5px}
+.warn{background:#fbeceb;border-left:4px solid #b3261e;padding:9px 13px;
+ border-radius:5px;font-size:12.5px;margin-bottom:16px;color:#6d1522}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:24px}
+.kpi{background:#fffdf8;border:1px solid #ddd4c2;border-radius:9px;padding:13px 15px}
+.kpi .k{font-size:10.5px;color:#6b6355;text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.kpi .v{font-size:25px;font-weight:700;margin-top:5px;letter-spacing:-.5px}
+.kpi .d{font-size:11.5px;color:#6b6355;margin-top:3px}
+.card{background:#fffdf8;border:1px solid #ddd4c2;border-radius:10px;
+ padding:18px 20px;margin-bottom:18px}
+.q{font-size:15.5px;font-weight:700;color:#6d1522;margin:0 0 3px}
+.q .num{display:inline-block;background:#8c1d2f;color:#fff;border-radius:5px;
+ padding:1px 7px;font-size:11px;margin-right:8px;vertical-align:2px}
+.hint{font-size:11.5px;color:#6b6355;margin-bottom:13px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:860px){.grid2{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{background:#6d1522;color:#fff;padding:7px 9px;text-align:left;
+ font-weight:600;font-size:11px;white-space:nowrap}
+td{padding:6px 9px;border-bottom:1px solid #efe9db;white-space:nowrap}
+tr:nth-child(even) td{background:#f9f5ec}
+td.r,th.r{text-align:right}
+td.nm{white-space:normal;max-width:330px;color:#453f35;font-size:11.5px}
+.mut{color:#9a927f}
+.up{color:#b3261e;font-weight:600}
+.dn{color:#1d6b45;font-weight:600}
+tr.thin td{opacity:.55;font-style:italic}
+.lgtag{background:#8c1d2f;color:#fff;border-radius:3px;padding:0 5px;
+ font-size:9.5px;font-weight:700}
+.take{background:#efe9db;border-left:4px solid #a8863c;padding:10px 13px;
+ border-radius:5px;font-size:12.5px;margin-top:13px;color:#453f35}
+.take b{color:#6d1522}
+canvas{max-height:270px}
+footer{margin-top:34px;padding-top:14px;border-top:1px solid #ddd4c2;
+ font-size:11px;color:#9a927f}
+</style></head><body><div class="wrap">
+
+<header>
+  <h1>Price Intelligence</h1>
+  <div class="sub">경쟁 가격 인텔리전스 · 기준일 <b>2026-08-31</b> ·
+   11채널 3,377 SKU ·
+   가격기록 312,981건 ·
+   생성 2026-08-31 21:41</div>
+</header>
+<div class="warn">⚠️ 수집 지연 1개 채널: Al Khater(112일) — 해당 채널 수치는 과거 시점입니다.</div>
+
+<div class="kpis">
+  <div class="kpi"><div class="k">현재 LG 프리미엄 (18K)</div>
+    <div class="v">+35.4%</div>
+    <div class="d">경쟁사 평균 대비</div></div>
+  <div class="kpi"><div class="k">프리미엄 변화 (2026-03→현재)</div>
+    <div class="v">-12.2%p</div>
+    <div class="d">동일 SKU 340개 기준</div></div>
+  <div class="kpi"><div class="k">우리 가격 변화</div>
+    <div class="v">+7.8%</div>
+    <div class="d">경쟁사 +17.5%</div></div>
+  <div class="kpi"><div class="k">채널 간 LG 가격 편차</div>
+    <div class="v">22.9%</div>
+    <div class="d">2,487 ~ 3,057 SAR</div></div>
+</div>
+
+<div class="card">
+  <div class="q"><span class="num">Q1</span>우리 프리미엄은 어디로 가고 있나?</div>
+  <div class="hint">18K 급 · <b>2026-03~2026-08</b> ·
+   기간 내내 살아있는 동일 SKU 340개만 비교해 신제품 출시·단종에 따른 착시를 제거했습니다.
+   수집 부실월 제외: 2026-01(3일), 2026-02(11일)<span class="mut"> · 월별 표본이 일부 변동(일시 품절 등) — 완전 균형패널은 아님</span></div>
+  <canvas id="c1"></canvas>
+  <div class="take">2026-03 → 2026-08 프리미엄 <b>+47.6% → +35.4%(-12.2%p)</b>. 격차가 줄어든 것은 우리가 내려서가 아니라 <b>경쟁사가 더 올렸기</b> 때문입니다 (경쟁 +17.5% vs LG +7.8%). 상대적 가격 위치가 개선된 구간입니다 — 이 여지를 <b>볼륨 확보</b>에 쓸지 <b>가격 인상으로 마진 회복</b>에 쓸지 판단이 필요합니다.</div>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <div class="q"><span class="num">Q2</span>어느 용량에서 가장 비싼가?</div>
+    <div class="hint">최근 30일 평균 · 표본 3 SKU 미만은 산출하지 않습니다(—)</div>
+    <table><tr><th>용량</th><th class="r">LG</th><th class="r">경쟁</th>
+      <th class="r">프리미엄</th><th class="r">SKU LG/경쟁</th></tr><tr><td>9~10K</td><td class="r">—</td><td class="r">—</td><td class="r"><span class="mut">—</span></td><td class="r mut">0 / 1</td></tr><tr><td>12K</td><td class="r">2,745</td><td class="r">1,965</td><td class="r"><span class="up">+39.7%</span></td><td class="r mut">11 / 224</td></tr><tr><td>18K</td><td class="r">2,759</td><td class="r">2,218</td><td class="r"><span class="up">+24.4%</span></td><td class="r mut">83 / 505</td></tr><tr><td>21~24K</td><td class="r">3,396</td><td class="r">2,890</td><td class="r"><span class="up">+17.5%</span></td><td class="r mut">71 / 447</td></tr><tr><td>30K</td><td class="r">6,055</td><td class="r">4,425</td><td class="r"><span class="up">+36.9%</span></td><td class="r mut">14 / 90</td></tr><tr><td>36K+</td><td class="r">9,389</td><td class="r">7,615</td><td class="r"><span class="up">+23.3%</span></td><td class="r mut">16 / 83</td></tr></table>
+  </div>
+  <div class="card">
+    <div class="q"><span class="num">Q3</span>채널마다 우리 가격이 다른가?</div>
+    <div class="hint">18K 급 · 최근 30일 평균 · 흐린 행은 표본 3 SKU 미만</div>
+    <table><tr><th>채널</th><th class="r">LG</th><th class="r">경쟁</th>
+      <th class="r">프리미엄</th><th class="r">SKU</th></tr><tr class=""><td>Bin Momen</td><td class="r">3,057</td><td class="r">2,392</td><td class="r"><span class="up">+27.8%</span></td><td class="r mut">5</td></tr><tr class=""><td>Al Manea</td><td class="r">3,043</td><td class="r">2,367</td><td class="r"><span class="up">+28.5%</span></td><td class="r mut">9</td></tr><tr class=""><td>eXtra</td><td class="r">2,938</td><td class="r">2,430</td><td class="r"><span class="up">+20.9%</span></td><td class="r mut">10</td></tr><tr class=""><td>SWS</td><td class="r">2,897</td><td class="r">2,445</td><td class="r"><span class="up">+18.5%</span></td><td class="r mut">12</td></tr><tr class=""><td>Black Box</td><td class="r">2,780</td><td class="r">2,242</td><td class="r"><span class="up">+24.0%</span></td><td class="r mut">15</td></tr><tr class=""><td>Tamkeen</td><td class="r">2,518</td><td class="r">2,057</td><td class="r"><span class="up">+22.4%</span></td><td class="r mut">19</td></tr><tr class=""><td>Najm</td><td class="r">2,487</td><td class="r">2,337</td><td class="r"><span class="up">+6.4%</span></td><td class="r mut">10</td></tr><tr class="thin"><td>Technobest <span class="mut">(표본 2)</span></td><td class="r">2,424</td><td class="r">1,857</td><td class="r"><span class="up">+30.5%</span></td><td class="r mut">2</td></tr><tr class="thin"><td>BH <span class="mut">(표본 1)</span></td><td class="r">1,448</td><td class="r">1,815</td><td class="r"><span class="dn">-20.2%</span></td><td class="r mut">1</td></tr></table>
+    <div class="take">같은 18K 급인데 채널 간 LG 가격이 <b>2,487 ~ 3,057 SAR (22.9% 차이)</b>로 벌어져 있습니다. 프리미엄이 가장 낮은 곳은 <b>Najm (+6.4%)</b>, 가장 높은 곳은 <b>Al Manea (+28.5%)</b>. 저가 채널이 시장가를 끌어내리면 타 채널 딜러 항의로 이어집니다 — 채널 가격 정책 점검 대상.</div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="q"><span class="num">Q4</span>지난 7일, 누가 가격을 움직였나?</div>
+  <div class="hint">기준일 2026-08-31 직전 7일 · 변동폭 큰 순 · 상위 15건 · <b style="color:#8a6d2e">수집 결함 24건 제외</b><span class="mut">(하루 튀었다 원위치한 값 = 프로모가 미포착일. 실제 변동이 아니라 순위만 왜곡함. ⚠️ 기준일 당일에 발생한 결함은 되돌아옴을 아직 관측 못 해 걸러지지 않을 수 있음)</span></div>
+  <div class="grid2">
+    <div><table><tr><th colspan="6" style="background:#b3261e">▲ 인상</th></tr>
+      <tr><th>일자</th><th>채널</th><th>브랜드</th><th>제품</th><th class="r">가격</th><th class="r">변동</th></tr>
+      <tr><td>2026-08-26</td><td>Technobest</td><td>بانكول</td><td class="nm"><span class="mut"> · 5202007</span></td><td class="r">1,499 → <b>2,279</b></td><td class="r"><span class="up">+52.0%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>GREE</td><td class="nm"><span class="mut"> · 12701090</span></td><td class="r">4,599 → <b>6,659</b></td><td class="r"><span class="up">+44.8%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>COOL SENSE</td><td class="nm"><span class="mut"> · 5301022</span></td><td class="r">2,199 → <b>3,169</b></td><td class="r"><span class="up">+44.1%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>GREE</td><td class="nm"><span class="mut"> · 12701100</span></td><td class="r">4,849 → <b>6,939</b></td><td class="r"><span class="up">+43.1%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>AL GHADEER</td><td class="nm"><span class="mut"> · 19503003</span></td><td class="r">999 → <b>1,429</b></td><td class="r"><span class="up">+43.0%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>GREE</td><td class="nm"><span class="mut"> · 12701098</span></td><td class="r">3,549 → <b>5,059</b></td><td class="r"><span class="up">+42.5%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>GREE</td><td class="nm"><span class="mut"> · 12701092</span></td><td class="r">5,349 → <b>7,599</b></td><td class="r"><span class="up">+42.1%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>AL JAZEERA AC</td><td class="nm"><span class="mut"> · 19603007</span></td><td class="r">1,749 → <b>2,479</b></td><td class="r"><span class="up">+41.7%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>جبسون</td><td class="nm"><span class="mut"> · 15602003</span></td><td class="r">1,649 → <b>2,329</b></td><td class="r"><span class="up">+41.2%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>بانكول</td><td class="nm"><span class="mut"> · 5201036</span></td><td class="r">1,699 → <b>2,399</b></td><td class="r"><span class="up">+41.2%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>بانكول</td><td class="nm"><span class="mut"> · 5201008</span></td><td class="r">3,199 → <b>4,509</b></td><td class="r"><span class="up">+41.0%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>COOL SENSE</td><td class="nm"><span class="mut"> · 5301008</span></td><td class="r">3,099 → <b>4,359</b></td><td class="r"><span class="up">+40.7%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>ZAMIL</td><td class="nm"><span class="mut"> · 6701027</span></td><td class="r">2,099 → <b>2,949</b></td><td class="r"><span class="up">+40.5%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>COOL SENSE</td><td class="nm"><span class="mut"> · 5301024</span></td><td class="r">2,149 → <b>3,019</b></td><td class="r"><span class="up">+40.5%</span></td></tr><tr><td>2026-08-26</td><td>Technobest</td><td>بانكول</td><td class="nm"><span class="mut"> · 5201038</span></td><td class="r">2,299 → <b>3,229</b></td><td class="r"><span class="up">+40.5%</span></td></tr></table></div>
+    <div><table><tr><th colspan="6" style="background:#1d6b45">▼ 인하</th></tr>
+      <tr><th>일자</th><th>채널</th><th>브랜드</th><th>제품</th><th class="r">가격</th><th class="r">변동</th></tr>
+      <tr><td>2026-08-26</td><td>Black Box</td><td>DANSAT</td><td class="nm">DANSAT Split Air Conditioner, 11100 BTU, Cold Only, Wi-Fi, 4<span class="mut"> · DSA12C</span></td><td class="r">2,599 → <b>1,249</b></td><td class="r"><span class="dn">-51.9%</span></td></tr><tr><td>2026-08-28</td><td>SWS</td><td>MIDEA</td><td class="nm">Midea Mission Xtreme, Split Air Conditioner, 22800BTU, Cold <span class="mut"> · 16842</span></td><td class="r">4,999 → <b>2,929</b></td><td class="r"><span class="dn">-41.4%</span></td></tr><tr><td>2026-08-31</td><td>SWS</td><td>HAIER</td><td class="nm">Haier - Split Air Conditioner, 18,000 BTU, Cooling Only, I-F<span class="mut"> · 7109</span></td><td class="r">3,249 → <b>1,999</b></td><td class="r"><span class="dn">-38.5%</span></td></tr><tr><td>2026-08-31</td><td>SWS</td><td>HAIER</td><td class="nm">Haier - Split Air Conditioner, 22,000 BTU, Cooling Only, Con<span class="mut"> · 7111</span></td><td class="r">3,799 → <b>2,499</b></td><td class="r"><span class="dn">-34.2%</span></td></tr><tr><td>2026-08-27</td><td>SWS</td><td>MANDO</td><td class="nm">Mando Plus Split Air Conditioner 18100 BTU Hot & Cold WiFi M<span class="mut"> · 8601</span></td><td class="r">3,299 → <b>2,209</b></td><td class="r"><span class="dn">-33.0%</span></td></tr><tr><td>2026-08-27</td><td>SWS</td><td>MANDO</td><td class="nm">Mando Plus Split Air Conditioner 22000 BTU Hot & Cold WiFi W<span class="mut"> · 9766</span></td><td class="r">3,899 → <b>2,779</b></td><td class="r"><span class="dn">-28.7%</span></td></tr><tr><td>2026-08-27</td><td>SWS</td><td>MANDO</td><td class="nm">Mando - Wall-Mounted Split Air Conditioner Plus, 27,000 BTU,<span class="mut"> · 8603</span></td><td class="r">4,799 → <b>3,729</b></td><td class="r"><span class="dn">-22.3%</span></td></tr><tr><td>2026-08-29</td><td>Al Manea</td><td>DYSON</td><td class="nm">Dyson Air Purifier Hot/Cold Special Edition, 454856-01<span class="mut"> · 150426303999004</span></td><td class="r">2,699 → <b>2,199</b></td><td class="r"><span class="dn">-18.5%</span></td></tr><tr><td>2026-08-27</td><td>Al Manea</td><td>HAAM</td><td class="nm">Haam Split AC, 12000 BTU, Cold Only, Inverter Compressor, Wi<span class="mut"> · 110300101312019</span></td><td class="r">1,799 → <b>1,499</b></td><td class="r"><span class="dn">-16.7%</span></td></tr><tr><td>2026-08-28</td><td>eXtra</td><td>SAMSUNG</td><td class="nm">Samsung, Split AC, 17,500 BTU, Cold Only, Digital Inverter, <span class="mut"> · 100513869</span></td><td class="r">3,099 → <b>2,599</b></td><td class="r"><span class="dn">-16.1%</span></td></tr><tr><td>2026-08-28</td><td>Technobest</td><td>TECHNO BEST</td><td class="nm"><span class="mut"> · 28101022</span></td><td class="r">2,809 → <b>2,409</b></td><td class="r"><span class="dn">-14.2%</span></td></tr><tr><td>2026-08-26</td><td>eXtra</td><td>CRAFFT</td><td class="nm">CRAFFT, Split AC, 22,000 BTU, Cool Only, Super Quiet<span class="mut"> · 100474412</span></td><td class="r">2,749 → <b>2,358</b></td><td class="r"><span class="dn">-14.2%</span></td></tr><tr><td>2026-08-28</td><td>Al Manea</td><td>HAAM</td><td class="nm">HAAM Window AC 18000 ,Window ,18000 BTU ,Cooling Only  ,Whit<span class="mut"> · 110100101318021</span></td><td class="r">1,449 → <b>1,249</b></td><td class="r"><span class="dn">-13.8%</span></td></tr><tr><td>2026-08-29</td><td>Technobest</td><td>COLIN</td><td class="nm"><span class="mut"> · 26202000</span></td><td class="r">1,669 → <b>1,439</b></td><td class="r"><span class="dn">-13.8%</span></td></tr><tr><td>2026-08-28</td><td>Al Manea</td><td>HAAM</td><td class="nm">Haam Window Air Conditioner 17700 ,Hot / Cold ,HM18HWM25<span class="mut"> · 110100102318017</span></td><td class="r">1,549 → <b>1,349</b></td><td class="r"><span class="dn">-12.9%</span></td></tr></table></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="q"><span class="num">Q5</span>브랜드별로 어떻게 움직였나?</div>
+  <div class="hint">18K 급 월평균 · Q1과 동일한 월 집합(수집 부실월 제외) ·
+   표본 2 SKU 미만인 달은 끊어서 표시</div>
+  <canvas id="c2"></canvas>
+</div>
+
+<div class="card">
+  <div class="q"><span class="num">Q6</span>경쟁사가 라인업을 바꿨나?</div>
+  <div class="hint">최근 30일 · 신규 283건 / 단종 363건 · 각 상위 12건</div>
+  <div class="grid2">
+    <div><table><tr><th colspan="4" style="background:#2a7a6e">신규 진입</th></tr>
+      <tr><th>일자</th><th>채널</th><th>브랜드</th><th>제품</th></tr>
+      <tr><td>2026-08-31</td><td>Al Manea</td><td>GREE</td><td class="nm">Gree Cosmo Split AC, 30000 BTU, Cool Only, White - GWC30AWEX</td></tr><tr><td>2026-08-31</td><td>Al Manea</td><td>GREE</td><td class="nm">Gree Cosmo Split AC, 24000 BTU, Cool Only, White - GWC24AWEX</td></tr><tr><td>2026-08-31</td><td>Al Manea</td><td>GREE</td><td class="nm">Gree Cosmo Split AC, 30000 BTU, Cool and Heat, White - GWH30</td></tr><tr><td>2026-08-31</td><td>Al Manea</td><td>GREE</td><td class="nm">Gree Cosmo Split AC, 24000 BTU, Cool and Heat, White - GWH24</td></tr><tr><td>2026-08-31</td><td>Al Manea</td><td>GREE</td><td class="nm">Gree Cosmo Split AC, 18,000 BTU, Cool Only, White - GWC18AWD</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 24000 BTU Inverter Fox N</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>BASIC</td><td class="nm">BASIC Air Conditioner Cassette Hot Cold 3 ton Inverter wifi</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 19100 BTU Inverter Fox N</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 18700 BTU Inverter Safe </td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 12100 BTU Inverter Fox N</td></tr><tr><td>2026-08-31</td><td>SWS</td><td>HAIER</td><td class="nm">Haier - Split Air Conditioner, 12,400 BTU, Cooling, Conda Pl</td></tr><tr><td>2026-08-30</td><td>Najm</td><td>MIDEA</td><td class="nm">ميديا مكيف كاسيت - 27000 وحدة - حار بارد - انفيرتر - موديل M</td></tr></table></div>
+    <div><table><tr><th colspan="4" style="background:#8a6d2e">단종·이탈</th></tr>
+      <tr><th>일자</th><th>채널</th><th>브랜드</th><th>제품</th></tr>
+      <tr><td>2026-08-31</td><td>Najm</td><td>MIDEA</td><td class="nm">ميديا أوليمبوس مكيف سبليت 31400 وحدة - بارد - MSTL36CRN</td></tr><tr><td>2026-08-31</td><td>Najm</td><td>GREE</td><td class="nm">جرى مكيف سبليت اي بلس 12000 وحدة - انفيرتر - بارد فقط - GWC1</td></tr><tr><td>2026-08-31</td><td>Tamkeen</td><td>GENERAL SUPREME</td><td class="nm">General Supreme General Supreme Quartz Split AC, 27,400 BTU,</td></tr><tr><td>2026-08-31</td><td>Technobest</td><td>BASIC</td><td class="nm"><span class='mut'>(제품명 미수집)</span></td></tr><tr><td>2026-08-31</td><td>Technobest</td><td>NIKAI</td><td class="nm"><span class='mut'>(제품명 미수집)</span></td></tr><tr><td>2026-08-31</td><td>Technobest</td><td>BASIC</td><td class="nm"><span class='mut'>(제품명 미수집)</span></td></tr><tr><td>2026-08-31</td><td>Al Manea</td><td>SAMSUNG</td><td class="nm">Samsung Split AC, Triple Inverter, 20000 BTU Cold, AR24TVHZB</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 12100 BTU Inverter VOXIN</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 18700 BTU Inverter SaveI</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 19100 BTU Inverter VOXIN</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>TCL</td><td class="nm">TCL Air Conditioner Split Cold Only 24000 BTU Inverter VOXIN</td></tr><tr><td>2026-08-31</td><td>Al Khunaizan</td><td>HISENSE</td><td class="nm">HISENSE Air Conditioner Cassette Hot Cold 41000 Inverter</td></tr></table></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="q"><span class="num">Q0</span>이 숫자를 믿어도 되나? — 데이터 신선도</div>
+  <div class="hint">모든 카드는 이 수집 상태 위에 계산됩니다. 지연 채널은 과거 시점 값입니다.</div>
+  <table><tr><th>채널</th><th>최종 수집일</th><th class="r">지연</th>
+    <th class="r">SKU</th><th class="r">누적 기록</th></tr><tr class=""><td>Al Khunaizan</td><td>2026-08-31</td><td class="r">0일</td><td class="r">467</td><td class="r mut">40,094</td></tr><tr class=""><td>Al Manea</td><td>2026-08-31</td><td class="r">0일</td><td class="r">303</td><td class="r mut">30,478</td></tr><tr class=""><td>BH</td><td>2026-08-31</td><td class="r">0일</td><td class="r">398</td><td class="r mut">38,035</td></tr><tr class=""><td>Bin Momen</td><td>2026-08-31</td><td class="r">0일</td><td class="r">116</td><td class="r mut">21,576</td></tr><tr class=""><td>Black Box</td><td>2026-08-31</td><td class="r">0일</td><td class="r">322</td><td class="r mut">28,473</td></tr><tr class=""><td>Najm</td><td>2026-08-31</td><td class="r">0일</td><td class="r">321</td><td class="r mut">29,264</td></tr><tr class=""><td>SWS</td><td>2026-08-31</td><td class="r">0일</td><td class="r">365</td><td class="r mut">34,381</td></tr><tr class=""><td>Tamkeen</td><td>2026-08-31</td><td class="r">0일</td><td class="r">234</td><td class="r mut">17,930</td></tr><tr class=""><td>Technobest</td><td>2026-08-31</td><td class="r">0일</td><td class="r">362</td><td class="r mut">33,540</td></tr><tr class=""><td>eXtra</td><td>2026-08-31</td><td class="r">0일</td><td class="r">318</td><td class="r mut">39,039</td></tr><tr class="thin"><td>Al Khater</td><td>2026-05-11</td><td class="r">112일</td><td class="r">171</td><td class="r mut">171</td></tr></table>
+</div>
+
+<footer>
+  소스: <code>2026/06. Price Tracking/price_data.db</code> ·
+  빌더: <code>price-tracking/build_price_intel.py</code> ·
+  가격 기준 = 프로모가(sl), 결측 시 표준가(sp) 폴백 ·
+  브랜드는 대소문자 통일 후 집계 · 결손은 0이 아닌 “—”로 표기
+</footer>
+</div>
+<script>
+const D = {"gap": {"band": "18K", "sku_count": 340, "series": [{"month": "2026-03", "lg": 2803, "comp": 1899, "gap_pct": 47.6, "lg_n": 42, "comp_n": 298}, {"month": "2026-04", "lg": 2758, "comp": 1954, "gap_pct": 41.1, "lg_n": 41, "comp_n": 284}, {"month": "2026-05", "lg": 2703, "comp": 1999, "gap_pct": 35.2, "lg_n": 40, "comp_n": 266}, {"month": "2026-06", "lg": 2774, "comp": 2058, "gap_pct": 34.8, "lg_n": 39, "comp_n": 261}, {"month": "2026-07", "lg": 2844, "comp": 2116, "gap_pct": 34.4, "lg_n": 40, "comp_n": 273}, {"month": "2026-08", "lg": 3022, "comp": 2232, "gap_pct": 35.4, "lg_n": 42, "comp_n": 298}], "base_month": "2026-03", "dropped_months": [{"month": "2026-01", "days": 3}, {"month": "2026-02", "days": 11}], "balanced": false}, "brand": {"band": "18K", "months": ["2026-03", "2026-04", "2026-05", "2026-06", "2026-07", "2026-08"], "brands": {"LG": [2696, 2674, 2611, 2692, 2708, 2759], "SAMSUNG": [2851, 2868, 2809, 2784, 3019, 2968], "GREE": [2099, 2123, 2179, 2432, 2489, 2580], "MIDEA": [2101, 2155, 2116, 2221, 2299, 2394], "HISENSE": [1840, 1859, 2013, 2495, 2192, 2304], "TCL": [1770, 1913, 2118, 2315, 2083, 2150]}}, "pal": {"paper": "#f7f3ea", "card": "#fffdf8", "panel": "#efe9db", "border": "#ddd4c2", "ink": "#191714", "sub": "#453f35", "muted": "#6b6355", "light": "#9a927f", "claret": "#8c1d2f", "claret_lt": "#a54b5e", "claret_dp": "#6d1522", "gold": "#a8863c", "gold_dp": "#8a6d2e", "green": "#1d6b45", "red": "#b3261e", "teal": "#2a7a6e", "plum": "#6d4b78", "rose": "#a5386b", "slate": "#33606d"}, "bcolor": {"LG": "#8c1d2f", "GREE": "#5f7a2a", "MIDEA": "#b06a24", "SAMSUNG": "#33606d", "HISENSE": "#2a7a6e", "TCL": "#7a4a8a"}};
+const P = D.pal, F = {family:'Inter'};
+Chart.defaults.font.family='Inter';
+Chart.defaults.color=P.muted;
+
+if (D.gap) {
+  const g=D.gap, L=g.series.map(s=>s.month);
+  new Chart(document.getElementById('c1'),{
+    data:{labels:L,datasets:[
+      {type:'line',label:'LG 평균가',data:g.series.map(s=>s.lg),borderColor:P.claret,
+        backgroundColor:P.claret,tension:.3,yAxisID:'y',borderWidth:2.5,pointRadius:3},
+      {type:'line',label:'경쟁사 평균가',data:g.series.map(s=>s.comp),borderColor:P.slate,
+        backgroundColor:P.slate,tension:.3,yAxisID:'y',borderWidth:2.5,pointRadius:3},
+      {type:'bar',label:'프리미엄 %',data:g.series.map(s=>s.gap_pct),
+        backgroundColor:'rgba(168,134,60,.32)',borderColor:P.gold,borderWidth:1,yAxisID:'y1'}
+    ]},
+    options:{responsive:true,animation:false,interaction:{mode:'index',intersect:false},
+      scales:{
+        y:{position:'left',title:{display:true,text:'SAR'},grid:{color:'#e8e0d0'}},
+        y1:{position:'right',title:{display:true,text:'프리미엄 %'},grid:{display:false},
+          ticks:{callback:v=>v+'%'}}
+      },
+      plugins:{legend:{labels:{boxWidth:12,padding:14}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+
+          (c.dataset.yAxisID==='y1'? c.parsed.y+'%' : c.parsed.y.toLocaleString()+' SAR')}}
+      }}
+  });
+}
+
+if (D.brand) {
+  const b=D.brand;
+  new Chart(document.getElementById('c2'),{
+    type:'line',
+    data:{labels:b.months,datasets:Object.entries(b.brands).map(([k,v])=>({
+      label:k,data:v,borderColor:D.bcolor[k]||P.muted,backgroundColor:D.bcolor[k]||P.muted,
+      tension:.3,borderWidth:k==='LG'?3:1.8,pointRadius:k==='LG'?3.5:2.5,spanGaps:false
+    }))},
+    options:{responsive:true,animation:false,interaction:{mode:'index',intersect:false},
+      scales:{y:{title:{display:true,text:'SAR'},grid:{color:'#e8e0d0'}}},
+      plugins:{legend:{labels:{boxWidth:12,padding:12}},
+        tooltip:{callbacks:{label:c=>c.dataset.label+': '+
+          (c.parsed.y==null?'데이터 없음':c.parsed.y.toLocaleString()+' SAR')}}}}
+  });
+}
+</script></body></html>
