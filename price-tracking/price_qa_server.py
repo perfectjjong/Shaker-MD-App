@@ -169,10 +169,181 @@ LIMIT 200
 """
 
 
+SQL_FRESHNESS = """
+SELECT ch.name AS 유통채널,
+       MAX(s.run_date) AS 최종수집일,
+       CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
+            - julianday(MAX(s.run_date)) AS INT) AS 지연일수,
+       COUNT(DISTINCT p.id) AS 상품수,
+       COUNT(*) AS 누적기록
+FROM price_snapshots s
+JOIN products p ON p.id = s.product_id
+JOIN channels ch ON ch.id = p.channel_id
+GROUP BY ch.id
+ORDER BY 최종수집일 DESC, ch.name
+LIMIT 200
+"""
+
+SQL_BRAND_BY_CHANNEL = """
+SELECT ch.name AS 유통채널,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)='LG' THEN COALESCE(s.sl,s.sp) END)) AS LG평균가,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN COALESCE(s.sl,s.sp) END)) AS 경쟁평균가,
+       COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU수,
+       MAX(s.run_date) AS 기준일
+FROM price_snapshots s
+JOIN products p ON p.id = s.product_id
+JOIN channels ch ON ch.id = p.channel_id
+WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days')
+  AND COALESCE(s.sl,s.sp) > 0
+GROUP BY ch.id
+HAVING LG평균가 IS NOT NULL
+ORDER BY LG평균가 DESC
+LIMIT 200
+"""
+
+FRESH_WORDS = ("언제까지 수집", "수집됐", "수집 됐", "신선도", "최종 수집",
+               "언제까지 데이터", "데이터 언제", "업데이트 언제", "최신 수집")
+BRANDCH_WORDS = ("채널별 lg", "유통별 lg", "채널별 평균가", "유통별 평균가",
+                 "채널별 가격", "유통별 가격", "채널 별 lg")
+
+
+SQL_BAND_BRAND = """
+SELECT UPPER(p.brand) AS 브랜드,
+       COUNT(DISTINCT p.id) AS 상품수,
+       ROUND(AVG(COALESCE(s.sl,s.sp))) AS 평균가_SAR,
+       ROUND(MIN(COALESCE(s.sl,s.sp))) AS 최저가_SAR,
+       ROUND(MAX(COALESCE(s.sl,s.sp))) AS 최고가_SAR,
+       MAX(s.run_date) AS 기준일
+FROM price_snapshots s
+JOIN products p ON p.id = s.product_id
+JOIN channels ch ON ch.id = p.channel_id
+WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days')
+  AND COALESCE(s.sl,s.sp) > 0
+  AND p.btu BETWEEN ? AND ?
+  AND (? IS NULL OR ch.code = ?)
+GROUP BY UPPER(p.brand)
+HAVING COUNT(DISTINCT p.id) >= 2
+ORDER BY 평균가_SAR DESC
+LIMIT 200
+"""
+
+# 🔴 변동 조회에는 price-intel 에서 검증한 **스크래핑 결함 가드**가 반드시 들어가야 한다.
+#    AI가 지은 SQL에는 이게 없어서 '하루 튀었다 원위치한' 가짜 변동을 그대로 보고한다
+#    (Black Box LG +79% → 다음날 -44% 같은 왕복). 실제 변동이 아니라 프로모가 미포착일이다.
+SQL_RECENT_MOVES = """
+WITH d AS (
+  SELECT s.product_id, s.run_date, COALESCE(s.sl,s.sp) px, s.sp, s.sl, s.discount_pct dp,
+         LAG(COALESCE(s.sl,s.sp))  OVER w prev,
+         LEAD(COALESCE(s.sl,s.sp)) OVER w next,
+         LAG(s.sp) OVER w prev_sp, LAG(s.sl) OVER w prev_sl,
+         LAG(s.discount_pct) OVER w prev_dp,
+         LAG(COALESCE(s.sl,s.sp), 2) OVER w prev2
+  FROM price_snapshots s
+  WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
+  WINDOW w AS (PARTITION BY s.product_id ORDER BY s.run_date)
+)
+SELECT d.run_date AS 일자, ch.name AS 유통채널, UPPER(p.brand) AS 브랜드,
+       p.sku AS SKU, substr(COALESCE(p.name_en,''),1,55) AS 상품명, p.btu AS BTU,
+       ROUND(d.prev) AS 이전가, ROUND(d.px) AS 현재가,
+       ROUND((d.px - d.prev) * 100.0 / d.prev, 1) AS 변동률
+FROM d JOIN products p ON p.id = d.product_id
+       JOIN channels ch ON ch.id = p.channel_id
+WHERE d.prev IS NOT NULL AND d.px IS NOT NULL AND d.px <> d.prev AND d.prev > 0
+  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand) = 'LG'))
+  AND (? = 0 OR (d.px - d.prev) < 0)
+  AND (? = 0 OR (d.px - d.prev) > 0)
+  -- 결함 가드 ①: 하루 튀었다 원위치한 스파이크
+  AND NOT (d.next IS NOT NULL AND d.prev > 0 AND d.next > 0
+           AND ABS(d.px - d.prev)/d.prev > 0.15 AND ABS(d.px - d.next)/d.next > 0.15
+           AND ABS(d.prev - d.next)/d.prev < 0.03)
+  AND NOT (d.prev2 IS NOT NULL AND d.prev2 > 0 AND d.px > 0
+           AND ABS(d.prev - d.prev2)/d.prev2 > 0.15 AND ABS(d.prev - d.px)/d.px > 0.15
+           AND ABS(d.prev2 - d.px)/d.px < 0.03)
+  -- 결함 가드 ②: 할인율은 있는데 판매가 = 표준가
+  AND NOT (d.dp > 1 AND d.sp > 0 AND d.sl >= d.sp * 0.995)
+  AND NOT (d.prev_dp > 1 AND d.prev_sp > 0 AND d.prev_sl >= d.prev_sp * 0.995)
+ORDER BY ABS((d.px - d.prev) / d.prev) DESC
+LIMIT 60
+"""
+
+SQL_MONTHLY_TREND = """
+SELECT substr(s.run_date,1,7) AS 월,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)='LG' THEN COALESCE(s.sl,s.sp) END)) AS LG평균가,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN COALESCE(s.sl,s.sp) END)) AS 경쟁평균가,
+       COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU수,
+       COUNT(DISTINCT s.run_date) AS 수집일수
+FROM price_snapshots s
+JOIN products p ON p.id = s.product_id
+WHERE COALESCE(s.sl,s.sp) > 0 AND p.btu BETWEEN ? AND ?
+GROUP BY 월
+HAVING 수집일수 >= 15    -- 수집 부실월은 월평균을 대표하지 못한다
+ORDER BY 월
+LIMIT 200
+"""
+
+SQL_LINEUP = """
+SELECT e.event_date AS 일자, ch.name AS 유통채널, UPPER(p.brand) AS 브랜드,
+       p.sku AS SKU, substr(COALESCE(p.name_en,''),1,55) AS 상품명, p.btu AS BTU,
+       CASE e.status WHEN 'new' THEN '신규' WHEN 'discontinued' THEN '단종'
+                     WHEN 'reactive' THEN '재입고' ELSE e.status END AS 구분
+FROM sku_status_events e
+JOIN products p ON p.id = e.product_id
+JOIN channels ch ON ch.id = p.channel_id
+WHERE e.event_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
+  AND e.status = ?
+  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand) = 'LG'))
+ORDER BY e.event_date DESC, ch.name
+LIMIT 120
+"""
+
+CHEAP_WORDS = ("제일 싸", "가장 싸", "제일 저렴", "가장 저렴", "어디가 싸", "어디서 싸",
+               "최저가", "싼 곳", "싼곳", "어디가 제일", "어디서 제일")
+DOWN_WORDS = ("내린", "인하", "떨어진", "낮아진", "할인")
+UP_WORDS = ("올린", "인상", "오른", "높아진")
+MOVE_WORDS = ("변동", "움직", "바뀐", "변화") + DOWN_WORDS + UP_WORDS
+TREND_WORDS = ("추이", "변했", "변화", "흐름", "월별", "지난 6개월", "6개월", "추세")
+NEW_WORDS = ("새로 들어온", "신규", "새로 나온", "새 제품", "신제품")
+GONE_WORDS = ("단종", "빠진", "사라진", "이탈")
+
+BAND_RE = re.compile(r"(\d{1,2}[,.]?\d{3})\s*(?:btu|BTU|비티유)?", re.I)
+CH_CODE_BY_NAME = {
+    "extra": "extra", "엑스트라": "extra", "익스트라": "extra",
+    "bh": "bh", "빈하무드": "bh", "sws": "sws",
+    "najm": "najm", "나즘": "najm",
+    "alkhunaizan": "alkhunaizan", "khunaizan": "alkhunaizan", "쿠나이잔": "alkhunaizan",
+    "almanea": "almanea", "manea": "almanea", "마네아": "almanea",
+    "tamkeen": "tamkeen", "탐킨": "tamkeen",
+    "binmomen": "binmomen", "bin momen": "binmomen", "빈모멘": "binmomen",
+    "blackbox": "blackbox", "black box": "blackbox", "블랙박스": "blackbox",
+    "technobest": "technobest", "techno": "technobest", "테크노": "technobest",
+    "alkhater": "alkhater", "khater": "alkhater",
+}
+
+
+def _btu_band(q):
+    """질문에서 BTU를 뽑아 ±8% 구간으로. 없으면 None."""
+    for m in BAND_RE.finditer(q):
+        try:
+            v = int(m.group(1).replace(",", "").replace(".", ""))
+        except ValueError:
+            continue
+        if 5000 <= v <= 120000:
+            return int(v * 0.92), int(v * 1.08)
+    return None
+
+
+def _channel_code(q):
+    ql = q.lower()
+    for k, v in CH_CODE_BY_NAME.items():
+        if k in ql:
+            return v
+    return None
+
+
 def match_template(q: str):
     """(설명, SQL, params) 또는 None. 정규식이 아니라 **의도**로 고른다."""
     up = q.upper()
-    has_ch = any(w in q for w in CH_WORDS)
+    has_ch = any(w in q for w in CH_WORDS) or any(w in q for w in CHEAP_WORDS)
     has_latest = any(w in q for w in LATEST_WORDS)
 
     # 후보 모델코드 중 v6_model 에 실제 있는 것만 채택 (추측 금지)
@@ -196,6 +367,52 @@ def match_template(q: str):
                             SQL_MODEL_LATEST_BY_CHANNEL.strip(), (hit[0],))
         finally:
             con.close()
+
+    # 데이터 신선도 — 모든 숫자의 신뢰 근거라 절대 틀리면 안 된다
+    if any(w in q for w in FRESH_WORDS):
+        return ("채널별 수집 신선도 (검증된 질의)", SQL_FRESHNESS.strip(), ())
+
+    # 모델 지정 없는 채널별 LG/경쟁 평균가
+    if any(w in q.lower() for w in BRANDCH_WORDS) and not cands:
+        return ("채널별 LG/경쟁 평균가 최근 30일 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), ())
+
+    band = _btu_band(q)
+
+    # 월별 추이 (BTU 지정 필요)
+    if any(w in q for w in TREND_WORDS) and band:
+        return (f"{band[0]//1000}~{band[1]//1000}K 월별 LG/경쟁 평균가 추이 (검증된 질의)",
+                SQL_MONTHLY_TREND.strip(), (band[0], band[1]))
+
+    # 라인업 변화 (신규 / 단종)
+    if any(w in q for w in NEW_WORDS) or any(w in q for w in GONE_WORDS):
+        status = "discontinued" if any(w in q for w in GONE_WORDS) else "new"
+        days = "-30 days"
+        scope = "LG" if ("LG" in q.upper() and "경쟁" not in q) else (
+            "COMP" if "경쟁" in q else "ALL")
+        label = "신규 진입" if status == "new" else "단종·이탈"
+        return (f"최근 30일 {label} 라인업 (검증된 질의)",
+                SQL_LINEUP.strip(), (days, status, scope, scope))
+
+    # 최근 가격 변동 (결함 가드 포함)
+    if any(w in q for w in MOVE_WORDS):
+        import re as _re
+        m = _re.search(r"(\d+)\s*일", q)
+        days = f"-{min(int(m.group(1)), 90)} days" if m else "-7 days"
+        scope = "LG" if ("LG" in q.upper() and "경쟁" not in q) else (
+            "COMP" if "경쟁" in q else "ALL")
+        only_down = 1 if any(w in q for w in DOWN_WORDS) and not any(w in q for w in UP_WORDS) else 0
+        only_up = 1 if any(w in q for w in UP_WORDS) and not any(w in q for w in DOWN_WORDS) else 0
+        dirn = "인하" if only_down else ("인상" if only_up else "전체")
+        return (f"최근 {days.strip('- days')}일 가격 {dirn} (검증된 질의 · 스크래핑 결함 제외)",
+                SQL_RECENT_MOVES.strip(), (days, scope, scope, only_down, only_up))
+
+    # BTU 구간 브랜드별 평균가 (채널 지정 있으면 그 채널만)
+    if band and not cands:
+        ch = _channel_code(q)
+        return (f"{band[0]//1000}~{band[1]//1000}K 브랜드별 평균가"
+                + (f" · {ch}" if ch else "") + " (검증된 질의)",
+                SQL_BAND_BRAND.strip(), (band[0], band[1], ch, ch))
+
     return None
 
 
