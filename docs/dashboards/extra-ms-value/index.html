@@ -62,6 +62,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ms-item{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:pointer;font-size:12px;transition:background .1s;user-select:none;color:var(--auto-text-2)}
 .ms-item:hover{background:#efe9db}
 .ms-item.dimmed{opacity:.5}
+.ms-item.wk-hidden{display:none!important}
 .ms-item input[type=checkbox]{cursor:pointer;flex-shrink:0;width:15px;height:15px}
 /* ===== Tabs ===== */
 .tabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);padding:0 16px;flex-wrap:wrap;flex-shrink:0}
@@ -135,6 +136,7 @@ body{display:block}
 </style>
 </head>
 <body><div id="loading-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(255,255,255,0.95);padding:20px 40px;border-radius:10px;box-shadow:0 2px 20px rgba(0,0,0,0.2);font-family:sans-serif;font-size:14px;color:var(--auto-text-4)">Loading Dashboard...</div>
+<div id="agg-note" style="display:none;margin:6px 10px 0;padding:7px 12px;border-left:3px solid #b06a24;background:rgba(176,106,36,.08);font:12px/1.5 system-ui,sans-serif;color:var(--auto-text-4,#453f35)"></div>
 <div class="filter-bar">
   <div class="fg" id="fg-fY"><label>Year</label><button class="ms-btn" id="fY-btn"><span class="ms-label">All</span><span class="ms-arrow">&#9660;</span></button><div class="ms-dropdown" id="fY-drop"></div></div>
   <div class="fg" id="fg-fQ"><label>Quarter</label><button class="ms-btn" id="fQ-btn"><span class="ms-label">All</span><span class="ms-arrow">&#9660;</span></button><div class="ms-dropdown" id="fQ-drop"></div></div>
@@ -224,7 +226,23 @@ body{display:block}
     
     // 3. Run the app code
     const DD=RAW.d;
-const CC=RAW.c;
+const _MW=RAW.mw||null;
+const _HIDDEN_WEEKS=[];
+// 경쟁사(LG 외) 판매가 존재하는 주차만 남긴다. (2026-08-31)
+// 필터 목록은 _available 이 CC 로부터 다시 계산하므로 여기만 걸러도 UI가 따라온다.
+const CC=(function(){
+  if(!_MW)return RAW.c;
+  const ok=new Set();
+  Object.keys(_MW).forEach(function(yi){_MW[yi].forEach(function(w){ok.add(yi+'-'+w)})});
+  const dropped={},kept=[];
+  for(var i=0;i<RAW.c.length;i++){
+    var r=RAW.c[i],m=RAW.dm[r[0]+'-'+r[1]];
+    if(m&&ok.has(r[0]+'-'+(m[0]+1))){kept.push(r)}
+    else if(m){dropped[r[0]+'-'+(m[0]+1)]=1}
+  }
+  Object.keys(dropped).forEach(function(k){_HIDDEN_WEEKS.push(k)});
+  return kept;
+})();
 const DM=RAW.dm;
 const TG=RAW.tg; // type group: idx->"Rotary"/"Inverter"
 
@@ -247,12 +265,41 @@ const DL_HBAR={display:true,anchor:'end',align:'right',font:{size:10,weight:'bol
 const DL_LINE={display:false};
 const DL_PIE={display:true,font:{size:10,weight:'bold'},formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?(v/t*100).toFixed(1)+'%':''}};
 
+(function(){
+  var el=document.getElementById('agg-note');if(!el)return;
+  var yl=RAW.d.y,parts=[];
+  // 주간집계(g='W') 레코드가 있는 연도-주차
+  var aggW={};
+  for(var i=0;i<CC.length;i++){
+    if(CC[i][12]!=='W')continue;
+    var m=RAW.dm[CC[i][0]+'-'+CC[i][1]];
+    if(m)aggW[yl[CC[i][0]]+' W'+(m[0]+1)]=1;
+  }
+  var aggKeys=Object.keys(aggW).sort();
+  if(aggKeys.length){
+    parts.push('<b>Weekly-aggregate weeks:</b> '+aggKeys.join(', ')+
+      ' &mdash; competitor figures come from the All-Brand weekly report, which has no day / store / region / promoter breakdown. '+
+      'Those rows are labelled <b>'+(RAW.agg||'(Weekly Agg)')+'</b> and drop out when you filter on those dimensions.');
+  }
+  if(_HIDDEN_WEEKS.length){
+    var hid=_HIDDEN_WEEKS.map(function(k){var p=k.split('-');return yl[+p[0]]+' W'+p[1]}).sort();
+    parts.push('<b>Hidden:</b> '+hid.length+' week(s) with no competitor data ('+hid.join(', ')+
+      ') are excluded so market share is not distorted. They return automatically once the competitor source arrives.');
+  }
+  if(!parts.length)return;
+  el.innerHTML=parts.join('<br>');
+  el.style.display='block';
+})();
+
 const idx={},rev={};
 ['y','day','w','b','sf','t','sz','r','p','br'].forEach(k=>{idx[k]={};rev[k]={};const a=DD[k];if(a)a.forEach((v,i)=>{idx[k][v]=i;rev[k][i]=v})});
 
 function getDM(yi,di){return DM[yi+'-'+di]||null}
 function rowWeek(r){const m=getDM(r[Yi],r[Di]);return m?m[0]:null}
 function rowTypeGroup(r){return TG[r[Ti]]||'Other'}
+// 매장/지역/프로모터 축이 없는 주간집계 레코드. 그 축을 그리는 화면에서만 걷어낸다.
+const AGGL=RAW.agg||'(Weekly Agg)';
+function noAgg(r){return rev.br[r[BRi]]!==AGGL}
 
 // ========== MULTI-SELECT STATE ==========
 // Values stored as dimension indices (or numeric q/m values)
@@ -374,10 +421,15 @@ function syncCheckboxes(cfg){
 function updateDropdownDimmed(cfg){
   const avail=_available[cfg.dim]||new Set();
   const drop=$(cfg.id+'-drop');if(!drop)return;
+  // 주차만 '숨김'. 경쟁사 데이터가 없는 주차는 고르는 것 자체가 의미 없다. (2026-08-31)
+  // 나머지 차원은 dim 처리만 유지 — 값이 사라지면 어느 축이 비었는지 알 수 없어진다.
+  const hideEmpty=(cfg.dim==='w');
   drop.querySelectorAll('.ms-item').forEach(item=>{
     const val=Number(item.dataset.val);
-    if(avail.has(val))item.classList.remove('dimmed');
+    const ok=avail.has(val);
+    if(ok)item.classList.remove('dimmed');
     else item.classList.add('dimmed');
+    if(hideEmpty)item.classList.toggle('wk-hidden',!ok);
   });
 }
 
@@ -536,7 +588,7 @@ function renderTotal(f){
   charts.c1=new Chart($('c1'),{type:'bar',data:{labels:bArr.map(b=>b.n),datasets:[{data:bArr.map(b=>b.q),backgroundColor:bArr.map(b=>BRAND_COLORS[b.n]||'#9a927f'),borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,grace:'15%',ticks:{callback:v=>fmt(v)}}}}});
 
   dc('c2');
-  const filtered2=fc({...f,br:[]});
+  const filtered2=fc({...f,br:[]}).filter(noAgg);   // 매장 차트: 주간집계 제외
   const brAgg=aggBy(filtered2,r=>r[BRi]);
   const brArr=Object.entries(brAgg).map(([k,v])=>({n:rev.br[k],q:v[1]})).sort((a,b)=>b.q-a.q).slice(0,20);
   charts.c2=new Chart($('c2'),{type:'bar',data:{labels:brArr.map(b=>b.n),datasets:[{data:brArr.map(b=>b.q),backgroundColor:'#a54b5e',borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:DL_BAR},scales:{y:{beginAtZero:true,ticks:{callback:v=>fmt(v)}}}}});
@@ -701,7 +753,7 @@ function renderPerf(f){
 
 // ============ REGION ============
 function renderRegion(f){
-  const rD=fc({...f,r:[]});
+  const rD=fc({...f,r:[]}).filter(noAgg);           // 지역 차트: 주간집계 제외
   const rA=aggBy(rD,r=>r[Ri]);
   const sorted=Object.entries(rA).map(([k,v])=>({n:rev.r[k],q:v[1]})).sort((a,b)=>b.q-a.q);
 
@@ -719,7 +771,7 @@ function renderRegion(f){
 
 // ============ PROMOTER ============
 function renderPromo(f){
-  const pD=fc({...f,p:[]});
+  const pD=fc({...f,p:[]}).filter(noAgg);           // 프로모터 차트: 주간집계 제외
   const pA=aggBy(pD,r=>r[Pi]);
   let wQ=0,wV=0,woQ=0,woV=0;
   Object.entries(pA).forEach(([k,v])=>{if(rev.p[k]==='O'){wQ+=v[1];wV+=v[0]}else{woQ+=v[1];woV+=v[0]}});
