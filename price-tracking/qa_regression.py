@@ -82,6 +82,89 @@ def chk_has_date(cols, rows):
     return False, f"시점 컬럼 없음 — 언제 값인지 알 수 없다 (컬럼: {list(cols)[:6]})"
 
 
+def chk_price_sane(cols, rows):
+    """가격 컬럼에 **가격이 아닌 값**이 섞이지 않았는가.
+
+    2026-08-31 실제 오답: eXtra `fj`(판매가의 1/20 수준 적립성 금액)를 '멤버십가'로 제시해
+    18K 에어컨을 242 SAR로 안내했다. 가격끼리 20배 차이는 물리적으로 불가능하다."""
+    pcols = [i for i, c in enumerate(cols)
+             if any(k in str(c) for k in ("가", "price", "SAR")) and "율" not in str(c)
+             and "일" not in str(c) and "수" not in str(c)]
+    vals = [float(r[i]) for i in pcols for r in rows
+            if isinstance(r[i], (int, float)) and r[i] and r[i] > 0]
+    if len(vals) < 2:
+        return True, "가격 표본 부족 — 검사 생략"
+    lo, hi = min(vals), max(vals)
+    if lo < hi / 8:
+        return False, f"가격 컬럼에 비가격 값 의심: 최저 {lo:,.0f} vs 최고 {hi:,.0f} ({hi/lo:.0f}배)"
+    return True, f"가격 범위 {lo:,.0f}~{hi:,.0f}"
+
+
+def chk_fresh_first(max_lag=3):
+    """'현재/최신'을 물었으면 **신선한 행이 위에** 있어야 한다.
+    지연된 저가가 맨 위에 오면 그게 현재 최저가로 오독된다(형님이 겪은 오답)."""
+    def f(cols, rows):
+        li = next((i for i, c in enumerate(cols) if "지연" in str(c)), None)
+        if li is None or not rows:
+            return True, "지연 컬럼 없음 — 검사 생략"
+        first = rows[0][li]
+        if isinstance(first, (int, float)) and first > max_lag:
+            return False, f"최상단이 {first}일 지연된 행 — 현재가로 오독된다"
+        return True, f"최상단 지연 {first}일"
+    return f
+
+
+def chk_no_stale_as_current(cols, rows):
+    """지연된 행이 **현재가 컬럼**을 채우고 있으면 안 된다.
+    형님 지적: Al Khunaizan 7/14 값(48일 전)이 현재 프로모가로 안내됐다."""
+    ci = next((i for i, c in enumerate(cols) if "현재" in str(c)), None)
+    li = next((i for i, c in enumerate(cols) if "지연" in str(c)), None)
+    if ci is None or li is None:
+        return True, "현재가/지연 컬럼 없음 — 검사 생략"
+    bad = [r for r in rows if isinstance(r[li], (int, float)) and r[li] > 3 and r[ci] is not None]
+    if bad:
+        return False, f"지연 {bad[0][li]}일 행이 현재가를 채우고 있다"
+    return True, "지연 행은 현재가 비어 있음"
+
+
+def chk_no_stale_stock(cols, rows):
+    """지연된 행에 **재고 상태**를 단정하면 안 된다.
+    형님 지적: Technobest 8/15 스냅샷의 '재고있음'이 현재처럼 안내됐다."""
+    si = next((i for i, c in enumerate(cols) if "상태" in str(c) or "재고" in str(c)), None)
+    li = next((i for i, c in enumerate(cols) if "지연" in str(c)), None)
+    if si is None or li is None:
+        return True, "상태/지연 컬럼 없음 — 검사 생략"
+    for r in rows:
+        if isinstance(r[li], (int, float)) and r[li] > 3 and r[si] and "재고있음" in str(r[si]):
+            return False, f"지연 {r[li]}일 행이 '재고있음'을 단정한다"
+    return True, "지연 행은 재고 단정 없음"
+
+
+def chk_live_only_avg(cols, rows):
+    """'현재 평균가'에 이미 리스팅이 내려간 상품이 섞이면 안 된다."""
+    def is_price(c):
+        return any(k in str(c) for k in ("평균가", "가_SAR")) 
+    if not any(is_price(c) for c in cols) or not rows:
+        return True, "평균가 컬럼 없음 — 검사 생략"
+    con = sqlite3.connect(f"file:{S.DB}?mode=ro", uri=True)
+    try:
+        live = con.execute("""
+          SELECT ROUND(AVG(COALESCE(s.sl,s.sp))) FROM price_snapshots s
+          JOIN products p ON p.id=s.product_id JOIN channels ch ON ch.id=p.channel_id
+          WHERE ch.name=? AND UPPER(p.brand)='LG'
+            AND s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots),'-30 days')
+            AND COALESCE(s.sl,s.sp)>0
+            AND p.id IN (SELECT product_id FROM price_snapshots GROUP BY product_id
+                         HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
+                                - julianday(MAX(run_date)) <= 3)""", (rows[0][0],)).fetchone()[0]
+    finally:
+        con.close()
+    got = rows[0][1]
+    if live and isinstance(got, (int, float)) and abs(got - live) > 1:
+        return False, f"{rows[0][0]} 평균가 {got:,.0f} ≠ 판매중 기준 {live:,.0f} (사라진 상품 혼입)"
+    return True, "판매중 기준과 일치"
+
+
 def chk_nonempty(minrows=1):
     def f(cols, rows):
         return (len(rows) >= minrows, f"{len(rows)}행")
@@ -106,17 +189,20 @@ def chk_channel_count(minimum):
 CASES = [
     # ── 모델 × 채널 (형님이 실제로 틀렸던 유형) ──────────────
     dict(tag="모델", q="NS182C 가장 최근 가격을 유통별로 알려줘",
-         checks=[chk_model_channels("NS182C"), chk_has_date]),
+         checks=[chk_model_channels("NS182C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
     dict(tag="모델", q="NS182C 채널별 최신가",
-         checks=[chk_model_channels("NS182C"), chk_has_date]),
+         checks=[chk_model_channels("NS182C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
     dict(tag="모델", q="ND182C 유통사별 지금 얼마야?",
-         checks=[chk_model_channels("ND182C"), chk_has_date]),
+         checks=[chk_model_channels("ND182C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
     dict(tag="모델", q="NT382C 어디가 제일 싸?",
-         checks=[chk_model_channels("NT382C"), chk_has_date]),
+         checks=[chk_model_channels("NT382C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
     dict(tag="모델", q="APNQ55GT3M 채널별 최근 가격 보여줘",
-         checks=[chk_model_channels("APNQ55GT3M"), chk_has_date]),
+         checks=[chk_model_channels("APNQ55GT3M"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
     dict(tag="모델", q="NS182C2.NK2 유통별 가격",
-         checks=[chk_model_channels("NS182C"), chk_has_date]),
+         checks=[chk_model_channels("NS182C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
+
+    dict(tag="모델", q="ND182C 모델의 현재 프로모션 각 유통 가격은?",
+         checks=[chk_model_channels("ND182C"), chk_has_date, chk_price_sane, chk_fresh_first(), chk_no_stale_as_current, chk_no_stale_stock]),
 
     # ── 브랜드 · 용량 비교 ────────────────────────────────
     dict(tag="브랜드", q="eXtra에서 18000 BTU LG랑 경쟁사 평균가 비교해줘",
@@ -128,7 +214,7 @@ CASES = [
     dict(tag="채널", q="채널별 데이터 언제까지 수집됐어?",
          checks=[chk_channel_count(10), chk_has_date]),
     dict(tag="채널", q="채널별 LG 평균가 보여줘",
-         checks=[chk_channel_count(8)]),
+         checks=[chk_channel_count(8), chk_live_only_avg]),
 
     # ── 변동 · 추이 ──────────────────────────────────────
     dict(tag="변동", q="지난 7일 경쟁사 중 가격 내린 곳",
