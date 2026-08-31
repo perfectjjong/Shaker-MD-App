@@ -136,7 +136,6 @@ body{display:block}
 </style>
 </head>
 <body><div id="loading-overlay" style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:rgba(255,255,255,0.95);padding:20px 40px;border-radius:10px;box-shadow:0 2px 20px rgba(0,0,0,0.2);font-family:sans-serif;font-size:14px;color:var(--auto-text-4)">Loading Dashboard...</div>
-<div id="agg-note" style="display:none;margin:6px 10px 0;padding:7px 12px;border-left:3px solid #b06a24;background:rgba(176,106,36,.08);font:12px/1.5 system-ui,sans-serif;color:var(--auto-text-4,#453f35)"></div>
 <div class="filter-bar">
   <div class="fg" id="fg-fY"><label>Year</label><button class="ms-btn" id="fY-btn"><span class="ms-label">All</span><span class="ms-arrow">&#9660;</span></button><div class="ms-dropdown" id="fY-drop"></div></div>
   <div class="fg" id="fg-fQ"><label>Quarter</label><button class="ms-btn" id="fQ-btn"><span class="ms-label">All</span><span class="ms-arrow">&#9660;</span></button><div class="ms-dropdown" id="fQ-drop"></div></div>
@@ -264,32 +263,6 @@ const DL_BAR={display:true,anchor:'end',align:'top',font:{size:10,weight:'bold'}
 const DL_HBAR={display:true,anchor:'end',align:'right',font:{size:10,weight:'bold'},formatter:v=>fN(v)};
 const DL_LINE={display:false};
 const DL_PIE={display:true,font:{size:10,weight:'bold'},formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t>0?(v/t*100).toFixed(1)+'%':''}};
-
-(function(){
-  var el=document.getElementById('agg-note');if(!el)return;
-  var yl=RAW.d.y,parts=[];
-  // 주간집계(g='W') 레코드가 있는 연도-주차
-  var aggW={};
-  for(var i=0;i<CC.length;i++){
-    if(CC[i][12]!=='W')continue;
-    var m=RAW.dm[CC[i][0]+'-'+CC[i][1]];
-    if(m)aggW[yl[CC[i][0]]+' W'+(m[0]+1)]=1;
-  }
-  var aggKeys=Object.keys(aggW).sort();
-  if(aggKeys.length){
-    parts.push('<b>Weekly-aggregate weeks:</b> '+aggKeys.join(', ')+
-      ' &mdash; competitor figures come from the All-Brand weekly report, which has no day / store / region / promoter breakdown. '+
-      'Those rows are labelled <b>'+(RAW.agg||'(Weekly Agg)')+'</b> and drop out when you filter on those dimensions.');
-  }
-  if(_HIDDEN_WEEKS.length){
-    var hid=_HIDDEN_WEEKS.map(function(k){var p=k.split('-');return yl[+p[0]]+' W'+p[1]}).sort();
-    parts.push('<b>Hidden:</b> '+hid.length+' week(s) with no competitor data ('+hid.join(', ')+
-      ') are excluded so market share is not distorted. They return automatically once the competitor source arrives.');
-  }
-  if(!parts.length)return;
-  el.innerHTML=parts.join('<br>');
-  el.style.display='block';
-})();
 
 const idx={},rev={};
 ['y','day','w','b','sf','t','sz','r','p','br'].forEach(k=>{idx[k]={};rev[k]={};const a=DD[k];if(a)a.forEach((v,i)=>{idx[k][v]=i;rev[k][i]=v})});
