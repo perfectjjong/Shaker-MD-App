@@ -191,6 +191,31 @@ def main():
             bad += 1
     print(f"  검증 셀: {len(sheet_vals)} / 불일치: {bad} (skipped rows: {skipped})")
 
+    # ── 가마감(provisional) 주입 ──────────────────────────────────
+    # 월마감 전 잠정 시뮬레이션을 별도 JSON으로 얹는다. 실적(Accrual)과 구분 표기.
+    # 생성: 03. Operation/00. GPC/_engine/build_provisional.py
+    prov_meta = None
+    PROV = OUT.replace("gpc_data.js", "gpc_provisional.json")
+    import os
+    if os.path.exists(PROV):
+        with open(PROV, encoding="utf-8") as pf:
+            pj = json.load(pf)
+        py, pm = int(pj["year"]), int(pj["month"])
+        exists = any(r["y"] == py and r["m"] == pm for r in records)
+        if exists:
+            print(f"  ⏭  {py}-{pm}월은 이미 실적이 있어 가마감을 얹지 않음")
+        else:
+            records.extend(pj["rows"])
+            ys = str(py)
+            if ys in year_months and pm not in year_months[ys]:
+                year_months[ys] = sorted(year_months[ys] + [pm])
+            if pm not in yoy_months:
+                yoy_months = sorted(yoy_months + [pm])   # 화면 선택 가능하도록 (검증은 위에서 실적만으로 완료)
+            prov_meta = {"year": py, "month": pm,
+                         "basis": pj.get("basis", "가마감"),
+                         "built": pj.get("built", "")}
+            print(f"  🟡 가마감 주입: {py}-{pm}월 {len(pj['rows'])}건 ({pj.get('basis','')})")
+
     meta = {
         "cats": CATS,
         "channels": ["IR", "OR"],
@@ -202,6 +227,7 @@ def main():
         "yoy_months": yoy_months,
         "source": src.split("/")[-1],
         "basis": "Accrual (발생주의 잠정)",
+        "provisional": prov_meta,
     }
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("// GPC 대시보드 데이터 v2 (build_gpc_dashboard.py 자동생성 — 직접 수정 금지)\n")

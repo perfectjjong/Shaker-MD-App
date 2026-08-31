@@ -162,6 +162,9 @@
     .tbl tr.prow td{font-size:10.5px}
     .grid.g2{gap:12px}
   }
+  .provbadge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;
+    background:#fef3c7;color:#92400e;font-size:11px;font-weight:700;vertical-align:1px}
+  .provrow{background:#fffbeb !important}
 </style>
 </head>
 <body>
@@ -703,10 +706,16 @@ function render(){renderKpis();
 (function(){
   document.getElementById('srcLbl').textContent=GPC_META.source;
   document.getElementById('basisLbl').textContent='('+GPC_META.basis+')';
-  const covs=GPC_META.years.map(y=>{const mm=GPC_META.year_months[String(y)];return `${y}: ${mm[0]}–${mm[mm.length-1]}월`;});
-  document.getElementById('covLbl').textContent=covs.join(' · ');
+  const PV=GPC_META.provisional||null;
+  const covs=GPC_META.years.map(y=>{const mm=GPC_META.year_months[String(y)];
+    let t=`${y}: ${mm[0]}–${mm[mm.length-1]}월`;
+    if(PV&&PV.year===y) t+=` (${PV.month}월 가마감)`;
+    return t;});
+  document.getElementById('covLbl').innerHTML=covs.join(' · ')
+    + (PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'');
   document.getElementById('foot').innerHTML=
-    `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b> · 메인계정=SSOT shared_classification`;
+    `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b> · 메인계정=SSOT shared_classification`
+    + (GPC_META.provisional?` · <b style="color:#b45309">${GPC_META.provisional.year}-${String(GPC_META.provisional.month).padStart(2,'0')}은 ${GPC_META.provisional.basis}</b> — 실적 아님, 파이낸스 마감 시 대체`:'');
 })();
 
 // deep link
