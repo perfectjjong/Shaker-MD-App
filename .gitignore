@@ -7,3 +7,8 @@ data/
 .gstack/
 .superpowers/
 __pycache__/
+
+# OneDrive 동기화 로컬 설정 (서버마다 경로가 다름)
+onedrive-sync/sync-map.conf
+onedrive-sync/sync-settings.conf
+onedrive-sync/pipeline-rules.conf

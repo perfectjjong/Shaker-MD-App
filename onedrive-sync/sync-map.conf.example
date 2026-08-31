@@ -1,0 +1,33 @@
+# OneDrive → OCI 서버 동기화 매핑
+#
+# 형식 (파이프 4칸):
+#   이름 | OneDrive 경로 | OCI 서버 경로 | 새 파일 감지 시 실행할 명령(선택)
+#
+# - OneDrive 경로는 rclone 리모트의 드라이브 루트 기준 상대경로다.
+#   실제 경로는 서버에서 확인한다:
+#       rclone lsd onedrive:
+#       rclone lsd "onedrive:문서/01. 2026/01. Work"
+# - 경로에 공백·점·한글이 있어도 그대로 쓴다. 따옴표는 붙이지 않는다.
+# - 부모 폴더와 자식 폴더를 함께 등록하지 말 것. 같은 파일을 두 번 내려받는다.
+# - 용량 가드(확장자 화이트리스트·크기 상한·디스크 점검)는 sync-settings.conf에서 정한다.
+#
+# 파이프라인에 넘어가는 환경변수:
+#   SYNC_NAME        매핑 이름
+#   SYNC_LOCAL_DIR   내려받은 서버 폴더
+#   SYNC_REMOTE_PATH OneDrive 원본 경로
+#   SYNC_FILE_COUNT  이번에 들어온 파일 수
+#   SYNC_FILE_LIST   파일 목록이 한 줄에 하나씩 담긴 임시 파일 경로
+
+# 08. Automation 폴더 하나만 통째로 받고, 무엇이 들어왔는지에 따라
+# dispatch-pipeline.sh가 pipeline-rules.conf를 보고 해당 파이프라인만 실행한다.
+#
+# OneDrive 경로는 서버에서 rclone lsd로 확인된 실제 값이다:
+#   rclone lsd "onedrive:문서/01. 2026/01. Work"  →  08. Automation 확인됨
+#
+# 서버 경로는 아직 추정값이다. 기존 백업 스크립트의
+# "/home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard" 에서 역산했다
+# (OneDrive의 "08. Automation"과 서버의 "10. Automation"이 같은 하위 폴더
+# 00. Sell Thru Dashboard 를 갖고 있어 대응된다고 보았다).
+# ls "/home/ubuntu/2026/" 로 실제 경로를 확인하고 고칠 것.
+
+automation | 문서/01. 2026/01. Work/08. Automation | /home/ubuntu/2026/10. Automation | /home/ubuntu/Shaker-MD-App/onedrive-sync/dispatch-pipeline.sh
