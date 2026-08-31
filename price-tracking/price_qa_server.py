@@ -74,8 +74,20 @@ sku_status_events(product_id, event_date, status, absent_days)
 【반드시 지킬 규칙】
 1. 가격은 COALESCE(s.sl, s.sp) 를 쓴다. sl이 기준가고 결측 시 sp 폴백.
 2. 브랜드 비교는 반드시 UPPER(p.brand) — 원본에 Gree/GREE, Midea/MIDEA 혼재.
-3. 오늘 날짜/date('now') 쓰지 말 것. 기준일은 (SELECT MAX(run_date) FROM price_snapshots).
-   수집 결손일이 있어 오늘 데이터가 없을 수 있다.
+3. 오늘 날짜/date('now') 쓰지 말 것. 수집 결손일이 있어 오늘 데이터가 없을 수 있다.
+   🔴 **"최신/최근 가격"은 전역 MAX(run_date)가 아니다.** 채널마다 마지막 수집일이 다르다.
+      반드시 **상품별 마지막 스냅샷**을 쓴다:
+        MAX(s.run_date) GROUP BY s.product_id  또는  ORDER BY s.run_date DESC LIMIT 1
+      전역 MAX(run_date)로 필터하면 그날 수집 안 된 채널이 통째로 사라진다.
+      (실측: NS182C는 10개 채널에 있는데 전역 최신일로 거르면 6개만 남아 4개가 소리 없이 누락됐다.)
+   (SELECT MAX(run_date) FROM price_snapshots) 는 **"오늘이 며칠인지" 표시용으로만** 쓴다.
+9. 🔴 **모델코드로 찾을 때는 반드시 `p.v6_model` 을 쓴다.**
+   `name_en`/`model`/`sku` 는 채널마다 표기가 제각각(아랍어·오타·접미 .NK2)이라 LIKE 로 찾으면 누락된다.
+   (실측: NS182C → v6_model 15건 vs model LIKE 7건 vs name LIKE 11건)
+   v6_model 은 접미 없는 기본형(예: 'NS182C')으로 저장돼 있다. `p.v6_model = 'NS182C'` 로 정확히 매칭.
+10. 🔴 **"채널별/유통별/유통사별"을 물으면 그 상품이 존재하는 모든 채널이 나와야 한다.**
+   날짜로 필터해 채널을 떨어뜨리지 말 것. 각 행에 **그 값의 날짜(run_date)를 반드시 포함**해
+   언제 기준인지 형님이 볼 수 있게 한다.
 4. Al Khater(code='alkhater')는 2026-05-11에 수집이 멈춘 채널이다. 최신 비교에서는 제외하거나
    따로 언급할 것.
 5. 결과가 0건이면 "없다"고 단정하지 말고 조건을 넓힐 것.
@@ -108,6 +120,85 @@ ANSWER_SYS = """당신은 사우디 LG 에어컨 사업 책임자('형님')의 �
 - 3~6문장. 표가 필요하면 간단한 마크다운 표 1개까지.
 """
 
+# ── 검증된 질의 템플릿 ───────────────────────────────────────────
+# 🔴 왜 필요한가 (2026-08-31 형님 지적 "오답을 안내하네, 신뢰도가 엄청 떨어지네"):
+#    LLM이 매번 SQL을 새로 지으면 **같은 질문에 다른 답**이 나온다.
+#    "NS182C 최신가를 유통별로" 질문에서 전역 MAX(run_date)로 거르는 SQL이 나오면
+#    10개 채널 중 6개만 나오고 4개가 소리 없이 누락된다.
+#    → 흔한 질문 유형은 **손으로 검증한 고정 SQL**로 처리해 항상 같은 정답이 나오게 한다.
+#      템플릿에 안 걸리는 질문만 LLM이 짓는다(자유 질의는 그대로 유지).
+
+def _canon_or_none(code):
+    """ssot_model_name.canon() 로 v6 정본 표기 복원. 실패해도 질의는 계속돼야 하므로 삼킨다."""
+    try:
+        sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+        from ssot_model_name import canon
+        return canon(code)
+    except Exception:
+        return None
+
+
+MODEL_RE = re.compile(r"\b([A-Z]{2,5}[A-Z0-9]{2,}\d[A-Z0-9]*)\b", re.I)
+CH_WORDS = ("채널별", "유통별", "유통사별", "채널 별", "유통 별", "채널마다", "유통마다",
+            "채널간", "채널 간", "어디가 싼", "어디서 싼", "매장별")
+LATEST_WORDS = ("최신", "최근", "지금", "현재", "요즘", "오늘")
+
+SQL_MODEL_LATEST_BY_CHANNEL = """
+SELECT ch.name AS 유통채널,
+       p.v6_model AS 모델코드,
+       p.sku AS SKU,
+       ROUND(last.px) AS 최신가_SAR,
+       ROUND(last.sp) AS 표준가_SAR,
+       last.run_date AS 가격일자,
+       CASE WHEN last.in_stock = 1 THEN '재고있음'
+            WHEN last.in_stock = 0 THEN '품절' ELSE '미상' END AS 재고,
+       CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
+            - julianday(last.run_date) AS INT) AS 지연일수
+FROM products p
+JOIN channels ch ON ch.id = p.channel_id
+JOIN (
+  SELECT s.product_id,
+         COALESCE(s.sl, s.sp) AS px, s.sp, s.run_date, s.in_stock,
+         ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
+  FROM price_snapshots s
+  WHERE COALESCE(s.sl, s.sp) IS NOT NULL
+) last ON last.product_id = p.id AND last.rn = 1
+WHERE p.v6_model = ?
+ORDER BY last.px ASC, ch.name
+LIMIT 200
+"""
+
+
+def match_template(q: str):
+    """(설명, SQL, params) 또는 None. 정규식이 아니라 **의도**로 고른다."""
+    up = q.upper()
+    has_ch = any(w in q for w in CH_WORDS)
+    has_latest = any(w in q for w in LATEST_WORDS)
+
+    # 후보 모델코드 중 v6_model 에 실제 있는 것만 채택 (추측 금지)
+    cands = [m.group(1).upper() for m in MODEL_RE.finditer(up)]
+    if cands:
+        con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+        try:
+            for c0 in cands:
+                # 형님이 접미 붙은 표기(NS182C2 / NS182C2.NK2)로 물을 수 있다.
+                # 표기 정규화는 정본 진입점 canon() 하나만 쓴다 — 자체 규칙을 만들지 않는다.
+                for cand in (c0, _canon_or_none(c0)):
+                    if not cand:
+                        continue
+                    hit = con.execute(
+                        "SELECT v6_model FROM products WHERE UPPER(v6_model)=? LIMIT 1",
+                        (cand.upper(),)).fetchone()
+                    if hit:
+                        break
+                if hit and (has_ch or has_latest):
+                    return ("모델 채널별 최신가 (검증된 질의)",
+                            SQL_MODEL_LATEST_BY_CHANNEL.strip(), (hit[0],))
+        finally:
+            con.close()
+    return None
+
+
 # ── 안전 검증 ────────────────────────────────────────────────────
 FORBIDDEN = re.compile(
     r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|ATTACH|DETACH|PRAGMA|VACUUM|"
@@ -129,14 +220,14 @@ def sanitize(sql: str) -> str:
     return s
 
 
-def run_sql(sql: str):
+def run_sql(sql: str, params=()):
     """읽기전용 연결 + 시간제한. 쓰기는 구문 검증 이전에 연결 수준에서 이미 불가능하다."""
     con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True, timeout=5)
     con.row_factory = sqlite3.Row
     deadline = time.time() + 15
     con.set_progress_handler(lambda: 1 if time.time() > deadline else 0, 10000)
     try:
-        cur = con.execute(sql)
+        cur = con.execute(sql, params)
         cols = [d[0] for d in cur.description]
         rows = [list(r) for r in cur.fetchmany(MAX_ROWS)]
         return cols, rows
@@ -227,25 +318,35 @@ def ask_stream():
         t0 = time.time()
         if not q:
             yield ev("error", {"message": "질문이 비어 있습니다."}); return
-        yield ev("stage", {"stage": "sql", "text": "질문을 SQL로 옮기는 중…"})
-        ctx = ""
-        if hist:
-            ctx = "\n\n【직전 대화 — 후속 질문일 수 있다】\n" + "\n".join(
-                f"{h['role']}: {h['text'][:300]}" for h in hist[-4:])
-        try:
-            sql = sanitize(llm([{"role": "system", "content": SQL_SYS + ctx},
-                                {"role": "user", "content": q}]))
-        except Exception as e:
-            yield ev("error", {"message": f"질의 생성 실패: {e}"}); return
-        yield ev("sql", {"sql": sql, "elapsed": round(time.time() - t0, 1)})
+        # 검증된 템플릿에 걸리면 LLM을 거치지 않는다 → 같은 질문엔 항상 같은 답
+        tpl = match_template(q)
+        if tpl:
+            label, sql, params = tpl
+            route = "verified"
+            yield ev("stage", {"stage": "sql", "text": f"{label} 적용 중…"})
+        else:
+            label, params, route = None, (), "generated"
+            yield ev("stage", {"stage": "sql", "text": "질문을 SQL로 옮기는 중…"})
+            ctx = ""
+            if hist:
+                ctx = "\n\n【직전 대화 — 후속 질문일 수 있다】\n" + "\n".join(
+                    f"{h['role']}: {h['text'][:300]}" for h in hist[-4:])
+            try:
+                sql = sanitize(llm([{"role": "system", "content": SQL_SYS + ctx},
+                                    {"role": "user", "content": q}]))
+            except Exception as e:
+                yield ev("error", {"message": f"질의 생성 실패: {e}"}); return
+        yield ev("sql", {"sql": sql, "route": route, "label": label,
+                         "elapsed": round(time.time() - t0, 1)})
 
         yield ev("stage", {"stage": "run", "text": "데이터 조회 중…"})
         try:
-            cols, rows = run_sql(sql)
+            cols, rows = run_sql(sql, params)
         except Exception as e:
             yield ev("error", {"message": f"조회 실패: {e}", "sql": sql}); return
         yield ev("rows", {"columns": cols, "rows": rows, "row_count": len(rows),
-                          "anchor": anchor(), "elapsed": round(time.time() - t0, 1)})
+                          "route": route, "anchor": anchor(),
+                          "elapsed": round(time.time() - t0, 1)})
 
         yield ev("stage", {"stage": "answer", "text": "해석하는 중…"})
         try:
