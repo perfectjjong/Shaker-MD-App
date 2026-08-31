@@ -49,12 +49,19 @@ echo "✅ 터널: $URL"
 echo "$URL" > /tmp/price_qa_tunnel_url.txt
 
 # 터널 경유 실제 도달 확인 (로컬만 되고 외부는 안 되는 경우를 잡는다)
-for i in $(seq 1 10); do
-  curl -sf "$URL/health" > /dev/null && break || sleep 2
+# 🔴 이 서버의 로컬 DNS는 새로 만들어진 trycloudflare 호스트를 한동안 해석하지 못한다.
+#    그냥 curl 하면 HTTP 000 이 나와 "터널 죽음"으로 오판한다 — 실제로는 형님 브라우저에선 멀쩡하다.
+#    그래서 **공개 DNS(1.1.1.1)로 직접 해석**해 그 IP로 도달을 확인한다.
+HOSTONLY=${URL#https://}
+TUNNEL_OK=0
+for i in $(seq 1 12); do
+  IP=$(dig +short @1.1.1.1 "$HOSTONLY" 2>/dev/null | grep -E '^[0-9.]+$' | head -1)
+  if [ -n "$IP" ] && curl -sf -m 15 --resolve "${HOSTONLY}:443:${IP}" "$URL/health" > /dev/null; then
+    TUNNEL_OK=1; echo "✅ 외부 도달 확인 ($IP)"; break
+  fi
+  sleep 3
 done
-if ! curl -sf "$URL/health" > /dev/null; then
-  echo "⚠️ 터널 URL로 health 도달 실패 — 전파 지연일 수 있음. 계속 진행."
-fi
+[ "$TUNNEL_OK" = "1" ] || echo "⚠️ 외부 도달 미확인 — 전파 지연일 수 있음. 계속 진행."
 
 echo "── 대시보드에 API 주소 주입 ──"
 "$PY" - "$HTML" "$URL" <<'PYEOF'
