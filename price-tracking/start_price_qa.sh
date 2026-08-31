@@ -8,7 +8,7 @@ set -uo pipefail
 
 PORT=5071
 REPO=/home/ubuntu/Shaker-MD-App
-HTML="$REPO/docs/dashboards/price-qa/index.html"
+HTML="$REPO/docs/gtm/price-qa/index.html"
 SRV="$REPO/price-tracking/price_qa_server.py"
 PY=/usr/bin/python3          # flask 가 여기에 설치돼 있다 (ai_env 에는 없음)
 LOG=/tmp/price_qa_server.log
@@ -81,7 +81,7 @@ if [ "$BRANCH" != "main" ]; then
   echo "❌ 배포 중단 — 현재 브랜치 '$BRANCH' (main 아님). 여기서 push하면 조용히 누락된다."
   exit 1
 fi
-git -C "$REPO" add docs/dashboards/price-qa/index.html
+git -C "$REPO" add docs/gtm/price-qa/index.html
 if git -C "$REPO" diff --cached --quiet; then
   echo "   변경 없음 — 커밋 생략"
 else
@@ -94,7 +94,7 @@ fi
 
 echo
 echo "════════════════════════════════════════"
-echo " 대시보드: https://perfectjjong.github.io/Shaker-MD-App/dashboards/price-qa/"
+echo " 대시보드: https://shaker-dashboard.pages.dev/gtm/price-qa/"
 echo " API     : $URL"
 echo " 서버로그: $LOG"
 echo "════════════════════════════════════════"
