@@ -67,10 +67,7 @@ products(id, channel_id, sku, brand, model, name_en, name_ar, category, btu, ton
 price_snapshots(id, product_id, run_date, scraped_at, sp, sl, fp, fj,
                 discount_pct, in_stock, stock_qty, promo_text, attrs, run_id)
   run_date 'YYYY-MM-DD', 상품×날짜 1행. 2026-01-27 ~ 현재.
-  sp=표준가  sl=프로모가(기본 기준가)  fp=조건부할인 최종가
-  🔴 fj는 **가격이 아니다. 절대 가격으로 제시하지 말 것.**
-     eXtra는 판매가의 정확히 1/20 수준 값이 들어 있다(적립성 금액으로 추정, 194건 중 176건이 1,000 미만).
-     '멤버십가'로 읽으면 18K 에어컨을 242 SAR로 안내하는 오답이 나온다. **SELECT 에 넣지 말 것.**
+  sp=표준가  sl=프로모가(기본 기준가)  fp=조건부할인 최종가  fj=멤버십가(Jood Gold 등)
 sku_status_events(product_id, event_date, status, absent_days)
   status: 'new' | 'reactive' | 'temp_oos' | 'discontinued'
 
@@ -120,12 +117,6 @@ ANSWER_SYS = """당신은 사우디 LG 에어컨 사업 책임자('형님')의 �
 - 결과가 비었으면 "데이터가 없다"가 아니라 **왜 비었을지**(조건이 좁음/수집 결손/채널 정지)를 말한다.
 - 표본이 적으면(3건 미만) 해석을 보류하라고 명시한다.
 - 추측한 수치를 만들어내지 않는다. 결과에 있는 숫자만 쓴다.
-- 🔴 **'현재/최신' 질문에 지연된 값을 현재가로 말하지 않는다.**
-  결과에 지연일수(또는 날짜)가 있으면, **지연 3일 초과 행은 '현재가 아님'으로 분리**해 말한다.
-  최저가·최고가를 꼽을 때도 **신선한 행(지연 0~3일) 안에서만** 고른다.
-  지연 행은 '○일 전 값'이라고 반드시 명시한다.
-- 🔴 가격으로 제시하는 값이 다른 채널 대비 1/5 이하로 터무니없이 낮으면 가격이 아닐 수 있다.
-  그대로 옮기지 말고 이상함을 지적한다.
 - 3~6문장. 표가 필요하면 간단한 마크다운 표 1개까지.
 """
 
@@ -153,53 +144,27 @@ CH_WORDS = ("채널별", "유통별", "유통사별", "채널 별", "유통 별"
 LATEST_WORDS = ("최신", "최근", "지금", "현재", "요즘", "오늘")
 
 SQL_MODEL_LATEST_BY_CHANNEL = """
--- 🔴 형님이 실제로 겪은 오답 3종을 구조로 막는다 (2026-08-31)
---   ① 사라진 SKU의 마지막 가격이 현재가로 안내됨 (Al Khunaizan 7/14 값 2,999)
---      → 현재가와 과거값을 **컬럼으로 분리**. 한 컬럼에 섞지 않는다.
---   ② 과거 시점의 재고 상태를 현재처럼 안내함 (Technobest 8/15 '재고있음')
---      → 지연된 행은 재고를 **말하지 않는다**. 모르는 것을 안다고 하지 않는다.
---   ③ '상품이 내려간 것'과 '채널 수집이 끊긴 것'을 같이 묶음
---      → 채널 자체의 최신 수집일과 대조해 **원인을 갈라서** 표시한다.
---        채널은 살아있는데 그 상품만 없음 = 실제 미판매(재고 소진·단종)
---        채널 자체가 멈춤 = 우리 수집 문제 (Al Khater)
-WITH ch_fresh AS (
-  SELECT p.channel_id AS cid, MAX(s.run_date) AS ch_last
-  FROM price_snapshots s JOIN products p ON p.id = s.product_id
-  GROUP BY p.channel_id
-),
-last AS (
+SELECT ch.name AS 유통채널,
+       p.v6_model AS 모델코드,
+       p.sku AS SKU,
+       ROUND(last.px) AS 최신가_SAR,
+       ROUND(last.sp) AS 표준가_SAR,
+       last.run_date AS 가격일자,
+       CASE WHEN last.in_stock = 1 THEN '재고있음'
+            WHEN last.in_stock = 0 THEN '품절' ELSE '미상' END AS 재고,
+       CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
+            - julianday(last.run_date) AS INT) AS 지연일수
+FROM products p
+JOIN channels ch ON ch.id = p.channel_id
+JOIN (
   SELECT s.product_id,
-         COALESCE(s.sl, s.sp) AS px, s.sp, s.discount_pct AS dp, s.run_date, s.in_stock,
-         CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
-              - julianday(s.run_date) AS INT) AS lag,
+         COALESCE(s.sl, s.sp) AS px, s.sp, s.run_date, s.in_stock,
          ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
   FROM price_snapshots s
   WHERE COALESCE(s.sl, s.sp) IS NOT NULL
-)
-SELECT ch.name AS 유통채널,
-       p.sku AS SKU,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.px) END AS 현재_프로모가,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.sp) END AS 현재_표준가,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.dp, 1) END AS 할인율_pct,
-       CASE WHEN last.lag  > 3 THEN ROUND(last.px) END AS 과거값_참고용,
-       last.run_date AS 확인일,
-       last.lag AS 지연일수,
-       CASE
-         WHEN last.lag <= 3 AND last.in_stock = 0 THEN '판매중 · 품절'
-         WHEN last.lag <= 3 AND last.in_stock = 1 THEN '판매중 · 재고있음'
-         WHEN last.lag <= 3 THEN '판매중 · 재고미상'
-         -- 채널은 계속 수집되는데 이 상품만 사라짐 → 리스팅 내려감(재고 소진·단종)
-         WHEN julianday(cf.ch_last) - julianday(last.run_date) > 3
-              THEN '미판매 · ' || last.lag || '일째 리스팅 없음(재고소진·단종)'
-         -- 채널 자체가 멈춤 → 우리 수집 문제
-         ELSE '수집중단 · 채널 최종수집 ' || cf.ch_last
-       END AS 상태
-FROM products p
-JOIN channels ch ON ch.id = p.channel_id
-JOIN last ON last.product_id = p.id AND last.rn = 1
-JOIN ch_fresh cf ON cf.cid = p.channel_id
+) last ON last.product_id = p.id AND last.rn = 1
 WHERE p.v6_model = ?
-ORDER BY (CASE WHEN last.lag <= 3 THEN 0 ELSE 1 END), last.px ASC, ch.name
+ORDER BY last.px ASC, ch.name
 LIMIT 200
 """
 
@@ -219,9 +184,6 @@ ORDER BY 최종수집일 DESC, ch.name
 LIMIT 200
 """
 
-# 🔴 '현재' 평균에는 **현재 판매중인 상품만** 넣는다.
-#    이미 리스팅이 내려간 상품의 과거 가격이 섞이면 현재 평균가가 왜곡된다
-#    (2026-08-31 실측: Al Khunaizan LG 평균이 5,127 → 실제 5,021, +106 부풀림).
 SQL_BRAND_BY_CHANNEL = """
 SELECT ch.name AS 유통채널,
        ROUND(AVG(CASE WHEN UPPER(p.brand)='LG' THEN COALESCE(s.sl,s.sp) END)) AS LG평균가,
@@ -233,10 +195,6 @@ JOIN products p ON p.id = s.product_id
 JOIN channels ch ON ch.id = p.channel_id
 WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days')
   AND COALESCE(s.sl,s.sp) > 0
-  AND p.id IN (SELECT product_id FROM price_snapshots
-               GROUP BY product_id
-               HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                      - julianday(MAX(run_date)) <= 3)   -- 현재 판매중인 상품만
 GROUP BY ch.id
 HAVING LG평균가 IS NOT NULL
 ORDER BY LG평균가 DESC
@@ -263,18 +221,13 @@ WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days'
   AND COALESCE(s.sl,s.sp) > 0
   AND p.btu BETWEEN ? AND ?
   AND (? IS NULL OR ch.code = ?)
-  AND p.id IN (SELECT product_id FROM price_snapshots
-               GROUP BY product_id
-               HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                      - julianday(MAX(run_date)) <= 3)   -- 현재 판매중인 상품만
-
 GROUP BY UPPER(p.brand)
 HAVING COUNT(DISTINCT p.id) >= 2
 ORDER BY 평균가_SAR DESC
 LIMIT 200
 """
 
-# 🔴 변동 조회에는 **스크래핑 결함 가드**가 반드시 들어가야 한다.
+# 🔴 변동 조회에는 price-intel 에서 검증한 **스크래핑 결함 가드**가 반드시 들어가야 한다.
 #    AI가 지은 SQL에는 이게 없어서 '하루 튀었다 원위치한' 가짜 변동을 그대로 보고한다
 #    (Black Box LG +79% → 다음날 -44% 같은 왕복). 실제 변동이 아니라 프로모가 미포착일이다.
 SQL_RECENT_MOVES = """

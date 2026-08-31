@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GPC 손익 대시보드 · B2C 2024–2026</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+<script>(function(){var NIGHT_START=22,NIGHT_END=6;var h=new Date().getHours();var isNight=(NIGHT_START>NIGHT_END)?(h>=NIGHT_START||h<NIGHT_END):(h>=NIGHT_START&&h<NIGHT_END);document.documentElement.setAttribute('data-theme',isNight?'dark':'light');})();</script>
+<style>
+  :root{
+    --lg:#8c1d2f; --lg-soft:#f6ebe6;
+    --ink:#191714; --ink2:#453f35; --mut:#948c7b;
+    --bg:#f7f3ea; --card:#fffdf8; --line:#e5ddcb; --line2:#efe9db;
+    --y24:#cfc6b2; --y25:#3a352c; --y26:#8c1d2f;
+    --pos:#1d6b45; --neg:#b3261e;
+    --r:14px; --sh:0 1px 2px rgba(20,23,28,.04),0 1px 3px rgba(20,23,28,.03);
+  }@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}/*DARK-PRIMARY-BTN-FIX*/:root:not([data-theme="light"]) .ms .opt.on .box{color:#191510!important}:root:not([data-theme="light"]) .pchip.on{color:#191510!important}:root:not([data-theme="light"]) .top .mark{color:#191510!important}}:root[data-theme="dark"]{--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#221d11;--line2:#211c0f;--y24:#242016;--y25:#dcd8d1;--y26:#d68a97;--pos:#5ba37f;--neg:#e2685c;}:root[data-theme="dark"] .ms .opt.on .box{color:#191510!important}:root[data-theme="dark"] .pchip.on{color:#191510!important}:root[data-theme="dark"] .top .mark{color:#191510!important}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased}
+  body{font-family:'Pretendard','Pretendard Variable',-apple-system,sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;
+    font-feature-settings:'tnum' 1}
+  .wrap{max-width:1320px;margin:0 auto;padding:24px 28px 48px}
+
+  .top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+  .top .brand{display:flex;align-items:center;gap:12px}
+  .top .mark{width:6px;height:34px;background:var(--lg);border-radius:3px}
+  .top h1{font-size:21px;font-weight:800;letter-spacing:-.02em}
+  .top .desc{font-size:12.5px;color:var(--mut);margin-top:3px;font-weight:500}
+  .top .meta{font-size:12px;color:var(--mut);text-align:right;line-height:1.7}
+  .top .meta b{color:var(--ink2);font-weight:700}
+
+  .bar{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);
+    padding:14px 18px;margin-bottom:20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+  .ctl{display:flex;flex-direction:column;gap:7px}
+  .ctl>.lab{font-size:10.5px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+  .row{display:flex;gap:7px;align-items:center}
+  .sep{width:1px;align-self:stretch;background:var(--line);margin:4px 0}
+
+  .ytog{display:inline-flex;align-items:center;gap:7px;border:1.5px solid var(--line);background:var(--card);
+    border-radius:9px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--mut);cursor:pointer;transition:.13s}
+  .ytog .dot{width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.35}
+  .ytog.on{color:var(--ink);border-color:var(--ink2)}
+  .ytog.on .dot{opacity:1}
+
+  .seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:3px}
+  .seg button{border:0;background:transparent;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;
+    color:var(--mut);border-radius:7px;cursor:pointer;transition:.13s}
+  .seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--sh)}
+  .seg.dark button.on{background:var(--ink);color:var(--bg)}
+
+  .pchips{display:flex;gap:5px;flex-wrap:wrap;max-width:430px}
+  .pchip{min-width:34px;text-align:center;border:1px solid var(--line);background:var(--card);border-radius:8px;
+    padding:6px 9px;font-size:12.5px;font-weight:600;color:var(--ink2);cursor:pointer;transition:.12s}
+  .pchip:hover{border-color:var(--lg)}
+  .pchip.on{background:var(--lg);border-color:var(--lg);color:#fff}
+  .txtbtn{font-size:11.5px;color:var(--mut);cursor:pointer;font-weight:600;background:none;border:0;padding:2px 4px}
+  .txtbtn:hover{color:var(--lg)}
+
+  .ms{position:relative}
+  .ms .trigger{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:var(--card);
+    border-radius:9px;padding:7px 13px;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}
+  .ms .trigger .cnt{background:var(--lg-soft);color:var(--lg);font-size:11px;font-weight:700;border-radius:20px;padding:1px 8px}
+  .ms .trigger .arw{color:var(--mut);font-size:10px}
+  .ms .panel{position:absolute;top:calc(100% + 6px);left:0;z-index:30;background:var(--card);border:1px solid var(--line);
+    border-radius:12px;box-shadow:0 8px 28px rgba(20,23,28,.12);padding:8px;min-width:230px;display:none}
+  .ms.open .panel{display:block}
+  .ms .panel .quick{display:flex;gap:4px;padding:4px 6px 8px;border-bottom:1px solid var(--line2);margin-bottom:4px}
+  .ms .opt{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:13px}
+  .ms .opt:hover{background:var(--bg)}
+  .ms .opt .box{width:16px;height:16px;border:1.5px solid var(--line);border-radius:5px;flex:none;position:relative}
+  .ms .opt.on .box{background:var(--lg);border-color:var(--lg)}
+  .ms .opt.on .box::after{content:'';position:absolute;left:4.5px;top:1.5px;width:4px;height:8px;
+    border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+  .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--line)}
+  .tabs button{border:0;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--mut);
+    padding:11px 18px;cursor:pointer;border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.13s}
+  .tabs button.on{color:var(--lg);border-bottom-color:var(--lg)}
+
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-bottom:20px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px;position:relative;overflow:hidden}
+  .kpi .bar-c{position:absolute;left:0;top:0;bottom:0;width:4px}
+  .kpi .yr{font-size:12.5px;font-weight:700;color:var(--mut);display:flex;align-items:center;gap:7px}
+  .kpi .big{font-size:30px;font-weight:800;letter-spacing:-.025em;margin:8px 0 2px;line-height:1}
+  .kpi .big .unit{font-size:13px;font-weight:600;color:var(--mut);letter-spacing:0}
+  .kpi .gmpct{font-size:13.5px;font-weight:700}
+  .kpi .sub{font-size:12px;color:var(--mut);margin-top:7px;display:flex;gap:10px;flex-wrap:wrap}
+  .kpi .sub span b{color:var(--ink2);font-weight:700}
+  .kpi .yoy{font-size:12px;font-weight:700;margin-top:9px;display:inline-flex;align-items:center;gap:4px;
+    padding:3px 9px;border-radius:20px}
+  .yoy.up{color:var(--pos);background:color-mix(in srgb,var(--pos) 12%,transparent)}
+  .yoy.down{color:var(--neg);background:color-mix(in srgb,var(--neg) 12%,transparent)}
+
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  @media(max-width:880px){.g2{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:20px 22px;margin-bottom:16px}
+  .card .h{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .card h3{font-size:15px;font-weight:800;letter-spacing:-.01em}
+  .card .hint{font-size:12px;color:var(--mut);margin-top:3px}
+  .cbox{position:relative;height:330px}
+  .cbox.tall{height:400px}
+  .hide{display:none!important}
+
+  .tblwrap{overflow-x:auto;margin:-2px}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .tbl th,.tbl td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--line2)}
+  .tbl th:first-child,.tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
+  .tbl thead .sub th{font-size:10.5px;color:var(--mut);font-weight:700;border-bottom:1.5px solid var(--line)}
+  .tbl tbody td:first-child{font-weight:600;color:var(--ink2)}
+  .tbl tbody tr:hover td{background:var(--bg)}
+  .tbl td.gmp{font-weight:800}
+  .tbl tr.mrow td{font-weight:700;color:var(--ink)}
+  .tbl tr.prow td{font-size:11.5px;color:var(--mut);padding-top:3px;padding-bottom:6px;border-bottom:1px solid var(--line2)}
+  .tbl tr.prow td:first-child{padding-left:26px;font-weight:500}
+  .tbl tr.key td{background:color-mix(in srgb,var(--lg) 5%,var(--card));border-top:1.5px solid var(--line)}
+  .tbl tr.key td:first-child{background:color-mix(in srgb,var(--lg) 5%,var(--card))}
+  .tbl tr.total td{font-weight:800;color:var(--ink);border-top:2px solid var(--ink2)}
+  .tbl tr.grp td{font-size:11px;font-weight:800;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;
+    background:var(--bg);padding:6px 14px}
+  .tbl tr.grp td:first-child{background:var(--bg)}
+  .tbl .ydiv{border-left:1px solid var(--line)}
+  .tbl .neg{color:var(--neg)}
+  .tbl .pos{color:var(--pos)}
+  .tbl .rt{font-size:11px;color:var(--mut);font-weight:600;margin-left:3px}
+
+  footer{text-align:center;color:var(--mut);font-size:11.5px;margin-top:8px}
+  footer b{color:var(--ink2)}
+
+  /* ── 반응형: 태블릿 ≤1024 / 모바일 ≤640 ── */
+  @media(max-width:1024px){
+    .wrap{padding:18px 18px 40px}
+    .bar{gap:16px;padding:12px 14px}
+    .cbox{height:300px}.cbox.tall{height:340px}
+  }
+  @media(max-width:640px){
+    .wrap{padding:12px 10px 32px}
+    body{font-size:13px}
+    .top{margin-bottom:14px}
+    .top h1{font-size:18px}
+    .top .meta{text-align:left;font-size:11px;line-height:1.6}
+    .bar{gap:12px;padding:12px 12px;margin-bottom:14px}
+    .sep{display:none}
+    .ctl{width:100%}
+    .pchips{max-width:none}
+    .pchip{min-width:30px;padding:5px 7px;font-size:12px}
+    .ytog{padding:5px 10px;font-size:12.5px}
+    .seg button{padding:5px 10px;font-size:12.5px}
+    .tabs{overflow-x:auto;scrollbar-width:none}
+    .tabs button{padding:10px 12px;font-size:13px;white-space:nowrap;flex:none}
+    .kpis{grid-template-columns:1fr;gap:10px;margin-bottom:14px}
+    .kpi{padding:14px 16px}
+    .kpi .big{font-size:26px}
+    .card{padding:14px 14px;margin-bottom:12px}
+    .card .h{margin-bottom:12px}
+    .card .h .row{flex-wrap:wrap;justify-content:flex-start}
+    .cbox{height:250px}.cbox.tall{height:290px}
+    .tbl th,.tbl td{padding:7px 9px;font-size:12px}
+    .tbl tr.prow td{font-size:10.5px}
+    .grid.g2{gap:12px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand">
+      <div class="mark"></div>
+      <div>
+        <h1>GPC 손익 대시보드</h1>
+        <div class="desc">B2C · Executive Summary — by Period &amp; Channel · 인보이스 라인아이템 기준</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div>기준: <b id="srcLbl"></b> <span style="color:var(--lg)" id="basisLbl"></span></div>
+      <div>커버리지 <b id="covLbl"></b> · 금액 단위 <b>천 SAR</b> · %(G)=GSV 대비, %(N)=NSV 대비 · 가중 재계산</div>
+    </div>
+  </div>
+
+  <!-- 컨트롤 바 -->
+  <div class="bar">
+    <div class="ctl">
+      <div class="lab">연도</div>
+      <div class="row" id="cYear"></div>
+    </div>
+    <div class="sep"></div>
+    <div class="ctl">
+      <div class="lab">기간 단위</div>
+      <div class="seg dark" id="cUnit"></div>
+    </div>
+    <div class="ctl">
+      <div class="lab"><span>기간</span> <button class="txtbtn" data-p="yoy">YOY</button><button class="txtbtn" data-p="all">전체</button><button class="txtbtn" data-p="none">해제</button></div>
+      <div class="pchips" id="cPeriod"></div>
+    </div>
+    <div class="sep"></div>
+    <div class="ctl">
+      <div class="lab">채널</div>
+      <div class="row" id="cChan"></div>
+    </div>
+    <div class="ctl">
+      <div class="lab">카테고리</div>
+      <div class="ms" id="cCat"></div>
+    </div>
+  </div>
+
+  <!-- 탭 -->
+  <div class="tabs" id="tabs">
+    <button class="on" data-tab="exec">Executive Summary</button>
+    <button data-tab="category">카테고리 분석</button>
+    <button data-tab="contract">Contract Condition</button>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <!-- 탭1: Executive Summary -->
+  <section data-pane="exec">
+    <div class="card">
+      <div class="h"><div><h3>손익 사다리 — 연도 비교</h3><div class="hint" id="ladderHint">GSV → 할인 4종 → NSV → COGS·INV·VSP → GP · 선택 기간·채널·카테고리 합산 · 천 SAR</div></div></div>
+      <div class="tblwrap"><table class="tbl" id="tblLadder"></table></div>
+    </div>
+    <div class="card">
+      <div class="h">
+        <div><h3>기간별 추이</h3><div class="hint" id="mainHint"></div></div>
+        <div class="seg" id="metricSel"></div>
+      </div>
+      <div class="cbox tall"><canvas id="cMain"></canvas></div>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>채널 비교 — IR vs OR</h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별</div></div></div>
+        <div class="cbox tall"><canvas id="cChanCmp"></canvas></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>할인 구조 — GSV 대비</h3><div class="hint">YED · ADC · VPD · DSI 비중 (연도별, 음수=차감)</div></div></div>
+        <div class="cbox tall"><canvas id="cErosion"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="h"><div><h3>월별 VSP(지원금) 추이 — 시즌성</h3><div class="hint">VSP ÷ COGS · 1~12월 고정 · 사우디 여름 피크 지원 공백 확인 · 필터 연동</div></div></div>
+      <div class="cbox"><canvas id="cVsp"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 탭2: 카테고리 분석 -->
+  <section data-pane="category" class="hide">
+    <div class="card">
+      <div class="h"><div><h3>카테고리 손익 상세표</h3><div class="hint">선택 기간·채널 합산 · 카테고리 × 연도 · GSV / 할인 / NSV / COGS / GP / GM% · 천 SAR</div></div></div>
+      <div class="tblwrap"><table class="tbl" id="tblCat"></table></div>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>카테고리별 GM%</h3><div class="hint">GP ÷ NSV · 선택 기간 합산 · 연도별</div></div></div>
+        <div class="cbox tall"><canvas id="cCatGm"></canvas></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>매출 믹스</h3><div class="hint" id="mixHint">NSV 비중</div></div></div>
+        <div class="cbox tall"><canvas id="cMix"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="h"><div><h3>GP 기여액</h3><div class="hint">카테고리별 GP 금액 · 연도별 · 천 SAR</div></div></div>
+      <div class="cbox"><canvas id="cCatGp"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 탭3: Contract Condition -->
+  <section data-pane="contract" class="hide">
+    <div class="card">
+      <div class="h">
+        <div><h3>메인 계정 × 카테고리 YED</h3><div class="hint" id="ctHint">OR 5 · IR 9 메인 계정 · 실효 YED율 = YED ÷ GSV (라인 가중) · 선택 기간 합산 · 연도 우측 선택</div></div>
+        <div class="row">
+          <div class="seg" id="ctMode"></div>
+          <div class="seg dark" id="ctYear"></div>
+        </div>
+      </div>
+      <div class="tblwrap"><table class="tbl" id="tblContract"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><div><h3>계정별 실효 YED율</h3><div class="hint" id="ctChartHint">선택 연도·기간 · 전 카테고리 가중 평균 · 연한 막대 = 전년</div></div></div>
+      <div class="cbox tall"><canvas id="cCtRate"></canvas></div>
+    </div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script src="gpc_data.js"></script>
+<script>
+Chart.register(ChartDataLabels);
+// Chart.js 4.4.2+datalabels: 초기 애니메이션 렌더에서 마지막 범례 아이템이 간헐 미도색 (뷰포트 의존) -> 전역 비활성화
+Chart.defaults.animation=false;
+Chart.defaults.font.family="'Pretendard',-apple-system,sans-serif";
+Chart.defaults.font.size=12;
+Chart.defaults.color="#8b919d";
+Chart.defaults.plugins.datalabels.display=false;
+Chart.defaults.plugins.legend.labels.usePointStyle=true;
+Chart.defaults.plugins.legend.labels.boxWidth=8;
+Chart.defaults.plugins.legend.labels.padding=16;
+Chart.defaults.plugins.legend.labels.font={size:12,weight:'600'};
+
+const __dk=(function(){var a=document.documentElement.getAttribute('data-theme');if(a==='dark')return true;if(a==='light')return false;return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches;})();
+const YCOL=__dk?{2024:'#cfc6b2',2025:'#b3a996',2026:'#d68a97'}:{2024:'#cfc6b2',2025:'#3a352c',2026:'#8c1d2f'};
+const YEARS=GPC_META.years;
+const UNITS=[['month','월'],['quarter','분기'],['half','반기'],['year','연간']];
+const METRICS=[['gm_pct','GM%'],['gp','GP'],['nsv','NSV'],['gsv','GSV']];
+const GRID={color:'#f2f3f5'};
+const DLF={size:9,weight:'700'};
+const MAINS=[...GPC_META.or_mains,...GPC_META.ir_mains];
+
+const isNarrow=()=>window.matchMedia('(max-width:640px)').matches;
+let _wasNarrow=isNarrow();
+window.addEventListener('resize',()=>{clearTimeout(window.__rzt);
+  window.__rzt=setTimeout(()=>{if(isNarrow()!==_wasNarrow){_wasNarrow=isNarrow();render();}},250);});
+const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
+  chans:new Set(GPC_META.channels),cats:new Set(GPC_META.cats),
+  metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1]};
+const charts={};
+
+function periodValues(u){if(u==='month')return[1,2,3,4,5,6,7,8,9,10,11,12];
+  if(u==='quarter')return['Q1','Q2','Q3','Q4'];if(u==='half')return['H1','H2'];return['Y'];}
+function periodLabel(u,p){return u==='month'?p+'월':p;}
+function monthsOf(u,p){if(u==='month')return[p];
+  if(u==='quarter'){const q=+p[1];return[q*3-2,q*3-1,q*3];}
+  if(u==='half')return p==='H1'?[1,2,3,4,5,6]:[7,8,9,10,11,12];
+  return[1,2,3,4,5,6,7,8,9,10,11,12];}
+const selYears=()=>YEARS.filter(y=>S.years.has(y));
+const selPeriods=()=>periodValues(S.unit).filter(p=>S.periods.has(p));
+const selMonths=()=>selPeriods().flatMap(p=>monthsOf(S.unit,p));
+
+// ── 집계 (금액 SAR 합산 → 파생) ──
+function agg(year,months,opt){opt=opt||{};
+  const ms=new Set(months),cs=opt.cats||S.cats,chs=opt.chans||S.chans;
+  const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
+  for(const r of GPC_DATA){
+    if(r.y!==year||!ms.has(r.m)||!chs.has(r.ch)||!cs.has(r.cat))continue;
+    if(opt.ac!==undefined&&r.ac!==opt.ac)continue;
+    for(const k in o)o[k]+=r[k];
+  }
+  o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;
+  o.gp=o.nsv-o.cogs+o.inv+o.vsp;
+  o.gm_pct=o.nsv?o.gp/o.nsv:0;
+  o.disc_total=o.yed+o.adc+o.vpd+o.dsi;
+  o.disc_rate=o.gsv?o.disc_total/o.gsv:0;
+  o.total_cogs=o.cogs-o.inv-o.vsp;
+  o.cogs_rate=o.gsv?o.total_cogs/o.gsv:0;
+  return o;}
+const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
+const pct=v=>(v*100).toFixed(1)+'%';
+const sgn=v=>v>0?'+':'';
+function yearCoverLabel(year,months){
+  const avail=new Set(GPC_META.year_months[String(year)]||[]);
+  const cov=months.filter(m=>avail.has(m));
+  if(cov.length===0) return ' · 해당 없음';
+  if(cov.length===months.length) return '';
+  const mn=Math.min(...cov),mx=Math.max(...cov);
+  return mn===mx?` · ${mn}월`:` · ${mn}–${mx}월`;
+}
+function destroy(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+const ycol=y=>YCOL[y]==='#cfc6b2'?'var(--ink2)':YCOL[y];
+
+// ── 필터 UI ──
+function buildBar(){
+  const cy=document.getElementById('cYear');cy.innerHTML='';
+  YEARS.forEach(y=>{const d=document.createElement('div');d.className='ytog'+(S.years.has(y)?' on':'');
+    d.style.color=YCOL[y];d.innerHTML=`<span class="dot"></span><span style="color:var(--ink2)">${y}</span>`;
+    d.onclick=()=>{S.years.has(y)?S.years.delete(y):S.years.add(y);d.classList.toggle('on');render();};
+    cy.appendChild(d);});
+  const cu=document.getElementById('cUnit');cu.innerHTML='';
+  UNITS.forEach(([v,l])=>{const b=document.createElement('button');b.textContent=l;b.className=S.unit===v?'on':'';
+    b.onclick=()=>{S.unit=v;S.periods=new Set(periodValues(v));buildPeriods();
+      cu.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+    cu.appendChild(b);});
+  buildPeriods();
+  const cc=document.getElementById('cChan');cc.innerHTML='';
+  GPC_META.channels.forEach(ch=>{const d=document.createElement('div');d.className='ytog'+(S.chans.has(ch)?' on':'');
+    d.innerHTML=`<span class="dot"></span><span style="color:var(--ink2)">${ch}</span>`;
+    d.onclick=()=>{S.chans.has(ch)?S.chans.delete(ch):S.chans.add(ch);d.classList.toggle('on');render();};
+    cc.appendChild(d);});
+  buildCat();
+  const ms=document.getElementById('metricSel');ms.innerHTML='';
+  METRICS.forEach(([v,l])=>{const b=document.createElement('button');b.textContent=l;b.className=S.metric===v?'on':'';
+    b.onclick=()=>{S.metric=v;ms.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+    ms.appendChild(b);});
+  const cm=document.getElementById('ctMode');cm.innerHTML='';
+  [['rate','YED율'],['amt','YED 금액'],['gsv','GSV']].forEach(([v,l])=>{const b=document.createElement('button');
+    b.textContent=l;b.className=S.ctMode===v?'on':'';
+    b.onclick=()=>{S.ctMode=v;cm.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+    cm.appendChild(b);});
+  const cty=document.getElementById('ctYear');cty.innerHTML='';
+  YEARS.forEach(y=>{const b=document.createElement('button');b.textContent=y;b.className=S.ctYear===y?'on':'';
+    b.onclick=()=>{S.ctYear=y;cty.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+    cty.appendChild(b);});
+}
+function buildPeriods(){const cp=document.getElementById('cPeriod');cp.innerHTML='';
+  periodValues(S.unit).forEach(p=>{const d=document.createElement('div');d.className='pchip'+(S.periods.has(p)?' on':'');
+    d.textContent=periodLabel(S.unit,p);
+    d.onclick=()=>{S.periods.has(p)?S.periods.delete(p):S.periods.add(p);d.classList.toggle('on');render();};
+    cp.appendChild(d);});}
+function buildCat(){
+  const wrap=document.getElementById('cCat');
+  wrap.innerHTML=`<div class="trigger"><span>카테고리</span><span class="cnt">${S.cats.size}/${GPC_META.cats.length}</span><span class="arw">▾</span></div>
+    <div class="panel"><div class="quick">
+      <button class="txtbtn" data-c="all">전체</button><button class="txtbtn" data-c="none">해제</button>
+    </div><div class="opts"></div></div>`;
+  const opts=wrap.querySelector('.opts');
+  GPC_META.cats.forEach(cat=>{const o=document.createElement('div');o.className='opt'+(S.cats.has(cat)?' on':'');
+    o.innerHTML=`<span class="box"></span><span>${cat}</span>`;
+    o.onclick=e=>{e.stopPropagation();S.cats.has(cat)?S.cats.delete(cat):S.cats.add(cat);
+      o.classList.toggle('on');updateCatCount();render();};
+    opts.appendChild(o);});
+  wrap.querySelector('.trigger').onclick=()=>wrap.classList.toggle('open');
+  wrap.querySelectorAll('[data-c]').forEach(b=>b.onclick=e=>{e.stopPropagation();
+    S.cats=b.dataset.c==='all'?new Set(GPC_META.cats):new Set();
+    buildCat();document.getElementById('cCat').classList.add('open');render();});
+}
+function updateCatCount(){const t=document.querySelector('#cCat .cnt');if(t)t.textContent=`${S.cats.size}/${GPC_META.cats.length}`;}
+document.addEventListener('click',e=>{const ms=document.getElementById('cCat');if(ms&&!ms.contains(e.target))ms.classList.remove('open');});
+document.querySelectorAll('.bar .txtbtn[data-p]').forEach(b=>{
+  b.onclick=()=>{
+    if(b.dataset.p==='yoy'){S.unit='month';S.periods=new Set(GPC_META.yoy_months);
+      document.querySelectorAll('#cUnit button').forEach((x,i)=>x.classList.toggle('on',UNITS[i][0]==='month'));}
+    if(b.dataset.p==='all')S.periods=new Set(periodValues(S.unit));
+    if(b.dataset.p==='none')S.periods=new Set();
+    buildPeriods();render();};});
+
+// 탭
+document.querySelectorAll('.tabs button').forEach(t=>t.onclick=()=>{S.tab=t.dataset.tab;
+  document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===t));
+  document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==S.tab));
+  void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth;
+  history.replaceState(null,'','#'+S.tab);
+  render();});
+
+// ── KPI ──
+function renderKpis(){
+  const box=document.getElementById('kpis');box.innerHTML='';
+  const yrs=selYears(),months=selMonths();
+  const tot={};yrs.forEach(y=>tot[y]=agg(y,months));
+  yrs.forEach((y,i)=>{const t=tot[y],prev=yrs[i-1]?tot[yrs[i-1]]:null;let yoy='';
+    if(prev&&prev.gp){const d=(t.gp-prev.gp)/Math.abs(prev.gp)*100;
+      yoy=`<div class="yoy ${d>=0?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}% <span style="font-weight:600;opacity:.7">vs ${yrs[i-1]}</span></div>`;}
+    const el=document.createElement('div');el.className='kpi';
+    el.innerHTML=`<div class="bar-c" style="background:${YCOL[y]}"></div>
+      <div class="yr">${y}${yearCoverLabel(y,months)}</div>
+      <div class="big">${fmt(t.gp)}<span class="unit"> 천 SAR</span></div>
+      <div class="gmpct" style="color:${ycol(y)}">GP · GM ${pct(t.gm_pct)}</div>
+      <div class="sub"><span>GSV <b>${fmt(t.gsv)}</b></span><span>할인율 <b>${pct(-t.disc_rate)}</b></span><span>COGS율 <b>${pct(t.cogs_rate)}</b></span></div>
+      ${yoy}`;
+    box.appendChild(el);});
+}
+
+// ── 탭1: 손익 사다리 테이블 (Summary 시트 구조) ──
+const LADDER=[
+  {key:'gsv',label:'GSV'},
+  {key:'yed',label:'YED',pg:1},
+  {key:'adc',label:'ADC',pg:1},
+  {key:'vpd',label:'VPD',pg:1},
+  {key:'dsi',label:'DSI',pg:1},
+  {key:'nsv',label:'NSV',pg:1,cls:'key'},
+  {key:'cogs',label:'COGS',pg:1,pn:1},
+  {key:'inv',label:'INV',pg:1,pn:1},
+  {key:'vsp',label:'VSP',vspr:1},
+  {key:'gp',label:'GP',pg:1,gm:1,cls:'key'},
+];
+function ladderTable(){
+  const tbl=document.getElementById('tblLadder');
+  const yrs=selYears(),months=selMonths();
+  const A={};yrs.forEach(y=>A[y]=agg(y,months));
+  const last=yrs[yrs.length-1],prev=yrs[yrs.length-2],first=yrs[0];
+  let head='<thead><tr class="sub"><th>Metric</th>';
+  yrs.forEach(y=>head+=`<th style="color:${ycol(y)}">${y}${yearCoverLabel(y,months)}</th>`);
+  if(prev!==undefined)head+=`<th class="ydiv">${String(prev).slice(2)}v${String(last).slice(2)} Var (Δ)</th><th>Gr% ${String(last).slice(2)} v ${String(prev).slice(2)}</th>`;
+  if(yrs.length>2)head+=`<th>Gr% ${String(last).slice(2)} v ${String(first).slice(2)}</th>`;
+  head+='</tr></thead>';
+  let body='';
+  LADDER.forEach(row=>{
+    const k=row.key;
+    let tr=`<tr class="mrow ${row.cls||''}"><td>${row.label}</td>`;
+    yrs.forEach(y=>{const v=A[y][k];tr+=`<td class="${v<0?'neg':''}">${fmt(v)}</td>`;});
+    if(prev!==undefined){
+      const d=A[last][k]-A[prev][k];
+      const g=A[prev][k]?d/Math.abs(A[prev][k]):0;
+      tr+=`<td class="ydiv ${d<0?'neg':'pos'}">${sgn(d)}${fmt(d)}</td><td class="${g<0?'neg':'pos'}">${sgn(g)}${pct(g)}</td>`;
+      if(yrs.length>2){const g2=A[first][k]?(A[last][k]-A[first][k])/Math.abs(A[first][k]):0;
+        tr+=`<td class="${g2<0?'neg':'pos'}">${sgn(g2)}${pct(g2)}</td>`;}
+    }
+    body+=tr+'</tr>';
+    const prows=[];
+    if(row.pg)prows.push(['%(G)',y=>A[y].gsv?A[y][k]/A[y].gsv:0]);
+    if(row.pn)prows.push(['%(N)',y=>A[y].nsv?A[y][k]/A[y].nsv:0]);
+    if(row.vspr)prows.push(['% VSP (÷COGS)',y=>A[y].cogs?A[y][k]/A[y].cogs:0]);
+    if(row.gm)prows.push(['%(N) / GM%',y=>A[y].gm_pct]);
+    prows.forEach(([lab,fn])=>{
+      let pr=`<tr class="prow"><td>${lab}</td>`;
+      yrs.forEach(y=>pr+=`<td>${pct(fn(y))}</td>`);
+      if(prev!==undefined){const dp=fn(last)-fn(prev);
+        pr+=`<td class="ydiv">${sgn(dp)}${(dp*100).toFixed(1)}pp</td><td></td>`;
+        if(yrs.length>2)pr+='<td></td>';}
+      body+=pr+'</tr>';});
+  });
+  tbl.innerHTML=head+`<tbody>${body}</tbody>`;
+  document.getElementById('ladderHint').textContent=
+    `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`;
+}
+
+// ── 차트 ──
+function renderMain(){destroy('cMain');
+  const yrs=selYears(),periods=selPeriods();const isPct=S.metric==='gm_pct';
+  const labels=periods.map(p=>periodLabel(S.unit,p));
+  const ds=yrs.map(y=>({label:''+y,data:periods.map(p=>{
+      const mm=monthsOf(S.unit,p);const av=new Set(GPC_META.year_months[String(y)]||[]);
+      if(!mm.some(m=>av.has(m)))return null;
+      const a=agg(y,mm);return isPct?a.gm_pct*100:a[S.metric]/1000;}),
+    backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:54}));
+  document.getElementById('mainHint').textContent=`${UNITS.find(u=>u[0]===S.unit)[1]} 단위 · ${METRICS.find(m=>m[0]===S.metric)[1]} · ${yrs.join(' / ')}${isPct?'':' · 천 SAR'}`;
+  charts.cMain=new Chart(cMain,{type:'bar',data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',align:'end'},
+        datalabels:{display:!isNarrow(),anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
+          formatter:v=>v==null?'':(isPct?v.toFixed(1)+'%':Math.round(v).toLocaleString())},
+        tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${isPct?c.parsed.y.toFixed(1)+'%':Math.round(c.parsed.y).toLocaleString()+' 천 SAR'}`}}},
+      scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>isPct?v+'%':v.toLocaleString()}}}}});}
+
+let chanGms=[]; // 데이터셋 객체에 커스텀 배열을 넣으면 Chart.js 범례 마지막 아이템 미도색 결함 유발 -> 외부 보관
+function renderChanCmp(){destroy('cChanCmp');
+  const yrs=selYears(),months=selMonths();
+  const chans=GPC_META.channels;
+  chanGms=[];
+  const ds=yrs.map(y=>{const gms=[];
+    const data=chans.map(ch=>{const a=agg(y,months,{chans:new Set([ch])});gms.push(a.gm_pct);return a.gp/1000;});
+    chanGms.push(gms);
+    return {label:''+y,backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:70,data};});
+  charts.cChanCmp=new Chart(cChanCmp,{type:'bar',data:{labels:chans,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
+        formatter:(v,ctx)=>v==null?'':(isNarrow()?`GM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`
+          :`${Math.round(v).toLocaleString()}\nGM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`)},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  GP ${Math.round(c.parsed.y).toLocaleString()} 천 SAR · GM ${(chanGms[c.datasetIndex][c.dataIndex]*100).toFixed(1)}%`}}},
+      scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
+
+function renderErosion(){destroy('cErosion');
+  const yrs=selYears(),months=selMonths();
+  const dk=[['yed','YED','#8c1d2f'],['adc','ADC','#a54b5e'],['vpd','VPD','#c99aa4'],['dsi','DSI','#e3ccd0']];
+  const ds=dk.map(([k,l,c])=>({label:l,backgroundColor:c,borderRadius:3,maxBarThickness:80,
+    data:yrs.map(y=>{const a=agg(y,months);return a.gsv?a[k]/a.gsv*100:0;})}));
+  charts.cErosion=new Chart(cErosion,{type:'bar',data:{labels:yrs.map(y=>''+y),datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:true,anchor:'center',align:'center',font:DLF,color:'#fff',
+        formatter:v=>Math.abs(v)>1.5?v.toFixed(1)+'%':''},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(2)}%`}}},
+      scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
+
+let vspAmts=[]; // 커스텀 배열 외부 보관 (범례 미도색 결함 회피)
+function renderVsp(){destroy('cVsp');
+  const yrs=selYears();
+  const labels=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  vspAmts=[];
+  const ds=yrs.map(y=>{const av=new Set(GPC_META.year_months[String(y)]||[]);const amts=[];
+    const data=Array.from({length:12},(_,i)=>{const m=i+1;if(!av.has(m)){amts.push(null);return null;}
+      const a=agg(y,[m]);amts.push(a.vsp);return a.cogs?a.vsp/a.cogs*100:0;});
+    vspAmts.push(amts);
+    return {label:''+y,borderColor:YCOL[y],backgroundColor:YCOL[y],pointStyle:'circle',pointRadius:3,pointHoverRadius:5,tension:.3,borderWidth:2.5,fill:false,spanGaps:false,data};});
+  charts.cVsp=new Chart(cVsp,{type:'line',data:{labels,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',align:'end'},datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.y.toFixed(1)}%  (${fmt(vspAmts[c.datasetIndex][c.dataIndex])} 천 SAR)`}}},
+      scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
+
+// ── 탭2: 카테고리 ──
+function catAgg(y,months,cat){return agg(y,months,{cats:new Set([cat])});}
+function catTable(){
+  const tbl=document.getElementById('tblCat');
+  const yrs=selYears(),months=selMonths();
+  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const cols=[{key:'gsv',label:'GSV'},{key:'disc_total',label:'할인',rate:'gsv'},{key:'nsv',label:'NSV'},
+    {key:'total_cogs',label:'COGS',rate:'gsv'},{key:'gp',label:'GP'},{key:'gm_pct',label:'GM%',isPct:1}];
+  let grp='<tr class="sub"><th></th>';let sub='<tr class="sub"><th>카테고리</th>';
+  yrs.forEach((y,yi)=>{grp+=`<th colspan="${cols.length}" style="color:${ycol(y)};text-align:center;border-bottom:none;font-size:11.5px;font-weight:800">${y}${yearCoverLabel(y,months)}</th>`;
+    cols.forEach((c,ci)=>{sub+=`<th class="${ci===0&&yi>0?'ydiv':''}">${c.label}</th>`;});});
+  grp+='</tr>';sub+='</tr>';
+  let body='';
+  const rows=cats.map(cat=>({cat,A:Object.fromEntries(yrs.map(y=>[y,catAgg(y,months,cat)]))}));
+  rows.forEach(({cat,A})=>{
+    let tr=`<tr><td>${cat}</td>`;
+    yrs.forEach(y=>cols.forEach((c,ci)=>{const a=A[y];const v=a[c.key];
+      let inner=c.isPct?pct(v):fmt(v);
+      if(c.rate){const base=a[c.rate];inner=`${fmt(v)}<span class="rt">${base?(v/base*100).toFixed(1):'0.0'}%</span>`;}
+      tr+=`<td class="${c.isPct?'gmp':''} ${ci===0?'ydiv':''} ${!c.isPct&&v<0?'neg':''}">${inner}</td>`;}));
+    body+=tr+'</tr>';});
+  let tr='<tr class="total"><td>합계</td>';
+  yrs.forEach(y=>{const a=agg(y,months);cols.forEach((c,ci)=>{const v=a[c.key];
+    let inner=c.isPct?pct(v):fmt(v);
+    if(c.rate){const base=a[c.rate];inner=`${fmt(v)}<span class="rt">${base?(v/base*100).toFixed(1):'0.0'}%</span>`;}
+    tr+=`<td class="${ci===0?'ydiv':''}">${inner}</td>`;});});
+  body+=tr+'</tr>';
+  tbl.innerHTML=`<thead>${grp}${sub}</thead><tbody>${body}</tbody>`;
+}
+function renderCatGm(){destroy('cCatGm');
+  const yrs=selYears(),months=selMonths();
+  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],borderRadius:4,
+    data:cats.map(c=>{const a=catAgg(y,months,c);
+      // NSV 베이스 50K SAR 미만 또는 ±100% 초과 = 조정성 노이즈 -> 제외 (축 폭주 방지)
+      if(Math.abs(a.nsv)<50000)return null;
+      const r=a.gp/a.nsv*100;return Math.abs(r)>100?null:r;})}));
+  charts.cCatGm=new Chart(cCatGm,{type:'bar',data:{labels:cats,datasets:ds},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${c.parsed.x.toFixed(1)}%`}}},
+      scales:{x:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:11}}}}}});}
+function renderMix(){destroy('cMix');
+  const yrs=selYears();const y=yrs.includes(S.ctYear)?S.ctYear:yrs[yrs.length-1];
+  document.getElementById('mixHint').textContent=`${y}년 · NSV 비중 (연도는 Contract 탭 연도 선택과 공유)`;
+  const months=selMonths();
+  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const vals=cats.map(c=>Math.max(catAgg(y,months,c).nsv,0));
+  const pal=['#8c1d2f','#3a352c','#a54b5e','#6b7888','#c99aa4','#9a927f','#b3ab98','#7a4a55','#c6bda9','#d8d0be','#e0d9c8'];
+  charts.cMix=new Chart(cMix,{type:'doughnut',data:{labels:cats,datasets:[{data:vals,backgroundColor:pal,borderWidth:2,borderColor:'#fff'}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+      plugins:{legend:{position:'right',labels:{boxWidth:8,font:{size:11},padding:9}},
+        datalabels:{display:true,font:{size:10,weight:'700'},color:'#fff',
+          formatter:(v,ctx)=>{const t=ctx.chart.data.datasets[0].data.reduce((a,b)=>a+b,0);return t&&v/t>0.04?(v/t*100).toFixed(0)+'%':'';}},
+        tooltip:{callbacks:{label:c=>`${c.label}  ${fmt(c.parsed)} 천 SAR`}}}}});}
+function renderCatGp(){destroy('cCatGp');
+  const yrs=selYears(),months=selMonths();
+  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],borderRadius:4,maxBarThickness:46,
+    data:cats.map(c=>catAgg(y,months,c).gp/1000)}));
+  charts.cCatGp=new Chart(cCatGp,{type:'bar',data:{labels:cats,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:false},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  ${Math.round(c.parsed.y).toLocaleString()} 천 SAR`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10.5}}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
+
+// ── 탭3: Contract Condition (메인 계정 × 카테고리 YED) ──
+function acAgg(y,months,ac,cat){
+  return agg(y,months,{ac,cats:cat?new Set([cat]):new Set(GPC_META.cats),chans:new Set(GPC_META.channels)});}
+function contractCell(a){
+  if(!a.gsv&&!a.yed)return '<span style="color:var(--mut)">–</span>';
+  if(S.ctMode==='rate'){
+    if(!a.gsv)return '<span style="color:var(--mut)">–</span>';
+    const r=-a.yed/a.gsv;
+    // GSV 베이스 10K SAR 미만 또는 요율 ±50% 초과 = 의미 없는 요율 (조정 라인) — 값은 title로 보존
+    if(Math.abs(a.gsv)<10000||Math.abs(r)>0.5)
+      return `<span style="color:var(--mut)" title="YED ${Math.round(a.yed).toLocaleString()} / GSV ${Math.round(a.gsv).toLocaleString()} SAR — 베이스 미미·조정성">※</span>`;
+    return `<b>${(r*100).toFixed(1)}%</b>`;}
+  if(S.ctMode==='amt')return `<span class="${a.yed<0?'neg':''}">${fmt(a.yed)}</span>`;
+  return fmt(a.gsv);}
+function contractTable(){
+  const tbl=document.getElementById('tblContract');
+  const y=S.ctYear,months=selMonths();
+  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  let head='<thead><tr class="sub"><th>계정</th>';
+  cats.forEach(c=>head+=`<th>${c}</th>`);head+='<th class="ydiv">전체</th></tr></thead>';
+  let body='';
+  const groups=[['OR 메인 (5채널)',GPC_META.or_mains],['IR 메인 (9채널)',GPC_META.ir_mains]];
+  groups.forEach(([glabel,mains])=>{
+    body+=`<tr class="grp"><td colspan="${cats.length+2}">${glabel}</td></tr>`;
+    mains.forEach(ac=>{
+      let tr=`<tr><td>${ac}</td>`;
+      cats.forEach(cat=>{tr+=`<td>${contractCell(acAgg(y,months,ac,cat))}</td>`;});
+      tr+=`<td class="ydiv gmp">${contractCell(acAgg(y,months,ac,null))}</td>`;
+      body+=tr+'</tr>';});
+    // 채널 소계 (메인 합산)
+    const sub={qty:0,gsv:0,yed:0};
+    const subCats=cats.map(cat=>{const s={gsv:0,yed:0};
+      mains.forEach(ac=>{const a=acAgg(y,months,ac,cat);s.gsv+=a.gsv;s.yed+=a.yed;});
+      sub.gsv+=s.gsv;sub.yed+=s.yed;return s;});
+    let tr=`<tr class="total"><td>${glabel.split(' ')[0]} 메인 소계</td>`;
+    subCats.forEach(s=>tr+=`<td>${contractCell(s)}</td>`);
+    tr+=`<td class="ydiv">${contractCell(sub)}</td>`;
+    body+=tr+'</tr>';});
+  tbl.innerHTML=head+`<tbody>${body}</tbody>`;
+  const modeLbl={rate:'실효 YED율 = −YED ÷ GSV (라인 가중)',amt:'YED 금액 (천 SAR, 음수=차감)',gsv:'GSV (천 SAR)'}[S.ctMode];
+  document.getElementById('ctHint').textContent=`${y}년 · ${modeLbl} · 선택 기간 합산 · Others 제외(메인 14계정만)`;
+}
+function renderCtRate(){destroy('cCtRate');
+  const y=S.ctYear,months=selMonths();
+  const prevY=YEARS[YEARS.indexOf(y)-1];
+  const rate=(yy,ac)=>{const a=acAgg(yy,months,ac,null);return a.gsv?-a.yed/a.gsv*100:null;};
+  const ds=[];
+  if(prevY!==undefined)ds.push({label:''+prevY,backgroundColor:'#cfc6b2',borderRadius:4,maxBarThickness:30,
+    data:MAINS.map(ac=>rate(prevY,ac))});
+  ds.push({label:''+y,backgroundColor:YCOL[y]||'#8c1d2f',borderRadius:4,maxBarThickness:30,
+    data:MAINS.map(ac=>rate(y,ac))});
+  document.getElementById('ctChartHint').textContent=`${y}년${prevY!==undefined?` (연한 막대 = ${prevY})`:''} · 선택 기간 · 전 카테고리 가중`;
+  charts.cCtRate=new Chart(cCtRate,{type:'bar',data:{labels:MAINS,datasets:ds},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
+      datalabels:{display:!isNarrow(),anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
+        formatter:v=>v==null?'':v.toFixed(1)+'%'},
+      tooltip:{callbacks:{label:c=>`${c.dataset.label}  YED율 ${c.parsed.y==null?'-':c.parsed.y.toFixed(1)+'%'}`}}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:10.5},maxRotation:45}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v+'%'}}}}});}
+
+function render(){renderKpis();
+  if(S.tab==='exec'){ladderTable();renderMain();renderChanCmp();renderErosion();renderVsp();}
+  else if(S.tab==='category'){catTable();renderCatGm();renderMix();renderCatGp();}
+  else{contractTable();renderCtRate();}}
+
+// 헤더 메타
+(function(){
+  document.getElementById('srcLbl').textContent=GPC_META.source;
+  document.getElementById('basisLbl').textContent='('+GPC_META.basis+')';
+  const covs=GPC_META.years.map(y=>{const mm=GPC_META.year_months[String(y)];return `${y}: ${mm[0]}–${mm[mm.length-1]}월`;});
+  document.getElementById('covLbl').textContent=covs.join(' · ');
+  document.getElementById('foot').innerHTML=
+    `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b> · 메인계정=SSOT shared_classification`;
+})();
+
+// deep link
+(function(){const h=location.hash.replace('#','');
+  if(['exec','category','contract'].includes(h)){S.tab=h;
+    document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===h));
+    document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));}})();
+buildBar();
+void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth;
+render();
+</script>
+</body>
+</html>
