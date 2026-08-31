@@ -56,6 +56,8 @@ def render(d: dict) -> str:
     bt = d["brand_trend"]
     lu = d["lineup"]
     pb = d["premium_band"]
+    ms = d["model_spread"]
+    mc = d["model_coverage"]
 
     # ── KPI ────────────────────────────────────────────────
     cur_gap = g["series"][-1]["gap_pct"] if g else None
@@ -118,6 +120,20 @@ def render(d: dict) -> str:
             f'<td>{"<span class=\"lgtag\">LG</span> " if i["is_lg"] else ""}{i["brand"]}</td>'
             f'<td class="nm">{i["name"] or "<span class=\'mut\'>(제품명 미수집)</span>"}</td></tr>'
             for i in items[:12])
+
+    ms_rows = "".join(
+        f'<tr><td><b>{r["model"]}</b></td>'
+        f'<td class="r mut">{_n(r["btu"])}</td>'
+        f'<td class="r">{r["n_ch"]}</td>'
+        f'<td class="r"><b>{r["lo"]:,}</b> <span class="mut">{r["lo_ch"]}</span></td>'
+        f'<td class="r"><b>{r["hi"]:,}</b> <span class="mut">{r["hi_ch"]}</span></td>'
+        f'<td class="r"><span class="up">{r["spread_pct"]:+.1f}%</span></td></tr>'
+        for r in ms["rows"]) or '<tr><td colspan="6" class="mut">비교 가능한 모델 없음</td></tr>'
+
+    mc_rows = "".join(
+        f'<tr class="{"thin" if r["pct"] < 90 else ""}"><td>{r["channel"]}</td>'
+        f'<td class="r">{r["hit"]} / {r["tot"]}</td>'
+        f'<td class="r">{r["pct"]:.0f}%</td></tr>' for r in mc["rows"])
 
     balance_note = ""
     if g and not g["balanced"]:
@@ -248,6 +264,32 @@ footer{{margin-top:34px;padding-top:14px;border-top:1px solid {PAL['border']};
 </div>
 
 <div class="card">
+  <div class="q"><span class="num">Q7</span>같은 모델인데 채널마다 얼마나 다른가?</div>
+  <div class="hint">
+    LG 모델코드(v6 정본)를 붙여 채널 간 <b>동일 모델</b>을 비교합니다 —
+    제품명은 채널마다 달라서(오타·아랍어 포함) 이름으로는 짝지을 수 없습니다.
+    최근 {ms['days']}일 · <b>채널별 평균을 먼저 낸 뒤</b> 그들끼리 비교(프로모션 등락이
+    채널 편차로 둔갑하지 않게) · 3채널 이상 · 관측 {ms['min_obs_days']}일 미만 채널 제외 ·
+    비교 가능 {ms['total']}종 중 편차 상위 {len(ms['rows'])}종
+  </div>
+  <div class="grid2">
+    <div>
+      <table><tr><th>모델</th><th class="r">BTU</th><th class="r">채널</th>
+        <th class="r">최저</th><th class="r">최고</th><th class="r">편차</th></tr>{ms_rows}</table>
+    </div>
+    <div>
+      <div class="hint" style="margin-bottom:8px"><b>이 표를 믿어도 되나</b> — 모델코드 부착률
+       (원본에 코드가 없으면 붙이지 않습니다. 추측하지 않음)</div>
+      <table><tr><th>채널</th><th class="r">LG 부착/전체</th><th class="r">부착률</th></tr>
+        {mc_rows}
+        <tr><td><b>합계</b></td><td class="r"><b>{mc['hit']} / {mc['tot']}</b></td>
+          <td class="r"><b>{mc['pct']:.0f}%</b></td></tr></table>
+    </div>
+  </div>
+  {_takeaway_model(ms)}
+</div>
+
+<div class="card">
   <div class="q"><span class="num">Q6</span>경쟁사가 라인업을 바꿨나?</div>
   <div class="hint">최근 {lu['days']}일 · 신규 {lu['new_total']}건 / 단종 {lu['gone_total']}건 · 각 상위 12건</div>
   <div class="grid2">
@@ -350,6 +392,20 @@ def _takeaway_gap(g, lg_chg, comp_chg, gap_delta):
         action = "상대 위치 변화 없음 — 별도 조치 불요."
     return (f"{a['month']} → {b['month']} 프리미엄 <b>{a['gap_pct']:+.1f}% → {b['gap_pct']:+.1f}%"
             f"({gap_delta:+.1f}%p)</b>. {driver} {action}")
+
+
+def _takeaway_model(ms):
+    if not ms["rows"]:
+        return ""
+    t = ms["rows"][0]
+    return (f'<div class="take">동일 모델 <b>{t["model"]}</b>({_n(t["btu"])} BTU)이 '
+            f'<b>{t["lo_ch"]} {t["lo"]:,} SAR</b> vs <b>{t["hi_ch"]} {t["hi"]:,} SAR</b>로 '
+            f'<b>{t["spread_pct"]:.1f}% 차이</b>가 납니다. '
+            f'Q3의 채널 편차는 상품 구성이 달라서일 수도 있지만, <b>여기는 완전히 같은 모델</b>이라 '
+            f'변명의 여지가 없습니다 — 저가 채널 가격이 온라인으로 노출되면 '
+            f'고가 채널 딜러의 판매 저항과 가격 보상 요구로 직결됩니다. '
+            f'비교 가능 {ms["total"]}종 중 편차 20% 이상이 '
+            f'{sum(1 for r in ms["rows"] if r["spread_pct"] >= 20)}종.</div>')
 
 
 def _takeaway_channel(cp):

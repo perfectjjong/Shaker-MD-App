@@ -310,9 +310,71 @@ def premium_by_band(c, days=30):
     return out
 
 
+# ─────────────────────────────────────────────────────────────
+# 카드 7 — 같은 모델, 채널별 가격 (C단계: v6 모델코드 부착으로 열린 비교)
+# ─────────────────────────────────────────────────────────────
+MIN_OBS_DAYS = 5   # 관측일이 이보다 적은 채널은 평균이 대표성을 못 가진다
+
+
+def model_channel_spread(c, days=14, min_channels=3, limit=12):
+    """같은 v6 모델을 채널별로 얼마에 파는가.
+
+    ⚠️ 기간 변동과 채널 차이를 섞지 않는다 — min/max를 기간 전체에 걸어 쓰면
+    프로모션 등락이 '채널 편차'로 둔갑한다. **채널별 평균을 먼저 낸 뒤** 그들끼리 비교한다.
+    관측일 {MIN_OBS_DAYS}일 미만 채널은 제외(표본 부족)."""
+    anchor = anchor_date(c)
+    per = {}
+    for r in c.execute(f"""
+        SELECT p.v6_model mdl, ch.name chn, AVG({_px()}) px,
+               COUNT(DISTINCT s.run_date) d, MAX(p.btu) btu
+        FROM price_snapshots s
+        JOIN products p ON p.id = s.product_id
+        JOIN channels ch ON ch.id = p.channel_id
+        WHERE p.v6_model IS NOT NULL AND UPPER(p.brand) = 'LG'
+          AND s.run_date >= date(?, ?) AND {_px()} > 0
+        GROUP BY p.v6_model, ch.name
+        HAVING d >= ?""", (anchor, f"-{days} days", MIN_OBS_DAYS)):
+        per.setdefault(r["mdl"], {"btu": r["btu"], "ch": []})["ch"].append(
+            {"channel": r["chn"], "px": round(r["px"]), "days": r["d"]})
+
+    out = []
+    for mdl, v in per.items():
+        chs = sorted(v["ch"], key=lambda x: x["px"])
+        if len(chs) < min_channels:
+            continue
+        lo, hi = chs[0], chs[-1]
+        out.append({
+            "model": mdl, "btu": v["btu"], "n_ch": len(chs),
+            "lo": lo["px"], "lo_ch": lo["channel"],
+            "hi": hi["px"], "hi_ch": hi["channel"],
+            "spread_pct": round((hi["px"] - lo["px"]) / lo["px"] * 100, 1),
+            "channels": chs,
+        })
+    out.sort(key=lambda x: -x["spread_pct"])
+    return {"days": days, "min_obs_days": MIN_OBS_DAYS,
+            "rows": out[:limit], "total": len(out)}
+
+
+def model_coverage(c):
+    """v6 코드 부착률 — Q7을 믿어도 되는지의 근거."""
+    rows = []
+    for r in c.execute("""
+        SELECT ch.name, SUM(p.v6_model IS NOT NULL) hit, COUNT(*) tot
+        FROM products p JOIN channels ch ON ch.id = p.channel_id
+        WHERE UPPER(p.brand) = 'LG' GROUP BY ch.name ORDER BY tot DESC"""):
+        rows.append({"channel": r["name"], "hit": r["hit"], "tot": r["tot"],
+                     "pct": round(r["hit"] / r["tot"] * 100, 1)})
+    t = c.execute("""SELECT SUM(v6_model IS NOT NULL), COUNT(*) FROM products
+                     WHERE UPPER(brand)='LG'""").fetchone()
+    return {"rows": rows, "hit": t[0], "tot": t[1],
+            "pct": round(t[0] / t[1] * 100, 1) if t[1] else None}
+
+
 def build_all():
     with _conn() as c:
         return {
+            "model_spread": model_channel_spread(c),
+            "model_coverage": model_coverage(c),
             "freshness": freshness(c),
             "gap_trend": gap_trend(c),
             "channel_position": channel_position(c),

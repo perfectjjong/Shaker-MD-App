@@ -65,6 +65,23 @@ def resolve_master_path(channel: str) -> Path:
     return None
 
 
+# AC 냉방능력의 물리적 상식 범위. 밖이면 값이 아니라 결손으로 본다.
+# (tamkeen btu=0 · almanea 증발식쿨러 btu=1 · alkhunaizan 톤/BTU 뒤바뀜 잔재)
+BTU_MIN, BTU_MAX = 3000, 120000
+TON_MIN, TON_MAX = 0.3, 12.0
+
+
+def _sanitize(row):
+    """말이 안 되는 용량은 **0이 아니라 NULL**로 만든다 (불변 6계명 ④).
+    0으로 두면 구간 집계에서 조용히 최하위 구간에 섞이거나 전부 탈락한다."""
+    b = row.get("btu")
+    if b is not None and not (BTU_MIN <= b <= BTU_MAX):
+        row["btu"] = None
+    t = row.get("ton")
+    if t is not None and not (TON_MIN <= t <= TON_MAX):
+        row["ton"] = None
+
+
 def _is_blank(v):
     if v is None:
         return True
@@ -98,6 +115,7 @@ def read_master_rows(channel: str, master_path: Path):
                 blanks += 1
                 continue
             row = norm(raw, sheet_name=sheet_name)
+            _sanitize(row)
             if not row["sku"] or not row["run_date"]:
                 errors.append({"reason": "sku/run_date 누락", "raw": {k: str(v)[:80] for k, v in raw.items()}})
                 continue

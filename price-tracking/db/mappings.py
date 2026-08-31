@@ -50,6 +50,21 @@ def parse_int(v):
     return int(n) if n is not None else None
 
 
+def parse_ton(v):
+    """'1.5 Ton' / '2 Ton (~24000 BTU)' → 1.5 / 2.0.
+    ⚠️ parse_num을 그대로 쓰면 괄호 안 BTU까지 붙여 읽어 '1 Ton (~12000 BTU)' → 112000 이 된다.
+    앞쪽 첫 숫자만 취한다."""
+    if _is_nan(v) or v == "":
+        return None
+    m = re.match(r"\s*([\d.]+)", str(v))
+    if not m:
+        return None
+    try:
+        return float(m.group(1))
+    except ValueError:
+        return None
+
+
 def parse_pct(v):
     """'39.0%' / '10%' / 0.39 → 39.0 (퍼센트 단위 float)."""
     n = parse_num(v)
@@ -309,7 +324,10 @@ def normalize_sws(raw, sheet_name=None):
 
 
 def normalize_alkhunaizan(raw, sheet_name=None):
-    # Capacity=Ton / Nominal Capacity=BTU 가정 — 서버 백필 시 스팟 체크로 검증할 것
+    # 🔴 2026-08-31 정정: 가정이 반대였다. 원본 실측 결과
+    #    Capacity = BTU 수치(18000.0) / Nominal Capacity = 톤 문자열('1.5 Ton (~18000 BTU)').
+    #    이전 코드가 서로 바꿔 읽어 btu에 '1 Ton (~12000 BTU)'→112000 같은 값이 들어갔고,
+    #    467개 상품 전량이 BTU 구간 집계에서 조용히 빠졌다.
     sl = parse_num(raw.get("Promotion Price (SAR)"))
     return {
         "sku": text(raw.get("SKU")) or text(raw.get("Reference")),
@@ -318,8 +336,8 @@ def normalize_alkhunaizan(raw, sheet_name=None):
         "name_en": text(raw.get("Product Name")),
         "name_ar": None,
         "category": text(raw.get("Category")),
-        "btu": parse_int(raw.get("Nominal Capacity")),
-        "ton": parse_num(raw.get("Capacity")),
+        "btu": parse_int(raw.get("Capacity")),
+        "ton": parse_ton(raw.get("Nominal Capacity")),
         "compressor": text(raw.get("Compressor Type")),
         "ac_type": text(raw.get("Type")),
         "url": text(raw.get("URL")),
