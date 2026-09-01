@@ -25,13 +25,15 @@ import urllib.parse
 from pathlib import Path
 
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
-from ssot_model_name import canon  # noqa: E402
+from ssot_model_name import canon, _v6_known  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).parent))
 import db as dbmod  # noqa: E402
 
 # LG 모델코드 토큰: 영문2~5 + 영숫자 + 숫자 포함, 선택적 .접미(ANWGIB 등)
-TOKEN = re.compile(r"[A-Z]{2,5}[A-Z0-9]{2,}\d[A-Z0-9]*(?:[.\-][A-Z0-9]{2,8})?")
+# ⚠️ 접두 영문이 **1자**인 계열이 있다(W181EC/W242EC = Window). {2,5} 로 두면 통째로 누락된다.
+#    [[project_w_series_window_sn3]] — 1자를 허용해도 아래 v6 등재 검증이 오탐을 막는다.
+TOKEN = re.compile(r"[A-Z]{1,5}[A-Z0-9]{2,}\d[A-Z0-9]*(?:[.\-][A-Z0-9]{2,8})?")
 
 
 def candidates(model, name, url, sku=None):
@@ -64,14 +66,28 @@ def candidates(model, name, url, sku=None):
     return [x for x in out if not (x in seen or seen.add(x))]
 
 
+MAX_CODE_LEN = 16   # v6 최장 코드가 14자. 여유 2자.
+
+
 def resolve(model, name, url, sku=None):
-    """(v6코드, 출처) 또는 (None, None). canon 이 v6로 인정한 것만 채택."""
+    """(v6코드, 출처) 또는 (None, None). **v6 마스터가 실제로 아는 코드만** 채택한다.
+
+    🔴 2026-09-01 수정 — 이전 조건 `v != cand or len(cand) >= 8` 이 오염을 만들었다.
+       canon()은 모르는 코드를 **원문 그대로** 돌려준다. 그런데 '8자 이상이면 채택'했기 때문에
+       상품명에서 하이픈을 뗀 긴 문자열이 그대로 모델코드가 됐다:
+         'LGWINDOWAC18000BTUWINDOWROTARYCOOLONLYW181ECSN'
+         'BASICAIRCONDITIONERSPLITCOLDONLY31400BTUINVERTER...'
+       LG만 돌릴 땐 97%였는데 전 브랜드로 돌리며 **3,076건 중 845건(27.5%)이 오염**됐다.
+       → v6 등재 여부(_v6_known)로 판정하고 길이 상한을 둔다. 모르면 붙이지 않는다."""
     for cand in candidates(model, name, url, sku):
-        v = canon(cand)
-        if not v:
+        if len(cand) > MAX_CODE_LEN:
             continue
-        # canon 이 형태를 바꿔줬으면 v6가 아는 것. 안 바꿨어도 충분히 긴 코드면 채택.
-        if v != cand or len(cand) >= 8:
+        v = canon(cand)
+        if not v or len(v) > MAX_CODE_LEN:
+            continue
+        if not (_v6_known(v) or _v6_known(v.split(".")[0])):
+            continue    # v6가 모르는 코드는 추측이다. 붙이지 않는다.
+        if True:
             src = ("model" if model and cand in model.upper()
                    else "sku" if sku and cand == str(sku).upper()
                    else "name" if name and cand.replace(".", "") in name.upper().replace("-", "")

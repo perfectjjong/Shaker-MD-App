@@ -478,6 +478,105 @@ def _brand_in(q):
     return None
 
 
+# 🔴 이 DB에 **없는 것**. 물으면 지어내지 말고 없다고 말해야 한다.
+#    가격 스냅샷 DB일 뿐이다. 판매량·매출·이익·점유율은 애초에 담겨 있지 않다.
+#    (계기: "가장 많이 팔리는 채널은?" — 판매량이 없는데 AI 생성 경로로 새어나갔다)
+NOT_IN_DB = [
+    (("많이 팔리", "판매량", "판매 수량", "몇 대 팔", "셀아웃", "sell out", "sell-out",
+      "잘 팔리", "베스트셀러", "판매 순위"),
+     "판매량·셀아웃", "이 DB는 가격 스냅샷만 담는다. 판매 수량은 들어 있지 않다.",
+     "unified-sellout / ir-total 대시보드, 또는 warehouse fact_sellthru"),
+    (("매출", "revenue", "거래액", "매상"),
+     "매출", "가격만 있고 수량이 없어 매출을 계산할 수 없다.",
+     "or-monthly-psi / ir-total"),
+    (("이익", "마진", "손익", "profit", "margin", "원가", "cogs"),
+     "이익·마진", "원가·마진 정보가 이 DB에 없다.", "GPC 손익 파이프라인"),
+    (("점유율", "share", "시장 점유"),
+     "시장 점유율", "판매량이 없어 점유율을 계산할 수 없다.", "extra-ms 계열 대시보드"),
+    (("재고 수량", "재고량", "몇 대 남", "재고 몇"),
+     "재고 수량",
+     "대부분 채널이 재고를 있음/품절 여부로만 제공한다(수치 없음). "
+     "수치 재고가 오는 곳은 Al Manea·Tamkeen·Bin Momen·Black Box뿐이다.",
+     "창고 재고는 fg-available (SAP ZMB52)"),
+]
+
+
+def unanswerable(q: str):
+    """답할 수 없는 질문이면 (주제, 이유, 대안). 아니면 None.
+    **모르는 것을 지어내지 않는 것이 정확도의 절반이다.**"""
+    ql = q.lower()
+    for words, topic, why, alt in NOT_IN_DB:
+        if any(w.lower() in ql for w in words):
+            return topic, why, alt
+    return None
+
+
+SQL_BRAND_TREND_ANY = """
+SELECT substr(s.run_date,1,7) AS 월,
+       UPPER(p.brand) AS 브랜드,
+       ROUND(AVG(COALESCE(s.sl,s.sp))) AS 평균가_SAR,
+       COUNT(DISTINCT p.id) AS SKU수,
+       COUNT(DISTINCT s.run_date) AS 수집일수
+FROM price_snapshots s JOIN products p ON p.id=s.product_id
+WHERE COALESCE(s.sl,s.sp) > 0
+  AND (? = 'ALL' OR UPPER(p.brand) = ?)
+  AND (? IS NULL OR p.btu BETWEEN ? AND ?)
+GROUP BY 월, UPPER(p.brand)
+HAVING 수집일수 >= 15 AND SKU수 >= 2
+ORDER BY 월, 평균가_SAR DESC
+LIMIT 200
+"""
+
+SQL_BRAND_CHANNELS = """
+SELECT UPPER(p.brand) AS 브랜드, ch.name AS 유통채널,
+       COUNT(DISTINCT p.id) AS 판매중_SKU,
+       ROUND(AVG(l.px)) AS 평균가_SAR,
+       ROUND(MIN(l.px)) AS 최저가_SAR, ROUND(MAX(l.px)) AS 최고가_SAR,
+       MAX(l.run_date) AS 확인일
+FROM products p JOIN channels ch ON ch.id=p.channel_id
+JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
+             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
+      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
+  ON l.product_id=p.id AND l.rn=1
+WHERE """ + LIVE_ONLY + """
+  AND UPPER(p.brand) = ?
+GROUP BY ch.id
+ORDER BY 판매중_SKU DESC
+LIMIT 50
+"""
+
+SQL_LG_VS_COMP_BY_MODEL = """
+-- 같은 BTU 급에서 LG 모델이 경쟁 평균보다 얼마나 비싼가
+WITH live AS (
+  SELECT p.id, p.v6_model, p.btu, UPPER(p.brand) br, l.px, l.run_date
+  FROM products p
+  JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
+               ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
+        FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
+    ON l.product_id=p.id AND l.rn=1
+  WHERE """ + LIVE_ONLY + """ AND p.btu IS NOT NULL
+),
+comp AS (
+  SELECT btu/1000 AS band, ROUND(AVG(px)) AS comp_avg, COUNT(*) n
+  FROM live WHERE br <> 'LG' GROUP BY band HAVING n >= 3
+)
+SELECT lg.v6_model AS LG모델, lg.btu AS BTU,
+       ROUND(AVG(lg.px)) AS LG평균가, c.comp_avg AS 경쟁평균가,
+       ROUND(AVG(lg.px) - c.comp_avg) AS 차액_SAR,
+       ROUND((AVG(lg.px) - c.comp_avg) * 100.0 / c.comp_avg, 1) AS 프리미엄_pct,
+       COUNT(DISTINCT lg.id) AS LG_SKU수, MAX(lg.run_date) AS 확인일
+FROM live lg JOIN comp c ON c.band = lg.btu/1000
+WHERE lg.br = 'LG' AND lg.v6_model IS NOT NULL
+GROUP BY lg.v6_model, lg.btu
+ORDER BY 프리미엄_pct DESC
+LIMIT 40
+"""
+
+TREND2_WORDS = ("동향", "추이", "흐름", "추세", "변했", "3개월", "6개월", "월별")
+WHERE_SOLD = ("어디서 팔", "어디에서 팔", "어느 채널", "판매 채널", "취급 채널", "어디서 파는")
+PREMIUM_WORDS = ("경쟁사보다", "경쟁보다", "우리가 비싼", "프리미엄", "가격 경쟁력", "비싼 모델")
+
+
 def match_template(q: str):
     """(설명, SQL, params) 또는 None. 정규식이 아니라 **의도**로 고른다."""
     up = q.upper()
@@ -515,7 +614,9 @@ def match_template(q: str):
         return ("채널별 수집 신선도 (검증된 질의)", SQL_FRESHNESS.strip(), ())
 
     # 모델 지정 없는 채널별 LG/경쟁 평균가
-    if any(w in q.lower() for w in BRANDCH_WORDS) and not cands:
+    #  단, 'SKU 개수'처럼 규모를 묻는 건 평균가가 아니다 → 위 요약 템플릿이 가져간다.
+    if (any(w in q.lower() for w in BRANDCH_WORDS) and not cands
+            and not any(w in q for w in SUMMARY_WORDS)):
         return ("채널별 LG/경쟁 평균가 최근 30일 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), ())
 
     band = _btu_band(q)
@@ -551,15 +652,8 @@ def match_template(q: str):
     ch = _channel_code(q)
     brand = _brand_in(q)
 
-    # 재고·품절 조회
-    if any(w in q for w in STOCK_WORDS):
-        only_oos = 1 if ("품절" in q or "없는" in q or "sold out" in q.lower()) else 0
-        scope = brand if brand else "ALL"
-        lbl = "품절 상품" if only_oos else "재고 현황"
-        return (f"{lbl}{' · '+brand if brand else ''}{' · '+ch if ch else ''} (검증된 질의)",
-                SQL_STOCK_STATUS.strip(), (scope, scope, only_oos, ch, ch))
-
-    # 최고가 / 최저가 순위
+    # 최고가/최저가 순위 — '제일 비싼 모델'은 순위 질문이지 프리미엄 질문이 아니다.
+    #  (PREMIUM_WORDS 의 '비싼 모델'이 먼저 걸려 엉뚱한 표가 나가던 오답)
     if any(w in q for w in RANK_HI) or any(w in q for w in RANK_LO):
         desc = any(w in q for w in RANK_HI)
         sql = SQL_BRAND_RANK.strip().replace("{DIR}", "DESC" if desc else "ASC")
@@ -567,9 +661,34 @@ def match_template(q: str):
         return (f"{'최고가' if desc else '최저가'} 순위{' · '+brand if brand else ''} (검증된 질의)",
                 sql, (scope, scope))
 
-    # 채널 취급 규모 요약
+    # 채널 취급 규모 요약 — 'SKU 개수'는 평균가가 아니라 규모 질문이다.
     if any(w in q for w in SUMMARY_WORDS) and not ch:
         return ("채널별 취급 규모 요약 (검증된 질의)", SQL_CHANNEL_SUMMARY.strip(), ())
+
+    # LG vs 경쟁 프리미엄 (모델별)
+    if any(w in q for w in PREMIUM_WORDS):
+        return ("LG 모델별 경쟁사 대비 프리미엄 (검증된 질의)",
+                SQL_LG_VS_COMP_BY_MODEL.strip(), ())
+
+    # 특정 브랜드가 어디서 팔리나
+    if brand and any(w in q for w in WHERE_SOLD):
+        return (f"{brand} 채널별 취급 현황 (검증된 질의)", SQL_BRAND_CHANNELS.strip(), (brand,))
+
+    # 브랜드 가격 동향 (BTU 없어도 동작)
+    if any(w in q for w in TREND2_WORDS) and (brand or not band):
+        lo, hi = (band if band else (None, None))
+        scope = brand if brand else "ALL"
+        return (f"{scope} 월별 평균가 추이" + (f" · {lo//1000}~{hi//1000}K" if band else "")
+                + " (검증된 질의)",
+                SQL_BRAND_TREND_ANY.strip(), (scope, scope, lo, lo, hi))
+
+    # 재고·품절 조회
+    if any(w in q for w in STOCK_WORDS):
+        only_oos = 1 if ("품절" in q or "없는" in q or "sold out" in q.lower()) else 0
+        scope = brand if brand else "ALL"
+        lbl = "품절 상품" if only_oos else "재고 현황"
+        return (f"{lbl}{' · '+brand if brand else ''}{' · '+ch if ch else ''} (검증된 질의)",
+                SQL_STOCK_STATUS.strip(), (scope, scope, only_oos, ch, ch))
 
     # 특정 채널 라인업
     if ch and any(w in q for w in LINEUP_WORDS):
@@ -705,6 +824,16 @@ def ask_stream():
         t0 = time.time()
         if not q:
             yield ev("error", {"message": "질문이 비어 있습니다."}); return
+
+        # 🔴 답할 수 없는 질문은 **먼저 거절**한다. 모르는 것을 지어내지 않는 것이 정확도의 절반이다.
+        na = unanswerable(q)
+        if na:
+            topic, why, alt = na
+            yield ev("error", {"message":
+                f"이 질문은 가격 DB로 답할 수 없습니다 — {topic}.\n{why}\n\n"
+                f"➜ 여기서 보셔야 합니다: {alt}"})
+            return
+
         # 검증된 템플릿에 걸리면 LLM을 거치지 않는다 → 같은 질문엔 항상 같은 답
         tpl = match_template(q)
         if tpl:
