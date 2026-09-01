@@ -56,51 +56,61 @@ def llm(messages, max_tokens=1400, temperature=0.0):
 
 # ── 스키마 + 도메인 규칙 (LLM이 우리 데이터를 오해하지 않게) ────────────
 SCHEMA = """
-SQLite. 사우디 LG 에어컨 유통 11채널의 일별 가격 스냅샷.
+SQLite. 사우디 LG 에어컨 유통 11채널의 일별 가격 스냅샷 DB.
 
-channels(id, code, name, alert_basis, cond_discount)
-  code: extra, bh, sws, najm, alkhunaizan, almanea, tamkeen, binmomen, blackbox, technobest, alkhater
-products(id, channel_id, sku, brand, model, name_en, name_ar, category, btu, ton,
-         compressor, ac_type, url, first_seen, last_seen, v6_model, v6_source)
-  v6_model = LG 정본 모델코드(v6 마스터). 채널 간 동일 모델 비교는 반드시 이 컬럼으로.
-             LG 상품의 97%에 부착됨. NULL이면 원본에 코드가 없는 상품.
-price_snapshots(id, product_id, run_date, scraped_at, sp, sl, fp, fj,
-                discount_pct, in_stock, stock_qty, promo_text, attrs, run_id)
-  run_date 'YYYY-MM-DD', 상품×날짜 1행. 2026-01-27 ~ 현재.
-  sp=표준가  sl=프로모가(기본 기준가)  fp=조건부할인 최종가
-  🔴 fj는 **가격이 아니다. 절대 가격으로 제시하지 말 것.**
-     eXtra는 판매가의 정확히 1/20 수준 값이 들어 있다(적립성 금액으로 추정, 194건 중 176건이 1,000 미만).
-     '멤버십가'로 읽으면 18K 에어컨을 242 SAR로 안내하는 오답이 나온다. **SELECT 에 넣지 말 것.**
-sku_status_events(product_id, event_date, status, absent_days)
-  status: 'new' | 'reactive' | 'temp_oos' | 'discontinued'
+🟢 **먼저 이 두 층을 써라. 원시 테이블은 여기로 안 되는 것만.**
+   품질 판정(최신 스냅샷·지연·결함 제외)이 이미 끝나 있어 질의가 한 줄로 끝난다.
 
-【반드시 지킬 규칙】
-1. 가격은 COALESCE(s.sl, s.sp) 를 쓴다. sl이 기준가고 결측 시 sp 폴백.
-2. 브랜드 비교는 반드시 UPPER(p.brand) — 원본에 Gree/GREE, Midea/MIDEA 혼재.
-3. 오늘 날짜/date('now') 쓰지 말 것. 수집 결손일이 있어 오늘 데이터가 없을 수 있다.
-   🔴 **"최신/최근 가격"은 전역 MAX(run_date)가 아니다.** 채널마다 마지막 수집일이 다르다.
-      반드시 **상품별 마지막 스냅샷**을 쓴다:
-        MAX(s.run_date) GROUP BY s.product_id  또는  ORDER BY s.run_date DESC LIMIT 1
-      전역 MAX(run_date)로 필터하면 그날 수집 안 된 채널이 통째로 사라진다.
-      (실측: NS182C는 10개 채널에 있는데 전역 최신일로 거르면 6개만 남아 4개가 소리 없이 누락됐다.)
-   (SELECT MAX(run_date) FROM price_snapshots) 는 **"오늘이 며칠인지" 표시용으로만** 쓴다.
-9. 🔴 **모델코드로 찾을 때는 반드시 `p.v6_model` 을 쓴다.**
-   `name_en`/`model`/`sku` 는 채널마다 표기가 제각각(아랍어·오타·접미 .NK2)이라 LIKE 로 찾으면 누락된다.
-   (실측: NS182C → v6_model 15건 vs model LIKE 7건 vs name LIKE 11건)
-   v6_model 은 접미 없는 기본형(예: 'NS182C')으로 저장돼 있다. `p.v6_model = 'NS182C'` 로 정확히 매칭.
-10. 🔴 **"채널별/유통별/유통사별"을 물으면 그 상품이 존재하는 모든 채널이 나와야 한다.**
-   날짜로 필터해 채널을 떨어뜨리지 말 것. 각 행에 **그 값의 날짜(run_date)를 반드시 포함**해
-   언제 기준인지 형님이 볼 수 있게 한다.
-4. Al Khater(code='alkhater')는 2026-05-11에 수집이 멈춘 채널이다. 최신 비교에서는 제외하거나
-   따로 언급할 것.
-5. 결과가 0건이면 "없다"고 단정하지 말고 조건을 넓힐 것.
-6. BTU는 결측이 있다(NULL). 용량 비교 시 p.btu IS NOT NULL 조건을 넣을 것.
-7. 채널 간 가격 비교는 **채널별 평균을 먼저 낸 뒤** 비교한다. 기간 전체 min/max를 쓰면
-   프로모션 등락이 채널 편차로 둔갑한다.
-8. 우리 브랜드는 'LG'. 🔴 **주요 경쟁사는 GREE · MIDEA · TCL 3사다** (형님 확정, 2026-09-01).
-   '경쟁사'라고만 하면 이 3사를 뜻한다. 삼성·Hisense는 주요 경쟁사가 아니다
-   (실측 판매중 SKU: GREE 225 · MIDEA 195 · TCL 162 vs HISENSE 44 · SAMSUNG 25 —
-    Mando 116·Haier 70보다도 작다). 다른 브랜드는 이름을 명시했을 때만 다룬다.
+━━ ① product_current — 상품별 '지금' 상태 (1상품 1행, 3,383행) ━━
+  channel_code, channel_name          채널 (extra/bh/sws/najm/alkhunaizan/almanea/
+                                       tamkeen/binmomen/blackbox/technobest/alkhater)
+  brand                               대문자 정규화 완료 (UPPER 다시 걸 필요 없음)
+  v6_model                            LG 정본 모델코드. 채널 간 동일 모델 비교는 이것으로.
+                                       LG의 96%에 부착. 비LG는 NULL(v6는 LG 마스터라 정상)
+  sku, name_en, btu, ton, compressor, category
+  px                                  현재가(프로모가 우선, 없으면 표준가). 이미 정리됨
+  sp                                  표준가
+  discount_pct                        할인율 %
+  in_stock                            1=재고있음 0=품절 NULL=미상
+  run_date                            이 값이 확인된 날짜
+  lag_days                            기준일로부터 며칠 지났나
+  is_live                             1=현재 판매중(지연 3일 이내) / 0=아님
+  status                              '판매중 · 재고있음' / '판매중 · 품절' /
+                                       '미판매 · N일째 리스팅 없음' / '수집중단 · 채널 최종수집 …'
+
+  ▶ **현재 가격/재고를 묻는 질문은 거의 다 이 표 한 장으로 끝난다.**
+    예) SELECT channel_name, sku, px, status FROM product_current WHERE v6_model='ND182C'
+
+━━ ② v_price_clean — 가격 시계열 (결함 스냅샷 판정 포함, 314,863행) ━━
+  product_id, run_date, px, sp, sl, fp, discount_pct, in_stock
+  prev_px, next_px                    앞뒤 값 (변동 계산용, 직접 LAG 짤 필요 없음)
+  is_spike                            1 = 하루 튀었다 원위치 (프로모가 미포착일 = 가짜 변동)
+  is_incons                           1 = 할인율은 있는데 판매가=표준가 (모순)
+  ▶ 추이·변동 질문은 이 뷰를 쓰고 **반드시 is_spike=0 AND is_incons=0** 을 건다.
+    products/channels 와 조인해야 브랜드·채널을 볼 수 있다.
+
+━━ ③ 원시 테이블 (위 둘로 안 되는 경우만) ━━
+  channels(id, code, name)
+  products(id, channel_id, sku, brand, model, name_en, name_ar, category,
+           btu, ton, compressor, ac_type, url, first_seen, last_seen, v6_model, v6_source)
+  price_snapshots(id, product_id, run_date, sp, sl, fp, fj, discount_pct,
+                  in_stock, stock_qty, promo_text, attrs)
+    sp=표준가 sl=프로모가 fp=조건부할인 최종가
+    🔴 fj는 가격이 아니다(eXtra는 판매가의 1/20 적립성 금액). SELECT 하지 말 것.
+  sku_status_events(product_id, event_date, status)  status: new/reactive/temp_oos/discontinued
+
+【지킬 것 — 짧다】
+1. **현재 상태 = product_current, 시계열 = v_price_clean.** 원시 테이블에서 최신 스냅샷을
+   직접 뽑지 마라(ROW_NUMBER 같은 걸 다시 짜면 함정에 빠진다).
+2. **'지금/현재/최신'을 물으면 is_live=1 로 거른다.** 지연된 값을 현재가로 내놓지 않는다.
+   지연 행도 보여줄 땐 run_date·status 를 같이 내서 언제 값인지 알 수 있게 한다.
+3. date('now') 금지. 기준일은 (SELECT MAX(run_date) FROM price_snapshots).
+4. 우리 브랜드 = 'LG'. **주요 경쟁사 = GREE · MIDEA · TCL** (형님 확정).
+   '경쟁사'라고만 하면 이 3사다. 다른 브랜드(SAMSUNG·HISENSE·MANDO·HAIER 등)는
+   **이름을 명시했을 때 그 브랜드로** 답한다. 로컬 저가 브랜드를 경쟁 평균에 섞으면
+   프리미엄이 부풀려진다(실측 +35.4% vs +19.5%).
+5. 결과가 0건이면 단정하지 말고 조건을 넓혀라. btu는 결측이 있다.
+6. 컬럼에 한국어 별칭(AS)을 붙이고 금액은 ROUND 한다.
 """
 
 SQL_SYS = f"""당신은 SQLite 전문가다. 아래 스키마로 사용자의 한국어 질문에 답할 SELECT 한 문장을 쓴다.
@@ -615,6 +625,93 @@ def match_template(q: str):
     return None
 
 
+# ── 질의 캐시 — 자유도는 지키고 안정성을 얻는 방법 ──────────────
+# 🔴 2026-09-01 형님 지적: "내가 말한게 하나의 예시잖아! 전체 데이터를 자유롭게 다뤄야지"
+#    질문마다 템플릿을 손으로 박는 건 DB화가 아니다. 그런데 AI 자유 질의는 불안정하다.
+#    실측: 정본 계층(product_current)을 깔아도 여전히 흔들렸다.
+#      "LG랑 삼성 누가 비싸" → 3회 중 2가지 답. 원인은 데이터 함정이 아니라 **질문의 모호성**
+#      (전체 평균인지·BTU급별인지·채널별인지를 AI가 매번 다르게 해석한다).
+#
+#    → 해법: **같은 질문이면 같은 SQL을 쓴다.**
+#      처음 보는 질문만 AI가 짓고, 그 SQL을 저장해 다음부터 재사용한다.
+#      · 자유도 유지 — 어떤 질문이든 답한다(템플릿을 미리 짤 필요 없다)
+#      · 안정성 확보 — 한 번 정해진 질의는 고정, 같은 질문엔 같은 답
+#      · 고치기 쉬움 — 형님이 "이 답 이상해" 하면 그 질문의 SQL 한 줄만 고치면 끝
+#      손으로 짜는 템플릿이 아니라 **쓰면서 저절로 쌓이는 템플릿**이다.
+
+CACHE_DDL = """
+CREATE TABLE IF NOT EXISTS qa_cache (
+  qnorm      TEXT PRIMARY KEY,   -- 정규화된 질문
+  question   TEXT NOT NULL,      -- 원문(마지막으로 물은 형태)
+  sql        TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  used_count INTEGER DEFAULT 1,
+  last_used  TEXT,
+  pinned     INTEGER DEFAULT 0,  -- 1 = 사람이 검토·확정한 질의 (덮어쓰지 않는다)
+  note       TEXT
+)
+"""
+
+
+def qnorm(q: str) -> str:
+    """질문 정규화 — 공백·문장부호·흔한 종결어미 차이를 흡수한다.
+    과하게 뭉개면 다른 질문이 같은 SQL을 쓰게 되므로 **보수적으로만** 정리한다."""
+    t = q.strip().lower()
+    t = re.sub(r"[?!.,·]+", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    # 종결어미를 떼고 나면 공백이 남을 수 있다 → 뗄 때마다 다시 strip (물음표 유무로 캐시가 갈리던 버그)
+    for tail in ("알려줘", "보여줘", "얼마야", "얼마인가", "어때", "해줘", "줘", "인가", "있나"):
+        if t.endswith(tail):
+            t = t[: -len(tail)].strip()
+    return re.sub(r"\s+", " ", t).strip()
+
+
+def cache_get(q: str):
+    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    try:
+        con.execute(CACHE_DDL.replace("CREATE TABLE IF NOT EXISTS", "CREATE TABLE IF NOT EXISTS"))
+    except sqlite3.OperationalError:
+        pass          # 읽기전용이라 생성 불가 — cache_put 이 만든다
+    try:
+        r = con.execute("SELECT sql, used_count, pinned FROM qa_cache WHERE qnorm=?",
+                        (qnorm(q),)).fetchone()
+        return r
+    except sqlite3.OperationalError:
+        return None
+    finally:
+        con.close()
+
+
+def cache_put(q: str, sql: str):
+    con = sqlite3.connect(str(DB), timeout=10)
+    try:
+        con.execute(CACHE_DDL)
+        con.execute("""INSERT INTO qa_cache(qnorm, question, sql, created_at, last_used)
+                       VALUES(?,?,?,datetime('now'),datetime('now'))
+                       ON CONFLICT(qnorm) DO UPDATE SET
+                         used_count = used_count + 1,
+                         last_used  = datetime('now'),
+                         question   = excluded.question""",
+                    (qnorm(q), q, sql))
+        con.commit()
+    except Exception as e:
+        print(f"[cache] 저장 실패(무시): {e}", file=sys.stderr)
+    finally:
+        con.close()
+
+
+def cache_touch(q: str):
+    con = sqlite3.connect(str(DB), timeout=10)
+    try:
+        con.execute("UPDATE qa_cache SET used_count=used_count+1, last_used=datetime('now') "
+                    "WHERE qnorm=?", (qnorm(q),))
+        con.commit()
+    except Exception:
+        pass
+    finally:
+        con.close()
+
+
 # ── 안전 검증 ────────────────────────────────────────────────────
 FORBIDDEN = re.compile(
     r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|ATTACH|DETACH|PRAGMA|VACUUM|"
@@ -751,17 +848,27 @@ def ask_stream():
             route = "verified"
             yield ev("stage", {"stage": "sql", "text": f"{label} 적용 중…"})
         else:
-            label, params, route = None, (), "generated"
-            yield ev("stage", {"stage": "sql", "text": "질문을 SQL로 옮기는 중…"})
-            ctx = ""
-            if hist:
-                ctx = "\n\n【직전 대화 — 후속 질문일 수 있다】\n" + "\n".join(
-                    f"{h['role']}: {h['text'][:300]}" for h in hist[-4:])
-            try:
-                sql = sanitize(llm([{"role": "system", "content": SQL_SYS + ctx},
-                                    {"role": "user", "content": q}]))
-            except Exception as e:
-                yield ev("error", {"message": f"질의 생성 실패: {e}"}); return
+            label, params = None, ()
+            cached = cache_get(q) if not hist else None   # 후속 질문은 문맥이 달라 캐시 금지
+            if cached:
+                sql, used, pinned = cached[0], cached[1], cached[2]
+                route = "cached"
+                label = (f"확정된 질의 (검토 완료)" if pinned
+                         else f"이전과 같은 질의 ({used}번째 사용)")
+                cache_touch(q)
+                yield ev("stage", {"stage": "sql", "text": f"{label} 적용 중…"})
+            else:
+                route = "generated"
+                yield ev("stage", {"stage": "sql", "text": "처음 보는 질문 — 질의를 새로 짓는 중…"})
+                ctx = ""
+                if hist:
+                    ctx = "\n\n【직전 대화 — 후속 질문일 수 있다】\n" + "\n".join(
+                        f"{h['role']}: {h['text'][:300]}" for h in hist[-4:])
+                try:
+                    sql = sanitize(llm([{"role": "system", "content": SQL_SYS + ctx},
+                                        {"role": "user", "content": q}]))
+                except Exception as e:
+                    yield ev("error", {"message": f"질의 생성 실패: {e}"}); return
         yield ev("sql", {"sql": sql, "route": route, "label": label,
                          "elapsed": round(time.time() - t0, 1)})
 
@@ -770,6 +877,8 @@ def ask_stream():
             cols, rows = run_sql(sql, params)
         except Exception as e:
             yield ev("error", {"message": f"조회 실패: {e}", "sql": sql}); return
+        if route == "generated":
+            cache_put(q, sql)     # 실행에 성공한 질의만 굳힌다
         yield ev("rows", {"columns": cols, "rows": rows, "row_count": len(rows),
                           "route": route, "anchor": anchor(),
                           "elapsed": round(time.time() - t0, 1)})
