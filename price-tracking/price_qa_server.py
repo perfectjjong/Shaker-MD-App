@@ -153,69 +153,30 @@ CH_WORDS = ("채널별", "유통별", "유통사별", "채널 별", "유통 별"
 LATEST_WORDS = ("최신", "최근", "지금", "현재", "요즘", "오늘")
 
 SQL_MODEL_LATEST_BY_CHANNEL = """
--- 🔴 형님이 실제로 겪은 오답 3종을 구조로 막는다 (2026-08-31)
---   ① 사라진 SKU의 마지막 가격이 현재가로 안내됨 (Al Khunaizan 7/14 값 2,999)
---      → 현재가와 과거값을 **컬럼으로 분리**. 한 컬럼에 섞지 않는다.
---   ② 과거 시점의 재고 상태를 현재처럼 안내함 (Technobest 8/15 '재고있음')
---      → 지연된 행은 재고를 **말하지 않는다**. 모르는 것을 안다고 하지 않는다.
---   ③ '상품이 내려간 것'과 '채널 수집이 끊긴 것'을 같이 묶음
---      → 채널 자체의 최신 수집일과 대조해 **원인을 갈라서** 표시한다.
---        채널은 살아있는데 그 상품만 없음 = 실제 미판매(재고 소진·단종)
---        채널 자체가 멈춤 = 우리 수집 문제 (Al Khater)
-WITH ch_fresh AS (
-  SELECT p.channel_id AS cid, MAX(s.run_date) AS ch_last
-  FROM price_snapshots s JOIN products p ON p.id = s.product_id
-  GROUP BY p.channel_id
-),
-last AS (
-  SELECT s.product_id,
-         COALESCE(s.sl, s.sp) AS px, s.sp, s.discount_pct AS dp, s.run_date, s.in_stock,
-         CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
-              - julianday(s.run_date) AS INT) AS lag,
-         ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-  FROM price_snapshots s
-  WHERE COALESCE(s.sl, s.sp) IS NOT NULL
-)
-SELECT ch.name AS 유통채널,
-       p.sku AS SKU,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.px) END AS 현재_프로모가,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.sp) END AS 현재_표준가,
-       CASE WHEN last.lag <= 3 THEN ROUND(last.dp, 1) END AS 할인율_pct,
-       CASE WHEN last.lag  > 3 THEN ROUND(last.px) END AS 과거값_참고용,
-       last.run_date AS 확인일,
-       last.lag AS 지연일수,
-       CASE
-         WHEN last.lag <= 3 AND last.in_stock = 0 THEN '판매중 · 품절'
-         WHEN last.lag <= 3 AND last.in_stock = 1 THEN '판매중 · 재고있음'
-         WHEN last.lag <= 3 THEN '판매중 · 재고미상'
-         -- 채널은 계속 수집되는데 이 상품만 사라짐 → 리스팅 내려감(재고 소진·단종)
-         WHEN julianday(cf.ch_last) - julianday(last.run_date) > 3
-              THEN '미판매 · ' || last.lag || '일째 리스팅 없음(재고소진·단종)'
-         -- 채널 자체가 멈춤 → 우리 수집 문제
-         ELSE '수집중단 · 채널 최종수집 ' || cf.ch_last
-       END AS 상태
-FROM products p
-JOIN channels ch ON ch.id = p.channel_id
-JOIN last ON last.product_id = p.id AND last.rn = 1
-JOIN ch_fresh cf ON cf.cid = p.channel_id
-WHERE p.v6_model = ?
-ORDER BY (CASE WHEN last.lag <= 3 THEN 0 ELSE 1 END), last.px ASC, ch.name
+-- 규칙(신선도·판매여부·결함제외)은 v_product_current 안에 있다. 여기서 다시 쓰지 않는다.
+SELECT channel_name AS 유통채널, sku AS SKU,
+       CASE WHEN is_live=1 THEN ROUND(px) END AS 현재_프로모가,
+       CASE WHEN is_live=1 THEN ROUND(sp) END AS 현재_표준가,
+       CASE WHEN is_live=1 THEN ROUND(discount_pct,1) END AS 할인율_pct,
+       CASE WHEN is_live=0 THEN ROUND(px) END AS 과거값_참고용,
+       run_date AS 확인일, lag_days AS 지연일수, status AS 상태
+FROM product_current
+WHERE v6_model = ?
+ORDER BY is_live DESC, px ASC, channel_name
 LIMIT 200
 """
 
 
 SQL_FRESHNESS = """
-SELECT ch.name AS 유통채널,
-       MAX(s.run_date) AS 최종수집일,
-       CAST(julianday((SELECT MAX(run_date) FROM price_snapshots))
-            - julianday(MAX(s.run_date)) AS INT) AS 지연일수,
-       COUNT(DISTINCT p.id) AS 상품수,
-       COUNT(*) AS 누적기록
-FROM price_snapshots s
-JOIN products p ON p.id = s.product_id
-JOIN channels ch ON ch.id = p.channel_id
-GROUP BY ch.id
-ORDER BY 최종수집일 DESC, ch.name
+SELECT channel_name AS 유통채널,
+       MAX(run_date) AS 최종수집일,
+       MIN(lag_days) AS 지연일수,
+       COUNT(*) AS 상품수,
+       SUM(is_live) AS 판매중_SKU,
+       SUM(CASE WHEN is_live=0 THEN 1 ELSE 0 END) AS 미판매_SKU
+FROM product_current
+GROUP BY channel_id
+ORDER BY 최종수집일 DESC, 유통채널
 LIMIT 200
 """
 
@@ -223,21 +184,14 @@ LIMIT 200
 #    이미 리스팅이 내려간 상품의 과거 가격이 섞이면 현재 평균가가 왜곡된다
 #    (2026-08-31 실측: Al Khunaizan LG 평균이 5,127 → 실제 5,021, +106 부풀림).
 SQL_BRAND_BY_CHANNEL = """
-SELECT ch.name AS 유통채널,
-       ROUND(AVG(CASE WHEN UPPER(p.brand)='LG' THEN COALESCE(s.sl,s.sp) END)) AS LG평균가,
-       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN COALESCE(s.sl,s.sp) END)) AS 경쟁평균가,
-       COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU수,
-       MAX(s.run_date) AS 기준일
-FROM price_snapshots s
-JOIN products p ON p.id = s.product_id
-JOIN channels ch ON ch.id = p.channel_id
-WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days')
-  AND COALESCE(s.sl,s.sp) > 0
-  AND p.id IN (SELECT product_id FROM price_snapshots
-               GROUP BY product_id
-               HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                      - julianday(MAX(run_date)) <= 3)   -- 현재 판매중인 상품만
-GROUP BY ch.id
+SELECT channel_name AS 유통채널,
+       ROUND(AVG(CASE WHEN brand='LG'  THEN px END)) AS LG평균가,
+       ROUND(AVG(CASE WHEN brand<>'LG' THEN px END)) AS 경쟁평균가,
+       COUNT(CASE WHEN brand='LG' THEN 1 END) AS LG_SKU수,
+       MAX(run_date) AS 기준일
+FROM product_current
+WHERE is_live = 1
+GROUP BY channel_id
 HAVING LG평균가 IS NOT NULL
 ORDER BY LG평균가 DESC
 LIMIT 200
@@ -250,26 +204,14 @@ BRANDCH_WORDS = ("채널별 lg", "유통별 lg", "채널별 평균가", "유통�
 
 
 SQL_BAND_BRAND = """
-SELECT UPPER(p.brand) AS 브랜드,
-       COUNT(DISTINCT p.id) AS 상품수,
-       ROUND(AVG(COALESCE(s.sl,s.sp))) AS 평균가_SAR,
-       ROUND(MIN(COALESCE(s.sl,s.sp))) AS 최저가_SAR,
-       ROUND(MAX(COALESCE(s.sl,s.sp))) AS 최고가_SAR,
-       MAX(s.run_date) AS 기준일
-FROM price_snapshots s
-JOIN products p ON p.id = s.product_id
-JOIN channels ch ON ch.id = p.channel_id
-WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), '-30 days')
-  AND COALESCE(s.sl,s.sp) > 0
-  AND p.btu BETWEEN ? AND ?
-  AND (? IS NULL OR ch.code = ?)
-  AND p.id IN (SELECT product_id FROM price_snapshots
-               GROUP BY product_id
-               HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                      - julianday(MAX(run_date)) <= 3)   -- 현재 판매중인 상품만
-
-GROUP BY UPPER(p.brand)
-HAVING COUNT(DISTINCT p.id) >= 2
+SELECT brand AS 브랜드, COUNT(*) AS 상품수,
+       ROUND(AVG(px)) AS 평균가_SAR, ROUND(MIN(px)) AS 최저가_SAR,
+       ROUND(MAX(px)) AS 최고가_SAR, MAX(run_date) AS 기준일
+FROM product_current
+WHERE is_live = 1 AND btu BETWEEN ? AND ?
+  AND (? IS NULL OR channel_code = ?)
+GROUP BY brand
+HAVING COUNT(*) >= 2
 ORDER BY 평균가_SAR DESC
 LIMIT 200
 """
@@ -278,52 +220,34 @@ LIMIT 200
 #    AI가 지은 SQL에는 이게 없어서 '하루 튀었다 원위치한' 가짜 변동을 그대로 보고한다
 #    (Black Box LG +79% → 다음날 -44% 같은 왕복). 실제 변동이 아니라 프로모가 미포착일이다.
 SQL_RECENT_MOVES = """
-WITH d AS (
-  SELECT s.product_id, s.run_date, COALESCE(s.sl,s.sp) px, s.sp, s.sl, s.discount_pct dp,
-         LAG(COALESCE(s.sl,s.sp))  OVER w prev,
-         LEAD(COALESCE(s.sl,s.sp)) OVER w next,
-         LAG(s.sp) OVER w prev_sp, LAG(s.sl) OVER w prev_sl,
-         LAG(s.discount_pct) OVER w prev_dp,
-         LAG(COALESCE(s.sl,s.sp), 2) OVER w prev2
-  FROM price_snapshots s
-  WHERE s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
-  WINDOW w AS (PARTITION BY s.product_id ORDER BY s.run_date)
-)
-SELECT d.run_date AS 일자, ch.name AS 유통채널, UPPER(p.brand) AS 브랜드,
+-- 결함 판정(스파이크·할인율모순)은 v_price_clean 안에 있다. 여기서 다시 쓰지 않는다.
+SELECT c.run_date AS 일자, ch.name AS 유통채널, UPPER(p.brand) AS 브랜드,
        p.sku AS SKU, substr(COALESCE(p.name_en,''),1,55) AS 상품명, p.btu AS BTU,
-       ROUND(d.prev) AS 이전가, ROUND(d.px) AS 현재가,
-       ROUND((d.px - d.prev) * 100.0 / d.prev, 1) AS 변동률
-FROM d JOIN products p ON p.id = d.product_id
-       JOIN channels ch ON ch.id = p.channel_id
-WHERE d.prev IS NOT NULL AND d.px IS NOT NULL AND d.px <> d.prev AND d.prev > 0
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand) = 'LG'))
-  AND (? = 0 OR (d.px - d.prev) < 0)
-  AND (? = 0 OR (d.px - d.prev) > 0)
-  -- 결함 가드 ①: 하루 튀었다 원위치한 스파이크
-  AND NOT (d.next IS NOT NULL AND d.prev > 0 AND d.next > 0
-           AND ABS(d.px - d.prev)/d.prev > 0.15 AND ABS(d.px - d.next)/d.next > 0.15
-           AND ABS(d.prev - d.next)/d.prev < 0.03)
-  AND NOT (d.prev2 IS NOT NULL AND d.prev2 > 0 AND d.px > 0
-           AND ABS(d.prev - d.prev2)/d.prev2 > 0.15 AND ABS(d.prev - d.px)/d.px > 0.15
-           AND ABS(d.prev2 - d.px)/d.px < 0.03)
-  -- 결함 가드 ②: 할인율은 있는데 판매가 = 표준가
-  AND NOT (d.dp > 1 AND d.sp > 0 AND d.sl >= d.sp * 0.995)
-  AND NOT (d.prev_dp > 1 AND d.prev_sp > 0 AND d.prev_sl >= d.prev_sp * 0.995)
-ORDER BY ABS((d.px - d.prev) / d.prev) DESC
+       ROUND(c.prev_px) AS 이전가, ROUND(c.px) AS 현재가,
+       ROUND((c.px - c.prev_px) * 100.0 / c.prev_px, 1) AS 변동률
+FROM v_price_clean c
+JOIN products p ON p.id = c.product_id
+JOIN channels ch ON ch.id = p.channel_id
+WHERE c.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
+  AND c.prev_px IS NOT NULL AND c.px <> c.prev_px AND c.prev_px > 0
+  AND c.is_spike = 0 AND c.is_incons = 0
+  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
+  AND (? = 0 OR (c.px - c.prev_px) < 0)
+  AND (? = 0 OR (c.px - c.prev_px) > 0)
+ORDER BY ABS((c.px - c.prev_px) / c.prev_px) DESC
 LIMIT 60
 """
 
 SQL_MONTHLY_TREND = """
-SELECT substr(s.run_date,1,7) AS 월,
-       ROUND(AVG(CASE WHEN UPPER(p.brand)='LG' THEN COALESCE(s.sl,s.sp) END)) AS LG평균가,
-       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN COALESCE(s.sl,s.sp) END)) AS 경쟁평균가,
+SELECT substr(c.run_date,1,7) AS 월,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)='LG'  THEN c.px END)) AS LG평균가,
+       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN c.px END)) AS 경쟁평균가,
        COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU수,
-       COUNT(DISTINCT s.run_date) AS 수집일수
-FROM price_snapshots s
-JOIN products p ON p.id = s.product_id
-WHERE COALESCE(s.sl,s.sp) > 0 AND p.btu BETWEEN ? AND ?
+       COUNT(DISTINCT c.run_date) AS 수집일수
+FROM v_price_clean c JOIN products p ON p.id = c.product_id
+WHERE c.is_spike = 0 AND c.is_incons = 0 AND p.btu BETWEEN ? AND ?
 GROUP BY 월
-HAVING 수집일수 >= 15    -- 수집 부실월은 월평균을 대표하지 못한다
+HAVING 수집일수 >= 15
 ORDER BY 월
 LIMIT 200
 """
@@ -393,69 +317,51 @@ LIVE_ONLY = """p.id IN (SELECT product_id FROM price_snapshots GROUP BY product_
                      - julianday(MAX(run_date)) <= 3)"""
 
 SQL_STOCK_STATUS = """
-SELECT ch.name AS 유통채널, UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR,
-       CASE WHEN l.in_stock=0 THEN '품절' WHEN l.in_stock=1 THEN '재고있음' ELSE '미상' END AS 재고,
-       l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.in_stock, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp) IS NOT NULL) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
-  AND (? = 0 OR l.in_stock = 0)
-  AND (? IS NULL OR ch.code = ?)
-ORDER BY l.in_stock, ch.name, l.px DESC
+SELECT channel_name AS 유통채널, brand AS 브랜드, v6_model AS 모델코드, sku AS SKU,
+       substr(COALESCE(name_en,''),1,45) AS 상품명, btu AS BTU,
+       ROUND(px) AS 현재가_SAR,
+       CASE WHEN in_stock=0 THEN '품절' WHEN in_stock=1 THEN '재고있음' ELSE '미상' END AS 재고,
+       run_date AS 확인일
+FROM product_current
+WHERE is_live = 1
+  AND (? = 'ALL' OR (? = 'LG') = (brand='LG'))
+  AND (? = 0 OR in_stock = 0)
+  AND (? IS NULL OR channel_code = ?)
+ORDER BY in_stock, channel_name, px DESC
 LIMIT 150
 """
 
 SQL_BRAND_RANK = """
-SELECT UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR, ch.name AS 유통채널, l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND (? = 'ALL' OR UPPER(p.brand) = ?)
-ORDER BY l.px """ + """{DIR}""" + """
+SELECT brand AS 브랜드, v6_model AS 모델코드, sku AS SKU,
+       substr(COALESCE(name_en,''),1,45) AS 상품명, btu AS BTU,
+       ROUND(px) AS 현재가_SAR, channel_name AS 유통채널, run_date AS 확인일
+FROM product_current
+WHERE is_live = 1 AND (? = 'ALL' OR brand = ?)
+ORDER BY px {DIR}
 LIMIT 30
 """
 
 SQL_CHANNEL_LINEUP = """
-SELECT ch.name AS 유통채널, UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR, l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND ch.code = ?
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
-ORDER BY UPPER(p.brand), l.px
+SELECT channel_name AS 유통채널, brand AS 브랜드, v6_model AS 모델코드, sku AS SKU,
+       substr(COALESCE(name_en,''),1,45) AS 상품명, btu AS BTU,
+       ROUND(px) AS 현재가_SAR, run_date AS 확인일
+FROM product_current
+WHERE is_live = 1 AND channel_code = ?
+  AND (? = 'ALL' OR (? = 'LG') = (brand='LG'))
+ORDER BY brand, px
 LIMIT 200
 """
 
 SQL_CHANNEL_SUMMARY = """
-SELECT ch.name AS 유통채널,
-       COUNT(DISTINCT p.id) AS 판매중_SKU,
-       COUNT(DISTINCT UPPER(p.brand)) AS 브랜드수,
-       COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU,
-       ROUND(AVG(l.px)) AS 평균가_SAR,
-       MAX(l.run_date) AS 최종확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-GROUP BY ch.id
+SELECT channel_name AS 유통채널,
+       COUNT(*) AS 판매중_SKU,
+       COUNT(DISTINCT brand) AS 브랜드수,
+       COUNT(CASE WHEN brand='LG' THEN 1 END) AS LG_SKU,
+       ROUND(AVG(px)) AS 평균가_SAR,
+       MAX(run_date) AS 최종확인일
+FROM product_current
+WHERE is_live = 1
+GROUP BY channel_id
 ORDER BY 판매중_SKU DESC
 LIMIT 50
 """
@@ -512,13 +418,12 @@ def unanswerable(q: str):
 
 
 SQL_BRAND_TREND_ANY = """
-SELECT substr(s.run_date,1,7) AS 월,
-       UPPER(p.brand) AS 브랜드,
-       ROUND(AVG(COALESCE(s.sl,s.sp))) AS 평균가_SAR,
+SELECT substr(c.run_date,1,7) AS 월, UPPER(p.brand) AS 브랜드,
+       ROUND(AVG(c.px)) AS 평균가_SAR,
        COUNT(DISTINCT p.id) AS SKU수,
-       COUNT(DISTINCT s.run_date) AS 수집일수
-FROM price_snapshots s JOIN products p ON p.id=s.product_id
-WHERE COALESCE(s.sl,s.sp) > 0
+       COUNT(DISTINCT c.run_date) AS 수집일수
+FROM v_price_clean c JOIN products p ON p.id = c.product_id
+WHERE c.is_spike = 0 AND c.is_incons = 0
   AND (? = 'ALL' OR UPPER(p.brand) = ?)
   AND (? IS NULL OR p.btu BETWEEN ? AND ?)
 GROUP BY 월, UPPER(p.brand)
@@ -528,45 +433,30 @@ LIMIT 200
 """
 
 SQL_BRAND_CHANNELS = """
-SELECT UPPER(p.brand) AS 브랜드, ch.name AS 유통채널,
-       COUNT(DISTINCT p.id) AS 판매중_SKU,
-       ROUND(AVG(l.px)) AS 평균가_SAR,
-       ROUND(MIN(l.px)) AS 최저가_SAR, ROUND(MAX(l.px)) AS 최고가_SAR,
-       MAX(l.run_date) AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND UPPER(p.brand) = ?
-GROUP BY ch.id
+SELECT brand AS 브랜드, channel_name AS 유통채널,
+       COUNT(*) AS 판매중_SKU, ROUND(AVG(px)) AS 평균가_SAR,
+       ROUND(MIN(px)) AS 최저가_SAR, ROUND(MAX(px)) AS 최고가_SAR,
+       MAX(run_date) AS 확인일
+FROM product_current
+WHERE is_live = 1 AND brand = ?
+GROUP BY channel_id
 ORDER BY 판매중_SKU DESC
 LIMIT 50
 """
 
 SQL_LG_VS_COMP_BY_MODEL = """
--- 같은 BTU 급에서 LG 모델이 경쟁 평균보다 얼마나 비싼가
-WITH live AS (
-  SELECT p.id, p.v6_model, p.btu, UPPER(p.brand) br, l.px, l.run_date
-  FROM products p
-  JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-               ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-        FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-    ON l.product_id=p.id AND l.rn=1
-  WHERE """ + LIVE_ONLY + """ AND p.btu IS NOT NULL
-),
-comp AS (
+WITH comp AS (
   SELECT btu/1000 AS band, ROUND(AVG(px)) AS comp_avg, COUNT(*) n
-  FROM live WHERE br <> 'LG' GROUP BY band HAVING n >= 3
+  FROM product_current WHERE is_live=1 AND brand<>'LG' AND btu IS NOT NULL
+  GROUP BY band HAVING n >= 3
 )
 SELECT lg.v6_model AS LG모델, lg.btu AS BTU,
        ROUND(AVG(lg.px)) AS LG평균가, c.comp_avg AS 경쟁평균가,
        ROUND(AVG(lg.px) - c.comp_avg) AS 차액_SAR,
        ROUND((AVG(lg.px) - c.comp_avg) * 100.0 / c.comp_avg, 1) AS 프리미엄_pct,
-       COUNT(DISTINCT lg.id) AS LG_SKU수, MAX(lg.run_date) AS 확인일
-FROM live lg JOIN comp c ON c.band = lg.btu/1000
-WHERE lg.br = 'LG' AND lg.v6_model IS NOT NULL
+       COUNT(*) AS LG_SKU수, MAX(lg.run_date) AS 확인일
+FROM product_current lg JOIN comp c ON c.band = lg.btu/1000
+WHERE lg.is_live=1 AND lg.brand='LG' AND lg.v6_model IS NOT NULL AND lg.btu IS NOT NULL
 GROUP BY lg.v6_model, lg.btu
 ORDER BY 프리미엄_pct DESC
 LIMIT 40
@@ -617,7 +507,7 @@ def match_template(q: str):
     #  단, 'SKU 개수'처럼 규모를 묻는 건 평균가가 아니다 → 위 요약 템플릿이 가져간다.
     if (any(w in q.lower() for w in BRANDCH_WORDS) and not cands
             and not any(w in q for w in SUMMARY_WORDS)):
-        return ("채널별 LG/경쟁 평균가 최근 30일 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), ())
+        return ("채널별 LG/경쟁 현재가 평균 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), ())
 
     band = _btu_band(q)
 
@@ -698,7 +588,7 @@ def match_template(q: str):
 
     # BTU 구간 브랜드별 평균가 (채널 지정 있으면 그 채널만)
     if band and not cands:
-        return (f"{band[0]//1000}~{band[1]//1000}K 브랜드별 평균가"
+        return (f"{band[0]//1000}~{band[1]//1000}K 브랜드별 현재가 평균"
                 + (f" · {ch}" if ch else "") + " (검증된 질의)",
                 SQL_BAND_BRAND.strip(), (band[0], band[1], ch, ch))
 

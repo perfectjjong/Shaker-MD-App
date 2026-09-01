@@ -141,28 +141,34 @@ def chk_no_stale_stock(cols, rows):
 
 
 def chk_live_only_avg(cols, rows):
-    """'현재 평균가'에 이미 리스팅이 내려간 상품이 섞이면 안 된다."""
-    def is_price(c):
-        return any(k in str(c) for k in ("평균가", "가_SAR")) 
-    if not any(is_price(c) for c in cols) or not rows:
+    """'현재가 평균'이 **판매중 상품의 최신 가격** 평균과 맞는가.
+
+    ⚠️ 기대값은 뷰(v_product_current)를 쓰지 않고 **원시 테이블에서 직접** 계산한다.
+       뷰로 뷰를 검증하면 뷰가 틀렸을 때 둘 다 같이 틀려서 통과해버린다.
+    (2026-09-01 정의 변경: '최근 30일 평균' → '현재 시점 가격 평균'.
+     형님이 채널별 평균가를 물으면 '지금 얼마에 팔리나'가 답이다.)"""
+    if not any("평균가" in str(c) for c in cols) or not rows:
         return True, "평균가 컬럼 없음 — 검사 생략"
     con = sqlite3.connect(f"file:{S.DB}?mode=ro", uri=True)
     try:
-        live = con.execute("""
-          SELECT ROUND(AVG(COALESCE(s.sl,s.sp))) FROM price_snapshots s
-          JOIN products p ON p.id=s.product_id JOIN channels ch ON ch.id=p.channel_id
-          WHERE ch.name=? AND UPPER(p.brand)='LG'
-            AND s.run_date >= date((SELECT MAX(run_date) FROM price_snapshots),'-30 days')
-            AND COALESCE(s.sl,s.sp)>0
-            AND p.id IN (SELECT product_id FROM price_snapshots GROUP BY product_id
-                         HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                                - julianday(MAX(run_date)) <= 3)""", (rows[0][0],)).fetchone()[0]
+        exp = con.execute("""
+          WITH anchor AS (SELECT MAX(run_date) d FROM price_snapshots),
+          last AS (
+            SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
+                   ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
+            FROM price_snapshots s WHERE COALESCE(s.sl,s.sp) > 0)
+          SELECT ROUND(AVG(l.px))
+          FROM last l JOIN products p ON p.id=l.product_id
+          JOIN channels ch ON ch.id=p.channel_id
+          WHERE l.rn=1 AND ch.name=? AND UPPER(p.brand)='LG'
+            AND julianday((SELECT d FROM anchor)) - julianday(l.run_date) <= 3""",
+                          (rows[0][0],)).fetchone()[0]
     finally:
         con.close()
     got = rows[0][1]
-    if live and isinstance(got, (int, float)) and abs(got - live) > 1:
-        return False, f"{rows[0][0]} 평균가 {got:,.0f} ≠ 판매중 기준 {live:,.0f} (사라진 상품 혼입)"
-    return True, "판매중 기준과 일치"
+    if exp and isinstance(got, (int, float)) and abs(got - exp) > 1:
+        return False, f"{rows[0][0]} 현재가 평균 {got:,.0f} ≠ 원시 계산 {exp:,.0f}"
+    return True, f"원시 계산과 일치 ({exp:,.0f})" if exp else "기대값 산출 불가"
 
 
 def chk_nonempty(minrows=1):
