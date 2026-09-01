@@ -387,97 +387,6 @@ def _channel_code(q):
     return None
 
 
-# 현재 판매중(리스팅 살아있는) 상품만 — 여러 템플릿이 공유하는 조건
-LIVE_ONLY = """p.id IN (SELECT product_id FROM price_snapshots GROUP BY product_id
-              HAVING julianday((SELECT MAX(run_date) FROM price_snapshots))
-                     - julianday(MAX(run_date)) <= 3)"""
-
-SQL_STOCK_STATUS = """
-SELECT ch.name AS 유통채널, UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR,
-       CASE WHEN l.in_stock=0 THEN '품절' WHEN l.in_stock=1 THEN '재고있음' ELSE '미상' END AS 재고,
-       l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.in_stock, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp) IS NOT NULL) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
-  AND (? = 0 OR l.in_stock = 0)
-  AND (? IS NULL OR ch.code = ?)
-ORDER BY l.in_stock, ch.name, l.px DESC
-LIMIT 150
-"""
-
-SQL_BRAND_RANK = """
-SELECT UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR, ch.name AS 유통채널, l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND (? = 'ALL' OR UPPER(p.brand) = ?)
-ORDER BY l.px """ + """{DIR}""" + """
-LIMIT 30
-"""
-
-SQL_CHANNEL_LINEUP = """
-SELECT ch.name AS 유통채널, UPPER(p.brand) AS 브랜드, p.v6_model AS 모델코드, p.sku AS SKU,
-       substr(COALESCE(p.name_en,''),1,45) AS 상품명, p.btu AS BTU,
-       ROUND(l.px) AS 현재가_SAR, l.run_date AS 확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-  AND ch.code = ?
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
-ORDER BY UPPER(p.brand), l.px
-LIMIT 200
-"""
-
-SQL_CHANNEL_SUMMARY = """
-SELECT ch.name AS 유통채널,
-       COUNT(DISTINCT p.id) AS 판매중_SKU,
-       COUNT(DISTINCT UPPER(p.brand)) AS 브랜드수,
-       COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU,
-       ROUND(AVG(l.px)) AS 평균가_SAR,
-       MAX(l.run_date) AS 최종확인일
-FROM products p JOIN channels ch ON ch.id=p.channel_id
-JOIN (SELECT s.product_id, COALESCE(s.sl,s.sp) px, s.run_date,
-             ROW_NUMBER() OVER (PARTITION BY s.product_id ORDER BY s.run_date DESC) rn
-      FROM price_snapshots s WHERE COALESCE(s.sl,s.sp)>0) l
-  ON l.product_id=p.id AND l.rn=1
-WHERE """ + LIVE_ONLY + """
-GROUP BY ch.id
-ORDER BY 판매중_SKU DESC
-LIMIT 50
-"""
-
-STOCK_WORDS = ("품절", "재고", "없는", "솔드아웃", "sold out")
-RANK_HI = ("제일 비싼", "가장 비싼", "최고가", "비싼 순", "높은 순")
-RANK_LO = ("제일 싼", "가장 싼", "최저가", "싼 순", "저렴한 순")
-LINEUP_WORDS = ("파는", "판매하는", "취급", "라인업", "모델 전부", "모델 목록", "어디서 팔")
-SUMMARY_WORDS = ("SKU 개수", "sku 개수", "몇 개", "몇개", "브랜드를 파는", "브랜드 수", "취급 규모")
-BRANDS_ALL = ("LG", "SAMSUNG", "GREE", "MIDEA", "HISENSE", "TCL")
-
-
-def _brand_in(q):
-    up = q.upper()
-    for b in BRANDS_ALL:
-        if b in up:
-            return b
-    if "삼성" in q: return "SAMSUNG"
-    if "그리" in q: return "GREE"
-    return None
-
-
 def match_template(q: str):
     """(설명, SQL, params) 또는 None. 정규식이 아니라 **의도**로 고른다."""
     up = q.upper()
@@ -548,37 +457,9 @@ def match_template(q: str):
         return (f"최근 {days.strip('- days')}일 가격 {dirn} (검증된 질의 · 스크래핑 결함 제외)",
                 SQL_RECENT_MOVES.strip(), (days, scope, scope, only_down, only_up))
 
-    ch = _channel_code(q)
-    brand = _brand_in(q)
-
-    # 재고·품절 조회
-    if any(w in q for w in STOCK_WORDS):
-        only_oos = 1 if ("품절" in q or "없는" in q or "sold out" in q.lower()) else 0
-        scope = brand if brand else "ALL"
-        lbl = "품절 상품" if only_oos else "재고 현황"
-        return (f"{lbl}{' · '+brand if brand else ''}{' · '+ch if ch else ''} (검증된 질의)",
-                SQL_STOCK_STATUS.strip(), (scope, scope, only_oos, ch, ch))
-
-    # 최고가 / 최저가 순위
-    if any(w in q for w in RANK_HI) or any(w in q for w in RANK_LO):
-        desc = any(w in q for w in RANK_HI)
-        sql = SQL_BRAND_RANK.strip().replace("{DIR}", "DESC" if desc else "ASC")
-        scope = brand if brand else "ALL"
-        return (f"{'최고가' if desc else '최저가'} 순위{' · '+brand if brand else ''} (검증된 질의)",
-                sql, (scope, scope))
-
-    # 채널 취급 규모 요약
-    if any(w in q for w in SUMMARY_WORDS) and not ch:
-        return ("채널별 취급 규모 요약 (검증된 질의)", SQL_CHANNEL_SUMMARY.strip(), ())
-
-    # 특정 채널 라인업
-    if ch and any(w in q for w in LINEUP_WORDS):
-        scope = brand if brand else "ALL"
-        return (f"{ch} 취급 라인업{' · '+brand if brand else ''} (검증된 질의)",
-                SQL_CHANNEL_LINEUP.strip(), (ch, scope, scope))
-
     # BTU 구간 브랜드별 평균가 (채널 지정 있으면 그 채널만)
     if band and not cands:
+        ch = _channel_code(q)
         return (f"{band[0]//1000}~{band[1]//1000}K 브랜드별 평균가"
                 + (f" · {ch}" if ch else "") + " (검증된 질의)",
                 SQL_BAND_BRAND.strip(), (band[0], band[1], ch, ch))
