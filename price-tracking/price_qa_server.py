@@ -97,7 +97,10 @@ sku_status_events(product_id, event_date, status, absent_days)
 6. BTU는 결측이 있다(NULL). 용량 비교 시 p.btu IS NOT NULL 조건을 넣을 것.
 7. 채널 간 가격 비교는 **채널별 평균을 먼저 낸 뒤** 비교한다. 기간 전체 min/max를 쓰면
    프로모션 등락이 채널 편차로 둔갑한다.
-8. 우리 브랜드는 'LG'. 주요 경쟁사는 SAMSUNG, GREE, MIDEA, HISENSE, TCL.
+8. 우리 브랜드는 'LG'. 🔴 **주요 경쟁사는 GREE · MIDEA · TCL 3사다** (형님 확정, 2026-09-01).
+   '경쟁사'라고만 하면 이 3사를 뜻한다. 삼성·Hisense는 주요 경쟁사가 아니다
+   (실측 판매중 SKU: GREE 225 · MIDEA 195 · TCL 162 vs HISENSE 44 · SAMSUNG 25 —
+    Mando 116·Haier 70보다도 작다). 다른 브랜드는 이름을 명시했을 때만 다룬다.
 """
 
 SQL_SYS = f"""당신은 SQLite 전문가다. 아래 스키마로 사용자의 한국어 질문에 답할 SELECT 한 문장을 쓴다.
@@ -186,13 +189,17 @@ LIMIT 200
 SQL_BRAND_BY_CHANNEL = """
 SELECT channel_name AS 유통채널,
        ROUND(AVG(CASE WHEN brand='LG'  THEN px END)) AS LG평균가,
-       ROUND(AVG(CASE WHEN brand<>'LG' THEN px END)) AS 경쟁평균가,
+       ROUND(AVG(CASE WHEN brand IN ('GREE','MIDEA','TCL') THEN px END)) AS 주요3사평균가,
+       ROUND((AVG(CASE WHEN brand='LG' THEN px END)
+              - AVG(CASE WHEN brand IN ('GREE','MIDEA','TCL') THEN px END)) * 100.0
+             / AVG(CASE WHEN brand IN ('GREE','MIDEA','TCL') THEN px END), 1) AS 프리미엄_pct,
        COUNT(CASE WHEN brand='LG' THEN 1 END) AS LG_SKU수,
+       COUNT(CASE WHEN brand IN ('GREE','MIDEA','TCL') THEN 1 END) AS 경쟁_SKU수,
        MAX(run_date) AS 기준일
 FROM product_current
 WHERE is_live = 1
 GROUP BY channel_id
-HAVING LG평균가 IS NOT NULL
+HAVING LG평균가 IS NOT NULL AND 주요3사평균가 IS NOT NULL
 ORDER BY LG평균가 DESC
 LIMIT 200
 """
@@ -204,7 +211,11 @@ BRANDCH_WORDS = ("채널별 lg", "유통별 lg", "채널별 평균가", "유통�
 
 
 SQL_BAND_BRAND = """
-SELECT brand AS 브랜드, COUNT(*) AS 상품수,
+SELECT brand AS 브랜드,
+       CASE WHEN brand='LG' THEN '우리'
+            WHEN brand IN ('GREE','MIDEA','TCL') THEN '주요경쟁'
+            ELSE '기타' END AS 구분,
+       COUNT(*) AS 상품수,
        ROUND(AVG(px)) AS 평균가_SAR, ROUND(MIN(px)) AS 최저가_SAR,
        ROUND(MAX(px)) AS 최고가_SAR, MAX(run_date) AS 기준일
 FROM product_current
@@ -231,7 +242,8 @@ JOIN channels ch ON ch.id = p.channel_id
 WHERE c.run_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
   AND c.prev_px IS NOT NULL AND c.px <> c.prev_px AND c.prev_px > 0
   AND c.is_spike = 0 AND c.is_incons = 0
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand)='LG'))
+  AND (? = 'ALL' OR (? = 'LG' AND UPPER(p.brand)='LG')
+       OR (? = 'COMP' AND UPPER(p.brand) IN ('GREE','MIDEA','TCL')))
   AND (? = 0 OR (c.px - c.prev_px) < 0)
   AND (? = 0 OR (c.px - c.prev_px) > 0)
 ORDER BY ABS((c.px - c.prev_px) / c.prev_px) DESC
@@ -241,7 +253,7 @@ LIMIT 60
 SQL_MONTHLY_TREND = """
 SELECT substr(c.run_date,1,7) AS 월,
        ROUND(AVG(CASE WHEN UPPER(p.brand)='LG'  THEN c.px END)) AS LG평균가,
-       ROUND(AVG(CASE WHEN UPPER(p.brand)<>'LG' THEN c.px END)) AS 경쟁평균가,
+       ROUND(AVG(CASE WHEN UPPER(p.brand) IN ('GREE','MIDEA','TCL') THEN c.px END)) AS 주요3사평균가,
        COUNT(DISTINCT CASE WHEN UPPER(p.brand)='LG' THEN p.id END) AS LG_SKU수,
        COUNT(DISTINCT c.run_date) AS 수집일수
 FROM v_price_clean c JOIN products p ON p.id = c.product_id
@@ -262,7 +274,8 @@ JOIN products p ON p.id = e.product_id
 JOIN channels ch ON ch.id = p.channel_id
 WHERE e.event_date >= date((SELECT MAX(run_date) FROM price_snapshots), ?)
   AND e.status = ?
-  AND (? = 'ALL' OR (? = 'LG') = (UPPER(p.brand) = 'LG'))
+  AND (? = 'ALL' OR (? = 'LG' AND UPPER(p.brand) = 'LG')
+       OR (? = 'COMP' AND UPPER(p.brand) IN ('GREE','MIDEA','TCL')))
 ORDER BY e.event_date DESC, ch.name
 LIMIT 120
 """
@@ -371,7 +384,10 @@ RANK_HI = ("제일 비싼", "가장 비싼", "최고가", "비싼 순", "높은 
 RANK_LO = ("제일 싼", "가장 싼", "최저가", "싼 순", "저렴한 순")
 LINEUP_WORDS = ("파는", "판매하는", "취급", "라인업", "모델 전부", "모델 목록", "어디서 팔")
 SUMMARY_WORDS = ("SKU 개수", "sku 개수", "몇 개", "몇개", "브랜드를 파는", "브랜드 수", "취급 규모")
-BRANDS_ALL = ("LG", "SAMSUNG", "GREE", "MIDEA", "HISENSE", "TCL")
+# 🔴 주요 경쟁사 = GREE · MIDEA · TCL (형님 확정 2026-09-01). '경쟁사'는 이 3사를 뜻한다.
+MAIN_COMPETITORS = ("GREE", "MIDEA", "TCL")
+# 질문에서 이름을 집어낼 대상 — 주요 3사 외 브랜드도 '명시하면' 답한다.
+BRANDS_ALL = ("LG",) + MAIN_COMPETITORS + ("SAMSUNG", "HISENSE", "HAIER", "MANDO", "BASIC", "ZAMIL")
 
 
 def _brand_in(q):
@@ -379,8 +395,10 @@ def _brand_in(q):
     for b in BRANDS_ALL:
         if b in up:
             return b
-    if "삼성" in q: return "SAMSUNG"
-    if "그리" in q: return "GREE"
+    for ko, en in (("삼성", "SAMSUNG"), ("그리", "GREE"), ("미디어", "MIDEA"),
+                   ("하이센스", "HISENSE"), ("하이얼", "HAIER"), ("만도", "MANDO")):
+        if ko in q:
+            return en
     return None
 
 
@@ -447,11 +465,13 @@ LIMIT 50
 SQL_LG_VS_COMP_BY_MODEL = """
 WITH comp AS (
   SELECT btu/1000 AS band, ROUND(AVG(px)) AS comp_avg, COUNT(*) n
-  FROM product_current WHERE is_live=1 AND brand<>'LG' AND btu IS NOT NULL
+  -- 🔴 경쟁 기준 = 주요 3사(GREE·MIDEA·TCL). 로컬 저가 브랜드를 섞으면 프리미엄이 부풀려진다
+  --    (실측: 전 브랜드 기준 +35.4% vs 주요 3사 기준 +19.5% — 15.9%p 차이)
+  FROM product_current WHERE is_live=1 AND brand IN ('GREE','MIDEA','TCL') AND btu IS NOT NULL
   GROUP BY band HAVING n >= 3
 )
 SELECT lg.v6_model AS LG모델, lg.btu AS BTU,
-       ROUND(AVG(lg.px)) AS LG평균가, c.comp_avg AS 경쟁평균가,
+       ROUND(AVG(lg.px)) AS LG평균가, c.comp_avg AS 주요3사평균가,
        ROUND(AVG(lg.px) - c.comp_avg) AS 차액_SAR,
        ROUND((AVG(lg.px) - c.comp_avg) * 100.0 / c.comp_avg, 1) AS 프리미엄_pct,
        COUNT(*) AS LG_SKU수, MAX(lg.run_date) AS 확인일
@@ -524,7 +544,7 @@ def match_template(q: str):
             "COMP" if "경쟁" in q else "ALL")
         label = "신규 진입" if status == "new" else "단종·이탈"
         return (f"최근 30일 {label} 라인업 (검증된 질의)",
-                SQL_LINEUP.strip(), (days, status, scope, scope))
+                SQL_LINEUP.strip(), (days, status, scope, scope, scope))
 
     # 최근 가격 변동 (결함 가드 포함)
     if any(w in q for w in MOVE_WORDS):
@@ -537,7 +557,7 @@ def match_template(q: str):
         only_up = 1 if any(w in q for w in UP_WORDS) and not any(w in q for w in DOWN_WORDS) else 0
         dirn = "인하" if only_down else ("인상" if only_up else "전체")
         return (f"최근 {days.strip('- days')}일 가격 {dirn} (검증된 질의 · 스크래핑 결함 제외)",
-                SQL_RECENT_MOVES.strip(), (days, scope, scope, only_down, only_up))
+                SQL_RECENT_MOVES.strip(), (days, scope, scope, scope, only_down, only_up))
 
     ch = _channel_code(q)
     brand = _brand_in(q)
