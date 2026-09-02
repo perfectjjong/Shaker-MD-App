@@ -242,9 +242,13 @@ OneDrive 것보다 오래된 수정시각을 갖게 되면 갱신 대상이 된�
 `pipeline-rules.conf`가 그 매핑을 담는다:
 
 ```
-00. Sell Thru Dashboard/ | cd /home/ubuntu/Shaker-MD-App && python3 -m automation-backup.sell-thru-dashboard.st_db
-03. Operation/03. PSI/   | cd /home/ubuntu/Shaker-MD-App && python3 price-tracking/orchestrator.py
+00. Sell Thru Dashboard/00. Raw Data/ | /home/ubuntu/Shaker-MD-App/onedrive-sync/menu_sellthru.sh
+03. Operation/00. GPC/                | /home/ubuntu/Shaker-MD-App/onedrive-sync/menu_gpc.sh
+03. Operation/03. PSI/                | /home/ubuntu/Shaker-MD-App/onedrive-sync/menu_notify.sh
 ```
+(위는 실제 `pipeline-rules.conf` 에서 그대로 가져온 예다 — 예시를 지어내면 문서가
+현실과 어긋난다. 2026-09-02 정정: 이전 예시는 존재하지 않는 매핑과 이미 회수된
+`price-tracking/orchestrator.py` 를 가리키고 있었다.)
 
 이번 회차에 그 접두사로 시작하는 파일이 **하나라도 들어온 경우에만** 명령이
 한 번 실행된다. Sell Thru 파일만 들어왔다면 PSI 파이프라인은 돌지 않는다.
