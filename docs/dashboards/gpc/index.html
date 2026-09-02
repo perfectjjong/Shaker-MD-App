@@ -360,16 +360,39 @@ const selMonths=()=>selPeriods().flatMap(p=>monthsOf(S.unit,p));
 
 // ── 집계 (금액 SAR 합산 → 파생) ──
 function agg(year,months,opt){opt=opt||{};
-  // 기준 토글이 Official 이고, 채널/계정 축을 쓰지 않는 호출이면 Official 로 답한다.
-  if(S.basis==='off'&&!opt.chans&&opt.ac===undefined&&!opt.acc)return aggOff(year,months,opt);
+  // Official 은 채널 축이 없지만 Accrual 매출비중으로 안분해서 IR/OR 을 낸다.
+  // 계정(ac) 축은 안분하지 않는다 — 14개 계정별 값을 지어내면 협상 근거로 못 쓴다.
+  if(S.basis==='off'&&opt.ac===undefined&&!opt.acc)return aggOff(year,months,opt);
   return aggAcc(year,months,opt);}
+
+// (연|월|카테고리) → 채널별 Accrual GSV. Official 보정액을 나눌 '매출 비중'의 분모.
+let _CHS=null;
+function chShare(){
+  if(_CHS)return _CHS;
+  _CHS={};
+  for(const r of GPC_DATA){
+    if(isProv(r.y,r.m))continue;
+    const k=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
+    (_CHS[k]=_CHS[k]||{IR:0,OR:0})[r.ch]+=r.gsv;}
+  return _CHS;}
 
 function aggOff(year,months,opt){opt=opt||{};
   const ms=new Set(months),cs=opt.cats||S.cats;
+  const chs=opt.chans||S.chans;
+  const whole=GPC_META.channels.every(c=>chs.has(c));   // 전 채널이면 안분 불필요(원본 그대로)
+  const SH=whole?null:chShare();
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,nsv:0,gm:0};
+  o.unalloc=0;                                          // 안분 못 한 금액은 숨기지 않고 표면화한다
   for(const r of OFF){
     if(r.y!==year||r.b!=='A'||!ms.has(r.m)||!cs.has(r.cat))continue;
-    for(const k in o)if(k in r)o[k]+=r[k];}     // qty 는 Official 에 없어 0 으로 남는다
+    let w=1;
+    if(!whole){
+      const b=SH[`${r.y}|${r.m}|${r.cat}`];
+      const tot=b?Math.abs(b.IR)+Math.abs(b.OR):0;
+      if(tot<1){o.unalloc+=r.gsv;continue;}             // Accrual 에 그 셀이 없어 비중을 못 만든다
+      w=0;chs.forEach(c=>{w+=Math.abs(b[c]||0)/tot;});
+      if(w<=0)continue;}
+    for(const k in o)if(k in r)o[k]+=r[k]*w;}   // qty 는 Official 에 없어 0 으로 남는다
   o.gp=o.gm;                                    // GP 는 엑셀 원본 GM 그대로, 재계산 금지
   o.gm_pct=o.nsv?o.gp/o.nsv:0;
   o.disc_total=o.yed+o.adc+o.vpd+o.dsi;
@@ -578,7 +601,11 @@ function ladderTable(){
   tbl.innerHTML=head+`<tbody>${body}</tbody>`;
   document.getElementById('ladderHint').textContent=
     (S.basis==='off'
-      ? `Official(Finance 공시) 기준 · GP 는 공시 원본값 · 채널 축 없음(전 채널) · 가마감 제외 · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
+      ? `Official(Finance 공시) 기준 · GP 는 공시 원본값 · ${[...S.chans].join('+')||'채널 없음'}`
+        +`${GPC_META.channels.every(c=>S.chans.has(c))?'(원본 그대로)':'(Accrual 매출비중 안분)'}`
+        +`${(()=>{const u=yrs.reduce((t,y)=>t+(A[y].unalloc||0),0);
+             return Math.abs(u)>500?` · ⚠️ 안분 불가 ${fmt(u)} 천 SAR 제외(Accrual 에 해당 셀 없음)`:'';})()}`
+        +` · 가마감 제외 · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
       : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`);
 }
 
@@ -814,7 +841,8 @@ function ofBudget(){destroy('cOfBud');
       scales:{x:{grid:{display:false},stacked:false},
         y:{grid:GRID,border:{display:false},ticks:{callback:v=>Math.round(v).toLocaleString()}}}}});}
 
-const OFFBDG='<span class="dfbadge">Accrual 기준 · Official 미제공</span>';
+const OFFBDG='<span class="dfbadge">Accrual 기준 · 계정 축은 안분하지 않음</span>';
+const ALLOCBDG='<span class="dfbadge">Official · Accrual 매출비중 안분 추정</span>';
 // 커버리지 줄은 기준마다 다르다. Official 엔 가마감이 없고 2026 은 7월까지다.
 function syncCover(){
   const off=S.basis==='off',PV=off?null:(GPC_META.provisional||null);
@@ -830,17 +858,18 @@ function syncCover(){
 function syncBasisUI(){
   const off=S.basis==='off';
   syncCover();
-  document.getElementById('ctlChan').classList.toggle('dim',off);
+  document.getElementById('ctlChan').classList.remove('dim');   // Official 도 채널 안분으로 필터 가능
   document.getElementById('cardBud').classList.toggle('hide',!off);
-  document.getElementById('bdgChan').innerHTML=off?OFFBDG:'';
+  document.getElementById('bdgChan').innerHTML=off?ALLOCBDG:'';
   document.getElementById('bdgCt').innerHTML=off?OFFBDG:'';
   document.getElementById('basisLbl').textContent=off
     ? '(Official — Finance 공시 확정)' : '('+GPC_META.basis+')';
   document.getElementById('srcLbl').textContent=off&&OFM?OFM.source:GPC_META.source;
   const n=document.getElementById('basisNote');
   n.className=off?'note':'note hide';
-  n.innerHTML=off?('<b>Official 기준입니다.</b> Finance 공시 확정치라 <b>채널·계정·수량 축이 없습니다</b> — '
-    +'채널 필터는 무시되고, 채널 비교와 Contract Condition 은 Accrual 로 남습니다. '
+  n.innerHTML=off?('<b>Official 기준입니다.</b> Finance 공시 확정치라 원본엔 <b>채널·계정·수량 축이 없습니다</b> — '
+    +'<b>IR/OR 은 (연·월·카테고리) 단위 Accrual 매출비중으로 안분한 추정치</b>이고, '
+    +'계정별 Contract Condition 은 지어내지 않고 Accrual 로 남깁니다. '
     +'사다리표의 <b class="rcl">보정</b> 줄이 Accrual 대비 증감입니다. '
     +'<b>INV 는 보정이 아니라 정의 차이</b>(Official 은 배부·계획값, 2024 는 월 250,000 정액이고 2025·2026 은 실적란=예산란). '
     +'카테고리별 차이에는 Finance 재분류가 섞여 있어 <b>보정이 아니라 차이</b>로 읽어야 합니다.'):'';}
