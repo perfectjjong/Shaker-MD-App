@@ -75,7 +75,33 @@ last AS (
 )
 SELECT p.id AS product_id, p.channel_id, ch.code AS channel_code, ch.name AS channel_name,
        UPPER(p.brand) AS brand, p.v6_model, p.sku, p.name_en, p.btu, p.ton,
-       p.compressor, p.category,
+       p.compressor, p.ac_type, p.category,
+       -- 🔴 냉방타입 정규화: 채널마다 표기가 제각각이다
+       --    CO 계열  : 'Cold Only' / 'CO' / 'Cooling Only' / 'Cold' / 'Cold Only, Inverter'
+       --    H&C 계열 : 'Hot & Cold' / 'Heat & Cool' / 'Cold and Hot' / 'Cold/Hot' / 'H&C' / 'C&H'
+       --    'Cold/Hot' 처럼 슬래시가 든 건 냉난방이므로 **CO 판정보다 먼저** 걸러야 한다.
+       CASE
+         WHEN p.ac_type IS NULL THEN NULL
+         WHEN UPPER(p.ac_type) LIKE '%HOT%' OR UPPER(p.ac_type) LIKE '%HEAT%'
+           OR UPPER(p.ac_type) LIKE '%H&C%' OR UPPER(p.ac_type) LIKE '%C&H%'
+           OR UPPER(p.ac_type) LIKE '%COLD/HOT%' OR UPPER(p.ac_type) LIKE '%COLD AND HOT%'
+           THEN 'H&C'
+         WHEN UPPER(p.ac_type) LIKE '%COLD%' OR UPPER(p.ac_type) LIKE '%COOL%'
+           OR UPPER(p.ac_type) = 'CO'
+           THEN 'CO'
+         ELSE NULL
+       END AS cool_type,
+       -- 🔴 압축기 정규화: 'Dual Inverter'·'Inverter' → Inverter, 'Rotary'·'On/Off'·'On-Off' → On/Off
+       --    ⚠️ ac_type 에 압축기가 섞여 들어온 채널이 있다(Al Khunaizan 'Cold Only, Inverter').
+       --       compressor 컬럼이 비면 ac_type 문자열도 본다.
+       CASE
+         WHEN UPPER(COALESCE(p.compressor,'')) LIKE '%INVERTER%'
+           OR UPPER(COALESCE(p.ac_type,''))    LIKE '%INVERTER%' THEN 'Inverter'
+         WHEN UPPER(COALESCE(p.compressor,'')) LIKE '%ROTARY%'
+           OR UPPER(COALESCE(p.compressor,'')) LIKE '%ON/OFF%'
+           OR UPPER(COALESCE(p.compressor,'')) LIKE '%ON-OFF%' THEN 'On/Off'
+         ELSE NULL
+       END AS comp_type,
        l.px, l.sp, l.discount_pct, l.in_stock, l.stock_qty, l.run_date,
        CAST(julianday((SELECT d FROM anchor)) - julianday(l.run_date) AS INT) AS lag_days,
        CASE WHEN julianday((SELECT d FROM anchor)) - julianday(l.run_date) <= {STALE_DAYS}
