@@ -216,6 +216,14 @@ def main():
                          "built": pj.get("built", "")}
             print(f"  🟡 가마감 주입: {py}-{pm}월 {len(pj['rows'])}건 ({pj.get('basis','')})")
 
+    # ── Official (Finance 공시 최종본) 레이어 ────────────────────
+    # Accrual 값은 건드리지 않는다. 별도 배열로 얹어 화면에서 대사만 한다.
+    import os as _os
+    sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))  # cwd 무관하게 import
+    import gpc_official
+    print("=== Official 레이어 ===")
+    off_rows, off_meta = gpc_official.load(records)
+
     meta = {
         "cats": CATS,
         "channels": ["IR", "OR"],
@@ -228,11 +236,13 @@ def main():
         "source": src.split("/")[-1],
         "basis": "Accrual (발생주의 잠정)",
         "provisional": prov_meta,
+        "official": off_meta,
     }
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("// GPC 대시보드 데이터 v2 (build_gpc_dashboard.py 자동생성 — 직접 수정 금지)\n")
         f.write("const GPC_META = " + json.dumps(meta, ensure_ascii=False) + ";\n")
         f.write("const GPC_DATA = " + json.dumps(records, ensure_ascii=False) + ";\n")
+        f.write("const GPC_OFFICIAL = " + json.dumps(off_rows, ensure_ascii=False) + ";\n")
 
     print(f"\n✅ 생성: {OUT}")
     print(f"   레코드 {len(records)}건 · 연도 {years} · YOY기준월 {yoy_months}")
