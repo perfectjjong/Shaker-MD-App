@@ -62,8 +62,8 @@ SQLite. 사우디 LG 에어컨 유통 11채널의 일별 가격 스냅샷 DB.
    품질 판정(최신 스냅샷·지연·결함 제외)이 이미 끝나 있어 질의가 한 줄로 끝난다.
 
 ━━ ① product_current — 상품별 '지금' 상태 (1상품 1행, 3,383행) ━━
-  channel_code, channel_name          채널 (extra/bh/sws/najm/alkhunaizan/almanea/
-                                       tamkeen/binmomen/blackbox/technobest/alkhater)
+  channel_code, channel_name          채널 10개 (extra/bh/sws/najm/alkhunaizan/almanea/
+                                       tamkeen/binmomen/blackbox/technobest)
   brand                               대문자 정규화 완료 (UPPER 다시 걸 필요 없음)
   v6_model                            LG 정본 모델코드. 채널 간 동일 모델 비교는 이것으로.
                                        LG의 96%에 부착. 비LG는 NULL(v6는 LG 마스터라 정상)
@@ -310,7 +310,6 @@ CH_CODE_BY_NAME = {
     "binmomen": "binmomen", "bin momen": "binmomen", "빈모멘": "binmomen",
     "blackbox": "blackbox", "black box": "blackbox", "블랙박스": "blackbox",
     "technobest": "technobest", "techno": "technobest", "테크노": "technobest",
-    "alkhater": "alkhater", "khater": "alkhater",
 }
 
 

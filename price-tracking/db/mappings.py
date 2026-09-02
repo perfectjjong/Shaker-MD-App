@@ -23,8 +23,11 @@ CHANNELS = {
     "binmomen":    {"name": "Bin Momen",    "alert_basis": "sl", "cond_discount": None},
     "blackbox":    {"name": "Black Box",    "alert_basis": "fp", "cond_discount": None},
     "technobest":  {"name": "Technobest",   "alert_basis": "sl", "cond_discount": None},
-    "alkhater":    {"name": "Al Khater",    "alert_basis": "sl", "cond_discount": None},
 }
+# 🔴 alkhater 는 2026-09-02 완전 폐기(형님 지시). 되살리지 말 것.
+#    2026-05-11 하루치만 수집하고 정지(Cloudflare + 데이터센터 IP 평판차단, 유료 우회 필요),
+#    2026-07-22 대시보드·cron 폐기. 그 뒤에도 MAPPINGS 에 남아 ingest_daily 가 매일 exit 1 을
+#    내며 "알려진 스킵"과 "진짜 적재 실패"의 구분을 망가뜨렸다.
 
 
 # ── 파싱 헬퍼 ────────────────────────────────────────────────────────────────
@@ -233,34 +236,6 @@ def normalize_binmomen(raw, sheet_name=None):
         "stock_qty": parse_int(raw.get("Stock_Qty")),
         "promo_text": None,
         "attrs": _attrs(raw, ["Inverter", "Warranty", "Image_URL"]),
-    }
-
-
-def normalize_alkhater(raw, sheet_name=None):
-    sl = parse_num(raw.get("Price_SAR"))
-    return {
-        "sku": text(raw.get("SKU")),
-        "brand": text(raw.get("Brand")),
-        "model": text(raw.get("Model")),
-        "name_en": text(raw.get("Product_Name")),
-        "name_ar": None,
-        "category": text(raw.get("AC_Type")),
-        "btu": None,
-        "ton": parse_num(raw.get("Ton")),
-        "compressor": text(raw.get("Compressor")),
-        "ac_type": text(raw.get("Cold_HC")),
-        "url": text(raw.get("URL")),
-        "run_date": sheet_name or date_part(raw.get("Scraped_At")),  # 시트명 = 수집일
-        "scraped_at": text(raw.get("Scraped_At")),
-        "sp": parse_num(raw.get("Original_Price_SAR")),
-        "sl": sl,
-        "fp": sl,  # 조건부 할인 없음
-        "fj": None,
-        "discount_pct": parse_pct(raw.get("Discount_Pct")),
-        "in_stock": parse_bool(raw.get("In_Stock")),
-        "stock_qty": None,
-        "promo_text": None,
-        "attrs": _attrs(raw, ["Is_On_Sale", "Page"]),
     }
 
 
@@ -493,11 +468,6 @@ MAPPINGS = {
         "source": "single_sheet", "sheet": 0,
         "legacy_master": "channels/binmomen/Binmomen_AC_Data.xlsx",
         "normalize": normalize_binmomen,
-    },
-    "alkhater": {
-        "source": "sheet_per_date", "sheet": None,
-        "legacy_master": "channels/alkhater/alkhater_ac_prices.xlsx",
-        "normalize": normalize_alkhater,
     },
     "bh": {
         "source": "single_sheet", "sheet": "Weekly_Price_DB",
