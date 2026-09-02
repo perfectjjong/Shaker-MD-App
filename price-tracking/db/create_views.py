@@ -74,13 +74,28 @@ last AS (
   WHERE c.is_spike = 0 AND c.is_incons = 0     -- 결함 스냅샷을 '최신'으로 삼지 않는다
 )
 SELECT p.id AS product_id, p.channel_id, ch.code AS channel_code, ch.name AS channel_name,
-       UPPER(p.brand) AS brand, p.v6_model, p.sku, p.name_en, p.btu, p.ton,
+       UPPER(p.brand) AS brand, p.v6_model, p.sku, p.name_en, p.name_ar,
+       -- 영문명이 없으면 아랍어명이라도 보여준다. 빈칸으로 두면 '없는 상품'처럼 보인다.
+       COALESCE(p.name_en, p.name_ar) AS display_name,
+       p.btu, p.ton,
        p.compressor, p.ac_type, p.category,
        -- 🔴 냉방타입 정규화: 채널마다 표기가 제각각이다
        --    CO 계열  : 'Cold Only' / 'CO' / 'Cooling Only' / 'Cold' / 'Cold Only, Inverter'
        --    H&C 계열 : 'Hot & Cold' / 'Heat & Cool' / 'Cold and Hot' / 'Cold/Hot' / 'H&C' / 'C&H'
        --    'Cold/Hot' 처럼 슬래시가 든 건 냉난방이므로 **CO 판정보다 먼저** 걸러야 한다.
        CASE
+         -- 🔴 영문 ac_type 이 비면 **아랍어 제품명**에서 읽는다.
+         --    데이터가 없는 게 아니라 아랍어를 안 읽었을 뿐이다(Technobest 160/160 결측 → 141 복구).
+         --    'بارد فقط'=냉방전용 · 'حار وبارد'/'حار بارد'/'بارد وحار'=냉난방 · 'ساخن'=난방
+         --    ⚠️ 냉난방 판정을 **냉방전용보다 먼저** — 'حار بارد' 안에 'بارد'가 들어 있다.
+         WHEN p.ac_type IS NULL AND p.name_ar IS NOT NULL AND (
+              p.name_ar LIKE '%حار وبارد%' OR p.name_ar LIKE '%حار بارد%'
+           OR p.name_ar LIKE '%بارد وحار%' OR p.name_ar LIKE '%بارد حار%'
+           OR p.name_ar LIKE '%ساخن%') THEN 'H&C'
+         WHEN p.ac_type IS NULL AND p.name_ar IS NOT NULL
+              AND p.name_ar LIKE '%بارد%' THEN 'CO'
+         WHEN p.ac_type IS NULL AND p.name_ar IS NOT NULL
+              AND p.name_ar LIKE '%حار%' THEN 'H&C'
          WHEN p.ac_type IS NULL THEN NULL
          WHEN UPPER(p.ac_type) LIKE '%HOT%' OR UPPER(p.ac_type) LIKE '%HEAT%'
            OR UPPER(p.ac_type) LIKE '%H&C%' OR UPPER(p.ac_type) LIKE '%C&H%'

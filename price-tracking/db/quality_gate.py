@@ -34,7 +34,10 @@ MISSING_LIMITS = {
     "btu":        (0.12, "BTU"),
     "cool_type":  (0.15, "냉방타입"),
     "comp_type":  (0.10, "압축기"),
-    "name_en":    (0.12, "제품명"),
+    # 🔴 판정 기준은 name_en 이 아니라 display_name 이다.
+    #    아랍어 이름만 있는 채널(Technobest)도 실제로는 **보여줄 이름이 있다**.
+    #    name_en 결측은 별도 '참고'로만 낸다 — 느슨하게 푸는 게 아니라 올바른 지표로 재는 것.
+    "display_name": (0.02, "표시명"),
     "sp":         (0.10, "표준가"),
 }
 
@@ -104,6 +107,12 @@ def main():
                     msg = f"{ko} 결측이 {r['channel_name']}에 집중 ({r['m']}/{r['c']})"
                     issues.append(msg)
                     report.append(f"      ↳ 🔴 {msg} — 이 축의 질문에서 통째로 빠진다")
+
+        # 참고 지표 — 게이트 판정에는 넣지 않되 눈에는 보이게
+        n_en = con.execute("SELECT COUNT(*) FROM product_current "
+                           "WHERE is_live=1 AND name_en IS NULL").fetchone()[0]
+        if n_en:
+            report.append(f"  ℹ️ 영문명 없음 {n_en} ({n_en/tot*100:.1f}%) — 아랍어명으로 표시 중(참고)")
 
         report.append("\n[규칙 위반]")
         for ko, limit, q in RULES:
