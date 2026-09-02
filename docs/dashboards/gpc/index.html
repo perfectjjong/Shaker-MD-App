@@ -175,6 +175,11 @@
   :root:not([data-theme="light"]) .dfbadge{background:#1e1b4b;color:#c7d2fe}
   :root[data-theme="dark"] .dfbadge{background:#1e1b4b;color:#c7d2fe}
   .tbl td.dpos{color:var(--pos)} .tbl td.dneg{color:var(--neg)}
+  .ctl.dim{opacity:.35;pointer-events:none}
+  .tbl tr.bcor td{font-size:11.5px;color:var(--mut);font-weight:600}
+  .tbl tr.bcor td:first-child{padding-left:26px;font-weight:600;color:var(--ink2)}
+  .tbl tr.bcor td .rt{margin-left:6px;opacity:.75;font-weight:500}
+  .seg button:disabled{opacity:.4;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -210,6 +215,10 @@
     </div>
     <div class="sep"></div>
     <div class="ctl">
+      <div class="lab">기준</div>
+      <div class="seg dark" id="cBasis"></div>
+    </div>
+    <div class="ctl" id="ctlChan">
       <div class="lab">채널</div>
       <div class="row" id="cChan"></div>
     </div>
@@ -224,9 +233,9 @@
     <button class="on" data-tab="exec">Executive Summary</button>
     <button data-tab="category">카테고리 분석</button>
     <button data-tab="contract">Contract Condition</button>
-    <button data-tab="official">Official 대사</button>
   </div>
 
+  <div class="note hide" id="basisNote"></div>
   <div class="kpis" id="kpis"></div>
 
   <!-- 탭1: Executive Summary -->
@@ -244,7 +253,7 @@
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>채널 비교 — IR vs OR</h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별</div></div></div>
+        <div class="h"><div><h3>채널 비교 — IR vs OR<span id="bdgChan"></span></h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별</div></div></div>
         <div class="cbox tall"><canvas id="cChanCmp"></canvas></div>
       </div>
       <div class="card" style="margin:0">
@@ -255,6 +264,11 @@
     <div class="card" style="margin-top:16px">
       <div class="h"><div><h3>월별 VSP(지원금) 추이 — 시즌성</h3><div class="hint">VSP ÷ COGS · 1~12월 고정 · 사우디 여름 피크 지원 공백 확인 · 필터 연동</div></div></div>
       <div class="cbox"><canvas id="cVsp"></canvas></div>
+    </div>
+    <div class="card hide" id="cardBud">
+      <div class="h"><div><h3>Official 예산 대비 실적</h3>
+        <div class="hint" id="ofBudHint">Official 기준 · 월별 · 천 SAR</div></div></div>
+      <div class="cbox"><canvas id="cOfBud"></canvas></div>
     </div>
   </section>
 
@@ -284,7 +298,7 @@
   <section data-pane="contract" class="hide">
     <div class="card">
       <div class="h">
-        <div><h3>메인 계정 × 카테고리 YED</h3><div class="hint" id="ctHint">OR 5 · IR 9 메인 계정 · 실효 YED율 = YED ÷ GSV (라인 가중) · 선택 기간 합산 · 연도 우측 선택</div></div>
+        <div><h3>메인 계정 × 카테고리 YED<span id="bdgCt"></span></h3><div class="hint" id="ctHint">OR 5 · IR 9 메인 계정 · 실효 YED율 = YED ÷ GSV (라인 가중) · 선택 기간 합산 · 연도 우측 선택</div></div>
         <div class="row">
           <div class="seg" id="ctMode"></div>
           <div class="seg dark" id="ctYear"></div>
@@ -295,34 +309,6 @@
     <div class="card">
       <div class="h"><div><h3>계정별 실효 YED율</h3><div class="hint" id="ctChartHint">선택 연도·기간 · 전 카테고리 가중 평균 · 연한 막대 = 전년</div></div></div>
       <div class="cbox tall"><canvas id="cCtRate"></canvas></div>
-    </div>
-  </section>
-
-  <!-- 탭4: Official 대사 -->
-  <section data-pane="official" class="hide">
-    <div class="card">
-      <div class="h"><div><h3>손익 사다리 — Accrual vs Official</h3>
-        <div class="hint" id="ofLadderHint"></div></div></div>
-      <div class="tblwrap"><table class="tbl" id="tblOfLadder"></table></div>
-      <div class="note" id="ofInvNote"></div>
-    </div>
-    <div class="grid g2">
-      <div class="card" style="margin:0">
-        <div class="h"><div><h3>보정액 채널 안분</h3>
-          <div class="hint">총계 보정을 Accrual 의 IR/OR 매출 비중으로 나눈 추정치 · 천 SAR</div></div></div>
-        <div class="tblwrap"><table class="tbl" id="tblOfChan"></table></div>
-      </div>
-      <div class="card" style="margin:0">
-        <div class="h"><div><h3>Official 예산 대비 실적</h3>
-          <div class="hint" id="ofBudHint">Official 기준 · 월별 · 천 SAR</div></div></div>
-        <div class="cbox tall"><canvas id="cOfBud"></canvas></div>
-      </div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <div class="h"><div><h3>카테고리별 차이 (분류 차이 포함)</h3>
-        <div class="hint">Finance 재분류가 섞여 있어 <b>보정이 아니라 차이</b>다 ·
-          <b class="rcl">※</b> = 재분류 의심 (한쪽 0 이거나 편차 10% 초과) · 천 SAR</div></div></div>
-      <div class="tblwrap"><table class="tbl" id="tblOfCat"></table></div>
     </div>
   </section>
 
@@ -358,7 +344,7 @@ window.addEventListener('resize',()=>{clearTimeout(window.__rzt);
   window.__rzt=setTimeout(()=>{if(isNarrow()!==_wasNarrow){_wasNarrow=isNarrow();render();}},250);});
 const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
   chans:new Set(GPC_META.channels),cats:new Set(GPC_META.cats),
-  metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1]};
+  metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1],basis:'acc'};
 const charts={};
 
 function periodValues(u){if(u==='month')return[1,2,3,4,5,6,7,8,9,10,11,12];
@@ -374,6 +360,35 @@ const selMonths=()=>selPeriods().flatMap(p=>monthsOf(S.unit,p));
 
 // ── 집계 (금액 SAR 합산 → 파생) ──
 function agg(year,months,opt){opt=opt||{};
+  // 기준 토글이 Official 이고, 채널/계정 축을 쓰지 않는 호출이면 Official 로 답한다.
+  if(S.basis==='off'&&!opt.chans&&opt.ac===undefined&&!opt.acc)return aggOff(year,months,opt);
+  return aggAcc(year,months,opt);}
+
+function aggOff(year,months,opt){opt=opt||{};
+  const ms=new Set(months),cs=opt.cats||S.cats;
+  const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,nsv:0,gm:0};
+  for(const r of OFF){
+    if(r.y!==year||r.b!=='A'||!ms.has(r.m)||!cs.has(r.cat))continue;
+    for(const k in o)if(k in r)o[k]+=r[k];}     // qty 는 Official 에 없어 0 으로 남는다
+  o.gp=o.gm;                                    // GP 는 엑셀 원본 GM 그대로, 재계산 금지
+  o.gm_pct=o.nsv?o.gp/o.nsv:0;
+  o.disc_total=o.yed+o.adc+o.vpd+o.dsi;
+  o.disc_rate=o.gsv?o.disc_total/o.gsv:0;
+  o.total_cogs=o.cogs-o.inv-o.vsp;
+  o.cogs_rate=o.gsv?o.total_cogs/o.gsv:0;
+  return o;}
+
+// Accrual 을 Official 과 같은 모집단으로 맞춘 기준선 (전 채널·가마감 제외) — 보정폭 계산용
+function accBase(year,months,cats){
+  const ms=new Set(months),cs=cats||S.cats;
+  const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
+  for(const r of GPC_DATA){
+    if(r.y!==year||!ms.has(r.m)||isProv(r.y,r.m)||!cs.has(r.cat))continue;
+    for(const k in o)o[k]+=r[k];}
+  o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;
+  o.gm_pct=o.nsv?o.gp/o.nsv:0;return o;}
+
+function aggAcc(year,months,opt){opt=opt||{};
   const ms=new Set(months),cs=opt.cats||S.cats,chs=opt.chans||S.chans;
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
@@ -393,7 +408,9 @@ const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
 const pct=v=>(v*100).toFixed(1)+'%';
 const sgn=v=>v>0?'+':'';
 function yearCoverLabel(year,months){
-  const avail=new Set(GPC_META.year_months[String(year)]||[]);
+  const avail=new Set(S.basis==='off'
+    ? ((OFM&&OFM.actual_months[String(year)])||[])
+    : (GPC_META.year_months[String(year)]||[]));
   const cov=months.filter(m=>avail.has(m));
   if(cov.length===0) return ' · 해당 없음';
   if(cov.length===months.length) return '';
@@ -431,6 +448,13 @@ function buildBar(){
     b.textContent=l;b.className=S.ctMode===v?'on':'';
     b.onclick=()=>{S.ctMode=v;cm.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
     cm.appendChild(b);});
+  const cb=document.getElementById('cBasis');cb.innerHTML='';
+  [['acc','Accrual'],['off','Official']].forEach(([v,l])=>{const b=document.createElement('button');
+    b.textContent=l;b.className=S.basis===v?'on':'';
+    b.disabled=(v==='off'&&!OFM);
+    b.onclick=()=>{if(b.disabled)return;S.basis=v;
+      cb.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
+    cb.appendChild(b);});
   const cty=document.getElementById('ctYear');cty.innerHTML='';
   YEARS.forEach(y=>{const b=document.createElement('button');b.textContent=y;b.className=S.ctYear===y?'on':'';
     b.onclick=()=>{S.ctYear=y;cty.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
@@ -510,7 +534,8 @@ const LADDER=[
 function ladderTable(){
   const tbl=document.getElementById('tblLadder');
   const yrs=selYears(),months=selMonths();
-  const A={};yrs.forEach(y=>A[y]=agg(y,months));
+  const A={},B={};yrs.forEach(y=>{A[y]=agg(y,months);
+    if(S.basis==='off')B[y]=accBase(y,months);});     // B = 같은 모집단의 Accrual 기준선
   const last=yrs[yrs.length-1],prev=yrs[yrs.length-2],first=yrs[0];
   let head='<thead><tr class="sub"><th>Metric</th>';
   yrs.forEach(y=>head+=`<th style="color:${ycol(y)}">${y}${yearCoverLabel(y,months)}</th>`);
@@ -535,6 +560,13 @@ function ladderTable(){
     if(row.pn)prows.push(['%(N)',y=>A[y].nsv?A[y][k]/A[y].nsv:0]);
     if(row.vspr)prows.push(['% VSP (÷COGS)',y=>A[y].cogs?A[y][k]/A[y].cogs:0]);
     if(row.gm)prows.push(['%(N) / GM%',y=>A[y].gm_pct]);
+    if(S.basis==='off'){                       // Accrual 대비 보정폭
+      let br=`<tr class="prow bcor"><td>보정 vs Accrual${k==='inv'?' <span class="dfbadge">정의 차이</span>':''}</td>`;
+      yrs.forEach(y=>{const a=B[y][k],o=A[y][k],d=o-a;
+        br+=`<td class="${dcls(d)}">${Math.abs(d)<500?'<span style="opacity:.5">차이 없음</span>'
+          :sgn(d)+fmt(d)+`<span class="rt">${dpct(o,a)}</span>`}</td>`;});
+      if(prev!==undefined){br+='<td class="ydiv"></td><td></td>'+(yrs.length>2?'<td></td>':'');}
+      body+=br+'</tr>';}
     prows.forEach(([lab,fn])=>{
       let pr=`<tr class="prow"><td>${lab}</td>`;
       yrs.forEach(y=>pr+=`<td>${pct(fn(y))}</td>`);
@@ -545,7 +577,9 @@ function ladderTable(){
   });
   tbl.innerHTML=head+`<tbody>${body}</tbody>`;
   document.getElementById('ladderHint').textContent=
-    `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`;
+    (S.basis==='off'
+      ? `Official(Finance 공시) 기준 · GP 는 공시 원본값 · 채널 축 없음(전 채널) · 가마감 제외 · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
+      : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`);
 }
 
 // ── 차트 ──
@@ -625,8 +659,9 @@ function catTable(){
   grp+='</tr>';sub+='</tr>';
   let body='';
   const rows=cats.map(cat=>({cat,A:Object.fromEntries(yrs.map(y=>[y,catAgg(y,months,cat)]))}));
+  const flagged=cat=>S.basis==='off'&&selYears().some(y=>months.some(m=>OFLAG.has(`${y}|${m}|${cat}`)));
   rows.forEach(({cat,A})=>{
-    let tr=`<tr><td>${cat}</td>`;
+    let tr=`<tr><td>${cat}${flagged(cat)?' <span class="rcl" title="Finance 재분류 의심 — 매출이 다른 카테고리로 옮겨 담겼을 수 있다. 보정이 아니라 분류 차이다.">※</span>':''}</td>`;
     yrs.forEach(y=>cols.forEach((c,ci)=>{const a=A[y];const v=a[c.key];
       let inner=c.isPct?pct(v):fmt(v);
       if(c.rate){const base=a[c.rate];inner=`${fmt(v)}<span class="rt">${base?(v/base*100).toFixed(1):'0.0'}%</span>`;}
@@ -745,18 +780,6 @@ const OFLAG=new Set(((OFM&&OFM.flags)||[]).map(f=>f.join('|')));
 const PVM=GPC_META.provisional?[GPC_META.provisional.year,GPC_META.provisional.month]:null;
 const isProv=(y,m)=>!!PVM&&y===PVM[0]&&m===PVM[1];
 const ABS=(OFM&&OFM.absorb)||{};                      // Applied → Accessory/Others
-const OFROWS=[['gsv','GSV'],['yed','YED'],['adc','ADC'],['vpd','VPD'],['dsi','DSI'],
-              ['nsv','NSV'],['cogs','COGS'],['inv','INV'],['vsp','VSP'],['gp','GP']];
-
-function accCell(y,ms,cats){                          // Accrual 실적(전 채널, 가마감 제외)
-  // ⚠️ 필터는 '원본 라벨'로 본다. 흡수 후 라벨로 보면 Applied 체크를 꺼도
-  //    Accessory/Others 가 켜져 있는 한 계속 합산돼 필터가 먹지 않는다.
-  const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
-  for(const r of GPC_DATA){
-    if(r.y!==y||!ms.has(r.m)||isProv(r.y,r.m))continue;
-    if(!cats.has(r.cat))continue;
-    for(const k in o)o[k]+=r[k];}
-  o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp; return o;}
 
 function offCell(y,ms,cats,b){                        // Official (엑셀 NSV/GM 원본 그대로)
   const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,nsv:0,gm:0};
@@ -769,90 +792,6 @@ const dcls=v=>Math.abs(v)<1?'':(v>0?'dpos':'dneg');
 // ⚠️ 분모에 절대값을 쓴다. YED/ADC/VPD/DSI/INV 는 음수라 (o-a)/a 로 하면
 //    차이(−80)와 차이%(+0.4%) 의 부호가 어긋나 같은 칸이 반대로 읽힌다.
 const dpct=(o,a)=>Math.abs(a)>1?sgn((o-a)/Math.abs(a))+((o-a)/Math.abs(a)*100).toFixed(1)+'%':'—';
-
-function ofLadder(){
-  const ms=new Set(selMonths()),cats=S.cats;
-  const yrs=selYears().filter(y=>OFM&&OFM.actual_months[String(y)]);
-  const hint=document.getElementById('ofLadderHint');
-  const t=document.getElementById('tblOfLadder');
-  if(!OFM||!yrs.length){hint.textContent='Official 데이터 없음';t.innerHTML='';return;}
-  hint.innerHTML='Accrual(우리 원장) vs Official(Finance 공시) · 선택 기간·카테고리 합산 · '
-    +'<b>채널 필터는 적용되지 않는다</b>(Official 에 채널 축이 없어 전 채널로 대사) · 천 SAR'
-    +(PVM?` · ${PVM[0]}-${String(PVM[1]).padStart(2,'0')} 가마감은 제외`:'');
-  let h='<thead><tr><th rowspan="2">지표</th>'+yrs.map(y=>`<th colspan="4" style="text-align:center">${y}</th>`).join('')
-    +'</tr><tr class="sub">'+yrs.map(()=>'<th>Accrual</th><th>Official</th><th>차이</th><th>차이%</th>').join('')+'</tr></thead><tbody>';
-  const A={},O={};
-  yrs.forEach(y=>{A[y]=accCell(y,ms,cats);O[y]=offCell(y,ms,cats,'A');});
-  for(const [k,lb] of OFROWS){
-    const key=(k==='gp'||k==='nsv');
-    const inv=(k==='inv');
-    h+=`<tr class="${key?'key':''}${inv?' provrow':''}"><td>${lb}`
-      +(inv?'<span class="dfbadge">정의 차이</span>':'')+'</td>';
-    yrs.forEach(y=>{const a=A[y][k],o=O[y][k],d=o-a;
-      h+=`<td>${fmt(a)}</td><td>${fmt(o)}</td><td class="${dcls(d)}">${sgn(d)}${fmt(d)}</td>`
-        +`<td class="${dcls(d)}">${dpct(o,a)}</td>`;});
-    h+='</tr>';}
-  t.innerHTML=h+'</tbody>';
-  document.getElementById('ofInvNote').innerHTML=
-    '<b>INV 는 보정이 아니라 정의 차이다.</b> Official 의 INV 는 실측이 아니라 배부·계획값이다 — '
-    +'2024 는 12개월 전부 월 250,000 정액이고, 2025·2026 은 실적란 값이 예산값과 같다'
-    +'(나머지 9개 지표는 실적=예산이 단 한 건도 없다). Accrual 의 INV(실제 발생액)와 성격이 다르므로 '
-    +'차이를 “Finance 가 고쳤다”로 읽으면 안 된다. <b>GP 는 Official 원본 값을 그대로 표시</b>하며 재계산하지 않는다.';}
-
-function ofChanTable(){
-  const ms=new Set(selMonths()),cats=S.cats,yrs=selYears().filter(y=>OFM&&OFM.actual_months[String(y)]);
-  const t=document.getElementById('tblOfChan');
-  if(!OFM||!yrs.length){t.innerHTML='';return;}
-  // (y,m,cat) 단위 Δ 를 Accrual 의 채널 GSV 비중으로 안분
-  const base={},acc={};                              // y|m|cat(흡수후) → 값
-  for(const r of GPC_DATA){                          // 필터는 원본 라벨, 키는 흡수 후
-    if(isProv(r.y,r.m)||!cats.has(r.cat))continue;
-    const kk=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
-    (base[kk]=base[kk]||{IR:0,OR:0})[r.ch]+=r.gsv;
-    const o=acc[kk]=acc[kk]||{gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
-    for(const k in o)o[k]+=r[k];}
-  const res={};yrs.forEach(y=>res[y]={IR:0,OR:0,na:0,tot:0});
-  for(const r of OFF){
-    if(r.b!=='A'||!res[r.y]||!ms.has(r.m)||!cats.has(r.cat))continue;
-    const kk=`${r.y}|${r.m}|${r.cat}`,a=acc[kk],b=base[kk];
-    const d=r.gsv-((a&&a.gsv)||0);
-    res[r.y].tot+=d;
-    const bs=b?Math.abs(b.IR)+Math.abs(b.OR):0;
-    if(bs<1){res[r.y].na+=d;continue;}
-    res[r.y].IR+=d*Math.abs(b.IR)/bs; res[r.y].OR+=d*Math.abs(b.OR)/bs;}
-  // 선택 기간에 Accrual 만 있고 Official 이 없는 (y,m,cat) 의 Δ 도 포함
-  for(const kk in acc){const [ys,mst,c]=kk.split('|'),y=+ys,m=+mst;
-    if(!res[y]||!ms.has(m))continue;
-    if(OFF.some(r=>r.b==='A'&&r.y===y&&r.m===m&&r.cat===c))continue;
-    const d=-acc[kk].gsv,b=base[kk],bs=b?Math.abs(b.IR)+Math.abs(b.OR):0;
-    res[y].tot+=d;
-    if(bs<1){res[y].na+=d;continue;}
-    res[y].IR+=d*Math.abs(b.IR)/bs; res[y].OR+=d*Math.abs(b.OR)/bs;}
-  let h='<thead><tr><th>연도</th><th>IR 안분</th><th>OR 안분</th><th>채널 미상</th><th>GSV 보정 합</th></tr></thead><tbody>';
-  yrs.forEach(y=>{const r=res[y];
-    h+=`<tr><td>${y}</td><td class="${dcls(r.IR)}">${sgn(r.IR)}${fmt(r.IR)}</td>`
-      +`<td class="${dcls(r.OR)}">${sgn(r.OR)}${fmt(r.OR)}</td>`
-      +`<td>${Math.abs(r.na)<1?'—':sgn(r.na)+fmt(r.na)}</td>`
-      +`<td class="gmp ${dcls(r.tot)}">${sgn(r.tot)}${fmt(r.tot)}</td></tr>`;});
-  document.getElementById('tblOfChan').innerHTML=h+'</tbody>';}
-
-function ofCatTable(){
-  const ms=new Set(selMonths()),yrs=selYears().filter(y=>OFM&&OFM.actual_months[String(y)]);
-  const t=document.getElementById('tblOfCat');
-  if(!OFM||!yrs.length){t.innerHTML='';return;}
-  const cats=GPC_META.cats.filter(c=>S.cats.has(c)&&!(c in ABS));
-  let h='<thead><tr><th rowspan="2">카테고리</th>'+yrs.map(y=>`<th colspan="3" style="text-align:center">${y}</th>`).join('')
-    +'</tr><tr class="sub">'+yrs.map(()=>'<th>Accrual</th><th>Official</th><th>차이</th>').join('')+'</tr></thead><tbody>';
-  cats.forEach(c=>{
-    const one=new Set([c]);
-    for(const k in ABS)if(ABS[k]===c&&S.cats.has(k))one.add(k);   // 흡수분은 원본 체크 여부를 따른다
-    let row='',any=false,flg=false;
-    yrs.forEach(y=>{const a=accCell(y,ms,one).gsv,o=offCell(y,ms,one,'A').gsv,d=o-a;
-      if(Math.abs(a)>1||Math.abs(o)>1)any=true;
-      for(const m of ms)if(OFLAG.has(`${y}|${m}|${c}`))flg=true;
-      row+=`<td>${fmt(a)}</td><td>${fmt(o)}</td><td class="${dcls(d)}">${sgn(d)}${fmt(d)}</td>`;});
-    if(any)h+=`<tr><td>${c}${flg?' <span class="rcl" title="Finance 재분류 의심 — 매출이 다른 카테고리로 옮겨 담겼을 수 있다">※</span>':''}</td>${row}</tr>`;});
-  t.innerHTML=h+'</tbody>';}
 
 function ofBudget(){destroy('cOfBud');
   const el=document.getElementById('cOfBud');if(!el)return;
@@ -875,23 +814,47 @@ function ofBudget(){destroy('cOfBud');
       scales:{x:{grid:{display:false},stacked:false},
         y:{grid:GRID,border:{display:false},ticks:{callback:v=>Math.round(v).toLocaleString()}}}}});}
 
-function render(){renderKpis();
-  if(S.tab==='exec'){ladderTable();renderMain();renderChanCmp();renderErosion();renderVsp();}
+const OFFBDG='<span class="dfbadge">Accrual 기준 · Official 미제공</span>';
+// 커버리지 줄은 기준마다 다르다. Official 엔 가마감이 없고 2026 은 7월까지다.
+function syncCover(){
+  const off=S.basis==='off',PV=off?null:(GPC_META.provisional||null);
+  const src=off&&OFM?OFM.actual_months:GPC_META.year_months;
+  const covs=GPC_META.years.map(y=>{const mm=src[String(y)];
+    if(!mm||!mm.length)return `${y}: 없음`;
+    let t=`${y}: ${mm[0]}–${mm[mm.length-1]}월`;
+    if(PV&&PV.year===y)t+=` (${PV.month}월 가마감)`;
+    return t;});
+  document.getElementById('covLbl').innerHTML=covs.join(' · ')
+    +(PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'')
+    +(off?' <span class="dfbadge">Official — 가마감 없음</span>':'');}
+function syncBasisUI(){
+  const off=S.basis==='off';
+  syncCover();
+  document.getElementById('ctlChan').classList.toggle('dim',off);
+  document.getElementById('cardBud').classList.toggle('hide',!off);
+  document.getElementById('bdgChan').innerHTML=off?OFFBDG:'';
+  document.getElementById('bdgCt').innerHTML=off?OFFBDG:'';
+  document.getElementById('basisLbl').textContent=off
+    ? '(Official — Finance 공시 확정)' : '('+GPC_META.basis+')';
+  document.getElementById('srcLbl').textContent=off&&OFM?OFM.source:GPC_META.source;
+  const n=document.getElementById('basisNote');
+  n.className=off?'note':'note hide';
+  n.innerHTML=off?('<b>Official 기준입니다.</b> Finance 공시 확정치라 <b>채널·계정·수량 축이 없습니다</b> — '
+    +'채널 필터는 무시되고, 채널 비교와 Contract Condition 은 Accrual 로 남습니다. '
+    +'사다리표의 <b class="rcl">보정</b> 줄이 Accrual 대비 증감입니다. '
+    +'<b>INV 는 보정이 아니라 정의 차이</b>(Official 은 배부·계획값, 2024 는 월 250,000 정액이고 2025·2026 은 실적란=예산란). '
+    +'카테고리별 차이에는 Finance 재분류가 섞여 있어 <b>보정이 아니라 차이</b>로 읽어야 합니다.'):'';}
+
+function render(){syncBasisUI();renderKpis();
+  if(S.tab==='exec'){ladderTable();renderMain();renderChanCmp();renderErosion();renderVsp();ofBudget();}
   else if(S.tab==='category'){catTable();renderCatGm();renderMix();renderCatGp();}
-  else if(S.tab==='official'){ofLadder();ofChanTable();ofCatTable();ofBudget();}
   else{contractTable();renderCtRate();}}
 
 // 헤더 메타
 (function(){
   document.getElementById('srcLbl').textContent=GPC_META.source;
   document.getElementById('basisLbl').textContent='('+GPC_META.basis+')';
-  const PV=GPC_META.provisional||null;
-  const covs=GPC_META.years.map(y=>{const mm=GPC_META.year_months[String(y)];
-    let t=`${y}: ${mm[0]}–${mm[mm.length-1]}월`;
-    if(PV&&PV.year===y) t+=` (${PV.month}월 가마감)`;
-    return t;});
-  document.getElementById('covLbl').innerHTML=covs.join(' · ')
-    + (PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'');
+  syncCover();
   document.getElementById('foot').innerHTML=
     `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b> · 메인계정=SSOT shared_classification`
     + (GPC_META.provisional?` · <b style="color:#b45309">${GPC_META.provisional.year}-${String(GPC_META.provisional.month).padStart(2,'0')}은 ${GPC_META.provisional.basis}</b> — 실적 아님, 파이낸스 마감 시 대체`:'')
@@ -900,7 +863,7 @@ function render(){renderKpis();
 
 // deep link
 (function(){const h=location.hash.replace('#','');
-  if(['exec','category','contract','official'].includes(h)){S.tab=h;
+  if(['exec','category','contract'].includes(h)){S.tab=h;
     document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===h));
     document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));}})();
 buildBar();
