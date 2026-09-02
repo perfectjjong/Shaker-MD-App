@@ -24,10 +24,6 @@ CHANNELS = {
     "blackbox":    {"name": "Black Box",    "alert_basis": "fp", "cond_discount": None},
     "technobest":  {"name": "Technobest",   "alert_basis": "sl", "cond_discount": None},
 }
-# 🔴 alkhater 는 2026-09-02 완전 폐기(형님 지시). 되살리지 말 것.
-#    2026-05-11 하루치만 수집하고 정지(Cloudflare + 데이터센터 IP 평판차단, 유료 우회 필요),
-#    2026-07-22 대시보드·cron 폐기. 그 뒤에도 MAPPINGS 에 남아 ingest_daily 가 매일 exit 1 을
-#    내며 "알려진 스킵"과 "진짜 적재 실패"의 구분을 망가뜨렸다.
 
 
 # ── 파싱 헬퍼 ────────────────────────────────────────────────────────────────
