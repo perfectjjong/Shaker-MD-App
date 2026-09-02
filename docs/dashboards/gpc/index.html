@@ -749,10 +749,12 @@ const OFROWS=[['gsv','GSV'],['yed','YED'],['adc','ADC'],['vpd','VPD'],['dsi','DS
               ['nsv','NSV'],['cogs','COGS'],['inv','INV'],['vsp','VSP'],['gp','GP']];
 
 function accCell(y,ms,cats){                          // Accrual 실적(전 채널, 가마감 제외)
+  // ⚠️ 필터는 '원본 라벨'로 본다. 흡수 후 라벨로 보면 Applied 체크를 꺼도
+  //    Accessory/Others 가 켜져 있는 한 계속 합산돼 필터가 먹지 않는다.
   const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
     if(r.y!==y||!ms.has(r.m)||isProv(r.y,r.m))continue;
-    if(!cats.has(ABS[r.cat]||r.cat))continue;
+    if(!cats.has(r.cat))continue;
     for(const k in o)o[k]+=r[k];}
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp; return o;}
 
@@ -764,7 +766,9 @@ function offCell(y,ms,cats,b){                        // Official (엑셀 NSV/GM
   o.gp=o.gm; return o;}
 
 const dcls=v=>Math.abs(v)<1?'':(v>0?'dpos':'dneg');
-const dpct=(o,a)=>Math.abs(a)>1?sgn((o-a)/a)+((o-a)/a*100).toFixed(1)+'%':'—';
+// ⚠️ 분모에 절대값을 쓴다. YED/ADC/VPD/DSI/INV 는 음수라 (o-a)/a 로 하면
+//    차이(−80)와 차이%(+0.4%) 의 부호가 어긋나 같은 칸이 반대로 읽힌다.
+const dpct=(o,a)=>Math.abs(a)>1?sgn((o-a)/Math.abs(a))+((o-a)/Math.abs(a)*100).toFixed(1)+'%':'—';
 
 function ofLadder(){
   const ms=new Set(selMonths()),cats=S.cats;
@@ -800,15 +804,11 @@ function ofChanTable(){
   const t=document.getElementById('tblOfChan');
   if(!OFM||!yrs.length){t.innerHTML='';return;}
   // (y,m,cat) 단위 Δ 를 Accrual 의 채널 GSV 비중으로 안분
-  const base={};                                     // y|m|cat → {IR,OR}
-  for(const r of GPC_DATA){
-    if(isProv(r.y,r.m))continue;
-    const c=ABS[r.cat]||r.cat,kk=`${r.y}|${r.m}|${c}`;
-    (base[kk]=base[kk]||{IR:0,OR:0})[r.ch]+=r.gsv;}
-  const acc={};                                      // y|m|cat → 지표합
-  for(const r of GPC_DATA){
-    if(isProv(r.y,r.m))continue;
-    const c=ABS[r.cat]||r.cat,kk=`${r.y}|${r.m}|${c}`;
+  const base={},acc={};                              // y|m|cat(흡수후) → 값
+  for(const r of GPC_DATA){                          // 필터는 원본 라벨, 키는 흡수 후
+    if(isProv(r.y,r.m)||!cats.has(r.cat))continue;
+    const kk=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
+    (base[kk]=base[kk]||{IR:0,OR:0})[r.ch]+=r.gsv;
     const o=acc[kk]=acc[kk]||{gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
     for(const k in o)o[k]+=r[k];}
   const res={};yrs.forEach(y=>res[y]={IR:0,OR:0,na:0,tot:0});
@@ -822,7 +822,7 @@ function ofChanTable(){
     res[r.y].IR+=d*Math.abs(b.IR)/bs; res[r.y].OR+=d*Math.abs(b.OR)/bs;}
   // 선택 기간에 Accrual 만 있고 Official 이 없는 (y,m,cat) 의 Δ 도 포함
   for(const kk in acc){const [ys,mst,c]=kk.split('|'),y=+ys,m=+mst;
-    if(!res[y]||!ms.has(m)||!cats.has(c))continue;
+    if(!res[y]||!ms.has(m))continue;
     if(OFF.some(r=>r.b==='A'&&r.y===y&&r.m===m&&r.cat===c))continue;
     const d=-acc[kk].gsv,b=base[kk],bs=b?Math.abs(b.IR)+Math.abs(b.OR):0;
     res[y].tot+=d;
@@ -845,6 +845,7 @@ function ofCatTable(){
     +'</tr><tr class="sub">'+yrs.map(()=>'<th>Accrual</th><th>Official</th><th>차이</th>').join('')+'</tr></thead><tbody>';
   cats.forEach(c=>{
     const one=new Set([c]);
+    for(const k in ABS)if(ABS[k]===c&&S.cats.has(k))one.add(k);   // 흡수분은 원본 체크 여부를 따른다
     let row='',any=false,flg=false;
     yrs.forEach(y=>{const a=accCell(y,ms,one).gsv,o=offCell(y,ms,one,'A').gsv,d=o-a;
       if(Math.abs(a)>1||Math.abs(o)>1)any=true;

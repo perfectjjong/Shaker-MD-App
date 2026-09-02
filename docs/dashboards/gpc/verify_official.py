@@ -2,11 +2,16 @@
 # -*- coding: utf-8 -*-
 """독립 검증: 엑셀 원본 셀 ↔ 생성된 gpc_data.js 의 GPC_OFFICIAL 을 1:1 대조.
 빌더 코드를 재사용하지 않고 엑셀을 처음부터 다시 읽는다(같은 버그를 공유하지 않기 위함)."""
-import json, re, sys, collections, openpyxl
+import glob, json, re, sys, collections, openpyxl
 
-XL = ("/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/02. 2026/"
-      "04. Official GPC/07. GPC official_Jul_2026.xlsx")
 JS = "/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc/gpc_data.js"
+# ⚠️ 파일명을 박아두면 다음 달 파일이 와도 지난 달 것만 검증한다 → 항상 최신본을 집는다.
+_c = sorted(glob.glob("/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/"
+                      "02. 2026/04. Official GPC/*GPC official*.xlsx"))
+if not _c:
+    sys.exit("❌ Official 파일 없음")
+XL = _c[-1]
+print(f"대조 대상: {XL.split('/')[-1]}")
 
 # 엑셀 라벨 → 정본 (빌더와 독립적으로 손으로 다시 적음)
 X2C = {"Window": "Window AC", "Split  (On / Off) ": "Split On/Off",
