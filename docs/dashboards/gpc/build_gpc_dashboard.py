@@ -148,7 +148,7 @@ def main():
     records = []
     for (y, m, ch, ac, cat), v in sorted(agg.items()):
         rec = {"y": y, "m": m, "ch": ch, "ac": ac, "cat": cat}
-        rec.update({k: round(v[i], 1) for i, k in enumerate(METRIC_KEYS)})
+        rec.update({k: round(v[i], 6) for i, k in enumerate(METRIC_KEYS)})
         records.append(rec)
 
     years = sorted({r["y"] for r in records})

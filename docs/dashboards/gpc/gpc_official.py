@@ -158,7 +158,7 @@ def load(accrual_records):
         if all(abs(a[k]) < 0.5 for k in KEYS):
             continue
         rec = {"y": y, "m": m, "b": b, "cat": cat}
-        rec.update({k: round(a[k], 1) for k in KEYS})
+        rec.update({k: round(a[k], 6) for k in KEYS})
         rows.append(rec)
 
     # ── 재분류 의심 셀 플래그 ──
