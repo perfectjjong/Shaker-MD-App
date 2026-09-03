@@ -108,6 +108,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ycard .sec{margin-bottom:4px}.ycard .wk{font-size:13px;font-weight:600}
 .ycard .dt{font-size:10px;opacity:.95;margin-top:1px}
 /* Perf layout: tables top, year cards bottom */
+#no-data{flex:1;min-height:0;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
+#no-data .nd-in{max-width:640px}
+#no-data .nd-wide{width:100%;max-width:1100px;text-align:left}
+#no-data .nd-wide .nd-t,#no-data .nd-wide .nd-b{text-align:left}
+#no-data .nd-t{font-size:15px;font-weight:700;margin-bottom:8px}
+#no-data .nd-b{font-size:12px;line-height:1.7;color:#6b6355}
+#no-data button,.r30-warn button{margin-top:12px;background:#3a352c;color:#fff;border:0;border-radius:5px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer}
+#no-data button:hover,.r30-warn button:hover{background:#5c554b}
+.r30-warn button{margin-top:6px}
 .r30-head{font-size:13px;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:2px solid #3a352c;flex-shrink:0}
 .r30-head span{font-weight:400;font-size:11px;color:#6b6355}
 .r30-warn{background:#fdf6e3;border:1px solid #d9cfae;border-left:4px solid #b06a24;padding:6px 10px;margin-bottom:8px;font-size:11px;line-height:1.5;border-radius:4px;flex-shrink:0}
@@ -165,6 +174,7 @@ body{display:block}
 </div>
 <div id="agg-notice" class="r30-warn" style="display:none;margin:6px 12px 0"></div>
 <div class="content">
+  <div id="no-data" style="display:none"></div>
   <div class="tab-content active" id="t-total">
     <div class="kpi-row" id="kpi1"></div>
     <div class="kpi-row" id="kpi2"></div>
@@ -189,7 +199,7 @@ body{display:block}
   </div>
   <div class="tab-content" id="t-region">
     <div id="r30-warn" class="r30-warn" style="display:none"></div>
-    <div class="chart-grid"><div class="cc"><h3>Region Distribution (Qty)</h3><div><canvas id="c11"></canvas></div></div><div class="cc"><h3>Region Weekly Trend (Top 5)</h3><div><canvas id="c12"></canvas></div></div></div>
+    <div class="chart-grid" id="region-weekly"><div class="cc"><h3>Region Distribution (Qty)</h3><div><canvas id="c11"></canvas></div></div><div class="cc"><h3>Region Weekly Trend (Top 5)</h3><div><canvas id="c12"></canvas></div></div></div>
     <div id="r30-wrap" style="display:none">
       <div class="r30-head">Regional MS &mdash; 30-day rolling window <span id="r30-note"></span></div>
       <div class="chart-grid" style="grid-template-columns:1.25fr 1fr">
@@ -515,6 +525,7 @@ function renderAll(){
   const f=getF();
   const tab=document.querySelector('.tab.active').dataset.t;
   updateAggNotice(f);
+  if(updateEmptyState(f,tab))return;
   if(tab==='total')renderTotal(f);
   else if(tab==='price')renderPrice(f);
   else if(tab==='overview')renderOverview(f);
@@ -742,6 +753,63 @@ function renderPerf(f){
   $('ycards').innerHTML=yh;
 }
 
+// 필터 조합의 결과가 0건일 때 0.0% 벽 대신 이유를 보여준다.
+// 빈 화면은 고장처럼 보인다 — 실제로 형님이 그렇게 보셨다.
+//  · 주차 필터를 무시하는 perf 탭은 제외한다(거기선 0건이 아니다).
+//  · region 탭은 30일 섹션이 답을 갖고 있으므로 **주간 차트만** 숨기고 탭은 살린다.
+const WEEK_AWARE_TABS=new Set(['total','price','overview','comp','promo']);
+function clearRegionFilter(){
+  const cfg=FILTER_CONFIGS.find(c=>c.id==='fR');
+  if(!cfg)return;
+  MS_STATE.fR.clear();syncCheckboxes(cfg);updateBtnLabel(cfg);onFilterChange('fR');
+}
+function regionBtnHtml(){
+  return '<button type="button" class="clr-region">Clear the Region filter</button>';
+}
+function wireRegionBtns(root){
+  root.querySelectorAll('.clr-region').forEach(b=>{
+    if(b.dataset.wired)return;b.dataset.wired='1';
+    b.addEventListener('click',e=>{e.stopPropagation();clearRegionFilter()});
+  });
+}
+function updateEmptyState(f,tab){
+  const el=$('no-data');
+  document.querySelectorAll('.tab-content').forEach(tc=>{tc.style.display=''});
+  const wkGrid=$('region-weekly');
+  if(!el)return false;
+  const empty=fc(f).length===0;
+  if(wkGrid)wkGrid.style.display=(tab==='region'&&empty)?'none':'';
+  if(!(empty&&WEEK_AWARE_TABS.has(tab))){el.style.display='none';return false}
+  const byRegion=(f.r&&f.r.length&&R30AGGW.size)?true:false;
+  const parts=byRegion?r30TableParts(f):null;
+  const covE=(parts&&parts.shown.length)?r30Coverage(f,parts.cur.i):null;
+  el.style.display='flex';
+  if(parts&&parts.shown.length){
+    // 설명만 띄우고 끝내지 않는다 — 같은 주차의 **측정된** 지역 결과를 여기에 바로 싣는다.
+    el.innerHTML='<div class="nd-wide">'+
+      '<div class="nd-t">No weekly figures for this week &times; region combination</div>'+
+      '<div class="nd-b">The source report has no weekly &times; region breakdown for these weeks '+
+      '(weekly sales are a national total; the regional split is a 30-day cumulative), so the weekly '+
+      'charts are empty. Below is the <b>measured 30-day regional result</b> for the same weeks &mdash; '+
+      'same source, same columns, no estimation.'+
+      (covE?'<br><b>Coverage:</b> '+covText(covE):'')+'</div>'+
+      '<div class="tbl" style="margin-top:12px;max-height:520px"><h3>Regional sell-out &amp; market share ('+
+      R30UNIT+') &mdash; 30-day window ending '+DD.y[parts.cur.yi]+' W'+parts.cur.wn+'</h3>'+
+      '<div><table><thead>'+parts.head+'</thead><tbody>'+parts.body+'</tbody></table></div></div>'+
+      '<div style="text-align:center">'+regionBtnHtml()+'</div></div>';
+  }else{
+    el.innerHTML='<div class="nd-in"><div class="nd-t">No data for this filter combination</div>'+
+      '<div class="nd-b">'+(byRegion
+        ? 'These weeks have no weekly &times; region breakdown in the source, and the region you picked '+
+          'is not on the 30-day axis either (it provides Central / East / West only).'
+        : 'Nothing matches the current filters. Widen or clear one of them.')+
+      '</div>'+(byRegion?regionBtnHtml():'')+'</div>';
+  }
+  wireRegionBtns(el);
+  document.querySelectorAll('.tab-content').forEach(tc=>{tc.style.display='none'});
+  return true;
+}
+
 // 지역 필터가 걸리면 주간×지역이 없는 주차를 통째로 빼는데(fc), 그 사실을 화면에 알린다.
 // 조용히 사라지면 "그 주는 원래 없다"로 오독된다.
 function updateAggNotice(f){
@@ -756,7 +824,8 @@ function updateAggNotice(f){
   el.innerHTML='<b>'+hit.map(w=>DD.y[w[0]]+' W'+w[1]).join(', ')+' excluded while a Region filter is active.</b> '+
     'The source has no weekly &times; region breakdown for these weeks (weekly = national total, regional = 30-day cumulative). '+
     'Keeping them would show LG at 100% share. Clear the Region filter to see them, or open the '+
-    '<b>Region tab &rarr; 30-day section</b> for a measured regional split.';
+    '<b>Region tab &rarr; 30-day section</b> for a measured regional split.<br>'+regionBtnHtml();
+  wireRegionBtns(el);
 }
 
 // ===== Regional 30-day axis (A: level, B: 4-week change) =====================
@@ -773,6 +842,14 @@ const R30UNIT='SAR';
 // (안 빼면 경쟁사만 탈락하고 LG 만 남아 MS 가 100% 로 잡힌다 — 거짓 숫자)
 const R30AGGW=new Set(R30?R30.wk.map(w=>w[0]+'-'+w[1]):[]);
 
+// 커버리지 문구 — 빠지는 물량이 무엇인지 같이 밝힌다. 숫자만 쓰면 오독된다.
+function covText(c){
+  const fv=(R30M===7)?fmt:fN;
+  return 'these regional columns cover '+c.pct.toFixed(0)+'% of eXtra\u2019s AC '+
+    (R30M===7?'sales value':'units')+' in the same window ('+
+    fv(c.part)+' of '+fv(c.all)+'). Online (Ecom/Noon), other locations and B2B carry the rest and are '+
+    'not split by region in the source, so shares here are shares of regional store sales, not of eXtra overall.';
+}
 function r30Weeks(f){
   if(!R30)return[];
   const fy=(f.y&&f.y.length)?new Set(f.y):null;
@@ -808,11 +885,58 @@ function r30Agg(rows){                       // {brandIdx: {regionIdx: value}}
   }
   return m;
 }
+const R30ALL='__ALL__';               // 지역이 아니라 같은 창의 전 채널 총계(커버리지 분모)
+// 3지역이 eXtra 30일 물량의 몇 %를 덮는지. 분자·분모 모두 같은 필터를 받되
+// **지역 필터는 무시**한다 — 커버리지는 원본의 성질이지 보고 있는 지역의 성질이 아니다.
+function r30Coverage(f,wi){
+  const rows=r30Rows({...f,r:[]},wi);
+  let part=0,all=0;
+  for(const r of rows){
+    if(R30.r[r[R30R]]===R30ALL)all+=r[R30M];else part+=r[R30M];
+  }
+  return all>0?{part:part,all:all,pct:part/all*100}:null;
+}
 function r30ShownRegions(f){
-  const all=R30.r.map((n,i)=>({n:n,i:i}));
+  const all=R30.r.map((n,i)=>({n:n,i:i})).filter(g=>g.n!==R30ALL);
   if(!f.r||!f.r.length)return all;
   const sel=new Set(f.r.map(i=>rev.r[i]));
   return all.filter(g=>sel.has(g.n));
+}
+
+// [A] 표 생성 — Region 탭과 Total Dashboard 빈 상태에서 **같은 로직**을 쓴다.
+// 두 군데서 따로 만들면 언젠가 한쪽만 고쳐져 어긋난다.
+function r30TableParts(f){
+  const wks=r30Weeks(f);
+  if(!R30||!wks.length)return null;
+  const cur=wks[wks.length-1];
+  const shown=r30ShownRegions(f);
+  if(!shown.length)return{cur:cur,shown:[],A:{},head:'',
+    body:'<tr><td>Not available on this axis — the source provides Central / East / West only</td></tr>'};
+  const A=r30Agg(r30Rows(f,cur.i));
+  const regTot={};shown.forEach(g=>{regTot[g.i]=0});
+  Object.keys(A).forEach(b=>shown.forEach(g=>{regTot[g.i]+=(A[b][g.i]||0)}));
+  const grand=shown.reduce((s,g)=>s+regTot[g.i],0);
+  const rows=Object.keys(A).map(b=>{
+    const per={},tot=shown.reduce((s,g)=>{const v=A[b][g.i]||0;per[g.i]=v;return s+v},0);
+    return{n:rev.b[b],per:per,tot:tot};
+  }).filter(r=>Math.abs(r.tot)>0).sort((a,b)=>b.tot-a.tot);
+  const fv=(R30M===7)?fmt:fN;
+  const showTot=shown.length>1;      // 지역 하나면 Total 열은 같은 값의 중복이라 뺀다
+  let head='<tr><th>Brand</th>';
+  shown.forEach(g=>{head+='<th class="num">'+g.n+'</th><th class="num">MS%</th>'});
+  if(showTot)head+='<th class="num">Total</th><th class="num">MS%</th>';
+  head+='</tr>';
+  let body=rows.map(r=>{
+    let s='<tr'+(r.n==='LG'?' class="hi"':'')+'><td>'+r.n+'</td>';
+    shown.forEach(g=>{s+='<td class="num">'+fv(r.per[g.i])+'</td><td class="num">'+pct(r.per[g.i],regTot[g.i])+'%</td>'});
+    if(showTot)s+='<td class="num">'+fv(r.tot)+'</td><td class="num">'+pct(r.tot,grand)+'%</td>';
+    return s+'</tr>';
+  }).join('');
+  body+='<tr class="tot"><td>Total</td>';
+  shown.forEach(g=>{body+='<td class="num">'+fv(regTot[g.i])+'</td><td class="num">100.0%</td>'});
+  if(showTot)body+='<td class="num">'+fv(grand)+'</td><td class="num">100.0%</td>';
+  body+='</tr>';
+  return{cur:cur,shown:shown,A:A,head:head,body:body};
 }
 
 function renderR30(f){
@@ -832,33 +956,16 @@ function renderR30(f){
 
   const cur=wks[wks.length-1];
   const prev=R30.wk.map((w,i)=>({i:i,yi:w[0],wn:w[1]})).filter(o=>o.i<cur.i).pop()||null;
-  $('r30-note').textContent='— '+DD.y[cur.yi]+' W'+cur.wn+' window (last 30 days). Measured, not estimated. Different period from the weekly figures above — do not add them together.';
+  const cov=r30Coverage(f,cur.i);
+  $('r30-note').textContent='— '+DD.y[cur.yi]+' W'+cur.wn+' window (last 30 days). Measured, not estimated. '+
+    'Different period from the weekly figures above — do not add them together.'+(cov?' '+covText(cov):'');
   $('r30-th').textContent='[A] Regional sell-out & market share ('+R30UNIT+') — '+DD.y[cur.yi]+' W'+cur.wn;
 
   // ── [A] 표 ──────────────────────────────────────────────
-  const A=r30Agg(r30Rows(f,cur.i));
-  const regTot={};shown.forEach(g=>{regTot[g.i]=0});
-  Object.keys(A).forEach(b=>shown.forEach(g=>{regTot[g.i]+=(A[b][g.i]||0)}));
-  const grand=shown.reduce((s,g)=>s+regTot[g.i],0);
-  const rows=Object.keys(A).map(b=>{
-    const per={},tot=shown.reduce((s,g)=>{const v=A[b][g.i]||0;per[g.i]=v;return s+v},0);
-    return{b:+b,n:rev.b[b],per:per,tot:tot};
-  }).filter(r=>Math.abs(r.tot)>0).sort((a,b)=>b.tot-a.tot);
-
-  const fv=(R30M===7)?fmt:fN;
-  let th='<tr><th>Brand</th>';
-  shown.forEach(g=>{th+='<th class="num">'+g.n+'</th><th class="num">MS%</th>'});
-  th+='<th class="num">Total</th><th class="num">MS%</th></tr>';
-  $('tr30').querySelector('thead').innerHTML=th;
-  let tb=rows.map(r=>{
-    let s='<tr'+(r.n==='LG'?' class="hi"':'')+'><td>'+r.n+'</td>';
-    shown.forEach(g=>{s+='<td class="num">'+fv(r.per[g.i])+'</td><td class="num">'+pct(r.per[g.i],regTot[g.i])+'%</td>'});
-    return s+'<td class="num">'+fv(r.tot)+'</td><td class="num">'+pct(r.tot,grand)+'%</td></tr>';
-  }).join('');
-  tb+='<tr class="tot"><td>Total</td>';
-  shown.forEach(g=>{tb+='<td class="num">'+fv(regTot[g.i])+'</td><td class="num">100.0%</td>'});
-  tb+='<td class="num">'+fv(grand)+'</td><td class="num">100.0%</td></tr>';
-  $('tr30').querySelector('tbody').innerHTML=tb;
+  const parts=r30TableParts(f);
+  const A=parts.A;                     // [B] 가 같은 집계를 재사용한다
+  $('tr30').querySelector('thead').innerHTML=parts.head;
+  $('tr30').querySelector('tbody').innerHTML=parts.body;
 
   // ── [B] 4주 전 대비 증감 ────────────────────────────────
   // 30일 창이 정확히 7일씩 밀리므로 두 창의 차 = (이번 주) − (4주 전 주).
