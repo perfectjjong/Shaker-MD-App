@@ -108,6 +108,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .ycard .sec{margin-bottom:4px}.ycard .wk{font-size:13px;font-weight:600}
 .ycard .dt{font-size:10px;opacity:.95;margin-top:1px}
 /* Perf layout: tables top, year cards bottom */
+.r30-head{font-size:13px;font-weight:700;margin:12px 0 6px;padding-top:10px;border-top:2px solid #3a352c;flex-shrink:0}
+.r30-head span{font-weight:400;font-size:11px;color:#6b6355}
+.r30-warn{background:#fdf6e3;border:1px solid #d9cfae;border-left:4px solid #b06a24;padding:6px 10px;margin-bottom:8px;font-size:11px;line-height:1.5;border-radius:4px;flex-shrink:0}
+#r30-wrap{flex-direction:column;flex:1.15;min-height:0}
 .perf-tables{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0}
 @media(max-width:900px){.chart-grid{grid-template-columns:1fr}.content{padding:6px}}
 @media(max-width:768px){
@@ -159,6 +163,7 @@ body{display:block}
   <div class="tab" data-t="region">Region</div>
   <div class="tab" data-t="promo">Promoter</div>
 </div>
+<div id="agg-notice" class="r30-warn" style="display:none;margin:6px 12px 0"></div>
 <div class="content">
   <div class="tab-content active" id="t-total">
     <div class="kpi-row" id="kpi1"></div>
@@ -183,7 +188,15 @@ body{display:block}
     <div class="year-cards" id="ycards"></div>
   </div>
   <div class="tab-content" id="t-region">
+    <div id="r30-warn" class="r30-warn" style="display:none"></div>
     <div class="chart-grid"><div class="cc"><h3>Region Distribution (Qty)</h3><div><canvas id="c11"></canvas></div></div><div class="cc"><h3>Region Weekly Trend (Top 5)</h3><div><canvas id="c12"></canvas></div></div></div>
+    <div id="r30-wrap" style="display:none">
+      <div class="r30-head">Regional MS &mdash; 30-day rolling window <span id="r30-note"></span></div>
+      <div class="chart-grid" style="grid-template-columns:1.25fr 1fr">
+        <div class="tbl"><h3 id="r30-th">[A] Regional sell-out &amp; market share</h3><div><table id="tr30"><thead></thead><tbody></tbody></table></div></div>
+        <div class="cc"><h3 id="r30-bh">[B] Change vs 4 weeks earlier</h3><div><canvas id="c15"></canvas></div></div>
+      </div>
+    </div>
   </div>
   <div class="tab-content" id="t-promo">
     <div class="kpi-row" id="kpiPR"></div>
@@ -297,7 +310,10 @@ function fc(f,ig={}){
   const fw  =(!ig.w  &&f.w  &&f.w.length)  ?new Set(f.w)  :null;
   const fq  =(!ig.q  &&f.q  &&f.q.length)  ?new Set(f.q)  :null;
   const fm  =(!ig.m  &&f.m  &&f.m.length)  ?new Set(f.m)  :null;
-  const needMeta=fw!==null||fq!==null||fm!==null;
+  // 지역 필터가 걸리면, 주간×지역이 없는 주차(2026 W33~35)를 통째로 제외한다.
+  // 안 빼면 경쟁사만 탈락하고 LG 만 남아 그 주 MS 가 100% 로 잡힌다.
+  const dropAgg=(fr!==null&&typeof R30AGGW!=='undefined'&&R30AGGW.size>0);
+  const needMeta=fw!==null||fq!==null||fm!==null||dropAgg;
   const result=[];
   for(let i=0;i<CC.length;i++){
     const r=CC[i];
@@ -316,6 +332,7 @@ function fc(f,ig={}){
       if(fw!==null&&!fw.has(meta[0]))continue;
       if(fq!==null&&!fq.has(meta[2]))continue;
       if(fm!==null&&!fm.has(meta[1]))continue;
+      if(dropAgg&&R30AGGW.has(r[Yi]+'-'+(meta[0]+1)))continue;
     }
     result.push(r);
   }
@@ -497,6 +514,7 @@ function initFilters(){
 function renderAll(){
   const f=getF();
   const tab=document.querySelector('.tab.active').dataset.t;
+  updateAggNotice(f);
   if(tab==='total')renderTotal(f);
   else if(tab==='price')renderPrice(f);
   else if(tab==='overview')renderOverview(f);
@@ -724,9 +742,163 @@ function renderPerf(f){
   $('ycards').innerHTML=yh;
 }
 
+// 지역 필터가 걸리면 주간×지역이 없는 주차를 통째로 빼는데(fc), 그 사실을 화면에 알린다.
+// 조용히 사라지면 "그 주는 원래 없다"로 오독된다.
+function updateAggNotice(f){
+  const el=$('agg-notice');
+  if(!el)return;
+  if(!(f.r&&f.r.length)||!R30AGGW.size){el.style.display='none';return}
+  const fy=(f.y&&f.y.length)?new Set(f.y):null;
+  const fw=(f.w&&f.w.length)?new Set(f.w):null;
+  const hit=R30.wk.filter(w=>(!fy||fy.has(w[0]))&&(!fw||fw.has(w[1]-1)));
+  if(!hit.length){el.style.display='none';return}
+  el.style.display='block';
+  el.innerHTML='<b>'+hit.map(w=>DD.y[w[0]]+' W'+w[1]).join(', ')+' excluded while a Region filter is active.</b> '+
+    'The source has no weekly &times; region breakdown for these weeks (weekly = national total, regional = 30-day cumulative). '+
+    'Keeping them would show LG at 100% share. Clear the Region filter to see them, or open the '+
+    '<b>Region tab &rarr; 30-day section</b> for a measured regional split.';
+}
+
+// ===== Regional 30-day axis (A: level, B: 4-week change) =====================
+// 원본에 "주간 × 지역" 조합이 없는 구간(2026 W33~W35) 전용 보조 축.
+//   · 주간 판매 = 지역 없는 전국 총계 / 지역 판매 = 30일 누적  → 둘을 곱해 쪼개면
+//     LG 실측 채점에서 평균 15%·최대 30% 틀린다(폐기). 같은 컬럼끼리만 비교한다.
+//   · ⚠️ 주간 숫자와 기간이 다르다. 더하거나 나란히 비교하지 말 것.
+//   · 2024·2025·2026 W1~W19 는 진짜 주간×지역 실측이 있으므로 이 축을 쓰지 않는다.
+const R30=(RAW.r30&&RAW.r30.c&&RAW.r30.c.length)?RAW.r30:null;
+const R30W=0,R30B=1,R30SF=2,R30T=3,R30SZ=4,R30R=5;
+const R30M=7;            // 6=Qty / 7=Value(SAR)
+const R30UNIT='SAR';
+// 주간×지역이 없는 주차 집합 — 지역 필터가 걸리면 이 주차를 통째로 뺀다.
+// (안 빼면 경쟁사만 탈락하고 LG 만 남아 MS 가 100% 로 잡힌다 — 거짓 숫자)
+const R30AGGW=new Set(R30?R30.wk.map(w=>w[0]+'-'+w[1]):[]);
+
+function r30Weeks(f){
+  if(!R30)return[];
+  const fy=(f.y&&f.y.length)?new Set(f.y):null;
+  const fw=(f.w&&f.w.length)?new Set(f.w):null;
+  return R30.wk.map((w,i)=>({i:i,yi:w[0],wn:w[1]}))
+    .filter(o=>(!fy||fy.has(o.yi))&&(!fw||fw.has(o.wn-1)));
+}
+function r30Rows(f,wi){
+  const fb=(f.b&&f.b.length)?new Set(f.b):null;
+  const fsf=(f.sf&&f.sf.length)?new Set(f.sf):null;
+  const ft=(f.t&&f.t.length)?new Set(f.t):null;
+  const fsz=(f.sz&&f.sz.length)?new Set(f.sz):null;
+  let fr=null;
+  if(f.r&&f.r.length){fr=new Set();f.r.forEach(i=>{const j=R30.r.indexOf(rev.r[i]);if(j>=0)fr.add(j)})}
+  const out=[];
+  for(const r of R30.c){
+    if(r[R30W]!==wi)continue;
+    if(fb&&!fb.has(r[R30B]))continue;
+    if(fsf&&!fsf.has(r[R30SF]))continue;
+    if(ft&&!ft.has(r[R30T]))continue;
+    if(fsz&&!fsz.has(r[R30SZ]))continue;
+    if(fr&&!fr.has(r[R30R]))continue;
+    out.push(r);
+  }
+  return out;
+}
+function r30Agg(rows){                       // {brandIdx: {regionIdx: value}}
+  const m={};
+  for(const r of rows){
+    const b=r[R30B];
+    if(!m[b])m[b]={};
+    m[b][r[R30R]]=(m[b][r[R30R]]||0)+r[R30M];
+  }
+  return m;
+}
+function r30ShownRegions(f){
+  const all=R30.r.map((n,i)=>({n:n,i:i}));
+  if(!f.r||!f.r.length)return all;
+  const sel=new Set(f.r.map(i=>rev.r[i]));
+  return all.filter(g=>sel.has(g.n));
+}
+
+function renderR30(f){
+  const wrap=$('r30-wrap');
+  if(!wrap)return;
+  const wks=r30Weeks(f);
+  if(!R30||!wks.length){wrap.style.display='none';dc('c15');return}
+  const shown=r30ShownRegions(f);
+  if(!shown.length){                          // ECOM/North/South 등만 고른 경우
+    wrap.style.display='flex';
+    $('r30-note').textContent='— selected region is not available on this axis (source provides Central / East / West only)';
+    $('tr30').querySelector('thead').innerHTML='';
+    $('tr30').querySelector('tbody').innerHTML='<tr><td>No data for the selected region</td></tr>';
+    dc('c15');return;
+  }
+  wrap.style.display='flex';
+
+  const cur=wks[wks.length-1];
+  const prev=R30.wk.map((w,i)=>({i:i,yi:w[0],wn:w[1]})).filter(o=>o.i<cur.i).pop()||null;
+  $('r30-note').textContent='— '+DD.y[cur.yi]+' W'+cur.wn+' window (last 30 days). Measured, not estimated. Different period from the weekly figures above — do not add them together.';
+  $('r30-th').textContent='[A] Regional sell-out & market share ('+R30UNIT+') — '+DD.y[cur.yi]+' W'+cur.wn;
+
+  // ── [A] 표 ──────────────────────────────────────────────
+  const A=r30Agg(r30Rows(f,cur.i));
+  const regTot={};shown.forEach(g=>{regTot[g.i]=0});
+  Object.keys(A).forEach(b=>shown.forEach(g=>{regTot[g.i]+=(A[b][g.i]||0)}));
+  const grand=shown.reduce((s,g)=>s+regTot[g.i],0);
+  const rows=Object.keys(A).map(b=>{
+    const per={},tot=shown.reduce((s,g)=>{const v=A[b][g.i]||0;per[g.i]=v;return s+v},0);
+    return{b:+b,n:rev.b[b],per:per,tot:tot};
+  }).filter(r=>Math.abs(r.tot)>0).sort((a,b)=>b.tot-a.tot);
+
+  const fv=(R30M===7)?fmt:fN;
+  let th='<tr><th>Brand</th>';
+  shown.forEach(g=>{th+='<th class="num">'+g.n+'</th><th class="num">MS%</th>'});
+  th+='<th class="num">Total</th><th class="num">MS%</th></tr>';
+  $('tr30').querySelector('thead').innerHTML=th;
+  let tb=rows.map(r=>{
+    let s='<tr'+(r.n==='LG'?' class="hi"':'')+'><td>'+r.n+'</td>';
+    shown.forEach(g=>{s+='<td class="num">'+fv(r.per[g.i])+'</td><td class="num">'+pct(r.per[g.i],regTot[g.i])+'%</td>'});
+    return s+'<td class="num">'+fv(r.tot)+'</td><td class="num">'+pct(r.tot,grand)+'%</td></tr>';
+  }).join('');
+  tb+='<tr class="tot"><td>Total</td>';
+  shown.forEach(g=>{tb+='<td class="num">'+fv(regTot[g.i])+'</td><td class="num">100.0%</td>'});
+  tb+='<td class="num">'+fv(grand)+'</td><td class="num">100.0%</td></tr>';
+  $('tr30').querySelector('tbody').innerHTML=tb;
+
+  // ── [B] 4주 전 대비 증감 ────────────────────────────────
+  // 30일 창이 정확히 7일씩 밀리므로 두 창의 차 = (이번 주) − (4주 전 주).
+  // LG 주간 실측으로 채점: 지역별 오차 ±3대.
+  dc('c15');
+  if(!prev){
+    $('r30-bh').textContent='[B] Change vs 4 weeks earlier — needs two windows';
+    return;
+  }
+  $('r30-bh').textContent='[B] Change vs 4 weeks earlier ('+R30UNIT+') — W'+prev.wn+' → W'+cur.wn+' window';
+  const P=r30Agg(r30Rows(f,prev.i));
+  const dl=Object.keys(A).concat(Object.keys(P)).filter((v,i,a)=>a.indexOf(v)===i).map(b=>{
+    const per={};let mag=0;
+    shown.forEach(g=>{const d=((A[b]&&A[b][g.i])||0)-((P[b]&&P[b][g.i])||0);per[g.i]=d;mag+=Math.abs(d)});
+    return{n:rev.b[b],per:per,mag:mag};
+  }).filter(r=>r.mag>0).sort((a,b)=>b.mag-a.mag).slice(0,10);
+  charts.c15=new Chart($('c15'),{type:'bar',
+    data:{labels:dl.map(r=>r.n),datasets:shown.map((g,i)=>({label:g.n,data:dl.map(r=>r.per[g.i]),backgroundColor:RC[i]}))},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top'},datalabels:{display:false}},
+      scales:{x:{beginAtZero:true,grid:{color:c=>c.tick.value===0?'#3a352c':'rgba(0,0,0,.06)'},ticks:{callback:v=>fmt(v)}}}}});
+}
+
 // ============ REGION ============
 function renderRegion(f){
-  const rD=fc({...f,r:[]}).filter(noAgg);           // 지역 차트: 주간집계 제외
+  // 주간×지역이 없는 주차(2026 W33~35)는 주간 지역 차트에서 통째로 뺀다.
+  // 경쟁사만 탈락시키면 LG 혼자 남아 MS 100% 라는 거짓 그림이 된다.
+  const rAll=fc({...f,r:[]}).filter(noAgg);
+  const rD=R30AGGW.size?rAll.filter(r=>{const m=getDM(r[Yi],r[Di]);return m&&!R30AGGW.has(r[Yi]+'-'+(m[0]+1))}):rAll;
+  const wn=$('r30-warn');
+  if(wn){
+    const dropped=rAll.length-rD.length;
+    if(dropped>0){
+      wn.style.display='block';
+      wn.innerHTML='<b>Weekly regional breakdown is not available for the All-Brand weeks.</b> '+
+        'In the source report, weekly sales are a national total and the regional split is a 30-day cumulative, '+
+        'so those weeks are excluded from the two charts below. Use the <b>30-day section</b> at the bottom instead.';
+    }else{wn.style.display='none'}
+  }
+  renderR30(f);
   const rA=aggBy(rD,r=>r[Ri]);
   const sorted=Object.entries(rA).map(([k,v])=>({n:rev.r[k],q:v[1]})).sort((a,b)=>b.q-a.q);
 
