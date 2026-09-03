@@ -136,6 +136,19 @@ def get_channel_id(conn, code: str) -> int:
     return conn.execute("SELECT id FROM channels WHERE code = ?", (code,)).fetchone()[0]
 
 
+def _brand(b):
+    """브랜드 표기 통일 — **적재 시점에** 한 번만.
+
+    🔴 2026-09-03: 값 547건을 UPDATE 로 고쳐놓고 유입구를 안 고쳐 하루 만에 21건이 다시 섞였다.
+       ('LG'/'Lg' · 'MIDEA'/'Midea' — 채널마다 표기가 다르다.)
+       증상만 고치면 매일 되살아난다. 정규화는 들어오는 길목에서 한다.
+    """
+    if b is None:
+        return None
+    b = " ".join(str(b).split()).upper()
+    return b or None
+
+
 def upsert_rows(conn, channel_id: int, run_date: str, rows: list, run_id=None) -> int:
     """한 채널 × 한 수집일 분량을 UPSERT. 반환: 적재 행수."""
     count = 0
@@ -157,7 +170,7 @@ def upsert_rows(conn, channel_id: int, run_date: str, rows: list, run_id=None) -
                  url        = COALESCE(excluded.url, url),
                  first_seen = MIN(first_seen, excluded.first_seen),
                  last_seen  = MAX(last_seen, excluded.last_seen)""",
-            (channel_id, r["sku"], r["brand"], r["model"], r["name_en"], r["name_ar"],
+            (channel_id, r["sku"], _brand(r["brand"]), r["model"], r["name_en"], r["name_ar"],
              r["category"], r["btu"], r["ton"], r["compressor"], r["ac_type"], r["url"],
              run_date, run_date),
         )

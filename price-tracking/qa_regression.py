@@ -171,6 +171,48 @@ def chk_live_only_avg(cols, rows):
     return True, f"원시 계산과 일치 ({exp:,.0f})" if exp else "기대값 산출 불가"
 
 
+def chk_attr_all(col, expected):
+    """지정한 컬럼이 **전 행** 기대값인가 — 질문에 적은 조건이 지켜졌는지 본다.
+
+    🔴 2026-09-03 신설. 형님 질문 "LG 18000 BTU CO Inverter 채널별 최저가"가
+       냉방타입·압축기·BTU·채널별을 전부 무시당한 채 Window On/Off 를 답했다.
+       총합·행수만 보는 검사로는 이 오답을 절대 못 잡는다.
+    """
+    def f(cols, rows):
+        if col not in cols:
+            return False, f"'{col}' 컬럼이 없다 — 조건이 표현되지 않았다"
+        i = cols.index(col)
+        bad = [r[i] for r in rows if r[i] != expected]
+        if bad:
+            return False, f"{col}={expected} 아닌 행 {len(bad)}개 (예: {bad[:3]})"
+        return True, f"{col}={expected} 전 행 준수 ({len(rows)}행)"
+    return f
+
+
+def chk_btu_band(lo, hi):
+    def f(cols, rows):
+        if "BTU" not in cols:
+            return False, "BTU 컬럼이 없다"
+        i = cols.index("BTU")
+        bad = [r[i] for r in rows if r[i] is None or not (lo <= r[i] <= hi)]
+        if bad:
+            return False, f"{lo}~{hi} 밖 {len(bad)}개 (예: {bad[:3]})"
+        return True, f"BTU {lo}~{hi} 전 행 준수"
+    return f
+
+
+def chk_one_per_channel(cols, rows):
+    """'채널별'이라 물었으면 채널마다 1행이어야 한다."""
+    if "유통채널" not in cols:
+        return False, "유통채널 컬럼이 없다 — '채널별'이 무시됐다"
+    i = cols.index("유통채널")
+    seen = [r[i] for r in rows]
+    dup = {c for c in seen if seen.count(c) > 1}
+    if dup:
+        return False, f"채널 중복 {sorted(dup)} — 채널마다 1행이어야 한다"
+    return True, f"{len(seen)}개 채널 각 1행"
+
+
 def chk_nonempty(minrows=1):
     def f(cols, rows):
         return (len(rows) >= minrows, f"{len(rows)}행")
@@ -231,6 +273,20 @@ CASES = [
     # ── 라인업 ──────────────────────────────────────────
     dict(tag="라인업", q="최근 30일 새로 들어온 경쟁사 제품",
          checks=[chk_nonempty(1)]),
+
+    # ── 🔴 형님이 실제로 던진 질문 (2026-09-02·09-03) ────────────
+    #    이 질문들이 회귀에 없어서 "전부 통과"가 오답을 덮고 있었다.
+    dict(tag="조건", q="LG 18000 BTU CO Inverter 채널별 최저가랑 모델 알려줘",
+         checks=[chk_nonempty(3), chk_attr_all("브랜드", "LG"),
+                 chk_attr_all("냉방타입", "CO"), chk_attr_all("압축기", "Inverter"),
+                 chk_btu_band(16560, 19440), chk_one_per_channel, chk_price_sane]),
+    dict(tag="조건", q="24000 BTU 냉난방 인버터 제일 싼 모델",
+         checks=[chk_nonempty(3), chk_attr_all("냉방타입", "H&C"),
+                 chk_attr_all("압축기", "Inverter"), chk_btu_band(22080, 25920)]),
+    dict(tag="의도", q="NS182C 6개월 가격 추이",
+         checks=[chk_nonempty(3), chk_has_date]),
+    dict(tag="의도", q="ND182C 품절인 채널",
+         checks=[chk_nonempty(1), chk_has_date]),
 ]
 
 

@@ -109,9 +109,16 @@ footer{flex:none;background:var(--card);border-top:1px solid var(--border);paddi
   <div class="hint">Enter 전송 · Shift+Enter 줄바꿈 · 답변은 조회 결과에 근거하며, SQL을 펼쳐 검증하실 수 있습니다.</div>
 </footer>
 
+<script src="endpoint.js?v=1"></script>
 <script>
 // 서버 주소 — start_price_qa.sh 가 터널 URL을 여기에 주입한다
-const API = "https://cafe-marie-adoption-convicted.trycloudflare.com";
+const API = (window.PRICE_QA_API || "").replace(/\/$/, "");
+    if (!API) { document.addEventListener("DOMContentLoaded", () => {
+      const b = document.querySelector("#log") || document.body;
+      b.insertAdjacentHTML("afterbegin",
+        '<div style="padding:12px;background:#7f1d1d;color:#fff;border-radius:8px">'
+        + 'API 주소를 못 읽었습니다 — endpoint.js 확인 필요</div>');
+    }); }
 
 const feed=document.getElementById('feed'), inner=feed.querySelector('.inner');
 const qEl=document.getElementById('q'), sendEl=document.getElementById('send');

@@ -491,13 +491,135 @@ ORDER BY 프리미엄_pct DESC
 LIMIT 40
 """
 
+# ── 질문에 적힌 조건을 읽는다 — 템플릿이 조건을 삼키면 오답이 된다 ──────────
+# 🔴 2026-09-03: "LG 18000 BTU CO Inverter 채널별 최저가" 가 냉방타입·압축기·BTU·채널별을
+#    전부 무시당하고 Window On/Off 1,449 SAR 을 답했다. 조건은 읽거나, 아니면 템플릿을 쓰지 않는다.
+def _cool_in(q):
+    """냉방타입. 🔴 냉난방을 먼저 본다 — 'CO'가 부분일치로 먼저 걸리는 함정(create_views 와 같은 순서)."""
+    ql = q.lower()
+    if ("냉난방" in q or "히트펌프" in ql or "heat pump" in ql
+            or re.search(r"\bh\s*&\s*c\b", ql)):
+        return "H&C"
+    if ("냉방전용" in q or "냉방 전용" in q or "쿨온리" in q or "cool only" in ql
+            or re.search(r"\bco\b", q, re.I)):
+        return "CO"
+    return None
+
+
+def _comp_in(q):
+    """압축기. DB 표기는 'On/Off' (하이픈 아님) — 값 표기를 추측하지 말 것."""
+    ql = q.lower()
+    if "온오프" in q or "정속" in q or re.search(r"\bon\s*[/-]?\s*off\b", ql):
+        return "On/Off"
+    if "인버터" in q or re.search(r"\binverter\b|\binv\b", ql):
+        return "Inverter"
+    return None
+
+
+SQL_RANK_FILTERED = """
+SELECT brand AS 브랜드, v6_model AS 모델코드, sku AS SKU,
+       substr(COALESCE(display_name,''),1,45) AS 상품명, btu AS BTU,
+       cool_type AS 냉방타입, comp_type AS 압축기,
+       ROUND(px) AS 현재가_SAR, channel_name AS 유통채널, run_date AS 확인일
+FROM product_current
+WHERE is_live = 1
+  AND (? = 'ALL' OR brand = ?)
+  AND (? IS NULL OR btu BETWEEN ? AND ?)
+  AND (? IS NULL OR cool_type = ?)
+  AND (? IS NULL OR comp_type = ?)
+  AND (? IS NULL OR channel_code = ?)
+ORDER BY px {DIR}
+LIMIT 30
+"""
+
+# '채널별 최저가' = 전체 1등 30개가 아니라 **채널마다 1등**이다.
+SQL_RANK_BY_CHANNEL = """
+WITH f AS (
+  SELECT * FROM product_current
+  WHERE is_live = 1
+    AND (? = 'ALL' OR brand = ?)
+    AND (? IS NULL OR btu BETWEEN ? AND ?)
+    AND (? IS NULL OR cool_type = ?)
+    AND (? IS NULL OR comp_type = ?)
+),
+r AS (SELECT *, ROW_NUMBER() OVER (PARTITION BY channel_id ORDER BY px {DIR}) rn FROM f)
+SELECT channel_name AS 유통채널, brand AS 브랜드, v6_model AS 모델코드, sku AS SKU,
+       substr(COALESCE(display_name,''),1,45) AS 상품명, btu AS BTU,
+       cool_type AS 냉방타입, comp_type AS 압축기,
+       ROUND(px) AS 가격_SAR, run_date AS 확인일
+FROM r WHERE rn = 1
+ORDER BY 가격_SAR {DIR}
+LIMIT 30
+"""
+
+SQL_MODEL_TREND = """
+SELECT strftime('%Y-%m', c.run_date) AS 월,
+       ROUND(AVG(c.px)) AS 평균가_SAR, MIN(ROUND(c.px)) AS 최저, MAX(ROUND(c.px)) AS 최고,
+       COUNT(DISTINCT c.product_id) AS SKU수, COUNT(DISTINCT p.channel_id) AS 채널수
+FROM v_price_clean c JOIN products p ON p.id = c.product_id
+WHERE UPPER(p.v6_model) = UPPER(?)
+GROUP BY 1 ORDER BY 1
+LIMIT 48
+"""
+
+SQL_MODEL_STOCK = """
+SELECT channel_name AS 유통채널, sku AS SKU, ROUND(px) AS 현재가_SAR,
+       CASE WHEN in_stock=0 THEN '품절' WHEN in_stock=1 THEN '재고있음' ELSE '미상' END AS 재고,
+       stock_qty AS 재고수량, run_date AS 확인일, status AS 상태
+FROM product_current
+WHERE v6_model = ? AND is_live = 1
+ORDER BY in_stock, px
+LIMIT 100
+"""
+
 TREND2_WORDS = ("동향", "추이", "흐름", "추세", "변했", "3개월", "6개월", "월별")
 WHERE_SOLD = ("어디서 팔", "어디에서 팔", "어느 채널", "판매 채널", "취급 채널", "어디서 파는")
 PREMIUM_WORDS = ("경쟁사보다", "경쟁보다", "우리가 비싼", "프리미엄", "가격 경쟁력", "비싼 모델")
 
 
+ALL_C = {"brand", "band", "cool", "comp", "ch", "bych", "model"}
+# 모델은 있으나 맞는 템플릿이 없는 의도 — 억지로 표를 내지 말고 자유 질의로 넘긴다
+MODEL_DEFER = PREMIUM_WORDS + ("비교", "대비", " vs ", "보다 비싸", "보다 싸")
+
+
+def _detected(q):
+    """질문에 **명시된** 조건들. 템플릿이 이걸 다 담지 못하면 그 템플릿은 쓰지 않는다."""
+    d = set()
+    if _btu_band(q):
+        d.add("band")
+    if _cool_in(q):
+        d.add("cool")
+    if _comp_in(q):
+        d.add("comp")
+    if _channel_code(q):
+        d.add("ch")
+    if _brand_in(q):
+        d.add("brand")
+    if any(w in q for w in CH_WORDS):
+        d.add("bych")
+    return d
+
+
 def match_template(q: str):
-    """(설명, SQL, params) 또는 None. 정규식이 아니라 **의도**로 고른다."""
+    """공개 진입점 — 템플릿이 질문의 조건을 **하나라도 못 담으면 쓰지 않는다.**
+
+    🔴 조건을 삼킨 채 그럴듯한 표를 '✓검증된 질의'로 내놓는 것이 이 세션 최악의 오답이었다.
+       (형님 질문 "LG 18000 BTU CO Inverter 채널별 최저가" → Window On/Off 1,449 SAR)
+       템플릿이 못 담으면 **틀린 답 대신 자유 질의로 넘긴다** — 조용히 버리지 않는다.
+    """
+    hit = _match_template(q)
+    if not hit:
+        return None
+    desc, sql, params, covers = hit
+    missed = _detected(q) - set(covers)
+    if missed:
+        print(f"[route] 템플릿 보류 — 조건 미표현 {sorted(missed)}: {q}", file=sys.stderr)
+        return None
+    return (desc, sql, params)
+
+
+def _match_template(q: str):
+    """(설명, SQL, params, covers) 또는 None. 정규식이 아니라 **의도**로 고른다."""
     up = q.upper()
     has_ch = any(w in q for w in CH_WORDS) or any(w in q for w in CHEAP_WORDS)
     has_latest = any(w in q for w in LATEST_WORDS)
@@ -508,6 +630,7 @@ def match_template(q: str):
         con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
         try:
             for c0 in cands:
+                model = None
                 # 형님이 접미 붙은 표기(NS182C2 / NS182C2.NK2)로 물을 수 있다.
                 # 표기 정규화는 정본 진입점 canon() 하나만 쓴다 — 자체 규칙을 만들지 않는다.
                 for cand in (c0, _canon_or_none(c0)):
@@ -517,33 +640,43 @@ def match_template(q: str):
                         "SELECT v6_model FROM products WHERE UPPER(v6_model)=? LIMIT 1",
                         (cand.upper(),)).fetchone()
                     if hit:
+                        model = hit[0]
                         break
-                # 🔴 모델코드가 v6에 실재하면 그것만으로 '모델 질문'이다.
-                #    부가 키워드(채널별/최신)를 요구하면 "AM242C 가격 알려줘",
-                #    "LO182C 어디서 파나" 같은 평범한 질문이 전부 AI 생성으로 새어나간다.
-                #    (실측: 실사용 32문항 중 23개(72%)가 이 이유로 불안정 경로로 빠졌다)
-                if hit:
-                    return ("모델 채널별 최신가 (검증된 질의)",
-                            SQL_MODEL_LATEST_BY_CHANNEL.strip(), (hit[0],))
+                if not model:
+                    continue
+                # 🔴 2026-09-03 수정: 모델코드가 있으면 **무조건** '채널별 최신가'로 보내던 단락을 없앴다.
+                #    그 탓에 "NS182C 6개월 추이" · "ND182C 품절인 채널" 이 전부 같은 표로 나갔다.
+                #    모델은 '대상'이지 '의도'가 아니다 — 의도를 먼저 읽는다.
+                if any(w in q for w in TREND_WORDS + TREND2_WORDS):
+                    return (f"{model} 월별 가격 추이 (검증된 질의)",
+                            SQL_MODEL_TREND.strip(), (model,), ALL_C)
+                if any(w in q for w in STOCK_WORDS):
+                    return (f"{model} 채널별 재고 (검증된 질의)",
+                            SQL_MODEL_STOCK.strip(), (model,), ALL_C)
+                if any(w in q for w in MODEL_DEFER):
+                    return None          # 비교·프리미엄 등 — 맞는 템플릿이 없으면 쓰지 않는다
+                return ("모델 채널별 최신가 (검증된 질의)",
+                        SQL_MODEL_LATEST_BY_CHANNEL.strip(), (model,), ALL_C)
         finally:
             con.close()
 
     # 데이터 신선도 — 모든 숫자의 신뢰 근거라 절대 틀리면 안 된다
     if any(w in q for w in FRESH_WORDS):
-        return ("채널별 수집 신선도 (검증된 질의)", SQL_FRESHNESS.strip(), ())
+        return ("채널별 수집 신선도 (검증된 질의)", SQL_FRESHNESS.strip(), (), {"bych", "ch"})
 
     # 모델 지정 없는 채널별 LG/경쟁 평균가
     #  단, 'SKU 개수'처럼 규모를 묻는 건 평균가가 아니다 → 위 요약 템플릿이 가져간다.
     if (any(w in q.lower() for w in BRANDCH_WORDS) and not cands
             and not any(w in q for w in SUMMARY_WORDS)):
-        return ("채널별 LG/경쟁 현재가 평균 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), ())
+        return ("채널별 LG/경쟁 현재가 평균 (검증된 질의)", SQL_BRAND_BY_CHANNEL.strip(), (),
+                {"bych", "ch", "brand"})
 
     band = _btu_band(q)
 
     # 월별 추이 (BTU 지정 필요)
     if any(w in q for w in TREND_WORDS) and band:
         return (f"{band[0]//1000}~{band[1]//1000}K 월별 LG/경쟁 평균가 추이 (검증된 질의)",
-                SQL_MONTHLY_TREND.strip(), (band[0], band[1]))
+                SQL_MONTHLY_TREND.strip(), (band[0], band[1]), {"band", "brand"})
 
     # 라인업 변화 (신규 / 단종)
     if any(w in q for w in NEW_WORDS) or any(w in q for w in GONE_WORDS):
@@ -553,7 +686,7 @@ def match_template(q: str):
             "COMP" if "경쟁" in q else "ALL")
         label = "신규 진입" if status == "new" else "단종·이탈"
         return (f"최근 30일 {label} 라인업 (검증된 질의)",
-                SQL_LINEUP.strip(), (days, status, scope, scope, scope))
+                SQL_LINEUP.strip(), (days, status, scope, scope, scope), {"brand"})
 
     # 최근 가격 변동 (결함 가드 포함)
     if any(w in q for w in MOVE_WORDS):
@@ -566,7 +699,7 @@ def match_template(q: str):
         only_up = 1 if any(w in q for w in UP_WORDS) and not any(w in q for w in DOWN_WORDS) else 0
         dirn = "인하" if only_down else ("인상" if only_up else "전체")
         return (f"최근 {days.strip('- days')}일 가격 {dirn} (검증된 질의 · 스크래핑 결함 제외)",
-                SQL_RECENT_MOVES.strip(), (days, scope, scope, scope, only_down, only_up))
+                SQL_RECENT_MOVES.strip(), (days, scope, scope, scope, only_down, only_up), {"brand"})
 
     ch = _channel_code(q)
     brand = _brand_in(q)
@@ -575,23 +708,35 @@ def match_template(q: str):
     #  (PREMIUM_WORDS 의 '비싼 모델'이 먼저 걸려 엉뚱한 표가 나가던 오답)
     if any(w in q for w in RANK_HI) or any(w in q for w in RANK_LO):
         desc = any(w in q for w in RANK_HI)
-        sql = SQL_BRAND_RANK.strip().replace("{DIR}", "DESC" if desc else "ASC")
+        dirn = "DESC" if desc else "ASC"
+        cool, comp = _cool_in(q), _comp_in(q)
+        lo, hi = band if band else (None, None)
         scope = brand if brand else "ALL"
-        return (f"{'최고가' if desc else '최저가'} 순위{' · '+brand if brand else ''} (검증된 질의)",
-                sql, (scope, scope))
+        tag = "".join(f" · {x}" for x in (
+            brand, f"{lo//1000}~{hi//1000}K" if band else None, cool, comp, ch) if x)
+        if has_ch and not ch:        # '채널별 최저가' = 채널마다 1등
+            return (f"채널별 {'최고가' if desc else '최저가'}{tag} (검증된 질의)",
+                    SQL_RANK_BY_CHANNEL.strip().replace("{DIR}", dirn),
+                    (scope, scope, lo, lo, hi, cool, cool, comp, comp),
+                    {"brand", "band", "cool", "comp", "bych"})
+        return (f"{'최고가' if desc else '최저가'} 순위{tag} (검증된 질의)",
+                SQL_RANK_FILTERED.strip().replace("{DIR}", dirn),
+                (scope, scope, lo, lo, hi, cool, cool, comp, comp, ch, ch),
+                {"brand", "band", "cool", "comp", "ch", "bych"})
 
     # 채널 취급 규모 요약 — 'SKU 개수'는 평균가가 아니라 규모 질문이다.
     if any(w in q for w in SUMMARY_WORDS) and not ch:
-        return ("채널별 취급 규모 요약 (검증된 질의)", SQL_CHANNEL_SUMMARY.strip(), ())
+        return ("채널별 취급 규모 요약 (검증된 질의)", SQL_CHANNEL_SUMMARY.strip(), (), {"bych"})
 
     # LG vs 경쟁 프리미엄 (모델별)
     if any(w in q for w in PREMIUM_WORDS):
         return ("LG 모델별 경쟁사 대비 프리미엄 (검증된 질의)",
-                SQL_LG_VS_COMP_BY_MODEL.strip(), ())
+                SQL_LG_VS_COMP_BY_MODEL.strip(), (), {"brand"})
 
     # 특정 브랜드가 어디서 팔리나
     if brand and any(w in q for w in WHERE_SOLD):
-        return (f"{brand} 채널별 취급 현황 (검증된 질의)", SQL_BRAND_CHANNELS.strip(), (brand,))
+        return (f"{brand} 채널별 취급 현황 (검증된 질의)", SQL_BRAND_CHANNELS.strip(), (brand,),
+                {"brand", "bych", "ch"})
 
     # 브랜드 가격 동향 (BTU 없어도 동작)
     if any(w in q for w in TREND2_WORDS) and (brand or not band):
@@ -599,7 +744,7 @@ def match_template(q: str):
         scope = brand if brand else "ALL"
         return (f"{scope} 월별 평균가 추이" + (f" · {lo//1000}~{hi//1000}K" if band else "")
                 + " (검증된 질의)",
-                SQL_BRAND_TREND_ANY.strip(), (scope, scope, lo, lo, hi))
+                SQL_BRAND_TREND_ANY.strip(), (scope, scope, lo, lo, hi), {"brand", "band"})
 
     # 재고·품절 조회
     if any(w in q for w in STOCK_WORDS):
@@ -607,19 +752,19 @@ def match_template(q: str):
         scope = brand if brand else "ALL"
         lbl = "품절 상품" if only_oos else "재고 현황"
         return (f"{lbl}{' · '+brand if brand else ''}{' · '+ch if ch else ''} (검증된 질의)",
-                SQL_STOCK_STATUS.strip(), (scope, scope, only_oos, ch, ch))
+                SQL_STOCK_STATUS.strip(), (scope, scope, only_oos, ch, ch), {"brand", "ch", "bych"})
 
     # 특정 채널 라인업
     if ch and any(w in q for w in LINEUP_WORDS):
         scope = brand if brand else "ALL"
         return (f"{ch} 취급 라인업{' · '+brand if brand else ''} (검증된 질의)",
-                SQL_CHANNEL_LINEUP.strip(), (ch, scope, scope))
+                SQL_CHANNEL_LINEUP.strip(), (ch, scope, scope), {"ch", "brand", "bych"})
 
     # BTU 구간 브랜드별 평균가 (채널 지정 있으면 그 채널만)
     if band and not cands:
         return (f"{band[0]//1000}~{band[1]//1000}K 브랜드별 현재가 평균"
                 + (f" · {ch}" if ch else "") + " (검증된 질의)",
-                SQL_BAND_BRAND.strip(), (band[0], band[1], ch, ch))
+                SQL_BAND_BRAND.strip(), (band[0], band[1], ch, ch), {"band", "ch", "brand", "bych"})
 
     return None
 
@@ -638,6 +783,13 @@ def match_template(q: str):
 #      · 고치기 쉬움 — 형님이 "이 답 이상해" 하면 그 질문의 SQL 한 줄만 고치면 끝
 #      손으로 짜는 템플릿이 아니라 **쓰면서 저절로 쌓이는 템플릿**이다.
 
+# 🔴 2026-09-03: 캐시는 **운영 DB**에 둔다. 정본 데이터 DB(price_data.db)에
+#    운영 로그를 섞던 것을 바로잡는다 [[project_db_layer_map]] 데이터/운영 분리 원칙.
+CACHE_DB = str(Path(DB).parent / "price_tracking.db")
+# 🔴 검토되지 않은 질의는 **영구 고정하지 않는다.** 오답이 굳으면 고칠 방법 없이 계속 나간다.
+#    (형님 지적: "오답을 내가 찾아라? 그럼 Q&A가 왜 필요해?")
+CACHE_TTL_DAYS = 30
+
 CACHE_DDL = """
 CREATE TABLE IF NOT EXISTS qa_cache (
   qnorm      TEXT PRIMARY KEY,   -- 정규화된 질문
@@ -646,7 +798,7 @@ CREATE TABLE IF NOT EXISTS qa_cache (
   created_at TEXT NOT NULL,
   used_count INTEGER DEFAULT 1,
   last_used  TEXT,
-  pinned     INTEGER DEFAULT 0,  -- 1 = 사람이 검토·확정한 질의 (덮어쓰지 않는다)
+  pinned     INTEGER DEFAULT 0,  -- 1 = 사람이 검토·확정한 질의 (만료도 없다)
   note       TEXT
 )
 """
@@ -666,23 +818,23 @@ def qnorm(q: str) -> str:
 
 
 def cache_get(q: str):
-    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    """확정(pinned)이면 그대로, 아니면 30일까지만 재사용한다.
+    🔴 검토 없이 굳은 질의를 영원히 쓰면 첫 오답이 영구 오답이 된다."""
+    con = sqlite3.connect(f"file:{CACHE_DB}?mode=ro", uri=True)
     try:
-        con.execute(CACHE_DDL.replace("CREATE TABLE IF NOT EXISTS", "CREATE TABLE IF NOT EXISTS"))
-    except sqlite3.OperationalError:
-        pass          # 읽기전용이라 생성 불가 — cache_put 이 만든다
-    try:
-        r = con.execute("SELECT sql, used_count, pinned FROM qa_cache WHERE qnorm=?",
-                        (qnorm(q),)).fetchone()
+        r = con.execute(
+            "SELECT sql, used_count, pinned FROM qa_cache WHERE qnorm=? "
+            "  AND (pinned=1 OR julianday('now') - julianday(created_at) <= ?)",
+            (qnorm(q), CACHE_TTL_DAYS)).fetchone()
         return r
     except sqlite3.OperationalError:
-        return None
+        return None   # 아직 테이블 없음 — cache_put 이 만든다
     finally:
         con.close()
 
 
 def cache_put(q: str, sql: str):
-    con = sqlite3.connect(str(DB), timeout=10)
+    con = sqlite3.connect(CACHE_DB, timeout=10)
     try:
         con.execute(CACHE_DDL)
         con.execute("""INSERT INTO qa_cache(qnorm, question, sql, created_at, last_used)
@@ -700,7 +852,7 @@ def cache_put(q: str, sql: str):
 
 
 def cache_touch(q: str):
-    con = sqlite3.connect(str(DB), timeout=10)
+    con = sqlite3.connect(CACHE_DB, timeout=10)
     try:
         con.execute("UPDATE qa_cache SET used_count=used_count+1, last_used=datetime('now') "
                     "WHERE qnorm=?", (qnorm(q),))
@@ -852,8 +1004,9 @@ def ask_stream():
             if cached:
                 sql, used, pinned = cached[0], cached[1], cached[2]
                 route = "cached"
-                label = (f"확정된 질의 (검토 완료)" if pinned
-                         else f"이전과 같은 질의 ({used}번째 사용)")
+                # 🔴 검토 안 된 질의를 '검증된' 것처럼 보이게 하지 않는다.
+                label = ("확정된 질의 (검토 완료)" if pinned
+                         else f"이전과 같은 질의 · ⚠️미검토 ({used}번째 사용)")
                 cache_touch(q)
                 yield ev("stage", {"stage": "sql", "text": f"{label} 적용 중…"})
             else:
@@ -898,7 +1051,42 @@ def ask_stream():
                     headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
 
+def cache_cli(argv):
+    """캐시 관리 — 굳은 질의를 **보고 지우고 확정할 수단**. 이게 없으면 오답을 고칠 방법이 없다.
+      list           : 저장된 질의 목록
+      drop <qnorm|all>: 삭제 (다음 질문 때 새로 생성된다)
+      pin  <qnorm>   : 검토 완료로 확정 (만료 없음)
+    """
+    con = sqlite3.connect(CACHE_DB, timeout=10)
+    con.execute(CACHE_DDL)
+    cmd = argv[0] if argv else "list"
+    if cmd == "list":
+        rows = con.execute(
+            "SELECT qnorm, used_count, pinned, substr(created_at,1,10), "
+            "  CAST(julianday('now')-julianday(created_at) AS INT) FROM qa_cache "
+            "ORDER BY used_count DESC").fetchall()
+        print(f"{'질문(정규화)':<44} {'사용':>4} {'확정':>4} {'생성':>11} {'경과일':>6}")
+        for r in rows:
+            print(f"{r[0][:42]:<44} {r[1]:>4} {'✅' if r[2] else '—':>4} {r[3]:>11} {r[4]:>6}")
+        print(f"\n  총 {len(rows)}건 · 미확정은 {CACHE_TTL_DAYS}일 후 자동 만료")
+    elif cmd == "drop" and len(argv) > 1:
+        if argv[1] == "all":
+            n = con.execute("DELETE FROM qa_cache").rowcount
+        else:
+            n = con.execute("DELETE FROM qa_cache WHERE qnorm LIKE ?", (f"%{argv[1]}%",)).rowcount
+        con.commit(); print(f"  {n}건 삭제")
+    elif cmd == "pin" and len(argv) > 1:
+        n = con.execute("UPDATE qa_cache SET pinned=1 WHERE qnorm LIKE ?",
+                        (f"%{argv[1]}%",)).rowcount
+        con.commit(); print(f"  {n}건 확정")
+    else:
+        print(cache_cli.__doc__)
+    con.close()
+
+
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "cache":
+        cache_cli(sys.argv[2:]); sys.exit(0)
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 5071
     print(f"Price Q&A 서버 :{port}  DB={DB}  기준일={anchor()}")
     app.run(host="127.0.0.1", port=port, threaded=True)

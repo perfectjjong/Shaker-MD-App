@@ -68,6 +68,12 @@ ch_fresh AS (
   FROM price_snapshots s JOIN products p ON p.id = s.product_id
   GROUP BY p.channel_id
 ),
+-- 🔴 결함으로 제외한 스냅샷도 '있었다'는 사실은 남긴다.
+--    제외 자체는 옳다(할인율만 있고 프로모가를 못 잡은 날 = 표준가가 현재가로 둔갑).
+--    문제는 그것이 **조용히** 일어나 어제 값이 오늘 값인 척한다는 것이다.
+raw_last AS (
+  SELECT product_id, MAX(run_date) rl FROM price_snapshots GROUP BY product_id
+),
 last AS (
   SELECT c.*, ROW_NUMBER() OVER (PARTITION BY c.product_id ORDER BY c.run_date DESC) rn
   FROM v_price_clean c
@@ -84,6 +90,40 @@ SELECT p.id AS product_id, p.channel_id, ch.code AS channel_code, ch.name AS cha
        --    H&C 계열 : 'Hot & Cold' / 'Heat & Cool' / 'Cold and Hot' / 'Cold/Hot' / 'H&C' / 'C&H'
        --    'Cold/Hot' 처럼 슬래시가 든 건 냉난방이므로 **CO 판정보다 먼저** 걸러야 한다.
        CASE
+         -- 🔴 2026-09-03: **제품명에 명시된 것이 raw ac_type 보다 구체적이다.**
+         --    eXtra 는 ac_type 을 'Cold' 하나로만 주면서 제품명에는 'Heat/Cool' 을 적는다.
+         --    ac_type 을 믿은 탓에 냉난방 102대가 '냉방전용'으로 둔갑해 있었다
+         --    (실측: APNW55GT3M 'Heat/Cool' → CO, NT382H → CO).
+         --    CLAUDE.md 원칙: raw 카테고리 필드를 맹신하지 말 것.
+         --    ⚠️ 냉난방을 냉방전용보다 **먼저** 본다 — 'Heat/Cool' 안에 'Cool'이 들어 있다.
+         --    ⚠️ 구분자가 채널마다 다르다: 'Heat/Cool' · 'Heat \\ Cool' · 'Hot and Cool' · 'Heat & Cool'.
+         --       구분자·공백을 지운 뒤 비교한다 — 표기 변형마다 패턴을 늘리면 계속 새어나간다.
+         WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','')
+              LIKE '%HEATCOOL%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLHEAT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HOTCOOL%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLHOT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HOTCOLD%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COLDHOT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HEATANDCOOL%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HOTANDCOOL%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HOTANDCOLD%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COLDANDHOT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLINGHEATING%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HEATINGCOOLING%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HEATCOLD%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COLDHEAT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLINGHOT%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HOTCOOLING%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%HEATPUMP%'
+           -- 기능 나열 속 단독 토큰: 'Split AC, 11,900 BTU, Heat, White'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%,HEAT,%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%,HOT,%'
+           THEN 'H&C'
+         WHEN REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLONLY%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COOLINGONLY%'
+           OR REPLACE(REPLACE(REPLACE(REPLACE(UPPER(COALESCE(p.name_en,'')),CHAR(92),''),'/',''),'&',''),' ','') LIKE '%COLDONLY%'
+           THEN 'CO'
          -- 🔴 영문 ac_type 이 비면 **아랍어 제품명**에서 읽는다.
          --    데이터가 없는 게 아니라 아랍어를 안 읽었을 뿐이다(Technobest 160/160 결측 → 141 복구).
          --    'بارد فقط'=냉방전용 · 'حار وبارد'/'حار بارد'/'بارد وحار'=냉난방 · 'ساخن'=난방
@@ -132,11 +172,16 @@ SELECT p.id AS product_id, p.channel_id, ch.code AS channel_code, ch.name AS cha
                 - julianday(l.run_date) AS INT) || '일째 리스팅 없음'
          -- 채널 자체가 멈춤 → 우리 수집 문제
          ELSE '수집중단 · 채널 최종수집 ' || cf.ch_last
-       END AS status
+       END || CASE WHEN rl.rl > l.run_date
+                    THEN ' · ⚠️' || rl.rl || ' 스냅샷은 결함(할인율만 있고 프로모가 없음)으로 제외'
+                    ELSE '' END AS status,
+       CASE WHEN rl.rl > l.run_date THEN 1 ELSE 0 END AS px_suspect,
+       rl.rl AS raw_last_date
 FROM products p
 JOIN channels ch ON ch.id = p.channel_id
 JOIN last l ON l.product_id = p.id AND l.rn = 1
 JOIN ch_fresh cf ON cf.cid = p.channel_id
+JOIN raw_last rl ON rl.product_id = p.id
 """,
 }
 

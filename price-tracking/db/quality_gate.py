@@ -67,6 +67,16 @@ RULES = [
         GROUP BY 1 HAVING COUNT(DISTINCT brand)>1)"""),
     ("미래 날짜", 0,
      "SELECT COUNT(*) FROM price_snapshots WHERE run_date > date('now','+1 day')"),
+    # 🔴 2026-09-03 신설: 결함으로 최신 스냅샷을 버리고 **과거값을 현재가로 보여주는** 상품 수.
+    #    버리는 것 자체는 옳다(할인율만 있고 프로모가를 못 잡은 날). 조용히 하는 게 문제였다.
+    #    수가 늘면 스크래퍼가 프로모가를 놓치기 시작했다는 신호다.
+    ("최신 스냅샷 결함으로 과거값 표시", 80,
+     "SELECT COUNT(*) FROM product_current WHERE is_live=1 AND px_suspect=1"),
+    # 냉방타입이 제품명과 모순 — raw ac_type 을 맹신하면 다시 벌어진다
+    ("냉방타입-제품명 모순", 10,
+     """SELECT COUNT(*) FROM product_current WHERE is_live=1 AND cool_type='H&C'
+        AND (UPPER(display_name) LIKE '%COOL ONLY%'
+             OR UPPER(display_name) LIKE '%COOLING ONLY%')"""),
 ]
 
 # 한 축의 결측이 특정 채널에 몰리면 그 축의 질문이 통째로 무너진다
