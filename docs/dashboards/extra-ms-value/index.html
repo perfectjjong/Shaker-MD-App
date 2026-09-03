@@ -110,6 +110,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* Perf layout: tables top, year cards bottom */
 #no-data{flex:1;min-height:0;align-items:center;justify-content:center;text-align:center;padding:40px 20px}
 #no-data .nd-in{max-width:640px}
+#t30{flex:0.85;min-height:0;display:none;flex-direction:column}
+#t30.on{display:flex}
 #no-data .nd-wide{width:100%;max-width:1100px;text-align:left}
 #no-data .nd-wide .nd-t,#no-data .nd-wide .nd-b{text-align:left}
 #no-data .nd-t{font-size:15px;font-weight:700;margin-bottom:8px}
@@ -180,6 +182,10 @@ body{display:block}
     <div class="kpi-row" id="kpi2"></div>
     <div class="kpi-row" id="kpi3"></div>
     <div class="chart-grid"><div class="cc"><h3>Weekly Sell out - Brand</h3><div><canvas id="c1"></canvas></div></div><div class="cc"><h3>Weekly Sell out - Branch (Top 20)</h3><div><canvas id="c2"></canvas></div></div></div>
+    <div id="t30">
+      <div class="r30-head">Regional MS &mdash; 30-day rolling window <span id="t30-note"></span></div>
+      <div class="tbl" style="min-height:0"><h3 id="t30-h"></h3><div><table id="tr30t"><thead></thead><tbody></tbody></table></div></div>
+    </div>
   </div>
   <div class="tab-content" id="t-price">
     <div class="kpi-row" id="kpiP"></div>
@@ -526,6 +532,7 @@ function renderAll(){
   const tab=document.querySelector('.tab.active').dataset.t;
   updateAggNotice(f);
   if(updateEmptyState(f,tab))return;
+  updateTotalR30(f,tab);
   if(tab==='total')renderTotal(f);
   else if(tab==='price')renderPrice(f);
   else if(tab==='overview')renderOverview(f);
@@ -937,6 +944,26 @@ function r30TableParts(f){
   if(showTot)body+='<td class="num">'+fv(grand)+'</td><td class="num">100.0%</td>';
   body+='</tr>';
   return{cur:cur,shown:shown,A:A,head:head,body:body};
+}
+
+// Total Dashboard 상시 지역 섹션 (형님 지시 2026-09-03).
+// 형님은 Total Dashboard 만 보신다 — Region 필터를 걸어야만 보이는 정보는 안 보이는 것과 같다.
+// W33~35 같은 All-Brand 주차가 선택 구간에 들어와 있을 때만 켠다.
+function updateTotalR30(f,tab){
+  const box=$('t30');
+  if(!box)return;
+  if(tab!=='total'||!R30){box.classList.remove('on');return}
+  const parts=r30TableParts(f);
+  if(!parts||!parts.shown.length){box.classList.remove('on');return}
+  box.classList.add('on');
+  const cov=r30Coverage(f,parts.cur.i);
+  $('t30-note').textContent='— '+DD.y[parts.cur.yi]+' W'+parts.cur.wn+
+    ' window. Measured, not estimated. Different period from the weekly charts above — do not add them together.'+
+    (cov?' '+covText(cov):'');
+  $('t30-h').textContent='Regional sell-out & market share ('+R30UNIT+') — 30-day window ending '+
+    DD.y[parts.cur.yi]+' W'+parts.cur.wn;
+  $('tr30t').querySelector('thead').innerHTML=parts.head;
+  $('tr30t').querySelector('tbody').innerHTML=parts.body;
 }
 
 function renderR30(f){
