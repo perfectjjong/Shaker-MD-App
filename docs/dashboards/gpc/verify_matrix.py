@@ -71,11 +71,12 @@ def exp_acc(y,months,chans,cats):
 
 # Official 엔 'Applied' 축이 없다 — 그 매출은 Official 의 Others 안에 있다.
 # 따라서 Accessory/Others 셀의 채널 비중 분모는 Accrual 의 (Accessory/Others + Applied) 여야 한다.
+# 지표마다 채널 구성이 다르므로 지표별 비중을 각각 만든다(GSV 비중 일괄 적용은 오차가 크다).
 ABS={"Applied":"Accessory/Others"}
-SHARE=collections.defaultdict(lambda: {"IR":0.0,"OR":0.0})
+SHARE=collections.defaultdict(lambda: {k:{"IR":0.0,"OR":0.0} for k in AMT})
 for (yy,m,ch,c),v in A.items():
     if (yy,m)==PKEY: continue                     # 가마감은 실적이 아니므로 비중 분모에서 제외
-    SHARE[(yy,m,ABS.get(c,c))][ch]+=v["gsv"]
+    for k in AMT: SHARE[(yy,m,ABS.get(c,c))][k][ch]+=v[k]
 
 def exp_off(y,months,chans,cats):
     """Official. 채널 부분선택이면 (연·월·카테고리) Accrual GSV 비중으로 안분(가마감 제외)."""
@@ -83,13 +84,20 @@ def exp_off(y,months,chans,cats):
     o=collections.defaultdict(float)
     for (yy,m,c),v in O.items():
         if yy!=y or m not in months or c not in cats: continue
-        w=1.0
-        if not whole:
-            b=SHARE.get((yy,m,c))
-            t=(abs(b["IR"])+abs(b["OR"])) if b else 0.0
-            if t<1: continue                      # 안분 불가 → 제외(화면도 동일)
-            w=sum(abs(b[x]) for x in chans)/t
-        for k,val in v.items(): o[k]+=val*w
+        if whole:
+            for k,val in v.items(): o[k]+=val
+            continue
+        b=SHARE.get((yy,m,c))
+        gt=(abs(b["gsv"]["IR"])+abs(b["gsv"]["OR"])) if b else 0.0
+        if gt<1: continue                         # 안분 불가 → 제외(화면도 동일)
+        wg=sum(abs(b["gsv"][x]) for x in chans)/gt
+        def wof(mk):
+            e=b.get(mk)
+            if not e: return wg
+            t=abs(e["IR"])+abs(e["OR"])
+            return wg if t<1 else sum(abs(e[x]) for x in chans)/t
+        for k in AMT:
+            if k in v: o[k]+=v[k]*wof(k)
     # Official 은 가마감을 내지 않는다 → 공시 없는 월은 Accrual 값을 그대로 (안분 없음)
     offM={m for (yy,m,_) in O if yy==y}
     for m in months:
@@ -103,6 +111,9 @@ def exp_off(y,months,chans,cats):
         fn=f["gsv"]+f["yed"]+f["adc"]+f["vpd"]+f["dsi"]
         for k in AMT: o[k]+=f[k]
         o["nsv"]+=fn; o["gm"]+=fn-f["cogs"]+f["inv"]+f["vsp"]
+    if not whole:
+        o["nsv"]=o["gsv"]+o["yed"]+o["adc"]+o["vpd"]+o["dsi"]
+        o["gm"]=o["nsv"]-o["cogs"]+o["inv"]+o["vsp"]
     o["gp"]=o.get("gm",0.0); return o
 
 CASES=[("기본 1~8월·전채널", "month",[1,2,3,4,5,6,7,8],{"IR","OR"},None),

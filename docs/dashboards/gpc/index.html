@@ -372,7 +372,10 @@ function offCover(year){return GPC_META.year_months[String(year)]||[];}
 function offFallback(year){const a=new Set(offMonths(year));
   return offCover(year).filter(m=>!a.has(m));}
 
-// (연|월|카테고리) → 채널별 Accrual GSV. Official 보정액을 나눌 '매출 비중'의 분모.
+// (연|월|카테고리) → 지표별·채널별 Accrual 합. Official 을 채널로 쪼갤 때의 분모.
+// ⚠️ 지표마다 채널 구성이 다르다 — YED 의 실제 IR 비중은 20% 대인데 GSV 는 47% 대다(3개년 일관).
+//    GSV 비중 하나로 전 지표를 쪼개면 IR 할인이 40% 넘게 부풀었다. 그래서 지표별 자체 비중을 쓴다.
+const MKEYS=['gsv','yed','adc','vpd','dsi','cogs','inv','vsp'];
 let _CHS=null;
 function chShare(){
   if(_CHS)return _CHS;
@@ -380,7 +383,9 @@ function chShare(){
   for(const r of GPC_DATA){
     if(isProv(r.y,r.m))continue;
     const k=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
-    (_CHS[k]=_CHS[k]||{IR:0,OR:0})[r.ch]+=r.gsv;}
+    let e=_CHS[k];
+    if(!e){e=_CHS[k]={};MKEYS.forEach(m=>e[m]={IR:0,OR:0});}
+    MKEYS.forEach(m=>e[m][r.ch]+=r[m]);}
   return _CHS;}
 
 function aggOff(year,months,opt){opt=opt||{};
@@ -392,14 +397,15 @@ function aggOff(year,months,opt){opt=opt||{};
   o.unalloc=0;                                          // 안분 못 한 금액은 숨기지 않고 표면화한다
   for(const r of OFF){
     if(r.y!==year||r.b!=='A'||!ms.has(r.m)||!cs.has(r.cat))continue;
-    let w=1;
-    if(!whole){
-      const b=SH[`${r.y}|${r.m}|${r.cat}`];
-      const tot=b?Math.abs(b.IR)+Math.abs(b.OR):0;
-      if(tot<1){o.unalloc+=r.gsv;continue;}             // Accrual 에 그 셀이 없어 비중을 못 만든다
-      w=0;chs.forEach(c=>{w+=Math.abs(b[c]||0)/tot;});
-      if(w<=0)continue;}
-    for(const k in o)if(k in r)o[k]+=r[k]*w;}   // qty 는 Official 에 없어 0 으로 남는다
+    if(whole){for(const k in o)if(k in r)o[k]+=r[k];continue;}   // 전 채널이면 공시 원본 그대로
+    const b=SH[`${r.y}|${r.m}|${r.cat}`];
+    const gt=b?Math.abs(b.gsv.IR)+Math.abs(b.gsv.OR):0;
+    if(gt<1){o.unalloc+=r.gsv;continue;}                // Accrual 에 그 셀이 없어 비중을 못 만든다
+    const wg=[...chs].reduce((t,c)=>t+Math.abs(b.gsv[c])/gt,0);
+    const wOf=mk=>{const e=b[mk];if(!e)return wg;
+      const t=Math.abs(e.IR)+Math.abs(e.OR);
+      return t<1?wg:[...chs].reduce((x,c)=>x+Math.abs(e[c])/t,0);};  // 그 지표가 0 이면 GSV 비중 폴백
+    for(const k of MKEYS)if(k in r)o[k]+=r[k]*wOf(k);}
 
   // Official 은 가마감을 내지 않는다. 공시가 없는 월(가마감 월 포함)은 Accrual 값을 그대로 쓴다.
   // 이 월은 Accrual 원본이라 채널이 실측이다 — 안분하지 않는다.
@@ -418,7 +424,12 @@ function aggOff(year,months,opt){opt=opt||{};
     for(const k in f)o[k]+=f[k];
     o.nsv+=fn;o.gm+=fn-f.cogs+f.inv+f.vsp;}
 
-  o.gp=o.gm;                                    // GP 는 엑셀 원본 GM 그대로, 재계산 금지
+  if(!whole){
+    // 지표를 각자 비중으로 쪼갰으므로 NSV/GP 는 그 구성요소로 다시 맞춰야 표가 정합한다.
+    // 엑셀 항등식이 성립하므로(검증 Δ0) IR+OR 을 더하면 여전히 공시 원본과 같다.
+    o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;
+    o.gm=o.nsv-o.cogs+o.inv+o.vsp;}
+  o.gp=o.gm;                     // 전 채널이면 엑셀 원본 GM 그대로 (재계산 안 함)
   o.gm_pct=o.nsv?o.gp/o.nsv:0;
   o.disc_total=o.yed+o.adc+o.vpd+o.dsi;
   o.disc_rate=o.gsv?o.disc_total/o.gsv:0;
@@ -627,7 +638,7 @@ function ladderTable(){
   document.getElementById('ladderHint').textContent=
     (S.basis==='off'
       ? `Official(Finance 공시) 기준 · GP 는 공시 원본값 · ${[...S.chans].join('+')||'채널 없음'}`
-        +`${GPC_META.channels.every(c=>S.chans.has(c))?'(원본 그대로)':'(Accrual 매출비중 안분)'}`
+        +`${GPC_META.channels.every(c=>S.chans.has(c))?'(원본 그대로)':'(Accrual 지표별 채널비중 안분)'}`
         +`${(()=>{const u=yrs.reduce((t,y)=>t+(A[y].unalloc||0),0);
              return Math.abs(u)>500?` · ⚠️ 안분 불가 ${fmt(u)} 천 SAR 제외(Accrual 에 해당 셀 없음)`:'';})()}`
         +`${(()=>{const fb=yrs.flatMap(y=>(A[y].fb||[]).map(m=>`${y}-${String(m).padStart(2,'0')}`));
@@ -869,7 +880,7 @@ function ofBudget(){destroy('cOfBud');
         y:{grid:GRID,border:{display:false},ticks:{callback:v=>Math.round(v).toLocaleString()}}}}});}
 
 const OFFBDG='<span class="dfbadge">Accrual 기준 · 계정 축은 안분하지 않음</span>';
-const ALLOCBDG='<span class="dfbadge">Official · Accrual 매출비중 안분 추정</span>';
+const ALLOCBDG='<span class="dfbadge">Official · Accrual 지표별 채널비중 안분 추정</span>';
 // 커버리지 줄은 기준마다 다르다. Official 엔 가마감이 없고 2026 은 7월까지다.
 function syncCover(){
   const off=S.basis==='off',PV=off?null:(GPC_META.provisional||null);
@@ -896,7 +907,9 @@ function syncBasisUI(){
   const n=document.getElementById('basisNote');
   n.className=off?'note':'note hide';
   n.innerHTML=off?('<b>Official 기준입니다.</b> Finance 공시 확정치라 원본엔 <b>채널·계정·수량 축이 없습니다</b> — '
-    +'<b>IR/OR 은 (연·월·카테고리) 단위 Accrual 매출비중으로 안분한 추정치</b>이고, '
+    +'<b>IR/OR 은 (연·월·카테고리) 단위로 Accrual 의 <u>지표별</u> 채널비중을 써서 안분한 추정치</b>입니다 — '
+    +'GSV 는 GSV 비중, YED 는 YED 비중, COGS 는 COGS 비중으로 각각 나눕니다'
+    +'(GSV 비중 하나로 전 지표를 쪼개면 IR 할인이 40% 넘게 부풀었습니다). '
     +'계정별 Contract Condition 은 지어내지 않고 Accrual 로 남깁니다. '
     +'<b>Official 은 가마감을 내지 않으므로, 공시가 없는 월은 Accrual 값을 그대로 씁니다</b>(그 달 보정은 0). '
     +'사다리표의 <b class="rcl">보정</b> 줄이 Accrual 대비 증감입니다. '
