@@ -1,1 +1,1 @@
-window.PRICE_QA_API = "https://cafe-marie-adoption-convicted.trycloudflare.com";
+window.PRICE_QA_API = "https://slideshow-earl-staying-barry.trycloudflare.com";
