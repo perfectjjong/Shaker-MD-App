@@ -69,6 +69,30 @@ def official_expect(months):
             if mm.group(1)=="B" or str(band[j])=="FCST": continue      # 실적만
             if int(mm.group(3)) not in months: continue
             a[(int(mm.group(2)),cat)][k]+=float(r[j])*sg
+    # 공시 없는 월(가마감 등)은 Accrual 로 대체 — 화면과 동일하게
+    offm=collections.defaultdict(set)
+    for r2 in V[3:279]:
+        if str(r2[5])!="GSV" or r2[4] is None: continue
+        for j in range(6,98):
+            mm=re.fullmatch(r"(?:\((A|B)\))?(\d{4})(\d{2})",str(lab[j] or ""))
+            if not mm or mm.group(1)=="B" or str(band[j])=="FCST": continue
+            if r2[j] not in (None,""): offm[int(mm.group(2))].add(int(mm.group(3)))
+    acc=accrual_expect(months)
+    for (y,c),v in acc.items():
+        for m in months:
+            pass
+    for y in list(offm):
+        miss=[m for m in months if m not in offm[y]]
+        if not miss: continue
+        sub=accrual_expect(set(miss))
+        for (yy,c),v in sub.items():
+            if yy!=y: continue
+            for k,val in v.items():
+                if k=="qty": continue
+                a[(y,c)][k]+=val
+            fn=v["gsv"]+v["yed"]+v["adc"]+v["vpd"]+v["dsi"]
+            a[(y,c)]["nsv"]+=fn
+            a[(y,c)]["gm"]+=fn-v["cogs"]+v["inv"]+v["vsp"]
     return a
 
 def ladder_from(cells, official):

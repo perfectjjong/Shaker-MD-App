@@ -90,6 +90,19 @@ def exp_off(y,months,chans,cats):
             if t<1: continue                      # 안분 불가 → 제외(화면도 동일)
             w=sum(abs(b[x]) for x in chans)/t
         for k,val in v.items(): o[k]+=val*w
+    # Official 은 가마감을 내지 않는다 → 공시 없는 월은 Accrual 값을 그대로 (안분 없음)
+    offM={m for (yy,m,_) in O if yy==y}
+    for m in months:
+        if m in offM: continue
+        f=dict.fromkeys(AMT,0.0); any_=False
+        for (yy,mm,ch,c),v in A.items():
+            if yy!=y or mm!=m or ch not in chans or c not in cats: continue
+            any_=True
+            for k in AMT: f[k]+=v[k]
+        if not any_: continue
+        fn=f["gsv"]+f["yed"]+f["adc"]+f["vpd"]+f["dsi"]
+        for k in AMT: o[k]+=f[k]
+        o["nsv"]+=fn; o["gm"]+=fn-f["cogs"]+f["inv"]+f["vsp"]
     o["gp"]=o.get("gm",0.0); return o
 
 CASES=[("기본 1~8월·전채널", "month",[1,2,3,4,5,6,7,8],{"IR","OR"},None),

@@ -365,6 +365,13 @@ function agg(year,months,opt){opt=opt||{};
   if(S.basis==='off'&&opt.ac===undefined&&!opt.acc)return aggOff(year,months,opt);
   return aggAcc(year,months,opt);}
 
+// Official 이 공시값을 주는 월. 여기 없는 월은 Accrual 로 대체된다.
+function offMonths(year){return (OFM&&OFM.actual_months[String(year)])||[];}
+// Official 기준 화면이 실제로 덮는 월 = Accrual 커버리지와 같다(부족분은 대체하므로)
+function offCover(year){return GPC_META.year_months[String(year)]||[];}
+function offFallback(year){const a=new Set(offMonths(year));
+  return offCover(year).filter(m=>!a.has(m));}
+
 // (연|월|카테고리) → 채널별 Accrual GSV. Official 보정액을 나눌 '매출 비중'의 분모.
 let _CHS=null;
 function chShare(){
@@ -393,6 +400,24 @@ function aggOff(year,months,opt){opt=opt||{};
       w=0;chs.forEach(c=>{w+=Math.abs(b[c]||0)/tot;});
       if(w<=0)continue;}
     for(const k in o)if(k in r)o[k]+=r[k]*w;}   // qty 는 Official 에 없어 0 으로 남는다
+
+  // Official 은 가마감을 내지 않는다. 공시가 없는 월(가마감 월 포함)은 Accrual 값을 그대로 쓴다.
+  // 이 월은 Accrual 원본이라 채널이 실측이다 — 안분하지 않는다.
+  const offM=new Set(offMonths(year));
+  o.fb=[];
+  for(const m of months){
+    if(offM.has(m))continue;
+    const f={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,qty:0};
+    let any=false;
+    for(const r of GPC_DATA){
+      if(r.y!==year||r.m!==m||!chs.has(r.ch)||!cs.has(r.cat))continue;
+      any=true;for(const k in f)f[k]+=r[k];}
+    if(!any)continue;
+    o.fb.push(m);
+    const fn=f.gsv+f.yed+f.adc+f.vpd+f.dsi;
+    for(const k in f)o[k]+=f[k];
+    o.nsv+=fn;o.gm+=fn-f.cogs+f.inv+f.vsp;}
+
   o.gp=o.gm;                                    // GP 는 엑셀 원본 GM 그대로, 재계산 금지
   o.gm_pct=o.nsv?o.gp/o.nsv:0;
   o.disc_total=o.yed+o.adc+o.vpd+o.dsi;
@@ -402,11 +427,13 @@ function aggOff(year,months,opt){opt=opt||{};
   return o;}
 
 // Accrual 을 Official 과 같은 모집단으로 맞춘 기준선 (전 채널·가마감 제외) — 보정폭 계산용
-function accBase(year,months,cats){
-  const ms=new Set(months),cs=cats||S.cats;
+function accBase(year,months,cats,chans){
+  // Official 화면과 같은 모집단이어야 보정폭이 의미가 있다 — 채널 필터를 그대로 따르고,
+  // 가마감 월도 포함한다(Official 이 그 달을 Accrual 로 대체하므로 보정 0 이 정답).
+  const ms=new Set(months),cs=cats||S.cats,chs=chans||S.chans;
   const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
-    if(r.y!==year||!ms.has(r.m)||isProv(r.y,r.m)||!cs.has(r.cat))continue;
+    if(r.y!==year||!ms.has(r.m)||!chs.has(r.ch)||!cs.has(r.cat))continue;
     for(const k in o)o[k]+=r[k];}
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;
   o.gm_pct=o.nsv?o.gp/o.nsv:0;return o;}
@@ -431,9 +458,7 @@ const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
 const pct=v=>(v*100).toFixed(1)+'%';
 const sgn=v=>v>0?'+':'';
 function yearCoverLabel(year,months){
-  const avail=new Set(S.basis==='off'
-    ? ((OFM&&OFM.actual_months[String(year)])||[])
-    : (GPC_META.year_months[String(year)]||[]));
+  const avail=new Set(GPC_META.year_months[String(year)]||[]);
   const cov=months.filter(m=>avail.has(m));
   if(cov.length===0) return ' · 해당 없음';
   if(cov.length===months.length) return '';
@@ -558,7 +583,7 @@ function ladderTable(){
   const tbl=document.getElementById('tblLadder');
   const yrs=selYears(),months=selMonths();
   const A={},B={};yrs.forEach(y=>{A[y]=agg(y,months);
-    if(S.basis==='off')B[y]=accBase(y,months);});     // B = 같은 모집단의 Accrual 기준선
+    if(S.basis==='off')B[y]=accBase(y,months,null,S.chans);});     // B = 같은 모집단의 Accrual 기준선
   const last=yrs[yrs.length-1],prev=yrs[yrs.length-2],first=yrs[0];
   let head='<thead><tr class="sub"><th>Metric</th>';
   yrs.forEach(y=>head+=`<th style="color:${ycol(y)}">${y}${yearCoverLabel(y,months)}</th>`);
@@ -605,7 +630,9 @@ function ladderTable(){
         +`${GPC_META.channels.every(c=>S.chans.has(c))?'(원본 그대로)':'(Accrual 매출비중 안분)'}`
         +`${(()=>{const u=yrs.reduce((t,y)=>t+(A[y].unalloc||0),0);
              return Math.abs(u)>500?` · ⚠️ 안분 불가 ${fmt(u)} 천 SAR 제외(Accrual 에 해당 셀 없음)`:'';})()}`
-        +` · 가마감 제외 · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
+        +`${(()=>{const fb=yrs.flatMap(y=>(A[y].fb||[]).map(m=>`${y}-${String(m).padStart(2,'0')}`));
+             return fb.length?` · 🟡 ${fb.join(', ')} 는 Official 미공시라 Accrual 값 사용(그 달 보정 0)`:'';})()}`
+        +` · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
       : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`);
 }
 
@@ -846,7 +873,7 @@ const ALLOCBDG='<span class="dfbadge">Official · Accrual 매출비중 안분 �
 // 커버리지 줄은 기준마다 다르다. Official 엔 가마감이 없고 2026 은 7월까지다.
 function syncCover(){
   const off=S.basis==='off',PV=off?null:(GPC_META.provisional||null);
-  const src=off&&OFM?OFM.actual_months:GPC_META.year_months;
+  const src=GPC_META.year_months;
   const covs=GPC_META.years.map(y=>{const mm=src[String(y)];
     if(!mm||!mm.length)return `${y}: 없음`;
     let t=`${y}: ${mm[0]}–${mm[mm.length-1]}월`;
@@ -854,7 +881,8 @@ function syncCover(){
     return t;});
   document.getElementById('covLbl').innerHTML=covs.join(' · ')
     +(PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'')
-    +(off?' <span class="dfbadge">Official — 가마감 없음</span>':'');}
+    +(off?(()=>{const fb=GPC_META.years.flatMap(y=>offFallback(y).map(m=>`${y}-${String(m).padStart(2,'0')}`));
+       return fb.length?` <span class="provbadge">🟡 ${fb.join(', ')} 는 Official 미공시 → Accrual 대체</span>`:'';})():'');}
 function syncBasisUI(){
   const off=S.basis==='off';
   syncCover();
@@ -870,6 +898,7 @@ function syncBasisUI(){
   n.innerHTML=off?('<b>Official 기준입니다.</b> Finance 공시 확정치라 원본엔 <b>채널·계정·수량 축이 없습니다</b> — '
     +'<b>IR/OR 은 (연·월·카테고리) 단위 Accrual 매출비중으로 안분한 추정치</b>이고, '
     +'계정별 Contract Condition 은 지어내지 않고 Accrual 로 남깁니다. '
+    +'<b>Official 은 가마감을 내지 않으므로, 공시가 없는 월은 Accrual 값을 그대로 씁니다</b>(그 달 보정은 0). '
     +'사다리표의 <b class="rcl">보정</b> 줄이 Accrual 대비 증감입니다. '
     +'<b>INV 는 보정이 아니라 정의 차이</b>(Official 은 배부·계획값, 2024 는 월 250,000 정액이고 2025·2026 은 실적란=예산란). '
     +'카테고리별 차이에는 Finance 재분류가 섞여 있어 <b>보정이 아니라 차이</b>로 읽어야 합니다.'):'';}
