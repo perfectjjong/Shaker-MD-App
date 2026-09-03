@@ -111,12 +111,7 @@ LAB=["GSV","YED","ADC","VPD","DSI","NSV","COGS","INV","VSP","GP"]
 KEY=["gsv","yed","adc","vpd","dsi","nsv","cogs","inv","vsp","gp"]
 
 async def main():
-    # 2026-09-03: 기준월 상한 리터럴 제거 — 마감이 진행돼도 1~8 로 굳어 있었다.
-    # 화면 기본 = 마감된 달까지(= 직전 달). 화면과 어긋나면 검증이 실패로 드러낸다.
-    import datetime as _dt
-    _t = _dt.date.today()
-    _last = 12 if _t.month == 1 else _t.month - 1
-    months = set(range(1, _last + 1))
+    months=set(range(1,9))                   # 화면 기본 = YOY 기준월 1~8
     EXP={"acc":ladder_from(accrual_expect(months),False),
          "off":ladder_from(official_expect(months),True)}
     EXPC={"acc":accrual_expect(months),"off":official_expect(months)}

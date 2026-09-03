@@ -175,6 +175,9 @@
   :root:not([data-theme="light"]) .dfbadge{background:#1e1b4b;color:#c7d2fe}
   :root[data-theme="dark"] .dfbadge{background:#1e1b4b;color:#c7d2fe}
   .tbl td.dpos{color:var(--pos)} .tbl td.dneg{color:var(--neg)}
+  .tbl tr.offref td{background:color-mix(in srgb,var(--lg) 7%,var(--card));
+    border-top:2px solid var(--lg);font-weight:700}
+  .tbl tr.offref td:first-child{background:color-mix(in srgb,var(--lg) 7%,var(--card));color:var(--lg)}
   .ctl.dim{opacity:.35;pointer-events:none}
   .tbl tr.bcor td{font-size:11.5px;color:var(--mut);font-weight:600}
   .tbl tr.bcor td:first-child{padding-left:26px;font-weight:600;color:var(--ink2)}
@@ -815,9 +818,32 @@ function contractTable(){
     subCats.forEach(s=>tr+=`<td>${contractCell(s)}</td>`);
     tr+=`<td class="ydiv">${contractCell(sub)}</td>`;
     body+=tr+'</tr>';});
+  // ── Official 카테고리 참조행 ──────────────────────────────
+  // 안분이 아니다. Official 원본이 카테고리별 YED/GSV 를 실측으로 갖고 있어 그대로 쓴다.
+  // 계정 축은 Official 에 없으므로 계정 행은 Accrual 그대로 두고, 비교 기준선만 깐다.
+  if(OFM){
+    const allCh=new Set(GPC_META.channels);
+    const ocell=cat=>aggOff(y,months,{cats:new Set(cat?[cat]:cats),chans:allCh});
+    let tr='<tr class="offref"><td>Official 공시 실효율 <span class="dfbadge">카테고리 실측</span></td>';
+    cats.forEach(c=>{const a=ocell(c);tr+=`<td>${contractCell({gsv:a.gsv,yed:a.yed})}</td>`;});
+    const at=ocell(null);
+    tr+=`<td class="ydiv gmp">${contractCell({gsv:at.gsv,yed:at.yed})}</td>`;
+    body+=tr+'</tr>';}
+
   tbl.innerHTML=head+`<tbody>${body}</tbody>`;
   const modeLbl={rate:'실효 YED율 = −YED ÷ GSV (라인 가중)',amt:'YED 금액 (천 SAR, 음수=차감)',gsv:'GSV (천 SAR)'}[S.ctMode];
-  document.getElementById('ctHint').textContent=`${y}년 · ${modeLbl} · 선택 기간 합산 · Others 제외(메인 14계정만)`;
+  let adj='';
+  if(OFM){
+    const allCh=new Set(GPC_META.channels);
+    const o=aggOff(y,months,{cats:new Set(cats),chans:allCh});
+    const a=accBase(y,months,new Set(cats),allCh);
+    const ro=o.gsv?-o.yed/o.gsv:0, ra=a.gsv?-a.yed/a.gsv:0;
+    const fb=(o.fb||[]).map(m=>m+'월');
+    if(ra) adj=` · Official 공시 실효율 ${(ro*100).toFixed(2)}% vs Accrual ${(ra*100).toFixed(2)}%`
+      +` (${sgn(ro/ra-1)}${((ro/ra-1)*100).toFixed(1)}%)`
+      +(fb.length?` · ${fb.join(',')}은 Official 미공시라 Accrual 값`:'');}
+  document.getElementById('ctHint').innerHTML=`${y}년 · ${modeLbl} · 선택 기간 합산 · Others 제외(메인 14계정만)`
+    +`<br><b>계정 행은 Accrual 실측입니다</b> — Official 엔 계정 축이 없어 안분하지 않습니다`+adj;
 }
 function renderCtRate(){destroy('cCtRate');
   const y=S.ctYear,months=selMonths();
