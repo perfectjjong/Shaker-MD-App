@@ -484,7 +484,7 @@ function buildDropdown(cfg){
     item.addEventListener('click',e=>{
       e.stopPropagation();
       const cb=item.querySelector('input[type=checkbox]');
-      if(e.target!==cb)cb.checked=!cb.checked;
+      if(e.target!==cb){e.preventDefault();cb.checked=!cb.checked;}
       if(cb.checked)MS_STATE[cfg.id].add(val);
       else MS_STATE[cfg.id].delete(val);
       if(MS_STATE[cfg.id].size===cfg.items.length)MS_STATE[cfg.id].clear();
