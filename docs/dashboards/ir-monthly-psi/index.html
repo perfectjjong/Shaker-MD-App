@@ -412,6 +412,29 @@ const MONTHS = IR_PSI_DATA.meta.months;
 const YEARS  = IR_PSI_DATA.meta.years;
 const CHS    = IR_PSI_DATA.meta.channels;
 const CATS   = IR_PSI_DATA.meta.categories;
+// QA fix: the PSI coverage label used to be the frozen literal '2026-06'. Derive it from
+// the data instead, so it tracks each monthly close (or-monthly-psi already did this).
+function psiLatestYm(D) {
+  for (let yi = YEARS.length - 1; yi >= 0; yi--) {
+    const yr = YEARS[yi], Y = D.years[yr];
+    if (!Y) continue;
+    for (let mi = MONTHS.length - 1; mi >= 0; mi--) {
+      const mo = MONTHS[mi];
+      let found = false;
+      const walk = (o, d) => {
+        if (found || d > 4 || !o || typeof o !== 'object') return;
+        const v = o[mo];
+        if (typeof v === 'number' && v) { found = true; return; }
+        if (v && typeof v === 'object' && Object.values(v).some(x => typeof x === 'number' && x)) { found = true; return; }
+        for (const k in o) { if (found) return; const c = o[k]; if (c && typeof c === 'object') walk(c, d + 1); }
+      };
+      walk(Y, 0);
+      if (found) return yr + '-' + String(mi + 1).padStart(2, '0');
+    }
+  }
+  return '';
+}
+const PSI_LATEST_YM = psiLatestYm(IR_PSI_DATA);
 const RANGE_MONTHS = {
   'Q1':      ['Jan','Feb','Mar'],
   'Q2':      ['Apr','May','Jun'],
@@ -1486,8 +1509,8 @@ function render() {
     + (includeOud ? ' · +OUD' : '');
   const mtAsOf = (typeof IR_PSI_MODEL_TABLE !== 'undefined')
     ? (IR_PSI_MODEL_TABLE.as_of_year + ' ' + IR_PSI_MODEL_TABLE.as_of_week)
-    : '2026-06';
-  document.getElementById('hdr-info').textContent = 'PSI ~2026-06 · MOS/Model ' + mtAsOf + ' · ' + chLabel;
+    : PSI_LATEST_YM;
+  document.getElementById('hdr-info').textContent = 'PSI ~' + PSI_LATEST_YM + ' · MOS/Model ' + mtAsOf + ' · ' + chLabel;
 }
 
 render();
