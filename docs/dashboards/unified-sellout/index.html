@@ -275,6 +275,17 @@ function computeAvailableItems(){
     const vals=new Set(rows.map(r=>r[cfg.key]).filter(v=>v&&v!==''));
     avail[id]=vals;
   });
+  // QA fix: weeks carrying only PRICE data were absent from the week availability set, so
+  // the newest price week could not be deselected and updatePT() stayed pinned to it —
+  // the Week filter had no effect on the Price Tracking tab. Union them in (before the
+  // month intersection below, so month filtering still constrains the result).
+  if(D.prices&&avail['fWeek']){
+    Object.values(D.prices).forEach(models=>{
+      Object.values(models||{}).forEach(weeks=>{
+        Object.keys(weeks||{}).forEach(w=>{if(WEEKS.indexOf(w)>=0)avail['fWeek'].add(w)});
+      });
+    });
+  }
   if(FILTER_STATE.m.size>0&&D.meta.week_month){
     const activeMonths=MONTHS.filter(m=>!FILTER_STATE.m.has(m));
     const validWeeks=new Set();
