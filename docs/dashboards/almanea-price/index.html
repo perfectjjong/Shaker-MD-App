@@ -343,6 +343,14 @@ function makeFilters(prefix,cb){
     brand: new MS(document.getElementById(prefix+'_brand'),BRANDS,'Brand',cb,colorOf),
   };
 }
+// QA fix: memoised date / date+brand buckets — the trend and stock charts used to
+// rescan all of DATA once per date and per (date,brand), which froze the page for
+// tens of seconds. Callers always wrap the result in applyF(), which copies, so
+// these cached arrays are never mutated.
+const _rowsByD = {}, _rowsByDB = {};
+function rowsByD(d){ let a = _rowsByD[d]; if (!a) { a = _rowsByD[d] = DATA.filter(r => r.d === d); } return a; }
+function rowsByDB(d, b){ const k = d + '\u0000' + b; let a = _rowsByDB[k]; if (!a) { a = _rowsByDB[k] = rowsByD(d).filter(r => r.b === b); } return a; }
+
 function applyF(rows,f){
   return rows.filter(r=>{
     if(r.c!=null&&!f.cat.getSelected().has(r.c))return false;
@@ -809,11 +817,11 @@ function renderS6(){
   const aggFn=ST.s6agg==='min'?(arr=>Math.round(Math.min(...arr))):(arr=>Math.round(mean(arr)));
   const aggLabel=ST.s6agg==='min'?'Market Min':'Market Avg';
   let datasets=[];
-  const mkt=DATES.map(d=>{let dd=applyF(DATA.filter(r=>r.d===d),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r[pk]!=null);return dd.length?aggFn(dd.map(r=>r[pk])):null;});
+  const mkt=DATES.map(d=>{let dd=applyF(rowsByD(d),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r[pk]!=null);return dd.length?aggFn(dd.map(r=>r[pk])):null;});
   datasets.push({label:aggLabel,data:mkt,borderColor:'#6b6355',borderWidth:2,borderDash:[6,3],pointRadius:2,tension:.3,fill:false});
   const bSet=S6F.brand.getSelected();
   [...bSet].forEach(br=>{
-    const vals=DATES.map(d=>{let dd=applyF(DATA.filter(r=>r.d===d&&r.b===br),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r[pk]!=null);return dd.length?aggFn(dd.map(r=>r[pk])):null;});
+    const vals=DATES.map(d=>{let dd=applyF(rowsByDB(d,br),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r[pk]!=null);return dd.length?aggFn(dd.map(r=>r[pk])):null;});
     if(vals.every(v=>v===null))return;const c=colorOf(br);
     datasets.push({label:br,data:vals,borderColor:c,backgroundColor:alphaC(c,.08),borderWidth:1.5,pointRadius:2,tension:.3,fill:false,spanGaps:true});
   });
@@ -944,7 +952,7 @@ function renderStock(){
   let stkDS=[];
   // Market total line
   const mktStk=useDates.map(d=>{
-    let dd=applyF(DATA.filter(r=>r.d===d),S9F);
+    let dd=applyF(rowsByD(d),S9F);
     if(ST.s9q)dd=dd.filter(r=>searchMatch(r,ST.s9q));
     return dd.filter(r=>r.stk!=null).reduce((a,r)=>a+r.stk,0);
   });
@@ -952,7 +960,7 @@ function renderStock(){
   // Brand lines
   [...S9F.brand.getSelected()].forEach(br=>{
     const vals=useDates.map(d=>{
-      let dd=applyF(DATA.filter(r=>r.d===d&&r.b===br),S9F);
+      let dd=applyF(rowsByDB(d,br),S9F);
       if(ST.s9q)dd=dd.filter(r=>searchMatch(r,ST.s9q));
       const sum=dd.filter(r=>r.stk!=null).reduce((a,r)=>a+r.stk,0);
       return sum||null;

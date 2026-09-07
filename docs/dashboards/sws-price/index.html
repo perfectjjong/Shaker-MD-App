@@ -423,6 +423,14 @@ function makeFilters(prefix,cb){
     brand: new MS(document.getElementById(prefix+'_brand'),BRANDS,'Brand',cb,colorOf),
   };
 }
+// QA fix: memoised date / date+brand buckets — the trend and stock charts used to
+// rescan all of DATA once per date and per (date,brand), which froze the page for
+// tens of seconds. Callers always wrap the result in applyF(), which copies, so
+// these cached arrays are never mutated.
+const _rowsByD = {}, _rowsByDB = {};
+function rowsByD(d){ let a = _rowsByD[d]; if (!a) { a = _rowsByD[d] = DATA.filter(r => r.d === d); } return a; }
+function rowsByDB(d, b){ const k = d + '\u0000' + b; let a = _rowsByDB[k]; if (!a) { a = _rowsByDB[k] = rowsByD(d).filter(r => r.b === b); } return a; }
+
 function applyF(rows,f){
   return rows.filter(r=>{
     if(r.c!=null&&!f.cat.getSelected().has(r.c))return false;
@@ -828,11 +836,11 @@ function renderS6(){
   const aggFn6=ST.s6agg==='min'?(arr=>Math.round(Math.min(...arr))):(arr=>Math.round(mean(arr)));
   const mktLabel6=ST.s6agg==='min'?'Market Min':'Market Avg';
   let datasets=[];
-  const mkt=DATES.map(d=>{let dd=applyF(DATA.filter(r=>r.d===d),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r.fp!=null);return dd.length?aggFn6(dd.map(r=>r.fp)):null;});
+  const mkt=DATES.map(d=>{let dd=applyF(rowsByD(d),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r.fp!=null);return dd.length?aggFn6(dd.map(r=>r.fp)):null;});
   datasets.push({label:mktLabel6,data:mkt,borderColor:'#6b6355',borderWidth:2,borderDash:[6,3],pointRadius:2,tension:.3,fill:false});
   const bSet=S6F.brand.getSelected();
   [...bSet].forEach(br=>{
-    const vals=DATES.map(d=>{let dd=applyF(DATA.filter(r=>r.d===d&&r.b===br),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r.fp!=null);return dd.length?aggFn6(dd.map(r=>r.fp)):null;});
+    const vals=DATES.map(d=>{let dd=applyF(rowsByDB(d,br),S6F);if(q)dd=dd.filter(r=>searchMatch(r,q));dd=dd.filter(r=>r.fp!=null);return dd.length?aggFn6(dd.map(r=>r.fp)):null;});
     if(vals.every(v=>v===null))return;const c=colorOf(br);
     datasets.push({label:br,data:vals,borderColor:c,backgroundColor:alphaC(c,.08),borderWidth:1.5,pointRadius:2,tension:.3,fill:false,spanGaps:true});
   });
@@ -900,7 +908,7 @@ function renderStock(){
   document.getElementById('stockKpiGrid').innerHTML=sCards.map(c=>`<div class="rounded-lg border-l-4 ${c.c} p-3"><div class="text-xl font-bold ${c.vc}">${c.v}</div><div class="text-[10px] text-gray-500 mt-1 font-medium">${c.l}</div></div>`).join('');
 
   // Stock Trend: count of in-stock SKUs per date
-  const trendData=DATES.map(d=>{const dd=applyF(DATA.filter(r=>r.d===d),S8F);return dd.filter(r=>r.ins).length;});
+  const trendData=DATES.map(d=>{const dd=applyF(rowsByD(d),S8F);return dd.filter(r=>r.ins).length;});
   const ctx1=document.getElementById('stockTrendChart').getContext('2d');
   if(stockTrendChart)stockTrendChart.destroy();
   stockTrendChart=new Chart(ctx1,{type:'line',data:{labels:DATES,datasets:[{label:'In Stock SKUs',data:trendData,borderColor:'#a54b5e',backgroundColor:'rgba(46,117,182,.1)',borderWidth:2,pointRadius:3,tension:.3,fill:true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},datalabels:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45}},y:{ticks:{callback:v=>v.toLocaleString()}}}}});
