@@ -332,16 +332,16 @@ function buildMultiSelect(wrapperId){
     label.appendChild(cb);label.appendChild(document.createTextNode(' '+item));
     drop.appendChild(label);cbs.push(cb);labels.push(label);
     label.addEventListener('click',(e)=>{
-      e.preventDefault();e.stopPropagation();
-      if(label.classList.contains('ms-disabled'))return;
-      cb.checked=!cb.checked;
+      e.stopPropagation();
+      if(label.classList.contains('ms-disabled')){e.preventDefault();return;}
+      if(e.target!==cb){e.preventDefault();cb.checked=!cb.checked;}
       if(cb.checked)state.delete(item);else state.add(item);
       allCb.checked=state.size===0;updateBtnLabel();cascadeAndUpdate();
     });
   });
   allLabel.addEventListener('click',(e)=>{
-    e.preventDefault();e.stopPropagation();
-    const newState=!allCb.checked;allCb.checked=newState;
+    e.stopPropagation();if(e.target!==allCb)e.preventDefault();
+    const newState=(e.target===allCb)?allCb.checked:!allCb.checked;allCb.checked=newState;
     cbs.forEach((cb,i)=>{if(!labels[i].classList.contains('ms-disabled'))cb.checked=newState});
     state.clear();
     if(!newState){cfg.items.forEach((item,i)=>{if(!labels[i].classList.contains('ms-disabled'))state.add(item)})}
