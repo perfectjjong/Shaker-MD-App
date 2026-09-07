@@ -1,8 +1,8 @@
 {
  "year": 2026,
  "month": 8,
- "basis": "가마감 (재무 Financial 기준 · 2026-09-06 보정: ADC 실제+eXtra 누락, VSP 균형배분)",
- "built": "2026-09-06",
+ "basis": "가마감 (재무 Financial 기준 · 2026-09-07 보정: ADC 실제+eXtra 누락(LA Agreement 미발동 제외), VSP 균형배분)",
+ "built": "2026-09-07",
  "source": "3. Aug 2026 GPC Financial.xlsx / Checked",
  "rows": [
   {
@@ -1070,7 +1070,7 @@
    "qty": 6674.0,
    "gsv": 7198809.7,
    "yed": -932478.6,
-   "adc": -255639.2,
+   "adc": -28619.2,
    "vpd": -143976.2,
    "dsi": -166750.0,
    "cogs": 4660177.7,
