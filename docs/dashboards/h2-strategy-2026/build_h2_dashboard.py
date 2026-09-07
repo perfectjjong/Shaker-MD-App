@@ -643,6 +643,7 @@ function drawExec(val){
   drawExecChart(allm,title);
 }
 function drawExecChart(allm,title){
+  const _cm=D.period.act_end;
   const ctx=document.getElementById('cExec'); if(charts.exec)charts.exec.destroy();
   charts.exec=new Chart(ctx,{data:{labels:allm.map(r=>r.m===_cm?'현재':r.m+'월'),datasets:[
     {type:'bar',label:'기말재고(대)',data:allm.map(r=>r.stk),backgroundColor:'rgba(59,130,246,.5)',yAxisID:'y'},
