@@ -80,7 +80,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .kpi-card .kv{font-size:20px;font-weight:700;line-height:1.2}
 .kpi-card .kl{font-size:10px;opacity:.9;margin-top:2px;font-weight:500}
 .c-lg{background:#8c1d2f}.c-gree{background:#5f7a2a}.c-midea{background:#b06a24}
-.c-ss{background:#33606d}.c-cp{background:#6d4b78}.c-green{background:#1d6b45}
+.c-ss{background:#33606d}
+.c-tcl{background:#2f5c9e}.c-cp{background:#6d4b78}.c-green{background:#1d6b45}
 .c-black{background:#191714}.c-teal{background:#2a7a6e}.c-dgray{background:#3a352c}
 /* Chart grid - fills remaining space */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;flex:1;min-height:0}
@@ -570,7 +571,7 @@ function renderTotal(f){
     kc('c-lg',ms('LG','Rotary')+'%','LG MS (Rotary)')+
     kc('c-gree',ms('GREE','Rotary')+'%','Gree MS (Rotary)')+
     kc('c-midea',ms('MIDEA','Rotary')+'%','Midea MS (Rotary)')+
-    kc('c-ss',ms('SAMSUNG','Rotary')+'%','Samsung MS (Rotary)')+
+    kc('c-tcl',ms('TCL','Rotary')+'%','TCL MS (Rotary)')+kc('c-ss',ms('SAMSUNG','Rotary')+'%','Samsung MS (Rotary)')+
     kc('c-cp',ms('CLASS PRO','Rotary')+'%','ClassPro MS (Rotary)');
 
   $('kpi2').innerHTML=
@@ -579,7 +580,7 @@ function renderTotal(f){
     kc('c-lg',ms('LG','Inverter')+'%','LG MS (Inverter)')+
     kc('c-gree',ms('GREE','Inverter')+'%','Gree MS (Inverter)')+
     kc('c-midea',ms('MIDEA','Inverter')+'%','Midea MS (Inverter)')+
-    kc('c-ss',ms('SAMSUNG','Inverter')+'%','Samsung MS (Inverter)')+
+    kc('c-tcl',ms('TCL','Inverter')+'%','TCL MS (Inverter)')+kc('c-ss',ms('SAMSUNG','Inverter')+'%','Samsung MS (Inverter)')+
     kc('c-cp',ms('CLASS PRO','Inverter')+'%','ClassPro MS (Inverter)');
 
   $('kpi3').innerHTML=
@@ -588,7 +589,7 @@ function renderTotal(f){
     kc('c-lg',msT('LG')+'%','LG MS (Total)')+
     kc('c-gree',msT('GREE')+'%','Gree MS (Total)')+
     kc('c-midea',msT('MIDEA')+'%','Midea MS (Total)')+
-    kc('c-ss',msT('SAMSUNG')+'%','Samsung MS (Total)')+
+    kc('c-tcl',msT('TCL')+'%','TCL MS (Total)')+kc('c-ss',msT('SAMSUNG')+'%','Samsung MS (Total)')+
     kc('c-cp',msT('CLASS PRO')+'%','ClassPro MS (Total)');
 
   dc('c1');
