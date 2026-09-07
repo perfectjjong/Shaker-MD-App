@@ -1,10 +1,10 @@
 {
  "_meta": {
   "src": "data.json+psi_data.js+data_ir.js",
-  "built": "2026-09-07",
+  "built": "2026-09-08",
   "version": "v1(dual-axis)",
   "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
-  "fcst_method": "1-8월 실적 + 9-12월(1-8평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)",
+  "fcst_method": "1-8월 실적 + 9월 RSM + 10-12월(1-8평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)",
   "season_index": {
    "OR": {
     "1": 1.122,
@@ -58,9 +58,9 @@
   "scenarios": {
    "OR": {
     "S1": {
-     "3Q": 70.9,
+     "3Q": 59.1,
      "4Q": 22.9,
-     "H2": 93.8
+     "H2": 82.0
     },
     "target": {
      "3Q": 70,
@@ -68,16 +68,16 @@
      "H2": 95
     },
     "S2": {
-     "3Q": 88.7,
+     "3Q": 73.9,
      "4Q": 28.6,
-     "H2": 117.4
+     "H2": 102.5
     }
    },
    "IR": {
     "S1": {
-     "3Q": 57.9,
+     "3Q": 38.2,
      "4Q": 34.6,
-     "H2": 92.5
+     "H2": 72.8
     },
     "target": {
      "3Q": 60,
@@ -85,9 +85,9 @@
      "H2": 95
     },
     "S2": {
-     "3Q": 71.4,
+     "3Q": 47.1,
      "4Q": 42.7,
-     "H2": 114.1
+     "H2": 89.8
     }
    }
   },
@@ -120,8 +120,8 @@
   "ir_others_fix": "2026-06-20: IR_Others SO/Stk = byDealer(channel_from_name 잔여) 집계 주입. IR 총 SO 정상화 12994→18091",
   "period": {
    "act_end": 8,
-   "rsm_month": null,
-   "fcst_start": 9
+   "rsm_month": 9,
+   "fcst_start": 10
   }
  },
  "channels": {
@@ -157,7 +157,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 16920458.0,
+     "st_val": 6273355.0,
      "fcst": true
     },
     "10": {
@@ -180,7 +180,7 @@
      "stk_qty": 2918
     },
     "02": {
-     "st_qty": 4202.0,
+     "st_qty": 4203.0,
      "so_qty": 3176,
      "stk_qty": 3947
     },
@@ -213,7 +213,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 11790.0,
+     "st_qty": 2780.0,
      "fcst": true
     },
     "10": {
@@ -267,7 +267,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 6161162.0,
+     "st_val": 5555783.0,
      "fcst": true
     },
     "10": {
@@ -323,7 +323,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 4485.0,
+     "st_qty": 2160.0,
      "fcst": true
     },
     "10": {
@@ -377,7 +377,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 2962530.0,
+     "st_val": 2897430.0,
      "fcst": true
     },
     "10": {
@@ -433,7 +433,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 1938.0,
+     "st_qty": 1150.0,
      "fcst": true
     },
     "10": {
@@ -487,7 +487,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 2478528.0,
+     "st_val": 2431508.0,
      "fcst": true
     },
     "10": {
@@ -543,7 +543,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 1683.0,
+     "st_qty": 975.0,
      "fcst": true
     },
     "10": {
@@ -597,7 +597,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1270416.0,
+     "st_val": 1268609.0,
      "fcst": true
     },
     "10": {
@@ -653,7 +653,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 724.0,
+     "st_qty": 514.0,
      "fcst": true
     },
     "10": {
@@ -707,7 +707,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 7068507.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -763,7 +763,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 3497.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -817,7 +817,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1289603.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -873,7 +873,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 594.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -927,7 +927,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1079828.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -983,7 +983,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 653.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1037,7 +1037,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 258701.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1093,7 +1093,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 144.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1147,7 +1147,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 139605.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1203,7 +1203,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 65.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1257,7 +1257,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1031954.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1313,7 +1313,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 403.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1367,7 +1367,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 388122.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1423,7 +1423,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 80.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1475,7 +1475,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1306551.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1531,7 +1531,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 443.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1568,7 +1568,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 481316.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1612,7 +1612,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 332.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1665,7 +1665,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 5218518.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1705,11 +1705,11 @@
      "fcst": true
     },
     "08": {
-     "st_qty": 2711.0,
+     "st_qty": 2712.0,
      "fcst": true
     },
     "09": {
-     "st_qty": 2541.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1745,7 +1745,7 @@
      "stk_qty": 8789
     },
     "05": {
-     "st_qty": 870.0,
+     "st_qty": 869.0,
      "so_qty": 1144,
      "stk_qty": 8599
     }
@@ -1772,7 +1772,7 @@
      "fcst": true
     },
     "09": {
-     "st_val": 1913496.0,
+     "st_val": 0.0,
      "fcst": true
     },
     "10": {
@@ -1816,7 +1816,7 @@
      "fcst": true
     },
     "09": {
-     "st_qty": 1631.0,
+     "st_qty": 0.0,
      "fcst": true
     },
     "10": {
@@ -1828,7 +1828,7 @@
      "fcst": true
     },
     "12": {
-     "st_qty": 584.0,
+     "st_qty": 583.0,
      "fcst": true
     },
     "01": {
@@ -1838,7 +1838,7 @@
      "st_qty": 5060.0
     },
     "03": {
-     "st_qty": 1057.0
+     "st_qty": 1056.0
     },
     "04": {
      "st_qty": 359.0
