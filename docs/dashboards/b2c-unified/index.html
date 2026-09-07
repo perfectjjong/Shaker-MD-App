@@ -1354,7 +1354,15 @@ function updatePT(){
   // Determine selected week based on active filters (week/month)
   let activeWs=FILTER_STATE.w.size===0?[...WEEKS]:WEEKS.filter(w=>!FILTER_STATE.w.has(w));
   if(FILTER_STATE.m.size>0&&D.meta&&D.meta.week_month){activeWs=activeWs.filter(w=>D.meta.week_month[w]&&!FILTER_STATE.m.has(D.meta.week_month[w]))}
-  const selectedW=activeWs.length?activeWs[activeWs.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:'');
+  // QA fix: 가격 수집이 셀아웃보다 뒤처진 채널은 마지막 셀아웃 주차에 가격 레코드가 없어
+  // 평균이 0 으로 찍혔다(화면상 'SAR 0' 과 '데이터 없음' 이 구분되지 않음).
+  // → 활성 주차 중 실제 가격이 있는 마지막 주차를 고른다. 최신까지 가격이 있으면 결과 동일.
+  const _qaPtWeeks=new Set();
+  Object.values(pt).forEach(models=>{Object.values(models||{}).forEach(weeks=>{
+    Object.keys(weeks||{}).forEach(w=>_qaPtWeeks.add(w));});});
+  const _wsWithPrice=activeWs.filter(w=>_qaPtWeeks.has(w));
+  const selectedW=_wsWithPrice.length?_wsWithPrice[_wsWithPrice.length-1]
+    :(activeWs.length?activeWs[activeWs.length-1]:(WEEKS.length?WEEKS[WEEKS.length-1]:''));
   // Build model→category lookup + PT category filter
   const ptModelCat=Object.assign({},D.price_cats||{});D.raw.forEach(r=>{if(r.c&&!ptModelCat[r.model])ptModelCat[r.model]=r.c});
   // Build model→compressor lookup from price_comps + sell-out fallback
