@@ -11,7 +11,8 @@
 파생(프론트 계산): NSV = GSV+YED+ADC+VPD+DSI / GP = NSV - COGS + INV + VSP
 
 메인 계정 = SSOT shared_classification ID맵 (OR 5 + IR 8) + Box Appliance(1110000360),
-ID 미매핑은 channel_from_name 이름 폴백. 채널 축 자체는 파일 AD(Chanel) 컬럼 기준.
+ID 미매핑은 channel_from_name 이름 폴백.
+채널 축: 메인 계정은 SSOT 소속으로 강제, Others 만 파일 AD(Chanel) 컬럼 기준 (2026-09-08).
 
 검증: 빌더 집계 vs 원본 Summary Value 시트 실측값(YOY 사다리) 자동 대사.
 """
@@ -34,7 +35,9 @@ MAIN_ID = {**OR_CHANNEL_MAP,
 OR_MAINS = ["eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan"]
 IR_MAINS = ["BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
             "Al Ghanem", "Dhamin", "Zagzoog", "Box Appliance"]
-MAIN_SET = set(OR_MAINS) | set(IR_MAINS)
+_OR_MAIN_SET = set(OR_MAINS)
+_IR_MAIN_SET = set(IR_MAINS)
+MAIN_SET = _OR_MAIN_SET | _IR_MAIN_SET
 
 # 2026-08-26 형님 지시로 카테고리 정본화. 원본 Accrual 엑셀(AC컬럼)은 구 라벨을 쓰지만
 # 대시보드 산출물은 전사 정본 라벨로 통일한다 — 다른 대시보드와 필터·비교가 어긋나던 문제.
@@ -139,7 +142,17 @@ def main():
             if not m or not ch:
                 skipped += 1
                 continue
-            key = (year, m, ch, account_of(row), norm_cat(row[28]))
+            ac = account_of(row)
+            # 2026-09-08 형님 확인("Tamkeen·Zagzoog 전부 IR이 맞다"): 메인 계정의 채널은
+            # 계정 소속(SSOT)이 정본이다. 원본 AD(Chanel) 컬럼에 오염 3행이 있었다
+            # — Tamkeen 2행이 'Dealer - OR', Al Manea 1행이 'Dealer - IR'(전부 2026 반품/CN,
+            # 합 -4대 / -4,974.42 SAR). raw 필드를 그대로 믿지 않고 SSOT로 덮는다.
+            # Others 계정은 소속이 없으므로 종전대로 raw Chanel 을 따른다.
+            if ac in _IR_MAIN_SET:
+                ch = "IR"
+            elif ac in _OR_MAIN_SET:
+                ch = "OR"
+            key = (year, m, ch, ac, norm_cat(row[28]))
             a = agg.setdefault(key, [0.0] * len(METRIC_KEYS))
             a[0] += num(row[18])
             for i, k in enumerate(METRIC_KEYS[1:], 1):
