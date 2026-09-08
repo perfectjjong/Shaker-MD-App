@@ -111,9 +111,9 @@ tr:hover td{background:#f9f5ec}
   <button class="fb" data-range="Q2">Q2</button>
   <button class="fb" data-range="Q3">Q3</button>
   <button class="fb" data-range="Q4">Q4</button>
-  <button class="fb on" data-range="H1">H1</button>
+  <button class="fb" data-range="H1">H1</button>
   <button class="fb" data-range="H2">H2</button>
-  <button class="fb" data-range="YTD">YTD</button>
+  <button class="fb on" data-range="YTD">YTD</button>
   <button class="fb" data-range="Full">Full Year</button>
   <div class="sep"></div>
   <span class="fl">Channel</span>
@@ -454,7 +454,7 @@ const RANGE_MONTHS = {
 const PEAK = ['May','Jun','Jul','Aug','Sep'];
 
 // 현재 필터 상태
-let curRange = 'H1';  // 2026-07 Jun 마감 반영 — 기본 H1(Jan~Jun)
+let curRange = 'YTD'; // 2026-09-08 Aug 마감 반영 — 기본 YTD(Jan~최신 실적월, 자동 전진). 매월 손으로 고치던 자리라 동적화.
 let curChs   = new Set(CHS);  // multi-select: 기본값 = 전 채널 선택(개별 해제로 제외/포함 토글)
 let curCats  = new Set(['ALL']); // multi-select: 'ALL' or specific categories
 let mainMetric = 'so';
@@ -1055,11 +1055,32 @@ function renderChBarChart() {
 }
 
 // ── KPI 업데이트 ──────────────────────────────────────────────────────────
+
+// ── 부분마감 경고 (2026-09-08) — or-monthly-psi 와 동일 취지, 데이터 shape 만 다름 ──
+function partialNote(mos) {
+  const LBL = {so: '셀아웃', st: '셀스루', stk: '재고'};
+  const Y = (B2C_PSI_DATA.years || {})['2026'] || {};
+  const out = [];
+  for (const mo of mos) {
+    const miss = {};
+    for (const ch of CHS) {
+      const cell = Y.by_ch && Y.by_ch[ch] && Y.by_ch[ch][mo];
+      if (!cell) continue;
+      for (const k of ['so', 'st', 'stk']) {
+        if (cell[k] === null || cell[k] === undefined) (miss[ch] = miss[ch] || []).push(LBL[k]);
+      }
+    }
+    const chs = Object.keys(miss);
+    if (chs.length) out.push(`${mo} ${chs.map(c => `${c} ${miss[c].join('·')}`).join(' / ')}`);
+  }
+  return out.length ? `  ⚠ 부분마감 — ${out.join(' | ')} 미입수(합계·YoY에서 빠짐)` : '';
+}
+
 function renderKpi() {
   const mos = RANGE_MONTHS[curRange];
   const catSuffix = !curCats.has('ALL') ? ` · ${[...curCats].join('+')}` : '';
   const label = `(${mos[0]}–${mos[mos.length-1]} 2026${catSuffix})`;
-  document.getElementById('kpi-range-label').textContent = label;
+  document.getElementById('kpi-range-label').textContent = label + partialNote(mos);
 
   const so26  = sumRange('2026', mos, 'so');
   const so25  = sumRange('2025', mos, 'so');
