@@ -1730,5 +1730,44 @@ render();
   renderAll();
 })();
 </script>
+
+<script>
+/* 2026-09-08 QA: MOS Analysis · MOS-2 Action · Model Table 은 **최신월 스냅샷** 이라
+   기간(Period) 필터가 적용되지 않는다(MOS = 재고 ÷ 월평균판매 — 분기 합계라는 개념 자체가 없다).
+   그런데 버튼은 그대로 눌리고 화면은 아무 반응이 없었다 → 사용자는 고장인지 설계인지 알 수 없다.
+   데이터 로직은 건드리지 않고 **"적용되지 않는다"를 화면에 드러낸다**.
+   (형님 원칙: 처리 못 한 입력은 반드시 표면화할 것) */
+(function () {
+  var NO_PERIOD = { '1': 1, '5': 1, '6': 1 };   // MOS Analysis · Model Table · MOS-2 Action
+  var st = document.createElement('style');
+  st.textContent = '.pf-off{opacity:.35;pointer-events:none}' +
+    '#pf-note{font-size:11px;color:#8a8378;margin-left:10px;white-space:nowrap}';
+  document.head.appendChild(st);
+
+  var note = document.createElement('span');
+  note.id = 'pf-note';
+  note.textContent = '\u203B \uC774 \uD0ED\uC740 \uCD5C\uC2E0\uC6D4 \uC2A4\uB0C5\uC0F7 \uAE30\uC900 \u2014 \uAE30\uAC04 \uD544\uD130\uAC00 \uC801\uC6A9\uB418\uC9C0 \uC54A\uC2B5\uB2C8\uB2E4';
+
+  function targets() {
+    var els = [].slice.call(document.querySelectorAll('button.fb[data-range]'));
+    [].slice.call(document.querySelectorAll('.fl')).forEach(function (e) {
+      if ((e.textContent || '').trim() === 'Period') els.push(e);
+    });
+    return els;
+  }
+  function sync() {
+    var act = document.querySelector('.tab.active');
+    var off = !!(act && NO_PERIOD[act.getAttribute('data-tab')]);
+    targets().forEach(function (e) { e.classList.toggle('pf-off', off); });
+    var anchor = document.querySelector('button.fb[data-range="Full"]');
+    if (anchor && !note.parentNode) anchor.parentNode.insertBefore(note, anchor.nextSibling);
+    note.style.display = off ? 'inline' : 'none';
+  }
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () { setTimeout(sync, 0); });
+  });
+  sync();
+})();
+</script>
 </body>
 </html>
