@@ -376,6 +376,9 @@ MS.prototype._build=function(){
   });
   menu.appendChild(list);w.appendChild(menu);this.menuEl=menu;
   btn.addEventListener('click',function(e){e.stopPropagation();document.querySelectorAll('.ms-menu.open').forEach(function(m){if(m!==menu)m.classList.remove('open')});menu.classList.toggle('open')});
+  /* 메뉴 안 클릭이 document 까지 올라가면 전역 닫기 핸들러가 즉시 메뉴를 닫는다.
+     멀티셀렉트인데 항목 하나 고를 때마다 닫혀서 여러 개를 고를 수 없었다. */
+  menu.addEventListener('click',function(e){e.stopPropagation()});
   this.el.appendChild(w);this.listEl=list;this._upd();
 };
 MS.prototype._upd=function(){
@@ -387,17 +390,21 @@ MS.prototype._upd=function(){
   this.btnEl.innerHTML=this.label+' <b style="color:var(--primary);font-weight:700">'+sel+'/'+cnt+'</b> <span style="color:#9a927f;font-size:9px">&#9662;</span>';
 };
 MS.prototype.syncVisible=function(availSet){
-  var self=this;var cnt=0;
+  /* 숨기기만 한다. 예전엔 숨길 때 선택을 지웠는데, 다시 보이게 될 때 복원하지 않아
+     하위 필터가 0/N 이 되고 화면이 통째로 0건이 됐다.
+     숨겨진 값은 상위 필터가 이미 그 행들을 배제했으므로 선택으로 남겨도 행이 늘지 않는다. */
+  var cnt=0;
   this.listEl.querySelectorAll('label').forEach(function(lbl){
     var cb=lbl.querySelector('input');
     if(availSet.has(cb.value)){lbl.style.display='flex';cnt++}
-    else{lbl.style.display='none';cb.checked=false;self.sel.delete(cb.value)}
+    else{lbl.style.display='none'}
   });
   this._visCount=cnt;this._upd();
 };
 MS.prototype.showAll=function(){
-  this.sel=new Set(this.opts.map(String));
-  this.listEl.querySelectorAll('label').forEach(function(lbl){lbl.style.display='flex';lbl.querySelector('input').checked=true});
+  /* 표시만 되돌린다. 선택까지 초기화하면 상위 필터를 건드릴 때마다
+     사용자가 고른 하위 항목이 소리 없이 날아간다(Reset 은 selectAll 이 따로 처리). */
+  this.listEl.querySelectorAll('label').forEach(function(lbl){lbl.style.display='flex'});
   this._visCount=this.opts.length;this._upd();
 };
 MS.prototype.selectAll=function(){this.sel=new Set(this.opts.map(String));this.listEl.querySelectorAll('input').forEach(function(c){c.checked=true});this._upd();this.cb()};
