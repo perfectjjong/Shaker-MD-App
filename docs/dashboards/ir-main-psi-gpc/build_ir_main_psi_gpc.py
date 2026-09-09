@@ -111,9 +111,21 @@ def _oud_date(path):
 
 
 def _oud_month_end_files():
-    """루트 + 하위폴더 전부 스캔(2026-09-07 사고: 자동배치는 하위폴더, 수동은 루트).
-    2026 Jan~Aug 각 월의 **마지막 날짜** 파일을 그 달 월마감 OUD 로 쓴다."""
-    cand = []
+    """2026 Jan~Aug 각 월의 월마감 OUD 스냅샷 파일.
+
+    🔴 정책 = **월말(EOM)을 넘긴 첫 스냅샷** (= 익월 첫 주간 파일). 월말 당일 파일도 해당 안 됨.
+       정본 3곳:
+         · project_sellthru_progress_freeze_fg_supply — "월 closing 규칙 = eom **이후** 첫 스냅샷.
+           최신본이 29-AUG 라 8/31 을 넘긴 파일이 없어 skip, 05-SEP 도착 시 8월이 채워진다"
+         · project_domain_knowledge — "OUD 4/14 = 3월 마감 기준 OUD"
+         · AR_DSO_Analysis/patch_v7_add_bh_or.get_oud_aggregate — "보고월 익월 첫째주 파일"
+       ⚠️ 내가 2026-09-09 에 "그 달 마지막 파일" → "월말 최근접" 으로 두 번 임의 정의했다가 형님께
+          연속 지적받았다. "월말 최근접(±7/10일)" 은 GTM 주간 리포트·앵커 파이프라인의 **다른 계층** 규약.
+       ⚠️ build_ir_total_raw_pivot.oud_last_week 는 '그 달 마지막 주차' — 정책과 다름(별건, 미수정).
+    루트 + 하위폴더 전부 스캔(2026-09-07 사고: 자동배치는 하위폴더, 수동은 루트).
+    """
+    import calendar
+    cand = {}
     for d in (OUD_DIR, os.path.join(OUD_DIR, "01. 2026")):
         if not os.path.isdir(d):
             continue
@@ -127,11 +139,15 @@ def _oud_month_end_files():
                 dt = _oud_date(p)
             except (AttributeError, KeyError, ValueError):
                 continue
-            if dt.year == 2026 and 1 <= dt.month <= 8:
-                cand.append((dt, p))
+            if dt.year == 2026:
+                cand.setdefault(dt, p)
     out = {}
-    for dt, p in sorted(cand):
-        out[dt.month] = p          # 정렬 순회라 마지막 값이 그 달 마지막 날짜
+    for mo in range(1, 9):
+        eom = datetime.date(2026, mo, calendar.monthrange(2026, mo)[1])
+        after = sorted(dt for dt in cand if dt > eom)
+        if not after:
+            raise ValueError(f"2026-{mo:02d} 마감 OUD 없음 — {eom} 을 넘긴 스냅샷 파일 미도착")
+        out[mo] = cand[after[0]]
     return out
 
 
@@ -254,7 +270,7 @@ def main():
             "oudAsOf": {m: asof.get(m) for m in MONTHS},
             "notes": {
                 "psi": "ir-monthly-psi by_ch_cat 실측 월마감 (수량, 대)",
-                "oud": "2026 만. 각 월 마지막 스냅샷 파일(05. OUD 원본) · 세트 환산 shared_set_rule 적용",
+                "oud": "2026 만. 월말을 넘긴 첫 스냅샷(=익월 첫 파일, 05. OUD 원본) · 세트 환산 shared_set_rule 적용",
                 "gpc": "GPC Accrual 라인아이템. NSV=GSV+YED+ADC+VPD+DSI, GP=NSV-COGS+INV+VSP",
                 "axis": "카테고리=shared_category SSOT + Split 만 인버터/온오프 분리 (압축기 축이 Split 전용이라 단일 축으로 통합)",
                 "oudCats": "OUD 는 원본 xlsx Group 컬럼(11종) 기준 — 가공 집계 아님",

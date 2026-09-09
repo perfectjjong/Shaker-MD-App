@@ -216,7 +216,7 @@ function renderTable(){
     '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오.<br>'
     +'· 카테고리 축은 <b>shared_category SSOT</b> 기준이며, <b>Split만 인버터/온오프로 나눴습니다</b> — 압축기 구분이 붙는 카테고리가 Split 하나뿐이라 별도 필터를 두지 않았습니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
     +'· OUD는 <b>05. OUD 원본 xlsx(Group 11종)</b>를 직접 읽어 전 카테고리를 담고 있습니다. 분리형은 OBD 라인이 실내기·실외기로 나뉘므로 <b>세트 환산(shared_set_rule, 세트=min(IDU,ODU))</b>을 거칩니다.<br>'
-    +'· 2026 월말 OUD 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
+    +'· <b>월마감 OUD = 월말을 넘긴 첫 스냅샷(익월 첫 주간 파일)</b> — 월 closing 정책. 2026 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
     +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
 }
 
