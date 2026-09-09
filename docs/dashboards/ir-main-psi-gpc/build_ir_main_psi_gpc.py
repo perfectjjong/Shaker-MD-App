@@ -39,7 +39,7 @@ OUT = os.path.join(D, "ir-main-psi-gpc", "data.js")
 OUD_DIR = ("/home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard/00. Raw Data/02. 2026/05. OUD")
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
 from shared_classification import channel_from_name
-from shared_category import normalize_category
+from shared_category import normalize_category, is_part
 import shared_set_rule as _SSR
 
 # IR SAP 라인 데이터의 짝 카테고리 — unified_sellout_dashboard_generator.PAIR_CATS_SAP 와 동일
@@ -224,6 +224,11 @@ def main():
         for cust, group, material, qty in _oud_rows(path):
             ch = channel_from_name(cust)
             if ch not in IR_MAIN:
+                continue
+            # 부품·악세사리·설치 라인 제외 (2026-09-09): ir-total/B2C 기준과 동일하게 shared_category.is_part
+            # + 원본 Group 'Accessorie'/'installati'. 종전엔 'Others' 로 785대(9/6) 섞여 들어갔다.
+            g = group.lower()
+            if g.startswith(("accessorie", "installati")) or is_part(material):
                 continue
             oud_rows.append({"ch": ch, "m": m, "model": material,
                              "cat": normalize_category(group),      # 짝맞춤은 SSOT 축으로
