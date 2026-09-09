@@ -8,6 +8,7 @@
   "groups": {
     "management": [
       "dash:sell-thru-progress",
+      "dash:gpc",
       "dash:b2c-monthly-psi",
       "dash:b2c-unified",
       "dash:extra-mgmt",
@@ -93,7 +94,6 @@
       "dash:fg-available",
       "dash:fg-psi",
       "sec:psi",
-      "dash:gpc",
       "dash:ar-detail",
       "dash:ir-ar-analysis-2026apr-ko",
       "dash:ir-ar-analysis-2026apr-en",

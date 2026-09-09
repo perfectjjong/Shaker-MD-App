@@ -47,7 +47,7 @@
     "main": [
       {
         "name": "Management Dashboard",
-        "description": "Management dashboards (6)",
+        "description": "Management dashboards (7)",
         "icon": "📋",
         "children": [
           {
@@ -55,6 +55,13 @@
             "description": "Sell thru progress dashboard",
             "url": "/dashboards/sell-thru-progress/",
             "icon": "📊"
+          },
+          {
+            "name": "GPC 손익 대시보드",
+            "description": "GPC 손익 대시보드 · B2C 2024–2026",
+            "url": "/dashboards/gpc/",
+            "icon": "💹",
+            "indent": true
           },
           {
             "name": "B2C 13 Ch. Monthly PSI",
@@ -607,7 +614,7 @@
       },
       {
         "name": "Personal",
-        "description": "Personal & internal dashboards (28)",
+        "description": "Personal & internal dashboards (27)",
         "icon": "🔒",
         "acl": "personal",
         "collapsed": true,
@@ -726,12 +733,6 @@
             "description": "Channel PSI 2024",
             "url": "/psi/",
             "icon": "📊"
-          },
-          {
-            "name": "GPC 손익 대시보드",
-            "description": "GPC 손익 대시보드 · B2C 2024–2026",
-            "url": "/dashboards/gpc/",
-            "icon": "💹"
           },
           {
             "name": "AR Receivables Dashboard",
