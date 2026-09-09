@@ -68,9 +68,15 @@
   <h1>IR Main — 판매 · 손익 통합</h1>
   <div class="sub" id="sub"></div>
 
-  <div class="bar">
-    <div><span class="lbl">채널</span><span class="chips" id="chCh"></span></div>
-    <div style="margin-left:auto"><span class="lbl">기간</span><span class="chips" id="chMo"></span></div>
+  <div class="bar" style="flex-direction:column;align-items:stretch;gap:10px">
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div><span class="lbl">채널</span><span class="chips" id="chCh"></span></div>
+      <div style="margin-left:auto"><span class="lbl">기간</span><span class="chips" id="chMo"></span></div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line2);padding-top:10px">
+      <div><span class="lbl">카테고리</span><span class="chips" id="chCat"></span></div>
+      <div style="margin-left:auto"><span class="lbl">압축기</span><span class="chips" id="chCmp"></span></div>
+    </div>
   </div>
 
   <div class="kpis" id="kpis"></div>
@@ -111,36 +117,49 @@
 
 <script src="data.js"></script>
 <script>
-var M=IRM_DATA.meta, D=IRM_DATA.data, CH=M.channels, MO=M.months;
-var SEL={ch:new Set(CH), mo:new Set(MO)};
-var LADYR='2026';   // 2025 | 2026 | delta
-var LAD=M.ladder;
+var M=IRM_DATA.meta, R=IRM_DATA.rows;
+var CH=M.channels, MO=M.months, CAT=M.cats, CMP=M.cmps, LAD=M.ladder;
+var SEL={ch:new Set(CH), mo:new Set(MO), cat:new Set(CAT), cmp:new Set(CMP)};
+var LADYR='2026';
 
 function n0(v){return (v==null||isNaN(v))?'-':Math.round(v).toLocaleString();}
 function money(v){if(v==null||isNaN(v))return '-';var a=Math.abs(v);
   if(a>=1e6)return (v/1e6).toFixed(2)+'M'; if(a>=1e3)return (v/1e3).toFixed(0)+'K'; return Math.round(v).toLocaleString();}
 function pct(v){return (v==null||isNaN(v)||!isFinite(v))?'-':v.toFixed(1)+'%';}
 function yoy(a,b){if(!a||!isFinite(a))return '<span class="mut">—</span>';
-  var r=(b/a-1)*100; var c=r>=0?'pos':'neg';
+  var r=(b/a-1)*100, c=r>=0?'pos':'neg';
   return '<span class="'+c+'">'+(r>=0?'+':'')+r.toFixed(0)+'%</span>';}
 function months(){return MO.filter(function(m){return SEL.mo.has(m);});}
 function chans(){return CH.filter(function(c){return SEL.ch.has(c);});}
-function lastMo(){var m=months();return m.length?m[m.length-1]:'Aug';}
+function lastMo(){var m=months();return m.length?m[m.length-1]:MO[MO.length-1];}
 
-// 채널 x 연도 집계: 흐름(st/so/gsv/nsv/gp)은 선택월 합, 잔량(stk/oud)은 마지막 선택월
+// 행 통과 여부 (채널은 호출부에서 지정)
+function pass(r,ch){
+  return r.ch===ch && SEL.cat.has(r.cat) && SEL.cmp.has(r.cmp);
+}
+function blank(){var o={st:0,so:0,stk:0,oud:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};return o;}
+function derive(o){o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp;
+  o.gm=o.nsv?o.gp/o.nsv*100:null; return o;}
+
+// 흐름=선택월 합 / 잔량(stk·oud)=선택월 중 마지막 달
 function agg(y,ch){
-  var o={st:0,so:0,gsv:0,nsv:0,gp:0,stk:0,oud:0};
-  months().forEach(function(m){var r=D[y][ch][m];
-    o.st+=r.st;o.so+=r.so;o.gsv+=r.gsv;o.nsv+=r.nsv;o.gp+=r.gp;});
-  var lm=D[y][ch][lastMo()];
-  o.stk=lm.stk; o.oud=(lm.oud==null?0:lm.oud);
-  return o;
+  var o=blank(), lm=lastMo();
+  R.forEach(function(r){
+    if(r.y!==y||!pass(r,ch)) return;
+    if(SEL.mo.has(r.m)){
+      o.st+=r.st;o.so+=r.so;
+      o.gsv+=r.gsv;o.yed+=r.yed;o.adc+=r.adc;o.vpd+=r.vpd;o.dsi+=r.dsi;
+      o.cogs+=r.cogs;o.inv+=r.inv;o.vsp+=r.vsp;
+    }
+    if(r.m===lm){o.stk+=r.stk;o.oud+=r.oud;}
+  });
+  return derive(o);
 }
 function aggAll(y){
-  var t={st:0,so:0,gsv:0,nsv:0,gp:0,stk:0,oud:0};
+  var t=blank();
   chans().forEach(function(c){var a=agg(y,c);
-    for(var k in t)t[k]+=a[k];});
-  return t;
+    ['st','so','stk','oud','gsv','yed','adc','vpd','dsi','cogs','inv','vsp'].forEach(function(k){t[k]+=a[k];});});
+  return derive(t);
 }
 
 function renderKpi(){
@@ -151,11 +170,10 @@ function renderKpi(){
     {k:'재고 +OUD (대)',v:n0(b.stk+b.oud),d:'재고 '+n0(b.stk)+' + OUD '+n0(b.oud)+' &nbsp;|&nbsp; 재고만 YoY '+yoy(a.stk,b.stk)},
     {k:'GSV (SAR)',v:money(b.gsv),d:'2025 '+money(a.gsv)+' · '+yoy(a.gsv,b.gsv)},
     {k:'GP (SAR)',v:money(b.gp),d:'2025 '+money(a.gp)+' · '+yoy(a.gp,b.gp)},
-    {k:'GM%',v:pct(b.nsv?b.gp/b.nsv*100:null),d:'2025 '+pct(a.nsv?a.gp/a.nsv*100:null)}
+    {k:'GM%',v:pct(b.gm),d:'2025 '+pct(a.gm)}
   ];
   document.getElementById('kpis').innerHTML=k.map(function(x){
-    return '<div class="kpi"><div class="k">'+x.k+'</div><div class="v">'+x.v+'</div><div class="d">'+x.d+'</div></div>';
-  }).join('');
+    return '<div class="kpi"><div class="k">'+x.k+'</div><div class="v">'+x.v+'</div><div class="d">'+x.d+'</div></div>';}).join('');
 }
 
 function renderTable(){
@@ -165,8 +183,7 @@ function renderTable(){
     +'<th colspan="4" class="sep">재고 · OUD (대)</th>'
     +'<th colspan="3" class="sep">GSV (SAR)</th>'
     +'<th colspan="4" class="sep">손익 (SAR)</th></tr><tr>'
-    +'<th>채널</th>'
-    +'<th>25</th><th>26</th><th>YoY</th>'
+    +'<th>채널</th><th>25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">재고25</th><th>재고26</th><th>OUD26</th><th>26 합</th>'
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
@@ -174,7 +191,6 @@ function renderTable(){
     +'</tr></thead><tbody>';
   chans().forEach(function(c){
     var a=agg('2025',c), b=agg('2026',c);
-    var gm25=a.nsv?a.gp/a.nsv*100:null, gm26=b.nsv?b.gp/b.nsv*100:null;   // GM% = GP/NSV
     h+='<tr><td>'+c+'</td>'
       +'<td>'+n0(a.st)+'</td><td>'+n0(b.st)+'</td><td>'+yoy(a.st,b.st)+'</td>'
       +'<td class="sep">'+n0(a.so)+'</td><td>'+n0(b.so)+'</td><td>'+yoy(a.so,b.so)+'</td>'
@@ -182,8 +198,8 @@ function renderTable(){
       +'<td style="color:var(--oud)">'+n0(b.oud)+'</td><td><b>'+n0(b.stk+b.oud)+'</b></td>'
       +'<td class="sep">'+money(a.gsv)+'</td><td>'+money(b.gsv)+'</td><td>'+yoy(a.gsv,b.gsv)+'</td>'
       +'<td class="sep">'+money(b.nsv)+'</td><td>'+money(b.gp)+'</td>'
-      +'<td class="'+(gm26!=null&&gm26<0?'neg':'')+'"><b>'+pct(gm26)+'</b></td>'
-      +'<td class="mut">'+pct(gm25)+'</td></tr>';
+      +'<td class="'+(b.gm!=null&&b.gm<0?'neg':'')+'"><b>'+pct(b.gm)+'</b></td>'
+      +'<td class="mut">'+pct(a.gm)+'</td></tr>';
   });
   var A=aggAll('2025'), B=aggAll('2026');
   h+='</tbody><tfoot><tr><td>합계 ('+chans().length+')</td>'
@@ -193,142 +209,111 @@ function renderTable(){
     +'<td style="color:var(--oud)">'+n0(B.oud)+'</td><td>'+n0(B.stk+B.oud)+'</td>'
     +'<td class="sep">'+money(A.gsv)+'</td><td>'+money(B.gsv)+'</td><td>'+yoy(A.gsv,B.gsv)+'</td>'
     +'<td class="sep">'+money(B.nsv)+'</td><td>'+money(B.gp)+'</td>'
-    +'<td>'+pct(B.nsv?B.gp/B.nsv*100:null)+'</td><td class="mut">'+pct(A.nsv?A.gp/A.nsv*100:null)+'</td>'
-    +'</tr></tfoot>';
+    +'<td>'+pct(B.gm)+'</td><td class="mut">'+pct(A.gm)+'</td></tr></tfoot>';
   document.getElementById('main').innerHTML=h;
-  var lm=lastMo();
   document.getElementById('tblSub').textContent=
-    '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lm+' 월말 시점';
+    '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lastMo()+' 월말 시점';
+  var oudCatOff=CAT.filter(function(c){return SEL.cat.has(c)&&['Cassette AC','Concealed Set','Multi-V','Unitary Package'].indexOf(c)>=0;});
   document.getElementById('tblNote').innerHTML=
-    '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오 — OUD를 더한 값과 2025를 직접 비교하면 과대평가됩니다.<br>'
+    '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오.<br>'
+    +'· 카테고리 축은 <b>shared_category SSOT</b>로 통일했고, <b>압축기(Inverter/On-Off)는 별도 축</b>입니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
+    +(oudCatOff.length?'· ⚠️ <b>OUD 원본은 Split·Window·Floor Standing·Others만 제공</b>합니다 — 선택하신 '+oudCatOff.join('·')+'는 OUD가 0으로 나옵니다.<br>':'')
     +'· 2026 월말 OUD 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
-    +'· GPC는 Accrual 라인아이템 기준. NSV=GSV+YED+ADC+VPD+DSI · GP=NSV−COGS+INV+VSP<br>'
-    +'· <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
+    +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
 }
 
-// ── 초경량 인라인 SVG 콤보차트 (막대 + 선) ──
+function renderLadder(){
+  var cs=chans(), y=LADYR, A={}, B={};
+  cs.forEach(function(c){A[c]=agg('2025',c);B[c]=agg('2026',c);});
+  A['__T']=aggAll('2025'); B['__T']=aggAll('2026');
+  function pick(c,k){return y==='2025'?A[c][k]:(y==='2026'?B[c][k]:B[c][k]-A[c][k]);}
+  var h='<thead><tr><th>항목</th>';
+  cs.forEach(function(c){h+='<th>'+c+'</th>';});
+  h+='<th class="sep">합계</th></tr></thead><tbody>';
+  LAD.forEach(function(x){
+    var k=x[0], key=(k==='nsv'||k==='gp'), bg=key?' style="background:var(--lg-soft)"':'';
+    h+='<tr'+bg+'><td'+bg+'>'+(key?'<b>'+x[1]+'</b>':x[1])+'</td>';
+    cs.concat(['__T']).forEach(function(c){
+      var v=pick(c,k), cls=(y==='delta')?(v>0?'pos':(v<0?'neg':'mut')):(v<0?'neg':'');
+      h+='<td class="'+cls+(c==='__T'?' sep':'')+'">'+(key?'<b>'+money(v)+'</b>':money(v))+'</td>';});
+    h+='</tr>';
+  });
+  h+='<tr style="background:var(--lg-soft)"><td style="background:var(--lg-soft)"><b>GM%</b></td>';
+  cs.concat(['__T']).forEach(function(c){
+    if(y==='delta'){
+      var t=(A[c].gm==null||B[c].gm==null)?null:(B[c].gm-A[c].gm);
+      var cl=t==null?'mut':(t>0?'pos':(t<0?'neg':'mut'));
+      h+='<td class="'+cl+(c==='__T'?' sep':'')+'"><b>'+(t==null?'-':(t>0?'+':'')+t.toFixed(1)+'%p')+'</b></td>';
+    } else {
+      var o=(y==='2025')?A[c]:B[c];
+      h+='<td class="'+((o.gm!=null&&o.gm<0)?'neg':'')+(c==='__T'?' sep':'')+'"><b>'+pct(o.gm)+'</b></td>';}
+  });
+  h+='</tr></tbody>';
+  document.getElementById('ladder').innerHTML=h;
+  document.getElementById('ladSub').textContent=
+    ((y==='delta')?'2026 − 2025 증감':y+'년')+' · 선택 기간·채널·카테고리 합계 · 단위 SAR';
+}
+
 function combo(el,labels,bars,line,barColor,lineColor,fmtB,fmtL){
-  var W=620,H=210,PL=52,PR=46,PT=14,PB=26;
-  var iw=W-PL-PR, ih=H-PT-PB;
+  var W=620,H=210,PL=52,PR=46,PT=14,PB=26,iw=W-PL-PR,ih=H-PT-PB;
   var bmax=Math.max.apply(null,bars.concat([1]));
   var lmin=Math.min.apply(null,line), lmax=Math.max.apply(null,line);
-  if(lmax===lmin){lmax=lmin+1;}
+  if(lmax===lmin)lmax=lmin+1;
   var pad=(lmax-lmin)*0.15; lmax+=pad; lmin-=pad;
-  var bw=iw/labels.length, s='';
-  s+='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" role="img">';
+  var bw=iw/Math.max(labels.length,1), s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" role="img">';
   for(var g=0;g<=3;g++){var yy=PT+ih*g/3;
     s+='<line x1="'+PL+'" y1="'+yy+'" x2="'+(W-PR)+'" y2="'+yy+'" stroke="var(--line2)" stroke-width="1"/>';
     s+='<text x="'+(PL-7)+'" y="'+(yy+3.5)+'" text-anchor="end" font-size="9" fill="var(--mut)">'+fmtB(bmax*(3-g)/3)+'</text>';}
   bars.forEach(function(v,i){
-    var bh=bmax?ih*v/bmax:0, x=PL+bw*i+bw*0.22, y=PT+ih-bh;
-    s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+(bw*0.56).toFixed(1)+'" height="'+Math.max(bh,0).toFixed(1)+'" fill="'+barColor+'" rx="2"><title>'+labels[i]+' '+fmtB(v)+'</title></rect>';
-    s+='<text x="'+(PL+bw*i+bw/2).toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle" font-size="9.5" fill="var(--mut)">'+labels[i]+'</text>';
-  });
-  var pts=line.map(function(v,i){
-    var x=PL+bw*i+bw/2, y=PT+ih-ih*(v-lmin)/(lmax-lmin);
-    return [x,y];});
+    var bh=bmax?ih*v/bmax:0, x=PL+bw*i+bw*0.22, yv=PT+ih-bh;
+    s+='<rect x="'+x.toFixed(1)+'" y="'+yv.toFixed(1)+'" width="'+(bw*0.56).toFixed(1)+'" height="'+Math.max(bh,0).toFixed(1)+'" fill="'+barColor+'" rx="2"><title>'+labels[i]+' '+fmtB(v)+'</title></rect>';
+    s+='<text x="'+(PL+bw*i+bw/2).toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle" font-size="9.5" fill="var(--mut)">'+labels[i]+'</text>';});
+  var pts=line.map(function(v,i){return [PL+bw*i+bw/2, PT+ih-ih*(v-lmin)/(lmax-lmin)];});
   s+='<polyline fill="none" stroke="'+lineColor+'" stroke-width="2" stroke-linejoin="round" points="'
     +pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'"/>';
   pts.forEach(function(p,i){
     s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="var(--card)" stroke="'+lineColor+'" stroke-width="2"><title>'+labels[i]+' '+fmtL(line[i])+'</title></circle>';});
   s+='<text x="'+(W-PR+7)+'" y="'+(PT+8)+'" font-size="9" fill="'+lineColor+'">'+fmtL(lmax)+'</text>';
   s+='<text x="'+(W-PR+7)+'" y="'+(PT+ih)+'" font-size="9" fill="'+lineColor+'">'+fmtL(lmin)+'</text>';
-  s+='</svg>';
-  document.getElementById(el).innerHTML=s;
+  document.getElementById(el).innerHTML=s+'</svg>';
 }
 
 function renderCharts(){
-  var ms=months(), cs=chans();
-  var so=[],stkoud=[],nsv=[],gpp=[];
+  var ms=months(), cs=chans(), so=[],stkoud=[],nsv=[],gm=[];
   ms.forEach(function(m){
-    var s=0,k=0,o=0,nv=0,gp=0;
-    cs.forEach(function(c){var r=D['2026'][c][m];
-      s+=r.so;k+=r.stk;o+=(r.oud==null?0:r.oud);nv+=r.nsv;gp+=r.gp;});
-    so.push(s);stkoud.push(k+o);nsv.push(nv);gpp.push(nv?gp/nv*100:0);
-  });
+    var s=0,k=0,o=0,g=0,c=0,i2=0,v=0,d=0;
+    var acc={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
+    R.forEach(function(r){
+      if(r.y!=='2026'||r.m!==m) return;
+      if(!SEL.ch.has(r.ch)||!SEL.cat.has(r.cat)||!SEL.cmp.has(r.cmp)) return;
+      s+=r.so;k+=r.stk;o+=r.oud;
+      for(var q in acc)acc[q]+=r[q];});
+    var n=acc.gsv+acc.yed+acc.adc+acc.vpd+acc.dsi;
+    so.push(s);stkoud.push(k+o);nsv.push(n);gm.push(n?(n-acc.cogs+acc.inv+acc.vsp)/n*100:0);});
   combo('c1',ms,so,stkoud,'var(--y26)','var(--oud)',function(v){return Math.round(v).toLocaleString();},function(v){return Math.round(v).toLocaleString();});
-  combo('c2',ms,nsv,gpp,'var(--y25)','var(--lg)',function(v){return (v/1e6).toFixed(1)+'M';},function(v){return v.toFixed(1)+'%';});
-}
-
-function ladAgg(y,ch){
-  var o={}; LAD.forEach(function(x){o[x[0]]=0;});
-  months().forEach(function(m){var r=D[y][ch][m];
-    LAD.forEach(function(x){o[x[0]]+=r[x[0]];});});
-  return o;
-}
-function renderLadder(){
-  var cs=chans(), y=LADYR;
-  var A={},B={};
-  cs.concat(['__T']).forEach(function(c){
-    if(c==='__T'){
-      A[c]={};B[c]={};
-      LAD.forEach(function(x){A[c][x[0]]=0;B[c][x[0]]=0;});
-      cs.forEach(function(k){LAD.forEach(function(x){A[c][x[0]]+=A[k][x[0]];B[c][x[0]]+=B[k][x[0]];});});
-    } else {A[c]=ladAgg('2025',c); B[c]=ladAgg('2026',c);}
-  });
-  function pick(c,k){
-    if(y==='2025')return A[c][k];
-    if(y==='2026')return B[c][k];
-    return B[c][k]-A[c][k];
-  }
-  var h='<thead><tr><th>항목</th>';
-  cs.forEach(function(c){h+='<th>'+c+'</th>';});
-  h+='<th class="sep">합계</th></tr></thead><tbody>';
-  LAD.forEach(function(x){
-    var k=x[0], key=(k==='nsv'||k==='gp');
-    h+='<tr'+(key?' style="background:var(--lg-soft)"':'')+'><td'+(key?' style="background:var(--lg-soft)"':'')+'>'
-      +(key?'<b>'+x[1]+'</b>':x[1])+'</td>';
-    cs.concat(['__T']).forEach(function(c){
-      var v=pick(c,k);
-      var cls=(y==='delta')?(v>0?'pos':(v<0?'neg':'mut')):(v<0?'neg':'');
-      h+='<td class="'+cls+(c==='__T'?' sep':'')+'">'+(key?'<b>'+money(v)+'</b>':money(v))+'</td>';
-    });
-    h+='</tr>';
-  });
-  // GM%
-  h+='<tr style="background:var(--lg-soft)"><td style="background:var(--lg-soft)"><b>GM%</b></td>';
-  cs.concat(['__T']).forEach(function(c){
-    var t;
-    if(y==='delta'){
-      var g25=A[c].nsv?A[c].gp/A[c].nsv*100:null, g26=B[c].nsv?B[c].gp/B[c].nsv*100:null;
-      t=(g25==null||g26==null)?null:(g26-g25);
-      var cl=t==null?'mut':(t>0?'pos':(t<0?'neg':'mut'));
-      h+='<td class="'+cl+(c==='__T'?' sep':'')+'"><b>'+(t==null?'-':(t>0?'+':'')+t.toFixed(1)+'%p')+'</b></td>';
-    } else {
-      var o=(y==='2025')?A[c]:B[c];
-      t=o.nsv?o.gp/o.nsv*100:null;
-      h+='<td class="'+((t!=null&&t<0)?'neg':'')+(c==='__T'?' sep':'')+'"><b>'+pct(t)+'</b></td>';
-    }
-  });
-  h+='</tr></tbody>';
-  document.getElementById('ladder').innerHTML=h;
-  var lbl=(y==='delta')?'2026 − 2025 증감':y+'년';
-  document.getElementById('ladSub').textContent=lbl+' · 선택 기간 합계 · 단위 SAR';
+  combo('c2',ms,nsv,gm,'var(--y25)','var(--lg)',function(v){return (v/1e6).toFixed(1)+'M';},function(v){return v.toFixed(1)+'%';});
 }
 
 function renderAll(){renderKpi();renderTable();renderLadder();renderCharts();}
 
-function chipBox(elId,items,set,onAll){
+function chipBox(elId,items,set){
   var el=document.getElementById(elId);
-  var h='<span class="chip sm" data-all="1">전체</span>';
-  h+=items.map(function(x){return '<span class="chip'+(set.has(x)?' on':'')+'" data-v="'+x+'">'+x+'</span>';}).join('');
-  el.innerHTML=h;
+  el.innerHTML='<span class="chip sm" data-all="1">전체</span>'
+    +items.map(function(x){return '<span class="chip'+(set.has(x)?' on':'')+'" data-v="'+x+'">'+(x==='—'?'해당없음':x)+'</span>';}).join('');
   el.querySelectorAll('.chip').forEach(function(c){
     c.addEventListener('click',function(){
       if(c.dataset.all){items.forEach(function(x){set.add(x);});}
-      else{var v=c.dataset.v;
-        if(set.has(v)&&set.size>1)set.delete(v); else set.add(v);}
-      el.querySelectorAll('.chip[data-v]').forEach(function(k){
-        k.classList.toggle('on',set.has(k.dataset.v));});
-      renderAll();
-    });
-  });
+      else{var v=c.dataset.v; if(set.has(v)&&set.size>1)set.delete(v); else set.add(v);}
+      el.querySelectorAll('.chip[data-v]').forEach(function(k){k.classList.toggle('on',set.has(k.dataset.v));});
+      renderAll();});});
 }
 
 document.getElementById('sub').textContent=
   'IR Main 8채널 · 2025 vs 2026 Jan~Aug · 판매=ir-monthly-psi 실측 월마감(수량) · 손익=GPC Accrual · 생성 '+M.generatedAt;
 chipBox('chCh',CH,SEL.ch);
 chipBox('chMo',MO,SEL.mo);
+chipBox('chCat',CAT,SEL.cat);
+chipBox('chCmp',CMP,SEL.cmp);
 (function(){
   var el=document.getElementById('chYr');
   var opts=[['2025','2025'],['2026','2026'],['delta','증감']];
@@ -337,9 +322,7 @@ chipBox('chMo',MO,SEL.mo);
     c.addEventListener('click',function(){
       LADYR=c.dataset.y;
       el.querySelectorAll('.chip').forEach(function(k){k.classList.toggle('on',k.dataset.y===LADYR);});
-      renderLadder();
-    });
-  });
+      renderLadder();});});
 })();
 renderAll();
 </script>
