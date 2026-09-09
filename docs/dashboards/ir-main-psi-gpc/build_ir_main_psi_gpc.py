@@ -112,10 +112,15 @@ def main():
                 g = gpc[(y, ch, m)]
                 nsv = g["gsv"] + g["yed"] + g["adc"] + g["vpd"] + g["dsi"]
                 gp = nsv - g["cogs"] + g["inv"] + g["vsp"]
+                # GPC 손익 사다리 전 항목 (gpc 대시보드 LADDER 와 동일 순서·부호 규약)
+                #   GSV → YED·ADC·VPD·DSI(할인 4종, 음수) → NSV → COGS·INV·VSP → GP, GM%=GP/NSV
                 rec = {"st": p["st"], "so": p["so"], "stk": p["stk"],
                        "oud": round(oud[(ch, m)]) if y == "2026" else None,
-                       "gsv": round(g["gsv"], 2), "nsv": round(nsv, 2),
-                       "gp": round(gp, 2), "cogs": round(g["cogs"], 2)}
+                       "gsv": round(g["gsv"], 2), "yed": round(g["yed"], 2),
+                       "adc": round(g["adc"], 2), "vpd": round(g["vpd"], 2),
+                       "dsi": round(g["dsi"], 2), "nsv": round(nsv, 2),
+                       "cogs": round(g["cogs"], 2), "inv": round(g["inv"], 2),
+                       "vsp": round(g["vsp"], 2), "gp": round(gp, 2)}
                 data[y][ch][m] = rec
 
     payload = {
@@ -125,6 +130,8 @@ def main():
             "months": MONTHS,
             "years": YEARS,
             "oudAsOf": oud_asof,
+            "ladder": [["gsv","GSV"],["yed","YED"],["adc","ADC"],["vpd","VPD"],["dsi","DSI"],
+                       ["nsv","NSV"],["cogs","COGS"],["inv","INV"],["vsp","VSP"],["gp","GP"]],
             "notes": {
                 "psi": "ir-monthly-psi 실측 월마감 (수량, 대)",
                 "oud": "2026 만. 각 월 마지막 주차 스냅샷 (ir-total)",
