@@ -136,49 +136,42 @@
     <div class="subtitle">IR Ch. Dashboard</div>
   </div>
 
-  <nav class="nav-links">
-    <a class="nav-link" href="/"><span class="nav-link-icon">🏠</span> Home</a>
-    <a class="nav-link" href="/#management"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/or/"><span class="nav-link-icon">📦</span> OR Ch.</a>
-    <a class="nav-link active" href="/ir/"><span class="nav-link-icon">📊</span> IR Ch.</a>
-    <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
-    <a class="nav-link" href="/gtm/"><span class="nav-link-icon">🎯</span> GTM Dashboard</a>
-  </nav>
+  <nav class="nav-links" id="navLinks"></nav>
 
   <div class="grid" id="dashboardGrid"></div>
 
 
   <script>
-    const IR_GROUP = {
-      name: 'IR Ch. Dashboard',
-      description: 'IR channel dashboards (16)',
-      icon: '📊',
-      children: [
-        { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-        { name: 'IR Monthly PSI', description: 'IR 8 channels + Others monthly Sell-Thru/Sell-Out/Stock PSI — 2023–2026', url: '/dashboards/ir-monthly-psi/', icon: '📊', indent: true },
-        { name: 'Total IR Monthly', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
-        { name: 'IR 8 Ch. Weekly Sell Out', description: 'IR 8 channels unified sell-out dashboard', url: '/dashboards/unified-sellout/', icon: '📦' },
-        { name: 'BH Weekly Sell Out', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
-        { name: 'BM Weekly Sell Out', description: 'Bin Momen LG AC weekly sell-out dashboard', url: '/dashboards/bm-sellout/', icon: '🏪', indent: true },
-        { name: 'Tamkeen Weekly Sell Out', description: 'Tamkeen LG AC weekly sell-out dashboard', url: '/dashboards/tamkeen-sellout/', icon: '🏪', indent: true },
-        { name: 'Star Appliance Weekly Sell Out', description: 'Star Appliance LG AC weekly sell-out dashboard', url: '/dashboards/star-appliance-sellout/', icon: '🏪', indent: true },
-        { name: 'Al Shathri Weekly Sell Out', description: 'Al Shathri LG AC weekly sell-out dashboard', url: '/dashboards/al-shathri-sellout/', icon: '🏪' },
-        { name: 'Dhamin Weekly Sell Out', description: 'Dhamin LG AC weekly sell-out dashboard', url: '/dashboards/dhamin-sellout/', icon: '🏪', indent: true },
-        { name: 'Al Ghanem Weekly Sell Out', description: 'Al Ghanem LG AC weekly sell-out dashboard', url: '/dashboards/al-ghanem-sellout/', icon: '🏪', indent: true },
-        { name: 'Zagzoog Weekly Sell Out', description: 'Zagzoog LG AC weekly sell-out dashboard', url: '/dashboards/zagzoog-sellout/', icon: '🏪', indent: true },
-        { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud AC price tracker', url: '/dashboards/bh-price/', icon: '💰' },
-        { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '💰' },
-        { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '💰', indent: true },
-        { name: 'Al Shathri Price Tracking', description: 'Al Shathri AC price tracker (2026-07-28 개시 · 이력 짧음)', url: '/dashboards/alshathri-price/', icon: '💰', indent: true },
-        { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '💰' },
-        { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '💰', indent: true },
-      ],
-    };
+
+    // 카드 정의는 HTML 에 두지 않는다 — 권한 없는 항목이 소스 보기로 노출되기 때문.
+    // 미들웨어(/api/cards)가 로그인 사용자 권한에 맞는 카드만 만들어 내려보낸다.
+    let IR_GROUP = { name: '', description: '', icon: '', children: [] };
+
+    // 내비는 서버가 권한에 맞춰 내려준 것만 그린다 (메뉴명 자체를 HTML 에 두지 않는다)
+    function renderNav(nav, activeId) {
+      const el = document.getElementById('navLinks');
+      if (!el) return;
+      el.innerHTML = nav.map(n =>
+        `<a class="nav-link${n.id === activeId ? ' active' : ''}" href="${esc(n.href)}" data-nav="${esc(n.id)}">`
+        + `<span class="nav-link-icon">${n.icon}</span> ${esc(n.label)}</a>`
+      ).join('');
+    }
+
+    async function loadCards() {
+      const r = await fetch('/api/cards?hub=ir', { cache: 'no-store' });
+      if (!r.ok) throw new Error('cards ' + r.status);
+      return await r.json(); // { nav, groups }
+    }
 
     function esc(str) {
       const div = document.createElement('div');
       div.textContent = str || '';
       return div.innerHTML;
+    }
+
+    // 설명 끝의 (N) 은 권한 필터 후 실제 카드 수로 교체한다 (고정값은 사람마다 거짓이 됨)
+    function countLabel(desc, n) {
+      return /\(\d+\)\s*$/.test(desc) ? desc.replace(/\(\d+\)\s*$/, `(${n})`) : desc;
     }
 
     function render() {
@@ -200,7 +193,7 @@
           <div class="card">
             <div class="card-icon">${g.icon}</div>
             <div class="card-name">${esc(g.name)} <span class="accordion-arrow">&#9660;</span></div>
-            <div class="card-desc">${esc(g.description)}</div>
+            <div class="card-desc">${esc(countLabel(g.description, g.children.length))}</div>
             <div class="sub-list">${subItems}</div>
           </div>
         </div>
@@ -213,7 +206,11 @@
       });
     }
 
-    render();
+    loadCards().then(d => {
+      renderNav(d.nav, 'ir');
+      if (d.groups.length) { IR_GROUP = d.groups[0]; render(); }
+      else document.getElementById('dashboardGrid').innerHTML = '<p style="grid-column:1/-1;padding:32px;color:#8888aa;font-size:14px">No dashboards are assigned to your account. Please contact the administrator.</p>';
+    }).catch(e => { document.getElementById('dashboardGrid').innerHTML = '<p style="grid-column:1/-1;padding:32px;color:#8888aa;font-size:14px">Failed to load dashboards. Please reload.</p>'; });
 
     (function initAuth() {
       const authBar = document.getElementById('authBar');

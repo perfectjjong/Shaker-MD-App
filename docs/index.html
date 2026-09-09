@@ -326,148 +326,31 @@
     <div class="subtitle">Management Dashboard</div>
   </div>
 
-  <nav class="nav-links">
-    <a class="nav-link" href="/" id="navHome"><span class="nav-link-icon">🏠</span> Home</a>
-    <a class="nav-link" href="/#management" id="navMgmt"><span class="nav-link-icon">📋</span> Management</a>
-    <a class="nav-link" href="/or/" id="navOR"><span class="nav-link-icon">📦</span> OR Ch.</a>
-    <a class="nav-link" href="/ir/" id="navIR"><span class="nav-link-icon">📊</span> IR Ch.</a>
-    <a class="nav-link" href="/price/"><span class="nav-link-icon">💰</span> Price Tracking</a>
-    <a class="nav-link" href="/gtm/"><span class="nav-link-icon">🎯</span> GTM Dashboard</a>
-  </nav>
+  <nav class="nav-links" id="navLinks"></nav>
 
   <div class="grid" id="dashboardGrid"></div>
 
   <script>
-    const GROUPS = [
-      {
-        name: 'Management Dashboard',
-        description: 'Management dashboards (6)',
-        icon: '📋',
-        children: [
-          { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-          { name: 'B2C 13 Ch. Monthly PSI', description: 'OR 5 + IR 8 channels combined monthly Sell-Thru/Sell-Out/Stock PSI', url: '/dashboards/b2c-monthly-psi/', icon: '📊', indent: true },
-          { name: 'B2C 13 Ch. Weekly Sell Out', description: 'IR 8 + OR 5 channels combined sell-out dashboard', url: '/dashboards/b2c-unified/', icon: '🌐', indent: true },
-          { name: 'eXtra All Division', description: 'eXtra management dashboard', url: '/dashboards/extra-mgmt/', icon: '🛒', indent: true },
-          { name: 'AR Detail', description: 'AR detail dashboard', url: 'https://b2c-dash.pages.dev/AR%20Dashboard%20Live', icon: '📄', indent: true },
-          { name: 'Monthly AR Comparison', description: 'B2C AR/DSO monthly analysis (FH Matrix · 87 channels)', url: '/dashboards/ir-ar-analysis-2026apr/', icon: '⚖️' },
-        ],
-      },
-      {
-        name: 'OR Ch. Dashboard',
-        description: 'OR channel dashboards (13)',
-        icon: '📦',
-        children: [
-          { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-          { name: 'OR 5 Ch. Monthly PSI', description: 'OR 5 channels monthly PSI integrated dashboard', url: '/dashboards/or-monthly-psi/', icon: '📊', indent: true },
-          { name: 'eXtra AC Business Sell Out', description: 'eXtra AC business sell-out dashboard', url: '/dashboards/extra-ac-business/', icon: '📈' },
-          { name: 'OR 5 Ch. Weekly Sell Out', description: 'OR 5 channels unified sell-out dashboard', url: '/dashboards/or-weekly/', icon: '📦' },
-          { name: 'eXtra Weekly MS Dashboard - Qty', description: 'eXtra weekly MS (Market Share) dashboard - full analysis', url: '/dashboards/extra-ms/', icon: '📊', indent: true },
-          { name: 'eXtra Weekly MS Dashboard - Value', description: 'eXtra weekly MS dashboard - value (SAR) based analysis', url: '/dashboards/extra-ms-value/', icon: '💹', indent: true },
-          { name: 'eXtra Weekly Sell Out', description: 'eXtra weekly sell-out dashboard', url: '/dashboards/extra-sellout/', icon: '🏪', indent: true },
-          { name: 'Al Manea Weekly Sell Out', description: 'Al Manea OR channel sell-out dashboard', url: '/dashboards/or-al-manea/', icon: '🏪' },
-          { name: 'SWS Weekly Sell Out', description: 'SWS OR channel sell-out dashboard', url: '/dashboards/or-sws/', icon: '🏪', indent: true },
-          { name: 'Black Box Weekly Sell Out', description: 'Black Box OR channel sell-out dashboard', url: '/dashboards/or-black-box/', icon: '🏪' },
-          { name: 'Al Khunizan Weekly Sell Out', description: 'Al Khunizan OR channel sell-out dashboard', url: '/dashboards/or-al-khunizan/', icon: '🏪', indent: true },
-          { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '💰' },
-          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '💰', indent: true },
-          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '💰' },
-          { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '💰' },
-          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '💰', indent: true },
-        ],
-      },
-      {
-        name: 'IR Ch. Dashboard',
-        description: 'IR channel dashboards (17)',
-        icon: '📊',
-        children: [
-          { name: 'Sell Thru Progress', description: 'Sell thru progress dashboard', url: '/dashboards/sell-thru-progress/', icon: '📊' },
-          { name: 'IR Monthly PSI', description: 'IR 8 channels + Others monthly Sell-Thru/Sell-Out/Stock PSI — 2023–2026', url: '/dashboards/ir-monthly-psi/', icon: '📊', indent: true },
-          { name: 'IR Main PSI + GPC', description: 'IR Main 8 channels — Sell-Thru/Sell-Out/Stock(+OUD) and GPC profit in one view — 2025 vs 2026', url: '/dashboards/ir-main-psi-gpc/', icon: '🧮', indent: true },
-          { name: 'Total IR Monthly', description: 'IR monthly total dashboard', url: '/dashboards/ir-total/', icon: '📅' },
-          { name: 'IR 8 Ch. Weekly Sell Out', description: 'IR 8 channels unified sell-out dashboard', url: '/dashboards/unified-sellout/', icon: '📦' },
-          { name: 'BH Weekly Sell Out', description: 'Bin Hamoud LG AC weekly sell-out dashboard', url: '/dashboards/bh-sellout/', icon: '🏪' },
-          { name: 'BM Weekly Sell Out', description: 'Bin Momen LG AC weekly sell-out dashboard', url: '/dashboards/bm-sellout/', icon: '🏪', indent: true },
-          { name: 'Tamkeen Weekly Sell Out', description: 'Tamkeen LG AC weekly sell-out dashboard', url: '/dashboards/tamkeen-sellout/', icon: '🏪', indent: true },
-          { name: 'Star Appliance Weekly Sell Out', description: 'Star Appliance LG AC weekly sell-out dashboard', url: '/dashboards/star-appliance-sellout/', icon: '🏪', indent: true },
-          { name: 'Al Shathri Weekly Sell Out', description: 'Al Shathri LG AC weekly sell-out dashboard', url: '/dashboards/al-shathri-sellout/', icon: '🏪' },
-          { name: 'Dhamin Weekly Sell Out', description: 'Dhamin LG AC weekly sell-out dashboard', url: '/dashboards/dhamin-sellout/', icon: '🏪', indent: true },
-          { name: 'Al Ghanem Weekly Sell Out', description: 'Al Ghanem LG AC weekly sell-out dashboard', url: '/dashboards/al-ghanem-sellout/', icon: '🏪', indent: true },
-          { name: 'Zagzoog Weekly Sell Out', description: 'Zagzoog LG AC weekly sell-out dashboard', url: '/dashboards/zagzoog-sellout/', icon: '🏪', indent: true },
-          { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud AC price tracker', url: '/dashboards/bh-price/', icon: '💰' },
-          { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '💰' },
-          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '💰', indent: true },
-          { name: 'Al Shathri Price Tracking', description: 'Al Shathri AC price tracker (2026-07-28 개시 · 이력 짧음)', url: '/dashboards/alshathri-price/', icon: '💰', indent: true },
-          { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '💰' },
-          { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '💰', indent: true },
-        ],
-      },
-      {
-        name: 'Price Tracking',
-        description: 'Price tracking (11)',
-        icon: '💰',
-        children: [
-          { name: 'eXtra Price Tracking', description: 'eXtra AC price tracker', url: '/dashboards/extra-price/', icon: '💰' },
-          { name: 'Al Manea Price Tracking', description: 'Al Manea AC price tracker', url: '/dashboards/almanea-price/', icon: '💰', indent: true },
-          { name: 'SWS Price Tracking', description: 'SWS AC price tracker', url: '/dashboards/sws-price/', icon: '💰' },
-          { name: 'Black Box Price Tracking', description: 'Black Box AC price tracker', url: '/dashboards/blackbox-price/', icon: '💰' },
-          { name: 'Al Khunizan Price Tracking', description: 'Al Khunizan AC price tracker', url: '/dashboards/alkhunaizan-price/', icon: '💰', indent: true },
-          { name: 'Bin Hamoud Price Tracking', description: 'Bin Hamoud AC price tracker', url: '/dashboards/bh-price/', icon: '💰' },
-          { name: 'Bin Momen Price Tracking', description: 'Bin Momen AC price tracker', url: '/dashboards/binmomen-price/', icon: '💰' },
-          { name: 'Tamkeen Price Tracking', description: 'Tamkeen AC price tracker', url: '/dashboards/tamkeen-price/', icon: '💰', indent: true },
-          { name: 'Star Appliance Price Tracking', description: 'Star Appliance AC price tracker', url: '/dashboards/najm-price/', icon: '💰' },
-          { name: 'Al Ghanem Price Tracking', description: 'Al Ghanem AC price tracker', url: '/dashboards/technobest-price/', icon: '💰', indent: true },
-        ],
-      },
-      {
-        name: 'GTM Weekly',
-        description: 'GTM weekly reports by channel',
-        icon: '📰',
-        children: [
-          { name: 'GTM Week 35', description: 'OR+IR Combined Weekly Report | W35', url: '/gtm-weekly/combined/w35/', icon: '📋' },
-          { name: 'GTM Week 34', description: 'OR+IR Combined Weekly Report | W34', url: '/gtm-weekly/combined/w34/', icon: '📋' },
-          { name: 'GTM Week 33', description: 'OR+IR Combined Weekly Report | W33', url: '/gtm-weekly/combined/w33/', icon: '📋' },
-          { name: 'GTM Week 32', description: 'OR+IR Combined Weekly Report | W32', url: '/gtm-weekly/combined/w32/', icon: '📋' },
-          { name: 'GTM Week 31', description: 'OR+IR Combined Weekly Report | W31', url: '/gtm-weekly/combined/w31/', icon: '📋' },
-          { name: 'GTM Week 30', description: 'OR+IR Combined Weekly Report | W30', url: '/gtm-weekly/combined/w30/', icon: '📋' },
-          { name: 'GTM Week 29', description: 'OR+IR Combined Weekly Report | W29', url: '/gtm-weekly/combined/w29/', icon: '📋' },
-          { name: 'GTM Week 28', description: 'OR+IR Combined Weekly Report | W28', url: '/gtm-weekly/combined/w28/', icon: '📋' },
-          { name: 'GTM Week 27', description: 'OR+IR Combined Weekly Report | W27', url: '/gtm-weekly/combined/w27/', icon: '📋' },
-          { name: 'GTM Week 26', description: 'OR+IR Combined Weekly Report | W26', url: '/gtm-weekly/combined/w26/', icon: '📋' },
-          { name: 'GTM Week 25', description: 'OR+IR Combined Weekly Report | W25', url: '/gtm-weekly/combined/w25/', icon: '📋' },
-          { name: 'GTM Week 24', description: 'OR+IR Combined Weekly Report | W24', url: '/gtm-weekly/combined/w24/', icon: '📋' },
-          { name: 'GTM Week 23', description: 'OR+IR Combined Weekly Report | W23', url: '/gtm-weekly/combined/w23/', icon: '📋' },
-          { name: 'GTM Week 22', description: 'OR+IR Combined Weekly Report | W22', url: '/gtm-weekly/combined/w22/', icon: '📋' },
-          { name: 'GTM Week 21', description: 'OR+IR Combined Weekly Report | W21', url: '/gtm-weekly/combined/w21/', icon: '📋' },
-          { name: 'GTM Week 20', description: 'OR+IR Combined Weekly Report | W20', url: '/gtm-weekly/combined/w20/', icon: '📋' },
-          { name: 'GTM Week 19', description: 'OR+IR Combined Weekly Report | W19', url: '/gtm-weekly/combined/w19/', icon: '📋' },
-          { name: 'GTM Week 18', description: 'OR+IR Combined Weekly Report | W18', url: '/gtm-weekly/combined/w18/', icon: '📋' },
-        ],
-      },
-      {
-        name: 'GTM Dashboard',
-        description: 'GTM dashboards (7)',
-        icon: '🎯',
-        children: [
-          { name: 'Promoter Sell Out', description: 'Promoter sell out - Power BI', url: 'https://app.powerbi.com/groups/me/apps/08977c0d-1567-4f95-9f8a-5b486e2f02b5?ctid=93febad1-5f14-420f-80bc-103c49a53a7c&experience=power-bi', icon: '📊', indent: true },
-          { name: 'Promoter Evaluation', description: 'Promoter Evaluation Dashboard', url: 'https://kahlout1994.github.io/SLPE/', icon: '📋', indent: true },
-          { name: 'Flooring Status', description: 'ISM and Display Final Dashboard', url: 'https://shaker-flooring-dashboard-673.netlify.app', icon: '🏢', indent: true },
-          { name: 'Indirect Sales Team', description: 'Indirect Sales Team Dashboard', url: 'https://kahlout1994.github.io/SLIST/', icon: '👥', indent: true },
-          { name: 'GTM Budget 2026', description: 'GTM Budget 2026 - Google Sheets', url: 'https://docs.google.com/spreadsheets/d/1KFhrKHV2-_YdENeEpbnrmLQNrvE_SlNTWZLWL5JYfHM/edit?gid=0#gid=0', icon: '💼', indent: true },
-          { name: 'Sell Thru Simulator', description: 'Sell Thru / WOS / Promo rate simulator', url: 'https://perfectjjong.github.io/sellthru-simulator/', icon: '📈', indent: true },
-        ],
-      },
-      {
-        name: 'Archive',
-        description: 'Archived dashboards',
-        icon: '🗄️',
-        children: [
-          { name: '동부지역 출장 보고서 (2026-05-10~11)', description: '담맘 · 동부지역 시장 방문 | OR 2채널 · IR 딜러 7개사 | Action Items 9건 · 🌐 한/EN 토글', url: '/reports/field-report-eastern-20260510-ko.html', icon: '🗺️' },
-          { name: '2026 B2C Business Review (Jan–Apr)', description: '2026 Jan–Apr B2C Business Review | Sell-Thru · Sell-Out · Stock (W18) · OUD (2-May)', url: '/reports/2026_b2c_report_jan_apr_en_s1to5.html', icon: '📊' },
-          { name: '2026 Q1 B2C Business Review', description: 'CEO/EVP Q1 2026 B2C Business Review Report (English)', url: '/reports/q1_2026_ceo_evp_report_v15_en.html', icon: '📄' },
-          { name: '2026Y eXtra Mega Progress', description: 'Mega Promotion Daily Sell-out Dashboard (Apr 26 – May 15, 2026) · YoY vs 2025', url: '/mega-promo/', icon: '🔥' },
-        ],
-      },
-    ];
+
+    // 카드 정의는 HTML 에 두지 않는다 — 권한 없는 항목이 소스 보기로 노출되기 때문.
+    // 미들웨어(/api/cards)가 로그인 사용자 권한에 맞는 카드만 만들어 내려보낸다.
+    let GROUPS = [];
+
+    // 내비는 서버가 권한에 맞춰 내려준 것만 그린다 (메뉴명 자체를 HTML 에 두지 않는다)
+    function renderNav(nav, activeId) {
+      const el = document.getElementById('navLinks');
+      if (!el) return;
+      el.innerHTML = nav.map(n =>
+        `<a class="nav-link${n.id === activeId ? ' active' : ''}" href="${esc(n.href)}" data-nav="${esc(n.id)}">`
+        + `<span class="nav-link-icon">${n.icon}</span> ${esc(n.label)}</a>`
+      ).join('');
+    }
+
+    async function loadCards() {
+      const r = await fetch('/api/cards?hub=main', { cache: 'no-store' });
+      if (!r.ok) throw new Error('cards ' + r.status);
+      return await r.json(); // { nav, groups }
+    }
 
     function esc(str) {
       const div = document.createElement('div');
@@ -480,18 +363,18 @@
       return 'home';
     }
 
-    function updateNav() {
-      const view = getView();
-      document.getElementById('navHome').classList.toggle('active', view === 'home');
-      document.getElementById('navMgmt').classList.toggle('active', view === 'management');
+
+    // 접힘 기본값은 카드 정의(cards.json)의 collapsed 플래그를 따른다 —
+    // 그룹명을 HTML 에 두면 권한 없는 그룹의 존재가 소스에 드러난다.
+    function isOpenByDefault(group) {
+      const isMobile = window.matchMedia('(max-width: 700px)').matches;
+      if (isMobile) return group === GROUPS[0];
+      return !group.collapsed;
     }
 
-    const COLLAPSED_BY_DEFAULT_DESKTOP = ['GTM Weekly', 'GTM Dashboard', 'Archive'];
-
-    function isOpenByDefault(groupName) {
-      const isMobile = window.matchMedia('(max-width: 700px)').matches;
-      if (isMobile) return groupName === 'Management Dashboard';
-      return !COLLAPSED_BY_DEFAULT_DESKTOP.includes(groupName);
+    // 설명 끝의 (N) 은 권한 필터 후 실제 카드 수로 교체한다 (고정값은 사람마다 거짓이 됨)
+    function countLabel(desc, n) {
+      return /\(\d+\)\s*$/.test(desc) ? desc.replace(/\(\d+\)\s*$/, `(${n})`) : desc;
     }
 
     function render() {
@@ -510,13 +393,13 @@
             <span class="sub-item-arrow">&rarr;</span>
           </a>
         `).join('');
-        const openClass = isOpenByDefault(g.name) ? ' open' : '';
+        const openClass = isOpenByDefault(g) ? ' open' : '';
         return `
           <div class="accordion-card${openClass}" onclick="this.classList.toggle('open')">
             <div class="card">
               <div class="card-icon">${g.icon}</div>
               <div class="card-name">${esc(g.name)} <span class="accordion-arrow">&#9660;</span></div>
-              <div class="card-desc">${esc(g.description)}</div>
+              <div class="card-desc">${esc(countLabel(g.description, g.children.length))}</div>
               <div class="sub-list">${subItems}</div>
             </div>
           </div>
@@ -530,9 +413,15 @@
       });
     }
 
-    window.addEventListener('hashchange', () => { updateNav(); render(); });
-    updateNav();
-    render();
+    let NAV = [];
+    window.addEventListener('hashchange', () => { renderNav(NAV, getView() === 'management' ? 'mgmt' : 'home'); render(); });
+    loadCards().then(d => {
+      NAV = d.nav;
+      GROUPS = d.groups;
+      renderNav(NAV, getView() === 'management' ? 'mgmt' : 'home');
+      render();
+      if (!GROUPS.length) document.getElementById('dashboardGrid').innerHTML = '<p style="grid-column:1/-1;padding:32px;color:#8888aa;font-size:14px">No dashboards are assigned to your account. Please contact the administrator.</p>';
+    }).catch(e => { document.getElementById('dashboardGrid').innerHTML = '<p style="grid-column:1/-1;padding:32px;color:#8888aa;font-size:14px">Failed to load dashboards. Please reload.</p>'; });
 
     // Cloudflare Access authentication
     (function initAuth() {

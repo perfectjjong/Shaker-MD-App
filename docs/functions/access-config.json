@@ -1,0 +1,186 @@
+{
+  "version": 2,
+  "_note": "권한 정본. groups 는 scripts/build_access_groups.py 가 생성(수기 편집 금지). superusers/users/default 만 손으로 관리.",
+  "superusers": [
+    "perfectjjong@gmail.com",
+    "j_park@shaker.com.sa"
+  ],
+  "groups": {
+    "management": [
+      "dash:sell-thru-progress",
+      "dash:b2c-monthly-psi",
+      "dash:b2c-unified",
+      "dash:extra-mgmt",
+      "dash:ir-ar-analysis-2026apr"
+    ],
+    "or": [
+      "dash:sell-thru-progress",
+      "dash:or-monthly-psi",
+      "dash:extra-ac-business",
+      "dash:or-weekly",
+      "dash:extra-ms",
+      "dash:extra-ms-value",
+      "dash:extra-sellout",
+      "dash:or-al-manea",
+      "dash:or-sws",
+      "dash:or-black-box",
+      "dash:or-al-khunizan",
+      "dash:extra-price",
+      "dash:almanea-price",
+      "dash:sws-price",
+      "dash:blackbox-price",
+      "dash:alkhunaizan-price"
+    ],
+    "ir": [
+      "dash:sell-thru-progress",
+      "dash:ir-monthly-psi",
+      "dash:ir-total",
+      "dash:unified-sellout",
+      "dash:bh-sellout",
+      "dash:bm-sellout",
+      "dash:tamkeen-sellout",
+      "dash:star-appliance-sellout",
+      "dash:al-shathri-sellout",
+      "dash:dhamin-sellout",
+      "dash:al-ghanem-sellout",
+      "dash:zagzoog-sellout",
+      "dash:bh-price",
+      "dash:binmomen-price",
+      "dash:tamkeen-price",
+      "dash:alshathri-price",
+      "dash:najm-price",
+      "dash:technobest-price"
+    ],
+    "price": [
+      "dash:extra-price",
+      "dash:almanea-price",
+      "dash:sws-price",
+      "dash:blackbox-price",
+      "dash:alkhunaizan-price",
+      "dash:bh-price",
+      "dash:binmomen-price",
+      "dash:tamkeen-price",
+      "dash:najm-price",
+      "dash:technobest-price"
+    ],
+    "gtm-weekly": [
+      "sec:gtm-weekly"
+    ],
+    "gtm": [
+      "sec:gtm"
+    ],
+    "archive": [
+      "sec:reports",
+      "sec:mega-promo"
+    ],
+    "personal": [
+      "dash:ir-main-psi-gpc",
+      "dash:team-ir",
+      "dash:team-or",
+      "dash:ch-al-ghanem",
+      "dash:ch-al-khunizan",
+      "dash:ch-al-manea",
+      "dash:ch-al-shathri",
+      "dash:ch-bh",
+      "dash:ch-black-box",
+      "dash:ch-bm",
+      "dash:ch-dhamin",
+      "dash:ch-extra",
+      "dash:ch-star-appliance",
+      "dash:ch-sws",
+      "dash:ch-tamkeen",
+      "dash:ch-zagzoog",
+      "dash:fg-available",
+      "dash:fg-psi",
+      "sec:psi",
+      "dash:gpc",
+      "dash:ar-detail",
+      "dash:ir-ar-analysis-2026apr-ko",
+      "dash:ir-ar-analysis-2026apr-en",
+      "dash:gfk-ac-split",
+      "dash:split-sellout-fcst-h2-2026",
+      "dash:h2-strategy-2026",
+      "dash:extra-simulator",
+      "dash:us-stock-mag7"
+    ]
+  },
+  "users": {
+    "eddiejun@shaker.com.sa": {
+      "groups": [
+        "management",
+        "or",
+        "ir",
+        "price",
+        "gtm-weekly",
+        "gtm"
+      ],
+      "resources": []
+    },
+    "ahmed_hashad@shaker.com.sa": {
+      "groups": [
+        "or",
+        "price",
+        "gtm-weekly"
+      ],
+      "resources": []
+    },
+    "sherif.hassan@shaker.com.sa": {
+      "groups": [
+        "ir",
+        "price",
+        "gtm-weekly"
+      ],
+      "resources": []
+    },
+    "s_siddique@shaker.com.sa": {
+      "groups": [
+        "or",
+        "ir",
+        "price",
+        "gtm-weekly",
+        "gtm"
+      ],
+      "resources": []
+    },
+    "a_alkahlout@shaker.com.sa": {
+      "groups": [
+        "or",
+        "ir",
+        "price",
+        "gtm-weekly",
+        "gtm"
+      ],
+      "resources": []
+    },
+    "m_abrarahmed@shaker.com.sa": {
+      "groups": [
+        "management",
+        "or",
+        "ir",
+        "gtm-weekly",
+        "gtm"
+      ],
+      "resources": []
+    },
+    "w_kamal@shaker.com.sa": {
+      "groups": [
+        "ir",
+        "price",
+        "gtm-weekly"
+      ],
+      "resources": []
+    },
+    "a_fathi@shaker.com.sa": {
+      "groups": [
+        "ir",
+        "price",
+        "gtm-weekly"
+      ],
+      "resources": []
+    }
+  },
+  "default": {
+    "groups": [],
+    "resources": []
+  }
+}
