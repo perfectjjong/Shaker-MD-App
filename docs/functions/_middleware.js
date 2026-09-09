@@ -68,6 +68,8 @@ export function allowedFor(email) {
   const u = (cfg.users || {})[e] || cfg.default || { groups: [], resources: [] };
   const set = new Set(u.resources || []);
   for (const g of u.groups || []) for (const r of (cfg.groups || {})[g] || []) set.add(r);
+  // 그룹은 주되 그 안의 특정 대시보드만 회수 (그룹째 빼면 나머지까지 잃는다)
+  for (const r of u.exclude || []) set.delete(r);
   return set;
 }
 

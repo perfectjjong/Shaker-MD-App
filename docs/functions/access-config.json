@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "_note": "권한 정본. groups 는 scripts/build_access_groups.py 가 생성(수기 편집 금지). superusers/users/default 만 손으로 관리.",
+  "_note": "권한 정본. groups 는 scripts/build_access_groups.py 가 생성(수기 편집 금지). superusers/users/default 만 손으로 관리. users[*].exclude = 그룹은 주되 특정 자원만 회수.",
   "superusers": [
     "perfectjjong@gmail.com",
     "j_park@shaker.com.sa"
@@ -160,7 +160,10 @@
         "gtm-weekly",
         "gtm"
       ],
-      "resources": []
+      "resources": [],
+      "exclude": [
+        "dash:gpc"
+      ]
     },
     "w_kamal@shaker.com.sa": {
       "groups": [
