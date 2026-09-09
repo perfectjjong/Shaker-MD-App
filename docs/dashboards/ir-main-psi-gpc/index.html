@@ -102,8 +102,8 @@
       <div id="c1"></div>
     </div>
     <div class="card">
-      <h3>월별 NSV · GP%</h3>
-      <div class="cs">막대=NSV(SAR) · 선=GP%</div>
+      <h3>월별 NSV · GM%</h3>
+      <div class="cs">막대=NSV(SAR) · 선=GM%</div>
       <div id="c2"></div>
     </div>
   </div>
@@ -151,7 +151,7 @@ function renderKpi(){
     {k:'재고 +OUD (대)',v:n0(b.stk+b.oud),d:'재고 '+n0(b.stk)+' + OUD '+n0(b.oud)+' &nbsp;|&nbsp; 재고만 YoY '+yoy(a.stk,b.stk)},
     {k:'GSV (SAR)',v:money(b.gsv),d:'2025 '+money(a.gsv)+' · '+yoy(a.gsv,b.gsv)},
     {k:'GP (SAR)',v:money(b.gp),d:'2025 '+money(a.gp)+' · '+yoy(a.gp,b.gp)},
-    {k:'GP%',v:pct(b.nsv?b.gp/b.nsv*100:null),d:'2025 '+pct(a.nsv?a.gp/a.nsv*100:null)}
+    {k:'GM%',v:pct(b.nsv?b.gp/b.nsv*100:null),d:'2025 '+pct(a.nsv?a.gp/a.nsv*100:null)}
   ];
   document.getElementById('kpis').innerHTML=k.map(function(x){
     return '<div class="kpi"><div class="k">'+x.k+'</div><div class="v">'+x.v+'</div><div class="d">'+x.d+'</div></div>';
@@ -170,11 +170,11 @@ function renderTable(){
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">재고25</th><th>재고26</th><th>OUD26</th><th>26 합</th>'
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
-    +'<th class="sep">NSV26</th><th>GP26</th><th>GP%26</th><th>GP%25</th>'
+    +'<th class="sep">NSV26</th><th>GP26</th><th>GM%26</th><th>GM%25</th>'
     +'</tr></thead><tbody>';
   chans().forEach(function(c){
     var a=agg('2025',c), b=agg('2026',c);
-    var gp25=a.nsv?a.gp/a.nsv*100:null, gp26=b.nsv?b.gp/b.nsv*100:null;
+    var gm25=a.nsv?a.gp/a.nsv*100:null, gm26=b.nsv?b.gp/b.nsv*100:null;   // GM% = GP/NSV
     h+='<tr><td>'+c+'</td>'
       +'<td>'+n0(a.st)+'</td><td>'+n0(b.st)+'</td><td>'+yoy(a.st,b.st)+'</td>'
       +'<td class="sep">'+n0(a.so)+'</td><td>'+n0(b.so)+'</td><td>'+yoy(a.so,b.so)+'</td>'
@@ -182,8 +182,8 @@ function renderTable(){
       +'<td style="color:var(--oud)">'+n0(b.oud)+'</td><td><b>'+n0(b.stk+b.oud)+'</b></td>'
       +'<td class="sep">'+money(a.gsv)+'</td><td>'+money(b.gsv)+'</td><td>'+yoy(a.gsv,b.gsv)+'</td>'
       +'<td class="sep">'+money(b.nsv)+'</td><td>'+money(b.gp)+'</td>'
-      +'<td class="'+(gp26!=null&&gp26<0?'neg':'')+'"><b>'+pct(gp26)+'</b></td>'
-      +'<td class="mut">'+pct(gp25)+'</td></tr>';
+      +'<td class="'+(gm26!=null&&gm26<0?'neg':'')+'"><b>'+pct(gm26)+'</b></td>'
+      +'<td class="mut">'+pct(gm25)+'</td></tr>';
   });
   var A=aggAll('2025'), B=aggAll('2026');
   h+='</tbody><tfoot><tr><td>합계 ('+chans().length+')</td>'
