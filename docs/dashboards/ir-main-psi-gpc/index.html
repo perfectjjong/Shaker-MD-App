@@ -213,11 +213,10 @@ function renderTable(){
   document.getElementById('main').innerHTML=h;
   document.getElementById('tblSub').textContent=
     '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lastMo()+' 월말 시점';
-  var oudCatOff=CAT.filter(function(c){return SEL.cat.has(c)&&['Cassette AC','Concealed Set','Multi-V','Unitary Package'].indexOf(c)>=0;});
   document.getElementById('tblNote').innerHTML=
     '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오.<br>'
     +'· 카테고리 축은 <b>shared_category SSOT</b>로 통일했고, <b>압축기(Inverter/On-Off)는 별도 축</b>입니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
-    +(oudCatOff.length?'· ⚠️ <b>OUD 원본은 Split·Window·Floor Standing·Others만 제공</b>합니다 — 선택하신 '+oudCatOff.join('·')+'는 OUD가 0으로 나옵니다.<br>':'')
+    +'· OUD는 <b>05. OUD 원본 xlsx(Group 11종)</b>를 직접 읽어 전 카테고리를 담고 있습니다. 분리형은 OBD 라인이 실내기·실외기로 나뉘므로 <b>세트 환산(shared_set_rule, 세트=min(IDU,ODU))</b>을 거칩니다.<br>'
     +'· 2026 월말 OUD 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
     +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
 }

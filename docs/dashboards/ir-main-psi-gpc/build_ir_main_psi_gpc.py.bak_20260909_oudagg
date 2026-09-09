@@ -22,28 +22,17 @@
 
 ⚠️ 앵커/역산은 여기 없다. 그건 주간 채널 대시보드(inject_ir_monthly_stock_from_irtotal.py) 얘기다.
 ⚠️ 2026-08 GPC 는 가마감(재무 확정 전) — 화면에 표기한다.
-🔴 OUD 는 **원본 xlsx 를 직접 읽는다**(2026-09-09 형님 지적).
-   ir-total 의 oudDealerCategory 는 OUD_GROUP_TO_IR 로 5종까지 접혀 있어
-   Cassette/Concealed/Multi-V/Unitary/CAC 가 사라진다. 원본 Detail1 시트의 `Group` 컬럼은
-   11종(Split Inve·Split on/o·Window On/·Free Stand·Cassette·Concealed·CAC Ducted·
-   Multi-V·Unitary Pa·Accessorie·installati)을 그대로 갖고 있고 Split 인버터/온오프도 구분된다.
-   → 가공 집계 말고 원본을 쓴다. 월마감 = 그 달 마지막 스냅샷 파일.
+⚠️ OUD 는 카테고리 5종(Split Inverter/ON-OFF·Window·Floor Standing·Others)만 제공 →
+   Cassette/Concealed/Multi-V/Unitary 로 필터하면 OUD 는 0 이다. 화면에 명시한다.
 """
-import glob, json, os, re, sys, datetime
+import json, os, re, sys, datetime
 from collections import defaultdict
-
-import openpyxl
 
 D = os.path.expanduser("~/Shaker-MD-App/docs/dashboards")
 OUT = os.path.join(D, "ir-main-psi-gpc", "data.js")
-OUD_DIR = ("/home/ubuntu/2026/10. Automation/00. Sell Thru Dashboard/00. Raw Data/02. 2026/05. OUD")
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
 from shared_classification import channel_from_name
 from shared_category import normalize_category
-import shared_set_rule as _SSR
-
-# IR SAP 라인 데이터의 짝 카테고리 — unified_sellout_dashboard_generator.PAIR_CATS_SAP 와 동일
-PAIR_CATS_SAP = {'Split AC', 'Cassette AC', 'Concealed Set', 'Floor Standing AC'}
 
 IR_MAIN = ["BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
            "Al Ghanem", "Dhamin", "Zagzoog"]
@@ -76,82 +65,6 @@ def _js(path, const=None):
     return json.loads(s.split("=", 1)[1].rstrip().rstrip(";"))
 
 
-_MN = {"JAN":1,"FEB":2,"MAR":3,"APR":4,"APRIL":4,"MAY":5,"JUN":6,"JUNE":6,
-       "JUL":7,"JULY":7,"AUG":8,"SEP":9,"OCT":10,"NOV":11,"DEC":12}
-
-
-def _oud_date(path):
-    m = re.match(r"(\d{1,2})[-\s]+([A-Za-z]+)[-\s]+(\d{4})", os.path.basename(path))
-    return datetime.date(int(m.group(3)), _MN[m.group(2).upper()], int(m.group(1)))
-
-
-def _oud_month_end_files():
-    """루트 + 하위폴더 전부 스캔(2026-09-07 사고: 자동배치는 하위폴더, 수동은 루트).
-    2026 Jan~Aug 각 월의 **마지막 날짜** 파일을 그 달 월마감 OUD 로 쓴다."""
-    cand = []
-    for d in (OUD_DIR, os.path.join(OUD_DIR, "01. 2026")):
-        if not os.path.isdir(d):
-            continue
-        for f in os.listdir(d):
-            if not f.endswith(".xlsx") or f.startswith("~$"):
-                continue
-            if not re.match(r"\d{1,2}[-\s]+[A-Za-z]+[-\s]+\d{4}", f):
-                continue
-            p = os.path.join(d, f)
-            try:
-                dt = _oud_date(p)
-            except (AttributeError, KeyError, ValueError):
-                continue
-            if dt.year == 2026 and 1 <= dt.month <= 8:
-                cand.append((dt, p))
-    out = {}
-    for dt, p in sorted(cand):
-        out[dt.month] = p          # 정렬 순회라 마지막 값이 그 달 마지막 날짜
-    return out
-
-
-def _oud_rows(path):
-    """원본 → (Customer, Group, Material, R-Qty). 헤더 키워드로 시트·행·컬럼을 찾는다.
-
-    ⚠️ 포맷 드리프트 실측(2026 Jan~Aug): 고객 컬럼명이 'Customer Name'(1~6월) /
-       'Customer'(7~8월), 시트명이 Detail1 / Detail2, 1월만 'PGI Qty' 컬럼이 하나 더 있다.
-       컬럼 좌표를 고정하면 깨진다 — 반드시 헤더 이름으로 찾을 것.
-    """
-    wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-    found = None
-    for ws in wb.worksheets:
-        rows = list(ws.iter_rows(values_only=True))
-        for i, r in enumerate(rows[:8]):
-            if not r:
-                continue
-            names = {str(c).strip() for c in r if c}
-            if ({"Customer", "Customer Name"} & names) and "Group" in names \
-                    and "R-Qty" in names and "Material" in names:
-                found = (rows, i, [str(c).strip() if c else "" for c in r])
-                break
-        if found:
-            break
-    wb.close()
-    if not found:
-        raise ValueError(f"OUD 헤더(Customer/Group/R-Qty) 탐지 실패: {os.path.basename(path)}")
-    rows, hi, hdr = found
-    ci = hdr.index("Customer") if "Customer" in hdr else hdr.index("Customer Name")
-    gi, qi, mi = hdr.index("Group"), hdr.index("R-Qty"), hdr.index("Material")
-    out = []
-    for r in rows[hi + 1:]:
-        if not r or ci >= len(r) or not r[ci]:
-            continue
-        nm = str(r[ci]).strip()
-        if nm.lower().startswith(("total", "grand", "합계")):
-            continue
-        q = r[qi] if qi < len(r) else None
-        if not isinstance(q, (int, float)):
-            continue
-        out.append((nm, str(r[gi]) if gi < len(r) and r[gi] else "",
-                    str(r[mi]) if mi < len(r) and r[mi] else "", float(q)))
-    return out
-
-
 def blank():
     return {k: 0.0 for k in QTY_KEYS + GPC_KEYS}
 
@@ -172,27 +85,26 @@ def main():
                     c["so"] += v["so"] or 0
                     c["stk"] += v["stk"] or 0
 
-    # ── 2) OUD: 원본 xlsx 직접 로드 (2026 만, 각 월 **마지막 스냅샷 파일**) ──
-    # ⚠️ 원본은 OBD 라인이라 분리형이 IDU·ODU 두 행으로 잡힌다. 그대로 더하면 정확히 2배가 된다
-    #    (2026-08-22 실측: Free Stand 2,960 vs 세트 1,480). 세트 환산 SSOT 를 반드시 통과시킨다.
-    asof = {}
-    oud_rows = []
-    for mo_idx, path in _oud_month_end_files().items():
-        m = MONTHS[mo_idx - 1]
-        asof[m] = _oud_date(path).isoformat()
-        for cust, group, material, qty in _oud_rows(path):
-            ch = channel_from_name(cust)
-            if ch not in IR_MAIN:
-                continue
-            oud_rows.append({"ch": ch, "m": m, "model": material,
-                             "cat": normalize_category(group),
-                             "cmp": compressor(group),
-                             "unit": _SSR.unit_type(material), "qty": qty})
-    for r in _SSR.pair_to_sets(oud_rows, group_key=("ch",), model_key="model", cat_key="cat",
-                               unit_key="unit", qty_key="qty", time_key=("m",),
-                               pair_cats=PAIR_CATS_SAP):
-        if r["qty"]:
-            cell[("2026", r["ch"], r["cat"], r["cmp"], r["m"])]["oud"] += r["qty"]
+    # ── 2) OUD: 2026 만, 각 월 마지막 주차 스냅샷 ──
+    t = _js(os.path.join(D, "ir-total", "data_ir.js"))
+    wkdate = {}
+    for e in t["oudMeta"]:
+        mm = re.match(r"(\d+)\s+(\w+)\s+(\d+)", e["label"])
+        wkdate[e["key"]] = datetime.date(int(mm.group(3)), MNUM[mm.group(2)[:3]], int(mm.group(1)))
+    lastwk, asof = {}, {}
+    for k, d in wkdate.items():
+        mo = d.strftime("%b")
+        if mo not in lastwk or wkdate[lastwk[mo]] < d:
+            lastwk[mo], asof[mo] = k, d.isoformat()
+    for r in t["oudDealerCategory"]:
+        ch = channel_from_name(r["dealer"])
+        if ch not in IR_MAIN:
+            continue
+        cat, cmp_ = normalize_category(r["category"]), compressor(r["category"])
+        for m in MONTHS:
+            k = lastwk.get(m)
+            if k and k in r:
+                cell[("2026", ch, cat, cmp_, m)]["oud"] += r[k]["qty"]
 
     # ── 3) GPC: Accrual 라인아이템 ──
     gmeta = _js(os.path.join(D, "gpc", "gpc_data.js"), "GPC_META")
@@ -231,10 +143,10 @@ def main():
             "oudAsOf": {m: asof.get(m) for m in MONTHS},
             "notes": {
                 "psi": "ir-monthly-psi by_ch_cat 실측 월마감 (수량, 대)",
-                "oud": "2026 만. 각 월 마지막 스냅샷 파일(05. OUD 원본) · 세트 환산 shared_set_rule 적용",
+                "oud": "2026 만. 각 월 마지막 주차 스냅샷 (ir-total)",
                 "gpc": "GPC Accrual 라인아이템. NSV=GSV+YED+ADC+VPD+DSI, GP=NSV-COGS+INV+VSP",
                 "axis": "카테고리=shared_category.normalize_category SSOT · 압축기=별도 축",
-                "oudCats": "OUD 는 원본 xlsx Group 컬럼(11종) 기준 — 가공 집계 아님",
+                "oudCats": "OUD 원본은 Split·Window·Floor Standing·Others 만 제공",
             },
         },
         "rows": rows,
