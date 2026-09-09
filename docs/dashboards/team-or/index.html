@@ -474,6 +474,7 @@ function msInit(id,key,label){
   btn.onclick=function(e){e.stopPropagation();
     document.querySelectorAll('.ms').forEach(function(m){if(m!==box)m.classList.remove('open')});
     box.classList.toggle('open')};
+  dd.addEventListener('click',function(e){e.stopPropagation()});
   paint();
 }
 document.addEventListener('click',function(){document.querySelectorAll('.ms').forEach(function(m){m.classList.remove('open')})});
