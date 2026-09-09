@@ -13,9 +13,7 @@ const SECTIONS = ['gtm-weekly', 'gtm', 'psi', 'mega-promo', 'reports'];
 // 서브 허브 페이지 — 카드가 비어도 페이지 제목으로 존재가 드러나므로 그룹 보유자만 연다
 const HUB_ACL = { '/ir/': 'ir', '/or/': 'or', '/price/': 'price' };
 
-function getEmailFromJWT(request) {
-  const jwt = request.headers.get('Cf-Access-Jwt-Assertion');
-  if (!jwt) return null;
+function decodeJWT(jwt) {
   try {
     const parts = jwt.split('.');
     if (parts.length !== 3) return null;
@@ -25,6 +23,23 @@ function getEmailFromJWT(request) {
   } catch (e) {
     return null;
   }
+}
+
+// Access 토큰은 헤더로 오기도, CF_Authorization 쿠키로 오기도 한다.
+// 헤더만 보면 못 받는 경우가 있고, 그러면 email 이 null 이라 접근 제어가 통째로 무력화된다.
+function getEmail(request) {
+  const hdr = request.headers.get('Cf-Access-Jwt-Assertion');
+  if (hdr) {
+    const e = decodeJWT(hdr);
+    if (e) return { email: e, via: 'header' };
+  }
+  const cookie = request.headers.get('Cookie') || '';
+  const m = cookie.match(/(?:^|;\s*)CF_Authorization=([^;]+)/);
+  if (m) {
+    const e = decodeJWT(m[1]);
+    if (e) return { email: e, via: 'cookie' };
+  }
+  return { email: null, via: null };
 }
 
 export function resourceOf(pathname) {
@@ -96,7 +111,15 @@ export async function onRequest(context) {
     return new Response('Not found', { status: 404 });
   }
 
-  const email = getEmailFromJWT(request);
+  const { email, via } = getEmail(request);
+
+  // API 는 미인증이어도 정적 404 로 흘리지 않는다 — 조용히 실패하면 원인을 못 찾는다
+  if (!email && (url.pathname === '/api/cards' || url.pathname === '/api/me')) {
+    return new Response(
+      JSON.stringify({ error: 'unauthenticated', detail: 'Access token not found in header or cookie' }),
+      { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }
+    );
+  }
   if (!email) return next(); // 미인증 — Cloudflare Access 가 리다이렉트 처리
 
   // 보호 대상이 아닌 경로(허브·전역 자산)는 통과.
@@ -137,6 +160,7 @@ export async function onRequest(context) {
     return new Response(
       JSON.stringify({
         email,
+        via,
         superuser: allowed === '*',
         resources: allowed === '*' ? '*' : [...allowed].sort(),
       }),
