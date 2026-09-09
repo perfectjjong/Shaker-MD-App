@@ -58,13 +58,38 @@ GPC_KEYS = ["gsv","yed","adc","vpd","dsi","cogs","inv","vsp"]
 
 
 def compressor(label):
-    """제품형과 별도인 압축기 축. 정본: Split 은 Inverter/On-Off 구분 의무."""
+    """압축기 판정. ⚠️ OUD 원본 Group 은 10자로 잘려 온다('Split Inve','Split on/o') —
+    'inverter'/'on/off' 완전한 단어로 찾으면 OUD 전량이 미분류로 빠진다(2026-09-09 실측 21,675대)."""
     l = str(label).lower()
-    if "inverter" in l:
+    if "inve" in l:
         return "Inverter"
-    if "on/off" in l or "on-off" in l or "onoff" in l:
+    if "on/o" in l or "on-o" in l or "onoff" in l:
         return "On-Off"
     return "—"
+
+
+def display_cat(label):
+    """화면 카테고리 축 (2026-09-09 형님 확정).
+
+    압축기 축이 붙는 카테고리는 **Split 하나뿐**이라(실측: 나머지 7종 전부 '해당없음'),
+    필터를 둘로 나누면 7개 칩이 죽는다. → Split 만 인버터/온오프로 쪼개 **카테고리 축 하나**로 만든다.
+    ir-monthly-psi 의 자체 카테고리 목록과도 같은 형태가 된다.
+    (SSOT normalize_category 는 Split 을 'Split AC' 로 접으므로, 압축기를 여기서 되붙인다 —
+     정본이 요구하는 '인버터/온오프 구분 의무'는 이 축으로 충족된다.)
+    ⚠️ Window 는 OUD 원본에만 On/Off 표기가 있고 PSI·GPC 는 구분하지 않는다 → 쪼개지 않는다."""
+    cat = normalize_category(label)
+    if cat == "Split AC":
+        c = compressor(label)
+        if c == "Inverter":
+            return "Split Inverter"
+        if c == "On-Off":
+            return "Split On/Off"
+    return cat
+
+
+CAT_ORDER = ["Split Inverter", "Split On/Off", "Window AC", "Floor Standing AC",
+             "Cassette AC", "Concealed Set", "CAC Ducted", "Multi-V",
+             "Unitary Package", "Others", "Split AC"]
 
 
 def _js(path, const=None):
@@ -157,17 +182,17 @@ def blank():
 
 
 def main():
-    cell = defaultdict(blank)          # (y, ch, cat, cmp, m) -> metrics
+    cell = defaultdict(blank)          # (y, ch, cat, m) -> metrics
 
     # ── 1) PSI: 채널 x 카테고리 x 월 (수량) ──
     psi = _js(os.path.join(D, "ir-monthly-psi", "psi_data.js"))
     for y in YEARS:
         for ch in IR_MAIN:
             for raw, series in psi["years"][y]["by_ch_cat"][ch].items():
-                cat, cmp_ = normalize_category(raw), compressor(raw)
+                cat = display_cat(raw)
                 for m in MONTHS:
                     v = series[m]
-                    c = cell[(y, ch, cat, cmp_, m)]
+                    c = cell[(y, ch, cat, m)]
                     c["st"] += v["st"] or 0
                     c["so"] += v["so"] or 0
                     c["stk"] += v["stk"] or 0
@@ -185,14 +210,14 @@ def main():
             if ch not in IR_MAIN:
                 continue
             oud_rows.append({"ch": ch, "m": m, "model": material,
-                             "cat": normalize_category(group),
-                             "cmp": compressor(group),
+                             "cat": normalize_category(group),      # 짝맞춤은 SSOT 축으로
+                             "dcat": display_cat(group),            # 표시는 Split 분리 축으로
                              "unit": _SSR.unit_type(material), "qty": qty})
     for r in _SSR.pair_to_sets(oud_rows, group_key=("ch",), model_key="model", cat_key="cat",
                                unit_key="unit", qty_key="qty", time_key=("m",),
                                pair_cats=PAIR_CATS_SAP):
         if r["qty"]:
-            cell[("2026", r["ch"], r["cat"], r["cmp"], r["m"])]["oud"] += r["qty"]
+            cell[("2026", r["ch"], r["dcat"], r["m"])]["oud"] += r["qty"]
 
     # ── 3) GPC: Accrual 라인아이템 ──
     gmeta = _js(os.path.join(D, "gpc", "gpc_data.js"), "GPC_META")
@@ -203,20 +228,18 @@ def main():
             continue
         if r["ch"] != "IR" or r["ac"] not in IR_MAIN:
             continue
-        cat, cmp_ = normalize_category(r["cat"]), compressor(r["cat"])
-        c = cell[(y, r["ac"], cat, cmp_, MONTHS[r["m"] - 1])]
+        c = cell[(y, r["ac"], display_cat(r["cat"]), MONTHS[r["m"] - 1])]
         for k in GPC_KEYS:
             c[k] += r[k]
 
-    cats = sorted({k[2] for k in cell})
-    cmps = ["Inverter", "On-Off", "—"]
-    cmps = [x for x in cmps if any(k[3] == x for k in cell)]
+    seen = {k[2] for k in cell}
+    cats = [c for c in CAT_ORDER if c in seen] + sorted(seen - set(CAT_ORDER))
 
     rows = []
-    for (y, ch, cat, cmp_, m), v in sorted(cell.items()):
+    for (y, ch, cat, m), v in sorted(cell.items()):
         if not any(abs(x) > 0.005 for x in v.values()):
             continue
-        rec = {"y": y, "ch": ch, "cat": cat, "cmp": cmp_, "m": m}
+        rec = {"y": y, "ch": ch, "cat": cat, "m": m}
         for k in QTY_KEYS:
             rec[k] = round(v[k])
         for k in GPC_KEYS:
@@ -227,13 +250,13 @@ def main():
         "meta": {
             "generatedAt": datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),
             "channels": IR_MAIN, "months": MONTHS, "years": YEARS,
-            "cats": cats, "cmps": cmps, "ladder": LADDER,
+            "cats": cats, "ladder": LADDER,
             "oudAsOf": {m: asof.get(m) for m in MONTHS},
             "notes": {
                 "psi": "ir-monthly-psi by_ch_cat 실측 월마감 (수량, 대)",
                 "oud": "2026 만. 각 월 마지막 스냅샷 파일(05. OUD 원본) · 세트 환산 shared_set_rule 적용",
                 "gpc": "GPC Accrual 라인아이템. NSV=GSV+YED+ADC+VPD+DSI, GP=NSV-COGS+INV+VSP",
-                "axis": "카테고리=shared_category.normalize_category SSOT · 압축기=별도 축",
+                "axis": "카테고리=shared_category SSOT + Split 만 인버터/온오프 분리 (압축기 축이 Split 전용이라 단일 축으로 통합)",
                 "oudCats": "OUD 는 원본 xlsx Group 컬럼(11종) 기준 — 가공 집계 아님",
             },
         },
@@ -245,7 +268,6 @@ def main():
 
     print(f"✅ {OUT}  ({len(rows)}행, {os.path.getsize(OUT)/1024:.0f} KB)")
     print(f"   카테고리 {cats}")
-    print(f"   압축기   {cmps}")
     for y in YEARS:
         st = sum(r["st"] for r in rows if r["y"] == y)
         so = sum(r["so"] for r in rows if r["y"] == y)

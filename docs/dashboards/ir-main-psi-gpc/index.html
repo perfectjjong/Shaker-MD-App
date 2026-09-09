@@ -75,7 +75,6 @@
     </div>
     <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line2);padding-top:10px">
       <div><span class="lbl">카테고리</span><span class="chips" id="chCat"></span></div>
-      <div style="margin-left:auto"><span class="lbl">압축기</span><span class="chips" id="chCmp"></span></div>
     </div>
   </div>
 
@@ -118,8 +117,8 @@
 <script src="data.js"></script>
 <script>
 var M=IRM_DATA.meta, R=IRM_DATA.rows;
-var CH=M.channels, MO=M.months, CAT=M.cats, CMP=M.cmps, LAD=M.ladder;
-var SEL={ch:new Set(CH), mo:new Set(MO), cat:new Set(CAT), cmp:new Set(CMP)};
+var CH=M.channels, MO=M.months, CAT=M.cats, LAD=M.ladder;
+var SEL={ch:new Set(CH), mo:new Set(MO), cat:new Set(CAT)};
 var LADYR='2026';
 
 function n0(v){return (v==null||isNaN(v))?'-':Math.round(v).toLocaleString();}
@@ -135,7 +134,7 @@ function lastMo(){var m=months();return m.length?m[m.length-1]:MO[MO.length-1];}
 
 // 행 통과 여부 (채널은 호출부에서 지정)
 function pass(r,ch){
-  return r.ch===ch && SEL.cat.has(r.cat) && SEL.cmp.has(r.cmp);
+  return r.ch===ch && SEL.cat.has(r.cat);
 }
 function blank(){var o={st:0,so:0,stk:0,oud:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};return o;}
 function derive(o){o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp;
@@ -215,7 +214,7 @@ function renderTable(){
     '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lastMo()+' 월말 시점';
   document.getElementById('tblNote').innerHTML=
     '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오.<br>'
-    +'· 카테고리 축은 <b>shared_category SSOT</b>로 통일했고, <b>압축기(Inverter/On-Off)는 별도 축</b>입니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
+    +'· 카테고리 축은 <b>shared_category SSOT</b> 기준이며, <b>Split만 인버터/온오프로 나눴습니다</b> — 압축기 구분이 붙는 카테고리가 Split 하나뿐이라 별도 필터를 두지 않았습니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
     +'· OUD는 <b>05. OUD 원본 xlsx(Group 11종)</b>를 직접 읽어 전 카테고리를 담고 있습니다. 분리형은 OBD 라인이 실내기·실외기로 나뉘므로 <b>세트 환산(shared_set_rule, 세트=min(IDU,ODU))</b>을 거칩니다.<br>'
     +'· 2026 월말 OUD 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
     +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
@@ -284,7 +283,7 @@ function renderCharts(){
     var acc={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
     R.forEach(function(r){
       if(r.y!=='2026'||r.m!==m) return;
-      if(!SEL.ch.has(r.ch)||!SEL.cat.has(r.cat)||!SEL.cmp.has(r.cmp)) return;
+      if(!SEL.ch.has(r.ch)||!SEL.cat.has(r.cat)) return;
       s+=r.so;k+=r.stk;o+=r.oud;
       for(var q in acc)acc[q]+=r[q];});
     var n=acc.gsv+acc.yed+acc.adc+acc.vpd+acc.dsi;
@@ -312,7 +311,6 @@ document.getElementById('sub').textContent=
 chipBox('chCh',CH,SEL.ch);
 chipBox('chMo',MO,SEL.mo);
 chipBox('chCat',CAT,SEL.cat);
-chipBox('chCmp',CMP,SEL.cmp);
 (function(){
   var el=document.getElementById('chYr');
   var opts=[['2025','2025'],['2026','2026'],['delta','증감']];
