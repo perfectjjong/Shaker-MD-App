@@ -320,7 +320,7 @@ class MS {
       lbl.appendChild(sp);list.appendChild(lbl);
     });
     menu.appendChild(list);w.appendChild(menu);this.menuEl=menu;
-    btn.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.ms-menu.open').forEach(m=>{if(m!==menu)m.classList.remove('open')});menu.classList.toggle('open');});
+    menu.addEventListener('click',e=>e.stopPropagation());btn.addEventListener('click',e=>{e.stopPropagation();document.querySelectorAll('.ms-menu.open').forEach(m=>{if(m!==menu)m.classList.remove('open')});menu.classList.toggle('open');});
     this.listEl=list;
     this.el.appendChild(w);this._upd();
   }

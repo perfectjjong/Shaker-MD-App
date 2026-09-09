@@ -474,6 +474,7 @@ function buildMultiSelect(id){
     drop.classList.toggle('open');
     e.stopPropagation();
   });
+  drop.addEventListener('click',e=>e.stopPropagation());
   wrap.appendChild(btn);wrap.appendChild(drop);
   wrap._updateAvailable=function(avail){
     let availCount=0,selectedCount=0;
