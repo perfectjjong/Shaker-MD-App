@@ -614,7 +614,7 @@
       },
       {
         "name": "Personal",
-        "description": "Personal & internal dashboards (27)",
+        "description": "Personal & internal dashboards (28)",
         "icon": "🔒",
         "acl": "personal",
         "collapsed": true,
@@ -623,6 +623,13 @@
             "name": "IR Main PSI + GPC",
             "description": "IR Main 8 channels — Sell-Thru/Sell-Out/Stock(+OUD) and GPC profit in one view — 2025 vs 2026",
             "url": "/dashboards/ir-main-psi-gpc/",
+            "icon": "🧮",
+            "indent": true
+          },
+          {
+            "name": "OR Main PSI + GPC",
+            "description": "OR Main 5 channels — Sell-Thru/Sell-Out/Stock(+OUD) and GPC profit in one view — 2025 vs 2026",
+            "url": "/dashboards/or-main-psi-gpc/",
             "icon": "🧮",
             "indent": true
           },
