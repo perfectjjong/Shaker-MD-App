@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OR Main — 판매 · 손익 통합</title>
+<script>(function(){var NS=22,NE=6;var h=new Date().getHours();var n=(NS>NE)?(h>=NS||h<NE):(h>=NS&&h<NE);document.documentElement.setAttribute('data-theme',n?'dark':'light');})();</script>
+<style>
+  :root{
+    --lg:#8c1d2f; --lg-soft:#f6ebe6;
+    --ink:#191714; --ink2:#453f35; --mut:#948c7b;
+    --bg:#f7f3ea; --card:#fffdf8; --line:#e5ddcb; --line2:#efe9db;
+    --y25:#3a352c; --y26:#8c1d2f; --oud:#a8863c;
+    --pos:#1d6b45; --neg:#b3261e;
+    --r:14px; --sh:0 1px 2px rgba(20,23,28,.04),0 1px 3px rgba(20,23,28,.03);
+  }
+  @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#2e281f;--line2:#272119;--y25:#dcd8d1;--y26:#d68a97;--oud:#c8a860;--pos:#5ba37f;--neg:#e2685c;}}
+  :root[data-theme="dark"]{--lg:#d68a97;--lg-soft:#22130c;--ink:#e2dfdb;--ink2:#d9d5cd;--mut:#c4bfb6;--bg:#191510;--card:#221d17;--line:#2e281f;--line2:#272119;--y25:#dcd8d1;--y26:#d68a97;--oud:#c8a860;--pos:#5ba37f;--neg:#e2685c;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-font-smoothing:antialiased}
+  body{font-family:'Pretendard','Pretendard Variable',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;font-feature-settings:'tnum' 1}
+  .wrap{max-width:1420px;margin:0 auto;padding:24px 28px 56px}
+  h1{font-size:21px;font-weight:700;letter-spacing:-.3px}
+  .sub{color:var(--mut);font-size:12px;margin-top:4px}
+  .bar{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);
+    padding:14px 18px;margin:18px 0 16px;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .lbl{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.4px;text-transform:uppercase;margin-right:8px}
+  .chips{display:inline-flex;flex-wrap:wrap;gap:5px}
+  .chip{border:1px solid var(--line);background:var(--bg);color:var(--ink2);border-radius:8px;
+    padding:4px 11px;font-size:12px;cursor:pointer;user-select:none;font-weight:600}
+  .chip.on{background:var(--lg);border-color:var(--lg);color:#fffdf8}
+  .chip.sm{padding:3px 9px;font-size:11px}
+  .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:14px 16px}
+  .kpi .k{font-size:10.5px;font-weight:700;color:var(--mut);letter-spacing:.4px;text-transform:uppercase}
+  .kpi .v{font-size:21px;font-weight:700;margin-top:5px;letter-spacing:-.5px}
+  .kpi .d{font-size:11px;margin-top:3px;color:var(--mut)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px;margin-bottom:16px}
+  .card h3{font-size:13px;font-weight:700;letter-spacing:.2px;margin-bottom:2px}
+  .card .cs{font-size:11px;color:var(--mut);margin-bottom:14px}
+  .scroll{overflow-x:auto}
+  .scroll table{min-width:100%;width:auto}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;white-space:nowrap}
+  th,td{padding:7px 9px;text-align:right;border-bottom:1px solid var(--line2)}
+  thead th{font-size:10.5px;font-weight:700;color:var(--mut);letter-spacing:.3px;text-transform:uppercase;
+    border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--card);z-index:2}
+  thead tr.grp th{text-align:center;font-size:10px;color:var(--ink2);background:var(--bg);border-bottom:1px solid var(--line)}
+  th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1;font-weight:600}
+  thead tr.grp th:first-child{background:var(--bg)}
+  tbody tr:hover td{background:var(--lg-soft)}
+  tbody tr:hover td:first-child{background:var(--lg-soft)}
+  tfoot td{font-weight:700;background:var(--bg);border-top:1.5px solid var(--line)}
+  tfoot td:first-child{background:var(--bg)}
+  .pos{color:var(--pos)} .neg{color:var(--neg)} .mut{color:var(--mut)}
+  .sep{border-left:1px solid var(--line)}
+  .flag{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:5px;
+    background:var(--lg-soft);color:var(--lg);margin-left:5px;vertical-align:middle}
+  .note{font-size:11px;color:var(--mut);margin-top:10px;line-height:1.7}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+  @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
+  svg text{font-family:inherit}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>OR Main — 판매 · 손익 통합</h1>
+  <div class="sub" id="sub"></div>
+
+  <div class="bar" style="flex-direction:column;align-items:stretch;gap:10px">
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div><span class="lbl">채널</span><span class="chips" id="chCh"></span></div>
+      <div style="margin-left:auto"><span class="lbl">기간</span><span class="chips" id="chMo"></span></div>
+    </div>
+    <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line2);padding-top:10px">
+      <div><span class="lbl">카테고리</span><span class="chips" id="chCat"></span></div>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="card">
+    <h3>채널별 한 판 — 물량(대) · 손익(SAR)</h3>
+    <div class="cs" id="tblSub"></div>
+    <div class="scroll"><table id="main"></table></div>
+    <div class="note" id="tblNote"></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>
+        <h3>손익 사다리 — GPC Accrual</h3>
+        <div class="cs" id="ladSub"></div>
+      </div>
+      <span class="chips" id="chYr"></span>
+    </div>
+    <div class="scroll"><table id="ladder"></table></div>
+    <div class="note">· GSV → 할인 4종(YED·ADC·VPD·DSI) → <b>NSV</b> → COGS·INV·VSP → <b>GP</b> · GM% = GP ÷ NSV<br>
+      · 부호는 원본 그대로입니다 — 할인 4종과 INV는 음수, VSP는 양수. NSV = GSV+YED+ADC+VPD+DSI, GP = NSV−COGS+INV+VSP</div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+var M=IRM_DATA.meta, R=IRM_DATA.rows;
+var CH=M.channels, MO=M.months, CAT=M.cats, LAD=M.ladder;
+var SEL={ch:new Set(CH), mo:new Set(MO), cat:new Set(CAT)};
+var LADYR='2026';
+
+function n0(v){return (v==null||isNaN(v))?'-':Math.round(v).toLocaleString();}
+function money(v){if(v==null||isNaN(v))return '-';var a=Math.abs(v);
+  if(a>=1e6)return (v/1e6).toFixed(2)+'M'; if(a>=1e3)return (v/1e3).toFixed(0)+'K'; return Math.round(v).toLocaleString();}
+function pct(v){return (v==null||isNaN(v)||!isFinite(v))?'-':v.toFixed(1)+'%';}
+function yoy(a,b){if(!a||!isFinite(a))return '<span class="mut">—</span>';
+  var r=(b/a-1)*100, c=r>=0?'pos':'neg';
+  return '<span class="'+c+'">'+(r>=0?'+':'')+r.toFixed(0)+'%</span>';}
+function months(){return MO.filter(function(m){return SEL.mo.has(m);});}
+function chans(){return CH.filter(function(c){return SEL.ch.has(c);});}
+function lastMo(){var m=months();return m.length?m[m.length-1]:MO[MO.length-1];}
+
+// 행 통과 여부 (채널은 호출부에서 지정)
+function pass(r,ch){
+  return r.ch===ch && SEL.cat.has(r.cat);
+}
+function blank(){var o={st:0,so:0,stk:0,oud:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};return o;}
+// 채권 — 카테고리 축이 없는 계정 재무라 SEL.cat 에 반응시키지 않는다.
+// OVD 는 잔액(스냅샷)이라 기간 마지막 달 값, COL 은 월 수금이라 기간 합산.
+function fin(y,ch){
+  var f=(M.fin&&M.fin[ch]&&M.fin[ch][y])||{}, c=0;
+  months().forEach(function(m){ if(f[m]) c+=f[m].col||0; });
+  var lm=lastMo();
+  return {ovd:(f[lm]&&f[lm].ovd)||0, col:c};
+}
+function finAll(y){var o={ovd:0,col:0};
+  chans().forEach(function(c){var x=fin(y,c);o.ovd+=x.ovd;o.col+=x.col;});return o;}
+function derive(o){o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp;
+  o.gm=o.nsv?o.gp/o.nsv*100:null; return o;}
+
+// 흐름=선택월 합 / 잔량(stk·oud)=선택월 중 마지막 달
+function agg(y,ch){
+  var o=blank(), lm=lastMo();
+  R.forEach(function(r){
+    if(r.y!==y||!pass(r,ch)) return;
+    if(SEL.mo.has(r.m)){
+      o.st+=r.st;o.so+=r.so;
+      o.gsv+=r.gsv;o.yed+=r.yed;o.adc+=r.adc;o.vpd+=r.vpd;o.dsi+=r.dsi;
+      o.cogs+=r.cogs;o.inv+=r.inv;o.vsp+=r.vsp;
+    }
+    if(r.m===lm){o.stk+=r.stk;o.oud+=r.oud;}
+  });
+  return derive(o);
+}
+function aggAll(y){
+  var t=blank();
+  chans().forEach(function(c){var a=agg(y,c);
+    ['st','so','stk','oud','gsv','yed','adc','vpd','dsi','cogs','inv','vsp'].forEach(function(k){t[k]+=a[k];});});
+  return derive(t);
+}
+
+function renderKpi(){
+  var a=aggAll('2025'), b=aggAll('2026');
+  var k=[
+    {k:'Sell-Thru (대)',v:n0(b.st),d:'2025 '+n0(a.st)+' · '+yoy(a.st,b.st)},
+    {k:'Sell-Out (대)',v:n0(b.so),d:'2025 '+n0(a.so)+' · '+yoy(a.so,b.so)},
+    {k:'재고 +OUD (대)',v:n0(b.stk+b.oud),d:'재고 '+n0(b.stk)+' + OUD '+n0(b.oud)+' &nbsp;|&nbsp; 재고만 YoY '+yoy(a.stk,b.stk)},
+    {k:'GSV (SAR)',v:money(b.gsv),d:'2025 '+money(a.gsv)+' · '+yoy(a.gsv,b.gsv)},
+    {k:'GP (SAR)',v:money(b.gp),d:'2025 '+money(a.gp)+' · '+yoy(a.gp,b.gp)},
+    {k:'GM%',v:pct(b.gm),d:'2025 '+pct(a.gm)}
+  ];
+  document.getElementById('kpis').innerHTML=k.map(function(x){
+    return '<div class="kpi"><div class="k">'+x.k+'</div><div class="v">'+x.v+'</div><div class="d">'+x.d+'</div></div>';}).join('');
+}
+
+function renderTable(){
+  var h='<thead><tr class="grp"><th></th>'
+    +'<th colspan="3">SELL-THRU (대)</th>'
+    +'<th colspan="3" class="sep">SELL-OUT (대)</th>'
+    +'<th colspan="4" class="sep">재고 · OUD (대)</th>'
+    +'<th colspan="3" class="sep">GSV (SAR)</th>'
+    +'<th colspan="4" class="sep">손익 (SAR)</th>'
+    +'<th colspan="4" class="sep">채권 · 수금 (SAR)</th></tr><tr>'
+    +'<th>채널</th><th>25</th><th>26</th><th>YoY</th>'
+    +'<th class="sep">25</th><th>26</th><th>YoY</th>'
+    +'<th class="sep">재고25</th><th>재고26</th><th>OUD26</th><th>26 합</th>'
+    +'<th class="sep">25</th><th>26</th><th>YoY</th>'
+    +'<th class="sep">NSV26</th><th>GP26</th><th>GM%26</th><th>GM%25</th>'
+    +'<th class="sep">OVD25</th><th>OVD26</th><th>수금25</th><th>수금26</th>'
+    +'</tr></thead><tbody>';
+  chans().forEach(function(c){
+    var a=agg('2025',c), b=agg('2026',c);
+    h+='<tr><td>'+c+'</td>'
+      +'<td>'+n0(a.st)+'</td><td>'+n0(b.st)+'</td><td>'+yoy(a.st,b.st)+'</td>'
+      +'<td class="sep">'+n0(a.so)+'</td><td>'+n0(b.so)+'</td><td>'+yoy(a.so,b.so)+'</td>'
+      +'<td class="sep">'+n0(a.stk)+'</td><td>'+n0(b.stk)+'</td>'
+      +'<td style="color:var(--oud)">'+n0(b.oud)+'</td><td><b>'+n0(b.stk+b.oud)+'</b></td>'
+      +'<td class="sep">'+money(a.gsv)+'</td><td>'+money(b.gsv)+'</td><td>'+yoy(a.gsv,b.gsv)+'</td>'
+      +'<td class="sep">'+money(b.nsv)+'</td><td>'+money(b.gp)+'</td>'
+      +'<td class="'+(b.gm!=null&&b.gm<0?'neg':'')+'"><b>'+pct(b.gm)+'</b></td>'
+      +'<td class="mut">'+pct(a.gm)+'</td>'
+      +(function(){var fa=fin('2025',c), fb=fin('2026',c);
+        return '<td class="sep mut">'+money(fa.ovd)+'</td>'
+             +'<td class="'+(fb.ovd>fa.ovd?'neg':'pos')+'">'+money(fb.ovd)+'</td>'
+             +'<td class="mut">'+money(fa.col)+'</td>'
+             +'<td><b>'+money(fb.col)+'</b></td>';})()
+      +'</tr>';
+  });
+  var A=aggAll('2025'), B=aggAll('2026');
+  h+='</tbody><tfoot><tr><td>합계 ('+chans().length+')</td>'
+    +'<td>'+n0(A.st)+'</td><td>'+n0(B.st)+'</td><td>'+yoy(A.st,B.st)+'</td>'
+    +'<td class="sep">'+n0(A.so)+'</td><td>'+n0(B.so)+'</td><td>'+yoy(A.so,B.so)+'</td>'
+    +'<td class="sep">'+n0(A.stk)+'</td><td>'+n0(B.stk)+'</td>'
+    +'<td style="color:var(--oud)">'+n0(B.oud)+'</td><td>'+n0(B.stk+B.oud)+'</td>'
+    +'<td class="sep">'+money(A.gsv)+'</td><td>'+money(B.gsv)+'</td><td>'+yoy(A.gsv,B.gsv)+'</td>'
+    +'<td class="sep">'+money(B.nsv)+'</td><td>'+money(B.gp)+'</td>'
+    +'<td>'+pct(B.gm)+'</td><td class="mut">'+pct(A.gm)+'</td>'
+    +(function(){var FA=finAll('2025'), FB=finAll('2026');
+      return '<td class="sep mut">'+money(FA.ovd)+'</td>'
+           +'<td class="'+(FB.ovd>FA.ovd?'neg':'pos')+'">'+money(FB.ovd)+'</td>'
+           +'<td class="mut">'+money(FA.col)+'</td>'
+           +'<td>'+money(FB.col)+'</td>';})()
+    +'</tr></tfoot>';
+  document.getElementById('main').innerHTML=h;
+  document.getElementById('tblSub').textContent=
+    '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lastMo()+' 월말 시점';
+  document.getElementById('tblNote').innerHTML=
+    '· 2025년은 OUD 원본이 2025-08-10부터만 존재해 <b>OUD를 넣지 않았습니다</b>. 동일 조건 재고 YoY는 <b>2025 재고 vs 2026 재고(OUD 제외)</b>로 보십시오.<br>'
+    +'· 카테고리 축은 <b>shared_category SSOT</b> 기준이며, <b>Split만 인버터/온오프로 나눴습니다</b> — 압축기 구분이 붙는 카테고리가 Split 하나뿐이라 별도 필터를 두지 않았습니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
+    +'· OUD는 <b>05. OUD 원본 xlsx(Group 11종)</b>를 직접 읽어 전 카테고리를 담고 있습니다. 분리형은 OBD 라인이 실내기·실외기로 나뉘므로 <b>세트 환산(shared_set_rule, 세트=min(IDU,ODU))</b>을 거칩니다.<br>'
+    +'· <b>월마감 OUD = 월말을 넘긴 첫 스냅샷(익월 첫 주간 파일)</b> — 월 closing 정책. 2026 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
+    +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.<br>'
+    +'· <b>채권·수금</b>은 계정 단위 재무(AR/Collection)라 <b>카테고리 필터에 반응하지 않습니다</b>. OVD는 잔액이라 '+lastMo()+' 월말 시점, 수금은 선택 기간 합계입니다. 색은 OVD 증가=적색.';
+}
+
+function renderLadder(){
+  var cs=chans(), y=LADYR, A={}, B={};
+  cs.forEach(function(c){A[c]=agg('2025',c);B[c]=agg('2026',c);});
+  A['__T']=aggAll('2025'); B['__T']=aggAll('2026');
+  function pick(c,k){return y==='2025'?A[c][k]:(y==='2026'?B[c][k]:B[c][k]-A[c][k]);}
+  var h='<thead><tr><th>항목</th>';
+  cs.forEach(function(c){h+='<th>'+c+'</th>';});
+  h+='<th class="sep">합계</th></tr></thead><tbody>';
+  LAD.forEach(function(x){
+    var k=x[0], key=(k==='nsv'||k==='gp'), bg=key?' style="background:var(--lg-soft)"':'';
+    h+='<tr'+bg+'><td'+bg+'>'+(key?'<b>'+x[1]+'</b>':x[1])+'</td>';
+    cs.concat(['__T']).forEach(function(c){
+      var v=pick(c,k), cls=(y==='delta')?(v>0?'pos':(v<0?'neg':'mut')):(v<0?'neg':'');
+      h+='<td class="'+cls+(c==='__T'?' sep':'')+'">'+(key?'<b>'+money(v)+'</b>':money(v))+'</td>';});
+    h+='</tr>';
+  });
+  h+='<tr style="background:var(--lg-soft)"><td style="background:var(--lg-soft)"><b>GM%</b></td>';
+  cs.concat(['__T']).forEach(function(c){
+    if(y==='delta'){
+      var t=(A[c].gm==null||B[c].gm==null)?null:(B[c].gm-A[c].gm);
+      var cl=t==null?'mut':(t>0?'pos':(t<0?'neg':'mut'));
+      h+='<td class="'+cl+(c==='__T'?' sep':'')+'"><b>'+(t==null?'-':(t>0?'+':'')+t.toFixed(1)+'%p')+'</b></td>';
+    } else {
+      var o=(y==='2025')?A[c]:B[c];
+      h+='<td class="'+((o.gm!=null&&o.gm<0)?'neg':'')+(c==='__T'?' sep':'')+'"><b>'+pct(o.gm)+'</b></td>';}
+  });
+  h+='</tr></tbody>';
+  document.getElementById('ladder').innerHTML=h;
+  document.getElementById('ladSub').textContent=
+    ((y==='delta')?'2026 − 2025 증감':y+'년')+' · 선택 기간·채널·카테고리 합계 · 단위 SAR';
+}
+
+function renderAll(){renderKpi();renderTable();renderLadder();}
+
+function chipBox(elId,items,set){
+  var el=document.getElementById(elId);
+  el.innerHTML='<span class="chip sm" data-all="1">전체</span>'
+    +items.map(function(x){return '<span class="chip'+(set.has(x)?' on':'')+'" data-v="'+x+'">'+(x==='—'?'해당없음':x)+'</span>';}).join('');
+  el.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      if(c.dataset.all){items.forEach(function(x){set.add(x);});}
+      else{var v=c.dataset.v; if(set.has(v)&&set.size>1)set.delete(v); else set.add(v);}
+      el.querySelectorAll('.chip[data-v]').forEach(function(k){k.classList.toggle('on',set.has(k.dataset.v));});
+      renderAll();});});
+}
+
+document.getElementById('sub').textContent=
+  'OR Main 5채널 · 2025 vs 2026 Jan~Aug · 판매=b2c-monthly-psi 실측 월마감(수량) · 손익=GPC Accrual · 생성 '+M.generatedAt;
+chipBox('chCh',CH,SEL.ch);
+chipBox('chMo',MO,SEL.mo);
+chipBox('chCat',CAT,SEL.cat);
+(function(){
+  var el=document.getElementById('chYr');
+  var opts=[['2025','2025'],['2026','2026'],['delta','증감']];
+  el.innerHTML=opts.map(function(o){return '<span class="chip sm'+(o[0]===LADYR?' on':'')+'" data-y="'+o[0]+'">'+o[1]+'</span>';}).join('');
+  el.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click',function(){
+      LADYR=c.dataset.y;
+      el.querySelectorAll('.chip').forEach(function(k){k.classList.toggle('on',k.dataset.y===LADYR);});
+      renderLadder();});});
+})();
+renderAll();
+</script>
+</body>
+</html>
