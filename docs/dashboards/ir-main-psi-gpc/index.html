@@ -137,6 +137,16 @@ function pass(r,ch){
   return r.ch===ch && SEL.cat.has(r.cat);
 }
 function blank(){var o={st:0,so:0,stk:0,oud:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};return o;}
+// 채권 — 카테고리 축이 없는 계정 재무라 SEL.cat 에 반응시키지 않는다.
+// OVD 는 잔액(스냅샷)이라 기간 마지막 달 값, COL 은 월 수금이라 기간 합산.
+function fin(y,ch){
+  var f=(M.fin&&M.fin[ch]&&M.fin[ch][y])||{}, c=0;
+  months().forEach(function(m){ if(f[m]) c+=f[m].col||0; });
+  var lm=lastMo();
+  return {ovd:(f[lm]&&f[lm].ovd)||0, col:c};
+}
+function finAll(y){var o={ovd:0,col:0};
+  chans().forEach(function(c){var x=fin(y,c);o.ovd+=x.ovd;o.col+=x.col;});return o;}
 function derive(o){o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi; o.gp=o.nsv-o.cogs+o.inv+o.vsp;
   o.gm=o.nsv?o.gp/o.nsv*100:null; return o;}
 
@@ -181,12 +191,14 @@ function renderTable(){
     +'<th colspan="3" class="sep">SELL-OUT (대)</th>'
     +'<th colspan="4" class="sep">재고 · OUD (대)</th>'
     +'<th colspan="3" class="sep">GSV (SAR)</th>'
-    +'<th colspan="4" class="sep">손익 (SAR)</th></tr><tr>'
+    +'<th colspan="4" class="sep">손익 (SAR)</th>'
+    +'<th colspan="4" class="sep">채권 · 수금 (SAR)</th></tr><tr>'
     +'<th>채널</th><th>25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">재고25</th><th>재고26</th><th>OUD26</th><th>26 합</th>'
     +'<th class="sep">25</th><th>26</th><th>YoY</th>'
     +'<th class="sep">NSV26</th><th>GP26</th><th>GM%26</th><th>GM%25</th>'
+    +'<th class="sep">OVD25</th><th>OVD26</th><th>수금25</th><th>수금26</th>'
     +'</tr></thead><tbody>';
   chans().forEach(function(c){
     var a=agg('2025',c), b=agg('2026',c);
@@ -198,7 +210,13 @@ function renderTable(){
       +'<td class="sep">'+money(a.gsv)+'</td><td>'+money(b.gsv)+'</td><td>'+yoy(a.gsv,b.gsv)+'</td>'
       +'<td class="sep">'+money(b.nsv)+'</td><td>'+money(b.gp)+'</td>'
       +'<td class="'+(b.gm!=null&&b.gm<0?'neg':'')+'"><b>'+pct(b.gm)+'</b></td>'
-      +'<td class="mut">'+pct(a.gm)+'</td></tr>';
+      +'<td class="mut">'+pct(a.gm)+'</td>'
+      +(function(){var fa=fin('2025',c), fb=fin('2026',c);
+        return '<td class="sep mut">'+money(fa.ovd)+'</td>'
+             +'<td class="'+(fb.ovd>fa.ovd?'neg':'pos')+'">'+money(fb.ovd)+'</td>'
+             +'<td class="mut">'+money(fa.col)+'</td>'
+             +'<td><b>'+money(fb.col)+'</b></td>';})()
+      +'</tr>';
   });
   var A=aggAll('2025'), B=aggAll('2026');
   h+='</tbody><tfoot><tr><td>합계 ('+chans().length+')</td>'
@@ -208,7 +226,13 @@ function renderTable(){
     +'<td style="color:var(--oud)">'+n0(B.oud)+'</td><td>'+n0(B.stk+B.oud)+'</td>'
     +'<td class="sep">'+money(A.gsv)+'</td><td>'+money(B.gsv)+'</td><td>'+yoy(A.gsv,B.gsv)+'</td>'
     +'<td class="sep">'+money(B.nsv)+'</td><td>'+money(B.gp)+'</td>'
-    +'<td>'+pct(B.gm)+'</td><td class="mut">'+pct(A.gm)+'</td></tr></tfoot>';
+    +'<td>'+pct(B.gm)+'</td><td class="mut">'+pct(A.gm)+'</td>'
+    +(function(){var FA=finAll('2025'), FB=finAll('2026');
+      return '<td class="sep mut">'+money(FA.ovd)+'</td>'
+           +'<td class="'+(FB.ovd>FA.ovd?'neg':'pos')+'">'+money(FB.ovd)+'</td>'
+           +'<td class="mut">'+money(FA.col)+'</td>'
+           +'<td>'+money(FB.col)+'</td>';})()
+    +'</tr></tfoot>';
   document.getElementById('main').innerHTML=h;
   document.getElementById('tblSub').textContent=
     '흐름(Sell-Thru·Sell-Out·GSV·손익)은 선택 기간 합계 · 잔량(재고·OUD)은 '+lastMo()+' 월말 시점';
@@ -217,7 +241,8 @@ function renderTable(){
     +'· 카테고리 축은 <b>shared_category SSOT</b> 기준이며, <b>Split만 인버터/온오프로 나눴습니다</b> — 압축기 구분이 붙는 카테고리가 Split 하나뿐이라 별도 필터를 두지 않았습니다. GPC의 CAC Ducted→Concealed Set, Applied·Accessory→Others로 SSOT가 접습니다.<br>'
     +'· OUD는 <b>05. OUD 원본 xlsx(Group 11종)</b>를 직접 읽어 전 카테고리를 담고 있습니다. 분리형은 OBD 라인이 실내기·실외기로 나뉘므로 <b>세트 환산(shared_set_rule, 세트=min(IDU,ODU))</b>을 거칩니다.<br>'
     +'· <b>월마감 OUD = 월말을 넘긴 첫 스냅샷(익월 첫 주간 파일)</b> — 월 closing 정책. 2026 기준일: '+MO.map(function(m){return m+' '+(M.oudAsOf[m]||'-');}).join(' · ')+'<br>'
-    +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.';
+    +'· GPC는 Accrual 라인아이템 기준. <b>2026년 8월 GPC는 가마감</b>(재무 확정 전)입니다.<br>'
+    +'· <b>채권·수금</b>은 계정 단위 재무(AR/Collection)라 <b>카테고리 필터에 반응하지 않습니다</b>. OVD는 잔액이라 '+lastMo()+' 월말 시점, 수금은 선택 기간 합계입니다. 색은 OVD 증가=적색.';
 }
 
 function renderLadder(){

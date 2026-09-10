@@ -197,6 +197,48 @@ def blank():
     return {k: 0.0 for k in QTY_KEYS + GPC_KEYS}
 
 
+def _fin():
+    """AR Overdue(월말 잔액) · Collection(월 수금) — 채널 x 연 x 월.
+
+    소스 = sell-thru-progress/data.json 의 ar_monthly / col_monthly (계정 단위 재무).
+    ⚠️ 카테고리 축이 없다 — 제품 카테고리와 무관한 계정 채권이므로 cell(=카테고리별)에 넣지 않고
+       meta 로 분리한다. 프론트에서도 카테고리 필터에 반응시키지 말 것.
+    ⚠️ ovd 는 **잔액(스냅샷)** 이라 월별로 더하면 안 된다 — 특정 월말 값만 쓴다.
+       col 은 mtd(그 달 수금액)라 기간 합산이 가능하다.
+    채널 매핑은 OUD 와 동일하게 shared_classification.channel_from_name 사용.
+    """
+    src = os.path.join(D, "sell-thru-progress", "data.json")
+    if not os.path.exists(src):
+        return {}
+    with open(src, encoding="utf-8") as f:
+        d = json.load(f)
+    out = {}
+    for key, fld, tgt in (("ar_monthly", "ovd", "ovd"), ("col_monthly", "mtd", "col")):
+        for rec in d.get(key, []):
+            ym = str(rec.get("month") or "")
+            if "-" not in ym:
+                continue
+            y, mm = ym.split("-", 1)
+            if y not in YEARS:
+                continue
+            i = int(mm)
+            if i > len(MONTHS):
+                continue
+            m = MONTHS[i - 1]
+            for _aid, v in (rec.get("accts") or {}).items():
+                ch = channel_from_name(v.get("nm") or "")
+                if ch not in IR_MAIN:
+                    continue
+                slot = out.setdefault(ch, {}).setdefault(y, {}).setdefault(m, {"ovd": 0.0, "col": 0.0})
+                slot[tgt] += v.get(fld) or 0
+    for ch in out:
+        for y in out[ch]:
+            for m in out[ch][y]:
+                for k in out[ch][y][m]:
+                    out[ch][y][m][k] = round(out[ch][y][m][k], 2)
+    return out
+
+
 def main():
     cell = defaultdict(blank)          # (y, ch, cat, m) -> metrics
 
@@ -273,6 +315,7 @@ def main():
             "channels": IR_MAIN, "months": MONTHS, "years": YEARS,
             "cats": cats, "ladder": LADDER,
             "oudAsOf": {m: asof.get(m) for m in MONTHS},
+            "fin": _fin(),
             "notes": {
                 "psi": "ir-monthly-psi by_ch_cat 실측 월마감 (수량, 대)",
                 "oud": "2026 만. 월말을 넘긴 첫 스냅샷(=익월 첫 파일, 05. OUD 원본) · 세트 환산 shared_set_rule 적용",
