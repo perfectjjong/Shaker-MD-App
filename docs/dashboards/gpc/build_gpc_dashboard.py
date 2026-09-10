@@ -229,6 +229,16 @@ def main():
                          "built": pj.get("built", "")}
             print(f"  🟡 가마감 주입: {py}-{pm}월 {len(pj['rows'])}건 ({pj.get('basis','')})")
 
+    # ── 월 예상(forecast) 레이어 ─────────────────────────────────
+    # RSM FCST × 프로모션 계획 시뮬레이션. 실적(GPC_DATA)에 섞지 않고 별도 배열로만 얹는다
+    # (연도 비교·필터 모집단 오염 방지). 생성: 03. Operation/00. GPC/_engine/build_sep_forecast.py
+    fc_payload = None
+    FC = OUT.replace("gpc_data.js", "gpc_forecast.json")
+    if os.path.exists(FC):
+        with open(FC, encoding="utf-8") as ff:
+            fc_payload = json.load(ff)
+        print(f"  🔮 예상 주입: {fc_payload['year']}-{fc_payload['month']}월 rows {len(fc_payload['rows'])} · lines {len(fc_payload['lines'])}")
+
     # ── Official (Finance 공시 최종본) 레이어 ────────────────────
     # Accrual 값은 건드리지 않는다. 별도 배열로 얹어 화면에서 대사만 한다.
     import os as _os
@@ -250,12 +260,14 @@ def main():
         "basis": "Accrual (발생주의 잠정)",
         "provisional": prov_meta,
         "official": off_meta,
+        "forecast": ({k: fc_payload[k] for k in ("year", "month", "basis", "built")} if fc_payload else None),
     }
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("// GPC 대시보드 데이터 v2 (build_gpc_dashboard.py 자동생성 — 직접 수정 금지)\n")
         f.write("const GPC_META = " + json.dumps(meta, ensure_ascii=False) + ";\n")
         f.write("const GPC_DATA = " + json.dumps(records, ensure_ascii=False) + ";\n")
         f.write("const GPC_OFFICIAL = " + json.dumps(off_rows, ensure_ascii=False) + ";\n")
+        f.write("const GPC_FORECAST = " + json.dumps(fc_payload, ensure_ascii=False) + ";\n")
 
     print(f"\n✅ 생성: {OUT}")
     print(f"   레코드 {len(records)}건 · 연도 {years} · YOY기준월 {yoy_months}")

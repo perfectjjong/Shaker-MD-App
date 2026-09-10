@@ -236,6 +236,7 @@
     <button class="on" data-tab="exec">Executive Summary</button>
     <button data-tab="category">카테고리 분석</button>
     <button data-tab="contract">Contract Condition</button>
+    <button data-tab="fcst" id="tabFcst">9월 예상</button>
   </div>
 
   <div class="note hide" id="basisNote"></div>
@@ -312,6 +313,40 @@
     <div class="card">
       <div class="h"><div><h3>계정별 실효 YED율</h3><div class="hint" id="ctChartHint">선택 연도·기간 · 전 카테고리 가중 평균 · 연한 막대 = 전년</div></div></div>
       <div class="cbox tall"><canvas id="cCtRate"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 탭4: 월 예상 (RSM FCST × 프로모션 계획 시뮬레이션) -->
+  <section data-pane="fcst" class="hide">
+    <div class="note" id="fcNote"></div>
+    <div class="kpis" id="fcKpis"></div>
+    <div class="card">
+      <div class="h"><div><h3>손익 사다리 — 9월 예상 vs 8월 가마감 vs 25년 9월 실적</h3><div class="hint" id="fcLadderHint">대상 4개 카테고리(Split Inverter · Split On/Off · Window · Floor Standing) 동일 모집단 · 상단 필터 미적용 · 천 SAR</div></div></div>
+      <div class="tblwrap"><table class="tbl" id="fcLadder"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><div><h3>카테고리 × 채널</h3><div class="hint">9월 예상 · 세트 = FCST 수량 · % 는 GSV 대비(VSP 는 ÷COGS) · GM% 8월 = 같은 채널·카테고리 8월 가마감 · 천 SAR</div></div></div>
+      <div class="tblwrap"><table class="tbl" id="fcCat"></table></div>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>VSP 배분</h3><div class="hint">Inverter·On/Off = 지정 lump sum 을 COGS 비례 배분 · FS = 8월 B2C FS GM% 동등 역산 · Window 0</div></div></div>
+        <div class="tblwrap"><table class="tbl" id="fcVsp"></table></div>
+      </div>
+      <div class="card" style="margin:0">
+        <div class="h"><div><h3>계정별</h3><div class="hint">메인 계정 + Others · 9월 예상 · 천 SAR</div></div></div>
+        <div class="tblwrap"><table class="tbl" id="fcAcc"></table></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <div class="h"><div><h3>모델 × 계정 라인</h3><div class="hint" id="fcLineHint"></div></div>
+        <div class="seg" id="fcLineMode"><button class="on" data-v="top">상위 40</button><button data-v="all">전체</button></div></div>
+      <div class="tblwrap"><table class="tbl" id="fcLines"></table></div>
+    </div>
+    <div class="card">
+      <div class="h"><div><h3>산출 가정</h3><div class="hint" id="fcSrc"></div></div></div>
+      <ol id="fcAssum" style="margin:0;padding-left:20px;font-size:13px;color:var(--ink2);line-height:1.7"></ol>
+      <div id="fcWarn" style="margin-top:10px;font-size:12.5px;color:#b45309"></div>
     </div>
   </section>
 
@@ -942,10 +977,103 @@ function syncBasisUI(){
     +'<b>INV 는 보정이 아니라 정의 차이</b>(Official 은 배부·계획값, 2024 는 월 250,000 정액이고 2025·2026 은 실적란=예산란). '
     +'카테고리별 차이에는 Finance 재분류가 섞여 있어 <b>보정이 아니라 차이</b>로 읽어야 합니다.'):'';}
 
-function render(){syncBasisUI();renderKpis();
+function render(){syncBasisUI();
+  const fc=S.tab==='fcst';document.getElementById('kpis').classList.toggle('hide',fc);
+  if(fc){renderFcst();return;}
+  renderKpis();
   if(S.tab==='exec'){ladderTable();renderMain();renderChanCmp();renderErosion();renderVsp();ofBudget();}
   else if(S.tab==='category'){catTable();renderCatGm();renderMix();renderCatGp();}
   else{contractTable();renderCtRate();}}
+
+// ── 탭4: 월 예상 (GPC_FORECAST) ──
+const FC=(typeof GPC_FORECAST!=='undefined')?GPC_FORECAST:null;
+if(!FC)document.getElementById('tabFcst').classList.add('hide');
+else document.getElementById('tabFcst').textContent=`${FC.month}월 예상`;
+const FC_CATS=['Split Inverter','Split On/Off','Window AC','Floor Standing AC'];
+let fcLineMode='top';
+function fcSum(rows){const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,sets:0};
+  for(const r of rows){for(const k in o)if(r[k]!==undefined)o[k]+=r[k];}
+  o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;o.gm_pct=o.nsv?o.gp/o.nsv:0;
+  o.disc_total=o.yed+o.adc+o.vpd+o.dsi;o.disc_rate=o.gsv?o.disc_total/o.gsv:0;
+  o.total_cogs=o.cogs-o.inv-o.vsp;o.cogs_rate=o.gsv?o.total_cogs/o.gsv:0;return o;}
+function fcActual(y,m,cats,chans){return aggAcc(y,[m],{cats:new Set(cats||FC_CATS),chans:new Set(chans||['IR','OR'])});}
+const fcR=(v,b)=>b?(v/b*100).toFixed(1)+'%':'-';
+function renderFcst(){
+  if(!FC)return;
+  const Y=FC.year,M=FC.month,pm=M-1;
+  const F=fcSum(FC.lines),A8=fcActual(Y,pm),A25=fcActual(Y-1,M);
+  const prov=GPC_META.provisional,provLbl=(prov&&prov.year===Y&&prov.month===pm)?'가마감':'실적';
+  document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> 대상 4개 카테고리만 산출(Unitary Package·Concealed 등 제외) · 상단 연도·기간·채널·카테고리 필터는 이 탭에 적용되지 않습니다.`;
+  // KPI
+  const box=document.getElementById('fcKpis');box.innerHTML='';
+  [[`${Y-1}년 ${M}월 실적`,A25,YCOL[Y-1]],[`${Y}년 ${pm}월 ${provLbl}`,A8,'#b45309'],[`${Y}년 ${M}월 예상`,F,YCOL[Y]]].forEach(([lab,t,col],i,arr)=>{
+    const prev=i?arr[i-1][1]:null;let yoy='';
+    if(prev&&prev.gp){const d=(t.gp-prev.gp)/Math.abs(prev.gp)*100;
+      yoy=`<div class="yoy ${d>=0?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}% <span style="font-weight:600;opacity:.7">GP vs ${arr[i-1][0]}</span></div>`;}
+    const el=document.createElement('div');el.className='kpi';
+    el.innerHTML=`<div class="bar-c" style="background:${col}"></div><div class="yr">${lab}</div>
+      <div class="big">${fmt(t.gp)}<span class="unit"> 천 SAR</span></div>
+      <div class="gmpct" style="color:${col==='#cfc6b2'?'var(--ink2)':col}">GP · GM ${pct(t.gm_pct)}</div>
+      <div class="sub"><span>GSV <b>${fmt(t.gsv)}</b></span><span>NSV <b>${fmt(t.nsv)}</b></span><span>할인율 <b>${pct(-t.disc_rate)}</b></span><span>COGS율 <b>${pct(t.cogs_rate)}</b></span></div>${yoy}`;
+    box.appendChild(el);});
+  // 사다리
+  const cols=[[`${Y-1}.${M} 실적`,A25],[`${Y}.${pm} ${provLbl}`,A8],[`${Y}.${M} 예상`,F]];
+  let head=`<thead><tr class="sub"><th>Metric</th>${cols.map(c=>`<th>${c[0]}</th>`).join('')}<th class="ydiv">Δ vs ${pm}월</th><th>Δ vs ${Y-1}.${M}</th></tr></thead>`,body='';
+  LADDER.forEach(row=>{const k=row.key;
+    let tr=`<tr class="mrow ${row.cls||''}"><td>${row.label}</td>`;
+    cols.forEach(c=>{const v=c[1][k];tr+=`<td class="${v<0?'neg':''}">${fmt(v)}</td>`;});
+    const d1=F[k]-A8[k],d2=F[k]-A25[k];
+    tr+=`<td class="ydiv ${d1<0?'neg':'pos'}">${sgn(d1)}${fmt(d1)}<span class="rt">${A8[k]?sgn(d1)+(d1/Math.abs(A8[k])*100).toFixed(1)+'%':''}</span></td><td class="${d2<0?'neg':'pos'}">${sgn(d2)}${fmt(d2)}<span class="rt">${A25[k]?sgn(d2)+(d2/Math.abs(A25[k])*100).toFixed(1)+'%':''}</span></td>`;
+    body+=tr+'</tr>';
+    const pr=[];
+    if(row.pg)pr.push(['%(G)',a=>a.gsv?a[k]/a.gsv:0]);
+    if(row.pn)pr.push(['%(N)',a=>a.nsv?a[k]/a.nsv:0]);
+    if(row.vspr)pr.push(['% VSP (÷COGS)',a=>a.cogs?a[k]/a.cogs:0]);
+    if(row.gm)pr.push(['%(N) / GM%',a=>a.gm_pct]);
+    pr.forEach(([lab,fn])=>{let t2=`<tr class="prow"><td>${lab}</td>`;cols.forEach(c=>t2+=`<td>${pct(fn(c[1]))}</td>`);
+      const p1=fn(F)-fn(A8),p2=fn(F)-fn(A25);t2+=`<td class="ydiv">${sgn(p1)}${(p1*100).toFixed(1)}pp</td><td>${sgn(p2)}${(p2*100).toFixed(1)}pp</td>`;body+=t2+'</tr>';});});
+  document.getElementById('fcLadder').innerHTML=head+`<tbody>${body}</tbody>`;
+  // 카테고리 × 채널
+  const cc=['<tr class="sub"><th>카테고리 / 채널</th><th>세트</th><th>GSV</th><th>YED%</th><th>ADC%</th><th>DSI%</th><th>NSV</th><th>COGS <span class="rt">%G</span></th><th>VSP <span class="rt">÷COGS</span></th><th>GP</th><th>GM%</th><th class="ydiv">GM% '+pm+'월</th><th>Δpp</th></tr>'];
+  const catRow=(lab,rows,cls,ch,cat)=>{const t=fcSum(rows);if(!rows.length)return'';
+    const a=fcActual(Y,pm,cat?[cat]:FC_CATS,ch?[ch]:null);const dp=(t.gm_pct-a.gm_pct)*100;
+    return`<tr class="${cls}"><td>${lab}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.yed,t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td class="neg">${fcR(t.dsi,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.cogs)}<span class="rt">${fcR(t.cogs,t.gsv)}</span></td><td>${fmt(t.vsp)}<span class="rt">${fcR(t.vsp,t.cogs)}</span></td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td class="ydiv">${a.nsv?pct(a.gm_pct):'-'}</td><td class="${dp<0?'neg':'pos'}">${a.nsv?sgn(dp)+dp.toFixed(1)+'pp':'-'}</td></tr>`;};
+  FC_CATS.forEach(cat=>{const L=FC.lines.filter(l=>l.cat===cat);if(!L.length)return;
+    cc.push(catRow(cat,L,'mrow',null,cat));
+    ['OR','IR'].forEach(ch=>{const r=L.filter(l=>l.ch===ch);if(r.length)cc.push(catRow('&nbsp;&nbsp;'+ch,r,'prow',ch,cat));});});
+  cc.push(catRow('합계',FC.lines,'total',null,null));
+  document.getElementById('fcCat').innerHTML=`<thead>${cc[0]}</thead><tbody>${cc.slice(1).join('')}</tbody>`;
+  // VSP 배분
+  let vb=`<thead><tr class="sub"><th>카테고리</th><th>배분액</th><th>COGS</th><th>÷COGS</th><th>÷GSV</th><th>세트당</th><th class="ydiv">${pm}월 VSP</th><th>${pm}월 ÷COGS</th></tr></thead><tbody>`;
+  let tv=0,tc=0,tg=0,ts=0,t8v=0,t8c=0;
+  FC_CATS.forEach(cat=>{const v=FC.vsp[cat];if(!v)return;const L=FC.lines.filter(l=>l.cat===cat);const t=fcSum(L);const a=fcActual(Y,pm,[cat]);
+    tv+=v.lump;tc+=t.cogs;tg+=t.gsv;ts+=t.sets;t8v+=a.vsp;t8c+=a.cogs;
+    vb+=`<tr><td>${cat}${cat==='Floor Standing AC'?` <span class="rt">목표 GM ${pct(v.target_gm)}</span>`:''}</td><td>${fmt(v.lump)}</td><td>${fmt(t.cogs)}</td><td>${fcR(v.lump,t.cogs)}</td><td>${fcR(v.lump,t.gsv)}</td><td>${t.sets?Math.round(v.lump/t.sets).toLocaleString():'-'}</td><td class="ydiv">${fmt(a.vsp)}</td><td>${fcR(a.vsp,a.cogs)}</td></tr>`;});
+  vb+=`<tr class="total"><td>합계</td><td>${fmt(tv)}</td><td>${fmt(tc)}</td><td>${fcR(tv,tc)}</td><td>${fcR(tv,tg)}</td><td>${ts?Math.round(tv/ts).toLocaleString():'-'}</td><td class="ydiv">${fmt(t8v)}</td><td>${fcR(t8v,t8c)}</td></tr></tbody>`;
+  document.getElementById('fcVsp').innerHTML=vb;
+  // 계정별
+  const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR',a]),['IR','Others']];
+  let ab='<thead><tr class="sub"><th>계정</th><th>채널</th><th>세트</th><th>GSV</th><th>ADC%</th><th>NSV</th><th>GP</th><th>GM%</th></tr></thead><tbody>';
+  accOrder.forEach(([ch,ac])=>{const L=FC.lines.filter(l=>l.ch===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
+    ab+=`<tr><td>${ac}</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
+  ['OR','IR'].forEach(ch=>{const t=fcSum(FC.lines.filter(l=>l.ch===ch));ab+=`<tr class="mrow"><td>${ch} 소계</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
+  const tt=fcSum(FC.lines);ab+=`<tr class="total"><td>합계</td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td class="neg">${fcR(tt.adc,tt.gsv)}</td><td>${fmt(tt.nsv)}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td></tr></tbody>`;
+  document.getElementById('fcAcc').innerHTML=ab;
+  // 라인
+  const lines=[...FC.lines].sort((a,b)=>b.gsv-a.gsv);const show=fcLineMode==='top'?lines.slice(0,40):lines;
+  let lb='<thead><tr class="sub"><th>채널 · 계정</th><th>모델</th><th>카테고리</th><th>세트</th><th>GSV</th><th>GSV/세트</th><th>YED/세트</th><th>ADC/세트</th><th>COGS/세트</th><th>VSP/세트</th><th>GP</th><th>GM%</th><th>COGS 근거</th><th>ADC 근거</th></tr></thead><tbody>';
+  show.forEach(l=>{const t=fcSum([l]);const s=l.sets||1;
+    lb+=`<tr><td>${l.ch} · ${l.ac}</td><td>${l.model}</td><td>${l.cat}</td><td>${Math.round(l.sets).toLocaleString()}</td><td>${fmt(l.gsv)}</td><td>${Math.round(l.gsv/s).toLocaleString()}</td><td class="neg">${Math.round(l.yed/s).toLocaleString()}</td><td class="neg">${Math.round(l.adc/s).toLocaleString()}</td><td>${Math.round(l.cogs/s).toLocaleString()}</td><td>${Math.round(l.vsp/s).toLocaleString()}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.cost}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.adc}</td></tr>`;});
+  lb+=`<tr class="total"><td>합계 (전체 ${lines.length}라인)</td><td></td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td>${Math.round(tt.gsv/tt.sets).toLocaleString()}</td><td class="neg">${Math.round(tt.yed/tt.sets).toLocaleString()}</td><td class="neg">${Math.round(tt.adc/tt.sets).toLocaleString()}</td><td>${Math.round(tt.cogs/tt.sets).toLocaleString()}</td><td>${Math.round(tt.vsp/tt.sets).toLocaleString()}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td><td></td><td></td></tr></tbody>`;
+  document.getElementById('fcLines').innerHTML=lb;
+  const cv=FC.coverage_cost||{};
+  document.getElementById('fcLineHint').textContent=`GSV 내림차순 · 세트당 SAR · GP 천 SAR · COGS 근거 커버(GSV): A 8월 단가 ${pct(cv.A||0)} · B 6~7월 ${pct(cv.B||0)} · C 형제모델 원가율 ${pct(cv.C||0)} · D 카테고리 원가율 ${pct(cv.D||0)}`;
+  document.getElementById('fcSrc').textContent=`FCST ${FC.sources.fcst_or} · ${FC.sources.fcst_ir} · 프로모션 ${FC.sources.promo} · 단가 ${FC.sources.unit_cost}`;
+  document.getElementById('fcAssum').innerHTML=FC.assumptions.map(a=>`<li>${a}</li>`).join('');
+  document.getElementById('fcWarn').innerHTML=(FC.warnings&&FC.warnings.length)?'⚠ 확인 필요: '+FC.warnings.join(' · '):'';
+}
+document.querySelectorAll('#fcLineMode button').forEach(b=>b.onclick=()=>{fcLineMode=b.dataset.v;
+  document.querySelectorAll('#fcLineMode button').forEach(x=>x.classList.toggle('on',x===b));renderFcst();});
 
 // 헤더 메타
 (function(){
@@ -960,7 +1088,7 @@ function render(){syncBasisUI();renderKpis();
 
 // deep link
 (function(){const h=location.hash.replace('#','');
-  if(['exec','category','contract'].includes(h)){S.tab=h;
+  if(['exec','category','contract','fcst'].includes(h)){S.tab=h;
     document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===h));
     document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));}})();
 buildBar();
