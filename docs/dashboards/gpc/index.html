@@ -330,7 +330,7 @@
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>VSP 배분</h3><div class="hint">Inverter·On/Off = 지정 lump sum (8월 채널×모델 세트당 유지 + 잔액 COGS 비례 균등) · FS = 8월 B2C FS GM% 동등 역산 · Window·Concealed 0</div></div></div>
+        <div class="h"><div><h3>VSP 배분</h3><div class="hint">필터 적용분 / 지정액 · Inverter·On/Off = 지정 lump sum (8월 채널×모델 세트당 유지 + 잔액 COGS 비례 균등) · FS = 8월 B2C FS GM% 동등 역산 · Window·Concealed 0</div></div></div>
         <div class="tblwrap"><table class="tbl" id="fcVsp"></table></div>
       </div>
       <div class="card" style="margin:0">
@@ -1001,9 +1001,13 @@ const fcR=(v,b)=>b?(v/b*100).toFixed(1)+'%':'-';
 function renderFcst(){
   if(!FC)return;
   const Y=FC.year,M=FC.month,pm=M-1;
-  const F=fcSum(FC.lines),A8=fcActual(Y,pm),A25=fcActual(Y-1,M);
+  // Executive Summary 와 같이 상단 채널·카테고리 필터를 따른다 (연도·기간은 비교월 고정이라 미적용)
+  const CATS=FC_CATS.filter(c=>S.cats.has(c)),CHS=['OR','IR'].filter(c=>S.chans.has(c));
+  const FL=FC.lines.filter(l=>S.chans.has(l.ch)&&S.cats.has(l.cat));
+  const F=fcSum(FL),A8=fcActual(Y,pm,CATS,CHS),A25=fcActual(Y-1,M,CATS,CHS);
+  const fsel=`${CHS.join('+')||'채널 없음'} · 카테고리 ${CATS.length}/${FC_CATS.length}`;
   const prov=GPC_META.provisional,provLbl=(prov&&prov.year===Y&&prov.month===pm)?'가마감':'실적';
-  document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> FCST 에 있는 카테고리만 산출(Cassette·Multi-V·Accessory 등 FCST 없는 축은 제외) · 상단 연도·기간·채널·카테고리 필터는 이 탭에 적용되지 않습니다.`;
+  document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> FCST 에 있는 카테고리만 산출(Cassette·Multi-V·Accessory 등 FCST 없는 축은 제외) · 상단 <b>채널·카테고리 필터 적용</b>(현재 ${fsel}) · 연도·기간 필터는 비교월이 고정이라 미적용.`;
   // KPI
   const box=document.getElementById('fcKpis');box.innerHTML='';
   [[`${Y-1}년 ${M}월 실적`,A25,YCOL[Y-1]],[`${Y}년 ${pm}월 ${provLbl}`,A8,'#b45309'],[`${Y}년 ${M}월 예상`,F,YCOL[Y]]].forEach(([lab,t,col],i,arr)=>{
@@ -1036,35 +1040,35 @@ function renderFcst(){
   // 카테고리 × 채널
   const cc=['<tr class="sub"><th>카테고리 / 채널</th><th>세트</th><th>GSV</th><th>YED%</th><th>ADC%</th><th>DSI%</th><th>NSV</th><th>COGS <span class="rt">%G</span></th><th>VSP <span class="rt">÷COGS</span></th><th>GP</th><th>GM%</th><th class="ydiv">GM% '+pm+'월</th><th>Δpp</th></tr>'];
   const catRow=(lab,rows,cls,ch,cat)=>{const t=fcSum(rows);if(!rows.length)return'';
-    const a=fcActual(Y,pm,cat?[cat]:FC_CATS,ch?[ch]:null);const dp=(t.gm_pct-a.gm_pct)*100;
+    const a=fcActual(Y,pm,cat?[cat]:CATS,ch?[ch]:CHS);const dp=(t.gm_pct-a.gm_pct)*100;
     return`<tr class="${cls}"><td>${lab}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.yed,t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td class="neg">${fcR(t.dsi,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.cogs)}<span class="rt">${fcR(t.cogs,t.gsv)}</span></td><td>${fmt(t.vsp)}<span class="rt">${fcR(t.vsp,t.cogs)}</span></td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td class="ydiv">${a.nsv?pct(a.gm_pct):'-'}</td><td class="${dp<0?'neg':'pos'}">${a.nsv?sgn(dp)+dp.toFixed(1)+'pp':'-'}</td></tr>`;};
-  FC_CATS.forEach(cat=>{const L=FC.lines.filter(l=>l.cat===cat);if(!L.length)return;
+  CATS.forEach(cat=>{const L=FL.filter(l=>l.cat===cat);if(!L.length)return;
     cc.push(catRow(cat,L,'mrow',null,cat));
-    ['OR','IR'].forEach(ch=>{const r=L.filter(l=>l.ch===ch);if(r.length)cc.push(catRow('&nbsp;&nbsp;'+ch,r,'prow',ch,cat));});});
-  cc.push(catRow('합계',FC.lines,'total',null,null));
+    CHS.forEach(ch=>{const r=L.filter(l=>l.ch===ch);if(r.length)cc.push(catRow('&nbsp;&nbsp;'+ch,r,'prow',ch,cat));});});
+  cc.push(catRow('합계',FL,'total',null,null));
   document.getElementById('fcCat').innerHTML=`<thead>${cc[0]}</thead><tbody>${cc.slice(1).join('')}</tbody>`;
   // VSP 배분
   let vb=`<thead><tr class="sub"><th>카테고리</th><th>배분액</th><th>COGS</th><th>÷COGS</th><th>÷GSV</th><th>세트당</th><th class="ydiv">${pm}월 VSP</th><th>${pm}월 ÷COGS</th></tr></thead><tbody>`;
   let tv=0,tc=0,tg=0,ts=0,t8v=0,t8c=0;
-  FC_CATS.forEach(cat=>{const v=FC.vsp[cat];if(!v)return;const L=FC.lines.filter(l=>l.cat===cat);const t=fcSum(L);const a=fcActual(Y,pm,[cat]);
-    tv+=v.lump;tc+=t.cogs;tg+=t.gsv;ts+=t.sets;t8v+=a.vsp;t8c+=a.cogs;
-    vb+=`<tr><td>${cat}${cat==='Floor Standing AC'?` <span class="rt">목표 GM ${pct(v.target_gm)}</span>`:''}</td><td>${fmt(v.lump)}</td><td>${fmt(t.cogs)}</td><td>${fcR(v.lump,t.cogs)}</td><td>${fcR(v.lump,t.gsv)}</td><td>${t.sets?Math.round(v.lump/t.sets).toLocaleString():'-'}</td><td class="ydiv">${fmt(a.vsp)}</td><td>${fcR(a.vsp,a.cogs)}</td></tr>`;});
+  CATS.forEach(cat=>{const v=FC.vsp[cat];if(!v)return;const L=FL.filter(l=>l.cat===cat);if(!L.length)return;const t=fcSum(L);const a=fcActual(Y,pm,[cat],CHS);
+    const lumpF=t.vsp;tv+=lumpF;tc+=t.cogs;tg+=t.gsv;ts+=t.sets;t8v+=a.vsp;t8c+=a.cogs;
+    vb+=`<tr><td>${cat}${cat==='Floor Standing AC'?` <span class="rt">목표 GM ${pct(v.target_gm)}</span>`:''}</td><td>${fmt(lumpF)}${Math.abs(lumpF-v.lump)>500?`<span class="rt">/ ${fmt(v.lump)}</span>`:''}</td><td>${fmt(t.cogs)}</td><td>${fcR(lumpF,t.cogs)}</td><td>${fcR(lumpF,t.gsv)}</td><td>${t.sets?Math.round(lumpF/t.sets).toLocaleString():'-'}</td><td class="ydiv">${fmt(a.vsp)}</td><td>${fcR(a.vsp,a.cogs)}</td></tr>`;});
   vb+=`<tr class="total"><td>합계</td><td>${fmt(tv)}</td><td>${fmt(tc)}</td><td>${fcR(tv,tc)}</td><td>${fcR(tv,tg)}</td><td>${ts?Math.round(tv/ts).toLocaleString():'-'}</td><td class="ydiv">${fmt(t8v)}</td><td>${fcR(t8v,t8c)}</td></tr></tbody>`;
   document.getElementById('fcVsp').innerHTML=vb;
   // 계정별
   const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR',a]),['IR','Others']];
   let ab='<thead><tr class="sub"><th>계정</th><th>채널</th><th>세트</th><th>GSV</th><th>ADC%</th><th>NSV</th><th>GP</th><th>GM%</th></tr></thead><tbody>';
-  accOrder.forEach(([ch,ac])=>{const L=FC.lines.filter(l=>l.ch===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
+  accOrder.filter(([ch])=>CHS.includes(ch)).forEach(([ch,ac])=>{const L=FL.filter(l=>l.ch===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
     ab+=`<tr><td>${ac}</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
-  ['OR','IR'].forEach(ch=>{const t=fcSum(FC.lines.filter(l=>l.ch===ch));ab+=`<tr class="mrow"><td>${ch} 소계</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
-  const tt=fcSum(FC.lines);ab+=`<tr class="total"><td>합계</td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td class="neg">${fcR(tt.adc,tt.gsv)}</td><td>${fmt(tt.nsv)}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td></tr></tbody>`;
+  CHS.forEach(ch=>{const t=fcSum(FL.filter(l=>l.ch===ch));ab+=`<tr class="mrow"><td>${ch} 소계</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
+  const tt=fcSum(FL);ab+=`<tr class="total"><td>합계</td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td class="neg">${fcR(tt.adc,tt.gsv)}</td><td>${fmt(tt.nsv)}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td></tr></tbody>`;
   document.getElementById('fcAcc').innerHTML=ab;
   // 라인
-  const lines=[...FC.lines].sort((a,b)=>b.gsv-a.gsv);const show=fcLineMode==='top'?lines.slice(0,40):lines;
+  const lines=[...FL].sort((a,b)=>b.gsv-a.gsv);const show=fcLineMode==='top'?lines.slice(0,40):lines;
   let lb='<thead><tr class="sub"><th>채널 · 계정</th><th>모델</th><th>카테고리</th><th>세트</th><th>GSV</th><th>GSV/세트</th><th>YED/세트</th><th>ADC/세트</th><th>COGS/세트</th><th>VSP/세트</th><th>GP</th><th>GM%</th><th>COGS 근거</th><th>ADC 근거</th></tr></thead><tbody>';
   show.forEach(l=>{const t=fcSum([l]);const s=l.sets||1;
     lb+=`<tr><td>${l.ch} · ${l.ac}</td><td>${l.model}</td><td>${l.cat}</td><td>${Math.round(l.sets).toLocaleString()}</td><td>${fmt(l.gsv)}</td><td>${Math.round(l.gsv/s).toLocaleString()}</td><td class="neg">${Math.round(l.yed/s).toLocaleString()}</td><td class="neg">${Math.round(l.adc/s).toLocaleString()}</td><td>${Math.round(l.cogs/s).toLocaleString()}</td><td>${Math.round(l.vsp/s).toLocaleString()}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.cost}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.adc}</td></tr>`;});
-  lb+=`<tr class="total"><td>합계 (전체 ${lines.length}라인)</td><td></td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td>${Math.round(tt.gsv/tt.sets).toLocaleString()}</td><td class="neg">${Math.round(tt.yed/tt.sets).toLocaleString()}</td><td class="neg">${Math.round(tt.adc/tt.sets).toLocaleString()}</td><td>${Math.round(tt.cogs/tt.sets).toLocaleString()}</td><td>${Math.round(tt.vsp/tt.sets).toLocaleString()}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td><td></td><td></td></tr></tbody>`;
+  lb+=`<tr class="total"><td>합계 (전체 ${lines.length}라인)</td><td></td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td>${tt.sets?Math.round(tt.gsv/tt.sets).toLocaleString():'-'}</td><td class="neg">${tt.sets?Math.round(tt.yed/tt.sets).toLocaleString():'-'}</td><td class="neg">${tt.sets?Math.round(tt.adc/tt.sets).toLocaleString():'-'}</td><td>${tt.sets?Math.round(tt.cogs/tt.sets).toLocaleString():'-'}</td><td>${tt.sets?Math.round(tt.vsp/tt.sets).toLocaleString():'-'}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td><td></td><td></td></tr></tbody>`;
   document.getElementById('fcLines').innerHTML=lb;
   const cv=FC.coverage_cost||{};
   document.getElementById('fcLineHint').textContent=`GSV 내림차순 · 세트당 SAR · GP 천 SAR · COGS 근거 커버(GSV): A 8월 단가 ${pct(cv.A||0)} · B 6~7월 ${pct(cv.B||0)} · C 형제모델 원가율 ${pct(cv.C||0)} · D 카테고리 원가율 ${pct(cv.D||0)}`;
