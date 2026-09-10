@@ -57,8 +57,7 @@
   .flag{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:5px;
     background:var(--lg-soft);color:var(--lg);margin-left:5px;vertical-align:middle}
   .note{font-size:11px;color:var(--mut);margin-top:10px;line-height:1.7}
-  .chartgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}.chartgrid{grid-template-columns:1fr}}
+  @media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
   @media(max-width:640px){.kpis{grid-template-columns:repeat(2,1fr)}}
   svg text{font-family:inherit}
 </style>
@@ -100,18 +99,6 @@
       · 부호는 원본 그대로입니다 — 할인 4종과 INV는 음수, VSP는 양수. NSV = GSV+YED+ADC+VPD+DSI, GP = NSV−COGS+INV+VSP</div>
   </div>
 
-  <div class="chartgrid">
-    <div class="card">
-      <h3>월별 셀아웃 · 재고(+OUD)</h3>
-      <div class="cs">막대=셀아웃(대) · 선=월말 재고+OUD(대)</div>
-      <div id="c1"></div>
-    </div>
-    <div class="card">
-      <h3>월별 NSV · GM%</h3>
-      <div class="cs">막대=NSV(SAR) · 선=GM%</div>
-      <div id="c2"></div>
-    </div>
-  </div>
 </div>
 
 <script src="data.js"></script>
@@ -277,47 +264,7 @@ function renderLadder(){
     ((y==='delta')?'2026 − 2025 증감':y+'년')+' · 선택 기간·채널·카테고리 합계 · 단위 SAR';
 }
 
-function combo(el,labels,bars,line,barColor,lineColor,fmtB,fmtL){
-  var W=620,H=210,PL=52,PR=46,PT=14,PB=26,iw=W-PL-PR,ih=H-PT-PB;
-  var bmax=Math.max.apply(null,bars.concat([1]));
-  var lmin=Math.min.apply(null,line), lmax=Math.max.apply(null,line);
-  if(lmax===lmin)lmax=lmin+1;
-  var pad=(lmax-lmin)*0.15; lmax+=pad; lmin-=pad;
-  var bw=iw/Math.max(labels.length,1), s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" height="'+H+'" role="img">';
-  for(var g=0;g<=3;g++){var yy=PT+ih*g/3;
-    s+='<line x1="'+PL+'" y1="'+yy+'" x2="'+(W-PR)+'" y2="'+yy+'" stroke="var(--line2)" stroke-width="1"/>';
-    s+='<text x="'+(PL-7)+'" y="'+(yy+3.5)+'" text-anchor="end" font-size="9" fill="var(--mut)">'+fmtB(bmax*(3-g)/3)+'</text>';}
-  bars.forEach(function(v,i){
-    var bh=bmax?ih*v/bmax:0, x=PL+bw*i+bw*0.22, yv=PT+ih-bh;
-    s+='<rect x="'+x.toFixed(1)+'" y="'+yv.toFixed(1)+'" width="'+(bw*0.56).toFixed(1)+'" height="'+Math.max(bh,0).toFixed(1)+'" fill="'+barColor+'" rx="2"><title>'+labels[i]+' '+fmtB(v)+'</title></rect>';
-    s+='<text x="'+(PL+bw*i+bw/2).toFixed(1)+'" y="'+(H-9)+'" text-anchor="middle" font-size="9.5" fill="var(--mut)">'+labels[i]+'</text>';});
-  var pts=line.map(function(v,i){return [PL+bw*i+bw/2, PT+ih-ih*(v-lmin)/(lmax-lmin)];});
-  s+='<polyline fill="none" stroke="'+lineColor+'" stroke-width="2" stroke-linejoin="round" points="'
-    +pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+'"/>';
-  pts.forEach(function(p,i){
-    s+='<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="3" fill="var(--card)" stroke="'+lineColor+'" stroke-width="2"><title>'+labels[i]+' '+fmtL(line[i])+'</title></circle>';});
-  s+='<text x="'+(W-PR+7)+'" y="'+(PT+8)+'" font-size="9" fill="'+lineColor+'">'+fmtL(lmax)+'</text>';
-  s+='<text x="'+(W-PR+7)+'" y="'+(PT+ih)+'" font-size="9" fill="'+lineColor+'">'+fmtL(lmin)+'</text>';
-  document.getElementById(el).innerHTML=s+'</svg>';
-}
-
-function renderCharts(){
-  var ms=months(), cs=chans(), so=[],stkoud=[],nsv=[],gm=[];
-  ms.forEach(function(m){
-    var s=0,k=0,o=0,g=0,c=0,i2=0,v=0,d=0;
-    var acc={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
-    R.forEach(function(r){
-      if(r.y!=='2026'||r.m!==m) return;
-      if(!SEL.ch.has(r.ch)||!SEL.cat.has(r.cat)) return;
-      s+=r.so;k+=r.stk;o+=r.oud;
-      for(var q in acc)acc[q]+=r[q];});
-    var n=acc.gsv+acc.yed+acc.adc+acc.vpd+acc.dsi;
-    so.push(s);stkoud.push(k+o);nsv.push(n);gm.push(n?(n-acc.cogs+acc.inv+acc.vsp)/n*100:0);});
-  combo('c1',ms,so,stkoud,'var(--y26)','var(--oud)',function(v){return Math.round(v).toLocaleString();},function(v){return Math.round(v).toLocaleString();});
-  combo('c2',ms,nsv,gm,'var(--y25)','var(--lg)',function(v){return (v/1e6).toFixed(1)+'M';},function(v){return v.toFixed(1)+'%';});
-}
-
-function renderAll(){renderKpi();renderTable();renderLadder();renderCharts();}
+function renderAll(){renderKpi();renderTable();renderLadder();}
 
 function chipBox(elId,items,set){
   var el=document.getElementById(elId);
