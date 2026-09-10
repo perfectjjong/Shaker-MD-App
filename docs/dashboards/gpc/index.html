@@ -95,6 +95,7 @@
   .yoy.down{color:var(--neg);background:color-mix(in srgb,var(--neg) 12%,transparent)}
 
   .grid{display:grid;gap:16px}
+  .grid>*{min-width:0}   /* 그리드 카드 안 표가 min-content 로 셀을 벌려 페이지가 가로로 넘치는 것 방지 — 표는 .tblwrap 안에서 스크롤 */
   .g2{grid-template-columns:1fr 1fr}
   @media(max-width:880px){.g2{grid-template-columns:1fr}}
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:20px 22px;margin-bottom:16px}
@@ -149,8 +150,8 @@
     .pchip{min-width:30px;padding:5px 7px;font-size:12px}
     .ytog{padding:5px 10px;font-size:12.5px}
     .seg button{padding:5px 10px;font-size:12.5px}
-    .tabs{overflow-x:auto;scrollbar-width:none}
-    .tabs button{padding:10px 12px;font-size:13px;white-space:nowrap;flex:none}
+    .tabs{flex-wrap:wrap}   /* 가로 스크롤이면 4번째 탭(월 예상)이 화면 밖으로 숨는다 → 줄바꿈 */
+    .tabs button{padding:9px 10px;font-size:12.5px;white-space:nowrap;flex:none}
     .kpis{grid-template-columns:1fr;gap:10px;margin-bottom:14px}
     .kpi{padding:14px 16px}
     .kpi .big{font-size:26px}
