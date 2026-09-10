@@ -321,7 +321,7 @@
     <div class="note" id="fcNote"></div>
     <div class="kpis" id="fcKpis"></div>
     <div class="card">
-      <div class="h"><div><h3>손익 사다리 — 9월 예상 vs 8월 가마감 vs 25년 9월 실적</h3><div class="hint" id="fcLadderHint">대상 4개 카테고리(Split Inverter · Split On/Off · Window · Floor Standing) 동일 모집단 · 상단 필터 미적용 · 천 SAR</div></div></div>
+      <div class="h"><div><h3>손익 사다리 — 9월 예상 vs 8월 가마감 vs 25년 9월 실적</h3><div class="hint" id="fcLadderHint">FCST 카테고리(Split Inverter · Split On/Off · Window · Floor Standing · Concealed) 동일 모집단 · 상단 필터 미적용 · 천 SAR</div></div></div>
       <div class="tblwrap"><table class="tbl" id="fcLadder"></table></div>
     </div>
     <div class="card">
@@ -330,7 +330,7 @@
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>VSP 배분</h3><div class="hint">Inverter·On/Off = 지정 lump sum 을 COGS 비례 배분 · FS = 8월 B2C FS GM% 동등 역산 · Window 0</div></div></div>
+        <div class="h"><div><h3>VSP 배분</h3><div class="hint">Inverter·On/Off = 지정 lump sum (8월 채널×모델 세트당 유지 + 잔액 COGS 비례 균등) · FS = 8월 B2C FS GM% 동등 역산 · Window·Concealed 0</div></div></div>
         <div class="tblwrap"><table class="tbl" id="fcVsp"></table></div>
       </div>
       <div class="card" style="margin:0">
@@ -989,7 +989,7 @@ function render(){syncBasisUI();
 const FC=(typeof GPC_FORECAST!=='undefined')?GPC_FORECAST:null;
 if(!FC)document.getElementById('tabFcst').classList.add('hide');
 else document.getElementById('tabFcst').textContent=`${FC.month}월 예상`;
-const FC_CATS=['Split Inverter','Split On/Off','Window AC','Floor Standing AC'];
+const FC_CATS=['Split Inverter','Split On/Off','Window AC','Floor Standing AC','Concealed Set'];
 let fcLineMode='top';
 function fcSum(rows){const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,sets:0};
   for(const r of rows){for(const k in o)if(r[k]!==undefined)o[k]+=r[k];}
@@ -1003,7 +1003,7 @@ function renderFcst(){
   const Y=FC.year,M=FC.month,pm=M-1;
   const F=fcSum(FC.lines),A8=fcActual(Y,pm),A25=fcActual(Y-1,M);
   const prov=GPC_META.provisional,provLbl=(prov&&prov.year===Y&&prov.month===pm)?'가마감':'실적';
-  document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> 대상 4개 카테고리만 산출(Unitary Package·Concealed 등 제외) · 상단 연도·기간·채널·카테고리 필터는 이 탭에 적용되지 않습니다.`;
+  document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> FCST 에 있는 카테고리만 산출(Cassette·Multi-V·Accessory 등 FCST 없는 축은 제외) · 상단 연도·기간·채널·카테고리 필터는 이 탭에 적용되지 않습니다.`;
   // KPI
   const box=document.getElementById('fcKpis');box.innerHTML='';
   [[`${Y-1}년 ${M}월 실적`,A25,YCOL[Y-1]],[`${Y}년 ${pm}월 ${provLbl}`,A8,'#b45309'],[`${Y}년 ${M}월 예상`,F,YCOL[Y]]].forEach(([lab,t,col],i,arr)=>{
