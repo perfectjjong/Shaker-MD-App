@@ -24,7 +24,9 @@ import sys
 import openpyxl
 
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
+sys.path.insert(0, "/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/_engine")
 from shared_classification import IR_CHANNEL_MAP, OR_CHANNEL_MAP, channel_from_name
+from gpc_core import sub_channel, SUB_CHANNELS   # 세부 채널 OR/IR_Main/IR_Others/SME (2026-09-11)
 
 SRC_DIR = "/home/ubuntu/2026/02. Operation Team/01. GPC Management/01. Monthly"
 OUT = "/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc/gpc_data.js"
@@ -125,8 +127,15 @@ def main():
     print(f"소스: {src.split('/')[-1]}")
     wb = openpyxl.load_workbook(src, read_only=True, data_only=True)
 
-    agg = {}  # (y,m,ch,ac,cat) -> [metrics]
+    agg = {}  # (y,m,ch,sub,ac,cat) -> [metrics]
     skipped = 0
+    # 비B2C(AFS·ACS·Central Projects·SDA…)·SSOT 밖 단발 계정은 제외 (2026-09-11 형님 "권고로 합시다" — STP 모집단과 동일).
+    # 제외분은 숨기지 않고 연도별로 집계해 Summary 시트 대사 때 되더한다.
+    excluded = {}  # (y, m) -> {metric: sum}
+    excluded_acc = {}  # (y, cid, name) -> gsv
+    # 계정 ID 가 없는 채널 단위 조정행(2024 IR: VSP·VPD·DSI·INV 정액 등)은 제외하지 않고
+    # 같은 (연,월,채널,카테고리)의 세부 채널 GSV 비중으로 안분한다 (Official 안분과 같은 원리).
+    lump = {}  # (y, m, ch, cat) -> [metrics]
     for sheet in wb.sheetnames:
         mo = re.fullmatch(r"Raw (20\d\d)", sheet)
         if not mo:
@@ -152,15 +161,60 @@ def main():
                 ch = "IR"
             elif ac in _OR_MAIN_SET:
                 ch = "OR"
-            key = (year, m, ch, ac, norm_cat(row[28]))
+            try:
+                _cid = int(float(row[4]))
+            except (TypeError, ValueError):
+                _cid = None
+            sub = sub_channel(_cid, ac)
+            if sub is None and _cid is None:
+                lk = (year, m, ch, norm_cat(row[28]))
+                la = lump.setdefault(lk, [0.0] * len(METRIC_KEYS))
+                la[0] += num(row[18])
+                for i, k in enumerate(METRIC_KEYS[1:], 1):
+                    la[i] += num(row[AMT[k]])
+                continue
+            if sub is None:
+                e = excluded.setdefault((year, m), {k: 0.0 for k in METRIC_KEYS})
+                e["qty"] += num(row[18])
+                for k in METRIC_KEYS[1:]:
+                    e[k] += num(row[AMT[k]])
+                ek = (year, _cid, str(row[5] or "")[:30])
+                excluded_acc[ek] = excluded_acc.get(ek, 0.0) + num(row[19])
+                continue
+            # 채널은 SSOT 세부 채널을 따른다 — raw Chanel 이 'Dealer - OR' 인데 SSOT 팀이 IR_Others 인 계정
+            # (United Vision·Basel Almazyad·Alsudairi 등 2024~25 약 10.5M)은 STP 와 같은 기준으로 IR 에 둔다.
+            ch = "OR" if sub == "OR" else "IR"
+            key = (year, m, ch, sub, ac, norm_cat(row[28]))
             a = agg.setdefault(key, [0.0] * len(METRIC_KEYS))
             a[0] += num(row[18])
             for i, k in enumerate(METRIC_KEYS[1:], 1):
                 a[i] += num(row[AMT[k]])
 
+    # ── 계정 없는 조정행 안분 ──
+    n_lump = 0
+    for (y, m, ch, cat), lv in lump.items():
+        cands = [k for k in agg if k[0] == y and k[1] == m and k[2] == ch and k[5] == cat]
+        if not cands:
+            cands = [k for k in agg if k[0] == y and k[1] == m and k[2] == ch]
+        if not cands:
+            print(f"  ⚠️ 안분 대상 없음 {y}-{m} {ch} {cat}: GSV {lv[1]:,.0f} → {ch} Others 로 적재")
+            k = (y, m, ch, "OR" if ch == "OR" else "IR_Others", "Others", cat)
+            a = agg.setdefault(k, [0.0] * len(METRIC_KEYS))
+            for i in range(len(METRIC_KEYS)):
+                a[i] += lv[i]
+            continue
+        tot_g = sum(abs(agg[k][1]) for k in cands)
+        for k in cands:
+            w = abs(agg[k][1]) / tot_g if tot_g else 1.0 / len(cands)
+            for i in range(len(METRIC_KEYS)):
+                agg[k][i] += lv[i] * w
+        n_lump += 1
+    if n_lump:
+        print(f"  ↔ 계정 없는 조정행 {n_lump}셀 안분 (GSV {sum(v[1] for v in lump.values()):,.0f} · VSP {sum(v[8] for v in lump.values()):,.0f})")
+
     records = []
-    for (y, m, ch, ac, cat), v in sorted(agg.items()):
-        rec = {"y": y, "m": m, "ch": ch, "ac": ac, "cat": cat}
+    for (y, m, ch, sub, ac, cat), v in sorted(agg.items()):
+        rec = {"y": y, "m": m, "ch": ch, "sub": sub, "ac": ac, "cat": cat}
         rec.update({k: round(v[i], 6) for i, k in enumerate(METRIC_KEYS)})
         records.append(rec)
 
@@ -186,7 +240,8 @@ def main():
     wb.close()
 
     def derived(y, months):
-        d = {k: tot(y, k, months) for k in METRIC_KEYS[1:]}
+        d = {k: tot(y, k, months) + sum(e[k] for (yy, mm), e in excluded.items() if yy == y and mm in months)
+             for k in METRIC_KEYS[1:]}   # 제외분 되더해 원본과 대사
         d["NSV"] = d["gsv"] + d["yed"] + d["adc"] + d["vpd"] + d["dsi"]
         d["GP"] = d["NSV"] - d["cogs"] + d["inv"] + d["vsp"]
         return {"GSV": d["gsv"], "YED": d["yed"], "ADC": d["adc"], "VPD": d["vpd"],
@@ -203,6 +258,14 @@ def main():
             print(f"  ❌ {yy} {label}: sheet={sv:,.1f} builder={cv:,.1f} Δ={cv - sv:,.1f}")
             bad += 1
     print(f"  검증 셀: {len(sheet_vals)} / 불일치: {bad} (skipped rows: {skipped})")
+    excl_y = {}
+    for (y, m), e in excluded.items():
+        ey = excl_y.setdefault(y, {k: 0.0 for k in METRIC_KEYS})
+        for k in METRIC_KEYS:
+            ey[k] += e[k]
+    for y in sorted(excl_y):
+        top = sorted(((k[2], v) for k, v in excluded_acc.items() if k[0] == y), key=lambda z: -abs(z[1]))[:3]
+        print(f"  ⛔ {y} 비B2C 제외: GSV {excl_y[y]['gsv']:,.0f} · " + ", ".join(f"{n} {v:,.0f}" for n, v in top))
 
     # ── 가마감(provisional) 주입 ──────────────────────────────────
     # 월마감 전 잠정 시뮬레이션을 별도 JSON으로 얹는다. 실적(Accrual)과 구분 표기.
@@ -218,6 +281,8 @@ def main():
         if exists:
             print(f"  ⏭  {py}-{pm}월은 이미 실적이 있어 가마감을 얹지 않음")
         else:
+            if any("sub" not in r for r in pj["rows"]):
+                sys.exit("❌ gpc_provisional.json 에 sub(세부 채널) 없음 — build_provisional_financial.py 를 다시 돌릴 것")
             records.extend(pj["rows"])
             ys = str(py)
             if ys in year_months and pm not in year_months[ys]:
@@ -249,7 +314,8 @@ def main():
 
     meta = {
         "cats": CATS,
-        "channels": ["IR", "OR"],
+        "channels": SUB_CHANNELS,               # 세부 채널 (필터·차트 축). 레코드 ch(IR/OR)는 호환용 유지
+        "excluded": {str(y): {k: round(v, 1) for k, v in e.items()} for y, e in excl_y.items()},
         "or_mains": OR_MAINS,
         "ir_mains": IR_MAINS,
         "metric_keys": METRIC_KEYS,

@@ -258,7 +258,7 @@
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>채널 비교 — IR vs OR<span id="bdgChan"></span></h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별</div></div></div>
+        <div class="h"><div><h3>채널 비교 — OR · IR_Main · IR_Others · SME<span id="bdgChan"></span></h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별 · IR_Main=메인 9계정, IR_Others=그 외 IR 딜러, SME=SME 계정 · OR 은 OR_Others 포함</div></div></div>
         <div class="cbox tall"><canvas id="cChanCmp"></canvas></div>
       </div>
       <div class="card" style="margin:0">
@@ -423,8 +423,8 @@ function chShare(){
     if(isProv(r.y,r.m))continue;
     const k=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
     let e=_CHS[k];
-    if(!e){e=_CHS[k]={};MKEYS.forEach(m=>e[m]={IR:0,OR:0});}
-    MKEYS.forEach(m=>e[m][r.ch]+=r[m]);}
+    if(!e){e=_CHS[k]={};MKEYS.forEach(m=>{e[m]={};GPC_META.channels.forEach(c=>e[m][c]=0);});}
+    MKEYS.forEach(m=>e[m][r.sub]+=r[m]);}
   return _CHS;}
 
 function aggOff(year,months,opt){opt=opt||{};
@@ -438,11 +438,11 @@ function aggOff(year,months,opt){opt=opt||{};
     if(r.y!==year||r.b!=='A'||!ms.has(r.m)||!cs.has(r.cat))continue;
     if(whole){for(const k in o)if(k in r)o[k]+=r[k];continue;}   // 전 채널이면 공시 원본 그대로
     const b=SH[`${r.y}|${r.m}|${r.cat}`];
-    const gt=b?Math.abs(b.gsv.IR)+Math.abs(b.gsv.OR):0;
+    const gt=b?GPC_META.channels.reduce((t,c)=>t+Math.abs(b.gsv[c]),0):0;
     if(gt<1){o.unalloc+=r.gsv;continue;}                // Accrual 에 그 셀이 없어 비중을 못 만든다
     const wg=[...chs].reduce((t,c)=>t+Math.abs(b.gsv[c])/gt,0);
     const wOf=mk=>{const e=b[mk];if(!e)return wg;
-      const t=Math.abs(e.IR)+Math.abs(e.OR);
+      const t=GPC_META.channels.reduce((x,c)=>x+Math.abs(e[c]),0);
       return t<1?wg:[...chs].reduce((x,c)=>x+Math.abs(e[c])/t,0);};  // 그 지표가 0 이면 GSV 비중 폴백
     for(const k of MKEYS)if(k in r)o[k]+=r[k]*wOf(k);}
 
@@ -455,7 +455,7 @@ function aggOff(year,months,opt){opt=opt||{};
     const f={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,qty:0};
     let any=false;
     for(const r of GPC_DATA){
-      if(r.y!==year||r.m!==m||!chs.has(r.ch)||!cs.has(r.cat))continue;
+      if(r.y!==year||r.m!==m||!chs.has(r.sub)||!cs.has(r.cat))continue;
       any=true;for(const k in f)f[k]+=r[k];}
     if(!any)continue;
     o.fb.push(m);
@@ -483,7 +483,7 @@ function accBase(year,months,cats,chans){
   const ms=new Set(months),cs=cats||S.cats,chs=chans||S.chans;
   const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
-    if(r.y!==year||!ms.has(r.m)||!chs.has(r.ch)||!cs.has(r.cat))continue;
+    if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat))continue;
     for(const k in o)o[k]+=r[k];}
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;
   o.gm_pct=o.nsv?o.gp/o.nsv:0;return o;}
@@ -492,7 +492,7 @@ function aggAcc(year,months,opt){opt=opt||{};
   const ms=new Set(months),cs=opt.cats||S.cats,chs=opt.chans||S.chans;
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
-    if(r.y!==year||!ms.has(r.m)||!chs.has(r.ch)||!cs.has(r.cat))continue;
+    if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat))continue;
     if(opt.ac!==undefined&&r.ac!==opt.ac)continue;
     for(const k in o)o[k]+=r[k];
   }
@@ -1003,8 +1003,8 @@ function renderFcst(){
   if(!FC)return;
   const Y=FC.year,M=FC.month,pm=M-1;
   // Executive Summary 와 같이 상단 채널·카테고리 필터를 따른다 (연도·기간은 비교월 고정이라 미적용)
-  const CATS=FC_CATS.filter(c=>S.cats.has(c)),CHS=['OR','IR'].filter(c=>S.chans.has(c));
-  const FL=FC.lines.filter(l=>S.chans.has(l.ch)&&S.cats.has(l.cat));
+  const CATS=FC_CATS.filter(c=>S.cats.has(c)),CHS=GPC_META.channels.filter(c=>S.chans.has(c));
+  const FL=FC.lines.filter(l=>S.chans.has(l.sub)&&S.cats.has(l.cat));
   const F=fcSum(FL),A8=fcActual(Y,pm,CATS,CHS),A25=fcActual(Y-1,M,CATS,CHS);
   const fsel=`${CHS.join('+')||'채널 없음'} · 카테고리 ${CATS.length}/${FC_CATS.length}`;
   const prov=GPC_META.provisional,provLbl=(prov&&prov.year===Y&&prov.month===pm)?'가마감':'실적';
@@ -1045,7 +1045,7 @@ function renderFcst(){
     return`<tr class="${cls}"><td>${lab}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.yed,t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td class="neg">${fcR(t.dsi,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.cogs)}<span class="rt">${fcR(t.cogs,t.gsv)}</span></td><td>${fmt(t.vsp)}<span class="rt">${fcR(t.vsp,t.cogs)}</span></td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td class="ydiv">${a.nsv?pct(a.gm_pct):'-'}</td><td class="${dp<0?'neg':'pos'}">${a.nsv?sgn(dp)+dp.toFixed(1)+'pp':'-'}</td></tr>`;};
   CATS.forEach(cat=>{const L=FL.filter(l=>l.cat===cat);if(!L.length)return;
     cc.push(catRow(cat,L,'mrow',null,cat));
-    CHS.forEach(ch=>{const r=L.filter(l=>l.ch===ch);if(r.length)cc.push(catRow('&nbsp;&nbsp;'+ch,r,'prow',ch,cat));});});
+    CHS.forEach(ch=>{const r=L.filter(l=>l.sub===ch);if(r.length)cc.push(catRow('&nbsp;&nbsp;'+ch,r,'prow',ch,cat));});});
   cc.push(catRow('합계',FL,'total',null,null));
   document.getElementById('fcCat').innerHTML=`<thead>${cc[0]}</thead><tbody>${cc.slice(1).join('')}</tbody>`;
   // VSP 배분
@@ -1057,18 +1057,18 @@ function renderFcst(){
   vb+=`<tr class="total"><td>합계</td><td>${fmt(tv)}</td><td>${fmt(tc)}</td><td>${fcR(tv,tc)}</td><td>${fcR(tv,tg)}</td><td>${ts?Math.round(tv/ts).toLocaleString():'-'}</td><td class="ydiv">${fmt(t8v)}</td><td>${fcR(t8v,t8c)}</td></tr></tbody>`;
   document.getElementById('fcVsp').innerHTML=vb;
   // 계정별
-  const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR',a]),['IR','Others']];
+  const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR_Main',a]),['IR_Others','Others'],['SME','Others']];
   let ab='<thead><tr class="sub"><th>계정</th><th>채널</th><th>세트</th><th>GSV</th><th>ADC%</th><th>NSV</th><th>GP</th><th>GM%</th></tr></thead><tbody>';
-  accOrder.filter(([ch])=>CHS.includes(ch)).forEach(([ch,ac])=>{const L=FL.filter(l=>l.ch===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
+  accOrder.filter(([ch])=>CHS.includes(ch)).forEach(([ch,ac])=>{const L=FL.filter(l=>l.sub===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
     ab+=`<tr><td>${ac}</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
-  CHS.forEach(ch=>{const t=fcSum(FL.filter(l=>l.ch===ch));ab+=`<tr class="mrow"><td>${ch} 소계</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
+  CHS.forEach(ch=>{const t=fcSum(FL.filter(l=>l.sub===ch));if(!t.sets)return;ab+=`<tr class="mrow"><td>${ch} 소계</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td>${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});
   const tt=fcSum(FL);ab+=`<tr class="total"><td>합계</td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td class="neg">${fcR(tt.adc,tt.gsv)}</td><td>${fmt(tt.nsv)}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td></tr></tbody>`;
   document.getElementById('fcAcc').innerHTML=ab;
   // 라인
   const lines=[...FL].sort((a,b)=>b.gsv-a.gsv);const show=fcLineMode==='top'?lines.slice(0,40):lines;
   let lb='<thead><tr class="sub"><th>채널 · 계정</th><th>모델</th><th>카테고리</th><th>세트</th><th>GSV</th><th>GSV/세트</th><th>YED/세트</th><th>ADC/세트</th><th>COGS/세트</th><th>VSP/세트</th><th>GP</th><th>GM%</th><th>COGS 근거</th><th>ADC 근거</th></tr></thead><tbody>';
   show.forEach(l=>{const t=fcSum([l]);const s=l.sets||1;
-    lb+=`<tr><td>${l.ch} · ${l.ac}</td><td>${l.model}</td><td>${l.cat}</td><td>${Math.round(l.sets).toLocaleString()}</td><td>${fmt(l.gsv)}</td><td>${Math.round(l.gsv/s).toLocaleString()}</td><td class="neg">${Math.round(l.yed/s).toLocaleString()}</td><td class="neg">${Math.round(l.adc/s).toLocaleString()}</td><td>${Math.round(l.cogs/s).toLocaleString()}</td><td>${Math.round(l.vsp/s).toLocaleString()}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.cost}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.adc}</td></tr>`;});
+    lb+=`<tr><td>${l.sub} · ${l.ac}</td><td>${l.model}</td><td>${l.cat}</td><td>${Math.round(l.sets).toLocaleString()}</td><td>${fmt(l.gsv)}</td><td>${Math.round(l.gsv/s).toLocaleString()}</td><td class="neg">${Math.round(l.yed/s).toLocaleString()}</td><td class="neg">${Math.round(l.adc/s).toLocaleString()}</td><td>${Math.round(l.cogs/s).toLocaleString()}</td><td>${Math.round(l.vsp/s).toLocaleString()}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.cost}</td><td style="text-align:left;font-size:11.5px;color:var(--mut)">${l.src.adc}</td></tr>`;});
   lb+=`<tr class="total"><td>합계 (전체 ${lines.length}라인)</td><td></td><td></td><td>${Math.round(tt.sets).toLocaleString()}</td><td>${fmt(tt.gsv)}</td><td>${tt.sets?Math.round(tt.gsv/tt.sets).toLocaleString():'-'}</td><td class="neg">${tt.sets?Math.round(tt.yed/tt.sets).toLocaleString():'-'}</td><td class="neg">${tt.sets?Math.round(tt.adc/tt.sets).toLocaleString():'-'}</td><td>${tt.sets?Math.round(tt.cogs/tt.sets).toLocaleString():'-'}</td><td>${tt.sets?Math.round(tt.vsp/tt.sets).toLocaleString():'-'}</td><td>${fmt(tt.gp)}</td><td class="gmp">${pct(tt.gm_pct)}</td><td></td><td></td></tr></tbody>`;
   document.getElementById('fcLines').innerHTML=lb;
   const cv=FC.coverage_cost||{};
@@ -1086,7 +1086,8 @@ document.querySelectorAll('#fcLineMode button').forEach(b=>b.onclick=()=>{fcLine
   document.getElementById('basisLbl').textContent='('+GPC_META.basis+')';
   syncCover();
   document.getElementById('foot').innerHTML=
-    `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b> · 메인계정=SSOT shared_classification`
+    `build_gpc_dashboard.py v2 자동생성 · 소스 <b>${GPC_META.source}</b> (${GPC_META.basis}) · 원본 Summary 시트 YOY 30셀 대사 <b>Δ=0</b>(비B2C 제외분 되더해 대사) · 메인계정=SSOT shared_classification · 채널 4분할=계정 SSOT 팀(SE 게이트 미적용)`
+    + (GPC_META.excluded?` · ⛔ 비B2C·SSOT 밖 계정 제외 GSV: ${Object.entries(GPC_META.excluded).map(([y,e])=>`${y} ${fmt(e.gsv)}`).join(' / ')} 천 SAR`:'')
     + (GPC_META.provisional?` · <b style="color:#b45309">${GPC_META.provisional.year}-${String(GPC_META.provisional.month).padStart(2,'0')}은 ${GPC_META.provisional.basis}</b> — 실적 아님, 파이낸스 마감 시 대체`:'')
     + (GPC_META.official?` · Official 대사 소스 <b>${GPC_META.official.source}</b> (Finance 공시) — 엑셀 원본 1:1 대조 <b>불일치 0</b>`:'');
 })();
