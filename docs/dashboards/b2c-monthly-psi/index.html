@@ -79,6 +79,18 @@ tr:hover td{background:#f9f5ec}
 .yt{padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700}
 @media(max-width:640px){.kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2,.grid32{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:700px){.cc{overflow-x:auto}#m2Summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* ── Channel 필터 선택/미선택 색상 구분 (2026-09-10 형님 요청) ──────────────
+   그룹 버튼(All OR·IR Main·IR_Others)은 인라인 background 가 .fb.on 을 덮어써서
+   on 클래스가 토글돼도 화면에 전혀 드러나지 않았다. 인라인은 !important 로만
+   이길 수 있으므로, 식별색은 살리고 미선택을 흐리게 해 상태를 보이게 한다. */
+.fb[data-ch-group]{transition:opacity .15s,filter .15s,box-shadow .15s}
+.fb[data-ch-group]:not(.on){opacity:.35;filter:grayscale(.65)}
+.fb[data-ch-group].on{opacity:1;filter:none;box-shadow:0 0 0 2px var(--so)}
+/* 개별 채널: 미선택이 흰 바탕 + 식별색 글자라 대비가 약했다 — 더 흐리게 */
+.fb[data-ch]{transition:opacity .15s,filter .15s}
+.fb[data-ch]:not(.on){opacity:.45;filter:grayscale(.5)}
+.fb[data-ch].on{opacity:1;filter:none}
 </style>
 </head>
 <body>
