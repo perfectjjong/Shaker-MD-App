@@ -269,6 +269,13 @@
       <div class="h"><div><h3>손익 사다리 — 연도 비교</h3><div class="hint" id="ladderHint">GSV → 할인 4종 → NSV → COGS·INV·VSP → GP · 선택 기간·채널·카테고리 합산 · 천 SAR</div></div></div>
       <div class="tblwrap"><table class="tbl" id="tblLadder"></table></div>
     </div>
+    <div class="card hide" id="cardAr">
+      <div class="h"><div><h3>채권·회수 <span class="dfbadge">계정 기준 · 카테고리 축 없음</span></h3>
+        <div class="hint" id="arHint"></div></div>
+        <button class="txtbtn" id="arAging">채권 연령 ▾</button></div>
+      <div class="tblwrap"><table class="tbl" id="tblAr"></table></div>
+      <div class="hint" id="arFoot" style="margin-top:9px"></div>
+    </div>
     <div class="card">
       <div class="h">
         <div><h3>기간별 추이</h3><div class="hint" id="mainHint"></div></div>
@@ -545,6 +552,98 @@ function aggAcc(year,months,opt){opt=opt||{};
   o.total_cogs=o.cogs-o.inv-o.vsp;
   o.cogs_rate=o.gsv?o.total_cogs/o.gsv:0;
   return o;}
+// ── 채권·회수(AR) ───────────────────────────────────────────────
+// AR·연체·한도·5구간 = 그 달 말 시점값(저량) → 여러 달 선택 시 **마지막 달** 값. 합산 금지.
+// 회수(Collection) = 그 달 합계(유량) → 선택 기간 합산.
+// 카테고리 축이 없다(계정 단위 잔액) → 카테고리 필터를 걸면 금액은 그대로 두고
+// 매출을 분모로 쓰는 비율(DSO·회수율)만 숨긴다. 안 바뀌는 금액은 결함이 아니라 정의다.
+const AR=(typeof GPC_AR!=='undefined'&&GPC_AR)?GPC_AR:null;
+const AR_STOCK=['ar','ovd','cl','o1','o2','o3','o4','o5'], AR_FLOW=['coll'];
+const arMonths=y=>AR?[...new Set(AR.rows.filter(r=>r.y===y).map(r=>r.m))].sort((a,b)=>a-b):[];
+function arSum(y,months){
+  if(!AR)return null;
+  const ms=months.filter(m=>arMonths(y).includes(m));
+  if(!ms.length)return null;
+  const last=Math.max(...ms),o={m:last,ms};
+  AR_STOCK.concat(AR_FLOW).forEach(k=>o[k]=0);
+  for(const r of AR.rows){
+    if(r.y!==y||!S.chans.has(r.sub)||!passAcc(r))continue;
+    if(r.m===last)AR_STOCK.forEach(k=>o[k]+=r[k]);
+    if(ms.includes(r.m))o.coll+=r.coll;
+  }
+  o.ovd_pct=o.ar?o.ovd/o.ar:0; o.clean=o.ar-o.ovd; o.cl_use=o.cl?o.ar/o.cl:0;
+  return o;}
+const arCatAll=()=>S.cats.size===GPC_META.cats.length;     // 카테고리 전체 선택 여부
+const AR_ROWS=[
+  {k:'ar',    label:'AR 잔액 <span class="rt">VAT 포함</span>'},
+  {k:'ovd',   label:'연체', cls:'neg'},
+  {k:'ovd_pct',label:'연체율 <span class="rt">÷AR</span>', pct:1},
+  {k:'clean', label:'정상 채권'},
+  {k:'dso',   label:'DSO <span class="rt">일</span>', day:1, needSales:1},
+  {k:'coll',  label:'회수 <span class="rt">기간 합</span>'},
+  {k:'coll_r',label:'회수율 <span class="rt">÷매출</span>', pct:1, needSales:1},
+  {k:'cl',    label:'여신한도'},
+  {k:'cl_use',label:'한도 소진율 <span class="rt">AR÷한도</span>', pct:1},
+];
+// ⚠️ 정본 aging_split_raw 는 **RAW 연령 버킷**이라 Σ = AR 잔액이다(연체 합이 아니다 — 음수·미도래분 포함).
+// '연체 구간' 으로 읽으면 틀린다. 라벨을 '채권 연령'으로 두고 소계 행으로 Σ=AR 을 명시한다.
+const AR_AGING=[['o1','0–30일'],['o2','31–60일'],['o3','61–180일'],['o4','181–365일'],['o5','365일 초과']];
+let arAgingOpen=false;
+function renderAr(){
+  const card=document.getElementById('cardAr');
+  if(!AR||S.basis==='off'){card.classList.add('hide');return;}   // Official 기준엔 AR 없음
+  const yrs=selYears(),months=selMonths();
+  const A={},SA={};let any=false;
+  yrs.forEach(y=>{A[y]=arSum(y,months);if(A[y])any=true;
+    const a=aggAcc(y,A[y]?A[y].ms:months,{noFcst:1});SA[y]=a.gsv*1.15;});   // 매출 VAT 환산
+  if(!any){card.classList.add('hide');return;}
+  card.classList.remove('hide');
+  const showRatio=arCatAll();
+  const val=(y,k)=>{const a=A[y];if(!a)return null;
+    if(k==='dso'){const n=a.ms.length;return SA[y]>0?a.ar/(SA[y]/n)*30:null;}
+    if(k==='coll_r')return SA[y]>0?a.coll/SA[y]:null;
+    return a[k];};
+  const last=yrs[yrs.length-1],prev=yrs[yrs.length-2],first=yrs[0];
+  let head='<thead><tr class="sub"><th>Metric</th>';
+  yrs.forEach(y=>{const a=A[y];head+=`<th style="color:${ycol(y)}">${y}${a?` · ${a.m}월말`:''}</th>`;});
+  if(prev!==undefined)head+=`<th class="ydiv">${String(prev).slice(2)}v${String(last).slice(2)} Var (Δ)</th><th>Gr% ${String(last).slice(2)} v ${String(prev).slice(2)}</th>`;
+  if(yrs.length>2)head+=`<th>Gr% ${String(last).slice(2)} v ${String(first).slice(2)}</th>`;
+  head+='</tr></thead>';
+  const cell=(row,v)=>v==null?'<span style="color:var(--mut)">–</span>'
+    :(row.pct?pct(v):row.day?Math.round(v).toLocaleString():fmt(v));
+  let body='';
+  const rows=AR_ROWS.concat(arAgingOpen
+    ?[{k:'_hdr',label:'<b>채권 연령</b> <span class="rt">합 = AR 잔액 · 미도래분 포함</span>',hdr:1}]
+      .concat(AR_AGING.map(([k,l])=>({k,label:'&nbsp;&nbsp;'+l,sub:1})))
+      .concat([{k:'ar',label:'&nbsp;&nbsp;연령 합계 <span class="rt">= AR</span>',sub:1}])
+    :[]);
+  rows.forEach(row=>{
+    if(row.needSales&&!showRatio)return;                      // 카테고리 필터 시 비율 숨김
+    if(row.hdr){body+=`<tr class="prow"><td colspan="${yrs.length+(prev!==undefined?2:0)+(yrs.length>2?1:0)+1}">${row.label}</td></tr>`;return;}
+    let tr=`<tr class="${row.sub?'prow':'mrow'} ${row.cls&&!row.pct?'':''}"><td>${row.label}</td>`;
+    yrs.forEach(y=>{const v=val(y,row.k);
+      tr+=`<td class="${v!=null&&v<0?'neg':''}">${cell(row,v)}</td>`;});
+    if(prev!==undefined){
+      const a=val(last,row.k),b=val(prev,row.k);
+      if(a==null||b==null)tr+='<td class="ydiv">–</td><td>–</td>';
+      else{const d=a-b,g=b?d/Math.abs(b):0;
+        const dd=row.pct?sgn(d)+(d*100).toFixed(1)+'pp':row.day?sgn(d)+Math.round(d).toLocaleString()+'일':sgn(d)+fmt(d);
+        // 비율 행은 pp 만 쓴다 — %의 %(상대변화)는 임원 보고에서 오독을 만든다
+        tr+=`<td class="ydiv ${d<0?'pos':'neg'}">${dd}</td><td class="${g<0?'pos':'neg'}">${row.pct?'–':(b?sgn(g)+pct(g):'–')}</td>`;}
+      if(yrs.length>2){const c=val(first,row.k);
+        tr+=c==null||a==null||row.pct?'<td>–</td>':`<td class="${a-c<0?'pos':'neg'}">${c?sgn((a-c)/Math.abs(c))+pct((a-c)/Math.abs(c)):'–'}</td>`;}
+    }
+    body+=tr+'</tr>';});
+  document.getElementById('tblAr').innerHTML=head+`<tbody>${body}</tbody>`;
+  document.getElementById('arHint').innerHTML=`AR·연체·한도 = 각 연도 <b>선택 기간 마지막 월말</b>(시점값, 합산 안 함) · 회수 = 선택 기간 합계`
+    +` · ${[...S.chans].join('+')||'채널 없음'} · 계정 ${accLabel()} · 천 SAR`
+    +(showRatio?' · DSO = AR ÷ (월평균 매출×1.15)':' · <b>카테고리 필터 적용 중 → DSO·회수율 숨김</b>(AR 은 카테고리 축이 없어 금액은 불변)');
+  const ex=yrs.map(y=>{const a=A[y];if(!a)return null;const e=AR.excluded[`${y}-${String(a.m).padStart(2,'0')}`];
+    return e?`${y} ${fmt(e.ar)}`:null;}).filter(Boolean);
+  document.getElementById('arFoot').innerHTML=`AR 원본 = 회사코드 1000 · 연체 = 신용일수 초과분(정본 기준) · 생성 ${AR.built}`
+    +(ex.length?` · ⛔ 비B2C·정본밖 제외: ${ex.join(' / ')} 천 SAR`:'')
+    +(AR.missing&&AR.missing.length?` · ⚠️ 원본 없음: ${AR.missing.join(', ')}`:'');
+}
 const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
 const pct=v=>(v*100).toFixed(1)+'%';
 const sgn=v=>v>0?'+':'';
@@ -1035,6 +1134,8 @@ function ofBudget(){destroy('cOfBud');
       scales:{x:{grid:{display:false},stacked:false},
         y:{grid:GRID,border:{display:false},ticks:{callback:v=>Math.round(v).toLocaleString()}}}}});}
 
+document.getElementById('arAging').onclick=function(){arAgingOpen=!arAgingOpen;
+  this.textContent=arAgingOpen?'채권 연령 ▴':'채권 연령 ▾';renderAr();};
 const OFFBDG='<span class="dfbadge">Accrual 기준 · 계정 축은 안분하지 않음</span>';
 const ALLOCBDG='<span class="dfbadge">Official · Accrual 지표별 채널비중 안분 추정</span>';
 // 커버리지 줄은 기준마다 다르다. Official 엔 가마감이 없고 2026 은 7월까지다.
@@ -1081,7 +1182,7 @@ function render(){syncBasisUI();
   const fc=S.tab==='fcst';document.getElementById('kpis').classList.toggle('hide',fc);
   if(fc){renderFcst();return;}
   renderKpis();
-  if(S.tab==='exec'){ladderTable();renderMain();renderChanCmp();renderErosion();renderVsp();ofBudget();}
+  if(S.tab==='exec'){ladderTable();renderAr();renderMain();renderChanCmp();renderErosion();renderVsp();ofBudget();}
   else if(S.tab==='category'){catTable();renderCatGm();renderMix();renderCatGp();}
   else{contractTable();renderCtRate();}}
 

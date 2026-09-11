@@ -307,6 +307,17 @@ def main():
             fc_payload = json.load(ff)
         print(f"  🔮 예상 주입: {fc_payload['year']}-{fc_payload['month']}월 rows {len(fc_payload['rows'])} · lines {len(fc_payload['lines'])}")
 
+    # ── 채권·회수(AR) 레이어 ─────────────────────────────────────
+    # 월말 AR 원본 32개월(계정×월). 실적(GPC_DATA)과 축은 같지만 카테고리가 없고 저량/유량이
+    # 섞여 있어 별도 배열로만 얹는다. 생성: 03. Operation/00. GPC/_engine/build_ar_monthly.py
+    ar_payload = None
+    ARF = OUT.replace("gpc_data.js", "gpc_ar.json")
+    if os.path.exists(ARF):
+        with open(ARF, encoding="utf-8") as af:
+            ar_payload = json.load(af)
+        _am = ar_payload["months"]
+        print(f"  💰 AR 주입: {_am[0]}~{_am[-1]} {len(_am)}개월 · 행 {len(ar_payload['rows'])}")
+
     # ── Official (Finance 공시 최종본) 레이어 ────────────────────
     # Accrual 값은 건드리지 않는다. 별도 배열로 얹어 화면에서 대사만 한다.
     import os as _os
@@ -330,6 +341,8 @@ def main():
         "provisional": prov_meta,
         "official": off_meta,
         "forecast": ({k: fc_payload[k] for k in ("year", "month", "basis", "built")} if fc_payload else None),
+        "ar": ({"months": ar_payload["months"], "basis": ar_payload["basis"], "built": ar_payload["built"],
+                "notes": ar_payload["notes"]} if ar_payload else None),
     }
     with open(OUT, "w", encoding="utf-8") as f:
         f.write("// GPC 대시보드 데이터 v2 (build_gpc_dashboard.py 자동생성 — 직접 수정 금지)\n")
@@ -337,6 +350,7 @@ def main():
         f.write("const GPC_DATA = " + json.dumps(records, ensure_ascii=False) + ";\n")
         f.write("const GPC_OFFICIAL = " + json.dumps(off_rows, ensure_ascii=False) + ";\n")
         f.write("const GPC_FORECAST = " + json.dumps(fc_payload, ensure_ascii=False) + ";\n")
+        f.write("const GPC_AR = " + json.dumps(ar_payload, ensure_ascii=False) + ";\n")
 
     print(f"\n✅ 생성: {OUT}")
     print(f"   레코드 {len(records)}건 · 연도 {years} · YOY기준월 {yoy_months}")
