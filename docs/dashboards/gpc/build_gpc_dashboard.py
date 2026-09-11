@@ -34,9 +34,10 @@ OUT = "/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc/gpc_data.js"
 
 MAIN_ID = {**OR_CHANNEL_MAP,
            **{k: v for k, v in IR_CHANNEL_MAP.items() if v != "IR_Others"}}
+# 계정 표시 순서 = 형님 지정(2026-09-11). 필터 드롭다운·Contract 탭·요율 차트가 이 순서를 따른다.
 OR_MAINS = ["eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan"]
 IR_MAINS = ["BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
-            "Al Ghanem", "Dhamin", "Zagzoog"]
+            "Zagzoog", "Al Ghanem", "Dhamin"]
 _OR_MAIN_SET = set(OR_MAINS)
 _IR_MAIN_SET = set(IR_MAINS)
 MAIN_SET = _OR_MAIN_SET | _IR_MAIN_SET

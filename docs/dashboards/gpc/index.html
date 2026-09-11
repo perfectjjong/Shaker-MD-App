@@ -397,7 +397,17 @@ const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
 const charts={};
 // 계정 필터 — 키 = 채널|계정. 'Others' 가 OR·IR_Others·SME 에 각각 있어 계정명만으로는 모집단이 겹친다.
 const ACC_KEYS={};[...GPC_DATA,...((typeof GPC_FORECAST!=='undefined'&&GPC_FORECAST)?GPC_FORECAST.lines:[])].forEach(r=>{(ACC_KEYS[r.sub]=ACC_KEYS[r.sub]||new Set()).add(r.ac);});   // 예상 탭에만 있는 신규 계정도 포함
-GPC_META.channels.forEach(c=>{ACC_KEYS[c]=[...(ACC_KEYS[c]||[])].sort((a,b)=>a==='Others'?1:b==='Others'?-1:a.localeCompare(b));});
+// 표시 순서: 메인 계정은 정본 순서(GPC_META.or_mains/ir_mains — 형님 지정) · 'Others' 는 끝 ·
+// 그 외(IR_Others)는 최근 2개년 × YOY 기준월(현재 1~8월, 신규월 마감 시 자동 전진) 누적 GSV 내림차순.
+const _RK_Y=new Set(GPC_META.years.slice(-2)),_RK_M=new Set(GPC_META.yoy_months),ACC_SALES={};
+GPC_DATA.forEach(r=>{if(_RK_Y.has(r.y)&&_RK_M.has(r.m)){const k=r.sub+'|'+r.ac;ACC_SALES[k]=(ACC_SALES[k]||0)+r.gsv;}});
+const _MAIN_ORDER={OR:GPC_META.or_mains,IR_Main:GPC_META.ir_mains};
+GPC_META.channels.forEach(c=>{const mo=_MAIN_ORDER[c]||[];
+  ACC_KEYS[c]=[...(ACC_KEYS[c]||[])].sort((a,b)=>{
+    const ia=mo.indexOf(a),ib=mo.indexOf(b);
+    if(ia>=0||ib>=0)return (ia<0?9e9:ia)-(ib<0?9e9:ib);
+    if(a==='Others'||b==='Others')return a==='Others'?1:-1;
+    return (ACC_SALES[c+'|'+b]||0)-(ACC_SALES[c+'|'+a]||0)||a.localeCompare(b);});});
 const accKey=(sub,ac)=>sub+'|'+ac;
 S.accs=new Set(GPC_META.channels.flatMap(c=>ACC_KEYS[c].map(a=>accKey(c,a))));
 const visAccKeys=()=>GPC_META.channels.filter(c=>S.chans.has(c)).flatMap(c=>ACC_KEYS[c].map(a=>accKey(c,a)));   // 선택 채널의 계정만 노출
