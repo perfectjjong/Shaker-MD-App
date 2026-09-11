@@ -396,7 +396,7 @@ const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
   metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1],basis:'acc'};
 const charts={};
 // 계정 필터 — 키 = 채널|계정. 'Others' 가 OR·IR_Others·SME 에 각각 있어 계정명만으로는 모집단이 겹친다.
-const ACC_KEYS={};GPC_DATA.forEach(r=>{(ACC_KEYS[r.sub]=ACC_KEYS[r.sub]||new Set()).add(r.ac);});
+const ACC_KEYS={};[...GPC_DATA,...((typeof GPC_FORECAST!=='undefined'&&GPC_FORECAST)?GPC_FORECAST.lines:[])].forEach(r=>{(ACC_KEYS[r.sub]=ACC_KEYS[r.sub]||new Set()).add(r.ac);});   // 예상 탭에만 있는 신규 계정도 포함
 GPC_META.channels.forEach(c=>{ACC_KEYS[c]=[...(ACC_KEYS[c]||[])].sort((a,b)=>a==='Others'?1:b==='Others'?-1:a.localeCompare(b));});
 const accKey=(sub,ac)=>sub+'|'+ac;
 S.accs=new Set(GPC_META.channels.flatMap(c=>ACC_KEYS[c].map(a=>accKey(c,a))));
@@ -885,7 +885,7 @@ function contractTable(){
   let head='<thead><tr class="sub"><th>계정</th>';
   cats.forEach(c=>head+=`<th>${c}</th>`);head+='<th class="ydiv">전체</th></tr></thead>';
   let body='';
-  const groups=[['OR 메인 (5채널)',GPC_META.or_mains],['IR 메인 (9채널)',GPC_META.ir_mains]];
+  const groups=[['OR 메인 (5채널)',GPC_META.or_mains],['IR 메인 (8채널)',GPC_META.ir_mains]];
   groups.forEach(([glabel,mains])=>{
     body+=`<tr class="grp"><td colspan="${cats.length+2}">${glabel}</td></tr>`;
     mains.forEach(ac=>{
@@ -1109,7 +1109,8 @@ function renderFcst(){
   vb+=`<tr class="total"><td>합계</td><td>${fmt(tv)}</td><td>${fmt(tc)}</td><td>${fcR(tv,tc)}</td><td>${fcR(tv,tg)}</td><td>${ts?Math.round(tv/ts).toLocaleString():'-'}</td><td class="ydiv">${fmt(t8v)}</td><td>${fcR(t8v,t8c)}</td></tr></tbody>`;
   document.getElementById('fcVsp').innerHTML=vb;
   // 계정별
-  const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR_Main',a]),['IR_Others','Others'],['SME','Others']];
+  const irOthers=[...new Set(FL.filter(l=>l.sub==='IR_Others').map(l=>l.ac))].map(a=>[a,fcSum(FL.filter(l=>l.sub==='IR_Others'&&l.ac===a)).gsv]).sort((a,b)=>b[1]-a[1]).map(([a])=>['IR_Others',a]);   // IR_Others 는 계정명별(GSV 내림차순)
+  const accOrder=[...GPC_META.or_mains.map(a=>['OR',a]),['OR','Others'],...GPC_META.ir_mains.map(a=>['IR_Main',a]),...irOthers,['SME','Others']];
   let ab='<thead><tr class="sub"><th>계정</th><th>채널</th><th>세트</th><th>GSV</th><th>ADC%</th><th>NSV</th><th>GP</th><th>GM%</th></tr></thead><tbody>';
   accOrder.filter(([ch])=>CHS.includes(ch)).forEach(([ch,ac])=>{const L=FL.filter(l=>l.sub===ch&&l.ac===ac);if(!L.length)return;const t=fcSum(L);
     ab+=`<tr><td>${ac}</td><td>${ch}</td><td>${Math.round(t.sets).toLocaleString()}</td><td>${fmt(t.gsv)}</td><td class="neg">${fcR(t.adc,t.gsv)}</td><td>${fmt(t.nsv)}</td><td class="${t.gp<0?'neg':''}">${fmt(t.gp)}</td><td class="gmp">${pct(t.gm_pct)}</td></tr>`;});

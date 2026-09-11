@@ -10,7 +10,8 @@
   qty, gsv, yed, adc, vpd(EVPD), dsi, cogs, inv, vsp
 파생(프론트 계산): NSV = GSV+YED+ADC+VPD+DSI / GP = NSV - COGS + INV + VSP
 
-메인 계정 = SSOT shared_classification ID맵 (OR 5 + IR 8) + Box Appliance(1110000360),
+메인 계정 = SSOT shared_classification ID맵 (OR 5 + IR 8). Box Appliance(1110000360)는 SSOT 대로 IR_Others (2026-09-11 형님 재확인),
+  IR_Others 는 계정명을 그대로 노출(gpc_core.account_name — Accrual 이력 최빈 표기), OR_Others·SME 는 "Others" 로 뭉침.
 ID 미매핑은 channel_from_name 이름 폴백.
 채널 축: 메인 계정은 SSOT 소속으로 강제, Others 만 파일 AD(Chanel) 컬럼 기준 (2026-09-08).
 
@@ -26,17 +27,16 @@ import openpyxl
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/_engine")
 from shared_classification import IR_CHANNEL_MAP, OR_CHANNEL_MAP, channel_from_name
-from gpc_core import sub_channel, SUB_CHANNELS   # 세부 채널 OR/IR_Main/IR_Others/SME (2026-09-11)
+from gpc_core import sub_channel, SUB_CHANNELS, account_name   # 세부 채널 OR/IR_Main/IR_Others/SME (2026-09-11)
 
 SRC_DIR = "/home/ubuntu/2026/02. Operation Team/01. GPC Management/01. Monthly"
 OUT = "/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc/gpc_data.js"
 
 MAIN_ID = {**OR_CHANNEL_MAP,
-           **{k: v for k, v in IR_CHANNEL_MAP.items() if v != "IR_Others"},
-           1110000360: "Box Appliance"}
+           **{k: v for k, v in IR_CHANNEL_MAP.items() if v != "IR_Others"}}
 OR_MAINS = ["eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan"]
 IR_MAINS = ["BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
-            "Al Ghanem", "Dhamin", "Zagzoog", "Box Appliance"]
+            "Al Ghanem", "Dhamin", "Zagzoog"]
 _OR_MAIN_SET = set(OR_MAINS)
 _IR_MAIN_SET = set(IR_MAINS)
 MAIN_SET = _OR_MAIN_SET | _IR_MAIN_SET
@@ -184,6 +184,8 @@ def main():
             # 채널은 SSOT 세부 채널을 따른다 — raw Chanel 이 'Dealer - OR' 인데 SSOT 팀이 IR_Others 인 계정
             # (United Vision·Basel Almazyad·Alsudairi 등 2024~25 약 10.5M)은 STP 와 같은 기준으로 IR 에 둔다.
             ch = "OR" if sub == "OR" else "IR"
+            if ac == "Others" and sub == "IR_Others":
+                ac = account_name(_cid, row[5])          # IR_Others 는 계정명 노출 (2026-09-11 형님 지시)
             key = (year, m, ch, sub, ac, norm_cat(row[28]))
             a = agg.setdefault(key, [0.0] * len(METRIC_KEYS))
             a[0] += num(row[18])
