@@ -177,6 +177,12 @@
     border-radius:0 7px 7px 0;font-size:12px;color:var(--ink2);line-height:1.65}
   .note b{color:var(--ink)}
   .rcl{color:#b45309;font-weight:800}
+  .fcbadge{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:10px;
+    background:#ede9fe;color:#5b21b6;font-size:11px;font-weight:700}
+  :root:not([data-theme="light"]) .fcbadge{background:#2e1065;color:#ddd6fe}
+  :root[data-theme="dark"] .fcbadge{background:#2e1065;color:#ddd6fe}
+  .ctl.dim{opacity:.45}
+  .ctl.dim .ytog{cursor:not-allowed}
   .dfbadge{display:inline-block;margin-left:7px;padding:1px 7px;border-radius:9px;
     background:#e0e7ff;color:#3730a3;font-size:10.5px;font-weight:700;vertical-align:1px}
   :root:not([data-theme="light"]) .dfbadge{background:#1e1b4b;color:#c7d2fe}
@@ -227,6 +233,10 @@
     <div class="ctl">
       <div class="lab">기준</div>
       <div class="seg dark" id="cBasis"></div>
+    </div>
+    <div class="ctl hide" id="ctlFcst">
+      <div class="lab">예상</div>
+      <div class="row"><div class="ytog" id="togFcst"><span class="dot"></span><span style="color:var(--ink2)" id="togFcstLbl"></span></div></div>
     </div>
     <div class="ctl" id="ctlChan">
       <div class="lab">채널</div>
@@ -393,7 +403,7 @@ window.addEventListener('resize',()=>{clearTimeout(window.__rzt);
   window.__rzt=setTimeout(()=>{if(isNarrow()!==_wasNarrow){_wasNarrow=isNarrow();render();}},250);});
 const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
   chans:new Set(GPC_META.channels),cats:new Set(GPC_META.cats),
-  metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1],basis:'acc'};
+  metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1],basis:'acc',fcst:false};
 const charts={};
 // 계정 필터 — 키 = 채널|계정. 'Others' 가 OR·IR_Others·SME 에 각각 있어 계정명만으로는 모집단이 겹친다.
 const ACC_KEYS={};[...GPC_DATA,...((typeof GPC_FORECAST!=='undefined'&&GPC_FORECAST)?GPC_FORECAST.lines:[])].forEach(r=>{(ACC_KEYS[r.sub]=ACC_KEYS[r.sub]||new Set()).add(r.ac);});   // 예상 탭에만 있는 신규 계정도 포함
@@ -521,7 +531,7 @@ function accBase(year,months,cats,chans){
 function aggAcc(year,months,opt){opt=opt||{};
   const ms=new Set(months),cs=opt.cats||S.cats,chs=opt.chans||S.chans;
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
-  for(const r of GPC_DATA){
+  for(const r of rowsFor(opt)){
     if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat))continue;
     if(opt.ac!==undefined){if(r.ac!==opt.ac)continue;}      // 계정을 명시한 조회(Contract 탭)는 계정 필터를 타지 않는다
     else if(!passAcc(r))continue;
@@ -539,7 +549,7 @@ const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
 const pct=v=>(v*100).toFixed(1)+'%';
 const sgn=v=>v>0?'+':'';
 function yearCoverLabel(year,months){
-  const avail=new Set(GPC_META.year_months[String(year)]||[]);
+  const avail=new Set(yMonths(year));
   const cov=months.filter(m=>avail.has(m));
   if(cov.length===0) return ' · 해당 없음';
   if(cov.length===months.length) return '';
@@ -577,6 +587,15 @@ function buildBar(){
     b.textContent=l;b.className=S.ctMode===v?'on':'';
     b.onclick=()=>{S.ctMode=v;cm.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
     cm.appendChild(b);});
+  const tf=document.getElementById('togFcst');
+  if(FCM&&FCR.length){
+    document.getElementById('ctlFcst').classList.remove('hide');
+    document.getElementById('togFcstLbl').textContent=`${FCM[1]}월 예상 포함`;
+    tf.classList.toggle('on',S.fcst);
+    tf.onclick=()=>{if(S.basis==='off')return;                       // Official 기준에선 예상 미적용
+      S.fcst=!S.fcst;tf.classList.toggle('on',S.fcst);
+      if(S.unit==='month'){S.fcst?S.periods.add(FCM[1]):S.periods.delete(FCM[1]);buildPeriods();}
+      render();};}
   const cb=document.getElementById('cBasis');cb.innerHTML='';
   [['acc','Accrual'],['off','Official']].forEach(([v,l])=>{const b=document.createElement('button');
     b.textContent=l;b.className=S.basis===v?'on':'';
@@ -741,7 +760,7 @@ function ladderTable(){
         +`${(()=>{const fb=yrs.flatMap(y=>(A[y].fb||[]).map(m=>`${y}-${String(m).padStart(2,'0')}`));
              return fb.length?` · 🟡 ${fb.join(', ')} 는 Official 미공시라 Accrual 값 사용(그 달 보정 0)`:'';})()}`
         +` · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 계정 ${accLabel()} · 천 SAR`
-      : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 계정 ${accLabel()} · 천 SAR`);
+      : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 계정 ${accLabel()} · 천 SAR`+fcNote());
 }
 
 // ── 차트 ──
@@ -749,7 +768,7 @@ function renderMain(){destroy('cMain');
   const yrs=selYears(),periods=selPeriods();const isPct=S.metric==='gm_pct';
   const labels=periods.map(p=>periodLabel(S.unit,p));
   const ds=yrs.map(y=>({label:''+y,data:periods.map(p=>{
-      const mm=monthsOf(S.unit,p);const av=new Set(GPC_META.year_months[String(y)]||[]);
+      const mm=monthsOf(S.unit,p);const av=new Set(yMonths(y));
       if(!mm.some(m=>av.has(m)))return null;
       const a=agg(y,mm);return isPct?a.gm_pct*100:a[S.metric]/1000;}),
     backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:54}));
@@ -796,7 +815,7 @@ function renderVsp(){destroy('cVsp');
   const yrs=selYears();
   const labels=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   vspAmts=[];
-  const ds=yrs.map(y=>{const av=new Set(GPC_META.year_months[String(y)]||[]);const amts=[];
+  const ds=yrs.map(y=>{const av=new Set(yMonths(y));const amts=[];
     const data=Array.from({length:12},(_,i)=>{const m=i+1;if(!av.has(m)){amts.push(null);return null;}
       const a=agg(y,[m]);amts.push(a.vsp);return a.cogs?a.vsp/a.cogs*100:0;});
     vspAmts.push(amts);
@@ -876,7 +895,7 @@ function renderCatGp(){destroy('cCatGp');
 
 // ── 탭3: Contract Condition (메인 계정 × 카테고리 YED) ──
 function acAgg(y,months,ac,cat){
-  return agg(y,months,{ac,cats:cat?new Set([cat]):new Set(GPC_META.cats),chans:new Set(GPC_META.channels)});}
+  return agg(y,months,{ac,cats:cat?new Set([cat]):new Set(GPC_META.cats),chans:new Set(GPC_META.channels),noFcst:1});}   // 계정 YED 요율 = 협상 근거 → 예상 제외
 function contractCell(a){
   if(!a.gsv&&!a.yed)return '<span style="color:var(--mut)">–</span>';
   if(S.ctMode==='rate'){
@@ -964,6 +983,23 @@ const OFM=GPC_META.official||null;
 const OFLAG=new Set(((OFM&&OFM.flags)||[]).map(f=>f.join('|')));
 const PVM=GPC_META.provisional?[GPC_META.provisional.year,GPC_META.provisional.month]:null;
 const isProv=(y,m)=>!!PVM&&y===PVM[0]&&m===PVM[1];
+// ── 월 예상(계획) 포함 토글 ─────────────────────────────────────────
+// 예상 행은 GPC_DATA 에 섞지 않는다(빌더에서 별도 배열). 토글이 켜질 때만 집계에 합친다.
+// Official 기준은 공시 대사용이라 예상을 받지 않고, Contract 탭(계정 YED 요율)은 협상 근거라 제외한다.
+const FCM=GPC_META.forecast?[GPC_META.forecast.year,GPC_META.forecast.month]:null;
+const FCR=(typeof GPC_FORECAST!=='undefined'&&GPC_FORECAST&&GPC_FORECAST.rows)?GPC_FORECAST.rows:[];
+const isFcst=(y,m)=>!!FCM&&y===FCM[0]&&m===FCM[1];
+const fcOn=()=>!!(S.fcst&&FCM&&FCR.length&&S.basis!=='off');
+const rowsFor=opt=>(fcOn()&&!(opt&&opt.noFcst))?GPC_DATA.concat(FCR):GPC_DATA;
+const yMonths=y=>{const a=GPC_META.year_months[String(y)]||[];
+  return (fcOn()&&FCM&&y===FCM[0]&&!a.includes(FCM[1]))?a.concat(FCM[1]).sort((p,q)=>p-q):a;};
+const FC_VSP=FCR.reduce((s,r)=>s+r.vsp,0);
+const FC_SUBS=new Set(FCR.map(r=>r.sub));
+const fcBadge=()=>fcOn()?` <span class="fcbadge">🔮 ${FCM[0]}-${String(FCM[1]).padStart(2,'0')} 예상 포함</span>`:'';
+// 커버리지는 사실만: 예상은 RSM 주요 계정 계획이라 계획 미제출 채널·딜러가 빠져 있고, VSP 는 LG 요청액이다.
+const fcNote=()=>{if(!fcOn())return '';
+  const miss=GPC_META.channels.filter(c=>!FC_SUBS.has(c));
+  return ` · 🔮 ${FCM[1]}월=예상(RSM 주요 계정 계획${miss.length?' · '+miss.join('/')+' 미포함':''} · VSP ${fmt(FC_VSP)} 천 SAR 요청 기준)`;};
 const ABS=(OFM&&OFM.absorb)||{};                      // Applied → Accessory/Others
 
 function offCell(y,ms,cats,b){                        // Official (엑셀 NSV/GM 원본 그대로)
@@ -1005,17 +1041,22 @@ const ALLOCBDG='<span class="dfbadge">Official · Accrual 지표별 채널비중
 function syncCover(){
   const off=S.basis==='off',PV=off?null:(GPC_META.provisional||null);
   const src=GPC_META.year_months;
-  const covs=GPC_META.years.map(y=>{const mm=src[String(y)];
+  const covs=GPC_META.years.map(y=>{const mm=fcOn()?yMonths(y):(src[String(y)]||[]);
     if(!mm||!mm.length)return `${y}: 없음`;
     let t=`${y}: ${mm[0]}–${mm[mm.length-1]}월`;
     if(PV&&PV.year===y)t+=` (${PV.month}월 가마감)`;
+    if(fcOn()&&FCM[0]===y)t+=` (${FCM[1]}월 예상)`;
     return t;});
   document.getElementById('covLbl').innerHTML=covs.join(' · ')
-    +(PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'')
+    +(PV?` <span class="provbadge">🟡 ${PV.year}-${String(PV.month).padStart(2,'0')} 가마감(잠정)</span>`:'')+fcBadge()
     +(off?(()=>{const fb=GPC_META.years.flatMap(y=>offFallback(y).map(m=>`${y}-${String(m).padStart(2,'0')}`));
        return fb.length?` <span class="provbadge">🟡 ${fb.join(', ')} 는 Official 미공시 → Accrual 대체</span>`:'';})():'');}
 function syncBasisUI(){
   const off=S.basis==='off';
+  const cf=document.getElementById('ctlFcst');
+  if(cf){cf.classList.toggle('dim',off);
+    const tl=document.getElementById('togFcstLbl');
+    if(tl&&FCM)tl.textContent=off?`${FCM[1]}월 예상 (Official 미적용)`:`${FCM[1]}월 예상 포함`;}
   syncCover();
   document.getElementById('ctlChan').classList.remove('dim');   // Official 도 채널 안분으로 필터 가능
   document.getElementById('cardBud').classList.toggle('hide',!off);
@@ -1055,7 +1096,7 @@ function fcSum(rows){const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,v
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;o.gm_pct=o.nsv?o.gp/o.nsv:0;
   o.disc_total=o.yed+o.adc+o.vpd+o.dsi;o.disc_rate=o.gsv?o.disc_total/o.gsv:0;
   o.total_cogs=o.cogs-o.inv-o.vsp;o.cogs_rate=o.gsv?o.total_cogs/o.gsv:0;return o;}
-function fcActual(y,m,cats,chans){return aggAcc(y,[m],{cats:new Set(cats||FC_CATS),chans:new Set(chans||['IR','OR'])});}
+function fcActual(y,m,cats,chans){return aggAcc(y,[m],{cats:new Set(cats||FC_CATS),chans:new Set(chans||['IR','OR']),noFcst:1});}   // 예상 탭 비교축은 실적만
 const fcR=(v,b)=>b?(v/b*100).toFixed(1)+'%':'-';
 function renderFcst(){
   if(!FC)return;
