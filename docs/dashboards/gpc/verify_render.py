@@ -9,7 +9,7 @@ from playwright.async_api import async_playwright
 ACC=sorted(glob.glob("/home/ubuntu/2026/02. Operation Team/01. GPC Management/01. Monthly/GPC_Accrual*.xlsx"))[-1]
 OFFX=sorted(glob.glob("/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/02. 2026/04. Official GPC/*GPC official*.xlsx"))[-1]
 PROV="/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc/gpc_provisional.json"
-URL="http://127.0.0.1:8899/index.html"
+URL="http://127.0.0.1:8901/index.html"
 AMT={"qty":18,"gsv":19,"yed":21,"adc":22,"vpd":25,"dsi":15,"cogs":12,"inv":27,"vsp":23}
 MON={n:i for i,n in enumerate(["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],1)}
 S2C={"inverter":"Split Inverter","on/off":"Split On/Off","window":"Window AC","free stand":"Floor Standing AC",
@@ -35,20 +35,13 @@ def mo_of(r):
     return MON.get(str(r[30]).strip()[:3].title())
 
 def accrual_expect(months):
-    """대시보드 Accrual 모드가 보여야 할 값 = 엑셀 + 가마감 JSON"""
+    """대시보드 Accrual 모드가 보여야 할 값 = 엑셀(SSOT 분류·비B2C 제외·조정행 안분 = verify_common) + 가마감 JSON"""
+    from verify_common import load_rows
     a=collections.defaultdict(lambda: collections.defaultdict(float))
-    wb=openpyxl.load_workbook(ACC,read_only=True,data_only=True)
-    for sh in wb.sheetnames:
-        m0=re.fullmatch(r"Raw (20\d\d)",sh)
-        if not m0: continue
-        y=int(m0.group(1))
-        for r in wb[sh].iter_rows(min_row=2,values_only=True):
-            if r[28] is None and r[19] is None and r[12] is None: continue
-            m=mo_of(r); c=str(r[29] or "")
-            ch="IR" if "IR" in c else ("OR" if "OR" in c else None)
-            if not m or not ch or m not in months: continue
-            for k,ci in AMT.items(): a[(y,cn(r[28]))][k]+=num(r[ci])
-    wb.close()
+    rows,_,_=load_rows(ACC)
+    for r in rows:
+        if r["m"] not in months: continue
+        for k in AMT: a[(r["y"],r["cat"])][k]+=r[k]
     pj=json.load(open(PROV,encoding="utf-8"))
     if pj["month"] in months:
         for r in pj["rows"]:

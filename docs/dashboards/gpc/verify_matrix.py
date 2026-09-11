@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""계층3-확장: 필터 조합을 바꿔가며 화면 렌더값 ↔ 원본 엑셀 재계산 전수 대조.
+"""계층3-확장: 필터 조합을 바꿔가며 화면 렌더값 ↔ 원본 엑셀 재계산 전수 대조 (채널 축 = 세부채널 4분할, 2026-09-12).
 Official + 채널 부분선택은 안분 추정이므로 안분식까지 여기서 독립 재현해 검증한다."""
 import asyncio, collections, glob, json, re, sys
 import openpyxl
@@ -26,27 +26,14 @@ def num(v):
 def cn(s):
     s=re.sub(r"\s+"," ",str(s or "")).strip(); return S2C.get(s.lower(),s)
 
-# ── 원본을 최소 입도로 한 번만 읽어둔다 ──
-A=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,ch,cat)
-wb=openpyxl.load_workbook(ACC,read_only=True,data_only=True)
-for sh in wb.sheetnames:
-    m0=re.fullmatch(r"Raw (20\d\d)",sh)
-    if not m0: continue
-    y=int(m0.group(1))
-    for r in wb[sh].iter_rows(min_row=2,values_only=True):
-        if r[28] is None and r[19] is None and r[12] is None: continue
-        d=r[8]; m=d.month if hasattr(d,"month") else None
-        if m is None:
-            try:
-                mi=int(float(r[30])); m=mi if 1<=mi<=12 else None
-            except (TypeError,ValueError): m=MON.get(str(r[30]).strip()[:3].title())
-        c=str(r[29] or ""); ch="IR" if "IR" in c else ("OR" if "OR" in c else None)
-        if not m or not ch: continue
-        for k,ci in AMT.items(): A[(y,m,ch,cn(r[28]))][k]+=num(r[ci])
-wb.close()
+# ── 원본을 최소 입도로 한 번만 읽어둔다 (세부채널 4분할·비B2C 제외·조정행 안분 = verify_common, 2026-09-12) ──
+from verify_common import load_rows
+A=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,sub,cat)
+for r in load_rows(ACC)[0]:
+    for k in AMT: A[(r["y"],r["m"],r["sub"],r["cat"])][k]+=r[k]
 pj=json.load(open(PROV,encoding="utf-8"))
 for r in pj["rows"]:
-    for k in AMT: A[(pj["year"],pj["month"],r["ch"],r["cat"])][k]+=r.get(k,0.0) or 0.0
+    for k in AMT: A[(pj["year"],pj["month"],r["sub"],r["cat"])][k]+=r.get(k,0.0) or 0.0
 PKEY=(pj["year"],pj["month"])
 
 O=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,cat) 실적만
@@ -73,14 +60,16 @@ def exp_acc(y,months,chans,cats):
 # 따라서 Accessory/Others 셀의 채널 비중 분모는 Accrual 의 (Accessory/Others + Applied) 여야 한다.
 # 지표마다 채널 구성이 다르므로 지표별 비중을 각각 만든다(GSV 비중 일괄 적용은 오차가 크다).
 ABS={"Applied":"Accessory/Others"}
-SHARE=collections.defaultdict(lambda: {k:{"IR":0.0,"OR":0.0} for k in AMT})
-for (yy,m,ch,c),v in A.items():
-    if (yy,m)==PKEY: continue                     # 가마감은 실적이 아니므로 비중 분모에서 제외
-    for k in AMT: SHARE[(yy,m,ABS.get(c,c))][k][ch]+=v[k]
+SUBS4=["OR","IR_Main","IR_Others","SME"]
+# 화면(chShare)과 같은 규칙: 비중 키 = 세부채널|계정, |값| 합 기준 (2026-09-11 계정 필터 도입 후 규칙)
+SHARE=collections.defaultdict(lambda: {k:collections.defaultdict(float) for k in AMT})
+for r in load_rows(ACC)[0]:
+    if (r["y"],r["m"])==PKEY: continue            # 가마감은 실적이 아니므로 비중 분모에서 제외
+    for k in AMT: SHARE[(r["y"],r["m"],ABS.get(r["cat"],r["cat"]))][k][(r["sub"],r["ac"])]+=r[k]
 
 def exp_off(y,months,chans,cats):
     """Official. 채널 부분선택이면 (연·월·카테고리) Accrual GSV 비중으로 안분(가마감 제외)."""
-    whole=chans=={"IR","OR"}
+    whole=chans=={"OR","IR_Main","IR_Others","SME"}
     o=collections.defaultdict(float)
     for (yy,m,c),v in O.items():
         if yy!=y or m not in months or c not in cats: continue
@@ -88,14 +77,14 @@ def exp_off(y,months,chans,cats):
             for k,val in v.items(): o[k]+=val
             continue
         b=SHARE.get((yy,m,c))
-        gt=(abs(b["gsv"]["IR"])+abs(b["gsv"]["OR"])) if b else 0.0
+        gt=sum(abs(v) for v in b["gsv"].values()) if b else 0.0
         if gt<1: continue                         # 안분 불가 → 제외(화면도 동일)
-        wg=sum(abs(b["gsv"][x]) for x in chans)/gt
+        wg=sum(abs(v) for (s,_a),v in b["gsv"].items() if s in chans)/gt
         def wof(mk):
             e=b.get(mk)
             if not e: return wg
-            t=abs(e["IR"])+abs(e["OR"])
-            return wg if t<1 else sum(abs(e[x]) for x in chans)/t
+            t=sum(abs(v) for v in e.values())
+            return wg if t<1 else sum(abs(v) for (s,_a),v in e.items() if s in chans)/t
         for k in AMT:
             if k in v: o[k]+=v[k]*wof(k)
     # Official 은 가마감을 내지 않는다 → 공시 없는 월은 Accrual 값을 그대로 (안분 없음)
@@ -116,17 +105,17 @@ def exp_off(y,months,chans,cats):
         o["gm"]=o["nsv"]-o["cogs"]+o["inv"]+o["vsp"]
     o["gp"]=o.get("gm",0.0); return o
 
-CASES=[("기본 1~8월·전채널", "month",[1,2,3,4,5,6,7,8],{"IR","OR"},None),
-       ("단월 3월",          "month",[3],{"IR","OR"},None),
-       ("단월 7월",          "month",[7],{"IR","OR"},None),
-       ("분기 Q2",           "quarter",["Q2"],{"IR","OR"},None),
-       ("반기 H1",           "half",["H1"],{"IR","OR"},None),
-       ("연간",              "year",["Y"],{"IR","OR"},None),
-       ("1~8월 · IR만",      "month",[1,2,3,4,5,6,7,8],{"IR"},None),
+CASES=[("기본 1~8월·전채널", "month",[1,2,3,4,5,6,7,8],{"OR","IR_Main","IR_Others","SME"},None),
+       ("단월 3월",          "month",[3],{"OR","IR_Main","IR_Others","SME"},None),
+       ("단월 7월",          "month",[7],{"OR","IR_Main","IR_Others","SME"},None),
+       ("분기 Q2",           "quarter",["Q2"],{"OR","IR_Main","IR_Others","SME"},None),
+       ("반기 H1",           "half",["H1"],{"OR","IR_Main","IR_Others","SME"},None),
+       ("연간",              "year",["Y"],{"OR","IR_Main","IR_Others","SME"},None),
+       ("1~8월 · IR만",      "month",[1,2,3,4,5,6,7,8],{"IR_Main","IR_Others","SME"},None),
        ("1~8월 · OR만",      "month",[1,2,3,4,5,6,7,8],{"OR"},None),
        ("단월 5월 · OR만",   "month",[5],{"OR"},None),
-       ("1~8월 · Split Inverter만","month",[1,2,3,4,5,6,7,8],{"IR","OR"},["Split Inverter"]),
-       ("Q3 · IR · Cassette","quarter",["Q3"],{"IR"},["Cassette AC"])]
+       ("1~8월 · Split Inverter만","month",[1,2,3,4,5,6,7,8],{"OR","IR_Main","IR_Others","SME"},["Split Inverter"]),
+       ("Q3 · IR · Cassette","quarter",["Q3"],{"IR_Main","IR_Others","SME"},["Cassette AC"])]
 MO={"month":lambda p:[p],"quarter":lambda p:[int(p[1])*3-2,int(p[1])*3-1,int(p[1])*3],
     "half":lambda p:[1,2,3,4,5,6] if p=="H1" else [7,8,9,10,11,12],"year":lambda p:list(range(1,13))}
 LAB=["GSV","YED","ADC","VPD","DSI","NSV","COGS","INV","VSP","GP"]
@@ -138,7 +127,7 @@ async def main():
         b=await p.chromium.launch(); pg=await b.new_page(viewport={"width":1600,"height":1100})
         pg.on("console",lambda m: errs.append(m.text) if m.type=="error" else None)
         pg.on("pageerror",lambda e: errs.append(str(e)))
-        await pg.goto("http://127.0.0.1:8899/index.html",wait_until="networkidle"); await pg.wait_for_timeout(600)
+        await pg.goto("http://127.0.0.1:8901/index.html",wait_until="networkidle"); await pg.wait_for_timeout(600)
         for name,unit,periods,chans,cats in CASES:
             months=set(m for pp in periods for m in MO[unit](pp))
             cs=set(cats) if cats else None

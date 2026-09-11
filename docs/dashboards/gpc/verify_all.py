@@ -7,27 +7,8 @@ import collections, glob, json, re, sys
 import openpyxl
 
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation")
-from shared_classification import IR_CHANNEL_MAP, OR_CHANNEL_MAP, channel_from_name
 
-# 계정 축은 SSOT 가 정의 그 자체이므로 같은 맵을 쓴다(여기서 재구현하면 그게 오답이 된다)
-MAIN_ID = {**OR_CHANNEL_MAP,
-           **{k: v for k, v in IR_CHANNEL_MAP.items() if v != "IR_Others"},
-           1110000360: "Box Appliance"}
-MAIN_SET = ({"eXtra", "Al Manea", "SWS", "Black Box", "Al Khunizan"} |
-            {"BH", "Al Shathri", "BM", "Tamkeen", "Star Appliance",
-             "Al Ghanem", "Dhamin", "Zagzoog", "Box Appliance"})
-
-
-def account_of(row):
-    try:
-        cid = int(float(row[4]))
-    except (TypeError, ValueError):
-        cid = None
-    ac = MAIN_ID.get(cid)
-    if not ac:
-        r = channel_from_name(row[5])
-        ac = r if r in MAIN_SET else None
-    return ac or "Others"
+# 계정·세부채널 분류는 verify_common.load_rows (SSOT 래퍼) 가 담당한다 (2026-09-12)
 
 ACC_DIR = "/home/ubuntu/2026/02. Operation Team/01. GPC Management/01. Monthly"
 OFF_DIR = ("/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/02. 2026/04. Official GPC")
@@ -121,50 +102,45 @@ def main():
     print(f"소스(Official): {META['official']['source']}")
     print(f"가마감 제외   : {pkey}\n")
 
-    # ── 1. Accrual 원본 재집계 ──────────────────────────────
-    src = sorted(glob.glob(f"{ACC_DIR}/GPC_Accrual*.xlsx"))[-1]
-    wb = openpyxl.load_workbook(src, read_only=True, data_only=True)
+    # ── 1. Accrual 원본 재집계 (SSOT 분류·비B2C 제외·조정행 안분 = verify_common) ──
+    from verify_common import load_rows, KEYS as CK
+    src_rows, excluded, lump_info = load_rows()
     xl_full = collections.defaultdict(lambda: collections.defaultdict(float))
-    rows_seen = 0
-    for sh in wb.sheetnames:
-        mo = re.fullmatch(r"Raw (20\d\d)", sh)
-        if not mo:
-            continue
-        y = int(mo.group(1))
-        for row in wb[sh].iter_rows(min_row=2, values_only=True):
-            if row[28] is None and row[19] is None and row[12] is None:
-                continue
-            m = month_of(row)
-            ch = str(row[29] or "")
-            ch = "IR" if "IR" in ch else ("OR" if "OR" in ch else None)
-            if not m or not ch:
-                continue
-            rows_seen += 1
-            k = (y, m, ch, account_of(row), canon(row[28]))
-            for mk, ci in AMT.items():
-                xl_full[k][mk] += num(row[ci])
-    wb.close()
-    print(f"[1] Accrual 원본 재집계: 유효행 {rows_seen:,}건")
+    for r in src_rows:
+        k = (r["y"], r["m"], r["sub"], r["ac"], r["cat"])
+        for mk in CK:
+            xl_full[k][mk] += r[mk]
+    print(f"[1] Accrual 원본 재집계: 셀 {len(xl_full):,} · 조정행 안분 {lump_info[0]}셀(VSP {lump_info[2]:,.0f}) · 제외 월 {len(excluded)}")
+    # meta.excluded(비B2C 제외분)와 원본 제외 합이 같아야 한다 — 제외가 '조용히' 커지는 것을 막는다
+    ex_y = collections.defaultdict(lambda: collections.defaultdict(float))
+    for (y, m), e in excluded.items():
+        for mk, v in e.items():
+            ex_y[(y,)][mk] += v
+    for k in ex_y:                                   # meta.excluded 는 빌더가 소수 1자리로 반올림해 싣는다
+        for mk in ex_y[k]:
+            ex_y[k][mk] = round(ex_y[k][mk], 1)
+    cmp_block("제외분(비B2C) 연 합계 = meta.excluded", ex_y,
+              {(int(y),): v for y, v in META.get("excluded", {}).items()}, list(AMT))
 
     KEYS = list(AMT)
     js_full = collections.defaultdict(lambda: collections.defaultdict(float))
     for r in DATA:
         if pkey and (r["y"], r["m"]) == pkey:
             continue                       # 가마감은 엑셀에 없다(별도 JSON)
-        k = (r["y"], r["m"], r["ch"], r["ac"], r["cat"])
+        k = (r["y"], r["m"], r["sub"], r["ac"], r["cat"])
         for mk in KEYS:
             js_full[k][mk] += r.get(mk, 0.0)
-    cmp_block("연×월×채널×계정×카테고리 (9지표, 최소입도)", xl_full, js_full, KEYS)
+    cmp_block("연×월×세부채널×계정×카테고리 (9지표, 최소입도)", xl_full, js_full, KEYS)
 
     # 축을 접어가며 재확인 (집계 경로가 달라도 같아야 한다)
     for name, fold in [("연×월", lambda k: (k[0], k[1])),
-                       ("연×월×채널", lambda k: (k[0], k[1], k[2])),
+                       ("연×월×세부채널", lambda k: (k[0], k[1], k[2])),
                        ("연×월×카테고리", lambda k: (k[0], k[1], k[4])),
-                       ("연×채널", lambda k: (k[0], k[2])),
+                       ("연×세부채널", lambda k: (k[0], k[2])),
                        ("연×계정", lambda k: (k[0], k[3])),
                        ("연×월×계정", lambda k: (k[0], k[1], k[3])),
                        ("연×카테고리", lambda k: (k[0], k[4])),
-                       ("연×채널×카테고리", lambda k: (k[0], k[2], k[4])),
+                       ("연×세부채널×카테고리", lambda k: (k[0], k[2], k[4])),
                        ("연 합계", lambda k: (k[0],))]:
         A = collections.defaultdict(lambda: collections.defaultdict(float))
         B = collections.defaultdict(lambda: collections.defaultdict(float))
