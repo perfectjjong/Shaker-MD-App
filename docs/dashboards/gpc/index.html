@@ -112,7 +112,8 @@
   .cbox.tall{height:400px}
   .hide{display:none!important}
 
-  .tblwrap{overflow-x:auto;margin:-2px}
+  .tblwrap{overflow-x:auto;margin:-2px}   /* ::-webkit-scrollbar 를 지정하면 macOS 오버레이 대신 상시 표시 — 잘린 열이 있음을 알 수 있다 */
+  .tblwrap::-webkit-scrollbar{height:8px}.tblwrap::-webkit-scrollbar-thumb{background:var(--mut);border-radius:4px}.tblwrap::-webkit-scrollbar-track{background:transparent}
   .tbl{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
   .tbl th,.tbl td{padding:8px 14px;text-align:right;border-bottom:1px solid var(--line2)}
   .tbl th:first-child,.tbl td:first-child{text-align:left;position:sticky;left:0;background:var(--card);z-index:1}
@@ -285,7 +286,7 @@
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>채널 비교 — OR · IR_Main · IR_Others · SME<span id="bdgChan"></span></h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별 · IR_Main=메인 9계정, IR_Others=그 외 IR 딜러, SME=SME 계정 · OR 은 OR_Others 포함</div></div></div>
+        <div class="h"><div><h3>채널 비교 — OR · IR_Main · IR_Others · SME<span id="bdgChan"></span></h3><div class="hint">선택 기간 합산 · GP(막대, 천 SAR) &amp; GM%(라벨) · 연도별 · IR_Main=메인 <span id="irMainN"></span>계정, IR_Others=그 외 IR 딜러, SME=SME 계정 · OR 은 OR_Others 포함</div></div></div>
         <div class="cbox tall"><canvas id="cChanCmp"></canvas></div>
       </div>
       <div class="card" style="margin:0">
@@ -895,9 +896,10 @@ function renderChanCmp(){destroy('cChanCmp');
     return {label:''+y,backgroundColor:YCOL[y],borderRadius:5,maxBarThickness:70,data};});
   charts.cChanCmp=new Chart(cChanCmp,{type:'bar',data:{labels:chans,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end'},
-      datalabels:{display:true,anchor:'end',align:'end',clamp:true,font:DLF,color:'#5c554b',
-        formatter:(v,ctx)=>v==null?'':(isNarrow()?`GM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`
-          :`${Math.round(v).toLocaleString()}\nGM ${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`)},
+      datalabels:{display:true,font:DLF,labels:{
+        gp:{anchor:'end',align:'end',clamp:true,color:'#5c554b',offset:ctx=>ctx.datasetIndex%2?14:2,formatter:v=>(v==null||isNarrow())?'':Math.round(v).toLocaleString()},
+        gm:{anchor:()=>isNarrow()?'end':'center',align:()=>isNarrow()?'end':'center',clamp:true,color:()=>isNarrow()?'#5c554b':'#fff',
+          formatter:(v,ctx)=>v==null?'':`${isNarrow()?'GM ':''}${(chanGms[ctx.datasetIndex][ctx.dataIndex]*100).toFixed(1)}%`}}},
       tooltip:{callbacks:{label:c=>`${c.dataset.label}  GP ${Math.round(c.parsed.y).toLocaleString()} 천 SAR · GM ${(chanGms[c.datasetIndex][c.dataIndex]*100).toFixed(1)}%`}}},
       scales:{x:{grid:{display:false}},y:{grid:GRID,border:{display:false},ticks:{callback:v=>v.toLocaleString()}}}}});}
 
@@ -1017,7 +1019,7 @@ function contractTable(){
   let head='<thead><tr class="sub"><th>계정</th>';
   cats.forEach(c=>head+=`<th>${c}</th>`);head+='<th class="ydiv">전체</th></tr></thead>';
   let body='';
-  const groups=[['OR 메인 (5채널)',GPC_META.or_mains],['IR 메인 (8채널)',GPC_META.ir_mains]];
+  const groups=[[`OR 메인 (${GPC_META.or_mains.length}채널)`,GPC_META.or_mains],[`IR 메인 (${GPC_META.ir_mains.length}채널)`,GPC_META.ir_mains]];
   groups.forEach(([glabel,mains])=>{
     body+=`<tr class="grp"><td colspan="${cats.length+2}">${glabel}</td></tr>`;
     mains.forEach(ac=>{
@@ -1058,7 +1060,7 @@ function contractTable(){
     if(ra) adj=` · Official 공시 실효율 ${(ro*100).toFixed(2)}% vs Accrual ${(ra*100).toFixed(2)}%`
       +` (${sgn(ro/ra-1)}${((ro/ra-1)*100).toFixed(1)}%)`
       +(fb.length?` · ${fb.join(',')}은 Official 미공시라 Accrual 값`:'');}
-  document.getElementById('ctHint').innerHTML=`${y}년 · ${modeLbl} · 선택 기간 합산 · Others 제외(메인 14계정만)`
+  document.getElementById('ctHint').innerHTML=`${y}년 · ${modeLbl} · 선택 기간 합산 · Others 제외(메인 ${GPC_META.or_mains.length+GPC_META.ir_mains.length}계정만)`
     +`<br><b>계정 행은 Accrual 실측입니다</b> — Official 엔 계정 축이 없어 안분하지 않습니다`+adj;
 }
 function renderCtRate(){destroy('cCtRate');
@@ -1302,10 +1304,13 @@ document.querySelectorAll('#fcLineMode button').forEach(b=>b.onclick=()=>{fcLine
 })();
 
 // deep link
-(function(){const h=location.hash.replace('#','');
-  if(['exec','category','contract','fcst'].includes(h)){S.tab=h;
+function applyHash(){const h=location.hash.replace('#','');
+  if(['exec','category','contract','fcst'].includes(h)&&h!==S.tab){S.tab=h;
     document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x.dataset.tab===h));
-    document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));}})();
+    document.querySelectorAll('[data-pane]').forEach(p=>p.classList.toggle('hide',p.dataset.pane!==h));return true;}return false;}
+applyHash();
+window.addEventListener('hashchange',()=>{if(applyHash())render();});
+document.getElementById('irMainN').textContent=GPC_META.ir_mains.length;
 buildBar();
 void document.querySelector(`[data-pane="${S.tab}"]`).offsetWidth;
 render();
