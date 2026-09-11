@@ -296,7 +296,7 @@ def main():
 
     # ── 월 예상(forecast) 레이어 ─────────────────────────────────
     # RSM FCST × 프로모션 계획 시뮬레이션. 실적(GPC_DATA)에 섞지 않고 별도 배열로만 얹는다
-    # (연도 비교·필터 모집단 오염 방지). 생성: 03. Operation/00. GPC/_engine/build_sep_forecast.py
+    # (연도 비교·필터 모집단 오염 방지). 생성: 03. Operation/00. GPC/_engine/build_forecast.py (--month N)
     fc_payload = None
     FC = OUT.replace("gpc_data.js", "gpc_forecast.json")
     if os.path.exists(FC):

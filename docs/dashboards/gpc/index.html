@@ -67,6 +67,12 @@
   .ms .panel{position:absolute;top:calc(100% + 6px);left:0;z-index:30;background:var(--card);border:1px solid var(--line);
     border-radius:12px;box-shadow:0 8px 28px rgba(20,23,28,.12);padding:8px;min-width:230px;display:none}
   .ms.open .panel{display:block}
+  .ms .opts{max-height:320px;overflow:auto}
+  .ms .srch{display:block;width:100%;box-sizing:border-box;margin:2px 0 6px;padding:7px 10px;border:1.5px solid var(--line);border-radius:8px;
+    background:var(--bg);color:var(--ink);font:inherit;font-size:13px;outline:none}
+  .ms .srch:focus{border-color:var(--ink2)}
+  .ms .grp{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:.04em;padding:8px 8px 3px;text-transform:uppercase}
+  .ms .hid{display:none}
   .ms .panel .quick{display:flex;gap:4px;padding:4px 6px 8px;border-bottom:1px solid var(--line2);margin-bottom:4px}
   .ms .opt{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;cursor:pointer;font-size:13px}
   .ms .opt:hover{background:var(--bg)}
@@ -230,6 +236,10 @@
       <div class="lab">카테고리</div>
       <div class="ms" id="cCat"></div>
     </div>
+    <div class="ctl">
+      <div class="lab">계정</div>
+      <div class="ms" id="cAcc"></div>
+    </div>
   </div>
 
   <!-- 탭 -->
@@ -322,20 +332,20 @@
     <div class="note" id="fcNote"></div>
     <div class="kpis" id="fcKpis"></div>
     <div class="card">
-      <div class="h"><div><h3>손익 사다리 — 9월 예상 vs 8월 가마감 vs 25년 9월 실적</h3><div class="hint" id="fcLadderHint">FCST 카테고리(Split Inverter · Split On/Off · Window · Floor Standing · Concealed) 동일 모집단 · 상단 필터 미적용 · 천 SAR</div></div></div>
+      <div class="h"><div><h3 id="fcLadderTitle">손익 사다리</h3><div class="hint" id="fcLadderHint">FCST 카테고리(Split Inverter · Split On/Off · Window · Floor Standing · Concealed) 동일 모집단 · 상단 필터 미적용 · 천 SAR</div></div></div>
       <div class="tblwrap"><table class="tbl" id="fcLadder"></table></div>
     </div>
     <div class="card">
-      <div class="h"><div><h3>카테고리 × 채널</h3><div class="hint">9월 예상 · 세트 = FCST 수량 · % 는 GSV 대비(VSP 는 ÷COGS) · GM% 8월 = 같은 채널·카테고리 8월 가마감 · 천 SAR</div></div></div>
+      <div class="h"><div><h3>카테고리 × 채널</h3><div class="hint" id="fcCatHint"></div></div></div>
       <div class="tblwrap"><table class="tbl" id="fcCat"></table></div>
     </div>
     <div class="grid g2">
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>VSP 배분</h3><div class="hint">필터 적용분 / 지정액 · Inverter·On/Off = 지정 lump sum (8월 채널×모델 세트당 유지 + 잔액 COGS 비례 균등) · FS = 8월 B2C FS GM% 동등 역산 · Window·Concealed 0</div></div></div>
+        <div class="h"><div><h3>VSP 배분</h3><div class="hint" id="fcVspHint"></div></div></div>
         <div class="tblwrap"><table class="tbl" id="fcVsp"></table></div>
       </div>
       <div class="card" style="margin:0">
-        <div class="h"><div><h3>계정별</h3><div class="hint">메인 계정 + Others · 9월 예상 · 천 SAR</div></div></div>
+        <div class="h"><div><h3>계정별</h3><div class="hint" id="fcAccHint"></div></div></div>
         <div class="tblwrap"><table class="tbl" id="fcAcc"></table></div>
       </div>
     </div>
@@ -385,6 +395,15 @@ const S={years:new Set(YEARS),unit:'month',periods:new Set(GPC_META.yoy_months),
   chans:new Set(GPC_META.channels),cats:new Set(GPC_META.cats),
   metric:'gm_pct',tab:'exec',ctMode:'rate',ctYear:YEARS[YEARS.length-1],basis:'acc'};
 const charts={};
+// 계정 필터 — 키 = 채널|계정. 'Others' 가 OR·IR_Others·SME 에 각각 있어 계정명만으로는 모집단이 겹친다.
+const ACC_KEYS={};GPC_DATA.forEach(r=>{(ACC_KEYS[r.sub]=ACC_KEYS[r.sub]||new Set()).add(r.ac);});
+GPC_META.channels.forEach(c=>{ACC_KEYS[c]=[...(ACC_KEYS[c]||[])].sort((a,b)=>a==='Others'?1:b==='Others'?-1:a.localeCompare(b));});
+const accKey=(sub,ac)=>sub+'|'+ac;
+S.accs=new Set(GPC_META.channels.flatMap(c=>ACC_KEYS[c].map(a=>accKey(c,a))));
+const visAccKeys=()=>GPC_META.channels.filter(c=>S.chans.has(c)).flatMap(c=>ACC_KEYS[c].map(a=>accKey(c,a)));   // 선택 채널의 계정만 노출
+const accLabel=()=>{const v=visAccKeys();return `${v.filter(k=>S.accs.has(k)).length}/${v.length}`;};
+const passAcc=r=>S.accs.has(accKey(r.sub,r.ac));
+const isWhole=chs=>GPC_META.channels.every(c=>chs.has(c))&&visAccKeys().every(k=>S.accs.has(k));   // 전 채널·전 계정 = 안분 불필요
 
 function periodValues(u){if(u==='month')return[1,2,3,4,5,6,7,8,9,10,11,12];
   if(u==='quarter')return['Q1','Q2','Q3','Q4'];if(u==='half')return['H1','H2'];return['Y'];}
@@ -423,27 +442,28 @@ function chShare(){
     if(isProv(r.y,r.m))continue;
     const k=`${r.y}|${r.m}|${ABS[r.cat]||r.cat}`;
     let e=_CHS[k];
-    if(!e){e=_CHS[k]={};MKEYS.forEach(m=>{e[m]={};GPC_META.channels.forEach(c=>e[m][c]=0);});}
-    MKEYS.forEach(m=>e[m][r.sub]+=r[m]);}
+    if(!e){e=_CHS[k]={};MKEYS.forEach(m=>e[m]={});}
+    const ak=accKey(r.sub,r.ac);MKEYS.forEach(m=>e[m][ak]=(e[m][ak]||0)+r[m]);}
   return _CHS;}
 
 function aggOff(year,months,opt){opt=opt||{};
   const ms=new Set(months),cs=opt.cats||S.cats;
   const chs=opt.chans||S.chans;
-  const whole=GPC_META.channels.every(c=>chs.has(c));   // 전 채널이면 안분 불필요(원본 그대로)
+  const whole=isWhole(chs);                              // 전 채널·전 계정이면 안분 불필요(원본 그대로)
   const SH=whole?null:chShare();
+  const selKeys=[...chs].flatMap(c=>(ACC_KEYS[c]||[]).map(a=>accKey(c,a))).filter(k=>S.accs.has(k));   // 선택 채널×선택 계정
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,nsv:0,gm:0};
   o.unalloc=0;                                          // 안분 못 한 금액은 숨기지 않고 표면화한다
   for(const r of OFF){
     if(r.y!==year||r.b!=='A'||!ms.has(r.m)||!cs.has(r.cat))continue;
     if(whole){for(const k in o)if(k in r)o[k]+=r[k];continue;}   // 전 채널이면 공시 원본 그대로
     const b=SH[`${r.y}|${r.m}|${r.cat}`];
-    const gt=b?GPC_META.channels.reduce((t,c)=>t+Math.abs(b.gsv[c]),0):0;
+    const gt=b?Object.values(b.gsv).reduce((t,v)=>t+Math.abs(v),0):0;
     if(gt<1){o.unalloc+=r.gsv;continue;}                // Accrual 에 그 셀이 없어 비중을 못 만든다
-    const wg=[...chs].reduce((t,c)=>t+Math.abs(b.gsv[c])/gt,0);
+    const wg=selKeys.reduce((t,k)=>t+Math.abs(b.gsv[k]||0)/gt,0);
     const wOf=mk=>{const e=b[mk];if(!e)return wg;
-      const t=GPC_META.channels.reduce((x,c)=>x+Math.abs(e[c]),0);
-      return t<1?wg:[...chs].reduce((x,c)=>x+Math.abs(e[c])/t,0);};  // 그 지표가 0 이면 GSV 비중 폴백
+      const t=Object.values(e).reduce((x,v)=>x+Math.abs(v),0);
+      return t<1?wg:selKeys.reduce((x,k)=>x+Math.abs(e[k]||0)/t,0);};  // 그 지표가 0 이면 GSV 비중 폴백
     for(const k of MKEYS)if(k in r)o[k]+=r[k]*wOf(k);}
 
   // Official 은 가마감을 내지 않는다. 공시가 없는 월(가마감 월 포함)은 Accrual 값을 그대로 쓴다.
@@ -455,7 +475,7 @@ function aggOff(year,months,opt){opt=opt||{};
     const f={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0,qty:0};
     let any=false;
     for(const r of GPC_DATA){
-      if(r.y!==year||r.m!==m||!chs.has(r.sub)||!cs.has(r.cat))continue;
+      if(r.y!==year||r.m!==m||!chs.has(r.sub)||!cs.has(r.cat)||!passAcc(r))continue;
       any=true;for(const k in f)f[k]+=r[k];}
     if(!any)continue;
     o.fb.push(m);
@@ -483,7 +503,7 @@ function accBase(year,months,cats,chans){
   const ms=new Set(months),cs=cats||S.cats,chs=chans||S.chans;
   const o={gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
-    if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat))continue;
+    if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat)||!passAcc(r))continue;
     for(const k in o)o[k]+=r[k];}
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;o.gp=o.nsv-o.cogs+o.inv+o.vsp;
   o.gm_pct=o.nsv?o.gp/o.nsv:0;return o;}
@@ -493,7 +513,8 @@ function aggAcc(year,months,opt){opt=opt||{};
   const o={qty:0,gsv:0,yed:0,adc:0,vpd:0,dsi:0,cogs:0,inv:0,vsp:0};
   for(const r of GPC_DATA){
     if(r.y!==year||!ms.has(r.m)||!chs.has(r.sub)||!cs.has(r.cat))continue;
-    if(opt.ac!==undefined&&r.ac!==opt.ac)continue;
+    if(opt.ac!==undefined){if(r.ac!==opt.ac)continue;}      // 계정을 명시한 조회(Contract 탭)는 계정 필터를 타지 않는다
+    else if(!passAcc(r))continue;
     for(const k in o)o[k]+=r[k];
   }
   o.nsv=o.gsv+o.yed+o.adc+o.vpd+o.dsi;
@@ -534,9 +555,9 @@ function buildBar(){
   const cc=document.getElementById('cChan');cc.innerHTML='';
   GPC_META.channels.forEach(ch=>{const d=document.createElement('div');d.className='ytog'+(S.chans.has(ch)?' on':'');
     d.innerHTML=`<span class="dot"></span><span style="color:var(--ink2)">${ch}</span>`;
-    d.onclick=()=>{S.chans.has(ch)?S.chans.delete(ch):S.chans.add(ch);d.classList.toggle('on');render();};
+    d.onclick=()=>{S.chans.has(ch)?S.chans.delete(ch):S.chans.add(ch);d.classList.toggle('on');buildAcc();render();};
     cc.appendChild(d);});
-  buildCat();
+  buildCat();buildAcc();
   const ms=document.getElementById('metricSel');ms.innerHTML='';
   METRICS.forEach(([v,l])=>{const b=document.createElement('button');b.textContent=l;b.className=S.metric===v?'on':'';
     b.onclick=()=>{S.metric=v;ms.querySelectorAll('button').forEach(x=>x.classList.remove('on'));b.classList.add('on');render();};
@@ -581,7 +602,34 @@ function buildCat(){
     buildCat();document.getElementById('cCat').classList.add('open');render();});
 }
 function updateCatCount(){const t=document.querySelector('#cCat .cnt');if(t)t.textContent=`${S.cats.size}/${GPC_META.cats.length}`;}
-document.addEventListener('click',e=>{const ms=document.getElementById('cCat');if(ms&&!ms.contains(e.target))ms.classList.remove('open');});
+document.addEventListener('click',e=>{document.querySelectorAll('.ms.open').forEach(ms=>{if(!ms.contains(e.target))ms.classList.remove('open');});});
+function buildAcc(){
+  const wrap=document.getElementById('cAcc');const vis=visAccKeys();
+  wrap.innerHTML=`<div class="trigger"><span>계정</span><span class="cnt">${accLabel()}</span><span class="arw">▾</span></div>
+    <div class="panel"><input class="srch" type="search" placeholder="계정 찾기…" autocomplete="off"><div class="quick">
+      <button class="txtbtn" data-a="all">전체</button><button class="txtbtn" data-a="none">해제</button>
+    </div><div class="opts"></div></div>`;
+  const opts=wrap.querySelector('.opts'),inp=wrap.querySelector('.srch');
+  GPC_META.channels.filter(c=>S.chans.has(c)).forEach(ch=>{
+    const g=document.createElement('div');g.className='grp';g.textContent=ch;opts.appendChild(g);
+    ACC_KEYS[ch].forEach(ac=>{const k=accKey(ch,ac);const o=document.createElement('div');o.className='opt'+(S.accs.has(k)?' on':'');o.dataset.q=ac.toLowerCase();
+      o.innerHTML=`<span class="box"></span><span>${ac}</span>`;
+      o.onclick=e=>{e.stopPropagation();S.accs.has(k)?S.accs.delete(k):S.accs.add(k);o.classList.toggle('on');updateAccCount();render();};
+      opts.appendChild(o);});});
+  if(!vis.length){const d=document.createElement('div');d.className='grp';d.textContent='선택된 채널 없음';opts.appendChild(d);}
+  const applySearch=()=>{const q=inp.value.trim().toLowerCase();
+    opts.querySelectorAll('.opt').forEach(o=>o.classList.toggle('hid',!!q&&!o.dataset.q.includes(q)));
+    opts.querySelectorAll('.grp').forEach(g=>{let e=g.nextElementSibling,any=false;
+      while(e&&!e.classList.contains('grp')){if(!e.classList.contains('hid'))any=true;e=e.nextElementSibling;}g.classList.toggle('hid',!any);});};
+  inp.oninput=applySearch;
+  wrap.querySelector('.trigger').onclick=()=>{wrap.classList.toggle('open');if(wrap.classList.contains('open'))inp.focus();};
+  wrap.querySelectorAll('[data-a]').forEach(b=>b.onclick=e=>{e.stopPropagation();
+    const q=inp.value.trim().toLowerCase();                       // 전체/해제 = 보이는 계정(선택 채널·검색 결과)에만
+    vis.filter(k=>!q||k.split('|')[1].toLowerCase().includes(q)).forEach(k=>b.dataset.a==='all'?S.accs.add(k):S.accs.delete(k));
+    const keep=inp.value;buildAcc();const w=document.getElementById('cAcc');w.classList.add('open');
+    const ni=w.querySelector('.srch');ni.value=keep;ni.oninput();ni.focus();render();});
+}
+function updateAccCount(){const t=document.querySelector('#cAcc .cnt');if(t)t.textContent=accLabel();}
 document.querySelectorAll('.bar .txtbtn[data-p]').forEach(b=>{
   b.onclick=()=>{
     if(b.dataset.p==='yoy'){S.unit='month';S.periods=new Set(GPC_META.yoy_months);
@@ -677,13 +725,13 @@ function ladderTable(){
   document.getElementById('ladderHint').textContent=
     (S.basis==='off'
       ? `Official(Finance 공시) 기준 · GP 는 공시 원본값 · ${[...S.chans].join('+')||'채널 없음'}`
-        +`${GPC_META.channels.every(c=>S.chans.has(c))?'(원본 그대로)':'(Accrual 지표별 채널비중 안분)'}`
+        +`${isWhole(S.chans)?'(원본 그대로)':'(Accrual 지표별 채널·계정 비중 안분)'}`
         +`${(()=>{const u=yrs.reduce((t,y)=>t+(A[y].unalloc||0),0);
              return Math.abs(u)>500?` · ⚠️ 안분 불가 ${fmt(u)} 천 SAR 제외(Accrual 에 해당 셀 없음)`:'';})()}`
         +`${(()=>{const fb=yrs.flatMap(y=>(A[y].fb||[]).map(m=>`${y}-${String(m).padStart(2,'0')}`));
              return fb.length?` · 🟡 ${fb.join(', ')} 는 Official 미공시라 Accrual 값 사용(그 달 보정 0)`:'';})()}`
-        +` · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`
-      : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 천 SAR`);
+        +` · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 계정 ${accLabel()} · 천 SAR`
+      : `NSV = GSV+YED+ADC+VPD+DSI · GP = NSV−COGS+INV+VSP · ${[...S.chans].join('+')||'채널 없음'} · 카테고리 ${S.cats.size}/${GPC_META.cats.length} · 계정 ${accLabel()} · 천 SAR`);
 }
 
 // ── 차트 ──
@@ -1001,17 +1049,21 @@ function fcActual(y,m,cats,chans){return aggAcc(y,[m],{cats:new Set(cats||FC_CAT
 const fcR=(v,b)=>b?(v/b*100).toFixed(1)+'%':'-';
 function renderFcst(){
   if(!FC)return;
-  const Y=FC.year,M=FC.month,pm=M-1;
+  const Y=FC.year,M=FC.month,pm=M>1?M-1:12,pY=M>1?Y:Y-1;
   // Executive Summary 와 같이 상단 채널·카테고리 필터를 따른다 (연도·기간은 비교월 고정이라 미적용)
   const CATS=FC_CATS.filter(c=>S.cats.has(c)),CHS=GPC_META.channels.filter(c=>S.chans.has(c));
-  const FL=FC.lines.filter(l=>S.chans.has(l.sub)&&S.cats.has(l.cat));
-  const F=fcSum(FL),A8=fcActual(Y,pm,CATS,CHS),A25=fcActual(Y-1,M,CATS,CHS);
-  const fsel=`${CHS.join('+')||'채널 없음'} · 카테고리 ${CATS.length}/${FC_CATS.length}`;
-  const prov=GPC_META.provisional,provLbl=(prov&&prov.year===Y&&prov.month===pm)?'가마감':'실적';
+  const FL=FC.lines.filter(l=>S.chans.has(l.sub)&&S.cats.has(l.cat)&&passAcc(l));
+  const F=fcSum(FL),A8=fcActual(pY,pm,CATS,CHS),A25=fcActual(Y-1,M,CATS,CHS);
+  const fsel=`${CHS.join('+')||'채널 없음'} · 카테고리 ${CATS.length}/${FC_CATS.length} · 계정 ${accLabel()}`;
+  const prov=GPC_META.provisional,provLbl=(prov&&prov.year===pY&&prov.month===pm)?'가마감':'실적';
+  document.getElementById('fcLadderTitle').textContent=`손익 사다리 — ${M}월 예상 vs ${pm}월 ${provLbl} vs ${String(Y-1).slice(2)}년 ${M}월 실적`;
+  document.getElementById('fcCatHint').textContent=`${M}월 예상 · 세트 = FCST 수량 · % 는 GSV 대비(VSP 는 ÷COGS) · GM% ${pm}월 = 같은 채널·카테고리 ${pm}월 ${provLbl} · 천 SAR`;
+  document.getElementById('fcAccHint').textContent=`메인 계정 + Others · ${M}월 예상 · 천 SAR`;
+  document.getElementById('fcVspHint').textContent=`필터 적용분 / 지정액 · Inverter·On/Off = 지정 lump sum (${pm}월 채널×모델 세트당 유지 + 잔액 COGS 비례 균등) · FS = ${pm}월 B2C FS GM% 동등 역산 · Window·Concealed 0`;
   document.getElementById('fcNote').innerHTML=`<b>🔮 ${Y}-${String(M).padStart(2,'0')} 예상</b> — ${FC.basis} · 생성 ${FC.built} · <b>실적이 아닙니다.</b> FCST 에 있는 카테고리만 산출(Cassette·Multi-V·Accessory 등 FCST 없는 축은 제외) · 상단 <b>채널·카테고리 필터 적용</b>(현재 ${fsel}) · 연도·기간 필터는 비교월이 고정이라 미적용.`;
   // KPI
   const box=document.getElementById('fcKpis');box.innerHTML='';
-  [[`${Y-1}년 ${M}월 실적`,A25,YCOL[Y-1]],[`${Y}년 ${pm}월 ${provLbl}`,A8,'#b45309'],[`${Y}년 ${M}월 예상`,F,YCOL[Y]]].forEach(([lab,t,col],i,arr)=>{
+  [[`${Y-1}년 ${M}월 실적`,A25,YCOL[Y-1]],[`${pY}년 ${pm}월 ${provLbl}`,A8,'#b45309'],[`${Y}년 ${M}월 예상`,F,YCOL[Y]]].forEach(([lab,t,col],i,arr)=>{
     const prev=i?arr[i-1][1]:null;let yoy='';
     if(prev&&prev.gp){const d=(t.gp-prev.gp)/Math.abs(prev.gp)*100;
       yoy=`<div class="yoy ${d>=0?'up':'down'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(1)}% <span style="font-weight:600;opacity:.7">GP vs ${arr[i-1][0]}</span></div>`;}
@@ -1022,7 +1074,7 @@ function renderFcst(){
       <div class="sub"><span>GSV <b>${fmt(t.gsv)}</b></span><span>NSV <b>${fmt(t.nsv)}</b></span><span>할인율 <b>${pct(-t.disc_rate)}</b></span><span>COGS율 <b>${pct(t.cogs_rate)}</b></span></div>${yoy}`;
     box.appendChild(el);});
   // 사다리
-  const cols=[[`${Y-1}.${M} 실적`,A25],[`${Y}.${pm} ${provLbl}`,A8],[`${Y}.${M} 예상`,F]];
+  const cols=[[`${Y-1}.${M} 실적`,A25],[`${pY}.${pm} ${provLbl}`,A8],[`${Y}.${M} 예상`,F]];
   let head=`<thead><tr class="sub"><th>Metric</th>${cols.map(c=>`<th>${c[0]}</th>`).join('')}<th class="ydiv">Δ vs ${pm}월</th><th>Δ vs ${Y-1}.${M}</th></tr></thead>`,body='';
   LADDER.forEach(row=>{const k=row.key;
     let tr=`<tr class="mrow ${row.cls||''}"><td>${row.label}</td>`;
