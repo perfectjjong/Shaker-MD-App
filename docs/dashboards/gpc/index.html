@@ -638,10 +638,14 @@ function renderAr(){
   document.getElementById('arHint').innerHTML=`AR·연체·한도 = 각 연도 <b>선택 기간 마지막 월말</b>(시점값, 합산 안 함) · 회수 = 선택 기간 합계`
     +` · ${[...S.chans].join('+')||'채널 없음'} · 계정 ${accLabel()} · 천 SAR`
     +(showRatio?' · DSO = AR ÷ (월평균 매출×1.15)':' · <b>카테고리 필터 적용 중 → DSO·회수율 숨김</b>(AR 은 카테고리 축이 없어 금액은 불변)');
-  const ex=yrs.map(y=>{const a=A[y];if(!a)return null;const e=AR.excluded[`${y}-${String(a.m).padStart(2,'0')}`];
-    return e?`${y} ${fmt(e.ar)}`:null;}).filter(Boolean);
+  // 제외 모집단은 AR 보다 **회수**에서 훨씬 크다(2024 제외 회수 725M vs B2C 335.7M — 서비스센터·프로젝트는
+  // 잔액은 적고 현금 회전이 빠르다). 회수 금액을 '회사 전체 회수'로 읽지 않도록 둘 다 표기한다.
+  const ex=yrs.map(y=>{const a=A[y];if(!a)return null;
+    const e=AR.excluded[`${y}-${String(a.m).padStart(2,'0')}`];
+    const ec=a.ms.reduce((s,m)=>{const x=AR.excluded[`${y}-${String(m).padStart(2,'0')}`];return s+((x&&x.coll)||0);},0);
+    return e?`${y} AR ${fmt(e.ar)}·회수 ${fmt(ec)}`:null;}).filter(Boolean);
   document.getElementById('arFoot').innerHTML=`AR 원본 = 회사코드 1000 · 연체 = 신용일수 초과분(정본 기준) · 생성 ${AR.built}`
-    +(ex.length?` · ⛔ 비B2C·정본밖 제외: ${ex.join(' / ')} 천 SAR`:'')
+    +(ex.length?` · ⛔ 비B2C·정본밖 제외(B2C 모집단 밖, 천 SAR): ${ex.join(' / ')}`:'')
     +(AR.missing&&AR.missing.length?` · ⚠️ 원본 없음: ${AR.missing.join(', ')}`:'');
 }
 const fmt=v=>Math.round(v/1000).toLocaleString();       // SAR -> 천 SAR
