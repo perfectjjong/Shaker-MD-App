@@ -933,10 +933,14 @@ function renderVsp(){destroy('cVsp');
 
 // ── 탭2: 카테고리 ──
 function catAgg(y,months,cat){return agg(y,months,{cats:new Set([cat])});}
+// 2026-09-12 형님 결정: 선택 기간·기준에서 표시 연도 전부 0 인 카테고리(부속 재분류 후 CAC Ducted·Applied 등)는
+//   카테고리 표·GM%·믹스·GP 차트에서 숨긴다. 한 규칙 한 곳(표시 규칙 단일 정본) · 필터 목록·합계는 그대로.
+function visCats(yrs,months){return GPC_META.cats.filter(c=>S.cats.has(c)&&yrs.some(y=>{const a=catAgg(y,months,c);
+  return ['gsv','nsv','gp','total_cogs','disc_total'].some(k=>Math.abs(a[k]||0)>0.5);}));}
 function catTable(){
   const tbl=document.getElementById('tblCat');
   const yrs=selYears(),months=selMonths();
-  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const cats=visCats(yrs,months);
   const cols=[{key:'gsv',label:'GSV'},{key:'disc_total',label:'할인',rate:'gsv'},{key:'nsv',label:'NSV'},
     {key:'total_cogs',label:'COGS',rate:'gsv'},{key:'gp',label:'GP'},{key:'gm_pct',label:'GM%',isPct:1}];
   let grp='<tr class="sub"><th></th>';let sub='<tr class="sub"><th>카테고리</th>';
@@ -963,7 +967,7 @@ function catTable(){
 }
 function renderCatGm(){destroy('cCatGm');
   const yrs=selYears(),months=selMonths();
-  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const cats=visCats(yrs,months);
   const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],borderRadius:4,
     data:cats.map(c=>{const a=catAgg(y,months,c);
       // NSV 베이스 50K SAR 미만 또는 ±100% 초과 = 조정성 노이즈 -> 제외 (축 폭주 방지)
@@ -978,7 +982,7 @@ function renderMix(){destroy('cMix');
   const yrs=selYears();const y=yrs.includes(S.ctYear)?S.ctYear:yrs[yrs.length-1];
   document.getElementById('mixHint').textContent=`${y}년 · NSV 비중 (연도는 Contract 탭 연도 선택과 공유)`;
   const months=selMonths();
-  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const cats=visCats([y],months);
   const vals=cats.map(c=>Math.max(catAgg(y,months,c).nsv,0));
   const pal=['#8c1d2f','#3a352c','#a54b5e','#6b7888','#c99aa4','#9a927f','#b3ab98','#7a4a55','#c6bda9','#d8d0be','#e0d9c8'];
   charts.cMix=new Chart(cMix,{type:'doughnut',data:{labels:cats,datasets:[{data:vals,backgroundColor:pal,borderWidth:2,borderColor:'#fff'}]},
@@ -989,7 +993,7 @@ function renderMix(){destroy('cMix');
         tooltip:{callbacks:{label:c=>`${c.label}  ${fmt(c.parsed)} 천 SAR`}}}}});}
 function renderCatGp(){destroy('cCatGp');
   const yrs=selYears(),months=selMonths();
-  const cats=GPC_META.cats.filter(c=>S.cats.has(c));
+  const cats=visCats(yrs,months);
   const ds=yrs.map(y=>({label:''+y,backgroundColor:YCOL[y],borderRadius:4,maxBarThickness:46,
     data:cats.map(c=>catAgg(y,months,c).gp/1000)}));
   charts.cCatGp=new Chart(cCatGp,{type:'bar',data:{labels:cats,datasets:ds},
