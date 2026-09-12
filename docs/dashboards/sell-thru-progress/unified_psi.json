@@ -1,7 +1,7 @@
 {
  "_meta": {
   "src": "data.json+psi_data.js+data_ir.js",
-  "built": "2026-09-12",
+  "built": "2026-09-13",
   "version": "v1(dual-axis)",
   "note": "value축=data.json(ST/AR), qty축 SO/Stk: OR=psi(Jan-), IR=data_ir byDealer(jan-may). Al Ghanem SO/Stk=byDealer부재(ST만). IR 6월 SO/Stk 없음",
   "fcst_method": "1-8월 실적 + 9월 RSM + 10-12월(1-8평균×OR/IR 분리 시즌계수, 2024:2025=4:6 가중평균)",
@@ -400,7 +400,7 @@
      "stk_qty": 517
     },
     "02": {
-     "st_qty": 2523.0,
+     "st_qty": 2518.0,
      "so_qty": 769,
      "stk_qty": 330
     },
@@ -410,7 +410,7 @@
      "stk_qty": 434
     },
     "04": {
-     "st_qty": 2221.0,
+     "st_qty": 2217.0,
      "so_qty": 493,
      "stk_qty": 358
     },
@@ -425,7 +425,7 @@
      "stk_qty": null
     },
     "07": {
-     "st_qty": 3435.0,
+     "st_qty": 3429.0,
      "fcst": true
     },
     "08": {
@@ -437,7 +437,7 @@
      "fcst": true
     },
     "10": {
-     "st_qty": 955.0,
+     "st_qty": 954.0,
      "fcst": true
     },
     "11": {
@@ -449,10 +449,10 @@
      "fcst": true
     }
    },
-   "ac_asp": 2575.0,
+   "ac_asp": 2582.0,
    "cat_mix": {
-    "Split on/off": 0.549,
-    "Split Inverter": 0.451
+    "Split on/off": 0.55,
+    "Split Inverter": 0.45
    }
   },
   "Black Box": {
@@ -510,7 +510,7 @@
      "stk_qty": 690
     },
     "02": {
-     "st_qty": 2393.0,
+     "st_qty": 2391.0,
      "so_qty": 553,
      "stk_qty": 634
     },
@@ -559,7 +559,7 @@
      "fcst": true
     }
    },
-   "ac_asp": 2501.0,
+   "ac_asp": 2502.0,
    "cat_mix": {
     "Split on/off": 0.609,
     "Split Inverter": 0.391
@@ -1713,19 +1713,19 @@
      "fcst": true
     },
     "10": {
-     "st_qty": 2291.0,
+     "st_qty": 2288.0,
      "fcst": true
     },
     "11": {
-     "st_qty": 1269.0,
+     "st_qty": 1267.0,
      "fcst": true
     },
     "12": {
-     "st_qty": 909.0,
+     "st_qty": 908.0,
      "fcst": true
     },
     "01": {
-     "st_qty": 2494.0,
+     "st_qty": 2471.0,
      "so_qty": 1217,
      "stk_qty": 4198
     },
