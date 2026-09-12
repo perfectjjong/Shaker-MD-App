@@ -74,7 +74,7 @@ for sheet in wb.sheetnames:
         if not m or not ch: continue                       # 빌더도 skip 하는 행
         try: cid = int(float(row[4]))
         except (TypeError, ValueError): cid = None
-        rec = dict(y=y, m=m, ch=ch, cid=cid, name=str(row[5] or ''), cat=B.norm_cat(row[28]), qty=num(row[18]))
+        rec = dict(y=y, m=m, ch=ch, cid=cid, name=str(row[5] or ''), cat=B.row_cat(row), qty=num(row[18]))
         for f in K[1:]: rec[f] = num(row[B.AMT[f]])
         ac = B.account_of(row)
         rec['ac0'] = ac

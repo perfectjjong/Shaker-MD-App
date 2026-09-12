@@ -10,7 +10,7 @@ import openpyxl
 
 sys.path.insert(0, "/home/ubuntu/Shaker-MD-App/docs/dashboards/gpc")
 sys.path.insert(0, "/home/ubuntu/2026/10. Automation/03. Operation/00. GPC/_engine")
-from build_gpc_dashboard import account_of, row_month, norm_cat          # 분류(SSOT 래퍼)만
+from build_gpc_dashboard import account_of, row_month, row_cat           # 분류(SSOT 래퍼)만 — row_cat = is_part 부속→Accessory/Others 포함
 from gpc_core import sub_channel, account_name, SUB_CHANNELS
 
 ACC_DIR = "/home/ubuntu/2026/02. Operation Team/01. GPC Management/01. Monthly"
@@ -61,7 +61,7 @@ def load_rows(src=None):
                 cid = None
             sub = sub_channel(cid, ac)
             vals = [num(row[AMT[k]]) for k in KEYS]
-            cat = norm_cat(row[28])
+            cat = row_cat(row)
             if sub is None and cid is None:                     # 계정 없는 조정행 → 안분 대상
                 lk = (y, m, ch, cat)
                 for i, v in enumerate(vals):

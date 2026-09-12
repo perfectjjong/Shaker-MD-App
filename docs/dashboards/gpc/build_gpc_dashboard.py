@@ -90,6 +90,20 @@ def norm_cat(s):
     return s or "Accessory/Others"
 
 
+# 2026-09-12 형님 승인: raw AC(Category) 열은 SAP 자재마스터 값이라 부속이 제품 카테고리로 들어온다
+#   (2026 'CAC Ducted' 1,127K 전액 PREMTB200 리모컨 · 2025 Concealed 447K 같은 품목 · Multi-V 분지관/WiFi ~250K).
+#   Finance 공시는 Accessories 로 재분류한다 → SSOT is_part(자재코드) 가 부품이면 Accessory/Others.
+#   ⚠️ 설명 인자는 넣지 않는다: 원본 K열은 '인보이스 유형'(Display Sale Invoice 등)이라 전시품 판매(정상 제품)를
+#   목업으로 오판한다. 자재코드만으로 판정(PREMTB·ARBLN·PWFMDD·LSIK·PTMCHW·'Split - Mock' 등).
+from shared_category import is_part as _ssot_is_part
+
+
+def row_cat(row):
+    if _ssot_is_part(row[17]):
+        return "Accessory/Others"
+    return norm_cat(row[28])
+
+
 def num(v):
     try:
         return float(v)
@@ -168,7 +182,7 @@ def main():
                 _cid = None
             sub = sub_channel(_cid, ac)
             if sub is None and _cid is None:
-                lk = (year, m, ch, norm_cat(row[28]))
+                lk = (year, m, ch, row_cat(row))
                 la = lump.setdefault(lk, [0.0] * len(METRIC_KEYS))
                 la[0] += num(row[18])
                 for i, k in enumerate(METRIC_KEYS[1:], 1):
@@ -187,7 +201,7 @@ def main():
             ch = "OR" if sub == "OR" else "IR"
             if ac == "Others" and sub == "IR_Others":
                 ac = account_name(_cid, row[5])          # IR_Others 는 계정명 노출 (2026-09-11 형님 지시)
-            key = (year, m, ch, sub, ac, norm_cat(row[28]))
+            key = (year, m, ch, sub, ac, row_cat(row))
             a = agg.setdefault(key, [0.0] * len(METRIC_KEYS))
             a[0] += num(row[18])
             for i, k in enumerate(METRIC_KEYS[1:], 1):
