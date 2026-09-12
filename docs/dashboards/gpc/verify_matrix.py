@@ -28,12 +28,15 @@ def cn(s):
 
 # ── 원본을 최소 입도로 한 번만 읽어둔다 (세부채널 4분할·비B2C 제외·조정행 안분 = verify_common, 2026-09-12) ──
 from verify_common import load_rows
-A=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,sub,cat)
+A=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,sub,ac,cat)
 for r in load_rows(ACC)[0]:
-    for k in AMT: A[(r["y"],r["m"],r["sub"],r["cat"])][k]+=r[k]
+    for k in AMT: A[(r["y"],r["m"],r["sub"],r["ac"],r["cat"])][k]+=r[k]
 pj=json.load(open(PROV,encoding="utf-8"))
 for r in pj["rows"]:
-    for k in AMT: A[(pj["year"],pj["month"],r["sub"],r["cat"])][k]+=r.get(k,0.0) or 0.0
+    for k in AMT: A[(pj["year"],pj["month"],r["sub"],r["ac"],r["cat"])][k]+=r.get(k,0.0) or 0.0
+def _sel(sub,ac,chans,accs):
+    """화면 규칙: 선택 채널의 계정 중 선택된 계정. accs=None 이면 전 계정"""
+    return sub in chans and (accs is None or f"{sub}|{ac}" in accs)
 PKEY=(pj["year"],pj["month"])
 
 O=collections.defaultdict(lambda: collections.defaultdict(float))     # (y,m,cat) 실적만
@@ -48,10 +51,10 @@ for r in V[3:279]:
         if not mm or r[j] in (None,"") or mm.group(1)=="B" or str(band[j])=="FCST": continue
         O[(int(mm.group(2)),int(mm.group(3)),cat)][k]+=float(r[j])*sg
 
-def exp_acc(y,months,chans,cats):
+def exp_acc(y,months,chans,cats,accs=None):
     o=dict.fromkeys(AMT,0.0)
-    for (yy,m,ch,c),v in A.items():
-        if yy!=y or m not in months or ch not in chans or c not in cats: continue
+    for (yy,m,ch,ac,c),v in A.items():
+        if yy!=y or m not in months or not _sel(ch,ac,chans,accs) or c not in cats: continue
         for k in AMT: o[k]+=v[k]
     o["nsv"]=o["gsv"]+o["yed"]+o["adc"]+o["vpd"]+o["dsi"]
     o["gp"]=o["nsv"]-o["cogs"]+o["inv"]+o["vsp"]; return o
@@ -67,9 +70,9 @@ for r in load_rows(ACC)[0]:
     if (r["y"],r["m"])==PKEY: continue            # 가마감은 실적이 아니므로 비중 분모에서 제외
     for k in AMT: SHARE[(r["y"],r["m"],ABS.get(r["cat"],r["cat"]))][k][(r["sub"],r["ac"])]+=r[k]
 
-def exp_off(y,months,chans,cats):
-    """Official. 채널 부분선택이면 (연·월·카테고리) Accrual GSV 비중으로 안분(가마감 제외)."""
-    whole=chans=={"OR","IR_Main","IR_Others","SME"}
+def exp_off(y,months,chans,cats,accs=None):
+    """Official. 채널·계정 부분선택이면 (연·월·카테고리) Accrual |값| 비중(세부채널|계정 키)으로 안분(가마감 제외)."""
+    whole=chans=={"OR","IR_Main","IR_Others","SME"} and accs is None
     o=collections.defaultdict(float)
     for (yy,m,c),v in O.items():
         if yy!=y or m not in months or c not in cats: continue
@@ -79,12 +82,12 @@ def exp_off(y,months,chans,cats):
         b=SHARE.get((yy,m,c))
         gt=sum(abs(v) for v in b["gsv"].values()) if b else 0.0
         if gt<1: continue                         # 안분 불가 → 제외(화면도 동일)
-        wg=sum(abs(v) for (s,_a),v in b["gsv"].items() if s in chans)/gt
+        wg=sum(abs(v) for (s,a),v in b["gsv"].items() if _sel(s,a,chans,accs))/gt
         def wof(mk):
             e=b.get(mk)
             if not e: return wg
             t=sum(abs(v) for v in e.values())
-            return wg if t<1 else sum(abs(v) for (s,_a),v in e.items() if s in chans)/t
+            return wg if t<1 else sum(abs(v) for (s,a),v in e.items() if _sel(s,a,chans,accs))/t
         for k in AMT:
             if k in v: o[k]+=v[k]*wof(k)
     # Official 은 가마감을 내지 않는다 → 공시 없는 월은 Accrual 값을 그대로 (안분 없음)
@@ -92,8 +95,8 @@ def exp_off(y,months,chans,cats):
     for m in months:
         if m in offM: continue
         f=dict.fromkeys(AMT,0.0); any_=False
-        for (yy,mm,ch,c),v in A.items():
-            if yy!=y or mm!=m or ch not in chans or c not in cats: continue
+        for (yy,mm,ch,ac,c),v in A.items():
+            if yy!=y or mm!=m or not _sel(ch,ac,chans,accs) or c not in cats: continue
             any_=True
             for k in AMT: f[k]+=v[k]
         if not any_: continue
@@ -115,7 +118,13 @@ CASES=[("기본 1~8월·전채널", "month",[1,2,3,4,5,6,7,8],{"OR","IR_Main","I
        ("1~8월 · OR만",      "month",[1,2,3,4,5,6,7,8],{"OR"},None),
        ("단월 5월 · OR만",   "month",[5],{"OR"},None),
        ("1~8월 · Split Inverter만","month",[1,2,3,4,5,6,7,8],{"OR","IR_Main","IR_Others","SME"},["Split Inverter"]),
-       ("Q3 · IR · Cassette","quarter",["Q3"],{"IR_Main","IR_Others","SME"},["Cassette AC"])]
+       ("Q3 · IR · Cassette","quarter",["Q3"],{"IR_Main","IR_Others","SME"},["Cassette AC"]),
+       # ── 계정 부분선택 (2026-09-12): Official 은 세부채널|계정 키 안분, 가마감월(8월)은 Accrual 계정 실측 폴백 ──
+       ("1~8월 · OR · eXtra+Al Manea","month",[1,2,3,4,5,6,7,8],{"OR"},None,["OR|eXtra","OR|Al Manea"]),
+       ("1~8월 · IR_Main · BH만",     "month",[1,2,3,4,5,6,7,8],{"IR_Main"},None,["IR_Main|BH"]),
+       ("1~8월 · 전채널 · 계정 3개",  "month",[1,2,3,4,5,6,7,8],{"OR","IR_Main","IR_Others","SME"},None,["OR|eXtra","IR_Main|BH","SME|Others"]),
+       ("단월 8월(가마감) · OR · eXtra만","month",[8],{"OR"},None,["OR|eXtra"]),
+       ("Q2 · IR_Main · BH+Zagzoog · Inverter","quarter",["Q2"],{"IR_Main"},["Split Inverter"],["IR_Main|BH","IR_Main|Zagzoog"])]
 MO={"month":lambda p:[p],"quarter":lambda p:[int(p[1])*3-2,int(p[1])*3-1,int(p[1])*3],
     "half":lambda p:[1,2,3,4,5,6] if p=="H1" else [7,8,9,10,11,12],"year":lambda p:list(range(1,13))}
 LAB=["GSV","YED","ADC","VPD","DSI","NSV","COGS","INV","VSP","GP"]
@@ -128,15 +137,19 @@ async def main():
         pg.on("console",lambda m: errs.append(m.text) if m.type=="error" else None)
         pg.on("pageerror",lambda e: errs.append(str(e)))
         await pg.goto("http://127.0.0.1:8901/index.html",wait_until="networkidle"); await pg.wait_for_timeout(600)
-        for name,unit,periods,chans,cats in CASES:
+        for case in CASES:
+            name,unit,periods,chans,cats=case[:5]; accs=case[5] if len(case)>5 else None
             months=set(m for pp in periods for m in MO[unit](pp))
             cs=set(cats) if cats else None
             for basis,bl in [("Accrual","acc"),("Official","off")]:
-                st=await pg.evaluate("""([u,ps,ch,ca,bs])=>{
+                st=await pg.evaluate("""([u,ps,ch,ca,bs,ac])=>{
                     S.basis=bs;S.unit=u;S.periods=new Set(ps);S.chans=new Set(ch);
                     S.cats=ca?new Set(ca):new Set(GPC_META.cats);
+                    const all=GPC_META.channels.flatMap(c=>ACC_KEYS[c].map(a=>c+'|'+a));
+                    S.accs=new Set(ac?all.filter(k=>ac.includes(k)):all);
                     buildBar();buildPeriods();buildCat();render();
-                    return [...S.periods].length;}""",[unit,periods,list(chans),cats,bl])
+                    return [...S.accs].length;}""",[unit,periods,list(chans),cats,bl,accs])
+                if accs is not None and st!=len(accs): fails.append(f"{name}: 계정 키 {accs} 중 {st}개만 존재"); continue
                 await pg.wait_for_timeout(450)
                 rows=await pg.eval_on_selector_all("#tblLadder tbody tr.mrow",
                     "es=>es.map(e=>[...e.querySelectorAll('td')].map(t=>t.textContent.trim()))")
@@ -148,7 +161,7 @@ async def main():
                     if r is None: fails.append(f"{name}/{basis} {lb} 행없음"); continue
                     for j,y in enumerate(yrs):
                         shown=int(r[1+j].replace(",","").replace("−","-"))
-                        e=(exp_acc if bl=="acc" else exp_off)(y,months,chans,allcats)
+                        e=(exp_acc if bl=="acc" else exp_off)(y,months,chans,allcats,accs)
                         exp=round(e[KEY[i]]/1000); checked+=1
                         if shown!=exp:
                             bad+=1; fails.append(f"{name}/{basis} {lb} {y}: 화면={shown:,} 엑셀={exp:,} Δ={shown-exp:,}")
